@@ -1,0 +1,74 @@
+on_actions = {
+	on_startup = {
+		effect = {
+			#Wonder Setup Event
+			random_country = {
+				limit = { is_ai = no }
+				country_event = TR.wonder.1
+			}
+			
+			#Start pointer great china wall
+			every_country = {
+				set_variable = {
+					var = bonus_gw
+					value = 0
+				}
+			}
+			
+			#Start legitimacy
+			every_country = {
+				country_event = TR.legitimacy.8
+				country_event = TR.migration.13
+			}
+		}
+	}
+
+	#ROOT is new controller #FROM is old controller #FROM.FROM is state ID
+	on_state_control_changed = {
+		effect = {
+			#check controller of great china wall
+			if = {
+				limit = {
+					FROM.FROM = { 
+						has_state_flag = great_wall_wonder_flag
+						is_controlled_by = ROOT
+					}
+				}
+				ROOT = {
+					add_to_variable = { var = bonus_gw value = 1 }
+					country_event = TR.wonder.28
+				}
+				FROM = {
+					subtract_from_variable = { var = bonus_gw value = 1 }
+					country_event = TR.wonder.28
+				}
+			}
+		}
+	}
+	
+	#Фикс аннекса Испании
+	#ROOT = nation being puppeted, FROM = overlord
+	on_puppet = {
+		effect = {
+			if = {
+				limit = {
+					AND = { 
+						TAG = SPR
+						is_subject_of = RSP
+					}
+				}
+				RSP = { annex_country = { target = SPR } }
+			}
+			if = {
+				limit = {
+					AND = { 
+						TAG = RSP
+						is_subject_of = SPR
+					}
+				}
+				SPR = { annex_country = { target = RSP } }
+			}
+		}
+	}
+}
+
