@@ -188,6 +188,9 @@ focus_tree = {
 
 		available = {
 			has_government = monarchy
+			any_country = {
+				NOT = { has_global_flag = form_habsburg_flag }
+			}
 		}
 
 		bypass = {
@@ -224,503 +227,134 @@ focus_tree = {
 				add_idea = HUN_habsburg_restored
 				remove_idea = HUN_hungarian_monarchy_2
 			}
+			if = {
+				limit = { 
+					OR = {
+						NOT = { FRA = { has_completed_focus = FRA_little_entente } } 
+						FRA = { exists = no }
+						FRA = { is_subject = yes }
+					}
+					OR = {
+						has_idea = HUN_treaty_of_triannon
+						has_idea = HUN_treaty_of_triannon_2
+						has_idea = HUN_treaty_of_triannon_3
+					}
+				} #Romania gets the event if France not engaged in Balkans
+				ROM = { country_event = { id = DOD_hungary.40 } }	 
+			}
 			set_rule = { can_create_factions = yes }
 			hidden_effect = {
 				news_event = { id = news.290 }
 			}
+			set_cosmetic_tag = HABSBURGS
+			load_focus_tree = hbbrg_focus
 		}
 	}
 
-	focus = {
-		id = HUN_demand_a_referendum
-		icon = GFX_goal_generic_forceful_treaty
-		prerequisite = { focus = HUN_invite_the_habsburg_prince }
-		mutually_exclusive = { focus = HUN_take_austria_by_force }
-		x = -1
-		y = 1
-		relative_position_id = HUN_invite_the_habsburg_prince
-
-		cost = 10
-
-		ai_will_do = {
-			factor = 70
-		}
-
-		available = {
-			NOT = { has_war_with = AUS }
-			is_subject = no
-			AUS = {
-				OR = {
-					exists = yes
-					is_subject = no
-				}
-			}
-		}
-
-		bypass = {
-			owns_state = 4
-			owns_state = 153
-			owns_state = 152
-		}
-
-		cancel_if_invalid = yes
-		continue_if_invalid = no
-		available_if_capitulated = no
-
-		complete_tooltip = {
-
-		}
-
-		completion_reward = {
-			AUS = { country_event = { id = DOD_hungary.1 } }
-		}
-	}
-
-	focus = {
-		id = HUN_take_austria_by_force
-		icon = GFX_goal_generic_territory_or_war
-		prerequisite = { focus = HUN_invite_the_habsburg_prince }
-		mutually_exclusive = { focus = HUN_demand_a_referendum }
-		x = 1
-		y = 1
-		relative_position_id = HUN_invite_the_habsburg_prince
-		will_lead_to_war_with = AUS
-		will_lead_to_war_with = GER #if after Anschluss
-		cost = 10
-
-		ai_will_do = {
-			factor = 70
-			modifier = {
-				factor = 0.5
-				AUS = { is_in_faction = yes }
-			}
-		}
-
-		available = {
-			4 = {
-				is_controlled_by = OWNER
-			}
-			is_subject = no
-		}
-
-		bypass = {
-
-		}
-
-		cancel_if_invalid = yes
-		continue_if_invalid = no
-		available_if_capitulated = no
-
-		complete_tooltip = {
-
-		}
-
-		completion_reward = {
-			random_country = {
-				limit = {
-					owns_state = 4
-				}
-				HUN = {
-					create_wargoal = {
-						type = take_state_focus
-						target = PREV
-						generator = { 4 152 153 }
-					}
-				}
-			}
-			add_state_claim = 152
-			add_state_claim = 153
-			add_state_claim = 4
-		}
-	}
-
-	focus = {
-		id = HUN_proclaim_the_restoration_of_austria_hungary
-		icon = GFX_focus_proclaim_the_restauration_of_Austria_Hungary
-		prerequisite = { focus = HUN_demand_a_referendum focus = HUN_take_austria_by_force }
-		x = 0
-		y = 2
-		relative_position_id = HUN_invite_the_habsburg_prince
-
-		cost = 10
-
-		ai_will_do = {
-			factor = 60
-		}
-
-		available = {
-			controls_state = 152
-			controls_state = 153
-			controls_state = 4
-			is_subject = no
-		}
-
-		bypass = {
-
-		}
-
-		cancel_if_invalid = yes
-		continue_if_invalid = no
-		available_if_capitulated = no
-
-		complete_tooltip = {
-
-		}
-
-		completion_reward = {
-			set_cosmetic_tag = HUN_EMPIRE
-			hidden_effect = { AUS = { set_cosmetic_tag = AUS_NOT_WHITE } }
-			152 = { add_core_of = ROOT }
-			153 = { add_core_of = ROOT }
-			4 = { add_core_of = ROOT }
-			69 = { add_core_of = ROOT }
-			9 = { add_core_of = ROOT }
-			75 = { add_core_of = ROOT }
-			74 = { add_core_of = ROOT }
-			72 = { add_core_of = ROOT }
-			70 = { add_core_of = ROOT }
-			664 = { add_core_of = ROOT }
-			71 = { add_core_of = ROOT }
-			73 = { add_core_of = ROOT }
-			810 = { add_core_of = ROOT }
-			815 = { add_core_of = ROOT }
-			hidden_effect = {
-				news_event = { id = news.295 }
-			}
-			set_global_flag = form_austria_hungary_flag
-		}
-	}
-
-	focus = {
-		id = HUN_protect_czechoslovakia
-		icon = GFX_goal_generic_defence
-		prerequisite = { focus = HUN_proclaim_the_restoration_of_austria_hungary }
-		x = 0
-		y = 3
-		relative_position_id = HUN_invite_the_habsburg_prince
-
-		cost = 10
-
-		ai_will_do = {
-			factor = 60
-		}
-
-		available = {
-			is_subject = no
-			country_exists = CZE
-		}
-
-		bypass = {
-			CZE = {
-				OR = {
-					exists = no
-					is_subject = yes
-				}
-			}
-		}
-
-		cancel_if_invalid = yes
-		continue_if_invalid = no
-		available_if_capitulated = no
-
-		complete_tooltip = {
-
-		}
-
-		completion_reward = {
-			CZE = { country_event = { id = DOD_hungary.10 } }
-		}
-	}
-
-	
-
-	focus = {
-		id = HUN_claim_transylvania
-		icon = GFX_focus_generic_strike_at_democracy2
-		prerequisite = { focus = HUN_protect_czechoslovakia }
-		x = -1
-		y = 4
-		relative_position_id = HUN_invite_the_habsburg_prince
-
-		cost = 10
-
-		ai_will_do = {
-			factor = 60
-		}
-
-		available = {
-			has_army_manpower = { size > 200000 }
-			76 = { OWNER = { NOT = { is_in_faction_with = HUN } } }
-			is_subject = no
-		}
-
-		bypass = {
-			controls_state = 76
-			controls_state = 83
-			controls_state = 84
-			controls_state = 82
-		}
-
-		cancel_if_invalid = yes
-		continue_if_invalid = no
-		available_if_capitulated = no
-
-		complete_tooltip = {
-
-		}
-
-		completion_reward = {
-			add_state_claim = 76
-			add_state_claim = 83
-			add_state_claim = 84
-			add_state_claim = 82
-			if = {
-				limit = {
-					NOT = {
-						has_war_with = ROM
-					}
-					threat < 0.5
-					ROM = {
-						OR = {
-							owns_state = 76
-							owns_state = 83
-							owns_state = 84
-							owns_state = 82
-						}
-					}
-				}
-				ROM = { country_event = DOD_hungary.50 }
-			}	
-		}
-	}
-
-	focus = {
-		id = HUN_march_to_the_shore
-		icon = GFX_focus_generic_strike_at_democracy3
-		prerequisite = { focus = HUN_claim_transylvania }
-		x = -1
-		y = 5
-		relative_position_id = HUN_invite_the_habsburg_prince
-
-		cost = 10
-
-		ai_will_do = {
-			factor = 60
-		}
-
-		available = {
-			has_army_manpower = { size > 250000 }
-			109 = { OWNER = { NOT = { is_in_faction_with = HUN } } }
-			is_subject = no
-		}
-
-		bypass = {
-			controls_state = 102
-			controls_state = 103
-			controls_state = 109
-			controls_state = 104
-			controls_state = 45
-			controls_state = 163
-			controls_state = 816
-			controls_state = 817
-			controls_state = 814
-			controls_state = 811
-			controls_state = 778
-		}
-
-		cancel_if_invalid = yes
-		continue_if_invalid = no
-		available_if_capitulated = no
-
-		complete_tooltip = {
-
-		}
-
-		completion_reward = {
-			add_state_claim = 102
-			add_state_claim = 103
-			add_state_claim = 109
-			add_state_claim = 104
-			add_state_claim = 45
-			add_state_claim = 163
-			add_state_claim = 816
-			add_state_claim = 817
-			add_state_claim = 814
-			add_state_claim = 811
-			add_state_claim = 778
-		}
-	}
-
-	focus = {
-		id = HUN_reclaim_venetia
-		icon = GFX_goal_generic_occupy_states_coastal
-		prerequisite = { focus = HUN_march_to_the_shore }
-		x = -1
-		y = 6
-		relative_position_id = HUN_invite_the_habsburg_prince
-
-		cost = 10
-
-		ai_will_do = {
-			factor = 60
-		}
-
-		available = {
-			has_army_manpower = { size > 300000 }
-			160 = { OWNER = { NOT = { is_in_faction_with = HUN } } }
-		}
-
-		bypass = {
-			is_subject = no
-			controls_state = 736
-			controls_state = 160
-			controls_state = 39
-		}
-
-		cancel_if_invalid = yes
-		continue_if_invalid = no
-		available_if_capitulated = no
-
-		complete_tooltip = {
-
-		}
-
-		completion_reward = {
-			add_state_claim = 736
-			add_state_claim = 160
-			add_state_claim = 39
-		}
-	}
-
-
-	focus = {
-		id = HUN_claim_galicia
-		icon = GFX_focus_generic_strike_at_democracy1
-		prerequisite = { focus = HUN_protect_czechoslovakia }
-		x = 1
-		y = 5
-		relative_position_id = HUN_invite_the_habsburg_prince
-
-		cost = 10
-
-		ai_will_do = {
-			factor = 60
-		}
-
-		available = {
-			has_army_manpower = { size > 200000 }
-			89 = { OWNER = { NOT = { is_in_faction_with = HUN } } }
-			is_subject = no
-		}
-
-		bypass = {
-			controls_state = 88
-			controls_state = 89
-			controls_state = 91
-		}
-
-		cancel_if_invalid = yes
-		continue_if_invalid = no
-		available_if_capitulated = no
-
-		complete_tooltip = {
-
-		}
-
-		completion_reward = {
-			add_state_claim = 88
-			add_state_claim = 89
-			add_state_claim = 91
-		}
-	}
-
-	focus = {
-		id = HUN_claim_the_bucovina
-		icon = GFX_focus_generic_strike_at_democracy2
-		prerequisite = { focus = HUN_claim_galicia }
-		x = 1
-		y = 6
-		relative_position_id = HUN_invite_the_habsburg_prince
-
-		cost = 10
-
-		ai_will_do = {
-			factor = 60
-		}
-
-		available = {
-			is_subject = no
-		}
-
-		bypass = {
-			controls_state = 80
-		}
-
-		cancel_if_invalid = yes
-		continue_if_invalid = no
-		available_if_capitulated = no
-
-		complete_tooltip = {
-
-		}
-
-		completion_reward = {
-			add_state_claim = 80
-		}
-	}
-	focus = {
-		id = HUN_reclaim_the_empire
-		icon = GFX_goal_generic_occupy_states_ongoing_war
-		prerequisite = { focus = HUN_reclaim_venetia }
-		prerequisite = { focus = HUN_claim_the_bucovina }
-		x = 0
-		y = 7
-		relative_position_id = HUN_invite_the_habsburg_prince
-
-		cost = 10
-
-		ai_will_do = {
-			factor = 60
-		}
-
-		available = {
-			is_subject = no
-			NOT = {
-				controls_state = 455
-				controls_state = 454
-				controls_state = 66 
-				controls_state = 67 
-				controls_state = 162
-				controls_state = 17 
-				controls_state = 159
-				controls_state = 161
-			}
-		}
-
-		bypass = {
-
-		}
-
-		cancel_if_invalid = yes
-		continue_if_invalid = no
-		available_if_capitulated = no
-
-		complete_tooltip = {
-
-		}
-
-		completion_reward = {
-			add_state_claim = 455
-			add_state_claim = 454
-			add_state_claim = 66 
-			add_state_claim = 67 
-			add_state_claim = 162
-			add_state_claim = 17 
-			add_state_claim = 159
-			add_state_claim = 161
-		}
-	}
+	#focus = {
+		#id = HUN_demand_a_referendum
+		#icon = GFX_goal_generic_forceful_treaty
+		#prerequisite = { focus = HUN_invite_the_habsburg_prince }
+		#mutually_exclusive = { focus = HUN_take_austria_by_force }
+		#x = -1
+		#y = 1
+		#relative_position_id = HUN_invite_the_habsburg_prince
+
+		#cost = 10
+
+		#ai_will_do = {
+			#factor = 70
+		#}
+
+		#available = {
+			#NOT = { has_war_with = AUS }
+			#is_subject = no
+			#AUS = {
+				#OR = {
+					#exists = yes
+					#is_subject = no
+				#}
+			#}
+		#}
+
+		#bypass = {
+			#owns_state = 4
+			#owns_state = 153
+			#owns_state = 152
+		#}
+
+		#cancel_if_invalid = yes
+		#continue_if_invalid = no
+		#available_if_capitulated = no
+
+		#complete_tooltip = {
+
+		#}
+
+		#completion_reward = {
+			#AUS = { country_event = { id = DOD_hungary.1 } }
+		#}
+	#}
+
+	#focus = {
+		#id = HUN_take_austria_by_force
+		#icon = GFX_goal_generic_territory_or_war
+		#prerequisite = { focus = HUN_invite_the_habsburg_prince }
+		#mutually_exclusive = { focus = HUN_demand_a_referendum }
+		#x = 1
+		#y = 1
+		#relative_position_id = HUN_invite_the_habsburg_prince
+		#will_lead_to_war_with = AUS
+		#will_lead_to_war_with = GER #if after Anschluss
+		#cost = 10
+
+		#ai_will_do = {
+			#factor = 70
+			#modifier = {
+				#factor = 0.5
+				#AUS = { is_in_faction = yes }
+			#}
+		#}
+
+		#available = {
+			#4 = {
+				#is_controlled_by = OWNER
+			#}
+			#is_subject = no
+		#}
+
+		#bypass = {
+
+		#}
+
+		#cancel_if_invalid = yes
+		#continue_if_invalid = no
+		#available_if_capitulated = no
+
+		#complete_tooltip = {
+
+		#}
+
+		#completion_reward = {
+			#random_country = {
+				#limit = {
+					#owns_state = 4
+				#}
+				#HUN = {
+					#create_wargoal = {
+						#type = take_state_focus
+						#target = PREV
+						#generator = { 4 152 153 }
+					#}
+				#}
+			#}
+			#add_state_claim = 152
+			#add_state_claim = 153
+			#add_state_claim = 4
+		#}
+	#}
 
+	 
 	############################
 	##### DEMOCRATIC KING ######
 	############################
