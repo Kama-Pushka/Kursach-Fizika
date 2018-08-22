@@ -4,6 +4,37 @@
 
 add_namespace = TRtest
 
+#Проверка
+country_event = {
+	id = TRtest.99
+	is_triggered_only = yes
+	hidden = yes
+
+	option = {
+		name = TRtest.99.a
+		if = {
+			limit = {
+				ROOT = {
+					NOT = { has_country_flag = from_civil_war }
+					is_major = no
+				}
+			}
+		}
+		ROOT = { country_event = TRtest.100 }
+		
+		if = {
+			limit = {
+				ROOT = {
+					has_country_flag = from_civil_war
+				}
+			}
+		}
+		ROOT = { clr_country_flag = from_civil_war }
+	}
+}
+
+
+#Вопрос о капитуляции
 country_event = {
 	id = TRtest.100
 	title = TRtest.100.t
@@ -12,7 +43,48 @@ country_event = {
 
 	option = {
 		ai_chance = {
-			factor = 90
+			base = 50
+			modifier = {
+				factor = 9
+				ROOT = { has_government = FROM.FROM }
+			}
+			modifier = {
+				factor = 0.3
+				OR = {
+					AND = {
+						ROOT = { has_government = trozkism }
+						FROM.FROM = { has_government = communism }
+					}
+					AND = {
+						ROOT = { has_government = communism }
+						FROM.FROM = { has_government = trozkism }
+					}
+					AND = {
+						ROOT = { has_government = communism }
+						FROM.FROM = { has_government = fascism }
+					}
+					AND = {
+						ROOT = { has_government = fascism }
+						FROM.FROM = { has_government = communism }
+					}
+					AND = {
+						ROOT = { has_government = monarchy }
+						FROM.FROM = { has_government = communism }
+					}
+					AND = {
+						ROOT = { has_government = communism }
+						FROM.FROM = { has_government = monarchy }
+					}
+					AND = {
+						ROOT = { has_government = monarchy }
+						FROM.FROM = { has_government = trozkism }
+					}
+					AND = {
+						ROOT = { has_government = trozkism }
+						FROM.FROM = { has_government = monarchy }
+					}
+				}
+			}
 		}
 		name = TRtest.100.a
 		FROM.FROM = { country_event = TRtest.101 days = 0 }
@@ -20,13 +92,14 @@ country_event = {
 	}
 	option = {
 		ai_chance = {
-			factor = 10
+			base = 50
 		}
 		name = TRtest.100.b
 		
 	}
 }
 
+#Вопрос к лорду
 country_event = {
 	id = TRtest.101
 	title = TRtest.101.t
@@ -35,7 +108,22 @@ country_event = {
 
 	option = {
 		ai_chance = {
-			factor = 90
+			base = 50
+			modifier = {
+				factor = 3
+				OR = {
+					ROOT = { has_government = communism }
+					ROOT = { has_government = trozkism }
+				}
+			}
+			modifier = {
+				factor = 0.3
+				ROOT = { has_government = fascism }
+			}
+			modifier = {
+				factor = 9
+				ROOT = { has_government = democratic }
+			}
 		}
 		name = TRtest.101.a
 		ROOT = {
@@ -163,9 +251,8 @@ country_event = {
 	}
 	option = {
 		ai_chance = {
-			factor = 10
+			base = 50
 		}
 		name = TRtest.101.b
-		
 	}
 }
