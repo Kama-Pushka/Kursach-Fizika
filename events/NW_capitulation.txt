@@ -1,0 +1,227 @@
+﻿###########################
+# Test Events
+###########################
+
+add_namespace = NW_capitulation
+
+#Вопрос о капитуляции
+country_event = {
+	id = NW_capitulation.1
+	title = NW_capitulation.1.t
+	desc = NW_capitulation.1.desc
+	is_triggered_only = yes
+
+	option = {
+		ai_chance = {
+			base = 50
+			modifier = {
+				factor = 9
+				FROM.FROM = { has_government = ROOT }
+			}
+			modifier = {
+				factor = 0.3
+				OR = {
+					AND = {
+						ROOT = { has_government = trozkism }
+						FROM.FROM = { has_government = communism }
+					}
+					AND = {
+						ROOT = { has_government = communism }
+						FROM.FROM = { has_government = trozkism }
+					}
+					AND = {
+						ROOT = { has_government = communism }
+						FROM.FROM = { has_government = fascism }
+					}
+					AND = {
+						ROOT = { has_government = fascism }
+						FROM.FROM = { has_government = communism }
+					}
+					AND = {
+						ROOT = { has_government = monarchy }
+						FROM.FROM = { has_government = communism }
+					}
+					AND = {
+						ROOT = { has_government = communism }
+						FROM.FROM = { has_government = monarchy }
+					}
+					AND = {
+						ROOT = { has_government = monarchy }
+						FROM.FROM = { has_government = trozkism }
+					}
+					AND = {
+						ROOT = { has_government = trozkism }
+						FROM.FROM = { has_government = monarchy }
+					}
+				}
+			}
+		}
+		name = NW_capitulation.1.a
+		FROM.FROM = { country_event = NW_capitulation.2 }
+	}
+	option = {
+		ai_chance = {
+			base = 50
+		}
+		name = NW_capitulation.1.b
+		
+	}
+}
+
+#Вопрос к лорду
+country_event = {
+	id = NW_capitulation.2
+	title = NW_capitulation.2.t
+	desc = NW_capitulation.2.desc
+	is_triggered_only = yes
+
+	option = {
+		ai_chance = {
+			base = 50
+			modifier = {
+				factor = 3
+				OR = {
+					ROOT = { has_government = communism }
+					ROOT = { has_government = trozkism }
+				}
+			}
+			modifier = {
+				factor = 0.3
+				ROOT = { has_government = fascism }
+			}
+			modifier = {
+				factor = 9
+				ROOT = { has_government = democratic }
+			}
+		}
+		name = NW_capitulation.2.a
+		ROOT = {
+			white_peace = FROM
+			puppet = FROM
+			if = {
+				limit = {
+					ROOT = { has_government = fascism }
+				}
+				set_autonomy = {
+					target = FROM
+					autonomy_state = autonomy_reichskommissariat
+				}
+			}
+			if = {
+				limit = {
+					ROOT = { has_government = trozkism }
+				}
+				set_autonomy = {
+					target = FROM
+					autonomy_state = autonomy_marionet
+				}
+			}
+			if = {
+				limit = {
+					ROOT = { 
+						NOT = {
+							OR = {
+								has_government = fascism
+								has_government = trozkism
+							}
+						}
+					}
+				}
+				set_autonomy = {
+					target = FROM
+					autonomy_state = autonomy_integrated_puppet
+				}
+			}
+			if = {
+				limit = {
+					ROOT = { has_government = fascism }
+				}
+				FROM = {
+					set_politics = {
+						ruling_party = fascism
+					}
+					add_popularity = {
+						ideology = fascism
+						popularity = 0.9
+					}
+				}
+			}
+			if = {
+				limit = {
+					ROOT = { has_government = democratic }
+				}
+				FROM = {
+					set_politics = {
+						ruling_party = democratic
+					}
+					add_popularity = {
+						ideology = democratic
+						popularity = 0.9
+					}
+				}
+			}
+			if = {
+				limit = {
+					ROOT = { has_government = communism }
+				}
+				FROM = {
+					set_politics = {
+						ruling_party = communism
+					}
+					add_popularity = {
+						ideology = communism
+						popularity = 0.9
+					}
+				}
+			}
+			if = {
+				limit = {
+					ROOT = { has_government = neutrality }
+				}
+				FROM = {
+					set_politics = {
+						ruling_party = neutrality
+					}
+					add_popularity = {
+						ideology = neutrality
+						popularity = 0.9
+					}
+				}
+			}
+			if = {
+				limit = {
+					ROOT = { has_government = trozkism }
+				}
+				FROM = {
+					set_politics = {
+						ruling_party = trozkism
+					}
+					add_popularity = {
+						ideology = trozkism
+						popularity = 0.9
+					}
+				}
+			}
+			if = {
+				limit = {
+					ROOT = { has_government = monarchy }
+				}
+				FROM = {
+					set_politics = {
+						ruling_party = monarchy
+					}
+					add_popularity = {
+						ideology = monarchy
+						popularity = 0.9
+					}
+				}
+			}
+		}
+	}
+	option = {
+		ai_chance = {
+			base = 50
+		}
+		name = NW_capitulation.2.b
+	}
+}
