@@ -15,9 +15,13 @@ on_actions = {
 				}
 			}
 			
+			#Start legitimacy
+			every_country = {
+				country_event = TRlegitimacy.8
+			}
+			
 			random_country = {
 				limit = { is_ai = no }
-			
 				set_variable = {
 					var = global.total_infantry_weapons
 					value = 0
@@ -47,28 +51,11 @@ on_actions = {
 					value = 0
 				}
 			}
+			
+			#NZL = { country_event = TRpolitical.35 }
 		}
 	}
 	
-	on_daily = {
-		effect = {
-            every_country = {
-				clear_variable = country_pp
-				set_variable = { country_pp = political_power }
-			}
-			random_country = {
-				limit = { is_ai = no }
-				clear_variable = global.var_cost
-				clear_variable = global.var_threat
-				clear_variable = global.base_cost
-				set_variable = { global.var_cost = 50 }
-				set_variable = { global.var_threat = global.threat }
-				multiply_variable = { global.var_threat = 50 }
-				add_to_variable = { global.var_cost = global.var_threat }
-				set_variable = { global.base_cost = global.var_cost }
-			}
-		}
-	}
 
 	#ROOT is new controller #FROM is old controller #FROM.FROM is state ID
 	on_state_control_changed = {
@@ -99,21 +86,83 @@ on_actions = {
 		effect = {
 			if = {
 				limit = {
-					AND = { 
-						TAG = SPR
-						is_subject_of = RSP
+					ROOT = { tag = SPR }
+					FROM = { tag = RSP }
+				}
+				RSP = {
+					annex_country = {
+						target = SPR
+						transfer_troops = yes
 					}
 				}
-				RSP = { annex_country = { target = SPR } }
 			}
 			if = {
 				limit = {
-					AND = { 
-						TAG = RSP
-						is_subject_of = SPR
+					ROOT = { tag = RSP }
+					FROM = { tag = SPR }
+				}
+				SPR = {
+					annex_country = {
+						target = RSP
+						transfer_troops = yes
 					}
 				}
-				SPR = { annex_country = { target = RSP } }
+			}
+		}
+	}
+	
+	
+	on_government_change = {
+		effect = {
+			if = {
+				limit = {
+					has_government = trozkism
+					NOT = { has_country_flag = gov_trozkist }
+				}
+				every_country = {
+					limit = { has_government = communism }
+					add_opinion_modifier = { target = ROOT modifier = op_trozkist }
+				}
+				ROOT = {
+					add_opinion_modifier = { target = PREV modifier = op_trozkist1 }
+					set_country_flag = gov_trozkist
+				}
+				
+				every_country = {
+					limit = {
+						has_government = trozkism
+					}
+					remove_opinion_modifier = { target = ROOT modifier = op_trozkist1 }
+				}
+				ROOT = {
+					remove_opinion_modifier = { target = PREV modifier = op_trozkist }
+				}
+			}
+			
+			if = {
+				limit = {
+					NOT = { has_government = trozkism }
+					has_country_flag = gov_trozkist
+				}
+				every_country = {
+					limit = { has_government = communism }
+					remove_opinion_modifier = { target = ROOT modifier = op_trozkist }
+				}
+				ROOT = {
+					remove_opinion_modifier = { target = PREV modifier = op_trozkist1 }
+					clr_country_flag = gov_trozkist
+				}
+			}
+			
+			if = {
+				limit = { has_government = communism }
+				every_country = {
+					limit = { has_government = trozkism }
+					add_opinion_modifier = { target = ROOT modifier = op_trozkist1 }
+				}
+				ROOT = {
+					add_opinion_modifier = { target = PREV modifier = op_trozkist }
+				}
 			}
 		}
 	}
