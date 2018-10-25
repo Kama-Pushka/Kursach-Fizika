@@ -5609,9 +5609,9 @@ focus_tree = {
 			809 = { set_demilitarized_zone = no }
 			835 = { set_demilitarized_zone = no }
 			add_political_power = 120
-			add_named_threat = { threat = 5 name = GER_oppose_hitler }
 			if = {
 				limit = { NOT = { has_country_flag = ger_second_chance_nonazi } }
+				add_named_threat = { threat = 5 name = GER_oppose_hitler }
 				country_event = { id = wtt_germany.1 }
 			}
 		}
@@ -8558,7 +8558,7 @@ focus_tree = {
 		
 		completion_reward = {
 			add_popularity = { ideology = trozkism popularity = 0.1 }
-			set_politics = { ruling_party = trozkism elections_allowed = no }
+			set_politics = { ruling_party = trozkism elections_allowed = yes }
 			add_ideas = GER_revolt_liderstvo
 			add_stability = 0.05
 		}
@@ -8805,20 +8805,25 @@ focus_tree = {
 					RSP = {
 						transfer_state = 165
 						set_state_owner = 165
-						add_state_core = 165
+						#transfer_state = 166
+						#set_state_owner = 166
 					}
 				
 					RSP = {
 						load_oob = "RSP_Civil_War"
-						set_equipment_fraction = 1.0
 						set_stability = 0.9
-						add_equipment_to_stockpile = { type = infantry_equipment amount = 5000 producer = RSP }
+						add_equipment_to_stockpile = { type = infantry_equipment amount = 10000 }
 						add_ai_strategy = {
 							type = antagonize
 							id = "SPR"
 							value = 200
 						}
-					}	
+						add_ai_strategy = {
+							type = conquer 
+							id = "SPR"
+							value = 200
+						}
+					}
 				
 					random_other_country = {
 						limit = {
@@ -8833,7 +8838,17 @@ focus_tree = {
 							id = "RSP"
 							value = 200
 						}
-						every_owned_state = { add_core_of = RSP }
+						add_ai_strategy = {
+							type = conquer 
+							id = "RSP"
+							value = 200
+						}
+						every_state = {
+							limit = {
+								is_core_of = THIS
+							}
+							add_core_of = RSP
+						}
 					}
 					set_global_flag = spanish_civil_war3
 					news_event = { id = trworldnews.19 }
@@ -8902,7 +8917,7 @@ focus_tree = {
 			#	add_state_core = 296
 			#	transfer_state = 296
 			#	add_popularity = { ideology = trozkism popularity = 0.5 }
-			#	set_politics = { ruling_party = trozkism elections_allowed = no }
+			#	set_politics = { ruling_party = trozkism elections_allowed = yes }
 			#}
 			#set_autonomy = {
 			#	target = GUN
@@ -8913,7 +8928,7 @@ focus_tree = {
 				add_state_core = 540
                 transfer_state = 540
 				add_popularity = { ideology = trozkism popularity = 0.5 }
-				set_politics = { ruling_party = trozkism elections_allowed = no }
+				set_politics = { ruling_party = trozkism elections_allowed = yes }
             }
 			set_autonomy = {
 				target = ANG
@@ -8924,7 +8939,7 @@ focus_tree = {
 				add_state_core = 544
                 transfer_state = 544
 				add_popularity = { ideology = trozkism popularity = 0.5 }
-				set_politics = { ruling_party = trozkism elections_allowed = no }
+				set_politics = { ruling_party = trozkism elections_allowed = yes }
             }
 			set_autonomy = {
 				target = MZB
@@ -8939,17 +8954,27 @@ focus_tree = {
 		prerequisite = { focus = GER_portugal_decol }
 		available = {
 			is_puppet = no
-			RSP = {
-				exists = yes
-				is_puppet = no
-            }
-			POR = {
-				exists = yes
-				is_puppet = no
-            }
+			OR = {
+				RSP = {
+					exists = yes
+					trozkism > 0.3
+					OR = {
+						is_puppet_of = ROOT
+						is_puppet = no
+					}
+				}
+				POR = {
+					exists = yes
+					trozkism > 0.3
+					OR = {
+						is_puppet_of = ROOT
+						is_puppet = no
+					}
+				}
+			}
 		}
 		
-		bypass = { 
+		bypass = {
 			RSP = { exists = no } 
 			POR = { exists = no }
 		}
@@ -8968,8 +8993,14 @@ focus_tree = {
 					GER = { is_in_faction_with = KMX }
 					is_faction_leader = no
 				}
-				KMX = {	add_to_faction = POR }
-				KMX = {	add_to_faction = RSP }
+				if = {
+					limit = { POR = { exists = yes }  }
+					KMX = {	add_to_faction = POR }
+				}
+				if = {
+					limit = { RSP = { exists = yes }  }
+					KMX = {	add_to_faction = RSP }
+				}
 			}
 			
 			if = {
@@ -8980,31 +9011,43 @@ focus_tree = {
 						is_faction_leader = yes
 					}
 				}
-				GER = {	add_to_faction = POR }
-				GER = {	add_to_faction = RSP }
+				if = {
+					limit = { POR = { exists = yes }  }
+					GER = {	add_to_faction = POR }
+				}
+				if = {
+					limit = { RSP = { exists = yes }  }
+					GER = {	add_to_faction = RSP }
+				}
 			}
 			
 			if = {
 				limit = { 
 					GER = { is_in_faction = no }
 				}
-				release_puppet = RSP
-				set_autonomy = {
-					target = RSP
-					autonomous_state = autonomy_socprotect
+				if = {
+					limit = { RSP = { exists = yes }  }
+					release_puppet = RSP
+					set_autonomy = {
+						target = RSP
+						autonomous_state = autonomy_socprotect
+					}
+					RSP = {
+						add_popularity = { ideology = trozkism popularity = 0.3 }
+						set_politics = { ruling_party = trozkism elections_allowed = yes }
+					}
 				}
-				RSP = {
-					add_popularity = { ideology = trozkism popularity = 0.5 }
-					set_politics = { ruling_party = trozkism elections_allowed = no }
-				}
-				release_puppet = POR
-				set_autonomy = {
-					target = POR
-					autonomous_state = autonomy_socprotect
-				}
-				POR = {
-					add_popularity = { ideology = trozkism popularity = 0.5 }
-					set_politics = { ruling_party = trozkism elections_allowed = no }
+				if = {
+					limit = { POR = { exists = yes }  }
+					release_puppet = POR
+					set_autonomy = {
+						target = POR
+						autonomous_state = autonomy_socprotect
+					}
+					POR = {
+						add_popularity = { ideology = trozkism popularity = 0.3 }
+						set_politics = { ruling_party = trozkism elections_allowed = yes }
+					}
 				}
 			}
 		}
@@ -9608,30 +9651,82 @@ focus_tree = {
 		available_if_capitulated = yes
 		
 		ai_will_do = {
-			factor = 5
+			factor = 1
+			modifier = {
+				factor = 10
+				FRA = { trozkism > 0.3 }
+			}
 		}
 		
 		available = {
 			country_exists = FRA
-			FRA = {
-                is_puppet = no
-                trozkism > 0.3
-            }
-			NOT = {
-                has_war_with = FRA
-            }
+			FRA = { is_puppet = no }
+			NOT = { has_war_with = FRA }
 		}
 		
 		bypass = {
 			OR = {
                 has_war_with = FRA
                 FRA = { is_in_faction_with = GER }
-                NOT = { FRA = { exists = yes } }
+				FRA = { is_puppet_of = ROOT }
+                FRA = { exists = no }
             }
 		}
 		
 		completion_reward = {
-			FRA = { country_event = { id = tr_german.8 days = 1 } }
+			custom_effect_tooltip = GER_protect_fra_tt
+			hidden_effect = {
+				if = {
+					limit = {
+						FRA = {
+							trozkism < 0.500
+							NOT = { has_government = trozkism }
+						}
+					}
+					random_list = {
+						50 = {
+							FRA = {
+								set_variable = {
+									var = trozkism_civil_war_size_var
+									value = party_popularity@trozkism
+								}
+								start_civil_war = {
+									ruling_party = trozkism
+									size = trozkism_civil_war_size_var
+									keep_unit_leaders_trigger = {
+										has_trait = hidden_sympathies
+									}				
+								}
+								clear_variable = trozkism_civil_war_size_var
+								random_other_country = {
+									limit = {
+										original_tag = FRA
+										has_government = trozkism
+									}
+									ROOT = { add_to_faction = THIS }
+								}
+							}
+						}
+						50 = {
+							FRA = {
+								set_politics = { ruling_party = trozkism elections_allowed = yes }
+								country_event = { id = tr_german.8 days = 1 }
+							}
+						}
+					}
+				}
+				if = {
+					limit = {
+						FRA = {
+							OR = {
+								trozkism > 0.499
+								has_government = trozkism
+							}
+						}
+					}
+					FRA = { country_event = { id = tr_german.8 days = 1 } }
+				}
+			}
 		}
 	}
 	
@@ -10108,7 +10203,7 @@ focus_tree = {
 				hidden_effect = {
 					set_cosmetic_tag = BAL_UNIFIED
 					add_popularity = { ideology = trozkism popularity = 0.5 }
-					set_politics = { ruling_party = trozkism elections_allowed = no }
+					set_politics = { ruling_party = trozkism elections_allowed = yes }
 					news_event = { id = trworldnews.33 hours = 6 }
 				}
 			}
@@ -10419,7 +10514,7 @@ focus_tree = {
 				hidden_effect = { 
 					set_cosmetic_tag = BAL_LIGA
 					add_popularity = { ideology = trozkism popularity = 0.5 }
-					set_politics = { ruling_party = trozkism elections_allowed = no }
+					set_politics = { ruling_party = trozkism elections_allowed = yes }
 					news_event = { id = trworldnews.31 hours = 6 }
 				}
 			}
@@ -10680,7 +10775,7 @@ focus_tree = {
 				hidden_effect = { 
 					set_cosmetic_tag = SCA_UNIFIED
 					add_popularity = { ideology = trozkism popularity = 0.5 }
-					set_politics = { ruling_party = trozkism elections_allowed = no }
+					set_politics = { ruling_party = trozkism elections_allowed = yes }
 					news_event = { id = trworldnews.34 hours = 6 }
 				}
 			}
@@ -10891,7 +10986,7 @@ focus_tree = {
 				hidden_effect = {
 					set_cosmetic_tag = GER_BENELUX
 					add_popularity = { ideology = trozkism popularity = 0.5 }
-					set_politics = { ruling_party = trozkism elections_allowed = no }
+					set_politics = { ruling_party = trozkism elections_allowed = yes }
 					news_event = { id = trworldnews.32 days = 1 }
 				}
 			}
