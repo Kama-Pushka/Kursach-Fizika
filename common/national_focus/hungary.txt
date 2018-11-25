@@ -227,6 +227,10 @@ focus_tree = {
 				add_idea = HUN_habsburg_restored
 				remove_idea = HUN_hungarian_monarchy_2
 			}
+			set_cosmetic_tag = HABSBURGS
+			set_rule = { can_create_factions = yes }
+			set_major = yes
+			news_event = { id = news.290 }
 			if = {
 				limit = { 
 					OR = {
@@ -242,40 +246,48 @@ focus_tree = {
 				} #Romania gets the event if France not engaged in Balkans
 				ROM = { country_event = { id = DOD_hungary.40 } }	 
 			}
-			set_rule = { can_create_factions = yes }
 			if = {
-				limit = {
-					ROOT = { is_ai = yes }
-					any_other_country = {
-						has_cosmetic_tag = HABSBURGS
-						exists = yes
-					}
-				}
-				country_event = { id = ExWmonarchy.1 days = 1 }
-			}
-			else_if = {
 				limit = {
 					ROOT = { is_ai = no }
 					any_other_country = {
-						has_cosmetic_tag = HABSBURGS
+						has_country_flag = hbbrg_flag
 						exists = yes
+						is_ai = yes
 					}
 				}
-				random_enemy_country = {
-					limit = { has_cosmetic_tag = HABSBURGS }
+				random_other_country = {
+					limit = { has_country_flag = hbbrg_flag }
+					clr_country_flag = hbbrg_flag
+					set_country_flag = hbbrg_minor_flag
+					remove_ideas = HUN_habsburg_restored
+					every_state = {
+						limit = {
+							is_core_of = PREV
+						}
+						add_core_of = ROOT
+					}
 					ROOT = {
 						annex_country = {
 							target = PREV
 							transfer_troops = yes
 						}
+						set_country_flag = hbbrg_flag
 					}
 				}
 			}
-			else = {
-				set_cosmetic_tag = HABSBURGS
+			hidden_effect = {
 				load_focus_tree = hbbrg_focus
-				hidden_effect = {
-					news_event = { id = news.290 }
+				set_politics = {
+					ruling_party = monarchy
+					elections_allowed = no
+				}
+				set_political_party = {
+					ideology = monarchy
+					popularity = 50
+				}
+				if = {
+					limit = { NOT = { has_global_flag = anti_hbbrg_flag } }
+					ROM = { country_event = { id = NWmonarchy.40 } }
 				}
 			}
 		}
