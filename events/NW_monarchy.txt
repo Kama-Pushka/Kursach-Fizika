@@ -51,6 +51,7 @@ country_event = {
 				ruling_party = monarchy
 				elections_allowed = no
 			}
+			set_country_flag = hbbrg_minor_flag
 		}
 	}
 }
@@ -67,6 +68,7 @@ country_event = {
 				ruling_party = monarchy
 				elections_allowed = no
 			}
+			set_country_flag = hbbrg_minor_flag
 		}
 	}
 }
@@ -163,6 +165,18 @@ country_event = {
 						autonomy_state = autonomy_puppet
 					}
 				}
+			}
+			if = {
+				limit = {
+					ROOT = {
+						OR = {
+							original_tag = CZE
+							original_tag = AUS
+							original_tag = HUN
+						}
+					}
+				}
+				ROOT = { set_country_flag = hbbrg_minor_flag }
 			}
 		}
 		if = {
@@ -938,7 +952,7 @@ country_event = {
 	option = {
 		name = NWmonarchy.12.b
 		trigger = {
-			any_state = {
+			all_state = {
 				is_core_of = CZE
 				NOT = { is_core_of = SLO }
 				is_fully_controlled_by = CZE
@@ -953,7 +967,7 @@ country_event = {
 	option = {
 		name = NWmonarchy.12.c
 		trigger = {
-			any_state = {
+			all_state = {
 				is_core_of = SLO
 				is_fully_controlled_by = CZE
 			}
@@ -1155,7 +1169,7 @@ country_event = {
 	option = {
 		name = NWmonarchy.15.e
 		trigger = {
-			any_state = {
+			all_state = {
 				is_core_of = TRA
 				is_fully_controlled_by = ROM
 			}
@@ -1757,6 +1771,7 @@ country_event = {
 			ideology = ROOT
 			popularity = -0.05
 		}
+		VAT = { add_to_variable = { italian_score = 1 } }
 	}
 	
 	option = {
@@ -1773,6 +1788,39 @@ country_event = {
 		add_popularity = {
 			ideology = ROOT
 			popularity = 0.05
+		}
+		VAT = { add_to_variable = { italian_score = 11 } }
+		FROM = {
+			if = {
+				limit = { has_government = fascism }
+				set_autonomy = {
+					target = VAT
+					autonomy_state = autonomy_reichsprotectorate
+				}
+			}
+			if = {
+				limit = { FROM = { has_government = monarchy } }
+				FROM = {
+					set_autonomy = {
+						target = ROOT
+						autonomy_state = autonomy_habs_imperial_uniate
+					}
+				}
+			}
+			if = {
+				limit = { has_government = trozkism }
+				set_autonomy = {
+					target = VAT
+					autonomy_state = autonomy_marionet
+				}
+			}
+			if = {
+				limit = { NOT = { has_government = fascism has_government = trozkism } }
+				set_autonomy = {
+					target = VAT
+					autonomy_state = autonomy_puppet
+				}
+			}
 		}
 	}
 	
@@ -1791,6 +1839,7 @@ country_event = {
 		ai_chance = {
 			factor = 70
 		}
+		VAT = { add_to_variable = { italian_score = 1 } }
 		FROM = { country_event = { id = NWmonarchy.29 days = 1 } }
 	}
 }
@@ -1809,6 +1858,7 @@ country_event = {
 		ai_chance = {
 			factor = 25
 		}
+		VAT = { add_to_variable = { habbrg_score = 1 } }
 	}
 	
 	option = {
@@ -1853,6 +1903,37 @@ country_event = {
 		905 = {
 			add_core_of = ITA
 			remove_core_of = ROOT
+		}
+		VAT = { add_to_variable = { habbrg_score = 11 } }
+		if = {
+			limit = { has_government = fascism }
+			set_autonomy = {
+				target = VAT
+				autonomy_state = autonomy_reichsprotectorate
+			}
+		}
+		if = {
+			limit = { FROM = { has_government = monarchy } }
+			FROM = {
+				set_autonomy = {
+					target = ROOT
+					autonomy_state = autonomy_habs_imperial_uniate
+				}
+			}
+		}
+		if = {
+			limit = { has_government = trozkism }
+			set_autonomy = {
+				target = VAT
+				autonomy_state = autonomy_marionet
+			}
+		}
+		if = {
+			limit = { NOT = { has_government = fascism has_government = trozkism } }
+			set_autonomy = {
+				target = VAT
+				autonomy_state = autonomy_puppet
+			}
 		}
 	}
 }
@@ -4328,4 +4409,430 @@ country_event = {
 		add_political_power = -25
 	}
 }
+
+#Требование земель тевтонского ордена Ватиканом
+country_event = {
+	id = NWmonarchy.79
+	title = NWmonarchy.79.t
+	desc = NWmonarchy.79.desc
+	picture = GFX_report_event_generic_rally_3
+
+	is_triggered_only = yes
+
+	option = {
+		name = NWmonarchy.79.a
+		ai_chance = {
+			factor = 90
+		}
+		add_political_power = -15
+		add_stability = -0.02
+		every_state = {
+			limit = { is_core_of = PRS }
+			PRS = { transfer_state = PREV }
+		}
+		VAT = {
+			if = {
+				limit = { has_government = fascism }
+				set_autonomy = {
+					target = PRS
+					autonomy_state = autonomy_reichsprotectorate
+				}
+			}
+			if = {
+				limit = { has_government = trozkism }
+				set_autonomy = {
+					target = PRS
+					autonomy_state = autonomy_marionet
+
+				}
+			}
+			if = {
+				limit = { NOT = { has_government = fascism has_government = trozkism } }
+				set_autonomy = {
+					target = PRS
+					autonomy_state = autonomy_puppet
+				}
+			}
+			add_to_variable = { habbrg_score = 5 }
+		}
+		if = {
+			limit = { VAT = { NOT = { is_in_faction_with = ROOT } } }
+			ROOT = { add_to_faction = VAT }
+			VAT = {
+				add_ai_strategy = {
+					type = befriend
+					id = ROOT
+					value = 200
+				}
+				add_ai_strategy = {
+					type = alliance
+					id = ROOT
+					value = 200
+				}
+			}
+		}
+	}
+	option = {
+		name = NWmonarchy.79.b
+		ai_chance = {
+			factor = 10
+		}
+		add_political_power = 25
+		custom_effect_tooltip = VAT_demand_ignore_tt
+		hidden_effect = {
+			VAT = { country_event = { id = NWmonarchy.80 days = 2 } }
+			VAT = { 
+				add_to_variable = { habbrg_score = 1 }
+				add_to_variable = { italian_score = 5 }
+			}
+			
+		}
+	}
+}
+
+#Габсы отказали в землях ордена. Отлучить?
+country_event = {
+	id = NWmonarchy.80
+	title = NWmonarchy.80.t
+	desc = NWmonarchy.80.desc
+	picture = GFX_report_event_generic_rally_3
+
+	is_triggered_only = yes
+
+	option = {
+		name = NWmonarchy.80.a
+		ai_chance = {
+			factor = 40
+		}
+	}
+	option = {
+		name = NWmonarchy.80.b
+		ai_chance = {
+			factor = 60
+		}
+		FROM = {
+			add_stability = -0.1
+			add_popularity = {
+				ideology = fascism
+				popularity = -0.15
+			}
+		}
+		add_opinion_modifier = {
+			target = FROM
+			modifier = diplomatic_affront
+		}
+		FROM = {
+			add_opinion_modifier = {
+				target = ROOT
+				modifier = diplomatic_affront
+			}
+		}
+		VAT = { 
+			add_to_variable = { habbrg_score = 1 }
+			add_to_variable = { italian_score = 10 }
+		}
+	}
+}
+
+
+#Требование Иерусалима Ватиканом
+country_event = {
+	id = NWmonarchy.81
+	title = NWmonarchy.81.t
+	desc = NWmonarchy.81.desc
+	picture = GFX_report_event_generic_rally_3
+
+	is_triggered_only = yes
+
+	option = {
+		name = NWmonarchy.81.a
+		ai_chance = {
+			factor = 90
+		}
+		add_political_power = -15
+		add_stability = -0.02
+		every_state = {
+			limit = { is_core_of = ISR }
+			ISR = { transfer_state = PREV }
+		}
+		VAT = {
+			if = {
+				limit = { has_government = fascism }
+				set_autonomy = {
+					target = ISR
+					autonomy_state = autonomy_reichsprotectorate
+				}
+			}
+			if = {
+				limit = { has_government = trozkism }
+				set_autonomy = {
+					target = ISR
+					autonomy_state = autonomy_marionet
+				}
+			}
+			if = {
+				limit = { NOT = { has_government = fascism has_government = trozkism } }
+				set_autonomy = {
+					target = ISR
+					autonomy_state = autonomy_puppet
+				}
+			}
+			add_to_variable = { habbrg_score = 10 }
+		}
+		if = {
+			limit = { VAT = { NOT = { is_in_faction_with = ROOT } } }
+			ROOT = { add_to_faction = VAT }
+			VAT = {
+				add_ai_strategy = {
+					type = befriend
+					id = ROOT
+					value = 200
+				}
+				add_ai_strategy = {
+					type = alliance
+					id = ROOT
+					value = 200
+				}
+			}
+		}
+	}
+	option = {
+		name = NWmonarchy.81.b
+		ai_chance = {
+			factor = 10
+		}
+		add_political_power = 25
+		custom_effect_tooltip = VAT_demand_ignore_tt
+		hidden_effect = {
+			VAT = { country_event = { id = NWmonarchy.82 days = 2 } }
+			VAT = {
+				add_to_variable = { habbrg_score = 1 }
+				add_to_variable = { italian_score = 5 }
+			}
+		}
+	}
+}
+
+#Габсы отказали в Иерусалиме. Отлучить?
+country_event = {
+	id = NWmonarchy.82
+	title = NWmonarchy.82.t
+	desc = NWmonarchy.82.desc
+	picture = GFX_report_event_generic_rally_3
+
+	is_triggered_only = yes
+
+	option = {
+		name = NWmonarchy.82.a
+		ai_chance = {
+			factor = 10
+		}
+	}
+	option = {
+		name = NWmonarchy.82.b
+		ai_chance = {
+			factor = 90
+		}
+		FROM = {
+			add_stability = -0.1
+			add_popularity = {
+				ideology = fascism
+				popularity = -0.15
+			}
+		}
+		add_opinion_modifier = {
+			target = FROM
+			modifier = diplomatic_affront
+		}
+		FROM = {
+			add_opinion_modifier = {
+				target = ROOT
+				modifier = diplomatic_affront
+			}
+		}
+		VAT = { 
+			add_to_variable = { habbrg_score = 1 }
+			add_to_variable = { italian_score = 10 }
+		}
+	}
+}
+
+#Требование Рима Ватиканом
+country_event = {
+	id = NWmonarchy.83
+	title = NWmonarchy.83.t
+	desc = NWmonarchy.83.desc
+	picture = GFX_report_event_generic_rally_3
+
+	is_triggered_only = yes
+
+	option = {
+		name = NWmonarchy.83.a
+		ai_chance = {
+			factor = 90
+		}
+		add_political_power = -15
+		add_stability = -0.02
+		VAT = { transfer_state = 2 }
+		2 = { add_core_of = VAT }
+		ROOT = {
+			if = {
+				limit = { has_government = fascism }
+				set_autonomy = {
+					target = VAT
+					autonomy_state = autonomy_reichsprotectorate
+				}
+			}
+			if = {
+				limit = { FROM = { has_government = monarchy } }
+				FROM = {
+					set_autonomy = {
+						target = ROOT
+						autonomy_state = autonomy_habs_imperial_uniate
+					}
+				}
+			}
+			if = {
+				limit = { has_government = trozkism }
+				set_autonomy = {
+					target = VAT
+					autonomy_state = autonomy_marionet
+				}
+			}
+			if = {
+				limit = { NOT = { has_government = fascism has_government = trozkism } }
+				set_autonomy = {
+					target = VAT
+					autonomy_state = autonomy_puppet
+				}
+			}
+			VAT = {
+				add_to_variable = { habbrg_score = 10 }
+				add_to_variable = { italian_score = 1 }
+			}
+		}
+	}
+	option = {
+		name = NWmonarchy.83.b
+		ai_chance = {
+			factor = 10
+		}
+		add_political_power = 25
+		custom_effect_tooltip = VAT_demand_ignore_tt
+		hidden_effect = {
+			VAT = { country_event = { id = NWmonarchy.84 days = 2 } }
+			VAT = {
+				add_to_variable = { habbrg_score = 1 }
+				add_to_variable = { italian_score = 5 }
+			}
+		}
+	}
+}
+
+#Габсы отказали в Риме. Отлучить?
+country_event = {
+	id = NWmonarchy.84
+	title = NWmonarchy.84.t
+	desc = NWmonarchy.84.desc
+	picture = GFX_report_event_generic_rally_3
+
+	is_triggered_only = yes
+
+	option = {
+		name = NWmonarchy.84.a
+		ai_chance = {
+			factor = 10
+		}
+	}
+	option = {
+		name = NWmonarchy.84.b
+		ai_chance = {
+			factor = 90
+		}
+		FROM = {
+			add_stability = -0.1
+			add_popularity = {
+				ideology = fascism
+				popularity = -0.15
+			}
+		}
+		add_opinion_modifier = {
+			target = FROM
+			modifier = diplomatic_affront
+		}
+		FROM = {
+			add_opinion_modifier = {
+				target = ROOT
+				modifier = diplomatic_affront
+			}
+		}
+		VAT = {
+			add_to_variable = { habbrg_score = 1 }
+			add_to_variable = { italian_score = 10 }
+		}
+	}
+}
+
+#Канонизация!
+country_event = {
+	id = NWmonarchy.85
+	title = NWmonarchy.85.t
+	desc = NWmonarchy.85.desc
+	picture = GFX_report_event_generic_rally_3
+
+	is_triggered_only = yes
+
+	option = {
+		name = NWmonarchy.85.a
+		if = {
+			limit = { ROOT = { original_tag = ITA } }
+			add_ideas = HBBRG_cononisations_ital
+		}
+		if = {
+			limit = { ROOT = { NOT = { original_tag = ITA } } }
+			add_ideas = HBBRG_cononisations_habsbrg
+		}
+	}
+}
+
+#Грек просит турецкие земли
+country_event = {
+	id = NWmonarchy.86
+	title = NWmonarchy.86.t
+	desc = NWmonarchy.86.desc
+	picture = GFX_report_event_generic_rally_3
+
+	is_triggered_only = yes
+
+	option = {
+		name = NWmonarchy.86.a
+		ai_chance = {
+			factor = 10
+		}
+		GRE = {
+			create_wargoal = {
+				type = annex_everything
+				target = ROOT
+			}
+		}
+	}
+	option = {
+		name = NWmonarchy.86.b
+		ai_chance = {
+			factor = 90
+		}
+		GRE = {
+			transfer_state = 339
+			transfer_state = 340
+			transfer_state = 341
+			transfer_state = 342
+		}
+		339 = { add_core_of = GRE }
+		340 = { add_core_of = GRE }
+		341 = { add_core_of = GRE }
+		342 = { add_core_of = GRE }
+	}
+}
+
+
 
