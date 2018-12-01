@@ -2,7 +2,229 @@
 # Ветка Турка
 ###########################
 
-add_namespace = nw_turkey
+add_namespace = NWturkey
+
+#FRA
+country_event = {
+	id = NWturkey.1
+	title = NWturkey.1.t
+	desc = NWturkey.1.desc
+	is_triggered_only = yes
+
+	option = {
+		name = NWturkey.1.a
+		ai_chance = {
+			factor = 50
+		}
+		FRA = {
+			add_opinion_modifier = {
+				target = FROM
+				modifier = diplomatic_affront
+			}
+			add_named_threat = { threat = 3 name = TUR_claims_hatay_threat1_tt }
+		}
+		FROM = {
+			add_opinion_modifier = {
+				target = FRA
+				modifier = diplomatic_affront
+			}
+		}
+	}
+	option = {
+		name = NWturkey.1.b
+		ai_chance = {
+			factor = 50
+		}
+		release = HAT
+		if = {
+			limit = { FRA = { has_full_control_of_state = 945 } }
+			HAT = {
+				set_state_controller = 945
+				FRA = {
+					puppet = PREV
+					set_autonomy = { target = PREV autonomy_state = autonomy_integrated_puppet }
+				}
+			}
+		}
+		if = {
+			limit = { SYR = { has_full_control_of_state = 945 } }
+			HAT = {
+				set_state_controller = 945
+				SYR = {
+					puppet = PREV
+					set_autonomy = { target = PREV autonomy_state = autonomy_integrated_puppet }
+				}
+			}
+		}
+		add_named_threat = { threat = -3 name = TUR_claims_hatay_threat2_tt }
+		FROM = {
+			add_popularity = {
+				ideology = democratic
+				popularity = 0.02
+			}
+		}
+	}
+}
 
 
+#Монтрё. Приглашение
+country_event = {
+	id = NWturkey.2
+	title = NWturkey.2.t
+	desc = NWturkey.2.desc
+	is_triggered_only = yes
 
+	option = {
+		name = NWturkey.2.a
+		ai_chance = {
+			factor = 90
+			modifier = {
+				AND = {
+					tag = ITA
+					has_government = fascism
+				}
+				factor = 0
+			}
+		}
+		country_event = { id = NWturkey.3 days = 1 }
+	}
+	option = {
+		name = NWturkey.2.b
+		ai_chance = {
+			factor = 10
+		}
+		add_opinion_modifier = {
+			target = FROM
+			modifier = TUR_the_montreux_convention_cancel
+		}
+		FROM = {
+			add_opinion_modifier = {
+				target = ROOT
+				modifier = TUR_the_montreux_convention_cancel
+			}
+		}
+	}
+}
+
+#Монтрё. Голосование
+country_event = {
+	id = NWturkey.3
+	title = NWturkey.3.t
+	desc = NWturkey.3.desc
+	is_triggered_only = yes
+
+	option = {
+		name = NWturkey.3.a
+		ai_chance = {
+			factor = 25
+		}
+		add_opinion_modifier = {
+			target = TUR
+			modifier = TUR_the_montreux_convention_abort_demilitariz
+		}
+		TUR = {
+			add_opinion_modifier = {
+				target = ROOT
+				modifier = TUR_the_montreux_convention_abort_demilitariz
+			}
+		}
+	}
+	option = {
+		name = NWturkey.3.b
+		ai_chance = {
+			factor = 75
+		}
+		TUR = { add_to_variable = { montreux_score = 1 } }
+		add_opinion_modifier = {
+			target = TUR
+			modifier = TUR_the_montreux_convention_accept_demilitariz
+		}
+		TUR = {
+			add_opinion_modifier = {
+				target = ROOT
+				modifier = TUR_the_montreux_convention_accept_demilitariz
+			}
+		}
+	}
+}
+
+#Монтрё. Итог
+country_event = {
+	id = NWturkey.4
+	title = NWturkey.4.t
+	desc = NWturkey.4.desc
+	is_triggered_only = yes
+
+	option = {
+		name = NWturkey.4.a
+		trigger = {
+			TUR = { check_variable = { var = montreux_score value = 5 compare = greater_than_or_equals } }
+		}
+		340 = { set_demilitarized_zone = no }
+		341 = { set_demilitarized_zone = no }
+		843 = { set_demilitarized_zone = no }
+		964 = { set_demilitarized_zone = no }
+	}
+	option = {
+		name = NWturkey.4.b
+		trigger = {
+			TUR = { check_variable = { montreux_score < 5 } }
+		}
+		set_country_flag = dem_montreux_accept
+	}
+}
+
+#Аннексия Хатая
+country_event = {
+	id = NWturkey.5
+	title = NWturkey.5.t
+	desc = NWturkey.5.desc
+	is_triggered_only = yes
+
+	option = {
+		name = NWturkey.5.a
+		ai_chance = {
+			factor = 90
+		}
+		TUR = { transfer_state = 945 }
+	}
+	option = {
+		name = NWturkey.5.b
+		ai_chance = {
+			factor = 90
+			modifier = {
+				AND = {
+					FRA = { has_government = democratic }
+					GER = { has_government = fascism }
+					threat > 0.2
+				}
+				factor = 0
+			}
+			modifier = {
+				TUR = { is_in_faction_with = FRA }
+				factor = 0
+			}
+			modifier = {
+				FRA = { has_completed_focus = FRA_go_with_britain }
+				factor = 0
+			}
+		}
+		TUR = { transfer_state = 945 }
+		if = {
+			limit = {
+				TUR = { is_in_faction_with = ENG }
+				FRA = { 
+					is_in_faction_with = ENG
+					is_faction_leader = no
+				}
+			}
+			FRA = { leave_faction = yes }
+		}
+		FRA = {
+			declare_war_on = {
+				target = TUR
+				type = annex_everything
+			}
+		}
+	}
+}
