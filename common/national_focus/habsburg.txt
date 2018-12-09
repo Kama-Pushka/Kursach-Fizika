@@ -129,6 +129,7 @@ focus_tree = {
 				}
 			}
 			country_event = { id = NWmonarchy.1 days = 1 }
+			custom_effect_tooltip = HBBRG_austrian_tt
 			hidden_effect = {
 				if = {
 					limit = { ROOT = { is_ai = yes } }
@@ -235,6 +236,7 @@ focus_tree = {
 				}
 			}
 			country_event = { id = NWmonarchy.7 days = 1 }
+			custom_effect_tooltip = HBBRG_hungary_tt
 			hidden_effect = {
 				if = {
 					limit = { ROOT = { is_ai = yes } }
@@ -284,8 +286,10 @@ focus_tree = {
 			NOT = { has_government = democratic }
 		}
 		bypass = {
-			YUG = { is_puppet_of = ROOT }
-			YUG = { exists = no }
+			OR = {
+				YUG = { is_puppet_of = ROOT }
+				YUG = { exists = no }
+			}
 		}
 		
 		completion_reward = {
@@ -333,6 +337,7 @@ focus_tree = {
 				}
 			}
 			country_event = { id = NWmonarchy.11 days = 1 }
+			custom_effect_tooltip = HBBRG_czechoslovakia_tt
 			hidden_effect = {
 				if = {
 					limit = { ROOT = { is_ai = yes } }
@@ -382,8 +387,10 @@ focus_tree = {
 			NOT = { has_government = democratic }
 		}
 		bypass = {
-			ROM = { is_puppet_of = ROOT }
-			ROM = { exists = no }
+			OR = {
+				ROM = { is_puppet_of = ROOT }
+				ROM = { exists = no }
+			}
 		}
 		
 		completion_reward = {
@@ -648,7 +655,7 @@ focus_tree = {
 		available = {
 			any_other_country = {
 				original_tag = SPR
-				has_civil_war = no
+				#has_civil_war = no
 				has_government = fascism
 			}
 		}
@@ -2489,18 +2496,58 @@ focus_tree = {
 		}
 		
 		select_effect = {
-			ROOT = {
-				country_event = { id = NWmonarchy.45 days = 25 }
-				country_event = { id = NWmonarchy.45 days = 50 }
+			if = {
+				limit = {
+					OR = {
+						AND = {
+							NOT = { original_tag = AUS }
+							AUS = { exists = yes }
+						}
+						AND = {
+							NOT = { original_tag = CZE }
+							CZE = { exists = yes }
+						}
+						AND = {
+							NOT = { original_tag = HUN }
+							HUN = { exists = yes }
+						}
+					}
+				}
+				ROOT = { country_event = { id = NWmonarchy.45 days = 25 } }
+			}
+			if = {
+				limit = {
+					OR = {
+						AND = {
+							NOT = { original_tag = AUS }
+							AUS = { exists = yes }
+							NOT = { has_country_flag = AUS_chosen }
+						}
+						AND = {
+							NOT = { original_tag = CZE }
+							CZE = { exists = yes }
+							NOT = { has_country_flag = CZE_chosen }
+						}
+						AND = {
+							NOT = { original_tag = HUN }
+							HUN = { exists = yes }
+							NOT = { has_country_flag = HUN_chosen }
+						}
+					}
+				}
+				ROOT = { country_event = { id = NWmonarchy.45 days = 50 } }
 			}
 		}
 		
 		completion_reward = {
 			add_political_power = 75
-			add_stability = 0.1
+			add_stability = 0.05
 			set_rule = { can_create_factions = yes }
 			create_faction = HBBRG_danube_union
 			country_event = { id = NWmonarchy.48 days = 1 }
+			hidden_effect = {
+				news_event = { hours = 6 id = trworldnews.54 }
+			}
 		}
 	}
 	
@@ -2523,6 +2570,11 @@ focus_tree = {
 			factor = 1
 		}
 		available = {
+			ENG = {
+				exists = yes
+				has_government = ROOT
+			}
+			NOT = { has_war_with = ENG }
 		}
 		bypass = {
 		}
@@ -2581,70 +2633,82 @@ focus_tree = {
 		available = {
 		}
 		bypass = {
+			YUG = { exists = no }
+			ROM = { exists = no }
+			BUL = { exists = no }
 		}
 		
 		completion_reward = {
-			add_opinion_modifier = {
-				target = YUG
-				modifier = HBBRG_danube
-			}
-			add_opinion_modifier = {
-				target = ROM
-				modifier = HBBRG_danube
-			}
-			add_opinion_modifier = {
-				target = BUL
-				modifier = HBBRG_danube
-			}
-			YUG = {
-				add_ideas = HBBRG_democratic
+			if = {
+				limit = { YUG = { exists = yes } }
 				add_opinion_modifier = {
-					target = ROOT
+					target = YUG
 					modifier = HBBRG_danube
 				}
-				add_ai_strategy = {
-					type = befriend
-					id = ROOT
-					value = 200
-				}
-				add_ai_strategy = {
-					type = alliance
-					id = ROOT
-					value = 200
-				}
-			}
-			ROM = {
-				add_ideas = HBBRG_democratic
-				add_opinion_modifier = {
-					target = ROOT
-					modifier = HBBRG_danube
-				}
-				add_ai_strategy = {
-					type = befriend
-					id = ROOT
-					value = 200
-				}
-				add_ai_strategy = {
-					type = alliance
-					id = ROOT
-					value = 200
+				YUG = {
+					add_ideas = HBBRG_democratic
+					add_opinion_modifier = {
+						target = ROOT
+						modifier = HBBRG_danube
+					}
+					add_ai_strategy = {
+						type = befriend
+						id = ROOT
+						value = 200
+					}
+					add_ai_strategy = {
+						type = alliance
+						id = ROOT
+						value = 200
+					}
 				}
 			}
-			BUL = {
-				add_ideas = HBBRG_democratic
+			if = {
+				limit = { ROM = { exists = yes } }
 				add_opinion_modifier = {
-					target = ROOT
+					target = ROM
 					modifier = HBBRG_danube
 				}
-				add_ai_strategy = {
-					type = befriend
-					id = ROOT
-					value = 200
+				ROM = {
+					add_ideas = HBBRG_democratic
+					add_opinion_modifier = {
+						target = ROOT
+						modifier = HBBRG_danube
+					}
+					add_ai_strategy = {
+						type = befriend
+						id = ROOT
+						value = 200
+					}
+					add_ai_strategy = {
+						type = alliance
+						id = ROOT
+						value = 200
+					}
 				}
-				add_ai_strategy = {
-					type = alliance
-					id = ROOT
-					value = 200
+			}
+			if = {
+				limit = { BUL = { exists = yes } }
+				add_opinion_modifier = {
+					target = BUL
+					modifier = HBBRG_danube
+				}
+				BUL = {
+					add_ideas = HBBRG_democratic
+					add_opinion_modifier = {
+						target = ROOT
+						modifier = HBBRG_danube
+					}
+					add_ai_strategy = {
+						type = befriend
+						id = ROOT
+						value = 200
+					}
+					add_ai_strategy = {
+						type = alliance
+						id = ROOT
+						value = 200
+					}
 				}
 			}
 		}
@@ -2670,6 +2734,9 @@ focus_tree = {
 		available = {
 		}
 		bypass = {
+			ALB = { exists = no }
+			TUR = { exists = no }
+			GRE = { exists = no }
 		}
 		
 		completion_reward = {
@@ -2697,60 +2764,82 @@ focus_tree = {
 					}
 				}
 			}
-			add_opinion_modifier = {
-				target = GRE
-				modifier = HBBRG_danube
-			}
-			add_opinion_modifier = {
-				target = TUR
-				modifier = HBBRG_danube
-			}
-			GRE = {
-				add_ideas = HBBRG_democratic
+			if = {
+				limit = { GRE = { exists = yes } }
 				add_opinion_modifier = {
-					target = ROOT
+					target = GRE
 					modifier = HBBRG_danube
 				}
-				add_ai_strategy = {
-					type = befriend
-					id = ROOT
-					value = 200
-				}
-				add_ai_strategy = {
-					type = alliance
-					id = ROOT
-					value = 200
+				GRE = {
+					add_ideas = HBBRG_democratic
+					add_opinion_modifier = {
+						target = ROOT
+						modifier = HBBRG_danube
+					}
+					add_ai_strategy = {
+						type = befriend
+						id = ROOT
+						value = 200
+					}
+					add_ai_strategy = {
+						type = alliance
+						id = ROOT
+						value = 200
+					}
 				}
 			}
-			TUR = {
-				add_ideas = HBBRG_democratic
+			if = {
+				limit = { TUR = { exists = yes } }
 				add_opinion_modifier = {
-					target = ROOT
+					target = TUR
 					modifier = HBBRG_danube
 				}
-				add_ai_strategy = {
-					type = befriend
-					id = ROOT
-					value = 200
-				}
-				add_ai_strategy = {
-					type = alliance
-					id = ROOT
-					value = 200
+				TUR = {
+					add_ideas = HBBRG_democratic
+					add_opinion_modifier = {
+						target = ROOT
+						modifier = HBBRG_danube
+					}
+					add_ai_strategy = {
+						type = befriend
+						id = ROOT
+						value = 200
+					}
+					add_ai_strategy = {
+						type = alliance
+						id = ROOT
+						value = 200
+					}
 				}
 			}
 			set_rule = { can_create_factions = yes }
 			effect_tooltip = {
-				create_faction = "HBBRG_balkan_danube_union"
+				create_faction = HBBRG_balkan_danube_union
 			}
-			if = {
-				limit = {
+			hidden_effect = {
+				if = {
+					limit = {
+						ROOT = {
+							is_in_faction = yes
+							is_faction_leader = yes
+						}
+					}
+					every_other_country = {
+						limit = {
+							is_in_faction_with = ROOT
+						}
+						save_global_event_target_as = old_ally
+						leave_faction = yes
+					}
+
 					ROOT = {
-						is_in_faction = yes
-						is_faction_leader = yes
+						dismantle_faction = yes
+						create_faction = HBBRG_balkan_danube_union
+						add_to_faction = event_target:old_ally
+						clear_global_event_target = old_ally
 					}
 				}
-				hidden_effect = {
+				else = {
 					every_other_country = {
 						limit = {
 							is_in_faction_with = ROOT
@@ -2758,29 +2847,12 @@ focus_tree = {
 						save_global_event_target_as = old_ally
 						leave_faction = yes
 					}
-				}
-				ROOT = {
-					dismantle_faction = yes
-					create_faction = "HBBRG_balkan_danube_union"
-					add_to_faction = event_target:old_ally
-					clear_global_event_target = old_ally
-				}
-			}
-			else = {
-				hidden_effect = {
-					every_other_country = {
-						limit = {
-							is_in_faction_with = ROOT
-						}
-						save_global_event_target_as = old_ally
-						leave_faction = yes
+					ROOT = {
+						dismantle_faction = yes
+						create_faction = HBBRG_balkan_danube_union
+						add_to_faction = event_target:old_ally
+						clear_global_event_target = old_ally
 					}
-				}
-				ROOT = {
-					dismantle_faction = yes
-					create_faction = "HBBRG_balkan_danube_union"
-					add_to_faction = event_target:old_ally
-					clear_global_event_target = old_ally
 				}
 			}
 		}
@@ -2817,12 +2889,12 @@ focus_tree = {
 					}
 				}
 				set_rule = { can_create_factions = yes }
-				create_faction = "HBBRG_danube_union"
+				create_faction = HBBRG_danube_union
+				hidden_effect = {
+					news_event = { hours = 6 id = trworldnews.54 }
+				}
 			}
 			add_ideas = HBBRG_danube_defence_initiative
-			hidden_effect = {
-				news_event = { hours = 6 id = trworldnews.54 }
-			}
 		}
 	}
 	
@@ -2893,6 +2965,7 @@ focus_tree = {
 					}
 				}
 			}
+			custom_effect_tooltip = HBBRG_southern_defense_line_tt
 		}
 	}
 	
@@ -2963,6 +3036,7 @@ focus_tree = {
 					}
 				}
 			}
+			custom_effect_tooltip = HBBRG_northern_defense_line_tt
 		}
 	}
 	
@@ -3000,6 +3074,7 @@ focus_tree = {
 				}
 				add_ideas = HBBRG_danube_military_industry
 			}
+			custom_effect_tooltip = HBBRG_all_ally_tt
 		}
 	}
 	
@@ -3022,101 +3097,121 @@ focus_tree = {
 			factor = 1
 		}
 		available = {
+			FRA = {
+				exists = yes
+				has_government = ROOT
+			}
+			NOT = { has_war_with = FRA }
 		}
 		bypass = {
 		}
 		
 		completion_reward = {
-			add_opinion_modifier = {
-				target = FRA
-				modifier = antigerman_tactic_1
-			}
-			add_opinion_modifier = {
-				target = GER
-				modifier = antigerman_tactic_2
-			}
-			GER = {
+			if = {
+				limit = { FRA = { exists = yes } }
 				add_opinion_modifier = {
-					target = ROOT
+					target = FRA
+					modifier = antigerman_tactic_1
+				}
+				FRA = {
+					add_ideas = HBBRG_democratic
+					add_opinion_modifier = {
+						target = ROOT
+						modifier = antigerman_tactic_1
+					}
+					add_ai_strategy = {
+						type = befriend
+						id = ROOT
+						value = 50
+					}
+					add_ai_strategy = {
+						type = alliance
+						id = ROOT
+						value = 50
+					}
+				}
+			}
+			if = {
+				limit = { GER = { exists = yes } }
+				add_opinion_modifier = {
+					target = GER
 					modifier = antigerman_tactic_2
+				}
+				GER = {
+					add_opinion_modifier = {
+						target = ROOT
+						modifier = antigerman_tactic_2
+					}
+					add_ai_strategy = {
+						type = antagonize
+						id = ROOT
+						value = 200
+					}
 				}
 				add_ai_strategy = {
 					type = antagonize
-					id = ROOT
+					id = "GER"
 					value = 200
 				}
 			}
-			add_ai_strategy = {
-				type = antagonize
-				id = "GER"
-				value = 200
-			}
-			FRA = {
-				add_ideas = HBBRG_democratic
-				add_opinion_modifier = {
-					target = ROOT
-					modifier = antigerman_tactic_1
-				}
-				add_ai_strategy = {
-					type = befriend
-					id = ROOT
-					value = 50
-				}
-				add_ai_strategy = {
-					type = alliance
-					id = ROOT
-					value = 50
+			if = {
+				limit = { YUG = { exists = yes } }
+				YUG = {
+					add_ideas = HBBRG_democratic
+					add_opinion_modifier = {
+						target = ROOT
+						modifier = HBBRG_danube
+					}
+					add_ai_strategy = {
+						type = befriend
+						id = ROOT
+						value = 50
+					}
+					add_ai_strategy = {
+						type = alliance
+						id = ROOT
+						value = 50
+					}
 				}
 			}
-			YUG = {
-				add_ideas = HBBRG_democratic
-				add_opinion_modifier = {
-					target = ROOT
-					modifier = HBBRG_danube
-				}
-				add_ai_strategy = {
-					type = befriend
-					id = ROOT
-					value = 50
-				}
-				add_ai_strategy = {
-					type = alliance
-					id = ROOT
-					value = 50
-				}
-			}
-			ROM = {
-				add_ideas = HBBRG_democratic
-				add_opinion_modifier = {
-					target = ROOT
-					modifier = HBBRG_danube
-				}
-				add_ai_strategy = {
-					type = befriend
-					id = ROOT
-					value = 50
-				}
-				add_ai_strategy = {
-					type = alliance
-					id = ROOT
-					value = 50
+			if = {
+				limit = { ROM = { exists = yes } }
+				ROM = {
+					add_ideas = HBBRG_democratic
+					add_opinion_modifier = {
+						target = ROOT
+						modifier = HBBRG_danube
+					}
+					add_ai_strategy = {
+						type = befriend
+						id = ROOT
+						value = 50
+					}
+					add_ai_strategy = {
+						type = alliance
+						id = ROOT
+						value = 50
+					}
 				}
 			}
-			BUL = {
-				add_ideas = HBBRG_democratic
-				add_opinion_modifier = {
-					target = ROOT
-					modifier = HBBRG_danube
-				}
-				add_ai_strategy = {
-					type = befriend
-					id = ROOT
-					value = 50
-				}
-				add_ai_strategy = {
-					type = alliance
-					id = ROOT
-					value = 50
+			if = {
+				limit = { BUL = { exists = yes } }
+				BUL = {
+					add_ideas = HBBRG_democratic
+					add_opinion_modifier = {
+						target = ROOT
+						modifier = HBBRG_danube
+					}
+					add_ai_strategy = {
+						type = befriend
+						id = ROOT
+						value = 50
+					}
+					add_ai_strategy = {
+						type = alliance
+						id = ROOT
+						value = 50
+					}
 				}
 			}
 		}
@@ -3140,8 +3235,14 @@ focus_tree = {
 			factor = 1
 		}
 		available = {
+			POL = { exists = yes }
+			NOT = { has_war_with = POL }
 		}
 		bypass = {
+			OR = {
+				POL = { exists = no }
+				has_war_with = POL
+			}
 		}
 		
 		completion_reward = {
@@ -3168,68 +3269,80 @@ focus_tree = {
 			}
 			
 			hidden_effect = {
-				FRA = {
-					add_opinion_modifier = {
-						target = ROOT
-						modifier = antigerman_tactic_1
-					}
-					add_ai_strategy = {
-						type = befriend
-						id = ROOT
-						value = 50
-					}
-					add_ai_strategy = {
-						type = alliance
-						id = ROOT
-						value = 150
-					}
-				}
-				YUG = {
-					add_opinion_modifier = {
-						target = ROOT
-						modifier = HBBRG_danube
-					}
-					add_ai_strategy = {
-						type = befriend
-						id = ROOT
-						value = 150
-					}
-					add_ai_strategy = {
-						type = alliance
-						id = ROOT
-						value = 150
+				if = {
+					limit = { FRA = { exists = yes } }
+					FRA = {
+						add_opinion_modifier = {
+							target = ROOT
+							modifier = antigerman_tactic_1
+						}
+						add_ai_strategy = {
+							type = befriend
+							id = ROOT
+							value = 50
+						}
+						add_ai_strategy = {
+							type = alliance
+							id = ROOT
+							value = 150
+						}
 					}
 				}
-				ROM = {
-					add_opinion_modifier = {
-						target = ROOT
-						modifier = HBBRG_danube
-					}
-					add_ai_strategy = {
-						type = befriend
-						id = ROOT
-						value = 150
-					}
-					add_ai_strategy = {
-						type = alliance
-						id = ROOT
-						value = 150
+				if = {
+					limit = { YUG = { exists = yes } }
+					YUG = {
+						add_opinion_modifier = {
+							target = ROOT
+							modifier = HBBRG_danube
+						}
+						add_ai_strategy = {
+							type = befriend
+							id = ROOT
+							value = 150
+						}
+						add_ai_strategy = {
+							type = alliance
+							id = ROOT
+							value = 150
+						}
 					}
 				}
-				BUL = {
-					add_opinion_modifier = {
-						target = ROOT
-						modifier = HBBRG_danube
+				if = {
+					limit = { ROM = { exists = yes } }
+					ROM = {
+						add_opinion_modifier = {
+							target = ROOT
+							modifier = HBBRG_danube
+						}
+						add_ai_strategy = {
+							type = befriend
+							id = ROOT
+							value = 150
+						}
+						add_ai_strategy = {
+							type = alliance
+							id = ROOT
+							value = 150
+						}
 					}
-					add_ai_strategy = {
-						type = befriend
-						id = ROOT
-						value = 150
-					}
-					add_ai_strategy = {
-						type = alliance
-						id = ROOT
-						value = 150
+				}
+				if = {
+					limit = { BUL = { exists = yes } }
+					BUL = {
+						add_opinion_modifier = {
+							target = ROOT
+							modifier = HBBRG_danube
+						}
+						add_ai_strategy = {
+							type = befriend
+							id = ROOT
+							value = 150
+						}
+						add_ai_strategy = {
+							type = alliance
+							id = ROOT
+							value = 150
+						}
 					}
 				}
 			}
@@ -3254,72 +3367,101 @@ focus_tree = {
 			factor = 1
 		}
 		available = {
+			OR = {
+				AND = {
+					BEL = { exists = yes }
+					NOT = { has_war_with = BEL }
+				}
+				AND = {
+					LUX = { exists = yes }
+					NOT = { has_war_with = LUX }
+				}
+				AND = {
+					HOL = { exists = yes }
+					NOT = { has_war_with = HOL }
+				}
+			}
 		}
 		bypass = {
+			BEL = { exists = no }
+			has_war_with = BEL
+			LUX = { exists = no }
+			has_war_with = LUX
+			HOL = { exists = no }
+			has_war_with = HOL
 		}
 		
 		completion_reward = {
-			add_opinion_modifier = {
-				target = BEL
-				modifier = HBBRG_danube
-			}
-			add_opinion_modifier = {
-				target = LUX
-				modifier = HBBRG_danube
-			}
-			add_opinion_modifier = {
-				target = HOL
-				modifier = HBBRG_danube
-			}
-			BEL = {
-				add_ideas = HBBRG_democratic
+			if = {
+				limit = { BEL = { exists = yes } }
 				add_opinion_modifier = {
-					target = ROOT
+					target = BEL
 					modifier = HBBRG_danube
 				}
-				add_ai_strategy = {
-					type = befriend
-					id = ROOT
-					value = 200
-				}
-				add_ai_strategy = {
-					type = alliance
-					id = ROOT
-					value = 200
-				}
-			}
-			LUX = {
-				add_ideas = HBBRG_democratic
-				add_opinion_modifier = {
-					target = ROOT
-					modifier = HBBRG_danube
-				}
-				add_ai_strategy = {
-					type = befriend
-					id = ROOT
-					value = 200
-				}
-				add_ai_strategy = {
-					type = alliance
-					id = ROOT
-					value = 200
+				BEL = {
+					add_ideas = HBBRG_democratic
+					add_opinion_modifier = {
+						target = ROOT
+						modifier = HBBRG_danube
+					}
+					add_ai_strategy = {
+						type = befriend
+						id = ROOT
+						value = 200
+					}
+					add_ai_strategy = {
+						type = alliance
+						id = ROOT
+						value = 200
+					}
 				}
 			}
-			HOL = {
-				add_ideas = HBBRG_democratic
+			if = {
+				limit = { LUX = { exists = yes } }
 				add_opinion_modifier = {
-					target = ROOT
+					target = LUX
 					modifier = HBBRG_danube
 				}
-				add_ai_strategy = {
-					type = befriend
-					id = ROOT
-					value = 200
+				LUX = {
+					add_ideas = HBBRG_democratic
+					add_opinion_modifier = {
+						target = ROOT
+						modifier = HBBRG_danube
+					}
+					add_ai_strategy = {
+						type = befriend
+						id = ROOT
+						value = 200
+					}
+					add_ai_strategy = {
+						type = alliance
+						id = ROOT
+						value = 200
+					}
 				}
-				add_ai_strategy = {
-					type = alliance
-					id = ROOT
-					value = 200
+			}
+			if = {
+				limit = { LUX = { exists = yes } }
+				add_opinion_modifier = {
+					target = HOL
+					modifier = HBBRG_danube
+				}
+				HOL = {
+					add_ideas = HBBRG_democratic
+					add_opinion_modifier = {
+						target = ROOT
+						modifier = HBBRG_danube
+					}
+					add_ai_strategy = {
+						type = befriend
+						id = ROOT
+						value = 200
+					}
+					add_ai_strategy = {
+						type = alliance
+						id = ROOT
+						value = 200
+					}
 				}
 			}
 		}
@@ -3343,8 +3485,14 @@ focus_tree = {
 			factor = 1
 		}
 		available = {
+			SWI = { exists = yes }
+			NOT = { has_war_with = SWI }
 		}
 		bypass = {
+			OR = {
+				SWI = { exists = no }
+				has_war_with = SWI
+			}
 		}
 		
 		completion_reward = {
@@ -3431,8 +3579,79 @@ focus_tree = {
 						set_nationality = ROOT
 					}
 				}
+				custom_effect_tooltip = HBBRG_expanded_integration_tt
 				hidden_effect = {
 					news_event = { hours = 6 id = trworldnews.51 }
+					every_state = {
+						limit = {
+							is_core_of = AUS
+							NOT = { is_fully_controlled_by = ROOT }
+						}
+						add_claim_by = ROOT
+					}
+					every_state = {
+						limit = {
+							is_core_of = HUN
+							NOT = { is_fully_controlled_by = ROOT }
+						}
+						add_claim_by = ROOT
+					}
+					every_state = {
+						limit = {
+							is_core_of = CZE
+							NOT = { is_fully_controlled_by = ROOT }
+						}
+						add_claim_by = ROOT
+					}
+					every_state = {
+						limit = {
+							is_core_of = YUG
+							NOT = { is_fully_controlled_by = ROOT }
+						}
+						add_claim_by = ROOT
+					}
+					every_state = {
+						limit = {
+							is_core_of = ROM
+							NOT = { is_fully_controlled_by = ROOT }
+						}
+						add_claim_by = ROOT
+					}
+					every_state = {
+						limit = {
+							is_core_of = BUL
+							NOT = { is_fully_controlled_by = ROOT }
+						}
+						add_claim_by = ROOT
+					}
+					every_state = {
+						limit = {
+							is_core_of = ALB
+							NOT = { is_fully_controlled_by = ROOT }
+						}
+						add_claim_by = ROOT
+					}
+					every_state = {
+						limit = {
+							is_core_of = GRE
+							NOT = { is_fully_controlled_by = ROOT }
+						}
+						add_claim_by = ROOT
+					}
+					every_state = {
+						limit = {
+							is_core_of = TUR
+							NOT = { is_fully_controlled_by = ROOT }
+						}
+						add_claim_by = ROOT
+					}
+					every_state = {
+						limit = {
+							is_core_of = SWI
+							NOT = { is_fully_controlled_by = ROOT }
+						}
+						add_claim_by = ROOT
+					}
 				}
 			}
 			if = {
@@ -3469,8 +3688,79 @@ focus_tree = {
 						set_nationality = ROOT
 					}
 				}
+				custom_effect_tooltip = HBBRG_expanded_integration_ttt
 				hidden_effect = {
 					news_event = { hours = 6 id = trworldnews.52 }
+					every_state = {
+						limit = {
+							is_core_of = AUS
+							NOT = { is_fully_controlled_by = ROOT }
+						}
+						add_claim_by = ROOT
+					}
+					every_state = {
+						limit = {
+							is_core_of = HUN
+							NOT = { is_fully_controlled_by = ROOT }
+						}
+						add_claim_by = ROOT
+					}
+					every_state = {
+						limit = {
+							is_core_of = CZE
+							NOT = { is_fully_controlled_by = ROOT }
+						}
+						add_claim_by = ROOT
+					}
+					every_state = {
+						limit = {
+							is_core_of = YUG
+							NOT = { is_fully_controlled_by = ROOT }
+						}
+						add_claim_by = ROOT
+					}
+					every_state = {
+						limit = {
+							is_core_of = ROM
+							NOT = { is_fully_controlled_by = ROOT }
+						}
+						add_claim_by = ROOT
+					}
+					every_state = {
+						limit = {
+							is_core_of = BUL
+							NOT = { is_fully_controlled_by = ROOT }
+						}
+						add_claim_by = ROOT
+					}
+					every_state = {
+						limit = {
+							is_core_of = BEL
+							NOT = { is_fully_controlled_by = ROOT }
+						}
+						add_claim_by = ROOT
+					}
+					every_state = {
+						limit = {
+							is_core_of = LUX
+							NOT = { is_fully_controlled_by = ROOT }
+						}
+						add_claim_by = ROOT
+					}
+					every_state = {
+						limit = {
+							is_core_of = HOL
+							NOT = { is_fully_controlled_by = ROOT }
+						}
+						add_claim_by = ROOT
+					}
+					every_state = {
+						limit = {
+							is_core_of = SWI
+							NOT = { is_fully_controlled_by = ROOT }
+						}
+						add_claim_by = ROOT
+					}
 				}
 			}
 		}
@@ -3500,11 +3790,34 @@ focus_tree = {
 		}
 		
 		select_effect = {
-			ROOT = {
-				country_event = { id = NWmonarchy.49 days = 20 }
-				country_event = { id = NWmonarchy.49 days = 40 }
-				country_event = { id = NWmonarchy.49 days = 60 }
-				country_event = { id = NWmonarchy.49 days = 80 }
+			if = {
+				limit = {
+					NOT = { original_tag = AUS }
+					AUS = { exists = yes }
+				}
+				ROOT = { country_event = { id = NWmonarchy.49 days = 20 } }
+			}
+			if = {
+				limit = {
+					NOT = { original_tag = CZE }
+					CZE = { exists = yes }
+				}
+				ROOT = { country_event = { id = NWmonarchy.49 days = 40 } }
+			}
+			if = {
+				limit = {
+					NOT = { original_tag = HUN }
+					HUN = { exists = yes }
+				}
+				ROOT = { country_event = { id = NWmonarchy.49 days = 60 } }
+			}
+			if = {
+				limit = { ROM = { exists = yes } }
+				ROOT = { country_event = { id = NWmonarchy.49 days = 60 } }
+			}
+			if = {
+				limit = { YUG = { exists = yes } }
+				ROOT = { country_event = { id = NWmonarchy.49 days = 80 } }
 			}
 		}
 		
@@ -3558,6 +3871,7 @@ focus_tree = {
 					add_ideas = HBBRG_neither_red_nor_brown
 				}
 			}
+			custom_effect_tooltip = HBBRG_all_ally_tt
 		}
 	}
 	
@@ -3579,8 +3893,14 @@ focus_tree = {
 			factor = 1
 		}
 		available = {
+			NOT = { has_government = communism }
+			NOT = { has_government = trozkism }
 		}
 		bypass = {
+			OR = {
+				has_government = communism
+				has_government = trozkism
+			}
 		}
 		
 		completion_reward = {
@@ -3592,25 +3912,30 @@ focus_tree = {
 				ideology = trozkism
 				popularity = -0.05
 			}
-			add_opinion_modifier = {
-				target = SOV
-				modifier = anti_sov_ritor
-			}
-			SOV = {
+			if = {
+				limit = { SOV = { exists = yes } }
 				add_opinion_modifier = {
-					target = ROOT
+					target = SOV
 					modifier = anti_sov_ritor
 				}
+				SOV = {
+					add_opinion_modifier = {
+						target = ROOT
+						modifier = anti_sov_ritor
+					}
+				}
 			}
-
-			add_opinion_modifier = {
-				target = KMX
-				modifier = HBBRG_anti_troz_ritor
-			}
-			KMX = {
+			if = {
+				limit = { KMX = { exists = yes } }
 				add_opinion_modifier = {
-					target = ROOT
+					target = KMX
 					modifier = HBBRG_anti_troz_ritor
+				}
+				KMX = {
+					add_opinion_modifier = {
+						target = ROOT
+						modifier = HBBRG_anti_troz_ritor
+					}
 				}
 			}
 		}
@@ -3873,7 +4198,7 @@ focus_tree = {
 		
 		completion_reward = {
 			set_rule = { can_create_factions = yes }
-			create_faction = "HBBRG_use_faction"
+			create_faction = HBBRG_use_faction
 			set_cosmetic_tag = HBBRG_uss_tag
 		}
 	}
@@ -3898,6 +4223,7 @@ focus_tree = {
 		}
 		available = {
 			USA = { exists = yes }
+			USA = { has_government = ROOT }
 			NOT = { has_war_with = USA }
 		}
 		bypass = {
@@ -3914,34 +4240,43 @@ focus_tree = {
 					modifier = HBBRG_usa_friend_1
 				}
 			}
-			add_opinion_modifier = {
-				target = SOV
-				modifier = HBBRG_usa_friend_2
-			}
-			SOV = {
+			if = {
+				limit = { SOV = { exists = yes } }
 				add_opinion_modifier = {
-					target = ROOT
+					target = SOV
 					modifier = HBBRG_usa_friend_2
 				}
-			}
-			add_opinion_modifier = {
-				target = GER
-				modifier = HBBRG_usa_friend_2
-			}
-			GER = {
-				add_opinion_modifier = {
-					target = ROOT
-					modifier = HBBRG_usa_friend_2
+				SOV = {
+					add_opinion_modifier = {
+						target = ROOT
+						modifier = HBBRG_usa_friend_2
+					}
 				}
 			}
-			add_opinion_modifier = {
-				target = KMX
-				modifier = HBBRG_usa_friend_2
-			}
-			KMX = {
+			if = {
+				limit = { GER = { exists = yes } }
 				add_opinion_modifier = {
-					target = ROOT
+					target = GER
 					modifier = HBBRG_usa_friend_2
+				}
+				GER = {
+					add_opinion_modifier = {
+						target = ROOT
+						modifier = HBBRG_usa_friend_2
+					}
+				}
+			}
+			if = {
+				limit = { KMX = { exists = yes } }
+				add_opinion_modifier = {
+					target = KMX
+					modifier = HBBRG_usa_friend_2
+				}
+				KMX = {
+					add_opinion_modifier = {
+						target = ROOT
+						modifier = HBBRG_usa_friend_2
+					}
 				}
 			}
 			USA = { country_event = { id = NWmonarchy.54 days = 1 } }
@@ -4356,8 +4691,14 @@ focus_tree = {
 			factor = 1
 		}
 		available = {
+			POL = { exists = yes }
+			NOT = { has_war_with = POL }
 		}
 		bypass = {
+			OR = {
+				POL = { exists = no }
+				has_war_with = POL
+			}
 		}
 		
 		completion_reward = {
@@ -4383,8 +4724,14 @@ focus_tree = {
 			factor = 1
 		}
 		available = {
+			FRA = { exists = yes }
+			NOT = { has_war_with = FRA }
 		}
 		bypass = {
+			OR = {
+				FRA = { exists = no }
+				has_war_with = FRA
+			}
 		}
 		
 		completion_reward = {
@@ -4410,8 +4757,28 @@ focus_tree = {
 			factor = 1
 		}
 		available = {
+			OR = {
+				AND = {
+					BEL = { exists = yes }
+					NOT = { has_war_with = BEL }
+				}
+				AND = {
+					LUX = { exists = yes }
+					NOT = { has_war_with = LUX }
+				}
+				AND = {
+					HOL = { exists = yes }
+					NOT = { has_war_with = HOL }
+				}
+			}
 		}
 		bypass = {
+			BEL = { exists = no }
+			has_war_with = BEL
+			LUX = { exists = no }
+			has_war_with = LUX
+			HOL = { exists = no }
+			has_war_with = HOL
 		}
 		
 		completion_reward = {
@@ -4458,6 +4825,9 @@ focus_tree = {
 				can_send_volunteers = yes
 				can_create_factions = yes
 			}
+			effect_tooltip = {
+				create_faction = HBBRG_use_faction_1
+			}
 			custom_effect_tooltip = HBBRG_european_family_tt
 			hidden_effect = {
 				set_country_flag = USE_accept_form
@@ -4470,6 +4840,44 @@ focus_tree = {
 					country_event = { id = NWmonarchy.78 days = 5 }
 				}
 				news_event = { hours = 6 id = trworldnews.53 }
+				
+				if = {
+					limit = {
+						ROOT = {
+							is_in_faction = yes
+							is_faction_leader = yes
+						}
+					}
+					every_other_country = {
+						limit = {
+							is_in_faction_with = ROOT
+						}
+						save_global_event_target_as = old_ally
+						leave_faction = yes
+					}
+
+					ROOT = {
+						dismantle_faction = yes
+						create_faction = HBBRG_use_faction_1
+						add_to_faction = event_target:old_ally
+						clear_global_event_target = old_ally
+					}
+				}
+				else = {
+					every_other_country = {
+						limit = {
+							is_in_faction_with = ROOT
+						}
+						save_global_event_target_as = old_ally
+						leave_faction = yes
+					}
+					ROOT = {
+						dismantle_faction = yes
+						create_faction = HBBRG_use_faction_1
+						add_to_faction = event_target:old_ally
+						clear_global_event_target = old_ally
+					}
+				}
 			}
 		}
 	}
