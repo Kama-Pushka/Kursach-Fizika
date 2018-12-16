@@ -508,7 +508,7 @@ focus_tree = {
 		available_if_capitulated = yes
 
 		ai_will_do = {
-			factor = 1
+			factor = 10
 		}
 		available = {
 		}
@@ -1085,7 +1085,7 @@ focus_tree = {
 	
 	focus = {
 		id = HBBRG_declare_himself_new_germany
-		icon = GFX_z_goal_checkmate
+		icon = GFX_z_goal_new_germany
 		prerequisite = { focus = HBBRG_great_german_way }
 		mutually_exclusive = { focus = HBBRG_holy_roman_empire }
 		x = -2
@@ -1647,7 +1647,7 @@ focus_tree = {
 		available_if_capitulated = yes
 
 		ai_will_do = {
-			factor = 1
+			factor = 2
 		}
 		available = {
 		}
@@ -2414,7 +2414,7 @@ focus_tree = {
 			create_country_leader = {
 				name = "Richard Nikolaus Coudenhove-Kalergi"
 				desc = "POLITICS_COUDENHOVE_KALERGI_DESC"
-				picture = GFX_Portrait_Coudenhove_Kalergi
+				picture = "gfx/leaders/AUS/Portrait_Coudenhove_Kalergi.dds"
 				expire = "1965.1.1"
 				ideology = socialism
 				traits = {
@@ -2432,6 +2432,22 @@ focus_tree = {
 			if = {
 				limit = { has_idea = HUN_treaty_of_triannon }
 				remove_ideas = HUN_treaty_of_triannon
+			}
+			if = {
+				limit = { has_idea = HUN_habsburg_restored }
+				swap_ideas = {
+					remove_idea = HUN_habsburg_restored
+					add_idea = HUN_habsburg_restored_dem
+				}
+			}
+			hidden_effect = {
+				every_state = {
+					limit = {
+						is_claimed_by = ROOT
+						NOT = { is_fully_controlled_by = ROOT }
+					}
+					remove_claim_by = ROOT
+				}
 			}
 		}
 	}
@@ -2588,10 +2604,20 @@ focus_tree = {
 				target = SOV
 				modifier = antisoviet_tactic_2
 			}
+			diplomatic_relation = {
+				country = ENG
+				relation = non_aggression_pact
+				active = yes
+			}
 			ENG = {
 				add_opinion_modifier = {
 					target = ROOT
 					modifier = antisoviet_tactic_1
+				}
+				diplomatic_relation = {
+					country = ROOT
+					relation = non_aggression_pact
+					active = yes
 				}
 			}
 			SOV = {
@@ -3113,11 +3139,21 @@ focus_tree = {
 					target = FRA
 					modifier = antigerman_tactic_1
 				}
+				diplomatic_relation = {
+					country = FRA
+					relation = non_aggression_pact
+					active = yes
+				}
 				FRA = {
 					add_ideas = HBBRG_democratic
 					add_opinion_modifier = {
 						target = ROOT
 						modifier = antigerman_tactic_1
+					}
+					diplomatic_relation = {
+						country = ROOT
+						relation = non_aggression_pact
+						active = yes
 					}
 					add_ai_strategy = {
 						type = befriend
@@ -3542,6 +3578,54 @@ focus_tree = {
 		bypass = {
 		}
 		
+		select_effect = {
+			if = {
+				limit = { has_completed_focus = HBBRG_friendship_britan }
+				every_country = {
+					limit = {
+						NOT = { original_tag = ROOT }
+						NOT = { is_in_faction_with = ROOT }
+						OR = {
+							original_tag = AUS
+							original_tag = HUN
+							original_tag = CZE
+							original_tag = YUG
+							original_tag = ROM
+							original_tag = BUL
+							original_tag = ALB
+							original_tag = GRE
+							original_tag = TUR
+							original_tag = SWI
+						}
+					}
+					country_event = { id = NWmonarchy.93 days = 30 }
+				}
+			}
+			if = {
+				limit = { has_completed_focus = HBBRG_friendship_france }
+				every_country = {
+					limit = {
+						NOT = { original_tag = ROOT }
+						NOT = { is_in_faction_with = ROOT }
+						OR = {
+							original_tag = AUS
+							original_tag = HUN
+							original_tag = CZE
+							original_tag = YUG
+							original_tag = ROM
+							original_tag = BUL
+							original_tag = POL
+							original_tag = BEL
+							original_tag = LUX
+							original_tag = HOL
+							original_tag = SWI
+						}
+					}
+					country_event = { id = NWmonarchy.93 days = 30 }
+				}
+			}
+		}
+		
 		completion_reward = {
 			add_ideas = HBBRG_expanded_integration
 			if = {
@@ -3669,6 +3753,7 @@ focus_tree = {
 									original_tag = YUG
 									original_tag = ROM
 									original_tag = BUL
+									original_tag = POL
 									original_tag = BEL
 									original_tag = LUX
 									original_tag = HOL
@@ -3687,6 +3772,10 @@ focus_tree = {
 					every_unit_leader = {
 						set_nationality = ROOT
 					}
+				}
+				if = {
+					limit = { FRA = { is_in_faction = no } }
+					FRA = { country_event = { id = NWmonarchy.93 days = 30 } }
 				}
 				custom_effect_tooltip = HBBRG_expanded_integration_ttt
 				hidden_effect = {
@@ -3729,6 +3818,13 @@ focus_tree = {
 					every_state = {
 						limit = {
 							is_core_of = BUL
+							NOT = { is_fully_controlled_by = ROOT }
+						}
+						add_claim_by = ROOT
+					}
+					every_state = {
+						limit = {
+							is_core_of = POL
 							NOT = { is_fully_controlled_by = ROOT }
 						}
 						add_claim_by = ROOT
@@ -4824,6 +4920,30 @@ focus_tree = {
 				can_guarantee_other_ideologies = yes
 				can_send_volunteers = yes
 				can_create_factions = yes
+			}
+			if = {
+				limit = {
+					GER = {
+						OR = {
+							has_government = democratic
+							has_government = neutrality
+							has_government = monarchy
+						}
+					}
+				}
+				GER = { country_event = { id = NWmonarchy.91 days = 0 } }
+			}
+			if = {
+				limit = {
+					ITA = {
+						OR = {
+							has_government = democratic
+							has_government = neutrality
+							has_government = monarchy
+						}
+					}
+				}
+				ITA = { country_event = { id = NWmonarchy.92 days = 0 } }
 			}
 			effect_tooltip = {
 				create_faction = HBBRG_use_faction_1
@@ -6342,10 +6462,10 @@ focus_tree = {
 		
 		completion_reward = {
 			102 = {
-				add_extra_state_shared_building_slots = 1
+				add_extra_state_shared_building_slots = 3
 				add_building_construction = {
 					type = dockyard
-					level = 1
+					level = 3
 					instant_build = yes
 				}
 			}
@@ -6376,10 +6496,10 @@ focus_tree = {
 		
 		completion_reward = {
 			736 = {
-				add_extra_state_shared_building_slots = 1
+				add_extra_state_shared_building_slots = 3
 				add_building_construction = {
 					type = dockyard
-					level = 1
+					level = 3
 					instant_build = yes
 				}
 			}
