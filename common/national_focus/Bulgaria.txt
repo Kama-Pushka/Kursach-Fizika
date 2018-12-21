@@ -20,9 +20,6 @@ focus_tree = {
 		id = BUL_fascist_coup
 		icon = GFX_goal_support_fascism
 		mutually_exclusive = { focus = BUL_fascist_coup_lost }
-		available = { 
-			has_country_flag = BUL_coup_victory
-		}
 		x = 3
 		y = 0
 
@@ -39,6 +36,7 @@ focus_tree = {
 				}
 			}
 			add_popularity = { ideology = fascism popularity = 0.15 }
+			add_ideas = BUL_tsar_boris
 			add_stability = -0.15
 		}
 	}
@@ -108,6 +106,8 @@ focus_tree = {
 			set_country_flag = BUL_lukov_dead
 			set_country_flag = BUL_zhekov_dead
 			set_country_flag = BUL_statev_dead
+			remove_unit_leader = 60001
+			remove_unit_leader = 60002
 		}
 	}
 	
@@ -131,6 +131,7 @@ focus_tree = {
 
 		completion_reward = {
 			add_ideas = BUL_legioners_idea
+			remove_ideas = BUL_tsar_boris
 			add_political_power = -200
 		}
 	}
@@ -202,12 +203,103 @@ focus_tree = {
 		}
 	}
 	
+	##### Balkan alliance #####
+	
+	focus = {
+		id = BUL_balkan_alliance
+		icon = GFX_goal_anschluss
+		prerequisite = { focus = BUL_fascist_coup_lost }
+		mutually_exclusive = { focus = BUL_great_bulgaria }
+		available = {
+			is_in_faction = no
+		}
+		cancel = {
+			is_in_faction = yes
+		}
+		x = 5
+		y = 0
+		relative_position_id = BUL_great_bulgaria
+		
+		cost = 10
+		
+		ai_will_do = {
+			factor = 10
+		}	
+		completion_reward = {
+			add_political_power = 120
+			set_rule = { can_create_factions = yes }
+			create_faction = "BUL_balkan_faction"
+			
+		}
+	}
+	
+	focus = {
+		id = BUL_YUG_alliance_alliance
+		icon = GFX_goal_generic_major_alliance
+		prerequisite = { focus = BUL_balkan_alliance }
+		available = {
+			country_exists = YUG
+			NOT = { has_war_with = YUG }
+			YUG = { is_in_faction = no }
+		}
+		cancel = {
+			YUG = { is_in_faction = yes }
+		}
+		x = 1
+		y = 1
+		relative_position_id = BUL_balkan_alliance
+		
+		cost = 10
+		
+		ai_will_do = {
+			factor = 10
+		}	
+		completion_reward = {
+			YUG = {
+				country_event = {
+					id = bulgaria.15 hours = 6
+				}
+			}
+		}
+	}
+	
+	focus = {
+		id = BUL_GRE_alliance_alliance
+		icon = GFX_goal_generic_major_alliance
+		prerequisite = { focus = BUL_balkan_alliance }
+		available = {
+			country_exists = GRE
+			NOT = { has_war_with = GRE }
+			GRE = { is_in_faction = no }
+		}
+		cancel = {
+			GRE = { is_in_faction = yes }
+		}
+		x = -1
+		y = 1
+		relative_position_id = BUL_balkan_alliance
+		
+		cost = 10
+		
+		ai_will_do = {
+			factor = 10
+		}	
+		completion_reward = {
+			GRE = {
+				country_event = {
+					id = bulgaria.15 hours = 6
+				}
+			}
+		}
+	}
+	
 	##### Great Bulgaria #####
 	
 	focus = {
 		id = BUL_great_bulgaria
 		icon = GFX_goal_demand_sudetenland
 		prerequisite = { focus = BUL_fascist_coup focus = BUL_fascist_coup_lost }
+		mutually_exclusive = { focus = BUL_balkan_alliance }
 		available = {
 		OR = {
 			has_government = fascism
@@ -215,7 +307,7 @@ focus_tree = {
 			}
 		}
 		x = 6
-		y = 2
+		y = 1
 		relative_position_id = BUL_fascist_coup
 
 		cost = 10
@@ -237,7 +329,7 @@ focus_tree = {
 			has_government = fascism
 		}
 		x = -3
-		y = 1
+		y = 2
 		relative_position_id = BUL_great_bulgaria
 
 		cost = 10
@@ -264,7 +356,7 @@ focus_tree = {
 			has_government = fascism
 		}
 		x = 0
-		y = 1
+		y = 2
 		relative_position_id = BUL_great_bulgaria
 
 		cost = 10
@@ -403,7 +495,7 @@ focus_tree = {
 			has_government = fascism
 		}
 		x = 3
-		y = 1
+		y = 2
 		relative_position_id = BUL_great_bulgaria
 
 		cost = 10
@@ -568,6 +660,10 @@ focus_tree = {
 		id = BUL_friendship_Yugoslavia
 		icon = GFX_goal_generic_improve_relations
 		prerequisite = { focus = BUL_tsar_dictature }
+		available = {
+			country_exists = YUG
+			NOT = { has_war_with = YUG }
+		}
 		x = 0
 		y = 1
 		relative_position_id = BUL_tsar_dictature
@@ -580,9 +676,9 @@ focus_tree = {
 
 		completion_reward = {
 			YUG = {
-					country_event = {
-						id = bulgaria.6
-					}
+				country_event = {
+					id = bulgaria.6
+				}
 			}
 		}
 	}
@@ -603,7 +699,23 @@ focus_tree = {
 		}
 
 		completion_reward = {
+			BUL = { set_politics = {
+				ruling_party = fascism
+				elections_allowed = no
+				}
+			}
 			add_popularity = { ideology = fascism popularity = 0.10 }
+			create_country_leader = {
+				name = "Bogdan Filov"
+				desc = "POLITICS_BOGDAN_FILOV_DESC"
+				picture = "gfx/leaders/BUL/Portrait_Bogdan_Filov.dds"
+				expire = "1965.1.1"
+				ideology = fascism_ideology
+				traits = {
+					antisemit
+				}
+			}
+			add_ideas = BUL_tsar_boris2
 			has_country_flag = BUL_fashizacia_flag
 		}
 	}
@@ -690,6 +802,10 @@ focus_tree = {
 		id = BUL_friendly_Germany
 		icon = GFX_goal_generic_improve_relations
 		prerequisite = { focus = BUL_fashizacia }
+		available = {
+			country_exists = GER
+			NOT = { has_war_with = GER }
+		}
 		x = -1
 		y = 1
 		relative_position_id = BUL_fashizacia
@@ -713,6 +829,11 @@ focus_tree = {
 		id = BUL_triple_pact
 		icon = GFX_goal_generic_military_deal
 		prerequisite = { focus = BUL_friendly_Germany }
+		available = {
+			country_exists = GER
+			NOT = { has_war_with = GER }
+			is_in_faction = no
+		}
 		x = 0
 		y = 1
 		relative_position_id = BUL_friendly_Germany
@@ -729,9 +850,61 @@ focus_tree = {
 	}
 	
 	focus = {
+		id = BUL_commissariat_jews_affairs
+		icon = GFX_focus_CZE_german_puppet
+		prerequisite = { focus = BUL_triple_pact }
+		prerequisite = { focus = BUL_brannik }
+		available = {
+			has_government = fascism
+		}
+		x = 1
+		y = 1
+		relative_position_id = BUL_triple_pact
+
+		cost = 10
+
+		ai_will_do = {
+			factor = 5
+		}
+
+		completion_reward = {
+			add_ideas = BUL_commissariat_jews_affairs_idea
+		}
+	}
+	
+	focus = {
+		id = BUL_deport_jews
+		icon = GFX_goal_support_fascism
+		prerequisite = { focus = BUL_commissariat_jews_affairs }
+		available = {
+			has_government = fascism
+			country_exists = GER
+			NOT = { has_war_with = GER }
+			is_in_faction_with = GER
+		}
+		x = 0
+		y = 1
+		relative_position_id = BUL_commissariat_jews_affairs
+
+		cost = 10
+
+		ai_will_do = {
+			factor = 5
+		}
+
+		completion_reward = {
+			country_event = { id = bulgaria.20 hours = 6 }
+		}
+	}
+	
+	focus = {
 		id = BUL_friendly_USSR
 		icon = GFX_goal_generic_improve_relations
 		prerequisite = { focus = BUL_bolshevist focus = BUL_own_rejime }
+		available = {
+			country_exists = SOV
+			NOT = { has_war_with = SOV }
+		}
 		x = -1
 		y = 1
 		relative_position_id = BUL_bolshevist
@@ -2312,7 +2485,7 @@ focus_tree = {
 		}
 
 		completion_reward = {
-			GER = { country_event = bulgaria.9 }
+			GER = { country_event = { id = bulgaria.9 hours = 6 } }
 		}
 	}
 	
@@ -2335,7 +2508,7 @@ focus_tree = {
 		}
 
 		completion_reward = {
-			FRA = { country_event = bulgaria.11 }
+			FRA = { country_event = { id = bulgaria.11 hours = 6 } }
 		}
 	}
 	
@@ -2357,7 +2530,7 @@ focus_tree = {
 		}
 
 		completion_reward = {
-			ITA = { country_event = bulgaria.10 }
+			ITA = { country_event = { id = bulgaria.10 hours = 6 } }
 		}
 	}
 	
@@ -2379,7 +2552,7 @@ focus_tree = {
 		}
 
 		completion_reward = {
-			FRA = { country_event = bulgaria.12 }
+			FRA = { country_event = { id = bulgaria.12 hours = 6 } }
 		}
 	}
 	
