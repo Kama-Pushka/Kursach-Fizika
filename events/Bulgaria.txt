@@ -311,7 +311,7 @@ country_event = {
 	option = {
 		name = bulgaria.12.a
 		ai_chance = { factor = 90 }
-		FRA = { add_equipment_to_stockpile = { type = artillery_equipment_1 amount = -00 producer = ITA } }
+		FRA = { add_equipment_to_stockpile = { type = artillery_equipment_1 amount = -100 producer = ITA } }
 		BUL = { add_equipment_to_stockpile = { type = artillery_equipment_1 amount = 100 producer = GER } }
 		add_political_power = 25
 		BUL = { add_political_power = -25 }
@@ -438,6 +438,8 @@ country_event = {
 	
 	trigger = {
 		tag = BUL
+		date > 1943.8.1
+		date < 1943.8.31
 		OR = {
 			has_government = monarchy
 			OR = {
@@ -493,7 +495,7 @@ country_event = {
 	}
 	
 	mean_time_to_happen = {
-		days = 60
+		days = 1
 	}
 
 	option = {
@@ -502,6 +504,10 @@ country_event = {
 			factor = 50
 		}
 		add_ideas = BUL_fatherland_front_idea
+		add_ideas = BUL_radiostation_idea
+		hidden_effect = {
+			country_event = { id = bulgaria.22 }
+		}
 	}
 }
 
@@ -566,10 +572,232 @@ country_event = {
 	}
 	
 	option = {
-		name = bulgaria.21.a
+		name = bulgaria.21.b
 		ai_chance = { factor = 10 }
 			add_political_power = -100
 			set_country_flag = BUL_peshev_removed
 			48 = { add_manpower = 20000 }
+	}
+}
+
+###########Начало забастовок#############
+
+country_event = {
+    id = bulgaria.22
+
+    is_triggered_only = yes
+
+    hidden = yes
+
+    immediate = {
+        random_list = {
+			33 = { country_event = { id = bulgaria.23 days = 30 random = 30 } } #raids fabrick
+			33 = { country_event = { id = bulgaria.24 days = 30 random = 30 } } #raids zavod
+			33 = { country_event = { id = bulgaria.25 days = 30 random = 30 } } #raids infrastructure
+            
+        }
+    }
+}
+
+###########Поджог фабрики##########
+
+country_event = {
+	id = bulgaria.23
+	title = bulgaria.23.t
+	desc = bulgaria.23.d
+	picture = GFX_report_event_generic_factory
+	
+	is_triggered_only = yes
+	
+	trigger = {
+		has_idea = BUL_fatherland_front_idea
+		NOT = { has_government = communism }
+	}
+	immediate = {
+		set_country_flag = bulgaria.23_fired
+	}
+	
+	option = {
+		name = bulgaria.23.a
+		ai_chance = { factor = 80 }
+		
+		random_owned_state = {
+					limit = {
+						industrial_complex > 0
+					}
+					damage_building = {
+						type = industrial_complex
+						damage = 0.6
+					}
+				}
+		
+		hidden_effect = {
+			country_event = { id = bulgaria.22 }
+		}
+		
+	}
+}
+
+###########Поджог завода##########
+
+country_event = {
+	id = bulgaria.24
+	title = bulgaria.24.t
+	desc = bulgaria.24.d
+	picture = GFX_report_event_generic_factory
+	
+	is_triggered_only = yes
+	
+	trigger = {
+		has_idea = BUL_fatherland_front_idea
+		NOT = { has_government = communism }
+	}
+	immediate = {
+		set_country_flag = bulgaria.24_fired
+	}
+	
+	option = {
+		name = bulgaria.24.a
+		ai_chance = { factor = 80 }
+		
+		random_owned_state = {
+					limit = {
+						arms_factory > 0
+					}
+					damage_building = {
+						type = arms_factory
+						damage = 0.6
+					}
+				}
+		
+		hidden_effect = {
+			country_event = { id = bulgaria.22 }
+		}
+		
+	}
+}
+
+###########Поджог инфраструктуры##########
+
+country_event = {
+	id = bulgaria.25
+	title = bulgaria.25.t
+	desc = bulgaria.25.d
+	picture = GFX_report_event_blow_up_iron_road
+	
+	is_triggered_only = yes
+	
+	trigger = {
+		has_idea = BUL_fatherland_front_idea
+		NOT = { has_government = communism }
+	}
+	immediate = {
+		set_country_flag = bulgaria.25_fired
+	}
+	
+	option = {
+		name = bulgaria.25.a
+		ai_chance = { factor = 80 }
+		
+		random_owned_state = {
+					limit = {
+						infrastructure > 0
+					}
+					damage_building = {
+						type = infrastructure
+						damage = 0.6
+					}
+				}
+		
+		hidden_effect = {
+			country_event = { id = bulgaria.22 }
+		}
+		
+	}
+}
+
+################сепаратный мир##########################
+
+country_event = {
+	id = bulgaria.26
+	title = bulgaria.26.t
+	desc = bulgaria.26.d
+	picture = GFX_report_event_second_vienna_award_pact
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = bulgaria.26.a
+		ai_chance = { factor = 90 }
+		white_peace = BUL
+	}
+
+	option = {
+		name = bulgaria.26.b
+		ai_chance = { factor = 10 }
+		
+	}
+}
+
+################ультиматум Македонии##########################
+
+country_event = {
+	id = bulgaria.27
+	title = bulgaria.27.t
+	desc = bulgaria.27.d
+	picture = GFX_report_event_second_vienna_award_pact
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = bulgaria.27.a
+		ai_chance = { factor = 50 }
+			BUL = { transfer_state = 825 }
+			BUL = { transfer_state = 106 }
+			BUL = { transfer_state = 812 }
+	}
+
+	option = {
+		name = bulgaria.27.b
+		ai_chance = { factor = 30 }
+		BUL = {
+			country_event = bulgaria.28 hours = 6
+		}
+	}
+	
+	option = {
+		name = bulgaria.27.c
+		ai_chance = { factor = 20 }
+			BUL = { create_wargoal = {
+			type = annex_everything
+			target = MAC
+				}
+			}
+	}
+}
+
+# [Country] Accepts
+country_event = {
+	id = bulgaria.28
+	title = bulgaria.28.t
+	desc = bulgaria.28.d
+	picture = GFX_report_event_second_vienna_award_pact
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = bulgaria.28.a
+		ai_chance = { factor = 50 }
+			puppet = MAC
+	}
+	
+	option = {
+		name = bulgaria.28.b
+		ai_chance = { factor = 50 }
+			BUL = { create_wargoal = {
+			type = annex_everything
+			target = MAC
+				}
+			}
 	}
 }
