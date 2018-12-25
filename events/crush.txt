@@ -1,0 +1,181 @@
+﻿add_namespace = crush
+
+country_event = { #Страна трещит по швам!
+	id = crush.1
+	immediate = {log = "[GetDateText]: [Root.GetName]: event crush.1"}
+	title = crush.1.t
+	desc = { text = crush.1.d }
+	picture = GFX_ozn_pilsudski #
+
+	fire_only_once = yes
+	
+	trigger = {
+		NOT = { #Исключения
+			OR = {
+				original_tag = USA AND = { original_tag = HUN } AND = { original_tag = AUS } AND = { original_tag = CZE } original_tag = GER original_tag = SOV original_tag = ENG original_tag = FRA
+			}
+		}
+		OR = { #Условие
+			AND = { has_stability < 0 has_political_power < 100 }
+			AND = { has_stability < -10 has_political_power < 120 }
+			AND = { has_stability < -20 has_political_power < 150 }
+			AND = { has_stability < -50 has_political_power < 200 }
+			AND = { has_stability < -100 has_political_power < 500 }
+		}
+		has_capitulated = no
+	}
+	
+	mean_time_to_happen = {
+		days = 60
+	}
+	
+	option = { #Принять капитуляцию
+		name = crush.1.a
+		
+		hidden_effect = { #Изменение и стабилизация правительства
+			set_stability = 0.4
+			set_variable = { crash_pol_pow = political_power }
+			set_variable = { crash_null = 0 }
+			subtract_from_variable = {
+				var = crash_null
+				value = crash_pol_pow
+			}
+			if = {
+				limit = {
+					check_variable = {
+						crash_pol_pow > 80
+					}
+				}
+				add_political_power = crash_null
+				else = {
+					add_political_power = -80
+				}
+			}
+			clear_variable = crash_pol_pow
+			clear_variable = crash_null
+			if = {  
+				limit = { has_government = fascism }
+				random_list = {
+					1 = { set_politics = { parties = { communism = { popularity = 60 } } ruling_party = communism } }
+					1 = { set_politics = { parties = { democratic = { popularity = 60 } } ruling_party = democratic } }
+					1 = { set_politics = { parties = { neutrality = { popularity = 60 } } ruling_party = neutrality } }
+				}
+			}
+			else_if = { 
+				limit = { has_government = democratic }
+				random_list = {
+					1 = { set_politics = { parties = { communism = { popularity = 60 } } ruling_party = communism } }
+					1 = { set_politics = { parties = { fascism = { popularity = 60 } } ruling_party = fascism } }
+					1 = { set_politics = { parties = { neutrality = { popularity = 60 } } ruling_party = neutrality } }
+				}
+			}
+			else_if = { 
+				limit = { has_government = communism }
+				random_list = {
+					1 = { set_politics = { parties = { democratic = { popularity = 60 } } ruling_party = democratic } }
+					1 = { set_politics = { parties = { fascism = { popularity = 60 } } ruling_party = fascism } }
+					1 = { set_politics = { parties = { neutrality = { popularity = 60 } } ruling_party = neutrality } }
+				}
+			}
+			else = { 
+				random_list = {
+					1 = { set_politics = { parties = { democratic = { popularity = 60 } } ruling_party = democratic } }
+					1 = { set_politics = { parties = { fascism = { popularity = 60 } } ruling_party = fascism } }
+					1 = { set_politics = { parties = { communism = { popularity = 60 } } ruling_party = communism } }
+				}
+			}
+		}
+		
+		hidden_effect = { #Слив войны + Слив с фракции
+			if = {
+				limit = { has_war = yes }
+				every_country = {
+					limit = {
+						has_war_with = PREV
+					}
+					country_event = { id = crush.2 days = 1 }
+					white_peace = PREV
+				}
+			}
+			leave_faction = yes
+		}
+		
+		hidden_effect = { #Слив территорий
+			release_all = yes
+			every_country = {
+				limit = {
+					NOT = { tag = ROOT }
+				}
+				every_state = {
+					limit = {
+						is_core_of = PREV
+						is_owned_by = ROOT 
+					}
+					PREV = {
+						set_state_owner = PREV
+						set_state_controller = PREV
+					}
+				}
+			}
+		}
+	}	
+}
+
+country_event = { #В противника совершена революция
+	id = crush.2
+	immediate = {log = "[GetDateText]: [Root.GetName]: event crush.2"}
+	title = crush.2.t
+	desc = { text = crush.2.d }
+	picture = GFX_ozn_pilsudski #
+	
+	is_triggered_only = yes
+	
+	option = { #
+		name = crush.2.a
+		ai_chance = { 
+			base = 0
+			modifier = {
+				factor = 8
+				has_war = yes
+			}
+			modifier = {
+				factor = 10
+				OR = { 	
+					has_civil_war = yes
+					strength_ratio = {
+						tag = FROM
+						ratio < 0.6
+					}
+				}
+			}
+		}
+		
+		add_political_power = 20
+	}
+	
+	option = { #
+		name = crush.2.b
+		ai_chance = { 
+			base = 10
+			modifier = {
+				factor = 2
+				has_war = yes
+			}
+			modifier = {
+				factor = 0
+				OR = { 	
+					has_civil_war = yes
+					strength_ratio = {
+						tag = FROM
+						ratio < 0.6
+					}
+				}
+			}
+		}
+		
+		create_wargoal = {
+			type = annex_everything
+			target = FROM
+		}
+	}
+}
