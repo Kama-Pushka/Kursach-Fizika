@@ -480,7 +480,13 @@ country_event = {
 	title = NWturkey.10.t
 	desc = NWturkey.10.desc
 	picture = GFX_report_event_generic_rally_3
-	is_triggered_only = yes
+	fire_only_once = yes
+	
+	trigger = {
+		tag = TUR
+		date > 1938.11.9
+		has_country_flag = block
+	}
 
 	option = {
 		name = NWturkey.10.a
@@ -506,6 +512,13 @@ country_event = {
 		add_popularity = {
 			ideology = neutrality
 			popularity = -0.1
+		}
+		if = {
+			limit = { neutrality < 0.6 }
+			country_event = { id = NWturkey.29 days = 2 }
+		}
+		else = {
+			country_event = { id = NWturkey.30 days = 2 }
 		}
 	}
 }
@@ -1232,6 +1245,9 @@ country_event = {
 
 	option = {
 		name = NWturkey.28.a
+		ai_chance = {
+			factor = 50
+		}
 		291 = {
 			add_building_construction = {
 				type = infrastructure
@@ -1264,6 +1280,9 @@ country_event = {
 	}
 	option = {
 		name = NWturkey.28.b
+		ai_chance = {
+			factor = 50
+		}
 		291 = {
 			add_extra_state_shared_building_slots = 2
 			add_building_construction = {
@@ -1300,4 +1319,1458 @@ country_event = {
 }
 
 
+#Образование оппозиционных партий после смерти Ататюка
+country_event = {
+	id = NWturkey.29
+	title = NWturkey.29.t
+	desc = NWturkey.29.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+
+	option = {
+		name = NWturkey.29.a
+		ai_chance = {
+			factor = 50
+		}
+		set_party_name = {
+			ideology = democratic
+			name = TUR_democratic_okyar_party
+			long_name = TUR_democratic_okyar_party_long
+		}
+		set_country_flag = TUR_oppositions_parties_formed_flag
+		
+		hidden_effect = {
+			set_temp_variable = { comm_p = party_popularity@communism }
+			set_temp_variable = { troz_p = party_popularity@trozkism }
+			set_temp_variable = { red = comm_p }
+			add_to_temp_variable = { var = red value = troz_p }
+			
+			set_temp_variable = { king_p = party_popularity@monarchy }
+			
+			if = {
+				limit = { check_variable = { var = red value = 0.05 compare = greater_than_or_equals } }
+				country_event = { id = NWturkey.34 days = 5 random = 10 }
+			}
+			else_if = {
+				limit = {
+					OR = {
+						check_variable = { var = red value = 0.05 compare = less_than }
+						check_variable = { var = king_p value = red compare = greater_than }
+					}
+				}
+				country_event = { id = NWturkey.40 days = 5 random = 10 }
+			}
+		}
+	}
+}
+
+#Избрание президентом Исмета Инёню
+country_event = {
+	id = NWturkey.30
+	title = NWturkey.30.t
+	desc = NWturkey.30.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+
+	option = {
+		name = NWturkey.30.a
+		ai_chance = {
+			factor = 50
+		}
+		create_country_leader = {
+			name = "Ismet Inönü"
+			desc = "POLITICS_ISMET_INÖNÜ_DESC"
+			picture = "Portrait_Turkey_Ismet_Inonu.dds"
+			expire = "1965.1.1"
+			ideology = despotism
+			traits = {
+				#
+			}
+		}
+		set_country_flag = TUR_Ismet_Inonu_peace_flag
+	}
+}
+
+#Переворот Чакмака
+country_event = {
+	id = NWturkey.31
+	title = NWturkey.31.t
+	desc = NWturkey.31.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+
+	option = {
+		name = NWturkey.31.a
+		ai_chance = {
+			factor = 50
+		}
+		add_political_power = 100
+		create_country_leader = {
+			name = "Fevzi Çakmak"
+			desc = "POLITICS_FEVZI_CAKMAK_DESC"
+			picture = "gfx/leaders/South America/Portrait_South_America_Generic_land_1.dds"
+			expire = "1965.1.1"
+			ideology = despotism
+			traits = {
+				#
+			}
+		}
+	}
+	option = {
+		name = NWturkey.31.b
+		ai_chance = {
+			factor = 50
+		}
+		remove_unit_leader = 1800
+		custom_effect_tooltip = TUR_civwar_tt
+		hidden_effect = {
+			start_civil_war = {
+				ideology = fascism
+				size = 0.45
+				states = { 341 843 964 }
+			}
+			random_other_country = {
+				limit = {
+					original_tag = TUR
+					has_government = fascism
+				}
+				set_politics = {
+					parties = {
+						neutrality = {
+							popularity = 95
+						}
+						fascism = {
+							popularity = 5
+						}
+					}
+					ruling_party = neutrality
+					last_election = "1938.1.1"
+					election_frequency = 48
+					elections_allowed = yes
+				}
+				set_cosmetic_tag = TUR_dictatorship_tag
+				create_country_leader = {
+					name = "Fevzi Çakmak"
+					desc = "POLITICS_FEVZI_CAKMAK_DESC"
+					picture = "gfx/leaders/South America/Portrait_South_America_Generic_land_1.dds"
+					expire = "1965.1.1"
+					ideology = despotism
+					traits = {
+						#
+					}
+				}
+			}
+		}
+	}
+}
+
+
+#Образование Демократической партии в 1946г
+country_event = {
+	id = NWturkey.32
+	title = NWturkey.32.t
+	desc = NWturkey.32.desc
+	picture = GFX_report_event_generic_rally_3
+	fire_only_once = yes
+	
+	trigger = {
+		tag = TUR
+		date > 1946.1.1
+		NOT = { has_country_flag = TUR_oppositions_parties_formed_flag }
+		has_country_flag = block
+	}
+	
+	mean_time_to_happen = {
+		days = 90
+	}
+
+	option = {
+		name = NWturkey.32.a
+		ai_chance = {
+			factor = 50
+		}
+		set_party_name = {
+			ideology = democratic
+			name = TUR_democratic_1946_party
+			long_name = TUR_democratic_1946_party_long
+		}
+		create_country_leader = {
+			name = "Ali Fethi Okyar"
+			desc = "POLITICS_CELAL_BAYAR_DESC"
+			picture = "gfx/leaders/TUR/Portrait_Ali_Fethi_Okyar.dds"
+			expire = "1965.1.1"
+			ideology = liberalism
+			traits = {
+				#
+			}
+		}
+	}
+}
+
+
+#Устроить честные выборы
+country_event = {
+	id = NWturkey.33
+	title = NWturkey.33.t
+	desc = NWturkey.33.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+
+	option = {
+		name = NWturkey.33.a
+		ai_chance = {
+			factor = 50
+		}
+		add_popularity = {
+			ideology = democratic
+			popularity = 0.15
+		}
+		set_politics = {
+			ruling_party = democratic
+			elections_allowed = yes
+		}
+	}
+	option = {
+		name = NWturkey.33.b
+		ai_chance = {
+			factor = 50
+		}
+		add_popularity = {
+			ideology = fascism
+			popularity = 0.15
+		}
+		set_politics = {
+			ruling_party = fascism
+			elections_allowed = no
+		}
+	}
+}
+
+#Переворот Этхема-черкеса
+country_event = {
+	id = NWturkey.34
+	title = NWturkey.34.t
+	desc = NWturkey.34.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+
+	option = {
+		name = NWturkey.34.a
+		ai_chance = {
+			factor = 90
+		}
+		set_party_name = {
+			ideology = trozkism
+			name = TUR_trozkism_green_army_party
+			long_name = TUR_trozkism_party_green_army_long
+		}
+		add_popularity = {
+			ideology = trozkism
+			popularity = 0.15
+		}
+		set_politics = {
+			ruling_party = trozkism
+			elections_allowed = yes
+		}
+		hidden_effect = {
+			if = {
+				limit = { is_in_faction = yes }
+				leave_faction = yes
+			}
+			set_country_flag = troz_focus_block_flag
+			country_event = { id = NWturkey.35 days = 0 } #запуск ГВ
+		}
+	}
+	option = {
+		name = NWturkey.34.b
+		ai_chance = {
+			factor = 10
+		}
+		add_stability = -0.1
+		add_war_support = -0.05
+	}
+}
+
+#Переворот Чакмака. ГВ
+country_event = {
+	id = NWturkey.35
+	title = NWturkey.35.t
+	desc = NWturkey.35.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	hidden = yes
+
+	option = {
+		name = NWturkey.35.a
+		ai_chance = {
+			factor = 50
+		}
+		
+		#Вписать if на популярности
+		hidden_effect = {
+		
+			#Онли Фаши
+			if = {
+				limit = {
+					fascism > 0.099
+					democratic < 0.1
+				}
+				
+				every_state = {
+					limit = {
+						is_core_of = TUR
+					}
+					add_core_of = TRK
+				}
+				TRK = {
+					#fas
+					transfer_state = 354
+					transfer_state = 355
+					transfer_state = 356
+					transfer_state = 347
+					
+					set_politics = {
+						parties = {
+							democratic = { 
+								popularity = 1
+							}
+
+							fascism = {
+								popularity = 98
+							}
+							
+							communism = {
+								popularity = 1
+							}
+						}
+						ruling_party = fascism
+						elections_allowed = no
+					}
+				}
+					
+				TUR = {
+					TRK = { transfer_technology = yes }
+				}
+				
+				TRK = {
+					division_template = {
+						name = "Süvari Tümeni Legion"					
+
+						regiments = {
+							infantry = { x = 0 y = 0 }
+							infantry = { x = 0 y = 1 }
+							infantry = { x = 0 y = 2 }
+							infantry = { x = 1 y = 0 }
+							infantry = { x = 1 y = 1 }
+							infantry = { x = 1 y = 2 }
+							infantry = { x = 2 y = 0 }
+							artillery_brigade = { x = 2 y = 1 }
+							artillery_brigade = { x = 2 y = 2 }
+						}
+						support = {
+							recon = { x = 0 y = 0 }
+							engineer = { x = 0 y = 1 }
+							artillery = { x = 0 y = 2 }
+							logistics_company = { x = 0 y = 3 }
+						}
+					}
+
+					division_template = {
+						name = "Mountaineers Dag Tugayi"
+
+						regiments = {
+							mountaineers = { x = 0 y = 0 }
+							mountaineers = { x = 0 y = 1 }
+							mountaineers = { x = 0 y = 2 }
+							mountaineers = { x = 1 y = 0 }
+							mountaineers = { x = 1 y = 1 }
+							mountaineers = { x = 1 y = 2 }
+						} 
+						support = {
+							recon = { x = 0 y = 0 }
+							engineer = { x = 0 y = 1 }
+							artillery = { x = 0 y = 2 }
+							logistics_company = { x = 0 y = 3 }
+						}
+					}
+
+					division_template = {
+						name = "Mobile Süvari Tümeni"
+
+						regiments = {
+							cavalry = { x = 0 y = 0 }
+							cavalry = { x = 0 y = 1 }
+							cavalry = { x = 1 y = 0 }
+							cavalry = { x = 1 y = 1 }
+							motorized = { x = 2 y = 0 }
+							motorized = { x = 2 y = 1 }
+							light_armor = { x = 3 y = 0 }
+						}
+
+						support = {
+							recon = { x = 0 y = 0 }
+							engineer = { x = 0 y = 1 }
+							artillery = { x = 0 y = 2 }
+							logistics_company = { x = 0 y = 3 }
+						}
+					}
+					
+					division_template = {
+						name = "Armored division"
+						regiments = {
+							light_armor = { x = 0 y = 0 }
+							light_armor = { x = 0 y = 1 }
+							light_armor = { x = 1 y = 0 }
+							light_armor = { x = 1 y = 1 }
+							light_armor = { x = 1 y = 2 }
+							motorized = { x = 2 y = 0 }		
+							motorized = { x = 2 y = 1 }	
+							motorized = { x = 2 y = 2 }		
+							motorized = { x = 2 y = 3 }		
+						}
+					}
+					
+					load_oob = "TUR_civil_war_fash"
+				
+					declare_war_on = {
+						target = TUR
+						type = annex_everything
+					}
+				}
+			}
+			
+			#Онли Демы
+			if = {
+				limit = {
+					democratic > 0.099
+					fascism < 0.1
+				}
+				
+				every_state = {
+					limit = {
+						is_core_of = TUR
+					}
+					add_core_of = TRK
+				}
+				TRK = {
+					#dem
+					transfer_state = 352
+					transfer_state = 350
+					transfer_state = 353
+					
+					set_politics = {
+						parties = {
+							democratic = { 
+								popularity = 98
+							}
+
+							fascism = {
+								popularity = 1
+							}
+							
+							communism = {
+								popularity = 1
+							}
+						}
+						ruling_party = democratic
+						elections_allowed = no
+					}
+				}
+					
+				TUR = {
+					TRK = { transfer_technology = yes }
+				}
+				
+				TRK = {
+					division_template = {
+						name = "Süvari Tümeni Legion"					
+
+						regiments = {
+							infantry = { x = 0 y = 0 }
+							infantry = { x = 0 y = 1 }
+							infantry = { x = 0 y = 2 }
+							infantry = { x = 1 y = 0 }
+							infantry = { x = 1 y = 1 }
+							infantry = { x = 1 y = 2 }
+							infantry = { x = 2 y = 0 }
+							artillery_brigade = { x = 2 y = 1 }
+							artillery_brigade = { x = 2 y = 2 }
+						}
+						support = {
+							recon = { x = 0 y = 0 }
+							engineer = { x = 0 y = 1 }
+							artillery = { x = 0 y = 2 }
+							logistics_company = { x = 0 y = 3 }
+						}
+					}
+
+					division_template = {
+						name = "Mountaineers Dag Tugayi"
+
+						regiments = {
+							mountaineers = { x = 0 y = 0 }
+							mountaineers = { x = 0 y = 1 }
+							mountaineers = { x = 0 y = 2 }
+							mountaineers = { x = 1 y = 0 }
+							mountaineers = { x = 1 y = 1 }
+							mountaineers = { x = 1 y = 2 }
+						} 
+						support = {
+							recon = { x = 0 y = 0 }
+							engineer = { x = 0 y = 1 }
+							artillery = { x = 0 y = 2 }
+							logistics_company = { x = 0 y = 3 }
+						}
+					}
+
+					division_template = {
+						name = "Mobile Süvari Tümeni"
+
+						regiments = {
+							cavalry = { x = 0 y = 0 }
+							cavalry = { x = 0 y = 1 }
+							cavalry = { x = 1 y = 0 }
+							cavalry = { x = 1 y = 1 }
+							motorized = { x = 2 y = 0 }
+							motorized = { x = 2 y = 1 }
+							light_armor = { x = 3 y = 0 }
+						}
+
+						support = {
+							recon = { x = 0 y = 0 }
+							engineer = { x = 0 y = 1 }
+							artillery = { x = 0 y = 2 }
+							logistics_company = { x = 0 y = 3 }
+						}
+					}
+					
+					division_template = {
+						name = "Armored division"
+						regiments = {
+							light_armor = { x = 0 y = 0 }
+							light_armor = { x = 0 y = 1 }
+							light_armor = { x = 1 y = 0 }
+							light_armor = { x = 1 y = 1 }
+							light_armor = { x = 1 y = 2 }
+							motorized = { x = 2 y = 0 }		
+							motorized = { x = 2 y = 1 }	
+							motorized = { x = 2 y = 2 }		
+							motorized = { x = 2 y = 3 }		
+						}
+					}
+					
+					load_oob = "TUR_civil_war_dem"
+
+					declare_war_on = {
+						target = TUR
+						type = annex_everything
+					}
+				}
+			}
+			
+			#Фаш+Демы
+			if = {
+				limit = {
+					democratic > 0.099
+					fascism > 0.099
+				}
+				
+				every_state = {
+					limit = {
+						is_core_of = TUR
+					}
+					add_core_of = TRK
+				}
+				
+				TRK = {
+					#fas
+					transfer_state = 354
+					transfer_state = 355
+					transfer_state = 356
+					transfer_state = 347
+				
+					#dem
+					transfer_state = 352
+					transfer_state = 350
+					transfer_state = 353
+					
+					set_politics = {
+						parties = {
+							democratic = { 
+								popularity = 1
+							}
+
+							fascism = {
+								popularity = 98
+							}
+							
+							communism = {
+								popularity = 1
+							}
+						}
+						ruling_party = fascism
+						elections_allowed = no
+					}
+				}
+				
+				TUR = {
+					TRK = { transfer_technology = yes }
+				}
+				
+				TRK = {
+					division_template = {
+						name = "Süvari Tümeni Legion"					
+
+						regiments = {
+							infantry = { x = 0 y = 0 }
+							infantry = { x = 0 y = 1 }
+							infantry = { x = 0 y = 2 }
+							infantry = { x = 1 y = 0 }
+							infantry = { x = 1 y = 1 }
+							infantry = { x = 1 y = 2 }
+							infantry = { x = 2 y = 0 }
+							artillery_brigade = { x = 2 y = 1 }
+							artillery_brigade = { x = 2 y = 2 }
+						}
+						support = {
+							recon = { x = 0 y = 0 }
+							engineer = { x = 0 y = 1 }
+							artillery = { x = 0 y = 2 }
+							logistics_company = { x = 0 y = 3 }
+						}
+					}
+
+					division_template = {
+						name = "Mountaineers Dag Tugayi"
+
+						regiments = {
+							mountaineers = { x = 0 y = 0 }
+							mountaineers = { x = 0 y = 1 }
+							mountaineers = { x = 0 y = 2 }
+							mountaineers = { x = 1 y = 0 }
+							mountaineers = { x = 1 y = 1 }
+							mountaineers = { x = 1 y = 2 }
+						} 
+						support = {
+							recon = { x = 0 y = 0 }
+							engineer = { x = 0 y = 1 }
+							artillery = { x = 0 y = 2 }
+							logistics_company = { x = 0 y = 3 }
+						}
+					}
+
+					division_template = {
+						name = "Mobile Süvari Tümeni"
+
+						regiments = {
+							cavalry = { x = 0 y = 0 }
+							cavalry = { x = 0 y = 1 }
+							cavalry = { x = 1 y = 0 }
+							cavalry = { x = 1 y = 1 }
+							motorized = { x = 2 y = 0 }
+							motorized = { x = 2 y = 1 }
+							light_armor = { x = 3 y = 0 }
+						}
+
+						support = {
+							recon = { x = 0 y = 0 }
+							engineer = { x = 0 y = 1 }
+							artillery = { x = 0 y = 2 }
+							logistics_company = { x = 0 y = 3 }
+						}
+					}
+					
+					division_template = {
+						name = "Armored division"
+						regiments = {
+							light_armor = { x = 0 y = 0 }
+							light_armor = { x = 0 y = 1 }
+							light_armor = { x = 1 y = 0 }
+							light_armor = { x = 1 y = 1 }
+							light_armor = { x = 1 y = 2 }
+							motorized = { x = 2 y = 0 }		
+							motorized = { x = 2 y = 1 }	
+							motorized = { x = 2 y = 2 }		
+							motorized = { x = 2 y = 3 }		
+						}
+					}
+					
+					load_oob = "TUR_civil_war_fash"
+					load_oob = "TUR_civil_war_dem"
+				
+					declare_war_on = {
+						target = TUR
+						type = annex_everything
+					}
+					
+					start_civil_war = {
+						ideology = democratic
+						size = 0.4
+						states = { 352 350 353 }
+					}
+				}
+				
+				random_other_country = {
+					limit = {
+						original_tag = TRK
+						has_government = democratic
+					}
+					declare_war_on = {
+						target = TUR
+						type = annex_everything
+					}
+				}
+			}
+			
+			#Нейтралы
+			if = {
+				limit = {
+					neutrality > 0.1
+				}
+				
+				start_civil_war = {
+					ideology = neutrality
+					size = 0.4
+					states = { 843 341 964 340 }
+				}
+				
+				random_other_country = {
+					limit = {
+						original_tag = TUR
+						has_government = neutrality
+					}
+					set_cosmetic_tag = TUR_dictatorship_tag
+					declare_war_on = {
+						target = TRK
+						type = annex_everything
+					}
+					create_country_leader = {
+						name = "Fevzi Çakmak"
+						desc = "POLITICS_FEVZI_CAKMAK_DESC"
+						picture = "gfx/leaders/South America/Portrait_South_America_Generic_land_1.dds"
+						expire = "1965.1.1"
+						ideology = despotism
+						traits = {
+							#
+						}
+					}
+				}
+				
+				350 = {
+					controller = {
+						random_other_country = {
+							limit = {
+								original_tag = TUR
+								has_government = neutrality
+							}
+							declare_war_on = {
+								type = annex_everything
+								target = PREV
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+#Объединение к компарией\\Турция просит помочь в гражданской войне
+country_event = {
+	id = NWturkey.36
+	title = NWturkey.36.t
+	desc = NWturkey.36.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+
+	option = {
+		name = NWturkey.36.a
+		ai_chance = {
+			factor = 50
+		}
+		add_political_power = 50
+		random_owned_controlled_state = {
+			limit = {
+				arms_factory > 1
+			}
+			remove_building = {
+				type = arms_factory
+				level = 1
+			}
+		}
+		random_owned_controlled_state = {
+			limit = {
+				arms_factory > 1
+			}
+			remove_building = {
+				type = arms_factory
+				level = 1
+			}
+		}
+		
+		FROM = {
+			random_owned_controlled_state = {
+				limit = {
+					free_building_slots = {
+						building = arms_factory
+						size > 2
+						include_locked = yes
+					}
+				}
+				add_extra_state_shared_building_slots = 2
+				add_building_construction = {
+					type = arms_factory
+					level = 2
+					instant_build = yes
+				}
+			}
+		}
+		
+	}
+	option = {
+		name = NWturkey.36.b
+		ai_chance = {
+			factor = 50
+		}
+		trigger = {
+			has_equipment = { infantry_equipment > 3000 }
+			has_equipment = { artillery_equipment > 1000 }
+		}
+		add_political_power = 50
+		send_equipment = {
+			equipment = infantry_equipment
+			amount = 3000
+			target = FROM
+		}
+		send_equipment = {
+			equipment = artillery_equipment
+			amount = 1000
+			target = FROM
+		}
+	}
+	option = {
+		name = NWturkey.36.c
+		ai_chance = {
+			factor = 50
+		}
+		trigger = {
+			has_equipment = { infantry_equipment > 3000 }
+			has_equipment = { artillery_equipment > 1000 }
+		}
+		
+		add_political_power = 100
+		random_owned_controlled_state = {
+			limit = {
+				arms_factory > 1
+			}
+			remove_building = {
+				type = arms_factory
+				level = 1
+			}
+		}
+		random_owned_controlled_state = {
+			limit = {
+				arms_factory > 1
+			}
+			remove_building = {
+				type = arms_factory
+				level = 1
+			}
+		}
+		
+		FROM = {
+			random_owned_controlled_state = {
+				limit = {
+					free_building_slots = {
+						building = arms_factory
+						size > 2
+						include_locked = yes
+					}
+				}
+				add_extra_state_shared_building_slots = 2
+				add_building_construction = {
+					type = arms_factory
+					level = 2
+					instant_build = yes
+				}
+			}
+		}
+		
+		send_equipment = {
+			equipment = infantry_equipment
+			amount = 3000
+			target = FROM
+		}
+		send_equipment = {
+			equipment = artillery_equipment
+			amount = 1000
+			target = FROM
+		}
+		
+	}
+	option = {
+		name = NWturkey.36.d
+		ai_chance = {
+			factor = 50
+		}
+		add_political_power = -50
+		every_country = {
+			limit = {
+				has_war_with = FROM
+				NOT = { tag = FROM }
+				OR = {
+					original_tag = TUR
+					original_tag = TRK
+				}
+			}
+			SOV = {
+				declare_war_on = {
+					target = PREV
+					type = annex_everything
+				}
+			}
+		}
+		
+	}
+	option = {
+		name = NWturkey.36.e
+		ai_chance = {
+			factor = 50
+		}
+		
+		add_opinion_modifier = {
+			target = FROM
+			modifier = diplomatic_affront
+		}
+
+		FROM = {
+			add_opinion_modifier = {
+				target = ROOT
+				modifier = diplomatic_affront
+			}
+		}
+		FROM = { set_country_flag = USSR_decline_support }
+		
+	}
+}
+
+#Оккупация Ирана
+country_event = {
+	id = NWturkey.37
+	title = NWturkey.37.t
+	desc = NWturkey.37.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+
+	option = {
+		name = NWturkey.37.a
+		ai_chance = {
+			factor = 1
+		}
+		every_state = {
+			limit = {
+				is_core_of = PER
+			}
+			add_claim_by = FROM
+		}
+		FROM = {
+			create_wargoal = {
+				type = annex_everything
+				target = PER
+			}
+		}
+	}
+	option = {
+		name = NWturkey.37.b
+		ai_chance = {
+			factor = 25
+		}
+		963 = { add_claim_by = FROM }
+		421 = { add_claim_by = FROM }
+		417 = { add_claim_by = FROM }
+		FROM = {
+			create_wargoal = {
+				type = take_state_focus
+				target = PER
+				generator = { 963 421 417 }
+			}
+		}
+		every_state = {
+			limit = {
+				is_core_of = PER
+				NOT = { state = 963 }
+				NOT = { state = 421 }
+				NOT = { state = 417 }
+			}
+			add_claim_by = SOV
+		}
+		
+	}
+	option = {
+		name = NWturkey.37.c
+		ai_chance = {
+			factor = 50
+		}
+		963 = { add_claim_by = FROM }
+		every_state = {
+			limit = {
+				is_core_of = PER
+				NOT = { state = 963 }
+			}
+			add_claim_by = SOV
+		}
+		create_wargoal = {
+			type = annex_everything
+			target = PER
+		}
+	}
+	option = {
+		name = NWturkey.37.d
+		ai_chance = {
+			factor = 50
+			modifier = {
+				PER = { is_faction_leader = yes }
+				factor = 0
+			}
+			modifier = {
+				OR = {
+					PER = { is_guaranteed_by = ENG }
+					PER = { is_guaranteed_by = FRA }
+					PER = { is_guaranteed_by = GER }
+					PER = { is_guaranteed_by = USA }
+					PER = { is_guaranteed_by = JAP }
+					PER = { is_guaranteed_by = ITA }
+				}
+				factor = 0
+			}
+		}
+		add_opinion_modifier = {
+			target = FROM
+			modifier = diplomatic_affront
+		}
+
+		FROM = {
+			add_opinion_modifier = {
+				target = ROOT
+				modifier = diplomatic_affront
+			}
+		}
+	}
+}
+
+#Турция требует Батуми
+country_event = {
+	id = NWturkey.38
+	title = NWturkey.38.t
+	desc = NWturkey.38.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+
+	option = {
+		name = NWturkey.38.a
+		ai_chance = {
+			factor = 25
+		}
+		972 = {
+			add_core_of = FROM
+			remove_core_of = ROOT
+		}
+		FROM = { transfer_state = 972 }
+		
+	}
+	option = {
+		name = NWturkey.38.b
+		ai_chance = {
+			factor = 50
+		}
+		FROM = { country_event = { id = NWturkey.39 days = 1 } }
+		
+	}
+	option = {
+		name = NWturkey.38.c
+		ai_chance = {
+			factor = 5
+		}
+		add_opinion_modifier = {
+			target = FROM
+			modifier = diplomatic_affront
+		}
+
+		FROM = {
+			add_opinion_modifier = {
+				target = ROOT
+				modifier = diplomatic_affront
+			}
+		}
+	}
+}
+
+#Обмен региона Аджария на регионы Стамбул и Дарданеллы
+country_event = {
+	id = NWturkey.39
+	title = NWturkey.39.t
+	desc = NWturkey.39.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+
+	option = {
+		name = NWturkey.39.a
+		ai_chance = {
+			factor = 75
+		}
+		972 = {
+			add_core_of = ROOT
+			remove_core_of = FROM
+		}
+		ROOT = { transfer_state = 972 }
+		
+		341 = {
+			add_core_of = FROM
+			remove_core_of = ROOT
+		}
+		FROM = { transfer_state = 341 }
+		
+		964 = {
+			add_core_of = FROM
+			remove_core_of = ROOT
+		}
+		FROM = { transfer_state = 964 }
+	}
+	option = {
+		name = NWturkey.39.b
+		ai_chance = {
+			factor = 25
+		}
+	}
+}
+
+#Сюлейман Шефик-паша врывается в Меджлис
+country_event = {
+	id = NWturkey.40
+	title = NWturkey.40.t
+	desc = NWturkey.40.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+
+	option = {
+		name = NWturkey.40.a
+		ai_chance = {
+			factor = 90
+		}
+		set_country_flag = monarch_focus_block_flag
+		add_stability = 0.05
+		add_political_power = 100
+		create_country_leader = {
+			name = "Süleyman Şefik Paşa"
+			desc = "POLITICS_SULEYMAN_SEFIK_PASA_DESC"
+			picture = "gfx/leaders/TUR/Portrait_Suleyman_Sefik_pasa.dds"
+			expire = "1965.1.1"
+			ideology = monarchy_ideology
+			traits = {
+				keep_of_order
+			}
+		}
+		set_party_name = {
+			ideology = monarchy
+			name = TUR_monarchy_force_of_order_party
+			long_name = TUR_monarchy_force_of_order_army_long
+		}
+		country_event = { id = NWturkey.41 days = 1 }
+		hidden_effect = {
+			start_civil_war = {
+				ideology = neutrality
+				size = 0.5
+				states = { 49 356 343 340 347 }
+			}
+			random_other_country = {
+				limit = {
+					original_tag = TUR
+					has_government = neutrality
+				}
+				set_cosmetic_tag = TUR_dictatorship_tag
+				create_country_leader = {
+					name = "Fevzi Çakmak"
+					desc = "POLITICS_FEVZI_CAKMAK_DESC"
+					picture = "gfx/leaders/South America/Portrait_South_America_Generic_land_1.dds"
+					expire = "1965.1.1"
+					ideology = despotism
+					traits = {
+						#
+					}
+				}
+			}
+		}
+	}
+	option = {
+		name = NWturkey.40.b
+		ai_chance = {
+			factor = 10
+		}
+		add_political_power = -100
+	}
+}
+
+#Сюлейман Шефик-паша врывается в Меджлис
+country_event = {
+	id = NWturkey.41
+	title = NWturkey.41.t
+	desc = NWturkey.41.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+
+	option = {
+		name = NWturkey.41.a
+		ai_chance = {
+			factor = 90
+		}
+
+		hidden_effect = {
+			KRD = {
+				transfer_state = 350
+				transfer_state = 352
+				transfer_state = 353
+			}
+		}
+	}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+#ТЕСТ ГВ
+country_event = {
+	id = NWturkey.999
+	title = NWturkey.999.t
+	desc = NWturkey.999.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	hidden = yes
+
+	option = {
+		name = NWturkey.999.a
+		ai_chance = {
+			factor = 50
+		}
+		
+		set_party_name = {
+			ideology = trozkism
+			name = TUR_trozkism_green_army_party
+			long_name = TUR_trozkism_party_green_army_long
+		}
+		add_popularity = {
+			ideology = trozkism
+			popularity = 0.15
+		}
+		set_politics = {
+			ruling_party = trozkism
+			elections_allowed = yes
+		}
+		hidden_effect = {
+			if = {
+				limit = { is_in_faction = yes }
+				leave_faction = yes
+			}
+			set_country_flag = troz_focus_block_flag
+		}
+
+		every_state = {
+			limit = {
+				is_core_of = TUR
+			}
+			add_core_of = TRK
+		}
+		
+		TRK = {
+			#fas
+			transfer_state = 354
+			transfer_state = 355
+			transfer_state = 356
+			transfer_state = 347
+		
+			#dem
+			transfer_state = 352
+			transfer_state = 350
+			transfer_state = 353
+
+			set_politics = {
+				parties = {
+					democratic = { 
+						popularity = 1
+					}
+
+					fascism = {
+						popularity = 98
+					}
+					
+					communism = {
+						popularity = 1
+					}
+				}
+				ruling_party = fascism
+				elections_allowed = no
+			}
+		}
+		
+		TUR = {
+			TRK = { transfer_technology = yes }
+		}
+		
+		TRK = {
+			
+			division_template = {
+				name = "Süvari Tümeni Legion"					
+
+				regiments = {
+					infantry = { x = 0 y = 0 }
+					infantry = { x = 0 y = 1 }
+					infantry = { x = 0 y = 2 }
+					infantry = { x = 1 y = 0 }
+					infantry = { x = 1 y = 1 }
+					infantry = { x = 1 y = 2 }
+					infantry = { x = 2 y = 0 }
+					artillery_brigade = { x = 2 y = 1 }
+					artillery_brigade = { x = 2 y = 2 }
+				}
+				support = {
+					recon = { x = 0 y = 0 }
+					engineer = { x = 0 y = 1 }
+					artillery = { x = 0 y = 2 }
+					logistics_company = { x = 0 y = 3 }
+				}
+			}
+
+			division_template = {
+				name = "Mountaineers Dag Tugayi"
+
+				regiments = {
+					mountaineers = { x = 0 y = 0 }
+					mountaineers = { x = 0 y = 1 }
+					mountaineers = { x = 0 y = 2 }
+					mountaineers = { x = 1 y = 0 }
+					mountaineers = { x = 1 y = 1 }
+					mountaineers = { x = 1 y = 2 }
+				} 
+				support = {
+					recon = { x = 0 y = 0 }
+					engineer = { x = 0 y = 1 }
+					artillery = { x = 0 y = 2 }
+					logistics_company = { x = 0 y = 3 }
+				}
+			}
+
+			division_template = {
+				name = "Mobile Süvari Tümeni"
+
+				regiments = {
+					cavalry = { x = 0 y = 0 }
+					cavalry = { x = 0 y = 1 }
+					cavalry = { x = 1 y = 0 }
+					cavalry = { x = 1 y = 1 }
+					motorized = { x = 2 y = 0 }
+					motorized = { x = 2 y = 1 }
+					light_armor = { x = 3 y = 0 }
+				}
+
+				support = {
+					recon = { x = 0 y = 0 }
+					engineer = { x = 0 y = 1 }
+					artillery = { x = 0 y = 2 }
+					logistics_company = { x = 0 y = 3 }
+				}
+			}
+			
+			division_template = {
+				name = "Armored division"
+				regiments = {
+					light_armor = { x = 0 y = 0 }
+					light_armor = { x = 0 y = 1 }
+					light_armor = { x = 1 y = 0 }
+					light_armor = { x = 1 y = 1 }
+					light_armor = { x = 1 y = 2 }
+					motorized = { x = 2 y = 0 }		
+					motorized = { x = 2 y = 1 }	
+					motorized = { x = 2 y = 2 }		
+					motorized = { x = 2 y = 3 }		
+				}
+			}
+			
+			load_oob = "TUR_civil_war_fash"
+			load_oob = "TUR_civil_war_dem"
+		
+			declare_war_on = {
+				target = TUR
+				type = annex_everything
+			}
+			
+			start_civil_war = {
+				ideology = democratic
+				size = 0.4
+				states = { 352 350 353 }
+			}
+		}
+		
+		random_other_country = {
+			limit = {
+				original_tag = TRK
+				has_government = democratic
+			}
+			declare_war_on = {
+				target = TUR
+				type = annex_everything
+			}
+		}
+
+		
+		start_civil_war = {
+			ideology = neutrality
+			size = 0.4
+			states = { 843 341 964 340 }
+		}
+		
+		random_other_country = {
+			limit = {
+				original_tag = TUR
+				has_government = neutrality
+			}
+			declare_war_on = {
+				target = TRK
+				type = annex_everything
+			}
+			create_country_leader = {
+				name = "Fevzi Çakmak"
+				desc = "POLITICS_FEVZI_CAKMAK_DESC"
+				picture = "gfx/leaders/South America/Portrait_South_America_Generic_land_1.dds"
+				expire = "1965.1.1"
+				ideology = despotism
+				traits = {
+					#
+				}
+			}
+			set_cosmetic_tag = TUR_dictatorship_tag
+		}
+		
+		350 = {
+			controller = {
+				random_other_country = {
+					limit = {
+						original_tag = TUR
+						has_government = neutrality
+					}
+					declare_war_on = {
+						type = annex_everything
+						target = PREV
+					}
+				}
+			}
+		}
+	}
+}
 
