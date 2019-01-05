@@ -4,14 +4,15 @@
 
 add_namespace = NWturkey
 
-#FRA
+#FRA #Претензии на Хатай
 country_event = {
 	id = NWturkey.1
 	title = NWturkey.1.t
 	desc = NWturkey.1.desc
 	picture = GFX_report_event_generic_rally_3
 	is_triggered_only = yes
-
+	
+	#Оставить Хатай частью Сирии 
 	option = {
 		name = NWturkey.1.a
 		ai_chance = {
@@ -31,6 +32,7 @@ country_event = {
 			}
 		}
 	}
+	#Предоставить автономию Хатаю
 	option = {
 		name = NWturkey.1.b
 		ai_chance = {
@@ -76,7 +78,7 @@ country_event = {
 	picture = GFX_report_event_generic_rally_3
 	is_triggered_only = yes
 	
-
+	#Согласиться на переговоры
 	option = {
 		name = NWturkey.2.a
 		ai_chance = {
@@ -90,7 +92,9 @@ country_event = {
 			}
 		}
 		country_event = { id = NWturkey.3 days = 1 }
+		set_country_flag = montreux_member_flag
 	}
+	#Отказаться 
 	option = {
 		name = NWturkey.2.b
 		ai_chance = {
@@ -116,7 +120,8 @@ country_event = {
 	desc = NWturkey.3.desc
 	picture = GFX_report_event_generic_rally_3
 	is_triggered_only = yes
-
+	
+	#Оставить зону демилитаризированной 
 	option = {
 		name = NWturkey.3.a
 		ai_chance = {
@@ -133,6 +138,7 @@ country_event = {
 			}
 		}
 	}
+	#Ремилитаризация зоны 
 	option = {
 		name = NWturkey.3.b
 		ai_chance = {
@@ -152,14 +158,15 @@ country_event = {
 	}
 }
 
-#Монтрё. Итог
+#Монтрё. Итог у турка
 country_event = {
 	id = NWturkey.4
 	title = NWturkey.4.t
 	desc = NWturkey.4.desc
 	picture = GFX_report_event_generic_rally_3
 	is_triggered_only = yes
-
+	
+	#Таки ремилитаризация
 	option = {
 		name = NWturkey.4.a
 		trigger = {
@@ -170,12 +177,13 @@ country_event = {
 		843 = { set_demilitarized_zone = no }
 		964 = { set_demilitarized_zone = no }
 	}
+	#Таки слив
 	option = {
 		name = NWturkey.4.b
 		trigger = {
 			TUR = { check_variable = { montreux_score < 5 } }
 		}
-		set_country_flag = dem_montreux_accept
+		set_country_flag = dem_montreux_denied
 	}
 }
 
@@ -186,7 +194,7 @@ country_event = {
 	desc = NWturkey.5.desc
 	picture = GFX_report_event_generic_rally_3
 	is_triggered_only = yes
-
+	
 	option = {
 		name = NWturkey.5.a
 		ai_chance = {
@@ -485,20 +493,15 @@ country_event = {
 	trigger = {
 		tag = TUR
 		date > 1938.11.9
-		has_country_flag = block
 	}
 
 	option = {
 		name = NWturkey.10.a
-		if = {
-			limit = {
-				has_country_leader = {
-					name = "Mustafa Kemal Atatürk"
-					ruling_only = no
-				}
-			}
-			kill_country_leader = yes
+		random_unit_leader = {
+			limit = { has_id = 1802 }
+			retire = yes
 		}
+
 		create_country_leader = {
 			name = "Mustafa Abdülhalik Renda"
 			desc = "POLITICS_MUSTAFA_ABDÜLHALIK_RENDA_DESC"
@@ -599,11 +602,12 @@ country_event = {
 			factor = 75
 		}
 		419 = { add_claim_by = FROM }
+		963 = { add_claim_by = FROM }
 		FROM = {
 			create_wargoal = {
 				type = take_state_focus
 				target = ROOT
-				generator = { 419 }
+				generator = { 419 963 }
 			}
 		}
 	}
@@ -644,7 +648,11 @@ country_event = {
 			}
 		}
 		419 = { add_core_of = ROOT }
-		ROOT = { transfer_state = 419 }
+		963 = { add_core_of = ROOT }
+		ROOT = {
+			transfer_state = 419
+			transfer_state = 963
+		}
 		PER = {
 			add_political_power = 100
 			random_owned_controlled_state = {
@@ -686,10 +694,11 @@ country_event = {
 			factor = 20
 		}
 		419 = { add_claim_by = ROOT }
+		963 = { add_claim_by = ROOT }
 		create_wargoal = {
 			type = take_state_focus
 			target = FROM
-			generator = { 419 }
+			generator = { 419 963 }
 		}
 	}
 }
@@ -851,6 +860,17 @@ country_event = {
 		name = NWturkey.16.a
 		ai_chance = {
 			factor = 50
+			modifier = {
+				factor = 100
+				ENG = { has_war = yes }
+				ENG = {
+					OR = {
+						surrender_progress > 0.65
+						has_capitulated = yes
+					}
+				}
+				GRE = { is_in_faction_with = ENG }
+			}
 		}
 		release_puppet = CYP
 	}
@@ -858,6 +878,14 @@ country_event = {
 		name = NWturkey.16.b
 		ai_chance = {
 			factor = 50
+			modifier = {
+				factor = 100
+				ENG = { has_war = no }
+			}
+			modifier = {
+				factor = 100
+				ENG = { surrender_progress < 0.01 }
+			}
 		}
 		add_stability = -0.03
 		release = NCP
@@ -873,6 +901,17 @@ country_event = {
 		name = NWturkey.16.c
 		ai_chance = {
 			factor = 50
+			modifier = {
+				factor = 100
+				ENG = { has_war = yes }
+				ENG = {
+					OR = {
+						surrender_progress > 0.65
+						has_capitulated = yes
+					}
+				}
+				GRE = { NOT = { is_in_faction_with = ENG } }
+			}
 		}
 		GRE = { country_event = { id = NWturkey.19 days = 1 } }
 		183 = { add_core_of = GRE }
@@ -1408,7 +1447,7 @@ country_event = {
 		create_country_leader = {
 			name = "Fevzi Çakmak"
 			desc = "POLITICS_FEVZI_CAKMAK_DESC"
-			picture = "gfx/leaders/South America/Portrait_South_America_Generic_land_1.dds"
+			picture = "gfx/leaders/TUR/Portrait_Fevzi_Cakmak.dds"
 			expire = "1965.1.1"
 			ideology = despotism
 			traits = {
@@ -1452,7 +1491,7 @@ country_event = {
 				create_country_leader = {
 					name = "Fevzi Çakmak"
 					desc = "POLITICS_FEVZI_CAKMAK_DESC"
-					picture = "gfx/leaders/South America/Portrait_South_America_Generic_land_1.dds"
+					picture = "gfx/leaders/TUR/Portrait_Fevzi_Cakmak.dds"
 					expire = "1965.1.1"
 					ideology = despotism
 					traits = {
@@ -1477,7 +1516,6 @@ country_event = {
 		tag = TUR
 		date > 1946.1.1
 		NOT = { has_country_flag = TUR_oppositions_parties_formed_flag }
-		has_country_flag = block
 	}
 	
 	mean_time_to_happen = {
@@ -1495,11 +1533,11 @@ country_event = {
 			long_name = TUR_democratic_1946_party_long
 		}
 		create_country_leader = {
-			name = "Ali Fethi Okyar"
+			name = "Celâl Bayar"
 			desc = "POLITICS_CELAL_BAYAR_DESC"
-			picture = "gfx/leaders/TUR/Portrait_Ali_Fethi_Okyar.dds"
+			picture = "gfx/leaders/Europe/Portrait_Europe_Generic_2.dds"
 			expire = "1965.1.1"
-			ideology = liberalism
+			ideology = conservatism
 			traits = {
 				#
 			}
@@ -1571,6 +1609,16 @@ country_event = {
 		set_politics = {
 			ruling_party = trozkism
 			elections_allowed = yes
+		}
+		create_country_leader = {
+			name = "Ethem Şeftürk"
+			desc = "POLITICS_ETHEM_SEFTURK_DESC"
+			picture = "gfx/leaders/TUR/Portrait_Turkey_Cerkez_Ethem.dds"
+			expire = "1965.1.1"
+			ideology = islamic_socialism
+			traits = {
+				#
+			}
 		}
 		hidden_effect = {
 			if = {
@@ -2047,7 +2095,7 @@ country_event = {
 					create_country_leader = {
 						name = "Fevzi Çakmak"
 						desc = "POLITICS_FEVZI_CAKMAK_DESC"
-						picture = "gfx/leaders/South America/Portrait_South_America_Generic_land_1.dds"
+						picture = "gfx/leaders/TUR/Portrait_Fevzi_Cakmak.dds"
 						expire = "1965.1.1"
 						ideology = despotism
 						traits = {
@@ -2491,7 +2539,7 @@ country_event = {
 				create_country_leader = {
 					name = "Fevzi Çakmak"
 					desc = "POLITICS_FEVZI_CAKMAK_DESC"
-					picture = "gfx/leaders/South America/Portrait_South_America_Generic_land_1.dds"
+					picture = "gfx/leaders/TUR/Portrait_Fevzi_Cakmak.dds"
 					expire = "1965.1.1"
 					ideology = despotism
 					traits = {
@@ -2529,6 +2577,51 @@ country_event = {
 				transfer_state = 350
 				transfer_state = 352
 				transfer_state = 353
+			}
+		}
+	}
+}
+
+#Смерть Абдул-Меджида II
+country_event = {
+	id = NWturkey.42
+	title = NWturkey.42.t
+	desc = NWturkey.42.desc
+	picture = GFX_report_event_generic_rally_3
+	fire_only_once = yes
+	
+	trigger = {
+		tag = TUR
+		date > 1944.1.1
+	}
+
+	option = {
+		name = NWturkey.42.a
+		random_unit_leader = {
+			limit = { has_id = 1801 }
+			retire = yes
+		}
+		if = {
+			limit = { has_government = monarchy }
+			if = {
+				limit = { has_idea = TUR_Abdulmejid_II }
+				swap_ideas = {
+					remove_idea = TUR_Abdulmejid_II
+					add_idea = TUR_Omer_Faruk_Osmanoglu
+				}
+			}
+			add_stability = -0.05
+		}
+		else = {
+			create_country_leader = {
+				name = "Omer Faruk Osmanoglu"
+				desc = "POLITICS_OMER_FARUK_OSMANOGLU_DESC"
+				picture = "gfx/leaders/TUR/Portrait_Omer_Faruk_Osmanoglu.dds"
+				expire = "1965.1.1"
+				ideology = monarchy_ideology
+				traits = {
+					keep_of_order
+				}
 			}
 		}
 	}
@@ -2747,7 +2840,7 @@ country_event = {
 			create_country_leader = {
 				name = "Fevzi Çakmak"
 				desc = "POLITICS_FEVZI_CAKMAK_DESC"
-				picture = "gfx/leaders/South America/Portrait_South_America_Generic_land_1.dds"
+				picture = "gfx/leaders/TUR/Portrait_Fevzi_Cakmak.dds"
 				expire = "1965.1.1"
 				ideology = despotism
 				traits = {
