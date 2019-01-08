@@ -38,24 +38,24 @@ country_event = {
 		ai_chance = {
 			factor = 50
 		}
-		release = HAT
+		#release = HAT
 		if = {
 			limit = { FRA = { has_full_control_of_state = 945 } }
 			HAT = {
-				set_state_controller = 945
+				transfer_state = 945
 				FRA = {
-					puppet = PREV
-					set_autonomy = { target = PREV autonomy_state = autonomy_integrated_puppet }
+					puppet = HAT
+					set_autonomy = { target = HAT autonomy_state = autonomy_integrated_puppet }
 				}
 			}
 		}
 		if = {
 			limit = { SYR = { has_full_control_of_state = 945 } }
 			HAT = {
-				set_state_controller = 945
+				transfer_state = 945
 				SYR = {
-					puppet = PREV
-					set_autonomy = { target = PREV autonomy_state = autonomy_integrated_puppet }
+					puppet = HAT
+					set_autonomy = { target = HAT autonomy_state = autonomy_integrated_puppet }
 				}
 			}
 		}
@@ -494,6 +494,13 @@ country_event = {
 		tag = TUR
 		date > 1938.11.09
 	}
+	
+	immediate = {
+		add_popularity = {
+			ideology = neutrality
+			popularity = -0.1
+		}
+	}
 
 	option = {
 		name = NWturkey.10.a
@@ -511,10 +518,6 @@ country_event = {
 			traits = {
 				#
 			}
-		}
-		add_popularity = {
-			ideology = neutrality
-			popularity = -0.1
 		}
 		if = {
 			limit = { neutrality < 0.6 }
@@ -1387,7 +1390,10 @@ country_event = {
 			set_temp_variable = { king_p = party_popularity@monarchy }
 			
 			if = {
-				limit = { check_variable = { var = red value = 0.05 compare = greater_than_or_equals } }
+				limit = { 
+					check_variable = { var = red value = 0.05 compare = greater_than_or_equals }
+					check_variable = { var = red value = king_p compare = greater_than }
+				}
 				country_event = { id = NWturkey.34 days = 5 random = 10 }
 			}
 			else_if = {
@@ -1410,6 +1416,10 @@ country_event = {
 	desc = NWturkey.30.desc
 	picture = GFX_report_event_generic_rally_3
 	is_triggered_only = yes
+	
+	immediate = {
+		set_country_flag = TUR_Ismet_Inonu_peace_flag
+	}
 
 	option = {
 		name = NWturkey.30.a
@@ -1426,7 +1436,9 @@ country_event = {
 				#
 			}
 		}
-		set_country_flag = TUR_Ismet_Inonu_peace_flag
+		hidden_effect = {
+			complete_national_focus = TUR_president_ismet_inenu
+		}
 	}
 }
 
@@ -1463,9 +1475,10 @@ country_event = {
 		remove_unit_leader = 1800
 		custom_effect_tooltip = TUR_civwar_tt
 		hidden_effect = {
+			set_country_flag = same_ideology_civil_war_flag
 			start_civil_war = {
 				ideology = fascism
-				size = 0.45
+				size = 0.4
 				states = { 341 843 964 }
 			}
 			random_other_country = {
@@ -1473,6 +1486,7 @@ country_event = {
 					original_tag = TUR
 					has_government = fascism
 				}
+				set_country_flag = same_ideology_civil_war_flag
 				set_politics = {
 					parties = {
 						neutrality = {
@@ -1625,7 +1639,15 @@ country_event = {
 				limit = { is_in_faction = yes }
 				leave_faction = yes
 			}
+			if = {
+				limit = { has_war = yes }
+				every_other_country = {
+					limit = { has_war_with = ROOT }
+					white_peace = PREV
+				}
+			}
 			set_country_flag = troz_focus_block_flag
+			complete_national_focus = TUR_etchem_circassian_coup
 			country_event = { id = NWturkey.35 days = 0 } #запуск ГВ
 		}
 	}
@@ -2523,30 +2545,24 @@ country_event = {
 			name = TUR_monarchy_force_of_order_party
 			long_name = TUR_monarchy_force_of_order_army_long
 		}
+		add_popularity = {
+			ideology = monarchy
+			popularity = 0.15
+		}
+		set_politics = {
+			ruling_party = monarchy
+			elections_allowed = no
+		}
 		country_event = { id = NWturkey.41 days = 1 }
 		hidden_effect = {
-			start_civil_war = {
-				ideology = neutrality
-				size = 0.5
-				states = { 49 356 343 340 347 }
-			}
-			random_other_country = {
-				limit = {
-					original_tag = TUR
-					has_government = neutrality
-				}
-				set_cosmetic_tag = TUR_dictatorship_tag
-				create_country_leader = {
-					name = "Fevzi Çakmak"
-					desc = "POLITICS_FEVZI_CAKMAK_DESC"
-					picture = "gfx/leaders/TUR/Portrait_Fevzi_Cakmak.dds"
-					expire = "1965.1.1"
-					ideology = despotism
-					traits = {
-						#
-					}
+			if = {
+				limit = { has_war = yes }
+				every_other_country = {
+					limit = { has_war_with = ROOT }
+					white_peace = PREV
 				}
 			}
+			complete_national_focus = TUR_force_of_order
 		}
 	}
 	option = {
@@ -2558,7 +2574,7 @@ country_event = {
 	}
 }
 
-#Сюлейман Шефик-паша врывается в Меджлис
+#Независимость Курдистана
 country_event = {
 	id = NWturkey.41
 	title = NWturkey.41.t
@@ -2577,6 +2593,30 @@ country_event = {
 				transfer_state = 350
 				transfer_state = 352
 				transfer_state = 353
+			}
+
+			set_capital = 341
+			start_civil_war = {
+				ideology = neutrality
+				size = 0.3
+				states = { 49 356 343 340 347 }
+			}
+			random_other_country = {
+				limit = {
+					original_tag = TUR
+					has_government = neutrality
+				}
+				set_cosmetic_tag = TUR_dictatorship_tag
+				create_country_leader = {
+					name = "Fevzi Çakmak"
+					desc = "POLITICS_FEVZI_CAKMAK_DESC"
+					picture = "gfx/leaders/TUR/Portrait_Fevzi_Cakmak.dds"
+					expire = "1965.1.1"
+					ideology = despotism
+					traits = {
+						#
+					}
+				}
 			}
 		}
 	}
@@ -2652,8 +2692,113 @@ country_event = {
 	}
 }
 
+#СССР требует проливы
+country_event = {
+	id = NWturkey.44
+	title = NWturkey.44.t
+	desc = NWturkey.44.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	
+	option = {
+		name = NWturkey.44.a
+		ai_chance = {
+			factor = 75
+		}
+		SOV = {
+			transfer_state = 341
+			transfer_state = 964
+		}
+		ROOT = {
+			add_opinion_modifier = {
+				target = FROM
+				modifier = TUR_annexation_straits
+			}
+		}
+	}
+	option = {
+		name = NWturkey.44.b
+		ai_chance = {
+			factor = 25
+		}
+		ROOT = {
+			add_opinion_modifier = {
+				target = FROM
+				modifier = TUR_annexation_straits
+			}
+		}
+		FROM = { country_event = { id = NWturkey.45 days = 1 } }
+	}
+}
+
+#Отказ Турции
+country_event = {
+	id = NWturkey.45
+	title = NWturkey.45.t
+	desc = NWturkey.45.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	
+	option = {
+		name = NWturkey.45.a
+		ai_chance = {
+			factor = 75
+		}
+		declare_war_on = {
+			type = take_state_focus
+			target = FROM
+			generator = { 341 964 }
+		}
+	}
+	option = {
+		name = NWturkey.45.b
+		ai_chance = {
+			factor = 25
+		}
+	}
+}
 
 
+
+#Решения Британии
+country_event = {
+	id = NWturkey.46
+	title = NWturkey.46.t
+	desc = NWturkey.46.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	
+	option = {
+		name = NWturkey.46.a
+		ai_chance = {
+			factor = 75
+		}
+		declare_war_on = {
+			type = take_state_focus
+			target = FROM
+			generator = { 341 964 }
+		}
+	}
+	option = {
+		name = NWturkey.46.b
+		ai_chance = {
+			factor = 25
+		}
+		create_country_leader = {
+			name = "Abdurahman Melek"
+			desc = "POLITICS_ABDURAHMAN_MELEK_DESC"
+			picture = "gfx/leaders/SYR/Portrait_Arabia_Generic_2.dds"
+			expire = "1965.1.1"
+			ideology = socialism
+			traits = {
+				#
+			}
+		}
+	}
+}
 
 
 
