@@ -422,7 +422,7 @@ country_event = {
 			popularity = 0.05
 		}
 		add_manpower = -5000
-		add_stability = 0.15
+		add_stability = 0.05
 	}
 	
 	option = {
@@ -2670,51 +2670,82 @@ country_event = {
 	}
 }
 
+#Пульсар. Саадабад. Гарантии
+country_event = {
+	id = NWturkey.430
+	title = NWturkey.430.t
+	desc = NWturkey.430.desc
+	picture = GFX_report_event_generic_rally_3
+	fire_only_once = yes
+	hidden = yes
+	
+	trigger = {
+		has_country_flag = saadabad_accept_flag
+		date > 1937.06.01
+	}
+	
+	option = {
+		name = NWturkey.430.a
+		every_country = {
+			limit = { has_country_flag = saadabad_accept_flag }
+			country_event = { id = NWturkey.43 }
+		}
+	}
+}
+
 #Саадабад. Гарантии
 country_event = {
 	id = NWturkey.43
 	title = NWturkey.43.t
 	desc = NWturkey.43.desc
 	picture = GFX_report_event_generic_rally_3
-	fire_only_once = yes
-	
-	trigger = {
-		OR = {
-			AND = {
-				is_ai = no
-				has_country_flag = saadabad_accept_flag
-			}
-			AND = {
-				TUR = { is_ai = yes }
-				PER = { is_ai = yes }
-				IRQ = { is_ai = yes }
-				AFG = { is_ai = yes }
-				has_country_flag = saadabad_accept_flag
-			}
-		}
-		date > 1937.06.01
-	}
+	is_triggered_only = yes
 	
 	option = {
 		name = NWturkey.43.a
-		every_country = {
-			limit = { has_country_flag = saadabad_accept_flag }
-			every_country = {
-				limit = { has_country_flag = saadabad_accept_flag }
-				give_guarantee = PREV
+		if = {
+			limit = {
+				ROOT = { NOT = { tag = TUR } }
+				TUR = { has_country_flag = saadabad_accept_flag }
 			}
+			ROOT = { give_guarantee = TUR }
 		}
+		if = {
+			limit = {
+				ROOT = { NOT = { tag = PER } }
+				PER = { has_country_flag = saadabad_accept_flag }
+			}
+			ROOT = { give_guarantee = PER }
+		}
+		if = {
+			limit = {
+				ROOT = { NOT = { tag = IRQ } }
+				IRQ = { has_country_flag = saadabad_accept_flag }
+			}
+			ROOT = { give_guarantee = IRQ }
+		}
+		if = {
+			limit = {
+				ROOT = { NOT = { tag = AFG } }
+				AFG = { has_country_flag = saadabad_accept_flag }
+			}
+			ROOT = { give_guarantee = AFG }
+		}
+		
+		#Новый лидер пакта
 		if = {
 			limit = { TUR = { NOT = { has_country_flag = saadabad_accept_flag } } }
 			if = {
 				limit = { PER = { has_country_flag = saadabad_accept_flag } }
 				PER = { set_country_flag = new_saadabad_creator_flag }
 			}
-			else = {
-				random_country = {
-					limit = { has_country_flag = saadabad_accept_flag }
-					set_country_flag = new_saadabad_creator_flag
-				}
+			else_if = {
+				limit = { IRQ = { has_country_flag = saadabad_accept_flag } }
+				IRQ = { set_country_flag = new_saadabad_creator_flag }
+			}
+			else_if = {
+				limit = { AFG = { has_country_flag = saadabad_accept_flag } }
+				AFG = { set_country_flag = new_saadabad_creator_flag }
 			}
 		}
 	}
@@ -2727,7 +2758,6 @@ country_event = {
 	desc = NWturkey.44.desc
 	picture = GFX_report_event_generic_rally_3
 	is_triggered_only = yes
-	
 	
 	option = {
 		name = NWturkey.44.a
