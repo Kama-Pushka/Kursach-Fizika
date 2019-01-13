@@ -502,9 +502,12 @@ country_event = {
 	}
 	
 	immediate = {
-		add_popularity = {
-			ideology = neutrality
-			popularity = -0.1
+		if = {
+			limit = { neutrality > 0.2 }
+			add_popularity = {
+				ideology = neutrality
+				popularity = -0.1
+			}
 		}
 	}
 
@@ -1637,14 +1640,48 @@ country_event = {
 		}
 		hidden_effect = {
 			if = {
+				limit = { has_war = yes }
+				every_other_country = {
+					limit = { has_war_with = PAK }
+					every_other_country = {
+						limit = {
+							is_in_faction_with = PAK
+							is_faction_leader = yes
+						}
+						white_peace = PREV
+					}
+				}
+				every_other_country = {
+					limit = { has_war_with = ROOT }
+					white_peace = PREV
+				}
+			}
+			if = {
 				limit = { is_in_faction = yes }
 				leave_faction = yes
 			}
 			if = {
-				limit = { has_war = yes }
+				limit = {
+					any_country = {
+						has_guaranteed = ROOT
+					}
+				}
 				every_other_country = {
-					limit = { has_war_with = ROOT }
-					white_peace = PREV
+					limit = {
+						has_guaranteed = ROOT
+					}
+					diplomatic_relation = {
+						country = ROOT
+						relation = guarantee
+						active = no
+					}
+					ROOT = {
+						diplomatic_relation = {
+							country = PREV
+							relation = guarantee
+							active = no
+						}
+					}
 				}
 			}
 			set_country_flag = troz_focus_block_flag
@@ -3356,7 +3393,6 @@ country_event = {
 	is_triggered_only = yes
 	hidden = yes
 	
-	
 	option = {
 		name = NWturkey.54.a
 		if = {
@@ -3397,6 +3433,7 @@ country_event = {
 						is_controlled_by = RAJ
 					}
 				}
+				TUR = { has_war_with = ENG }
 			}
 			ENG = { set_country_flag = eng_pakistan_peace_flag }
 		}
