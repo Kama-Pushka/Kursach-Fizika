@@ -30,6 +30,7 @@ country_event = {
 				instant_build = yes
 			}
 		}
+		DEN = { add_opinion_modifier = { target = ROOT modifier = DEN_occupied_the_islands } }
 	}
 	option = { # 
 		name = greenland.1.b
@@ -40,9 +41,18 @@ country_event = {
 				is_historical_focus_on = yes
 			}	
 		}
-		
-		GRO = { add_opinion_modifier = { target = USA modifier = GRO_not_defence } }
-		GRO = { country_event = { id = grenland.3 days = 1 } }
+		GRO = { add_opinion_modifier = { target = ROOT modifier = GRO_not_defence } }
+		if = {
+			limit = {
+				tag = USA
+				DEN = { NOT = { has_war_with = ENG } }
+				ENG = { is_puppet = no exists = yes } 
+			}
+			ENG = { country_event = { id = greenland.1 } }
+			else = {
+				GRO = { country_event = { id = greenland.3 days = 1 } }
+			}
+		}
 	}
 }
 
@@ -52,7 +62,10 @@ country_event = {
 	desc = greenland.2.d
 	
 	trigger = {
-		tag = USA
+		OR = { 
+			tag = USA
+			tag = ENG
+		}
 		DEN = {
 			OR = { 
 				has_country_flag = ENG_transfer_greenland
@@ -61,7 +74,8 @@ country_event = {
 			has_war = no
 			has_capitulated = no
 		}
-		GRO = { is_puppet_of = USA }
+		GRO = { is_puppet_of = ROOT }
+		NOT = { DEN = { is_puppet_of = ROOT } }
 	}
 
 	fire_only_once = yes
@@ -91,11 +105,49 @@ country_event = {
 				is_historical_focus_on = yes
 			}	 
 		}
+		trigger = {
+			DEN = { has_country_flag = USA_transfer_greenland } 
+		}
 		DEN = {
-            clr_country_flag = ENG_transfer_greenland
 			clr_country_flag = USA_transfer_greenland
 			annex_country = { target = GRO transfer_troops = yes }
 		}
+		DEN = { remove_opinion_modifier = { target = ROOT modifier = DEN_occupied_the_islands } }
+		hidden_effect = { news_event = { hours = 6 id = news.1801 } }
+	}
+	option = { # 
+		name = greenland.2.a
+		ai_chance = { 
+			factor = 1
+			modifier = {
+				factor = 80
+				OR = {
+					AND = { DEN = { has_government = democratic } ENG = { has_government = democratic } }
+					AND = { DEN = { has_government = communism } ENG = { has_government = communism } }
+					AND = { DEN = { has_government = neutrality } ENG = { has_government = neutrality } }
+				}	 
+			}
+			modifier = {
+				factor = 0
+				DEN = { has_war_with = ENG } 
+			}
+			modifier = {
+				factor = 80
+				DEN = { is_in_faction_with = ENG } 
+			}
+			modifier = {
+				factor = 100
+				is_historical_focus_on = yes
+			}	 
+		}
+		trigger = {
+			DEN = { has_country_flag = ENG_transfer_greenland } 
+		}
+		DEN = {
+			clr_country_flag = ENG_transfer_greenland
+			annex_country = { target = GRO transfer_troops = yes }
+		}
+		DEN = { remove_opinion_modifier = { target = ROOT modifier = DEN_occupied_the_islands } }
 		hidden_effect = { news_event = { hours = 6 id = news.1801 } }
 	}
 	option = { # 
@@ -118,6 +170,15 @@ country_event = {
 		}
 		
 		DEN = { add_opinion_modifier = { target = USA modifier = non_returned_territory } }
+		if = {
+			limit = {
+				NOT = { DEN = { is_in_faction_with = USA } }
+			}
+			create_wargoal = {
+				type = puppet_wargoal_focus
+				target = GRO
+			}
+		}
 		hidden_effect = { news_event = { hours = 6 id = news.1802 } }
 	}
 	option = { # 
@@ -140,7 +201,16 @@ country_event = {
 		}
 		
 		DEN = { add_opinion_modifier = { target = ENG modifier = non_returned_territory } }
-		hidden_effect = { news_event = { hours = 6 id = news.1803 } }
+		if = {
+			limit = {
+				NOT = { DEN = { is_in_faction_with = ENG } }
+			}
+			create_wargoal = {
+				type = puppet_wargoal_focus
+				target = GRO
+			}
+		}
+		hidden_effect = { news_event = { hours = 6 id = news.1802 } }
 	}
 }	
 
@@ -283,7 +353,22 @@ country_event = { #Гренландия предлагает союз
 				add_stability = -0.05 
 			} 
 		}
-		GRO = { add_opinion_modifier = { target = ICE modifier = GRO_ICE_united_yes } }
+		GRO = { 
+			add_opinion_modifier = { target = ICE modifier = GRO_ICE_united_yes } 
+			add_ai_strategy = {
+				type = alliance
+				id = "ICE"			
+				value = 200
+			}
+			set_rule = { can_create_factions = yes }
+		}
+		ICE = { 
+			add_ai_strategy = {
+				type = alliance
+				id = "GRO"			
+				value = 200
+			}
+		}
 	}
 	option = { # Мы отдельно
 		name = greenland.4.b
@@ -293,31 +378,31 @@ country_event = { #Гренландия предлагает союз
 }
 
 
-country_event = { #Агрессия против Дании
-	id = greenland.5
-	title = greenland.5.t
-	desc = greenland.5.d	
-	
-	trigger = {
-		OR = {
-			AND = {
-				tag = ICE
-				#has_idea = danish_crown
-				has_war_with = DEN
-			}
-			AND = {
-				tag = GRO 
-				#has_idea = danish_crown
-				has_war_with = DEN
-			}
-		}
-	}
-
-	fire_only_once = yes
-	
-	option = { # Такое случается
-		name = greenland.5.a
-		ai_chance = { factor = 100 }
-		#remove_ideas = danish_crown
-	}
-}
+#country_event = { #Агрессия против Дании
+#	id = greenland.5
+#	title = greenland.5.t
+#	desc = greenland.5.d	
+#	
+#	trigger = {
+#		OR = {
+#			AND = {
+#				tag = ICE
+#				#has_idea = danish_crown
+#				has_war_with = DEN
+#			}
+#			AND = {
+#				tag = GRO 
+#				#has_idea = danish_crown
+#				has_war_with = DEN
+#			}
+#		}
+#	}
+#
+#	fire_only_once = yes
+#	
+#	option = { # Такое случается
+#		name = greenland.5.a
+#		ai_chance = { factor = 100 }
+#		#remove_ideas = danish_crown
+#	}
+#}
