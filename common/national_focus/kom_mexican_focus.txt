@@ -2699,18 +2699,43 @@ focus_tree = {
 		completion_reward = {
 			add_political_power = -100
 			
-			every_other_country = {
-                limit = {
-					is_in_faction_with = SOV
-					is_faction_leader = no
+			if = {
+				limit = { SOV = { exists = yes } }
+				every_other_country = {
+					limit = {
+						is_in_faction_with = SOV
+						is_faction_leader = no
+					}
+					add_timed_idea = { idea = trozkism_influence1 days = 90 }
+					country_event = { id = TRpolitical.13 days = 1 }
+					add_opinion_modifier = { target = ROOT modifier = anti_sov_prop }
 				}
-                add_timed_idea = { idea = trozkism_influence1 days = 90 }
-				country_event = { id = TRpolitical.13 days = 1 }
-				add_opinion_modifier = { target = ROOT modifier = anti_sov_prop }
-            }
-			SOV = {
-				country_event = { id = TRpolitical.13 days = 1 }
-				add_opinion_modifier = { target = ROOT modifier = anti_sov_prop }
+				SOV = {
+					country_event = { id = TRpolitical.13 days = 1 }
+					add_opinion_modifier = { target = ROOT modifier = anti_sov_prop }
+				}
+			}
+			if = {
+				limit = {
+					SOV = { exists = no }
+					GEO = {
+						exists = yes
+						has_full_control_of_state = 219
+					}
+				}
+				every_other_country = {
+					limit = {
+						is_in_faction_with = GEO
+						is_faction_leader = no
+					}
+					add_timed_idea = { idea = trozkism_influence1 days = 90 }
+					country_event = { id = TRpolitical.13 days = 1 }
+					add_opinion_modifier = { target = ROOT modifier = anti_sov_prop }
+				}
+				GEO = {
+					country_event = { id = TRpolitical.13 days = 1 }
+					add_opinion_modifier = { target = ROOT modifier = anti_sov_prop }
+				}
 			}
 		}
 	}
@@ -2756,17 +2781,35 @@ focus_tree = {
 		available_if_capitulated = yes
 		
 		available = {
-			SOV = { exists = yes }
+			OR = {
+				SOV = {
+					exists = yes
+					has_full_control_of_state = 219
+					NOT = { has_government = ROOT }
+					NOT = { is_in_faction_with = ROOT }
+				}
+				GEO = {
+					exists = yes
+					has_full_control_of_state = 219
+					NOT = { has_government = ROOT }
+					NOT = { is_in_faction_with = ROOT }
+				}
+			}
 		}
 		
 		bypass = {
-			SOV = { exists = yes }
 		}
 		
 		completion_reward = {
-			create_wargoal = {
-				type = puppet_wargoal_focus
-				target = SOV
+			219 = {
+				owner = {
+					ROOT = {
+						create_wargoal = {
+							type = puppet_wargoal_focus
+							target = PREV
+						}
+					}
+				}
 			}
 			news_event = { id = trworldnews.28 }
 		}

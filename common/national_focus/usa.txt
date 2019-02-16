@@ -1051,10 +1051,25 @@ focus_tree = {
 		icon = GFX_goal_generic_position_armies
 		prerequisite = { focus = USA_prepare_intervention }
 		available = {
-			country_exists = SOV
 			OR = {
-				SOV = { has_offensive_war = yes }
-				communism > 0.3
+				AND = {
+					country_exists = SOV
+					OR = {
+						SOV = { has_offensive_war = yes }
+						communism > 0.3
+					}
+				}
+				AND = {
+					AND = {
+						NOT = { country_exists = SOV }
+						country_exists = GEO
+						GEO = { has_full_control_of_state = 219 }
+					}
+					OR = {
+						GEO = { has_offensive_war = yes }
+						communism > 0.3
+					}
+				}
 			}
 			NOT = { has_government = communism }
 		}
@@ -1069,8 +1084,19 @@ focus_tree = {
 		available_if_capitulated = yes
 
 		completion_reward = {
-			SOV = {
-				add_opinion_modifier = { target = USA modifier = war_plan_white }
+			if = {
+				limit = { SOV = { exists = yes } }
+				SOV = { add_opinion_modifier = { target = USA modifier = war_plan_white } }
+			}
+			if = {
+				limit = {
+					SOV = { exists = no }
+					GEO = {
+						exists = yes
+						has_full_control_of_state = 219
+					}
+				}
+				GEO = { add_opinion_modifier = { target = USA modifier = war_plan_white } }
 			}
 		}
 	}
@@ -1080,10 +1106,25 @@ focus_tree = {
 		icon = GFX_goal_generic_trade
 		prerequisite = { focus = USA_war_plan_white }
 		available = {
-			country_exists = SOV
 			OR = {
-				SOV = { has_added_tension_amount > 30 }
-				threat > 0.6
+				AND = {
+					country_exists = SOV
+					OR = {
+						SOV = { has_added_tension_amount > 30 }
+						threat > 0.6
+					}
+				}
+				AND = {
+					AND = {
+						NOT = { country_exists = SOV }
+						country_exists = GEO
+						GEO = { has_full_control_of_state = 219 }
+					}
+					OR = {
+						GEO = { has_added_tension_amount > 30 }
+						threat > 0.6
+					}
+				}
 			}
 		}
 
@@ -1099,8 +1140,19 @@ focus_tree = {
 		available_if_capitulated = yes
 
 		completion_reward = {
-			SOV = {
-				add_opinion_modifier = { target = USA modifier = embargo }
+			if = {
+				limit = { SOV = { exists = yes } }
+				SOV = { add_opinion_modifier = { target = USA modifier = embargo } }
+			}
+			if = {
+				limit = {
+					SOV = { exists = no }
+					GEO = {
+						exists = yes
+						has_full_control_of_state = 219
+					}
+				}
+				GEO = { add_opinion_modifier = { target = USA modifier = embargo } }
 			}
 		}
 	}
@@ -1411,9 +1463,19 @@ focus_tree = {
 		prerequisite = { focus = USA_unholy_alliance }
 		prerequisite = { focus = USA_limited_intervention }
 		available = {
-			SOV = {
-				exists = yes
-				NOT = { has_government = ROOT }
+			OR = {
+				SOV = {
+					exists = yes
+					NOT = { has_government = ROOT }
+				}
+				AND = {
+					SOV = { exists = no }
+					GEO = {
+						exists = yes
+						NOT = { has_government = ROOT }
+						has_full_control_of_state = 219
+					}
+				}
 			}
 			date > 1942.1.1
 		}
@@ -1426,10 +1488,29 @@ focus_tree = {
 		#	factor = 1
 		#}
 		completion_reward = {
-			create_wargoal = {
-				type = take_state_focus
-				target = SOV
-				generator = { 644 637 562 } # Eastern Siberia, Kamchatka
+			if = {
+				limit = { SOV = { exists = yes } }
+				create_wargoal = {
+					type = take_state_focus
+					target = SOV
+					generator = { 644 637 562 } # Eastern Siberia, Kamchatka
+				}
+			}
+			if = {
+				limit = {
+					SOV = { exists = no }
+					GEO = {
+						exists = yes
+						has_full_control_of_state = 644
+						has_full_control_of_state = 637
+						has_full_control_of_state = 562
+					}
+				}
+				create_wargoal = {
+					type = take_state_focus
+					target = GEO
+					generator = { 644 637 562 } # Eastern Siberia, Kamchatka
+				}
 			}
 			hidden_effect = {
 				news_event = { hours = 6 id = news.207 }
