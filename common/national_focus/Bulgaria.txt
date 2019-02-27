@@ -759,7 +759,7 @@ focus_tree = {
 		relative_position_id = BUL_great_bulgaria
 
 		cost = 10
-
+		
 		ai_will_do = {
 			factor = 5
 			modifier = {
@@ -872,28 +872,66 @@ focus_tree = {
 				is_historical_focus_on = yes
 			}
 		}
-
+		
+		bypass = {
+			AND = {
+				OR = {
+					106 = { is_owned_by = BUL } 
+					AND = { 106 = { is_owned_by = MAC } MAC = { is_puppet_of = BUL } }
+				}
+				OR = {
+					812 = { is_owned_by = BUL } 
+					AND = { 812 = { is_owned_by = MAC } MAC = { is_puppet_of = BUL } }
+				}
+				OR = {
+					825 = { is_owned_by = BUL } 
+					AND = { 825 = { is_owned_by = MAC } MAC = { is_puppet_of = BUL } }
+				}
+			}
+		}
+		
 		completion_reward = {
-			MAC = { transfer_state = 825 }
-			MAC = { transfer_state = 106 }
-			MAC = { transfer_state = 812 }
-			hidden_effect = {
-				MAC = {
-					country_event = {
-						id = macedonia.1 hours = 6
+			if = {
+				limit = {
+					MAC = { exists = no }
+				}
+				if = {
+					limit = { NOT = { 825 = { is_owned_by = BUL } } }
+					MAC = { transfer_state = 825 }
+				}
+				if = {
+					limit = { NOT = { 106 = { is_owned_by = BUL } } }
+					MAC = { transfer_state = 106 }
+				}
+				if = {
+					limit = { NOT = { 812 = { is_owned_by = BUL } } }
+					MAC = { transfer_state = 812 }
+				}
+				BUL = { 
+					create_wargoal = {
+						type = take_state_focus
+						target = YUG
+						generator = { 106 }
 					}
-					add_popularity = { ideology = fascism popularity = 1.0 }
-					set_politics = {
-					ruling_party = fascism
-					elections_allowed = no
+				}
+				hidden_effect = {
+					MAC = {
+						country_event = {
+							id = macedonia.1 hours = 6
+						}
+						add_popularity = { ideology = fascism popularity = 1.0 }
+						set_politics = {
+							ruling_party = fascism
+							elections_allowed = no
+						}
 					}
 				}
 			}
-			BUL = { create_wargoal = {
-			type = take_state_focus
-			target = YUG
-			generator = { 106 }
+			else_if = {
+				limit = {
+					MAC = { exists = yes }
 				}
+				MAC = { country_event = { id = macedonia.3 hours = 6 } }
 			}
 		}
 	}
@@ -903,18 +941,20 @@ focus_tree = {
 		icon = GFX_goal_generic_national_unity
 		prerequisite = { focus = BUL_liberate_Macedonia }
 		available = {
-			OR = {
-				BUL = {
-					has_government = fascism
-					owns_state = 825
-					owns_state = 812
-					owns_state = 106
+			AND = {
+				BUL = { has_government = fascism }
+				MAC = { NOT = { has_war_with = YUG has_war_with = BUL } }
+				OR = {
+					BUL = { owns_state = 106 }
+					MAC = { owns_state = 106 }
 				}
-				MAC = {
-					owns_state = 825
-					owns_state = 812
-					owns_state = 106
-					NOT = { has_war_with = YUG }
+				OR = {
+					BUL = { owns_state = 812 }
+					MAC = { owns_state = 812 }
+				}
+				OR = {
+					BUL = { owns_state = 825 }
+					MAC = { owns_state = 825 }
 				}
 			}
 		}
@@ -929,28 +969,26 @@ focus_tree = {
 		}
 
 		completion_reward = {
-			if = { limit = {
-				MAC = {
-					owns_state = 825
-					owns_state = 812
-					owns_state = 106
+			if = {
+				limit = {
+					MAC = {
+						OR = {
+							owns_state = 825
+							owns_state = 812
+							owns_state = 106
+						}
+					}
 				}
-			}
 				MAC = {
 					country_event = {
 						id = bulgaria.27 hours = 6
 					}
 				}
 			}
-			825 = {
-				add_core_of = BUL
-			}
-			812 = {
-				add_core_of = BUL
-			}
-			106 = {
-				add_core_of = BUL
-			}
+			
+			825 = { add_core_of = BUL }
+			812 = { add_core_of = BUL }
+			106 = { add_core_of = BUL }
 		}
 	}
 
@@ -5180,11 +5218,5 @@ focus_tree = {
 				category = tp_tech
 			}
 		}
-	}
-
-	
-	
-	
-	
-	
+	}	
 }
