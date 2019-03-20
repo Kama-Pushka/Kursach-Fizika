@@ -1,0 +1,335 @@
+﻿###########################
+# Ветка Испании
+###########################
+
+add_namespace = NWspain
+
+#Выборы в испанский парламент
+country_event = {
+	id = NWspain.1
+	title = NWspain.1.t
+	desc = NWspain.1.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = {
+		log = "[GetDateText]: [Root.GetName]: event NWspain.1"
+		set_variable = { SPRdemo = party_popularity@democratic }
+		set_variable = { SPRking = party_popularity@monarchy }
+	}
+	
+	#Народный фронт одержал победу
+	option = {
+		name = NWspain.1.a
+		trigger = {
+			has_country_flag = democrats_available_elections_flag
+			check_variable = { var = SPRdemo value = SPRking compare = greater_than_or_equals }
+			NOT = { has_country_flag = libarals_win_flag }
+		}
+		complete_national_focus = SPR_victory_popular_front
+	}
+	
+	#Национальный блок одержал победу
+	option = {
+		name = NWspain.1.b
+		trigger = {
+			OR = {
+				AND = {
+					has_country_flag = democrats_available_elections_flag
+					check_variable = { var = SPRking value = SPRdemo compare = greater_than_or_equals }
+				}
+				AND = {
+					NOT = { has_country_flag = democrats_available_elections_flag }
+					NOT = { has_country_flag = libarals_win_flag }
+				}
+			}
+		}
+		complete_national_focus = SPR_victory_national_block
+	}
+	
+	#Либеральная партия одержал победу
+	option = {
+		name = NWspain.1.c
+		trigger = {
+			has_country_flag = libarals_win_flag
+		}
+		complete_national_focus = SPR_victory_liberal_party
+	}
+}
+
+
+
+################
+#### ВЫБОРЫ ####
+################
+
+#Национальный блок отказывает правительству в доверии
+country_event = {
+	id = NWspain.2
+	title = NWspain.2.t
+	desc = NWspain.2.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName]: event NWspain.2" }
+	
+	option = {
+		name = NWspain.2.a
+		ai_chance = {
+			factor = 50
+		}
+		add_stability = -0.05
+	}
+	
+	option = {
+		name = NWspain.2.b
+		ai_chance = {
+			factor = 50
+			modifier = {
+				factor = 0
+				is_historical_focus_on = yes
+			}
+		}
+		add_popularity = { ideology = monarchy popularity = 0.04 }
+	}
+}
+
+#Снятие чрезвычайного положения
+country_event = {
+	id = NWspain.3
+	title = NWspain.3.t
+	desc = NWspain.3.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName]: event NWspain.3" }
+	
+	option = {
+		name = NWspain.3.a
+		ai_chance = {
+			factor = 50
+		}
+		add_stability = -0.04
+		set_country_flag = democrats_available_elections_flag
+	}
+	
+	option = {
+		name = NWspain.3.b
+		ai_chance = {
+			factor = 50
+			modifier = {
+				factor = 0
+				is_historical_focus_on = yes
+			}
+		}
+		add_stability = -0.02
+	}
+}
+
+#Левые партии образуют Народный блок
+country_event = {
+	id = NWspain.4
+	title = NWspain.4.t
+	desc = NWspain.4.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName]: event NWspain.4" }
+	
+	option = {
+		name = NWspain.4.a
+		ai_chance = {
+			factor = 50
+			modifier = {
+				factor = 0
+				is_historical_focus_on = yes
+			}
+		}
+		add_popularity = { ideology = communism popularity = -0.05 }
+		add_popularity = { ideology = trozkism popularity = -0.05 }
+		add_popularity = { ideology = anarchism popularity = -0.03 }
+		add_popularity = { ideology = democratic popularity = 0.12 }
+		set_party_name = { ideology = democratic name = SPR_popular_front_party }
+	}
+	
+	option = {
+		name = NWspain.4.b
+		ai_chance = {
+			factor = 50
+		}
+		set_country_flag = democrats_plus_autoritarian_flag
+	}
+}
+
+#Анархисты призывают голосовать за левых
+country_event = {
+	id = NWspain.5
+	title = NWspain.5.t
+	desc = NWspain.5.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = {
+		log = "[GetDateText]: [Root.GetName]: event NWspain.5"
+		if = {
+			limit = { ROOT = { is_ai = yes } }
+			country_event = { id = NWspain.8 hours = 1 }
+		}
+		if = {
+			limit = {
+				NOT = { has_country_flag = democrats_available_elections_flag }
+				neutrality > 0.150
+			}
+			country_event = { id = NWspain.9 days = 1 }
+		}
+	}
+	
+	option = {
+		name = NWspain.5.a
+		ai_chance = {
+			factor = 50
+		}
+		add_popularity = { ideology = democratic popularity = 0.04 }
+		add_popularity = { ideology = monarchy popularity = -0.02 }
+	}
+	
+	option = {
+		name = NWspain.5.b
+		ai_chance = {
+			factor = 50
+			modifier = {
+				factor = 0
+				is_historical_focus_on = yes
+			}
+		}
+		add_popularity = { ideology = anarchism popularity = -0.01 }
+		add_political_power = -50
+		add_stability = -0.02
+	}
+}
+
+#Каталонцы поддерживают либералов
+country_event = {
+	id = NWspain.6
+	title = NWspain.6.t
+	desc = NWspain.6.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName]: event NWspain.6" }
+	
+	option = {
+		name = NWspain.6.a
+		ai_chance = {
+			factor = 50
+		}
+		add_popularity = { ideology = democratic popularity = -0.1 }
+		add_popularity = { ideology = neutrality popularity = 0.1 }
+	}
+}
+
+#Баски поддерживают либералов
+country_event = {
+	id = NWspain.7
+	title = NWspain.7.t
+	desc = NWspain.7.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName]: event NWspain.7" }
+	
+	option = {
+		name = NWspain.7.a
+		ai_chance = {
+			factor = 50
+		}
+		add_popularity = { ideology = democratic popularity = -0.05 }
+		add_popularity = { ideology = neutrality popularity = 0.05 }
+	}
+}
+
+#Предоставление независимости Каталонии
+country_event = {
+	id = NWspain.8
+	title = NWspain.8.t
+	desc = NWspain.8.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName]: event NWspain.8" }
+	
+	option = {
+		name = NWspain.8.a
+		ai_chance = {
+			factor = 85
+		}
+	}
+	
+	option = {
+		name = NWspain.8.b
+		ai_chance = {
+			factor = 15
+			modifier = {
+				factor = 0
+				is_historical_focus_on = yes
+			}
+		}
+		puppet = CAT
+	}
+}
+
+#Фальсификация на выборах
+country_event = {
+	id = NWspain.9
+	title = NWspain.9.t
+	desc = NWspain.9.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName]: event NWspain.9" }
+	
+	option = {
+		name = NWspain.9.a
+		ai_chance = {
+			factor = 50
+		}
+		set_country_flag = libarals_win_flag
+		add_political_power = -50
+	}
+	
+	option = {
+		name = NWspain.9.b
+		ai_chance = {
+			factor = 50
+			modifier = {
+				factor = 0
+				CAT = { is_puppet_of = ROOT }
+			}
+		}
+	}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
