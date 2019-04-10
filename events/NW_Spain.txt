@@ -2049,6 +2049,11 @@ country_event = {
 					id = "SPA" 
 					value = 500
 				}
+				add_ai_strategy = {
+					type = ignore
+					id = "FRA" 
+					value = 500
+				}
 				every_state = {
 					limit = { is_owned_by = SPR }
 					add_claim_by = ARA
@@ -2193,6 +2198,11 @@ country_event = {
 					add_ai_strategy = {
 						type = protect
 						id = "ARA" 
+						value = 500
+					}
+					add_ai_strategy = {
+						type = ignore
+						id = "FRA" 
 						value = 500
 					}
 					ARA = {
@@ -3254,15 +3264,15 @@ country_event = {
 		hidden_effect = {
 			if = {
 				limit = { NOT = { FRA = { is_in_faction_with = ROOT } } }
-				#FRA = { country_event = { id = NWspain.112 days = 1 } }
+				FRA = { country_event = { id = NWspain.112 days = 1 } }
 			}
 			if = {
 				limit = { NOT = { ENG = { is_in_faction_with = ROOT } } }
-				#ENG = { country_event = { id = NWspain.112 days = 2 } }
+				ENG = { country_event = { id = NWspain.112 days = 2 } }
 			}
 			if = {
 				limit = { NOT = { SOV = { is_in_faction_with = ROOT } } }
-				#SOV = { country_event = { id = NWspain.112 days = 3 } }
+				SOV = { country_event = { id = NWspain.112 days = 3 } }
 			}
 		}
 	}
@@ -3376,6 +3386,296 @@ country_event = {
 	}
 	
 }
+
+#Италия проводит агрессивную политику // FRA/ENG/SOV
+country_event = {
+	id = NWspain.112
+	title = NWspain.112.t
+	desc = NWspain.112.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName]: event NWspain.112" }
+	
+	option = {
+		name = NWspain.112.a
+		ai_chance = {
+			factor = 90
+		}
+		set_country_flag = anti_italy_flag
+		if = {
+			limit = {
+				tag = SOV
+				FRA = { has_country_flag = anti_italy_flag }
+				ENG = { has_country_flag = anti_italy_flag }
+			}
+			SOV = { country_event = { id = NWspain.113 days = 1 } }
+		}
+	}
+	
+	option = {
+		name = NWspain.112.b
+		ai_chance = {
+			factor = 10
+		}
+	}
+}
+
+#Миротворческая интервенция в Италию // SOV
+country_event = {
+	id = NWspain.113
+	title = NWspain.113.t
+	desc = NWspain.113.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName]: event NWspain.113" }
+	immediate = { clr_country_flag = anti_italy_flag }
+	
+	option = {
+		name = NWspain.113.a
+		ai_chance = {
+			factor = 90
+		}
+		FRA = { country_event = { id = NWspain.114 days = 1 } }
+		ENG = { country_event = { id = NWspain.114 days = 2 } }
+		if = {
+			limit = {
+				GER = {
+					NOT = { is_in_faction_with = FRA }
+					NOT = { is_in_faction_with = ENG }
+					NOT = { is_in_faction_with = SOV }
+				}
+			}
+			GER = { country_event = { id = NWspain.117 } }
+		}
+		hidden_effect = {
+			ITA = { country_event = { id = NWspain.115 days = 5 } }
+		}
+	}
+	
+	option = {
+		name = NWspain.113.b
+		ai_chance = {
+			factor = 10
+		}
+	}
+}
+
+#Советский Союз призывает к интервенции в Италию // FRA/ENG
+country_event = {
+	id = NWspain.114
+	title = NWspain.114.t
+	desc = NWspain.114.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName]: event NWspain.114" }
+	immediate = { clr_country_flag = anti_italy_flag }
+	
+	option = {
+		name = NWspain.114.a
+		ai_chance = {
+			factor = 90
+		}
+		set_country_flag = war_with_italy_flag
+	}
+	
+	option = {
+		name = NWspain.114.b
+		ai_chance = {
+			factor = 10
+		}
+	}
+}
+
+#Лига Наций требует прекратить вмешательство в дела Испании // ITA
+country_event = {
+	id = NWspain.115
+	title = NWspain.115.t
+	desc = NWspain.115.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName]: event NWspain.115" }
+	immediate = { clr_country_flag = anti_italy_flag }
+	
+	option = {
+		name = NWspain.115.a
+		ai_chance = {
+			factor = 80
+		}
+		add_stability = -0.1
+		every_country = {
+			limit = {
+				has_war_with = ITA
+				OR = {
+					tag = SPR
+					tag = ARA
+					tag = CAT
+					tag = BAS
+					tag = GLC
+				}
+			}
+			ITA = { white_peace = PREV }
+		}
+		if = {
+			limit = { SPA = { is_in_faction_with = ITA } }
+			SPA = { leave_faction = yes }
+		}
+		SPA = { country_event = { id = NWspain.116 } }
+		hidden_effect = {
+			diplomatic_relation = {
+				country = SPA
+				relation = guarantee
+				active = no
+			}
+			SPA = {
+				diplomatic_relation = {
+					country = ROOT
+					relation = guarantee
+					active = no
+				}
+			}
+			every_country = {
+				limit = { has_country_flag = war_with_italy_flag }
+				clr_country_flag = war_with_italy_flag
+			}
+		}
+	}
+	
+	option = {
+		name = NWspain.115.b
+		ai_chance = {
+			factor = 20
+		}
+		every_country = {
+			limit = {
+				OR = {
+					tag = SOV
+					has_country_flag = war_with_italy_flag
+				}
+			}
+			declare_war_on = {
+				target = ITA
+				type = topple_government
+			}
+		}
+		hidden_effect = {
+			every_country = {
+				limit = { has_country_flag = war_with_italy_flag }
+				clr_country_flag = war_with_italy_flag
+			}
+		}
+	}
+}
+
+#Италия вынуждена прекратить нашу поддержку // SPA
+country_event = {
+	id = NWspain.116
+	title = NWspain.116.t
+	desc = NWspain.116.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName]: event NWspain.116" }
+	
+	option = {
+		name = NWspain.116.a
+	}
+}
+
+#Угроза вторжения в Италию // GER
+country_event = {
+	id = NWspain.117
+	title = NWspain.117.t
+	desc = NWspain.117.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName]: event NWspain.117" }
+	immediate = { clr_country_flag = anti_italy_flag }
+	
+	option = {
+		name = NWspain.117.a
+		ai_chance = {
+			factor = 50
+		}
+		diplomatic_relation = {
+			country = ITA
+			relation = guarantee
+			active = yes
+		}
+	}
+	
+	option = {
+		name = NWspain.117.b
+		ai_chance = {
+			factor = 5
+		}
+	}
+	
+	option = {
+		name = NWspain.117.c
+		ai_chance = {
+			factor = 15
+		}
+		trigger = {
+			GER = {
+				has_full_control_of_state = 153
+				has_full_control_of_state = 841
+			}
+			ITA = {
+				has_full_control_of_state = 39
+				has_full_control_of_state = 846
+				has_full_control_of_state = 736
+				has_full_control_of_state = 824
+				has_full_control_of_state = 823
+			}
+		}
+		ITA = { country_event = { id = NWspain.118 days = 1 } }
+	}
+	
+	option = {
+		name = NWspain.117.d
+		ai_chance = {
+			factor = 30
+		}
+		trigger = {
+			GER = {
+				has_full_control_of_state = 153
+				has_full_control_of_state = 841
+			}
+			ITA = {
+				has_full_control_of_state = 39
+				has_full_control_of_state = 846
+			}
+		}
+		ITA = { country_event = { id = NWspain.118 days = 1 } }
+	}
+}
+
+#Германия предлагает свою поддержку // SPA
+country_event = {
+	id = NWspain.118
+	title = NWspain.118.t
+	desc = NWspain.118.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName]: event NWspain.118" }
+	
+	option = {
+		name = NWspain.118.a
+	}
+	
+	option = {
+		name = NWspain.118.b
+	}
+}
+
+
+
 
 
 
