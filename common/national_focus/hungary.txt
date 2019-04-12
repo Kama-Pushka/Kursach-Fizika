@@ -173,7 +173,11 @@ focus_tree = {
 		available_if_capitulated = yes
 
 		completion_reward = {
-			set_politics = { ruling_party = monarchy elections_allowed = no }
+			if = {
+				limit = { NOT = { has_government = monarchy } }
+				set_politics = { ruling_party = monarchy elections_allowed = no }
+				else = { set_political_party = { ideology = monarchy popularity = 0.05 } }
+			}
 			swap_ideas = {
 				remove_idea = HUN_hungarian_monarchy
 				add_idea = HUN_hungarian_monarchy_2
@@ -1890,20 +1894,63 @@ focus_tree = {
 		available_if_capitulated = no
 
 		completion_reward = {
-			add_state_core = 76
-			add_state_core = 83
-			add_state_core = 84
-			add_state_core = 664
-			add_state_claim = 45
-			add_state_claim = 82
-			add_state_claim = 778
-			add_state_claim = 814
-			add_state_claim = 109
-			add_state_claim = 816
-			add_state_claim = 817
-			add_state_claim = 103
-			add_state_claim = 810
-			add_state_claim = 815
+			if = {
+				limit = { 76 = { owner = { NOT = { is_in_faction_with = ROOT original_tag = ROOT } } } }
+				add_state_core = 76
+			}
+			if = {
+				limit = { 83 = { owner = { NOT = { is_in_faction_with = ROOT original_tag = ROOT } } } }
+				add_state_core = 83
+			}
+			if = {
+				limit = { 84 = { owner = { NOT = { is_in_faction_with = ROOT original_tag = ROOT } } } }
+				add_state_core = 84
+			}
+			if = {
+				limit = { 664 = { owner = { NOT = { is_in_faction_with = ROOT original_tag = ROOT } } } }
+				add_state_core = 664
+			}
+			if = {
+				limit = { 810 = { owner = { NOT = { is_in_faction_with = ROOT original_tag = ROOT } } } }
+				add_state_core = 810
+			}
+			if = {
+				limit = { 814 = { owner = { NOT = { is_in_faction_with = ROOT original_tag = ROOT } } } }
+				add_state_core = 814
+			}
+			if = {
+				limit = { 815 = { owner = { NOT = { is_in_faction_with = ROOT original_tag = ROOT } } } }
+				add_state_core = 815
+			}
+			
+			if = {
+				limit = { 45 = { owner = { NOT = { is_in_faction_with = ROOT original_tag = ROOT } } } }
+				add_state_claim = 45
+			}
+			if = {
+				limit = { 70 = { owner = { NOT = { is_in_faction_with = ROOT original_tag = ROOT } } } }
+				add_state_claim = 70
+			}
+			if = {
+				limit = { 71 = { owner = { NOT = { is_in_faction_with = ROOT original_tag = ROOT } } } }
+				add_state_claim = 71
+			}
+			if = {
+				limit = { 73 = { owner = { NOT = { is_in_faction_with = ROOT original_tag = ROOT } } } }
+				add_state_claim = 73
+			}
+			if = {
+				limit = { 82 = { owner = { NOT = { is_in_faction_with = ROOT original_tag = ROOT } } } }
+				add_state_claim = 82
+			}
+			if = {
+				limit = { 778 = { owner = { NOT = { is_in_faction_with = ROOT original_tag = ROOT } } } }
+				add_state_claim = 778
+			}
+			if = {
+				limit = { 990 = { owner = { NOT = { is_in_faction_with = ROOT original_tag = ROOT } } } }
+				add_state_claim = 990
+			}
 		}
 	}
 
@@ -1924,9 +1971,12 @@ focus_tree = {
 		available = {
 
 			ROM = {
-				controls_state = 76
-				controls_state = 83
-				controls_state = 84
+				OR = {
+					controls_state = 76
+					controls_state = 82
+					controls_state = 83
+					controls_state = 84
+				}
 			}
 			is_puppet = no
 			NOT = {
@@ -1950,6 +2000,7 @@ focus_tree = {
 				NOT = {
 					ROM = {
 						controls_state = 76
+						controls_state = 82
 						controls_state = 83
 						controls_state = 84
 					}
@@ -1990,14 +2041,20 @@ focus_tree = {
 			if = {
 				limit = { 
 					country_exists = CZE 
-					664 = { is_owned_by = CZE }
+					OR = {
+						664 = { is_owned_by = CZE }
+						815 = { is_owned_by = CZE }
+					}
 				}
 				strength_ratio = { tag = CZE ratio > 0.75 }
 			}
 			if = {
 				limit = { 
 					country_exists = SLO 
-					664 = { is_owned_by = SLO }
+					OR = {
+						664 = { is_owned_by = SLO }
+						815 = { is_owned_by = SLO }
+					}
 				}
 				strength_ratio = { tag = SLO ratio > 0.75 }
 			}
@@ -2019,6 +2076,18 @@ focus_tree = {
 					NOT = { SLO = { owns_state = 664 } }
 				}
 			}
+			OR = {
+				owns_state = 815
+				815 = {
+					OWNER = {
+						has_war_with = ROOT
+					}
+				}
+				AND = {
+					NOT = { CZE = { owns_state = 815 } }
+					NOT = { SLO = { owns_state = 815 } }
+				}
+			}
 		}
 
 		cancel_if_invalid = yes
@@ -2031,7 +2100,10 @@ focus_tree = {
 				limit = {
 					CZE = {
 						exists = yes 
-						owns_state = 664
+						OR = {
+							owns_state = 664
+							owns_state = 815
+						}
 					}
 				}
 				if = {
@@ -2041,7 +2113,7 @@ focus_tree = {
 					create_wargoal = {
 						type = take_state_focus
 						target = CZE
-						generator = { 664 }
+						generator = { 664 815 }
 					}
 					else = {
 						CZE = { country_event = DOD_hungary.80 }
@@ -2050,19 +2122,25 @@ focus_tree = {
 			}
 			if = {
 				limit = {
-					664 = { is_owned_by = POL } #exchanged Danzig for Slovakia
+					OR = {
+						664 = { is_owned_by = POL } #exchanged Danzig for Slovakia
+						815 = { is_owned_by = POL }
+					}
 				}
 				create_wargoal = {
 					type = take_state_focus
 					target = POL
-					generator = { 664 }
+					generator = { 664 815 }
 				}
 			}
 			if = {
 				limit = {
 					SLO = { 
 						exists = yes 
-						owns_state = 664
+						OR = {
+							owns_state = 664
+							owns_state = 815
+						}
 					}
 				}
 				SLO = { country_event = DOD_hungary.80 }
@@ -2180,8 +2258,8 @@ focus_tree = {
 				any_other_country = {
 					owns_state = 70
 					owns_state = 71
-					owns_state = 815
 					owns_state = 73
+					owns_state = 990
 					NOT = {
 						has_war_with = HUN
 					}
@@ -2203,7 +2281,7 @@ focus_tree = {
 				AND = {
 					owns_state = 70
 					owns_state = 71
-					owns_state = 815
+					owns_state = 990
 					owns_state = 73
 				}
 			}
@@ -2755,6 +2833,36 @@ focus_tree = {
 					instant_build = yes
 				}
 			}
+			random_state = {
+				limit = {
+					has_state_flag = HUN_reintegrate_the_railroads_Inf_4
+				}
+				add_building_construction = {
+					type = infrastructure
+					level = 1
+					instant_build = yes
+				}
+			}
+			random_state = {
+				limit = {
+					has_state_flag = HUN_reintegrate_the_railroads_Inf_5
+				}
+				add_building_construction = {
+					type = infrastructure
+					level = 1
+					instant_build = yes
+				}
+			}
+			random_state = {
+				limit = {
+					has_state_flag = HUN_reintegrate_the_railroads_Inf_6
+				}
+				add_building_construction = {
+					type = infrastructure
+					level = 1
+					instant_build = yes
+				}
+			}
 			if = {
 				limit = { country_exists = AUS }
 				reverse_add_opinion_modifier = { target = AUS modifier = HUN_reintegrate_the_railroads }
@@ -2762,6 +2870,10 @@ focus_tree = {
 			if = {
 				limit = { country_exists = CZE }
 				reverse_add_opinion_modifier = { target = CZE modifier = HUN_reintegrate_the_railroads }
+			}
+			if = {
+				limit = { country_exists = SLO }
+				reverse_add_opinion_modifier = { target = SLO modifier = HUN_reintegrate_the_railroads }
 			}
 		}
 
@@ -2811,13 +2923,125 @@ focus_tree = {
 				}
 				set_state_flag = HUN_reintegrate_the_railroads_Inf_3
 			}
-			if = {
-				limit = { country_exists = AUS }
-				reverse_add_opinion_modifier = { target = AUS modifier = HUN_reintegrate_the_railroads }
+			random_owned_controlled_state = {
+				prioritize = { 783 }
+				limit = {
+					free_building_slots = {
+						building = infrastructure
+						size > 0
+					}
+				}
+				add_building_construction = {
+					type = infrastructure
+					level = 1
+					instant_build = yes
+				}
+				set_state_flag = HUN_reintegrate_the_railroads_Inf_4
+			}
+			random_owned_controlled_state = {
+				prioritize = { 784 }
+				limit = {
+					free_building_slots = {
+						building = infrastructure
+						size > 0
+					}
+				}
+				add_building_construction = {
+					type = infrastructure
+					level = 1
+					instant_build = yes
+				}
+				set_state_flag = HUN_reintegrate_the_railroads_Inf_5
+			}
+			random_owned_controlled_state = {
+				prioritize = { 977 }
+				limit = {
+					free_building_slots = {
+						building = infrastructure
+						size > 0
+					}
+				}
+				add_building_construction = {
+					type = infrastructure
+					level = 1
+					instant_build = yes
+				}
+				set_state_flag = HUN_reintegrate_the_railroads_Inf_6
 			}
 			if = {
-				limit = { country_exists = CZE }
+				limit = { country_exists = AUS NOT = { has_war_with = AUS } }
+				reverse_add_opinion_modifier = { target = AUS modifier = HUN_reintegrate_the_railroads }
+				hidden_effect = {
+					AUS = {
+						random_owned_controlled_state = {
+							limit = {
+								free_building_slots = {
+									building = infrastructure
+									size > 0
+								}
+								num_owned_neighbour_states = {
+									owner = HUN
+									count > 0
+								}
+							}
+							add_building_construction = {
+								type = infrastructure
+								level = 1
+								instant_build = yes
+							}
+						}
+					}
+				}
+			}
+			if = {
+				limit = { country_exists = CZE NOT = { has_war_with = CZE } }
 				reverse_add_opinion_modifier = { target = CZE modifier = HUN_reintegrate_the_railroads }
+				hidden_effect = {
+					CZE = {
+						random_owned_controlled_state = {
+							limit = {
+								free_building_slots = {
+									building = infrastructure
+									size > 0
+								}
+								num_owned_neighbour_states = {
+									owner = HUN
+									count > 0
+								}
+							}
+							add_building_construction = {
+								type = infrastructure
+								level = 1
+								instant_build = yes
+							}
+						}
+					}
+				}
+			}
+			if = {
+				limit = { country_exists = SLO NOT = { has_war_with = SLO } }
+				reverse_add_opinion_modifier = { target = SLO modifier = HUN_reintegrate_the_railroads }
+				hidden_effect = {
+					SLO = {
+						random_owned_controlled_state = {
+							limit = {
+								free_building_slots = {
+									building = infrastructure
+									size > 0
+								}
+								num_owned_neighbour_states = {
+									owner = HUN
+									count > 0
+								}
+							}
+							add_building_construction = {
+								type = infrastructure
+								level = 1
+								instant_build = yes
+							}
+						}
+					}
+				}
 			}
 		}
 	}
