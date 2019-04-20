@@ -30,7 +30,7 @@ country_event = {
 			}
 		}
 		add_ideas = HUN_habsburg_restored
-		set_rule = { can_create_factions = yes }
+		#set_rule = { can_create_factions = yes }
 		set_country_flag = hbbrg_flag
 		set_party_name = { ideology = democratic long_name = habsburg_democratic_party name = habsburg_democratic_party }
 		set_party_name = { ideology = communism long_name = habsburg_communism_party name = habsburg_communism_party }
@@ -60,6 +60,13 @@ country_event = {
 			YUG = { country_event = { id = TRpolitical.104 } }
 			ROM = { country_event = { id = TRpolitical.104 } }
 			TUR = { country_event = { id = TRpolitical.104 } }
+			if = {
+				limit = { SPA = { has_idea = SPA_otto_von_habsburg } }
+				set_autonomy = {
+					target = SPA
+					autonomy_state = autonomy_dominion
+				}
+			}
 		}
 	}
 }
@@ -6485,7 +6492,6 @@ country_event = {
 				}
 			}
 		}
-		
 		YUG = { country_event = { id = NWmonarchy.98 days = 1 } }
 	}
 }
@@ -6528,9 +6534,18 @@ country_event = {
 	title = NWmonarchy.97.t
 	desc = NWmonarchy.97.desc
 	picture = GFX_report_event_generic_rally_3
-	is_triggered_only = yes
+	fire_only_once = yes
 	
 	immediate = { log = "[GetDateText]: [Root.GetName]: event NWmonarchy.97" }
+	
+	trigger = {
+		NOT = { has_war_with = YUG }
+		has_country_flag = anti_YUG_flag
+		any_country = {
+			has_country_flag = anti_YUG_flag
+			has_war_with = YUG
+		}
+	}
 
 	option = {
 		log = "[GetDateText]: [Root.GetName]: choose option NWmonarchy.97.a"
@@ -6539,12 +6554,30 @@ country_event = {
 			factor = 90
 		}
 		
-		add_to_war = {
-			targeted_alliance = FROM
-			enemy = YUG
+		#declare_war_on = {
+		#	target = YUG
+		#	type = annex_everything
+		#}
+		
+		random_other_country = {
+			limit = {
+				has_country_flag = anti_YUG_flag
+				has_war_with = YUG
+			}
+			ROOT = {
+				add_to_war = {
+					targeted_alliance = PREV
+					enemy = YUG
+				}
+			}
 		}
+		
 		hidden_effect = {
 			YUG = { clr_country_flag = no_barter_flag }
+			every_country = {
+				limit = { has_country_flag = anti_YUG_flag }
+				clr_country_flag = anti_YUG_flag
+			}
 		}
 	}
 	
@@ -6554,8 +6587,22 @@ country_event = {
 		ai_chance = {
 			factor = 10
 		}
+		random_other_country = {
+			limit = {
+				has_country_flag = anti_YUG_flag
+				has_war_with = YUG
+			}
+			add_opinion_modifier = {
+				target = ROOT
+				modifier = diplomatic_affront
+			}
+		}
 		hidden_effect = {
 			YUG = { clr_country_flag = no_barter_flag }
+			every_country = {
+				limit = { has_country_flag = anti_YUG_flag }
+				clr_country_flag = anti_YUG_flag
+			}
 		}
 	}
 }

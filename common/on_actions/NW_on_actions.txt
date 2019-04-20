@@ -142,10 +142,17 @@ on_actions = {
 				SPR = {
 					country_event = { id = NWspain.2 days = 9 }
 					country_event = { id = NWspain.3 days = 12 random = 2 }
-					country_event = { id = NWspain.4 days = 15 }
-					country_event = { id = NWspain.5 days = 45 }
+					country_event = { id = NWspain.990 days = 15 } #Пульсар
+					country_event = { id = NWspain.5 days = 44 }
 				}
 			}
+			
+			# Greece
+			GRE = {
+				country_event = { id = nw_greece.1 days = 26 }
+				country_event = { id = nw_greece.14 days = 730 }
+			}
+			set_variable = { var = var_add_pop value = 0 }
 		}
 	}
 	
@@ -169,6 +176,34 @@ on_actions = {
 					subtract_from_variable = { var = bonus_gw value = 1 }
 					country_event = { id = TR.wonder.28 }
 				}
+			}
+			
+			#чечня - круто
+			if = {
+				limit = {
+					FROM.FROM = { state = 966 }
+					ROOT = { NOT = { original_tag = ICH } }
+					FROM = {
+						original_tag = ICH
+						is_puppet = no
+						is_subject = no
+						NOT = { has_cosmetic_tag = ICH_Chechnya }
+					}
+				}
+				FROM = { set_cosmetic_tag = ICH_Chechnya }
+			}
+			if = {
+				limit = {
+					FROM.FROM = { state = 966 }
+					FROM = { NOT = { original_tag = ICH } }
+					ROOT = {
+						original_tag = ICH
+						is_puppet = no
+						is_subject = no
+						has_cosmetic_tag = ICH_Chechnya
+					}
+				}
+				ROOT = { drop_cosmetic_tag = yes }
 			}
 		}
 	}
@@ -629,6 +664,314 @@ on_actions = {
 							NOT = { tag = ROOT }
 						}
 						country_event = { id = NWmonarchy.97 days = 1 }
+					}
+				}
+			}
+			#ARA states and troops
+			if = {
+				limit = {
+					OR = {
+						AND = {
+							FROM = { tag = SPR }
+							ROOT = { tag = ARA }
+						}
+						AND = {
+							FROM = { tag = ARA }
+							ROOT = { tag = SPR }
+						}
+					}
+					ARA = { has_country_flag = ARA_call_to_anarchists_andalusia_flag }
+				}
+				ARA = {
+					transfer_state = 169
+					transfer_state = 173
+					division_template = {
+						name = "Anarchists Brigada N2"
+						priority = 1
+						is_locked = no
+						regiments = {
+							infantry = { x = 0 y = 0 }
+							infantry = { x = 0 y = 1 }
+							infantry = { x = 0 y = 2 }
+							infantry = { x = 1 y = 0 }
+							infantry = { x = 1 y = 1 }
+							infantry = { x = 1 y = 2 }
+						}
+					}
+					169 = {
+						create_unit = {
+							division = "name = \"1. Anarchists Brigada\" division_template = \"Anarchists Brigada N2\" start_experience_factor = 0.5" 
+							owner = ARA
+						}
+					}
+					173 = {
+						create_unit = {
+							division = "name = \"2. Anarchists Brigada\" division_template = \"Anarchists Brigada N2\" start_experience_factor = 0.5" 
+							owner = ARA
+						}
+					}
+					clr_country_flag = ARA_call_to_anarchists_andalusia_flag
+				}
+			}
+			
+			#Анархо-Испанская ГВ (1vs1vs1)
+			if = {
+				limit = {
+					FROM = { tag = SPR }
+					ROOT = { tag = ARA }
+					has_global_flag = spanish_civil_war
+					NOT = { has_global_flag = scw_over }
+					SPR = { has_war_with = SPA }
+				}
+				ROOT = {
+					news_event = { id = trworldnews.68 hours = 6 }
+					set_global_flag = expand_spanish_civil_war
+				}
+			}
+		}
+	}
+	
+	# ROOT is capitulated country, FROM is winner
+	on_capitulation = {
+		effect = {
+			#End of SCW
+			#ГВ Испании
+			if = {
+				limit = {
+					FROM = {
+						tag = SPA
+					}
+					ROOT = {
+						tag = SPR
+					}
+				}
+				#FROM = { add_timed_idea = { idea = SPA_recovering_from_civil_war days = 1825 } }
+				
+				FROM = {
+					if = {
+						limit = {
+							ARA = {
+								has_war_with = SPA
+								is_puppet_of = SPR
+							}
+						}
+						FROM = {
+							annex_country = {
+								target = ARA
+								transfer_troops = no
+							}
+						}
+					}
+					if = {
+						limit = {
+							BAS = {
+								has_war_with = SPA
+								is_puppet_of = SPR
+							}
+						}
+						FROM = {
+							annex_country = {
+								target = BAS
+								transfer_troops = no
+							}
+						}
+					}
+					if = {
+						limit = {
+							CAT = {
+								has_war_with = SPA
+								is_puppet_of = SPR
+							}
+						}
+						FROM = {
+							annex_country = {
+								target = CAT
+								transfer_troops = no
+							}
+						}
+					}
+					if = {
+						limit = {
+							GLC = {
+								has_war_with = SPA
+								is_puppet_of = SPR
+							}
+						}
+						FROM = {
+							annex_country = {
+								target = GLC
+								transfer_troops = no
+							}
+						}
+					}
+					if = {
+						limit = {
+							ASU = {
+								has_war_with = SPA
+								is_puppet_of = SPR
+							}
+						}
+						FROM = {
+							annex_country = {
+								target = ASU
+								transfer_troops = no
+							}
+						}
+					}
+					if = {
+						limit = {
+							SNT = {
+								has_war_with = SPA
+								is_puppet_of = SPR
+							}
+						}
+						FROM = {
+							annex_country = {
+								target = SNT
+								transfer_troops = no
+							}
+						}
+					}
+					
+					
+					every_state = {
+						limit = { is_core_of = SPR }
+						remove_core_of = SPR
+					}
+					
+					annex_country = {
+						target = ROOT
+						transfer_troops = no
+					}
+				}
+			}
+			if = {
+				limit = {
+					FROM = {
+						tag = SPR
+					}
+					ROOT = {
+						tag = SPA
+					}
+				}
+				FROM = {
+					add_timed_idea = { idea = SPA_recovering_from_civil_war days = 1825 }
+					every_state = {
+						limit = { is_core_of = SPA }
+						remove_core_of = SPA
+					}
+					
+					annex_country = {
+						target = ROOT
+						transfer_troops = no
+					}
+				}
+			}
+			
+			if = {
+				limit = {
+					ROOT = { tag = ASU }
+				}
+				ROOT = {
+					174 = { remove_core_of = ASU }
+					drop_cosmetic_tag = yes
+				}
+			}
+			if = {
+				limit = {
+					ROOT = { tag = SNT }
+				}
+				ROOT = {
+					drop_cosmetic_tag = yes
+				}
+			}
+		}
+	}
+	
+	#ROOT is winner #FROM gets annexed - For civil wars on_civil_war_end is also fired
+	on_annex = {
+		effect = {
+			#SPR - ARA
+			if = {
+				limit = {
+					FROM = { tag = SPR }
+					ROOT = {
+						OR = {
+							tag = ARA
+							tag = CAT
+						}
+					}
+				}
+				ARA = {
+					every_state = {
+						limit = {
+							is_claimed_by = ARA
+							NOT = { is_fully_controlled_by = ARA }
+						}
+						remove_core_of = ARA
+						remove_claim_by = ARA
+					}
+				}
+				if = {
+					limit = { GLC = { exists = yes } }
+					ARA = {
+						every_state = {
+							limit = { is_fully_controlled_by = GLC }
+							add_claim_by = ARA
+							add_core_of = ARA
+						}
+					}
+				}
+				if = {
+					limit = { BAS = { exists = yes } }
+					ARA = {
+						every_state = {
+							limit = { is_fully_controlled_by = BAS }
+							add_claim_by = ARA
+							add_core_of = ARA
+						}
+					}
+				}
+				if = {
+					limit = { ASU = { exists = yes } }
+					ARA = {
+						every_state = {
+							limit = { is_fully_controlled_by = ASU }
+							add_claim_by = ARA
+							add_core_of = ARA
+						}
+					}
+				}
+				if = {
+					limit = { SNT = { exists = yes } }
+					ARA = {
+						every_state = {
+							limit = { is_fully_controlled_by = SNT }
+							add_claim_by = ARA
+							add_core_of = ARA
+						}
+					}
+				}
+				if = {
+					limit = { CAT = { exists = yes } }
+					CAT = {
+						every_state = {
+							limit = {
+								is_claimed_by = CAT
+								NOT = { is_fully_controlled_by = CAT }
+							}
+							remove_core_of = CAT
+							remove_claim_by = CAT
+						}
+					}
+				}
+				SPR = {
+					every_state = {
+						limit = {
+							is_core_of = SPR
+						}
+						remove_core_of = SPR
+						remove_claim_by = SPR
 					}
 				}
 			}

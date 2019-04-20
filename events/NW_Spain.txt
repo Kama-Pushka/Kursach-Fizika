@@ -12,10 +12,16 @@ country_event = {
 	picture = GFX_report_event_generic_rally_3
 	is_triggered_only = yes
 	
+	immediate = { log = "[GetDateText]: [Root.GetName]: event NWspain.1" }
+	
 	immediate = {
-		log = "[GetDateText]: [Root.GetName]: event NWspain.1"
 		set_variable = { SPRdemo = party_popularity@democratic }
 		set_variable = { SPRking = party_popularity@monarchy }
+		if = {
+			limit = { has_country_flag = democrats_plus_autoritarian_flag }
+			set_variable = { SPRneut = party_popularity@neutrality }
+			add_to_variable = { SPRdemo = SPRneut }
+		}
 	}
 	
 	#Народный фронт одержал победу
@@ -27,6 +33,12 @@ country_event = {
 			NOT = { has_country_flag = libarals_win_flag }
 		}
 		complete_national_focus = SPR_victory_popular_front
+		hidden_effect = {
+			clr_country_flag = democrats_plus_autoritarian_flag
+			clr_country_flag = spain_block_legitimacy_flag
+			country_event = { id = TRlegitimacy.8 days = 0 }
+			news_event = { id = trworldnews.62 hours = 6 }
+		}
 	}
 	
 	#Национальный блок одержал победу
@@ -36,6 +48,7 @@ country_event = {
 			OR = {
 				AND = {
 					has_country_flag = democrats_available_elections_flag
+					NOT = { has_country_flag = libarals_win_flag }
 					check_variable = { var = SPRking value = SPRdemo compare = greater_than_or_equals }
 				}
 				AND = {
@@ -45,6 +58,12 @@ country_event = {
 			}
 		}
 		complete_national_focus = SPR_victory_national_block
+		hidden_effect = {
+			clr_country_flag = democrats_plus_autoritarian_flag
+			clr_country_flag = spain_block_legitimacy_flag
+			country_event = { id = TRlegitimacy.8 days = 0 }
+			news_event = { id = trworldnews.63 hours = 6 }
+		}
 	}
 	
 	#Либеральная партия одержал победу
@@ -54,14 +73,20 @@ country_event = {
 			has_country_flag = libarals_win_flag
 		}
 		complete_national_focus = SPR_victory_liberal_party
+		hidden_effect = {
+			clr_country_flag = democrats_plus_autoritarian_flag
+			clr_country_flag = spain_block_legitimacy_flag
+			country_event = { id = TRlegitimacy.8 days = 0 }
+			news_event = { id = trworldnews.64 hours = 6 }
+		}
 	}
 }
 
 
 
-################
-#### ВЫБОРЫ ####
-################
+##################
+####  ВЫБОРЫ  ####
+##################
 
 #Национальный блок отказывает правительству в доверии
 country_event = {
@@ -128,12 +153,33 @@ country_event = {
 	}
 }
 
-#Левые партии образуют Народный блок
+#Пульсар // Левые партии образуют Народный Фронт
+country_event = {
+	id = NWspain.990
+	title = NWspain.990.t
+	desc = NWspain.990.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	hidden = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName]: event NWspain.990" }
+	
+	option = {
+		name = NWspain.990.a
+		if = {
+			limit = { has_country_flag = democrats_available_elections_flag }
+			country_event = { id = NWspain.4 days = 0 }
+		}
+	}
+	
+}
+
+#Левые партии образуют Народный Фронт
 country_event = {
 	id = NWspain.4
 	title = NWspain.4.t
 	desc = NWspain.4.desc
-	picture = GFX_report_event_generic_rally_3
+	picture = GFX_report_event_communist_leader
 	is_triggered_only = yes
 	
 	immediate = { log = "[GetDateText]: [Root.GetName]: event NWspain.4" }
@@ -141,15 +187,11 @@ country_event = {
 	option = {
 		name = NWspain.4.a
 		ai_chance = {
-			factor = 50
-			modifier = {
-				factor = 0
-				is_historical_focus_on = yes
-			}
+			factor = 75
 		}
 		add_popularity = { ideology = communism popularity = -0.05 }
 		add_popularity = { ideology = trozkism popularity = -0.05 }
-		add_popularity = { ideology = anarchism popularity = -0.03 }
+		add_popularity = { ideology = anarchism popularity = -0.02 }
 		add_popularity = { ideology = democratic popularity = 0.12 }
 		set_party_name = { ideology = democratic name = SPR_popular_front_party long_name = SPR_popular_front_party }
 	}
@@ -157,8 +199,13 @@ country_event = {
 	option = {
 		name = NWspain.4.b
 		ai_chance = {
-			factor = 50
+			factor = 25
+			modifier = {
+				factor = 0
+				is_historical_focus_on = yes
+			}
 		}
+		custom_effect_tooltip = democrats_plus_autoritarian_tt
 		set_country_flag = democrats_plus_autoritarian_flag
 	}
 }
@@ -168,28 +215,31 @@ country_event = {
 	id = NWspain.5
 	title = NWspain.5.t
 	desc = NWspain.5.desc
-	picture = GFX_report_event_generic_rally_3
+	picture = GFX_report_event_communists_cheer
 	is_triggered_only = yes
 	
+	immediate = { log = "[GetDateText]: [Root.GetName]: event NWspain.5" }
+	
 	immediate = {
-		log = "[GetDateText]: [Root.GetName]: event NWspain.5"
 		if = {
 			limit = { ROOT = { is_ai = yes } }
-			country_event = { id = NWspain.8 hours = 1 }
+			ROOT = { country_event = { id = NWspain.8 hours = 1 } }
 		}
 		if = {
 			limit = {
-				NOT = { has_country_flag = democrats_available_elections_flag }
-				neutrality > 0.150
+				ROOT = {
+					NOT = { has_country_flag = democrats_available_elections_flag }
+					neutrality > 0.150
+				}
 			}
-			country_event = { id = NWspain.9 days = 1 }
+			ROOT = { country_event = { id = NWspain.9 days = 1 } }
 		}
 	}
 	
 	option = {
 		name = NWspain.5.a
 		ai_chance = {
-			factor = 50
+			factor = 75
 		}
 		add_popularity = { ideology = democratic popularity = 0.04 }
 		add_popularity = { ideology = monarchy popularity = -0.02 }
@@ -198,7 +248,7 @@ country_event = {
 	option = {
 		name = NWspain.5.b
 		ai_chance = {
-			factor = 50
+			factor = 25
 			modifier = {
 				factor = 0
 				is_historical_focus_on = yes
@@ -227,6 +277,51 @@ country_event = {
 		}
 		add_popularity = { ideology = democratic popularity = -0.1 }
 		add_popularity = { ideology = neutrality popularity = 0.1 }
+		remove_ideas = SPR_catalon_nationalism
+		hidden_effect = {
+			CAT = {
+				add_equipment_to_stockpile = {
+					type = infantry_equipment
+					amount = 5000
+				}
+				division_template = {
+					name = "Catalon Brigada"
+					priority = 1
+					is_locked = no
+					regiments = {
+						infantry = { x = 0 y = 0 }
+						infantry = { x = 0 y = 1 }
+						infantry = { x = 0 y = 2 }
+					}
+				}
+				every_owned_state = {
+					create_unit = {
+						division = "name = \"Catalon Brigada\" division_template = \"Catalon Brigada\" start_experience_factor = 0.4" 
+						owner = CAT
+					}
+					create_unit = {
+						division = "name = \"Catalon Brigada\" division_template = \"Catalon Brigada\" start_experience_factor = 0.4" 
+						owner = CAT
+					}
+					create_unit = {
+						division = "name = \"Catalon Brigada\" division_template = \"Catalon Brigada\" start_experience_factor = 0.4" 
+						owner = CAT
+					}
+					create_unit = {
+						division = "name = \"Catalon Brigada\" division_template = \"Catalon Brigada\" start_experience_factor = 0.4" 
+						owner = CAT
+					}
+					create_unit = {
+						division = "name = \"Catalon Brigada\" division_template = \"Catalon Brigada\" start_experience_factor = 0.4" 
+						owner = CAT
+					}
+					create_unit = {
+						division = "name = \"Catalon Brigada\" division_template = \"Catalon Brigada\" start_experience_factor = 0.4" 
+						owner = CAT
+					}
+				}
+			}
+		}
 	}
 }
 
@@ -247,6 +342,51 @@ country_event = {
 		}
 		add_popularity = { ideology = democratic popularity = -0.05 }
 		add_popularity = { ideology = neutrality popularity = 0.05 }
+		remove_ideas = SPR_basks_nationalism
+		hidden_effect = {
+			BAS = {
+				add_equipment_to_stockpile = {
+					type = infantry_equipment
+					amount = 5000
+				}
+				division_template = {
+					name = "Basks Brigada"
+					priority = 1
+					is_locked = no
+					regiments = {
+						infantry = { x = 0 y = 0 }
+						infantry = { x = 0 y = 1 }
+						infantry = { x = 0 y = 2 }
+					}
+				}
+				every_owned_state = {
+					create_unit = {
+						division = "name = \"Basks Brigada\" division_template = \"Basks Brigada\" start_experience_factor = 0.4" 
+						owner = BAS
+					}
+					create_unit = {
+						division = "name = \"Basks Brigada\" division_template = \"Basks Brigada\" start_experience_factor = 0.4" 
+						owner = BAS
+					}
+					create_unit = {
+						division = "name = \"Basks Brigada\" division_template = \"Basks Brigada\" start_experience_factor = 0.4" 
+						owner = BAS
+					}
+					create_unit = {
+						division = "name = \"Basks Brigada\" division_template = \"Basks Brigada\" start_experience_factor = 0.4" 
+						owner = BAS
+					}
+					create_unit = {
+						division = "name = \"Basks Brigada\" division_template = \"Basks Brigada\" start_experience_factor = 0.4" 
+						owner = BAS
+					}
+					create_unit = {
+						division = "name = \"Basks Brigada\" division_template = \"Basks Brigada\" start_experience_factor = 0.4" 
+						owner = BAS
+					}
+				}
+			}
+		}
 	}
 }
 
@@ -276,7 +416,39 @@ country_event = {
 				is_historical_focus_on = yes
 			}
 		}
+		add_popularity = { ideology = democratic popularity = -0.1 }
+		add_popularity = { ideology = neutrality popularity = 0.1 }
 		release_puppet = CAT
+		hidden_effect = {
+			CAT = {
+				inherit_technology = SPR
+				set_country_flag = catalonia_focus_democrat_flag
+				load_focus_tree = catalonia_focus_democrat
+				set_politics = {
+					parties = {
+						democratic = { 
+							popularity = 10
+						}
+						monarchy = {
+							popularity = 40
+						}
+						neutrality = {
+							popularity = 17
+						}
+						trozkism = {
+							popularity = 3
+						}
+						anarchism = {
+							popularity = 30
+						}
+					}
+					ruling_party = democratic
+					last_election = "1933.2.16"
+					election_frequency = 36
+					elections_allowed = yes
+				}
+			}
+		}
 	}
 }
 
@@ -327,6 +499,84 @@ country_event = {
 			factor = 50
 		}
 		release_puppet = CAT
+		hidden_effect = {
+			CAT = {
+				inherit_technology = SPR
+				set_country_flag = catalonia_focus_democrat_flag
+				load_focus_tree = catalonia_focus_democrat
+				set_politics = {
+					parties = {
+						democratic = { 
+							popularity = 10
+						}
+						monarchy = {
+							popularity = 40
+						}
+						neutrality = {
+							popularity = 17
+						}
+						trozkism = {
+							popularity = 3
+						}
+						anarchism = {
+							popularity = 30
+						}
+					}
+					ruling_party = democratic
+					last_election = "1933.2.16"
+					election_frequency = 36
+					elections_allowed = yes
+				}
+				add_equipment_to_stockpile = {
+					type = infantry_equipment
+					amount = 5000
+				}
+				division_template = {
+					name = "Catalon Brigada"
+					priority = 1
+					is_locked = no
+					regiments = {
+						infantry = { x = 0 y = 0 }
+						infantry = { x = 0 y = 1 }
+						infantry = { x = 0 y = 2 }
+					}
+				}
+				every_owned_state = {
+					create_unit = {
+						division = "name = \"1. Catalon Brigada\" division_template = \"Catalon Brigada\" start_experience_factor = 0.4" 
+						owner = CAT
+					}
+					create_unit = {
+						division = "name = \"2. Catalon Brigada\" division_template = \"Catalon Brigada\" start_experience_factor = 0.4" 
+						owner = CAT
+					}
+					create_unit = {
+						division = "name = \"3. Catalon Brigada\" division_template = \"Catalon Brigada\" start_experience_factor = 0.4" 
+						owner = CAT
+					}
+					create_unit = {
+						division = "name = \"4. Catalon Brigada\" division_template = \"Catalon Brigada\" start_experience_factor = 0.4" 
+						owner = CAT
+					}
+					create_unit = {
+						division = "name = \"5. Catalon Brigada\" division_template = \"Catalon Brigada\" start_experience_factor = 0.4" 
+						owner = CAT
+					}
+					create_unit = {
+						division = "name = \"6. Catalon Brigada\" division_template = \"Catalon Brigada\" start_experience_factor = 0.4" 
+						owner = CAT
+					}
+					create_unit = {
+						division = "name = \"7. Catalon Brigada\" division_template = \"Catalon Brigada\" start_experience_factor = 0.4" 
+						owner = CAT
+					}
+					create_unit = {
+						division = "name = \"8. Catalon Brigada\" division_template = \"Catalon Brigada\" start_experience_factor = 0.4" 
+						owner = CAT
+					}
+				}
+			}
+		}
 		remove_ideas = SPR_catalon_nationalism
 	}
 	
@@ -341,10 +591,86 @@ country_event = {
 	
 	option = {
 		name = NWspain.10.c
-		trigger = {
-			is_ai = no
-		}
+		trigger = { is_ai = no }
 		release_puppet = CAT
+		hidden_effect = {
+			CAT = {
+				inherit_technology = SPR
+				set_country_flag = catalonia_focus_democrat_flag
+				load_focus_tree = catalonia_focus_democrat
+				set_politics = {
+					parties = {
+						democratic = { 
+							popularity = 10
+						}
+						monarchy = {
+							popularity = 40
+						}
+						neutrality = {
+							popularity = 17
+						}
+						trozkism = {
+							popularity = 3
+						}
+						anarchism = {
+							popularity = 30
+						}
+					}
+					ruling_party = democratic
+					last_election = "1933.2.16"
+					election_frequency = 36
+					elections_allowed = yes
+				}
+				add_equipment_to_stockpile = {
+					type = infantry_equipment
+					amount = 5000
+				}
+				division_template = {
+					name = "Catalon Brigada"
+					priority = 1
+					is_locked = no
+					regiments = {
+						infantry = { x = 0 y = 0 }
+						infantry = { x = 0 y = 1 }
+						infantry = { x = 0 y = 2 }
+					}
+				}
+				every_owned_state = {
+					create_unit = {
+						division = "name = \"1. Catalon Brigada\" division_template = \"Catalon Brigada\" start_experience_factor = 0.4" 
+						owner = CAT
+					}
+					create_unit = {
+						division = "name = \"2. Catalon Brigada\" division_template = \"Catalon Brigada\" start_experience_factor = 0.4" 
+						owner = CAT
+					}
+					create_unit = {
+						division = "name = \"3. Catalon Brigada\" division_template = \"Catalon Brigada\" start_experience_factor = 0.4" 
+						owner = CAT
+					}
+					create_unit = {
+						division = "name = \"4. Catalon Brigada\" division_template = \"Catalon Brigada\" start_experience_factor = 0.4" 
+						owner = CAT
+					}
+					create_unit = {
+						division = "name = \"5. Catalon Brigada\" division_template = \"Catalon Brigada\" start_experience_factor = 0.4" 
+						owner = CAT
+					}
+					create_unit = {
+						division = "name = \"6. Catalon Brigada\" division_template = \"Catalon Brigada\" start_experience_factor = 0.4" 
+						owner = CAT
+					}
+					create_unit = {
+						division = "name = \"7. Catalon Brigada\" division_template = \"Catalon Brigada\" start_experience_factor = 0.4" 
+						owner = CAT
+					}
+					create_unit = {
+						division = "name = \"8. Catalon Brigada\" division_template = \"Catalon Brigada\" start_experience_factor = 0.4" 
+						owner = CAT
+					}
+				}
+			}
+		}
 		remove_ideas = SPR_catalon_nationalism
 		CAT = { change_tag_from = ROOT }
 	}
@@ -368,9 +694,62 @@ country_event = {
 		release_puppet = BAS
 		remove_ideas = SPR_basks_nationalism
 		BAS = {
+			inherit_technology = SPR
 			add_popularity = { ideology = neutrality popularity = 0.15 }
 			set_politics = {
 				ruling_party = neutrality
+			}
+		}
+		hidden_effect = {
+			BAS = {
+				add_equipment_to_stockpile = {
+					type = infantry_equipment
+					amount = 5000
+				}
+				division_template = {
+					name = "Basks Brigada"
+					priority = 1
+					is_locked = no
+					regiments = {
+						infantry = { x = 0 y = 0 }
+						infantry = { x = 0 y = 1 }
+						infantry = { x = 0 y = 2 }
+					}
+				}
+				every_owned_state = {
+					create_unit = {
+						division = "name = \"1. Basks Brigada\" division_template = \"Basks Brigada\" start_experience_factor = 0.4" 
+						owner = BAS
+					}
+					create_unit = {
+						division = "name = \"2. Basks Brigada\" division_template = \"Basks Brigada\" start_experience_factor = 0.4" 
+						owner = BAS
+					}
+					create_unit = {
+						division = "name = \"3. Basks Brigada\" division_template = \"Basks Brigada\" start_experience_factor = 0.4" 
+						owner = BAS
+					}
+					create_unit = {
+						division = "name = \"4. Basks Brigada\" division_template = \"Basks Brigada\" start_experience_factor = 0.4" 
+						owner = BAS
+					}
+					create_unit = {
+						division = "name = \"5. Basks Brigada\" division_template = \"Basks Brigada\" start_experience_factor = 0.4" 
+						owner = BAS
+					}
+					create_unit = {
+						division = "name = \"6. Basks Brigada\" division_template = \"Basks Brigada\" start_experience_factor = 0.4" 
+						owner = BAS
+					}
+					create_unit = {
+						division = "name = \"7. Basks Brigada\" division_template = \"Basks Brigada\" start_experience_factor = 0.4" 
+						owner = BAS
+					}
+					create_unit = {
+						division = "name = \"8. Basks Brigada\" division_template = \"Basks Brigada\" start_experience_factor = 0.4" 
+						owner = BAS
+					}
+				}
 			}
 		}
 	}
@@ -385,7 +764,7 @@ country_event = {
 	}
 }
 
-#Арагон просит предоставить автономиию
+#Арагон просит предоставить автономию
 country_event = {
 	id = NWspain.12
 	title = NWspain.12.t
@@ -396,9 +775,14 @@ country_event = {
 	trigger = {
 		tag = SPR
 		date > 1936.07.20
-		NOT = { has_global_flag = nw_spain_civil_war_flag }
+		OR = {
+			NOT = { has_global_flag = spanish_civil_war }
+			has_global_flag = scw_over
+		}
+		SPR = { has_completed_focus = SPR_victory_popular_front }
 		has_idea = SPR_desire_for_decentralization
 		has_full_control_of_state = 166
+		ARA = { exists = no }
 	}
 	
 	immediate = { log = "[GetDateText]: [Root.GetName]: event NWspain.12" }
@@ -409,6 +793,90 @@ country_event = {
 			factor = 75
 		}
 		release_puppet = ARA
+		hidden_effect = {
+			ARA = {
+				inherit_technology = SPR
+				set_country_flag = aragon_focus_democrat_flag
+				load_focus_tree = aragon_focus_democrat
+				set_politics = {
+					parties = {
+						democratic = { 
+							popularity = 20
+						}
+						fascism = {
+							popularity = 20
+						}
+						communism = {
+							popularity = 0
+						}
+						neutrality = {
+							popularity = 0
+						}
+						monarchy = {
+							popularity = 30
+						}
+						trozkism = {
+							popularity = 0
+						}
+						anarchism = {
+							popularity = 30
+						}
+					}
+					ruling_party = democratic
+					last_election = "1933.2.16"
+					election_frequency = 36
+					elections_allowed = yes
+				}
+				add_equipment_to_stockpile = {
+					type = infantry_equipment
+					amount = 5000
+				}
+				division_template = {
+					name = "Aragons Brigada"
+					priority = 1
+					is_locked = no
+					regiments = {
+						infantry = { x = 0 y = 0 }
+						infantry = { x = 0 y = 1 }
+						infantry = { x = 0 y = 2 }
+					}
+				}
+				every_owned_state = {
+					create_unit = {
+						division = "name = \"1. Aragons Brigada\" division_template = \"Aragons Brigada\" start_experience_factor = 0.4" 
+						owner = ARA
+					}
+					create_unit = {
+						division = "name = \"2. Aragons Brigada\" division_template = \"Aragons Brigada\" start_experience_factor = 0.4" 
+						owner = ARA
+					}
+					create_unit = {
+						division = "name = \"3. Aragons Brigada\" division_template = \"Aragons Brigada\" start_experience_factor = 0.4" 
+						owner = ARA
+					}
+					create_unit = {
+						division = "name = \"4. Aragons Brigada\" division_template = \"Aragons Brigada\" start_experience_factor = 0.4" 
+						owner = ARA
+					}
+					create_unit = {
+						division = "name = \"5. Aragons Brigada\" division_template = \"Aragons Brigada\" start_experience_factor = 0.4" 
+						owner = ARA
+					}
+					create_unit = {
+						division = "name = \"6. Aragons Brigada\" division_template = \"Aragons Brigada\" start_experience_factor = 0.4" 
+						owner = ARA
+					}
+					create_unit = {
+						division = "name = \"7. Aragons Brigada\" division_template = \"Aragons Brigada\" start_experience_factor = 0.4" 
+						owner = ARA
+					}
+					create_unit = {
+						division = "name = \"8. Aragons Brigada\" division_template = \"Aragons Brigada\" start_experience_factor = 0.4" 
+						owner = ARA
+					}
+				}
+			}
+		}
 		custom_effect_tooltip = SPR_desire_for_decentralization_tt
 		set_country_flag = SPR_decentralization_1_flag
 	}
@@ -472,16 +940,98 @@ country_event = {
 	
 	option = {
 		name = NWspain.12.c
-		trigger = {
-			is_ai = no
-		}
+		trigger = { is_ai = no }
 		release_puppet = ARA
+		hidden_effect = {
+			ARA = {
+				inherit_technology = SPR
+				set_country_flag = aragon_focus_democrat_flag
+				load_focus_tree = aragon_focus_democrat
+				set_politics = {
+					parties = {
+						democratic = { 
+							popularity = 20
+						}
+						fascism = {
+							popularity = 20
+						}
+						communism = {
+							popularity = 0
+						}
+						neutrality = {
+							popularity = 0
+						}
+						monarchy = {
+							popularity = 30
+						}
+						trozkism = {
+							popularity = 0
+						}
+						anarchism = {
+							popularity = 30
+						}
+					}
+					ruling_party = democratic
+					last_election = "1933.2.16"
+					election_frequency = 36
+					elections_allowed = yes
+				}
+				add_equipment_to_stockpile = {
+					type = infantry_equipment
+					amount = 5000
+				}
+				division_template = {
+					name = "Aragons Brigada"
+					priority = 1
+					is_locked = no
+					regiments = {
+						infantry = { x = 0 y = 0 }
+						infantry = { x = 0 y = 1 }
+						infantry = { x = 0 y = 2 }
+					}
+				}
+				every_owned_state = {
+					create_unit = {
+						division = "name = \"1. Aragons Brigada\" division_template = \"Aragons Brigada\" start_experience_factor = 0.4" 
+						owner = ARA
+					}
+					create_unit = {
+						division = "name = \"2. Aragons Brigada\" division_template = \"Aragons Brigada\" start_experience_factor = 0.4" 
+						owner = ARA
+					}
+					create_unit = {
+						division = "name = \"3. Aragons Brigada\" division_template = \"Aragons Brigada\" start_experience_factor = 0.4" 
+						owner = ARA
+					}
+					create_unit = {
+						division = "name = \"4. Aragons Brigada\" division_template = \"Aragons Brigada\" start_experience_factor = 0.4" 
+						owner = ARA
+					}
+					create_unit = {
+						division = "name = \"5. Aragons Brigada\" division_template = \"Aragons Brigada\" start_experience_factor = 0.4" 
+						owner = ARA
+					}
+					create_unit = {
+						division = "name = \"6. Aragons Brigada\" division_template = \"Aragons Brigada\" start_experience_factor = 0.4" 
+						owner = ARA
+					}
+					create_unit = {
+						division = "name = \"7. Aragons Brigada\" division_template = \"Aragons Brigada\" start_experience_factor = 0.4" 
+						owner = ARA
+					}
+					create_unit = {
+						division = "name = \"8. Aragons Brigada\" division_template = \"Aragons Brigada\" start_experience_factor = 0.4" 
+						owner = ARA
+					}
+				}
+			}
+		}
 		set_country_flag = SPR_decentralization_1_flag
 		ARA = { change_tag_from = ROOT }
 	}
 }
 
-#Галисия просит предоставить автономию
+#Галисия просит предоставить автономию // После победы НФ
 country_event = {
 	id = NWspain.13
 	title = NWspain.13.t
@@ -492,9 +1042,14 @@ country_event = {
 	trigger = {
 		tag = SPR
 		date > 1936.07.20
-		NOT = { has_global_flag = nw_spain_civil_war_flag }
+		OR = {
+			NOT = { has_global_flag = spanish_civil_war }
+			has_global_flag = scw_over
+		}
+		SPR = { has_completed_focus = SPR_victory_popular_front }
 		has_idea = SPR_desire_for_decentralization
 		has_full_control_of_state = 171
+		CAT = { exists = no }
 	}
 	
 	immediate = { log = "[GetDateText]: [Root.GetName]: event NWspain.13" }
@@ -509,6 +1064,59 @@ country_event = {
 			}
 		}
 		release_puppet = GLC
+		hidden_effect = {
+			GLC = {
+				inherit_technology = SPR
+				add_equipment_to_stockpile = {
+					type = infantry_equipment
+					amount = 5000
+				}
+				division_template = {
+					name = "Galician Brigada"
+					priority = 1
+					is_locked = no
+					regiments = {
+						infantry = { x = 0 y = 0 }
+						infantry = { x = 0 y = 1 }
+						infantry = { x = 0 y = 2 }
+					}
+				}
+				every_owned_state = {
+					create_unit = {
+						division = "name = \"1. Galician Brigada\" division_template = \"Galician Brigada\" start_experience_factor = 0.4" 
+						owner = GLC
+					}
+					create_unit = {
+						division = "name = \"2. Galician Brigada\" division_template = \"Galician Brigada\" start_experience_factor = 0.4" 
+						owner = GLC
+					}
+					create_unit = {
+						division = "name = \"3. Galician Brigada\" division_template = \"Galician Brigada\" start_experience_factor = 0.4" 
+						owner = GLC
+					}
+					create_unit = {
+						division = "name = \"4. Galician Brigada\" division_template = \"Galician Brigada\" start_experience_factor = 0.4" 
+						owner = GLC
+					}
+					create_unit = {
+						division = "name = \"5. Galician Brigada\" division_template = \"Galician Brigada\" start_experience_factor = 0.4" 
+						owner = GLC
+					}
+					create_unit = {
+						division = "name = \"6. Galician Brigada\" division_template = \"Galician Brigada\" start_experience_factor = 0.4" 
+						owner = GLC
+					}
+					create_unit = {
+						division = "name = \"7. Galician Brigada\" division_template = \"Galician Brigada\" start_experience_factor = 0.4" 
+						owner = GLC
+					}
+					create_unit = {
+						division = "name = \"8. Galician Brigada\" division_template = \"Galician Brigada\" start_experience_factor = 0.4" 
+						owner = GLC
+					}
+				}
+			}
+		}
 		if = {
 			limit = { has_country_flag = SPR_decentralization_1_flag }
 			remove_ideas = SPR_desire_for_decentralization
@@ -519,6 +1127,312 @@ country_event = {
 	
 	option = {
 		name = NWspain.13.b
+		ai_chance = {
+			factor = 50
+		}
+		add_stability = -0.03
+		if = {
+			limit = { has_government = fascism }
+			add_popularity = {
+				ideology = fascism
+				popularity = -0.05
+			}
+		}
+		if = {
+			limit = { has_government = communism }
+			add_popularity = {
+				ideology = communism
+				popularity = -0.05
+			}
+		}
+		if = {
+			limit = { has_government = democratic }
+			add_popularity = {
+				ideology = democratic
+				popularity = -0.05
+			}
+		}
+		if = {
+			limit = { has_government = neutrality }
+			add_popularity = {
+				ideology = neutrality
+				popularity = -0.05
+			}
+		}
+		if = {
+			limit = { has_government = monarchy }
+			add_popularity = {
+				ideology = monarchy
+				popularity = -0.05
+			}
+		}
+		if = {
+			limit = { has_government = trozkism }
+			add_popularity = {
+				ideology = trozkism
+				popularity = -0.05
+			}
+		}
+		if = {
+			limit = { has_government = anarchism }
+			add_popularity = {
+				ideology = anarchism
+				popularity = -0.05
+			}
+		}
+		clr_country_flag = SPR_decentralization_1_flag
+	}
+}
+
+#Астурия просит предоставить автономию // После победы НФ
+country_event = {
+	id = NWspain.1013
+	title = NWspain.1013.t
+	desc = NWspain.1013.desc
+	picture = GFX_report_event_generic_rally_3
+	fire_only_once = yes
+	
+	trigger = {
+		tag = SPR
+		date > 1936.07.20
+		OR = {
+			NOT = { has_global_flag = spanish_civil_war }
+			has_global_flag = scw_over
+		}
+		SPR = { has_completed_focus = SPR_victory_popular_front }
+		has_idea = SPR_desire_for_decentralization
+		has_full_control_of_state = 983
+		ASU = { exists = no }
+	}
+	
+	immediate = { log = "[GetDateText]: [Root.GetName]: event NWspain.1013" }
+	
+	option = {
+		name = NWspain.1013.a
+		ai_chance = {
+			factor = 50
+			modifier = {
+				factor = 3
+				ASU = { is_puppet_of = ROOT }
+			}
+		}
+		release_puppet = ASU
+		hidden_effect = {
+			ASU = {
+				inherit_technology = SPR
+				add_equipment_to_stockpile = {
+					type = infantry_equipment
+					amount = 5000
+				}
+				division_template = {
+					name = "Asturian Brigada"
+					priority = 1
+					is_locked = no
+					regiments = {
+						infantry = { x = 0 y = 0 }
+						infantry = { x = 0 y = 1 }
+						infantry = { x = 0 y = 2 }
+					}
+				}
+				every_owned_state = {
+					create_unit = {
+						division = "name = \"1. Asturian Brigada\" division_template = \"Asturian Brigada\" start_experience_factor = 0.4" 
+						owner = ASU
+					}
+					create_unit = {
+						division = "name = \"2. Asturian Brigada\" division_template = \"Asturian Brigada\" start_experience_factor = 0.4" 
+						owner = ASU
+					}
+					create_unit = {
+						division = "name = \"3. Asturian Brigada\" division_template = \"Asturian Brigada\" start_experience_factor = 0.4" 
+						owner = ASU
+					}
+					create_unit = {
+						division = "name = \"4. Asturian Brigada\" division_template = \"Asturian Brigada\" start_experience_factor = 0.4" 
+						owner = ASU
+					}
+					create_unit = {
+						division = "name = \"5. Asturian Brigada\" division_template = \"Asturian Brigada\" start_experience_factor = 0.4" 
+						owner = ASU
+					}
+					create_unit = {
+						division = "name = \"6. Asturian Brigada\" division_template = \"Asturian Brigada\" start_experience_factor = 0.4" 
+						owner = ASU
+					}
+					create_unit = {
+						division = "name = \"7. Asturian Brigada\" division_template = \"Asturian Brigada\" start_experience_factor = 0.4" 
+						owner = ASU
+					}
+					create_unit = {
+						division = "name = \"8. Asturian Brigada\" division_template = \"Asturian Brigada\" start_experience_factor = 0.4" 
+						owner = ASU
+					}
+				}
+			}
+		}
+		if = {
+			limit = { has_country_flag = SPR_decentralization_1_flag }
+			remove_ideas = SPR_desire_for_decentralization
+		}
+		clr_country_flag = SPR_decentralization_1_flag
+		
+	}
+	
+	option = {
+		name = NWspain.1013.b
+		ai_chance = {
+			factor = 50
+		}
+		add_stability = -0.03
+		if = {
+			limit = { has_government = fascism }
+			add_popularity = {
+				ideology = fascism
+				popularity = -0.05
+			}
+		}
+		if = {
+			limit = { has_government = communism }
+			add_popularity = {
+				ideology = communism
+				popularity = -0.05
+			}
+		}
+		if = {
+			limit = { has_government = democratic }
+			add_popularity = {
+				ideology = democratic
+				popularity = -0.05
+			}
+		}
+		if = {
+			limit = { has_government = neutrality }
+			add_popularity = {
+				ideology = neutrality
+				popularity = -0.05
+			}
+		}
+		if = {
+			limit = { has_government = monarchy }
+			add_popularity = {
+				ideology = monarchy
+				popularity = -0.05
+			}
+		}
+		if = {
+			limit = { has_government = trozkism }
+			add_popularity = {
+				ideology = trozkism
+				popularity = -0.05
+			}
+		}
+		if = {
+			limit = { has_government = anarchism }
+			add_popularity = {
+				ideology = anarchism
+				popularity = -0.05
+			}
+		}
+		clr_country_flag = SPR_decentralization_1_flag
+	}
+}
+
+#Сантадор просит предоставить автономию // После победы НФ
+country_event = {
+	id = NWspain.1014
+	title = NWspain.1014.t
+	desc = NWspain.1014.desc
+	picture = GFX_report_event_generic_rally_3
+	fire_only_once = yes
+	
+	trigger = {
+		tag = SPR
+		date > 1936.07.20
+		OR = {
+			NOT = { has_global_flag = spanish_civil_war }
+			has_global_flag = scw_over
+		}
+		SPR = { has_completed_focus = SPR_victory_popular_front }
+		has_idea = SPR_desire_for_decentralization
+		has_full_control_of_state = 982
+		SNT = { exists = no }
+	}
+	
+	immediate = { log = "[GetDateText]: [Root.GetName]: event NWspain.1014" }
+	
+	option = {
+		name = NWspain.1014.a
+		ai_chance = {
+			factor = 50
+			modifier = {
+				factor = 3
+				SNT = { is_puppet_of = ROOT }
+			}
+		}
+		release_puppet = SNT
+		hidden_effect = {
+			SNT = {
+				inherit_technology = SPR
+				add_equipment_to_stockpile = {
+					type = infantry_equipment
+					amount = 5000
+				}
+				division_template = {
+					name = "Santador Brigada"
+					priority = 1
+					is_locked = no
+					regiments = {
+						infantry = { x = 0 y = 0 }
+						infantry = { x = 0 y = 1 }
+						infantry = { x = 0 y = 2 }
+					}
+				}
+				every_owned_state = {
+					create_unit = {
+						division = "name = \"1. Santador Brigada\" division_template = \"Santador Brigada\" start_experience_factor = 0.4" 
+						owner = SNT
+					}
+					create_unit = {
+						division = "name = \"2. Santador Brigada\" division_template = \"Santador Brigada\" start_experience_factor = 0.4" 
+						owner = SNT
+					}
+					create_unit = {
+						division = "name = \"3. Santador Brigada\" division_template = \"Santador Brigada\" start_experience_factor = 0.4" 
+						owner = SNT
+					}
+					create_unit = {
+						division = "name = \"4. Santador Brigada\" division_template = \"Santador Brigada\" start_experience_factor = 0.4" 
+						owner = SNT
+					}
+					create_unit = {
+						division = "name = \"5. Santador Brigada\" division_template = \"Santador Brigada\" start_experience_factor = 0.4" 
+						owner = SNT
+					}
+					create_unit = {
+						division = "name = \"6. Santador Brigada\" division_template = \"Santador Brigada\" start_experience_factor = 0.4" 
+						owner = SNT
+					}
+					create_unit = {
+						division = "name = \"7. Santador Brigada\" division_template = \"Santador Brigada\" start_experience_factor = 0.4" 
+						owner = SNT
+					}
+					create_unit = {
+						division = "name = \"8. Santador Brigada\" division_template = \"Santador Brigada\" start_experience_factor = 0.4" 
+						owner = SNT
+					}
+				}
+			}
+		}
+		if = {
+			limit = { has_country_flag = SPR_decentralization_1_flag }
+			remove_ideas = SPR_desire_for_decentralization
+		}
+		clr_country_flag = SPR_decentralization_1_flag
+		
+	}
+	
+	option = {
+		name = NWspain.1014.b
 		ai_chance = {
 			factor = 50
 		}
@@ -652,8 +1566,9 @@ country_event = {
 	picture = GFX_report_event_generic_rally_3
 	is_triggered_only = yes
 	
+	immediate = { log = "[GetDateText]: [Root.GetName]: event NWspain.16" }
+	
 	immediate = {
-		log = "[GetDateText]: [Root.GetName]: event NWspain.16"
 		set_variable = { SPRdemo = party_popularity@democratic }
 		set_variable = { SPRtroz = party_popularity@trozkism }
 		set_variable = { SPRanarch = party_popularity@anarchism }
@@ -837,7 +1752,7 @@ country_event = {
 	}
 }
 
-#Галисия просит предоставить автономию
+#Каталония просит предоставить автономию
 country_event = {
 	id = NWspain.20
 	title = NWspain.20.t
@@ -848,7 +1763,7 @@ country_event = {
 	trigger = {
 		tag = SPR
 		date > 1936.07.20
-		NOT = { has_global_flag = nw_spain_civil_war_flag }
+		NOT = { has_global_flag = spanish_civil_war }
 		has_full_control_of_state = 165
 		has_country_flag = SPR_guarantee_autonomy_minorities_flag
 	}
@@ -858,6 +1773,84 @@ country_event = {
 	option = {
 		name = NWspain.20.a
 		release_puppet = CAT
+		hidden_effect = {
+			CAT = {
+				inherit_technology = SPR
+				set_country_flag = catalonia_focus_democrat_flag
+				load_focus_tree = catalonia_focus_democrat
+				set_politics = {
+					parties = {
+						democratic = { 
+							popularity = 10
+						}
+						monarchy = {
+							popularity = 40
+						}
+						neutrality = {
+							popularity = 17
+						}
+						trozkism = {
+							popularity = 3
+						}
+						anarchism = {
+							popularity = 30
+						}
+					}
+					ruling_party = democratic
+					last_election = "1933.2.16"
+					election_frequency = 36
+					elections_allowed = yes
+				}
+				add_equipment_to_stockpile = {
+					type = infantry_equipment
+					amount = 5000
+				}
+				division_template = {
+					name = "Catalon Brigada"
+					priority = 1
+					is_locked = no
+					regiments = {
+						infantry = { x = 0 y = 0 }
+						infantry = { x = 0 y = 1 }
+						infantry = { x = 0 y = 2 }
+					}
+				}
+				every_owned_state = {
+					create_unit = {
+						division = "name = \"1. Catalon Brigada\" division_template = \"Catalon Brigada\" start_experience_factor = 0.4" 
+						owner = CAT
+					}
+					create_unit = {
+						division = "name = \"2. Catalon Brigada\" division_template = \"Catalon Brigada\" start_experience_factor = 0.4" 
+						owner = CAT
+					}
+					create_unit = {
+						division = "name = \"3. Catalon Brigada\" division_template = \"Catalon Brigada\" start_experience_factor = 0.4" 
+						owner = CAT
+					}
+					create_unit = {
+						division = "name = \"4. Catalon Brigada\" division_template = \"Catalon Brigada\" start_experience_factor = 0.4" 
+						owner = CAT
+					}
+					create_unit = {
+						division = "name = \"5. Catalon Brigada\" division_template = \"Catalon Brigada\" start_experience_factor = 0.4" 
+						owner = CAT
+					}
+					create_unit = {
+						division = "name = \"6. Catalon Brigada\" division_template = \"Catalon Brigada\" start_experience_factor = 0.4" 
+						owner = CAT
+					}
+					create_unit = {
+						division = "name = \"7. Catalon Brigada\" division_template = \"Catalon Brigada\" start_experience_factor = 0.4" 
+						owner = CAT
+					}
+					create_unit = {
+						division = "name = \"8. Catalon Brigada\" division_template = \"Catalon Brigada\" start_experience_factor = 0.4" 
+						owner = CAT
+					}
+				}
+			}
+		}
 		clr_country_flag = SPR_guarantee_autonomy_minorities_flag
 	}
 }
@@ -897,17 +1890,3068 @@ country_event = {
 }
 
 
+##################
+###  ГВ c SPA  ###
+##################
+
+#Убийство Хосе Кастильо
+country_event = {
+	id = NWspain.22
+	title = NWspain.22.t
+	desc = NWspain.22.desc
+	picture = GFX_report_event_generic_rally_3
+	fire_only_once = yes
+	
+	trigger = {
+		tag = SPR
+		date > 1936.07.07		#задержка 5 дня. Ивент случится 12 июля
+		SPR = { has_completed_focus = SPR_victory_popular_front }
+	}
+	
+	immediate = { log = "[GetDateText]: [Root.GetName]: event NWspain.22" }
+	
+	option = {
+		name = NWspain.22.a
+		ai_chance = {
+			factor = 15
+		}
+		add_stability = -0.05
+		log = "[GetDateText]: [Root.GetName]: выбран вариант NWspain.22.a"
+	}
+	
+	option = {
+		name = NWspain.22.b
+		ai_chance = {
+			factor = 85
+		}
+		add_political_power = -40
+		add_popularity = {
+			ideology = monarchy
+			popularity = -0.06
+		}
+		hidden_effect = {
+			if = {
+				limit = { SPR = { has_completed_focus = SPR_victory_popular_front } }
+				ROOT = {
+					country_event = { id = NWspain.23 days = 4 }
+					set_country_flag = kill_sanjurjo_flag
+				}
+			}
+			log = "[GetDateText]: [Root.GetName]: выбран вариант NWspain.22.b"
+		}
+	}
+}
+
+#Пульсар путча в Марокко
+country_event = {
+	id = NWspain.230
+	title = NWspain.230.t
+	desc = NWspain.230.desc
+	picture = GFX_report_event_generic_rally_3
+	fire_only_once = yes
+	hidden = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName]: event NWspain.230" }
+	
+	trigger = {
+		tag = SPR
+		date > 1936.10.15
+		SPR = { has_completed_focus = SPR_victory_popular_front }
+		NOT = { has_country_flag = block_event_flag }
+	}
+	mean_time_to_happen = { days = 14 }
+	
+	option = {
+		name = NWspain.230.a
+		country_event = { id = NWspain.23 }
+	}
+}
+
+#Путч в Марокко
+country_event = {
+	id = NWspain.23
+	title = NWspain.23.t
+	desc = NWspain.23.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName]: event NWspain.23" }
+	
+	# Support Republicans
+	option = {
+		name = NWspain.23.a
+		hidden_effect = {
+			set_country_flag = block_event_flag
+			SPA = { transfer_state = 1015 }
+			start_civil_war = {
+				ideology = fascism
+				size = 0.5
+				capital = 290
+				states = { 290 }
+			}
+			random_other_country = {
+				limit = {
+					original_tag = SPR
+					has_government = fascism
+				}
+				set_equipment_fraction = 0.5
+				SPA = {
+					annex_country = {
+						target = PREV
+						transfer_troops = yes
+					}
+				}
+			}
+			SPA = {
+				inherit_technology = SPR
+				set_stability = 0.9
+				set_war_support = 0.8
+			}
+			every_state = {
+				limit = {
+					OR = {
+						is_core_of = SPR
+						is_core_of = CAT
+						is_core_of = BAS
+						is_core_of = GLC
+						is_core_of = ASU
+						is_core_of = SNT
+					}
+				}
+				add_core_of = SPA
+			}
+			every_state = {
+				limit = {
+					is_owned_by = SPR
+				}
+				add_claim_by = SPA
+			}
+			SPA = {
+				country_event = { id = TRlegitimacy.8 days = 0 }
+				country_event = { id = NWspain.24 days = 1 }
+			}
+			news_event = { hours = 6 id = news.63 }
+			set_global_flag = spanish_civil_war
+			SPR = {
+				set_stability = 0.9
+				set_war_support = 0.5
+				add_popularity = {
+					ideology = monarchy
+					popularity = -0.2
+				}
+				declare_war_on = {
+					target = SPA
+					type = annex_everything
+				}
+				transfer_state = 1015
+				add_timed_idea = { idea = SPR_patriotic_mood days = 180 }
+			}
+			if = {
+				limit = { has_country_flag = kill_sanjurjo_flag }
+				SPA = { country_event = { id = NWspain.101 days = 4 } }
+				clr_country_flag = kill_sanjurjo_flag
+			}
+		}
+	}
+	
+	# Support Nationalists
+	option = {
+		name = NWspain.23.b
+		trigger = { is_ai = no }
+		hidden_effect = {
+			set_country_flag = block_event_flag
+			SPA = { transfer_state = 1015 }
+			start_civil_war = {
+				ideology = fascism
+				size = 0.5
+				capital = 290
+				states = { 290 }
+			}
+			random_other_country = {
+				limit = {
+					original_tag = SPR
+					has_government = fascism
+				}
+				set_equipment_fraction = 0.5
+				SPA = {
+					annex_country = {
+						target = PREV
+						transfer_troops = yes
+					}
+				}
+			}
+			SPA = {
+				inherit_technology = SPR
+				set_stability = 0.9
+				set_war_support = 0.8
+				change_tag_from = ROOT
+			}
+			every_state = {
+				limit = {
+					OR = {
+						is_core_of = SPR
+						is_core_of = CAT
+						is_core_of = BAS
+						is_core_of = GLC
+						is_core_of = ASU
+						is_core_of = SNT
+					}
+				}
+				add_core_of = SPA
+			}
+			every_state = {
+				limit = {
+					is_owned_by = SPR
+				}
+				add_claim_by = SPA
+			}
+			SPA = {
+				country_event = { id = TRlegitimacy.8 days = 0 }
+				country_event = { id = NWspain.24 days = 1 }
+			}
+			news_event = { hours = 6 id = news.63 }
+			set_global_flag = spanish_civil_war
+			SPR = {
+				set_stability = 0.9
+				set_war_support = 0.5
+				add_popularity = {
+					ideology = monarchy
+					popularity = -0.2
+				}
+				declare_war_on = {
+					target = SPA
+					type = annex_everything
+				}
+				transfer_state = 1015
+				add_timed_idea = { idea = SPR_patriotic_mood days = 180 }
+			}
+			if = {
+				limit = { has_country_flag = kill_sanjurjo_flag }
+				SPA = { country_event = { id = NWspain.101 days = 4 } }
+				clr_country_flag = kill_sanjurjo_flag
+			}
+		}
+	}
+}
+
+#Мятеж республиканских генералов
+country_event = {
+	id = NWspain.24
+	title = NWspain.24.t
+	desc = NWspain.24.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName]: event NWspain.24" }
+	
+	option = {
+		name = NWspain.24.a
+		hidden_effect = {
+			if = {
+				limit = { SPR = { has_full_control_of_state = 166 } }
+				transfer_state = 166
+
+			}
+			if = {
+				limit = { SPR = { has_full_control_of_state = 699 } }
+				transfer_state = 699
+			}
+			if = {
+				limit = { SPR = { has_full_control_of_state = 178 } }
+				transfer_state = 178
+			}
+			if = {
+				limit = { SPR = { has_full_control_of_state = 169 } }
+				transfer_state = 169
+			}
+			if = {
+				limit = { SPR = { has_full_control_of_state = 170 } }
+				transfer_state = 170
+			}
+			if = {
+				limit = { SPR = { has_full_control_of_state = 176 } }
+				transfer_state = 176
+				set_capital = 176
+			}
+			if = {
+				limit = { SPR = { has_full_control_of_state = 174 } }
+				transfer_state = 174
+			}
+			if = {
+				limit = { SPR = { has_full_control_of_state = 171 } }
+				transfer_state = 171
+			}
+			if = {
+				limit = { SPR = { has_full_control_of_state = 177 } }
+				transfer_state = 177
+			}
+			if = {
+				limit = { SPR = { has_full_control_of_state = 297 } }
+				transfer_state = 297
+			}
+			load_oob = "SPA_Civil_War"
+			SPR = { load_oob = "SPR_Civil_War" }
+			if = {
+				limit = { SPR = { has_idea = SPR_basks_nationalism } }
+				transfer_state = 981
+			}
+		}
+	}
+}
+
+#######################
+###  ГВ c Анархами  ###
+#######################
+
+#Левые восстали против власти
+country_event = {
+	id = NWspain.25
+	title = NWspain.25.t
+	desc = NWspain.25.desc
+	picture = GFX_report_event_generic_rally_3
+	fire_only_once = yes
+	
+	trigger = {
+		tag = SPR
+		date > 1936.09.15
+		SPR = { has_completed_focus = SPR_victory_national_block }
+		SPR = { NOT = { has_completed_focus = SPR_repression_against_leftists } }
+	}
+	
+	immediate = { log = "[GetDateText]: [Root.GetName]: event NWspain.25" }
+	
+	mean_time_to_happen = {
+		days = 14
+	}
+	
+	option = {
+		name = NWspain.25.a
+		effect_tooltip = {
+			release = ARA
+		}
+		if = {
+			limit = { SPR = { has_idea = SPR_catalon_nationalism } }
+			effect_tooltip = {
+				release = CAT
+			}
+		}
+		hidden_effect = {
+			ARA = {
+				transfer_state = 169
+				169 = { add_core_of = ARA }
+				transfer_state = 173
+				173 = { add_core_of = ARA }
+				transfer_state = 166
+				166 = { add_core_of = ARA }
+				inherit_technology = SPR
+				set_country_flag = aragon_focus_anarchist_flag
+				load_focus_tree = aragon_focus_anarchist
+				set_politics = {
+					parties = {
+						democratic = { 
+							popularity = 20
+						}
+						fascism = {
+							popularity = 20
+						}
+						communism = {
+							popularity = 0
+						}
+						neutrality = {
+							popularity = 0
+						}
+						monarchy = {
+							popularity = 30
+						}
+						trozkism = {
+							popularity = 0
+						}
+						anarchism = {
+							popularity = 30
+						}
+					}
+					ruling_party = anarchism
+					elections_allowed = no
+				}
+				set_cosmetic_tag = ARA_and
+				add_equipment_to_stockpile = {
+					type = infantry_equipment
+					amount = 10000
+				}
+				division_template = {
+					name = "Anarchists Brigada"
+					priority = 1
+					is_locked = no
+					regiments = {
+						infantry = { x = 0 y = 0 }
+						infantry = { x = 0 y = 1 }
+						infantry = { x = 0 y = 2 }
+						infantry = { x = 0 y = 3 }
+					}
+				}
+				capital_scope = {
+					create_unit = {
+						division = "name = \"Anarchists Brigada\" division_template = \"Anarchists Brigada\" start_experience_factor = 0.4" 
+						owner = ARA
+					}
+					create_unit = {
+						division = "name = \"Anarchists Brigada\" division_template = \"Anarchists Brigada\" start_experience_factor = 0.4" 
+						owner = ARA
+					}
+				}
+				every_owned_state = {
+					create_unit = {
+						division = "name = \"Anarchists Brigada\" division_template = \"Anarchists Brigada\" start_experience_factor = 0.4" 
+						owner = ARA
+					}
+					create_unit = {
+						division = "name = \"Anarchists Brigada\" division_template = \"Anarchists Brigada\" start_experience_factor = 0.4" 
+						owner = ARA
+					}
+					create_unit = {
+						division = "name = \"Anarchists Brigada\" division_template = \"Anarchists Brigada\" start_experience_factor = 0.4" 
+						owner = ARA
+					}
+					create_unit = {
+						division = "name = \"Anarchists Brigada\" division_template = \"Anarchists Brigada\" start_experience_factor = 0.4" 
+						owner = ARA
+					}
+					create_unit = {
+						division = "name = \"Anarchists Brigada\" division_template = \"Anarchists Brigada\" start_experience_factor = 0.4" 
+						owner = ARA
+					}
+				}
+				random_list = {
+					0 = {
+						ARA = {
+							capital_scope = {
+								create_unit = {
+									division = "name = \"Anarchists Brigada\" division_template = \"Anarchists Brigada\" start_experience_factor = 0.4" 
+									owner = ARA
+								}
+							}
+							every_owned_state = {
+								create_unit = {
+									division = "name = \"Anarchists Brigada\" division_template = \"Anarchists Brigada\" start_experience_factor = 0.4" 
+									owner = ARA
+								}
+							}
+						}
+					}
+					50 = {
+					}
+				}
+				add_ai_strategy = {
+					type = antagonize
+					id = "SPR"
+					value = 500
+				}
+				add_ai_strategy = {
+					type = conquer
+					id = "SPR" 
+					value = 500
+				}
+				add_ai_strategy = {
+					type = antagonize
+					id = "SPA"
+					value = 500
+				}
+				add_ai_strategy = {
+					type = conquer
+					id = "SPA" 
+					value = 500
+				}
+				add_ai_strategy = {
+					type = ignore
+					id = "FRA" 
+					value = 500
+				}
+				every_state = {
+					limit = { is_owned_by = SPR }
+					add_claim_by = ARA
+				}
+				every_state = {
+					limit = { is_core_of = SPR }
+					add_core_of = ARA
+				}
+			}
+			SPR = {
+				declare_war_on = {
+					target = ARA
+					type = annex_everything
+				}
+			}
+			if = {
+				limit = { SPR = { has_idea = SPR_catalon_nationalism } }
+				CAT = {
+					transfer_state = 165
+					165 = { add_core_of = CAT }
+					inherit_technology = SPR
+					set_country_flag = catalonia_focus_anarchist_flag
+					load_focus_tree = catalonia_focus_anarchist
+					set_politics = {
+						parties = {
+							democratic = { 
+								popularity = 10
+							}
+							monarchy = {
+								popularity = 40
+							}
+							neutrality = {
+								popularity = 17
+							}
+							trozkism = {
+								popularity = 3
+							}
+							anarchism = {
+								popularity = 30
+							}
+						}
+						ruling_party = anarchism
+						elections_allowed = no
+					}
+					add_equipment_to_stockpile = {
+						type = infantry_equipment
+						amount = 10000
+					}
+					division_template = {
+						name = "Anarchists Brigada"
+						priority = 1
+						is_locked = no
+						regiments = {
+							infantry = { x = 0 y = 0 }
+							infantry = { x = 0 y = 1 }
+							infantry = { x = 0 y = 2 }
+							infantry = { x = 0 y = 3 }
+						}
+					}
+					every_owned_state = {
+						create_unit = {
+							division = "name = \"1. Anarchists Brigada\" division_template = \"Anarchists Brigada\" start_experience_factor = 0.4" 
+							owner = CAT
+						}
+						create_unit = {
+							division = "name = \"2. Anarchists Brigada\" division_template = \"Anarchists Brigada\" start_experience_factor = 0.4" 
+							owner = CAT
+						}
+						create_unit = {
+							division = "name = \"3. Anarchists Brigada\" division_template = \"Anarchists Brigada\" start_experience_factor = 0.4" 
+							owner = CAT
+						}
+						create_unit = {
+							division = "name = \"4. Anarchists Brigada\" division_template = \"Anarchists Brigada\" start_experience_factor = 0.4" 
+							owner = CAT
+						}
+						create_unit = {
+							division = "name = \"5. Anarchists Brigada\" division_template = \"Anarchists Brigada\" start_experience_factor = 0.4" 
+							owner = CAT
+						}
+						create_unit = {
+							division = "name = \"6. Anarchists Brigada\" division_template = \"Anarchists Brigada\" start_experience_factor = 0.4" 
+							owner = CAT
+						}
+						create_unit = {
+							division = "name = \"7. Anarchists Brigada\" division_template = \"Anarchists Brigada\" start_experience_factor = 0.4" 
+							owner = CAT
+						}
+						create_unit = {
+							division = "name = \"8. Anarchists Brigada\" division_template = \"Anarchists Brigada\" start_experience_factor = 0.4" 
+							owner = CAT
+						}
+						create_unit = {
+							division = "name = \"9. Anarchists Brigada\" division_template = \"Anarchists Brigada\" start_experience_factor = 0.4" 
+							owner = CAT
+						}
+						create_unit = {
+							division = "name = \"9. Anarchists Brigada\" division_template = \"Anarchists Brigada\" start_experience_factor = 0.4" 
+							owner = CAT
+						}
+						create_unit = {
+							division = "name = \"9. Anarchists Brigada\" division_template = \"Anarchists Brigada\" start_experience_factor = 0.4" 
+							owner = CAT
+						}
+					}
+					random_list = {
+						0 = {
+							CAT = {
+								every_owned_state = {
+									create_unit = {
+										division = "name = \"10. Anarchists Brigada\" division_template = \"Anarchists Brigada\" start_experience_factor = 0.4" 
+										owner = CAT
+									}
+								}
+							}
+						}
+						85 = {
+						}
+					}
+					give_military_access = ARA
+					add_ai_strategy = {
+						type = antagonize
+						id = "SPR"
+						value = 500
+					}
+					add_ai_strategy = {
+						type = conquer
+						id = "SPR" 
+						value = 500
+					}
+					add_ai_strategy = {
+						type = antagonize
+						id = "SPA"
+						value = 500
+					}
+					add_ai_strategy = {
+						type = conquer
+						id = "SPA" 
+						value = 500
+					}
+					
+					add_ai_strategy = {
+						type = protect
+						id = "ARA" 
+						value = 500
+					}
+					add_ai_strategy = {
+						type = ignore
+						id = "FRA" 
+						value = 500
+					}
+					ARA = {
+						add_ai_strategy = {
+							type = protect
+							id = "CAT" 
+							value = 500
+						}
+					}
+					every_state = {
+						limit = { is_owned_by = SPR }
+						add_claim_by = CAT
+					}
+					every_state = {
+						limit = { is_core_of = SPR }
+						add_core_of = CAT
+					}
+				}
+				ARA = { give_military_access = CAT }
+				SPR = {
+					declare_war_on = {
+						target = CAT
+						type = annex_everything
+					}
+					remove_ideas = SPR_catalon_nationalism
+				}
+			}
+			news_event = { id = trworldnews.65 hours = 6 }
+			set_global_flag = anarcho_spanish_civil_war
+		}
+	}
+	
+	option = {
+		name = NWspain.25.b
+		trigger = { is_ai = no }
+		if = {
+			limit = { SPR = { has_idea = SPR_catalon_nationalism } }
+			effect_tooltip = {
+				release = CAT
+			}
+		}
+		effect_tooltip = {
+			release = ARA
+			ARA = { change_tag_from = ROOT }
+		}
+		hidden_effect = {
+			ARA = {
+				transfer_state = 169
+				169 = { add_core_of = ARA }
+				transfer_state = 173
+				173 = { add_core_of = ARA }
+				transfer_state = 166
+				166 = { add_core_of = ARA }
+				inherit_technology = SPR
+				set_country_flag = aragon_focus_anarchist_flag
+				load_focus_tree = aragon_focus_anarchist
+				set_politics = {
+					parties = {
+						democratic = { 
+							popularity = 20
+						}
+						fascism = {
+							popularity = 20
+						}
+						communism = {
+							popularity = 0
+						}
+						neutrality = {
+							popularity = 0
+						}
+						monarchy = {
+							popularity = 30
+						}
+						trozkism = {
+							popularity = 0
+						}
+						anarchism = {
+							popularity = 30
+						}
+					}
+					ruling_party = anarchism
+					elections_allowed = no
+				}
+				set_cosmetic_tag = ARA_and
+				add_equipment_to_stockpile = {
+					type = infantry_equipment
+					amount = 10000
+				}
+				division_template = {
+					name = "Anarchists Brigada"
+					priority = 1
+					is_locked = no
+					regiments = {
+						infantry = { x = 0 y = 0 }
+						infantry = { x = 0 y = 1 }
+						infantry = { x = 0 y = 2 }
+						infantry = { x = 0 y = 3 }
+					}
+				}
+				capital_scope = {
+					create_unit = {
+						division = "name = \"Anarchists Brigada\" division_template = \"Anarchists Brigada\" start_experience_factor = 0.4" 
+						owner = ARA
+					}
+					create_unit = {
+						division = "name = \"Anarchists Brigada\" division_template = \"Anarchists Brigada\" start_experience_factor = 0.4" 
+						owner = ARA
+					}
+					create_unit = {
+						division = "name = \"Anarchists Brigada\" division_template = \"Anarchists Brigada\" start_experience_factor = 0.4" 
+						owner = ARA
+					}
+				}
+				every_owned_state = {
+					create_unit = {
+						division = "name = \"Anarchists Brigada\" division_template = \"Anarchists Brigada\" start_experience_factor = 0.4" 
+						owner = ARA
+					}
+					create_unit = {
+						division = "name = \"Anarchists Brigada\" division_template = \"Anarchists Brigada\" start_experience_factor = 0.4" 
+						owner = ARA
+					}
+					create_unit = {
+						division = "name = \"Anarchists Brigada\" division_template = \"Anarchists Brigada\" start_experience_factor = 0.4" 
+						owner = ARA
+					}
+					create_unit = {
+						division = "name = \"Anarchists Brigada\" division_template = \"Anarchists Brigada\" start_experience_factor = 0.4" 
+						owner = ARA
+					}
+					create_unit = {
+						division = "name = \"Anarchists Brigada\" division_template = \"Anarchists Brigada\" start_experience_factor = 0.4" 
+						owner = ARA
+					}
+				}
+				random_list = {
+					50 = {
+						ARA = {
+							capital_scope = {
+								create_unit = {
+									division = "name = \"Anarchists Brigada\" division_template = \"Anarchists Brigada\" start_experience_factor = 0.4" 
+									owner = ARA
+								}
+							}
+							every_owned_state = {
+								create_unit = {
+									division = "name = \"Anarchists Brigada\" division_template = \"Anarchists Brigada\" start_experience_factor = 0.4" 
+									owner = ARA
+								}
+							}
+						}
+					}
+					50 = {
+					}
+				}
+				change_tag_from = ROOT
+			}
+			SPR = {
+				declare_war_on = {
+					target = ARA
+					type = annex_everything
+				}
+			}
+			if = {
+				limit = { SPR = { has_idea = SPR_catalon_nationalism } }
+				CAT = {
+					transfer_state = 165
+					165 = { add_core_of = CAT }
+					inherit_technology = SPR
+					set_country_flag = catalonia_focus_anarchist_flag
+					load_focus_tree = catalonia_focus_anarchist
+					set_politics = {
+						parties = {
+							democratic = { 
+								popularity = 10
+							}
+							monarchy = {
+								popularity = 40
+							}
+							neutrality = {
+								popularity = 17
+							}
+							trozkism = {
+								popularity = 3
+							}
+							anarchism = {
+								popularity = 30
+							}
+						}
+						ruling_party = anarchism
+						elections_allowed = no
+					}
+					add_equipment_to_stockpile = {
+						type = infantry_equipment
+						amount = 10000
+					}
+					division_template = {
+						name = "Anarchists Brigada"
+						priority = 1
+						is_locked = no
+						regiments = {
+							infantry = { x = 0 y = 0 }
+							infantry = { x = 0 y = 1 }
+							infantry = { x = 0 y = 2 }
+							infantry = { x = 0 y = 3 }
+						}
+					}
+					every_owned_state = {
+						create_unit = {
+							division = "name = \"1. Anarchists Brigada\" division_template = \"Anarchists Brigada\" start_experience_factor = 0.4" 
+							owner = CAT
+						}
+						create_unit = {
+							division = "name = \"2. Anarchists Brigada\" division_template = \"Anarchists Brigada\" start_experience_factor = 0.4" 
+							owner = CAT
+						}
+						create_unit = {
+							division = "name = \"3. Anarchists Brigada\" division_template = \"Anarchists Brigada\" start_experience_factor = 0.4" 
+							owner = CAT
+						}
+						create_unit = {
+							division = "name = \"4. Anarchists Brigada\" division_template = \"Anarchists Brigada\" start_experience_factor = 0.4" 
+							owner = CAT
+						}
+						create_unit = {
+							division = "name = \"5. Anarchists Brigada\" division_template = \"Anarchists Brigada\" start_experience_factor = 0.4" 
+							owner = CAT
+						}
+						create_unit = {
+							division = "name = \"6. Anarchists Brigada\" division_template = \"Anarchists Brigada\" start_experience_factor = 0.4" 
+							owner = CAT
+						}
+						create_unit = {
+							division = "name = \"7. Anarchists Brigada\" division_template = \"Anarchists Brigada\" start_experience_factor = 0.4" 
+							owner = CAT
+						}
+						create_unit = {
+							division = "name = \"8. Anarchists Brigada\" division_template = \"Anarchists Brigada\" start_experience_factor = 0.4" 
+							owner = CAT
+						}
+						create_unit = {
+							division = "name = \"9. Anarchists Brigada\" division_template = \"Anarchists Brigada\" start_experience_factor = 0.4" 
+							owner = CAT
+						}
+					}
+					random_list = {
+						15 = {
+							CAT = {
+								every_owned_state = {
+									create_unit = {
+										division = "name = \"10. Anarchists Brigada\" division_template = \"Anarchists Brigada\" start_experience_factor = 0.4" 
+										owner = CAT
+									}
+								}
+							}
+						}
+						85 = {
+						}
+					}
+					give_military_access = ARA
+					add_ai_strategy = {
+						type = antagonize
+						id = "SPR"
+						value = 500
+					}
+					add_ai_strategy = {
+						type = conquer
+						id = "SPR" 
+						value = 500
+					}
+					add_ai_strategy = {
+						type = antagonize
+						id = "SPA"
+						value = 500
+					}
+					add_ai_strategy = {
+						type = conquer
+						id = "SPA" 
+						value = 500
+					}
+					
+					add_ai_strategy = {
+						type = protect
+						id = "ARA" 
+						value = 500
+					}
+					ARA = {
+						add_ai_strategy = {
+							type = protect
+							id = "CAT" 
+							value = 500
+						}
+					}
+				}
+				ARA = { give_military_access = CAT }
+				SPR = {
+					declare_war_on = {
+						target = CAT
+						type = annex_everything
+					}
+					remove_ideas = SPR_catalon_nationalism
+				}
+			}
+			news_event = { id = trworldnews.65 hours = 6 }
+			set_global_flag = anarcho_spanish_civil_war
+		}
+	}
+}
+
+
+#Анархисты захватывают влияние в Арагоне // После начала ГВ
+country_event = {
+	id = NWspain.26
+	title = NWspain.26.t
+	desc = NWspain.26.desc
+	picture = GFX_report_event_generic_rally_3
+	fire_only_once = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName]: event NWspain.26" }
+	
+	trigger = {
+		tag = SPR
+		SPR = { has_war_with = SPA }
+		ARA = { exists = no }
+	}
+	
+	mean_time_to_happen = { days = 14 }
+	
+	option = {
+		name = NWspain.26.a
+		release_puppet = ARA
+		hidden_effect = {
+			ARA = {
+				transfer_state = 166
+				166 = { add_core_of = ARA }
+				inherit_technology = SPR
+				set_country_flag = aragon_focus_anarchist_flag
+				load_focus_tree = aragon_focus_anarchist
+				set_politics = {
+					parties = {
+						democratic = { 
+							popularity = 20
+						}
+						fascism = {
+							popularity = 20
+						}
+						communism = {
+							popularity = 0
+						}
+						neutrality = {
+							popularity = 0
+						}
+						monarchy = {
+							popularity = 30
+						}
+						trozkism = {
+							popularity = 0
+						}
+						anarchism = {
+							popularity = 30
+						}
+					}
+					ruling_party = anarchism
+					elections_allowed = no
+				}
+				add_equipment_to_stockpile = {
+					type = infantry_equipment
+					amount = 10000
+				}
+				division_template = {
+					name = "Anarchists Brigada"
+					priority = 1
+					is_locked = no
+					regiments = {
+						infantry = { x = 0 y = 0 }
+						infantry = { x = 0 y = 1 }
+						infantry = { x = 0 y = 2 }
+						infantry = { x = 0 y = 3 }
+					}
+				}
+				every_owned_state = {
+					create_unit = {
+						division = "name = \"1. Anarchists Brigada\" division_template = \"Anarchists Brigada\" start_experience_factor = 0.4" 
+						owner = ARA
+					}
+					create_unit = {
+						division = "name = \"2. Anarchists Brigada\" division_template = \"Anarchists Brigada\" start_experience_factor = 0.4" 
+						owner = ARA
+					}
+					create_unit = {
+						division = "name = \"3. Anarchists Brigada\" division_template = \"Anarchists Brigada\" start_experience_factor = 0.4" 
+						owner = ARA
+					}
+					create_unit = {
+						division = "name = \"4. Anarchists Brigada\" division_template = \"Anarchists Brigada\" start_experience_factor = 0.4" 
+						owner = ARA
+					}
+					create_unit = {
+						division = "name = \"5. Anarchists Brigada\" division_template = \"Anarchists Brigada\" start_experience_factor = 0.4" 
+						owner = ARA
+					}
+					create_unit = {
+						division = "name = \"6. Anarchists Brigada\" division_template = \"Anarchists Brigada\" start_experience_factor = 0.4" 
+						owner = ARA
+					}
+					create_unit = {
+						division = "name = \"7. Anarchists Brigada\" division_template = \"Anarchists Brigada\" start_experience_factor = 0.4" 
+						owner = ARA
+					}
+					create_unit = {
+						division = "name = \"8. Anarchists Brigada\" division_template = \"Anarchists Brigada\" start_experience_factor = 0.4" 
+						owner = ARA
+					}
+					create_unit = {
+						division = "name = \"9. Anarchists Brigada\" division_template = \"Anarchists Brigada\" start_experience_factor = 0.4" 
+						owner = ARA
+					}
+					create_unit = {
+						division = "name = \"10. Anarchists Brigada\" division_template = \"Anarchists Brigada\" start_experience_factor = 0.4" 
+						owner = ARA
+					}
+					create_unit = {
+						division = "name = \"11. Anarchists Brigada\" division_template = \"Anarchists Brigada\" start_experience_factor = 0.4" 
+						owner = ARA
+					}
+					create_unit = {
+						division = "name = \"12. Anarchists Brigada\" division_template = \"Anarchists Brigada\" start_experience_factor = 0.4" 
+						owner = ARA
+					}
+					create_unit = {
+						division = "name = \"13. Anarchists Brigada\" division_template = \"Anarchists Brigada\" start_experience_factor = 0.4" 
+						owner = ARA
+					}
+					create_unit = {
+						division = "name = \"14. Anarchists Brigada\" division_template = \"Anarchists Brigada\" start_experience_factor = 0.4" 
+						owner = ARA
+					}
+				}
+				random_list = {
+					15 = {
+						ARA = {
+							random_owned_state = {
+								create_unit = {
+									division = "name = \"15. Anarchists Brigada\" division_template = \"Anarchists Brigada\" start_experience_factor = 0.4" 
+									owner = ARA
+								}
+								create_unit = {
+									division = "name = \"16. Anarchists Brigada\" division_template = \"Anarchists Brigada\" start_experience_factor = 0.4" 
+									owner = ARA
+								}
+								create_unit = {
+									division = "name = \"17. Anarchists Brigada\" division_template = \"Anarchists Brigada\" start_experience_factor = 0.4" 
+									owner = ARA
+								}
+							}
+						}
+					}
+					85 = {
+					}
+				}
+				add_ai_strategy = {
+					type = antagonize
+					id = "SPR"
+					value = 5000
+				}
+				add_ai_strategy = {
+					type = antagonize
+					id = "SPA"
+					value = 5000
+				}
+			}
+		}
+	}
+	
+	option = {
+		name = NWspain.26.b
+		trigger = { is_ai = no }
+		effect_tooltip = {
+			release_puppet = ARA
+			ARA = { change_tag_from = ROOT }
+		}
+		hidden_effect = {
+			release_puppet = ARA
+			ARA = {
+				transfer_state = 166
+				166 = { add_core_of = ARA }
+				inherit_technology = SPR
+				set_country_flag = aragon_focus_anarchist_flag
+				load_focus_tree = aragon_focus_anarchist
+				set_politics = {
+					parties = {
+						democratic = { 
+							popularity = 20
+						}
+						fascism = {
+							popularity = 20
+						}
+						communism = {
+							popularity = 0
+						}
+						neutrality = {
+							popularity = 0
+						}
+						monarchy = {
+							popularity = 30
+						}
+						trozkism = {
+							popularity = 0
+						}
+						anarchism = {
+							popularity = 30
+						}
+					}
+					ruling_party = anarchism
+					elections_allowed = no
+				}
+				add_equipment_to_stockpile = {
+					type = infantry_equipment
+					amount = 10000
+				}
+				division_template = {
+					name = "Anarchists Brigada"
+					priority = 1
+					is_locked = no
+					regiments = {
+						infantry = { x = 0 y = 0 }
+						infantry = { x = 0 y = 1 }
+						infantry = { x = 0 y = 2 }
+						infantry = { x = 0 y = 3 }
+					}
+				}
+				every_owned_state = {
+					create_unit = {
+						division = "name = \"1. Anarchists Brigada\" division_template = \"Anarchists Brigada\" start_experience_factor = 0.4" 
+						owner = ARA
+					}
+					create_unit = {
+						division = "name = \"2. Anarchists Brigada\" division_template = \"Anarchists Brigada\" start_experience_factor = 0.4" 
+						owner = ARA
+					}
+					create_unit = {
+						division = "name = \"3. Anarchists Brigada\" division_template = \"Anarchists Brigada\" start_experience_factor = 0.4" 
+						owner = ARA
+					}
+					create_unit = {
+						division = "name = \"4. Anarchists Brigada\" division_template = \"Anarchists Brigada\" start_experience_factor = 0.4" 
+						owner = ARA
+					}
+					create_unit = {
+						division = "name = \"5. Anarchists Brigada\" division_template = \"Anarchists Brigada\" start_experience_factor = 0.4" 
+						owner = ARA
+					}
+					create_unit = {
+						division = "name = \"6. Anarchists Brigada\" division_template = \"Anarchists Brigada\" start_experience_factor = 0.4" 
+						owner = ARA
+					}
+					create_unit = {
+						division = "name = \"7. Anarchists Brigada\" division_template = \"Anarchists Brigada\" start_experience_factor = 0.4" 
+						owner = ARA
+					}
+					create_unit = {
+						division = "name = \"8. Anarchists Brigada\" division_template = \"Anarchists Brigada\" start_experience_factor = 0.4" 
+						owner = ARA
+					}
+					create_unit = {
+						division = "name = \"9. Anarchists Brigada\" division_template = \"Anarchists Brigada\" start_experience_factor = 0.4" 
+						owner = ARA
+					}
+					create_unit = {
+						division = "name = \"10. Anarchists Brigada\" division_template = \"Anarchists Brigada\" start_experience_factor = 0.4" 
+						owner = ARA
+					}
+					create_unit = {
+						division = "name = \"11. Anarchists Brigada\" division_template = \"Anarchists Brigada\" start_experience_factor = 0.4" 
+						owner = ARA
+					}
+					create_unit = {
+						division = "name = \"12. Anarchists Brigada\" division_template = \"Anarchists Brigada\" start_experience_factor = 0.4" 
+						owner = ARA
+					}
+					create_unit = {
+						division = "name = \"13. Anarchists Brigada\" division_template = \"Anarchists Brigada\" start_experience_factor = 0.4" 
+						owner = ARA
+					}
+					create_unit = {
+						division = "name = \"14. Anarchists Brigada\" division_template = \"Anarchists Brigada\" start_experience_factor = 0.4" 
+						owner = ARA
+					}
+					random_list = {
+						15 = {
+							ARA = {
+								random_owned_state = {
+									create_unit = {
+										division = "name = \"15. Anarchists Brigada\" division_template = \"Anarchists Brigada\" start_experience_factor = 0.4" 
+										owner = ARA
+									}
+									create_unit = {
+										division = "name = \"16. Anarchists Brigada\" division_template = \"Anarchists Brigada\" start_experience_factor = 0.4" 
+										owner = ARA
+									}
+									create_unit = {
+										division = "name = \"17. Anarchists Brigada\" division_template = \"Anarchists Brigada\" start_experience_factor = 0.4" 
+										owner = ARA
+									}
+								}
+							}
+						}
+						85 = {
+						}
+					}
+				}
+				add_ai_strategy = {
+					type = antagonize
+					id = "SPR"
+					value = 200
+				}
+				add_ai_strategy = {
+					type = antagonize
+					id = "SPA"
+					value = 200
+				}
+				change_tag_from = ROOT
+			}
+		}
+	}
+}
+
+#Военные устраивают переворот в республике
+country_event = {
+	id = NWspain.27
+	title = NWspain.27.t
+	desc = NWspain.27.desc
+	picture = GFX_report_event_generic_rally_3
+	fire_only_once = yes
+	
+	trigger = {
+		tag = SPR
+		SPR = { has_war_with = SPA }
+		SPR = { num_of_controlled_states < 12 }
+		SPA = { has_full_control_of_state = 41 }
+		SPR = { NOT = { has_completed_focus = SPR_transformation_people_republic } }
+		date > 1939.02.01
+		date < 1939.04.01
+	}
+	
+	immediate = { log = "[GetDateText]: [Root.GetName]: event NWspain.27" }
+	
+	mean_time_to_happen = { days = 30 }
+	
+	option = {
+		name = NWspain.27.a
+		ai_chance = {
+			factor = 90
+		}
+		set_party_name = { ideology = neutrality name = SPR_junta_national_defense long_name = SPR_junta_national_defense }
+		create_country_leader = {
+			name = "Segismundo Casado"
+			desc = "POLITICS_SEGISMUNDO_CASADO_DESC"
+			picture = "gfx/leaders/SPR/Portrait_Segismundo_Casado.dds"
+			expire = "1965.1.1"
+			ideology = militarism
+			traits = {
+				#
+			}
+		}
+		complete_national_focus = SPR_stand_junta
+	}
+	
+	option = {
+		name = NWspain.27.b
+		ai_chance = {
+			factor = 10
+		}
+		add_stability = -0.1
+		add_war_support = -0.1
+	}
+}
+
+#Пульсар для решений совка/гермы/итала
+country_event = {
+	id = NWspain.28
+	title = NWspain.28.t
+	desc = NWspain.28.desc
+	picture = GFX_report_event_generic_rally_3
+	fire_only_once = yes
+	hidden = yes
+	
+	mean_time_to_happen = { days = 90 }
+	
+	trigger = {
+		tag = SPR
+		has_global_flag = spanish_civil_war
+		NOT = { has_global_flag = scw_over }
+	}
+	
+	immediate = { log = "[GetDateText]: [Root.GetName]: event NWspain.28" }
+	
+	option = {
+		name = NWspain.28.a
+		set_global_flag = spanish_cw_decisions
+	}
+}
+
+
+
+########################
+####  NATIONALISTS  ####
+########################
+
+
+#Смерть Хосе Санхурхо
+country_event = {
+	id = NWspain.101
+	title = NWspain.101.t
+	desc = NWspain.101.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName]: event NWspain.101" }
+	
+	option = {
+		name = NWspain.101.a
+		add_stability = -0.03
+		if = {
+			limit = {
+				has_country_leader = { name = "José Sanjurjo" }
+			}
+			kill_country_leader = yes
+		}
+		create_country_leader = {
+			name = "Emilio Mola"
+			id = 4700
+			desc = "POLITICS_EMILIO_MOLA_DESC"
+			picture = "gfx/leaders/SPR/Portrait_Emilio_Mola.dds"
+			expire = "1965.1.1"
+			ideology = despotism
+			traits = {
+				#
+			}
+		}
+		set_country_flag = SPA_focus_junta_block_flag
+	}
+}
+
+#Пульсар смерти Эмилио Молы
+country_event = {
+	id = NWspain.1002
+	title = NWspain.1002.t
+	desc = NWspain.1002.desc
+	picture = GFX_report_event_generic_rally_3
+	fire_only_once = yes
+	hidden = yes
+	
+	trigger = {
+		tag = SPA
+		date > 1937.06.01
+		has_country_flag = SPA_emilio_mola_kill_flag
+	}
+	
+	immediate = { log = "[GetDateText]: [Root.GetName]: event NWspain.1002" }
+	
+	option = {
+		name = NWspain.1002.a
+		country_event = { id = NWspain.102 days = 75 random = 30 }
+	}
+}
+
+#Смерть Эмилио Молы
+country_event = {
+	id = NWspain.102
+	title = NWspain.102.t
+	desc = NWspain.102.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName]: event NWspain.102" }
+	
+	option = {
+		name = NWspain.102.a
+		add_stability = -0.03
+		if = {
+			limit = {
+				has_country_leader = { name = "Emilio Mola" }
+			}
+			kill_country_leader = yes
+		}
+		random_unit_leader = {
+			limit = {
+				has_id = 4700
+			}
+			retire = yes
+		}
+		random_unit_leader = {
+			limit = {
+				has_id = 4701
+			}
+			retire = yes
+		}
+		hidden_effect = {
+			SPR = {
+				random_unit_leader = {
+					limit = {
+						has_id = 4702
+					}
+					retire = yes
+				}
+			}
+		}
+	}
+}
+
+#Смерть Примо де Риверы
+country_event = {
+	id = NWspain.103
+	title = NWspain.103.t
+	desc = NWspain.103.desc
+	picture = GFX_report_event_generic_rally_3
+	fire_only_once = yes
+	
+	trigger = {
+		tag = SPA
+		date > 1936.11.18
+	}
+	
+	immediate = { log = "[GetDateText]: [Root.GetName]: event NWspain.103" }
+	
+	option = {
+		name = NWspain.103.a
+		add_war_support = 0.02
+		random_unit_leader = {
+			limit = {
+				has_id = 4703
+			}
+			retire = yes
+		}
+		if = {
+			limit = {
+				has_country_leader = { name = "José Antonio Primo de Rivera" }
+			}
+			kill_country_leader = yes
+		}
+		if = {
+			limit = { SPA = { NOT = { has_completed_focus = SPA_dictatorship_of_franco } } }
+			create_country_leader = {
+				name = "Manuel Hedilla"
+				desc = "POLITICS_MANUEL_HEDILLA_DESC"
+				picture = "gfx/leaders/SPR/Portrait_Manuel_Hedilla.dds"
+				expire = "1965.1.1"
+				ideology = fascism_ideology
+				traits = {
+					#
+				}
+			}
+			effect_tooltip = {
+				unlock_national_focus = SPA_edilas_presidency
+			}
+			set_country_flag = SPA_edilas_presidency_flag
+		}
+		
+		hidden_effect = {
+			SPR = {
+				random_unit_leader = {
+					limit = {
+						has_id = 4704
+					}
+					retire = yes
+				}
+				if = {
+					limit = {
+						has_country_leader = { name = "José Antonio Primo de Rivera" }
+					}
+					kill_country_leader = yes
+				}
+				create_country_leader = {
+					name = "Manuel Hedilla"
+					desc = "POLITICS_MANUEL_HEDILLA_DESC"
+					picture = "gfx/leaders/SPR/Portrait_Manuel_Hedilla.dds"
+					expire = "1965.1.1"
+					ideology = fascism_ideology
+					traits = {
+						#
+					}
+				}
+			}
+		}
+	}
+}
+
+#Хуан Барселонский хочет принять участие в войне
+country_event = {
+	id = NWspain.104
+	title = NWspain.104.t
+	desc = NWspain.104.desc
+	picture = GFX_report_event_king_speech
+	fire_only_once = yes
+	
+	mean_time_to_happen = { days = 45 }
+	
+	trigger = {
+		tag = SPA
+		has_global_flag = spanish_civil_war
+		NOT = { has_global_flag = scw_over }
+	}
+	
+	immediate = { log = "[GetDateText]: [Root.GetName]: event NWspain.104" }
+	
+	option = {
+		name = NWspain.104.a
+		ai_chance = {
+			factor = 50
+		}
+		set_country_flag = no_huan_flag
+	}
+	
+	option = {
+		name = NWspain.104.b
+		ai_chance = {
+			factor = 50
+			modifier = {
+				factor = 0
+				is_historical_focus_on = yes
+			}
+		}
+		add_war_support = 0.02
+		add_manpower = 10000
+		add_popularity = {
+			ideology = monarchy
+			popularity = 0.05
+		}
+	}
+}
+
+#Смерть Альфонсо XIII
+country_event = {
+	id = NWspain.105
+	title = NWspain.105.t
+	desc = NWspain.105.desc
+	picture = GFX_report_event_king_speech
+	fire_only_once = yes
+	
+	mean_time_to_happen = { days = 45 }
+	
+	trigger = {
+		tag = SPA
+		date > 1941.02.26
+		has_country_flag = SPA_alfonso_kill_flag
+	}
+	
+	immediate = { log = "[GetDateText]: [Root.GetName]: event NWspain.105" }
+	
+	option = {
+		name = NWspain.105.a
+		add_political_power = -20
+		if = {
+			limit = {
+				has_country_leader = { name = "Alfonso XIII" }
+			}
+			kill_country_leader = yes
+		}
+		create_country_leader = {
+			name = "Juan III"
+			desc = "POLITICS_JUAN_III_DESC"
+			picture = "gfx/leaders/SPR/Portrait_Juan_III.dds"
+			expire = "1965.1.1"
+			ideology = despotism
+			traits = {
+				democratic_sympathies
+			}
+		}
+	}
+}
+
+#Испанцы просят о благословении на войну с безбожниками // Ватикан
+country_event = {
+	id = NWspain.106
+	title = NWspain.106.t
+	desc = NWspain.106.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName]: event NWspain.106" }
+	
+	option = {
+		name = NWspain.106.a
+		ai_chance = {
+			factor = 85
+		}
+		VAT = { country_event = { id = NWspain.107 days = 1 } }
+	}
+	
+	option = {
+		name = NWspain.106.b
+		ai_chance = {
+			factor = 15
+		}
+		add_opinion_modifier = { target = FROM modifier = diplomatic_affront }
+		FROM = { add_opinion_modifier = { target = ROOT modifier = diplomatic_affront } }
+	}
+}
+
+#Папа Римский благословил нас на борьбу // ответ
+country_event = {
+	id = NWspain.107
+	title = NWspain.107.t
+	desc = NWspain.107.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName]: event NWspain.107" }
+	
+	option = {
+		name = NWspain.107.a
+		add_ideas = SPA_bless_pope
+	}
+}
+
+#Противоречия среди монархистов
+country_event = {
+	id = NWspain.108
+	title = NWspain.108.t
+	desc = NWspain.108.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName]: event NWspain.108" }
+	
+	option = {
+		name = NWspain.108.a
+		trigger = {
+			has_country_flag = no_huan_flag
+		}
+		complete_national_focus = SPA_invite_alfonso_XIII
+	}
+	
+	option = {
+		name = NWspain.108.b
+		trigger = {
+			NOT = { has_country_flag = no_huan_flag }
+		}
+		complete_national_focus = SPA_invite_javier_parma
+	}
+}
+
+#Мольбы испанских националистов о помощи // начало
+country_event = {
+	id = NWspain.109
+	title = NWspain.109.t
+	desc = NWspain.109.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName]: event NWspain.109" }
+	
+	option = {
+		name = NWspain.109.a
+		ai_chance = {
+			factor = 50
+		}
+		add_to_war = {
+			targeted_alliance = FROM
+			enemy = SPR
+		}
+		hidden_effect = {
+			if = {
+				limit = { NOT = { FRA = { is_in_faction_with = ROOT } } }
+				FRA = { country_event = { id = NWspain.112 days = 1 } }
+			}
+			if = {
+				limit = { NOT = { ENG = { is_in_faction_with = ROOT } } }
+				ENG = { country_event = { id = NWspain.112 days = 2 } }
+			}
+			if = {
+				limit = { NOT = { SOV = { is_in_faction_with = ROOT } } }
+				SOV = { country_event = { id = NWspain.112 days = 3 } }
+			}
+		}
+	}
+	
+	option = {
+		name = NWspain.109.b
+		ai_chance = {
+			factor = 50
+		}
+		FROM = { country_event = { id = NWspain.121 days = 1 } }
+	}
+	
+	option = {
+		name = NWspain.109.c
+		ai_chance = {
+			factor = 50
+		}
+		add_opinion_modifier = { target = FROM modifier = diplomatic_affront }
+		FROM = { add_opinion_modifier = { target = ROOT modifier = diplomatic_affront } }
+	}
+}
+
+#Испания хочет вступить в Ось // GER
+country_event = {
+	id = NWspain.110
+	title = NWspain.110.t
+	desc = NWspain.110.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName]: event NWspain.110" }
+	
+	option = {
+		name = NWspain.110.a
+		ai_chance = {
+			factor = 50
+			modifier = {
+				factor = 0
+				is_historical_focus_on = yes
+			}
+			modifier = {
+				factor = 5
+				any_country = {
+					has_war_with = ROOT
+					has_war_with = FROM
+				}
+			}
+		}
+		GER = { add_to_faction = FROM }
+	}
+	
+	option = {
+		name = NWspain.110.b
+		ai_chance = {
+			factor = 75
+			modifier = {
+				factor = 0
+				is_historical_focus_on = yes
+			}
+			modifier = {
+				factor = 2
+				any_country = {
+					has_war_with = ROOT
+					has_war_with = FROM
+				}
+			}
+		}
+		FROM = { country_event = { id = NWspain.111 days = 1 } }
+	}
+	
+	option = {
+		name = NWspain.110.c
+		ai_chance = {
+			factor = 15
+			modifier = {
+				factor = 5
+				FROM = { has_war = yes }
+			}
+		}
+		add_opinion_modifier = { target = FROM modifier = diplomatic_affront }
+		FROM = { add_opinion_modifier = { target = ROOT modifier = diplomatic_affront } }
+	}
+}
+
+#Германия требует не выдвигать претензии на Камерун // SPA
+country_event = {
+	id = NWspain.111
+	title = NWspain.111.t
+	desc = NWspain.111.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName]: event NWspain.111" }
+	
+	option = {
+		name = NWspain.111.a
+		ai_chance = {
+			factor = 85
+		}
+		FROM = { add_to_faction = ROOT }
+		set_country_flag = SPA_not_claims_camerun
+	}
+	
+	option = {
+		name = NWspain.111.b
+		ai_chance = {
+			factor = 15
+		}
+		add_opinion_modifier = { target = FROM modifier = diplomatic_affront }
+		FROM = { add_opinion_modifier = { target = ROOT modifier = diplomatic_affront } }
+	}
+	
+}
+
+#Италия проводит агрессивную политику // FRA/ENG/SOV
+country_event = {
+	id = NWspain.112
+	title = NWspain.112.t
+	desc = NWspain.112.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName]: event NWspain.112" }
+	
+	option = {
+		name = NWspain.112.a
+		ai_chance = {
+			factor = 90
+		}
+		set_country_flag = anti_italy_flag
+		if = {
+			limit = {
+				tag = SOV
+				FRA = { has_country_flag = anti_italy_flag }
+				ENG = { has_country_flag = anti_italy_flag }
+			}
+			SOV = { country_event = { id = NWspain.113 days = 1 } }
+		}
+	}
+	
+	option = {
+		name = NWspain.112.b
+		ai_chance = {
+			factor = 10
+		}
+	}
+}
+
+#Миротворческая интервенция в Италию // SOV
+country_event = {
+	id = NWspain.113
+	title = NWspain.113.t
+	desc = NWspain.113.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName]: event NWspain.113" }
+	immediate = { clr_country_flag = anti_italy_flag }
+	
+	option = {
+		name = NWspain.113.a
+		ai_chance = {
+			factor = 90
+		}
+		FRA = { country_event = { id = NWspain.114 days = 1 } }
+		ENG = { country_event = { id = NWspain.114 days = 2 } }
+		if = {
+			limit = {
+				GER = {
+					NOT = { is_in_faction_with = FRA }
+					NOT = { is_in_faction_with = ENG }
+					NOT = { is_in_faction_with = SOV }
+				}
+			}
+			GER = { country_event = { id = NWspain.117 } }
+		}
+		hidden_effect = {
+			ITA = { country_event = { id = NWspain.115 days = 5 } }
+		}
+	}
+	
+	option = {
+		name = NWspain.113.b
+		ai_chance = {
+			factor = 10
+		}
+	}
+}
+
+#Советский Союз призывает к интервенции в Италию // FRA/ENG
+country_event = {
+	id = NWspain.114
+	title = NWspain.114.t
+	desc = NWspain.114.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName]: event NWspain.114" }
+	immediate = { clr_country_flag = anti_italy_flag }
+	
+	option = {
+		name = NWspain.114.a
+		ai_chance = {
+			factor = 90
+		}
+		set_country_flag = war_with_italy_flag
+	}
+	
+	option = {
+		name = NWspain.114.b
+		ai_chance = {
+			factor = 10
+		}
+	}
+}
+
+#Лига Наций требует прекратить вмешательство в дела Испании // ITA
+country_event = {
+	id = NWspain.115
+	title = NWspain.115.t
+	desc = NWspain.115.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName]: event NWspain.115" }
+	immediate = { clr_country_flag = anti_italy_flag }
+	
+	option = {
+		name = NWspain.115.a
+		ai_chance = {
+			factor = 80
+		}
+		add_stability = -0.1
+		every_country = {
+			limit = {
+				has_war_with = ITA
+				OR = {
+					tag = SPR
+					tag = ARA
+					tag = CAT
+					tag = BAS
+					tag = GLC
+					tag = ASU
+					tag = SNT
+				}
+			}
+			ITA = { white_peace = PREV }
+		}
+		if = {
+			limit = { SPA = { is_in_faction_with = ITA } }
+			SPA = { leave_faction = yes }
+		}
+		SPA = { country_event = { id = NWspain.116 } }
+		hidden_effect = {
+			diplomatic_relation = {
+				country = SPA
+				relation = guarantee
+				active = no
+			}
+			SPA = {
+				diplomatic_relation = {
+					country = ROOT
+					relation = guarantee
+					active = no
+				}
+			}
+			every_country = {
+				limit = { has_country_flag = war_with_italy_flag }
+				clr_country_flag = war_with_italy_flag
+			}
+		}
+	}
+	
+	option = {
+		name = NWspain.115.b
+		ai_chance = {
+			factor = 20
+		}
+		every_country = {
+			limit = {
+				OR = {
+					tag = SOV
+					has_country_flag = war_with_italy_flag
+				}
+			}
+			declare_war_on = {
+				target = ITA
+				type = topple_government
+			}
+		}
+		hidden_effect = {
+			every_country = {
+				limit = { has_country_flag = war_with_italy_flag }
+				clr_country_flag = war_with_italy_flag
+			}
+		}
+	}
+}
+
+#Италия вынуждена прекратить нашу поддержку // SPA
+country_event = {
+	id = NWspain.116
+	title = NWspain.116.t
+	desc = NWspain.116.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName]: event NWspain.116" }
+	
+	option = {
+		name = NWspain.116.a
+	}
+}
+
+#Угроза вторжения в Италию // GER
+country_event = {
+	id = NWspain.117
+	title = NWspain.117.t
+	desc = NWspain.117.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName]: event NWspain.117" }
+	immediate = { clr_country_flag = anti_italy_flag }
+	
+	option = {
+		name = NWspain.117.a
+		ai_chance = {
+			factor = 50
+		}
+		diplomatic_relation = {
+			country = ITA
+			relation = guarantee
+			active = yes
+		}
+	}
+	
+	option = {
+		name = NWspain.117.b
+		ai_chance = {
+			factor = 5
+		}
+	}
+	
+	option = {
+		name = NWspain.117.c
+		ai_chance = {
+			factor = 15
+		}
+		trigger = {
+			GER = {
+				has_full_control_of_state = 153
+				has_full_control_of_state = 841
+			}
+			ITA = {
+				has_full_control_of_state = 39
+				has_full_control_of_state = 846
+				has_full_control_of_state = 736
+				has_full_control_of_state = 824
+				has_full_control_of_state = 823
+			}
+		}
+		ITA = { country_event = { id = NWspain.118 days = 1 } }
+		GER = { set_country_flag = flag_var_c }
+	}
+	
+	option = {
+		name = NWspain.117.d
+		ai_chance = {
+			factor = 30
+		}
+		trigger = {
+			GER = {
+				has_full_control_of_state = 153
+				has_full_control_of_state = 841
+			}
+			ITA = {
+				has_full_control_of_state = 39
+				has_full_control_of_state = 846
+			}
+		}
+		ITA = { country_event = { id = NWspain.118 days = 1 } }
+		GER = { set_country_flag = flag_var_d }
+	}
+}
+
+#Германия предлагает свою поддержку // ITA
+country_event = {
+	id = NWspain.118
+	title = NWspain.118.t
+	desc = NWspain.118.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName]: event NWspain.118" }
+	
+	option = {
+		name = NWspain.118.a
+		ai_chance = {
+			factor = 50
+		}
+		if = {
+			limit = { GER = { has_country_flag = flag_var_c } }
+			GER = {
+				transfer_state = 39
+				transfer_state = 846
+				transfer_state = 736
+				transfer_state = 824
+				transfer_state = 823
+				clr_country_flag = flag_var_c
+			}
+			every_state = {
+				limit = {
+					OR = {
+						state = 39
+						state = 846
+						state = 736
+						state = 824
+						state = 823
+					}
+				}
+				remove_core_of = ITA
+				add_core_of = GER
+			}
+		}
+		if = {
+			limit = { GER = { has_country_flag = flag_var_d } }
+			GER = {
+				transfer_state = 39
+				transfer_state = 846
+				clr_country_flag = flag_var_d
+			}
+			every_state = {
+				limit = {
+					OR = {
+						state = 39
+						state = 846
+					}
+				}
+				remove_core_of = ITA
+				add_core_of = GER
+			}
+		}
+		GER = { country_event = { id = NWspain.119 days = 1 } }
+	}
+	
+	option = {
+		name = NWspain.118.b
+		ai_chance = {
+			factor = 50
+		}
+		GER = { country_event = { id = NWspain.120 days = 1 } }
+	}
+}
+
+#Гарантия итальянской независимости // GER
+country_event = {
+	id = NWspain.119
+	title = NWspain.119.t
+	desc = NWspain.119.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName]: event NWspain.119" }
+	
+	option = {
+		name = NWspain.119.a
+		ai_chance = {
+			factor = 80
+		}
+		if = {
+			limit = { GER = { is_faction_leader = yes } }
+			add_to_faction = ITA
+		}
+		else = {
+			diplomatic_relation = {
+				country = ITA
+				relation = guarantee
+				active = yes
+			}
+		}
+	}
+	
+	option = {
+		name = NWspain.119.b
+		ai_chance = {
+			factor = 20
+		}
+		ITA = {
+			create_wargoal = {
+				type = annex_everything
+				target = GER
+			}
+		}
+	}
+}
+
+#Итальянский отказ // GER
+country_event = {
+	id = NWspain.120
+	title = NWspain.120.t
+	desc = NWspain.120.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName]: event NWspain.120" }
+	
+	option = {
+		name = NWspain.120.a
+	}
+}
+
+#Италия выдвигает свои требования // SPA
+country_event = {
+	id = NWspain.121
+	title = NWspain.121.t
+	desc = NWspain.121.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName]: event NWspain.121" }
+	
+	option = {
+		name = NWspain.121.a
+		ai_chance = {
+			factor = 20
+		}
+		ITA = { country_event = { id = NWspain.122 days = 1 } }
+	}
+	
+	option = {
+		name = NWspain.121.b
+		ai_chance = {
+			factor = 80
+		}
+		ITA = {
+			add_to_war = {
+				targeted_alliance = ROOT
+				enemy = SPR
+			}
+		}
+		add_ideas = SPA_italy_debt
+		
+		hidden_effect = {
+			if = {
+				limit = { NOT = { FRA = { is_in_faction_with = ROOT } } }
+				FRA = { country_event = { id = NWspain.112 days = 1 } }
+			}
+			if = {
+				limit = { NOT = { ENG = { is_in_faction_with = ROOT } } }
+				ENG = { country_event = { id = NWspain.112 days = 2 } }
+			}
+			if = {
+				limit = { NOT = { SOV = { is_in_faction_with = ROOT } } }
+				SOV = { country_event = { id = NWspain.112 days = 3 } }
+			}
+		}
+	}
+}
+
+#Испанский отказ // ITA
+country_event = {
+	id = NWspain.122
+	title = NWspain.122.t
+	desc = NWspain.122.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName]: event NWspain.122" }
+	
+	option = {
+		name = NWspain.122.a
+	}
+}
+
+#Италия пришла вернуть свои дивиденды // SPA
+country_event = {
+	id = NWspain.123
+	title = NWspain.123.t
+	desc = NWspain.123.desc
+	picture = GFX_report_event_generic_rally_3
+	fire_only_once = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName]: event NWspain.123" }
+	
+	trigger = {
+		tag = SPA
+		ITA = { exists = yes }
+		has_idea = SPA_italy_debt
+		has_global_flag = scw_over
+	}
+	
+	option = {
+		name = NWspain.123.a
+		ai_chance = {
+			factor = 80
+		}
+		ITA = {
+			set_autonomy = {
+				target = ROOT
+				autonomy_state = autonomy_dominion
+			}
+		}
+	}
+	
+	option = {
+		name = NWspain.123.a
+		ai_chance = {
+			factor = 20
+		}
+		ITA = { country_event = { id = NWspain.124 days = 1 } }
+	}
+}
+
+#Испания отказывает нашему покровительству // ITA
+country_event = {
+	id = NWspain.124
+	title = NWspain.124.t
+	desc = NWspain.124.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName]: event NWspain.124" }
+	
+	option = {
+		name = NWspain.124.a
+		ai_chance = {
+			factor = 95
+		}
+		create_wargoal = {
+			type = puppet_wargoal_focus
+			target = FROM
+		}
+	}
+	
+	option = {
+		name = NWspain.124.b
+		ai_chance = {
+			factor = 5
+		}
+	}
+}
 
 
 
 
+##################
+####  ARAGON  ####
+##################
+
+#(From.GetAdjective) анархисты взбунтовались // SPR
+country_event = {
+	id = NWspain.201
+	title = NWspain.201.t
+	desc = NWspain.201.desc
+	picture = GFX_report_event_crowd_in_prague
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName]: event NWspain.201" }
+	
+	option = {
+		name = NWspain.201.a
+		ai_chance = {
+			factor = 50
+		}
+		declare_war_on = {
+			target = FROM
+			type = annex_everything
+		}
+	}
+	
+	option = {
+		name = NWspain.201.b
+		ai_chance = {
+			factor = 50
+			modifier = {
+				factor = 0
+				num_of_controlled_states > 12
+				has_war_with = SPA
+			}
+		}
+		add_stability = 0.05
+	}
+}
+
+#Арагон призывает нас вступить на путь борьбы с капитализмом // Каталония
+country_event = {
+	id = NWspain.202
+	title = NWspain.202.t
+	desc = NWspain.202.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName]: event NWspain.202" }
+	
+	option = {
+		name = NWspain.202.a
+		ai_chance = {
+			factor = 90
+		}
+		OVERLORD = {
+			set_autonomy = {
+				target = ROOT
+				autonomy_state = autonomy_free
+			}
+		}
+		ARA = {
+			set_rule = { can_create_factions = yes }
+			create_faction = ARA_union_anarchists_iberia
+			add_to_faction = ROOT
+		}
+	}
+	
+	option = {
+		name = NWspain.202.b
+		ai_chance = {
+			factor = 10
+		}
+		add_opinion_modifier = { target = FROM modifier = diplomatic_affront }
+		FROM = { add_opinion_modifier = { target = ROOT modifier = diplomatic_affront } }
+	}
+}
+
+#Democrat
+#(From.GetName) объявляет о независимости // SPR
+country_event = {
+	id = NWspain.203
+	title = NWspain.203.t
+	desc = NWspain.203.desc
+	picture = GFX_report_event_communist_leader
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName]: event NWspain.203" }
+	
+	option = {
+		name = NWspain.203.a
+		ai_chance = {
+			factor = 50
+		}
+		declare_war_on = {
+			target = FROM
+			type = annex_everything
+		}
+	}
+	
+	option = {
+		name = NWspain.203.b
+		ai_chance = {
+			factor = 50
+			modifier = {
+				factor = 0
+				num_of_controlled_states > 12
+				has_war_with = SPA
+			}
+		}
+		add_stability = 0.05
+	}
+}
+
+#Арагон предлагает заключить союз // CAT
+country_event = {
+	id = NWspain.204
+	title = NWspain.204.t
+	desc = NWspain.204.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName]: event NWspain.204" }
+	
+	option = {
+		name = NWspain.204.a
+		ai_chance = {
+			factor = 90
+		}
+		diplomatic_relation = {
+			country = FROM
+			relation = guarantee
+			active = yes
+		}
+		FROM = {
+			diplomatic_relation = {
+				country = ROOT
+				relation = guarantee
+				active = yes
+			}
+		}
+		FROM = { add_to_tech_sharing_group = ARA_cat_ara_group }
+		ROOT = { add_to_tech_sharing_group = ARA_cat_ara_group }
+		
+		if = {
+			limit = {
+				OR = {
+					is_subject = yes
+					is_puppet = yes
+				}
+			}
+			OVERLORD = {
+				set_autonomy = {
+					target = ROOT
+					autonomy_state = autonomy_free
+				}
+			}
+		}
+	}
+	
+	option = {
+		name = NWspain.204.b
+		ai_chance = {
+			factor = 10
+		}
+		add_opinion_modifier = { target = FROM modifier = diplomatic_affront }
+		FROM = { add_opinion_modifier = { target = ROOT modifier = diplomatic_affront } }
+	}
+}
+
+#Арагон призывает к независимости // BAS + GLC + ASU + SNT
+country_event = {
+	id = NWspain.205
+	title = NWspain.205.t
+	desc = NWspain.205.desc
+	picture = GFX_report_event_communist_leader
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName]: event NWspain.205" }
+	
+	option = {
+		name = NWspain.205.a
+		ai_chance = {
+			factor = 90
+			modifier = {
+				factor = 0
+				has_government = communism
+			}
+		}
+		if = {
+			limit = {
+				has_war_with = FROM
+			}
+			white_peace = FROM
+		}
+		if = {
+			limit = {
+				OR = {
+					is_subject = yes
+					is_puppet = yes
+				}
+			}
+			OVERLORD = {
+				set_autonomy = {
+					target = ROOT
+					autonomy_state = autonomy_free
+				}
+			}
+		}
+		diplomatic_relation = {
+			country = FROM
+			relation = guarantee
+			active = yes
+		}
+		FROM = {
+			diplomatic_relation = {
+				country = ROOT
+				relation = guarantee
+				active = yes
+			}
+		}
+	}
+	
+	option = {
+		name = NWspain.205.b
+		ai_chance = {
+			factor = 10
+		}
+		add_opinion_modifier = { target = FROM modifier = diplomatic_affront }
+		FROM = { add_opinion_modifier = { target = ROOT modifier = diplomatic_affront } }
+	}
+}
 
 
 
+#Catalonia
+#Перестрелка между анархистами и коммунистами
+country_event = {
+	id = NWspain.301
+	title = NWspain.301.t
+	desc = NWspain.301.desc
+	picture = GFX_report_event_ger_civil_war
+	fire_only_once = yes
+	
+	trigger = {
+		tag = CAT
+		date > 1937.05.01
+	}
+	
+	immediate = { log = "[GetDateText]: [Root.GetName]: event NWspain.301" }
+	
+	option = {
+		name = NWspain.301.a
+		add_stability = -0.03
+		hidden_effect = {
+			country_event = { id = NWspain.306 days = 4 }
+			complete_national_focus = CAT_may_events
+			if = {
+				limit = {
+					ARA = {
+						exists = yes
+						has_government = democratic
+					}
+				}
+				country_event = { id = NWspain.302 days = 1 }
+			}
+		}
+	}
+}
+
+#Арагонская поддержка
+country_event = {
+	id = NWspain.302
+	title = NWspain.302.t
+	desc = NWspain.302.desc
+	picture = GFX_report_event_ger_civil_war
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName]: event NWspain.302" }
+	
+	option = {
+		name = NWspain.302.a
+		ai_chance = {
+			factor = 75
+		}
+		add_political_power = -10
+		ARA = { country_event = { id = NWspain.303 days = 1 } }
+	}
+	
+	option = {
+		name = NWspain.302.b
+		ai_chance = {
+			factor = 25
+		}
+	}
+}
+
+#Каталония просит разрешить политический кризис
+country_event = {
+	id = NWspain.303
+	title = NWspain.303.t
+	desc = NWspain.303.desc
+	picture = GFX_report_event_ger_civil_war
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName]: event NWspain.303" }
+	
+	option = {
+		name = NWspain.303.a
+		ai_chance = {
+			factor = 90
+		}
+		add_manpower = -3000
+		hidden_effect = {
+			FROM = { country_event = { id = NWspain.304 days = 1 } }
+		}
+	}
+	
+	option = {
+		name = NWspain.303.b
+		ai_chance = {
+			factor = 10
+		}
+		add_opinion_modifier = { target = FROM modifier = diplomatic_affront }
+		FROM = { add_opinion_modifier = { target = ROOT modifier = diplomatic_affront } }
+		hidden_effect = {
+			FROM = { country_event = { id = NWspain.305 days = 1 } }
+		}
+	}
+}
+
+#Арагон согласился помочь
+country_event = {
+	id = NWspain.304
+	title = NWspain.304.t
+	desc = NWspain.304.desc
+	picture = GFX_report_event_ger_civil_war
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName]: event NWspain.304" }
+	
+	option = {
+		name = NWspain.304.a
+		set_country_flag = ara_help_cat_flag
+	}
+}
+
+#Арагон отказался помочь
+country_event = {
+	id = NWspain.305
+	title = NWspain.305.t
+	desc = NWspain.305.desc
+	picture = GFX_report_event_ger_civil_war
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName]: event NWspain.305" }
+	
+	option = {
+		name = NWspain.305.a
+	}
+}
+
+#Завершение боёв на улицах Барселоны
+country_event = {
+	id = NWspain.306
+	title = NWspain.306.t
+	desc = NWspain.306.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName]: event NWspain.306" }
+	
+	#Победа КПИ
+	option = {
+		name = NWspain.306.a
+		trigger = {
+			NOT = { has_completed_focus = CAT_federation_anarchists_iberia }
+			has_completed_focus = CAT_creation_centralized_army
+			check_variable = { var = communist_score value = anarchist_score compare = greater_than_or_equals }
+			NOT = { has_country_flag = ara_help_cat_flag }
+		}
+		complete_national_focus = CAT_winning_kpi
+	}
+	
+	#Победа НКТ
+	option = {
+		name = NWspain.306.b
+		trigger = {
+			has_completed_focus = CAT_federation_anarchists_iberia
+			NOT = { has_country_flag = ara_help_cat_flag }
+		}
+		complete_national_focus = CAT_winning_iwa
+	}
+	
+	#Победа ПОУМ
+	option = {
+		name = NWspain.306.c
+		trigger = {
+			NOT = { has_completed_focus = CAT_federation_anarchists_iberia }
+			NOT = { has_completed_focus = CAT_creation_centralized_army }
+			NOT = { has_country_flag = ara_help_cat_flag }
+		}
+		complete_national_focus = CAT_winning_poum
+	}
+	
+	#Победа Женераритета
+	option = {
+		name = NWspain.306.d
+		trigger = {
+			OR = {
+				AND = {
+					NOT = { has_completed_focus = CAT_federation_anarchists_iberia }
+					has_completed_focus = CAT_creation_centralized_army
+					check_variable = { var = communist_score value = anarchist_score compare = less_than }
+				}
+				has_country_flag = ara_help_cat_flag
+			}
+		}
+		complete_national_focus = CAT_save_power_jeneralitet
+	}
+}
 
 
+#Астурия и Сантадор
+#Падение Сантадера
+country_event = {
+	id = NWspain.401
+	title = NWspain.401.t
+	desc = NWspain.401.desc
+	picture = GFX_report_event_ger_civil_war
+	fire_only_once = yes
+	
+	trigger = {
+		tag = ASU
+		SNT = { has_capitulated = yes }
+	}
+	
+	immediate = { log = "[GetDateText]: [Root.GetName]: event NWspain.401" }
+	
+	option = {
+		name = NWspain.401.a
+		add_autonomy_ratio = { value = 1.0 }
+		set_cosmetic_tag = ASU_sovereign
+	}
+}
 
+#Падение Астурии
+country_event = {
+	id = NWspain.402
+	title = NWspain.402.t
+	desc = NWspain.402.desc
+	picture = GFX_report_event_ger_civil_war
+	fire_only_once = yes
+	
+	trigger = {
+		tag = SNT
+		ASU = { has_capitulated = yes }
+	}
+	
+	immediate = { log = "[GetDateText]: [Root.GetName]: event NWspain.402" }
+	
+	option = {
+		name = NWspain.402.a
+		add_autonomy_ratio = { value = 1.0 }
+		set_cosmetic_tag = SNT_sovereign
+	}
+}
 
+#Юниты каталонии
+country_event = {
+	id = NWspain.901
+	title = NWspain.901.t
+	desc = NWspain.901.desc
+	picture = GFX_report_event_ger_civil_war
+	is_triggered_only = yes
+	hidden = yes
+	
+	option = {
+		name = NWspain.901.a
+		division_template = {
+			name = "Anarchists Brigada"
+			priority = 1
+			is_locked = no
+			regiments = {
+				infantry = { x = 0 y = 0 }
+				infantry = { x = 0 y = 1 }
+				infantry = { x = 0 y = 2 }
+				infantry = { x = 0 y = 3 }
+			}
+		}
+		every_owned_state = {
+			create_unit = {
+				division = "name = \"1. Anarchists Brigada\" division_template = \"Anarchists Brigada\" start_experience_factor = 0.4" 
+				owner = CAT
+			}
+			create_unit = {
+				division = "name = \"2. Anarchists Brigada\" division_template = \"Anarchists Brigada\" start_experience_factor = 0.4" 
+				owner = CAT
+			}
+			create_unit = {
+				division = "name = \"3. Anarchists Brigada\" division_template = \"Anarchists Brigada\" start_experience_factor = 0.4" 
+				owner = CAT
+			}
+			create_unit = {
+				division = "name = \"4. Anarchists Brigada\" division_template = \"Anarchists Brigada\" start_experience_factor = 0.4" 
+				owner = CAT
+			}
+			create_unit = {
+				division = "name = \"5. Anarchists Brigada\" division_template = \"Anarchists Brigada\" start_experience_factor = 0.4" 
+				owner = CAT
+			}
+			create_unit = {
+				division = "name = \"6. Anarchists Brigada\" division_template = \"Anarchists Brigada\" start_experience_factor = 0.4" 
+				owner = CAT
+			}
+			create_unit = {
+				division = "name = \"7. Anarchists Brigada\" division_template = \"Anarchists Brigada\" start_experience_factor = 0.4" 
+				owner = CAT
+			}
+			create_unit = {
+				division = "name = \"8. Anarchists Brigada\" division_template = \"Anarchists Brigada\" start_experience_factor = 0.4" 
+				owner = CAT
+			}
+			create_unit = {
+				division = "name = \"9. Anarchists Brigada\" division_template = \"Anarchists Brigada\" start_experience_factor = 0.4" 
+				owner = CAT
+			}
+			create_unit = {
+				division = "name = \"9. Anarchists Brigada\" division_template = \"Anarchists Brigada\" start_experience_factor = 0.4" 
+				owner = CAT
+			}
+			create_unit = {
+				division = "name = \"9. Anarchists Brigada\" division_template = \"Anarchists Brigada\" start_experience_factor = 0.4" 
+				owner = CAT
+			}
+		}
+		random_list = {
+			0 = {
+				CAT = {
+					every_owned_state = {
+						create_unit = {
+							division = "name = \"10. Anarchists Brigada\" division_template = \"Anarchists Brigada\" start_experience_factor = 0.4" 
+							owner = CAT
+						}
+					}
+				}
+			}
+			85 = {
+			}
+		}
+	}
+}
 
+#Юниты Басков
+country_event = {
+	id = NWspain.902
+	title = NWspain.902.t
+	desc = NWspain.902.desc
+	picture = GFX_report_event_ger_civil_war
+	is_triggered_only = yes
+	hidden = yes
+	
+	option = {
+		name = NWspain.902.a
+		division_template = {
+			name = "Basks Brigada"
+			priority = 1
+			is_locked = no
+			regiments = {
+				infantry = { x = 0 y = 0 }
+				infantry = { x = 0 y = 1 }
+				infantry = { x = 0 y = 2 }
+			}
+		}
+		every_owned_state = {
+			create_unit = {
+				division = "name = \"Basks Brigada\" division_template = \"Basks Brigada\" start_experience_factor = 0.4" 
+				owner = BAS
+			}
+			create_unit = {
+				division = "name = \"Basks Brigada\" division_template = \"Basks Brigada\" start_experience_factor = 0.4" 
+				owner = BAS
+			}
+			create_unit = {
+				division = "name = \"Basks Brigada\" division_template = \"Basks Brigada\" start_experience_factor = 0.4" 
+				owner = BAS
+			}
+			create_unit = {
+				division = "name = \"Basks Brigada\" division_template = \"Basks Brigada\" start_experience_factor = 0.4" 
+				owner = BAS
+			}
+		}
+	}
+}
 
+#Юниты Галисии
+country_event = {
+	id = NWspain.903
+	title = NWspain.903.t
+	desc = NWspain.903.desc
+	picture = GFX_report_event_ger_civil_war
+	is_triggered_only = yes
+	hidden = yes
+	
+	option = {
+		name = NWspain.903.a
+		division_template = {
+			name = "Galician Brigada"
+			priority = 1
+			is_locked = no
+			regiments = {
+				infantry = { x = 0 y = 0 }
+				infantry = { x = 0 y = 1 }
+				infantry = { x = 0 y = 2 }
+			}
+		}
+		every_owned_state = {
+			create_unit = {
+				division = "name = \"1. Galician Brigada\" division_template = \"Galician Brigada\" start_experience_factor = 0.4" 
+				owner = GLC
+			}
+			create_unit = {
+				division = "name = \"2. Galician Brigada\" division_template = \"Galician Brigada\" start_experience_factor = 0.4" 
+				owner = GLC
+			}
+			create_unit = {
+				division = "name = \"3. Galician Brigada\" division_template = \"Galician Brigada\" start_experience_factor = 0.4" 
+				owner = GLC
+			}
+			create_unit = {
+				division = "name = \"4. Galician Brigada\" division_template = \"Galician Brigada\" start_experience_factor = 0.4" 
+				owner = GLC
+			}
+		}
+	}
+}
+
+#Юниты Астурии
+country_event = {
+	id = NWspain.904
+	title = NWspain.904.t
+	desc = NWspain.904.desc
+	picture = GFX_report_event_ger_civil_war
+	is_triggered_only = yes
+	hidden = yes
+	
+	option = {
+		name = NWspain.904.a
+		division_template = {
+			name = "Asturian Brigada"
+			priority = 1
+			is_locked = no
+			regiments = {
+				infantry = { x = 0 y = 0 }
+				infantry = { x = 0 y = 1 }
+				infantry = { x = 0 y = 2 }
+			}
+		}
+		every_owned_state = {
+			create_unit = {
+				division = "name = \"1. Asturian Brigada\" division_template = \"Asturian Brigada\" start_experience_factor = 0.4" 
+				owner = ASU
+			}
+			create_unit = {
+				division = "name = \"2. Asturian Brigada\" division_template = \"Asturian Brigada\" start_experience_factor = 0.4" 
+				owner = ASU
+			}
+			create_unit = {
+				division = "name = \"3. Asturian Brigada\" division_template = \"Asturian Brigada\" start_experience_factor = 0.4" 
+				owner = ASU
+			}
+			create_unit = {
+				division = "name = \"4. Asturian Brigada\" division_template = \"Asturian Brigada\" start_experience_factor = 0.4" 
+				owner = ASU
+			}
+		}
+	}
+}
+
+#Юниты Сантадора
+country_event = {
+	id = NWspain.905
+	title = NWspain.905.t
+	desc = NWspain.905.desc
+	picture = GFX_report_event_ger_civil_war
+	is_triggered_only = yes
+	hidden = yes
+	
+	option = {
+		name = NWspain.905.a
+		division_template = {
+			name = "Santador Brigada"
+			priority = 1
+			is_locked = no
+			regiments = {
+				infantry = { x = 0 y = 0 }
+				infantry = { x = 0 y = 1 }
+				infantry = { x = 0 y = 2 }
+			}
+		}
+		every_owned_state = {
+			create_unit = {
+				division = "name = \"1. Santador Brigada\" division_template = \"Santador Brigada\" start_experience_factor = 0.4" 
+				owner = SNT
+			}
+			create_unit = {
+				division = "name = \"2. Santador Brigada\" division_template = \"Santador Brigada\" start_experience_factor = 0.4" 
+				owner = SNT
+			}
+			create_unit = {
+				division = "name = \"3. Santador Brigada\" division_template = \"Santador Brigada\" start_experience_factor = 0.4" 
+				owner = SNT
+			}
+			create_unit = {
+				division = "name = \"4. Santador Brigada\" division_template = \"Santador Brigada\" start_experience_factor = 0.4" 
+				owner = SNT
+			}
+		}
+	}
+}
 
