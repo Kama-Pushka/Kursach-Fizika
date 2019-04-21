@@ -131,7 +131,7 @@ political_actions = {
 		}
 
 
-		complete_effect = {
+		remove_effect = {
 			add_state_core = 843
 		}
 
@@ -170,7 +170,7 @@ political_actions = {
 		}
 
 
-		complete_effect = {
+		remove_effect = {
 			add_state_core = 964
 		}
 
@@ -209,7 +209,7 @@ political_actions = {
 		}
 
 
-		complete_effect = {
+		remove_effect = {
 			add_state_core = 341
 		}
 
@@ -248,7 +248,7 @@ political_actions = {
 		}
 
 
-		complete_effect = {
+		remove_effect = {
 			add_state_core = 339
 		}
 
@@ -286,7 +286,7 @@ political_actions = {
 		}
 
 
-		complete_effect = {
+		remove_effect = {
 			if = {
 				limit = { 183 = { is_owned_and_controlled_by = ROOT } }
 				add_state_core = 183
@@ -315,8 +315,9 @@ political_actions = {
 		available = {
 			has_capitulated = no
 			OR = {
-				ROOT = { surrender_progress < 0.1 }
-				ITA = { surrender_progress < 0.1 }
+				AND = { GRE = { surrender_progress > 0.1 } has_war_with = ITA }
+				AND = { CRE = { surrender_progress > 0.1 } has_war_with = ITA }
+				ITA = { surrender_progress > 0.1 }
 			}
 		}
 
@@ -324,14 +325,30 @@ political_actions = {
 			OR = {
 				original_tag = GRE
 				original_tag = CRE
+				original_tag = ITA
 			}
-			has_war_with = ITA
-			has_country_flag = GRE_event_end_war
-			NOT = {
+			OR = {
+				GRE = { has_war_with = ITA }
+				CRE = { has_war_with = ITA }
+				ITA = { has_war_with = GRE }
+				ITA = { has_war_with = CRE }
+			}
+			any_country = {
+				NOT = { 
+					original_tag = ITA
+					is_subject_of = ITA
+				}
+				has_war_with = ROOT
+			}
+			ITA = {
 				any_country = {
-					has_war_with = ROOT
-					NOT = { original_tag = ITA }
-					NOT = { overlord = { original_tag = ITA } }
+					NOT = { 
+						original_tag = GRE
+						is_subject_of = GRE
+						original_tag = CRE
+						is_subject_of = CRE
+					}
+					has_war_with = PREV
 				}
 			}
 		}

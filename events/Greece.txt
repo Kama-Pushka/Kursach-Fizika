@@ -422,7 +422,7 @@ country_event = {
 	
 	immediate = { log = "[GetDateText]: [Root.GetName]: event nw_greece.3" }
 	
-	option = { # Perfectly
+	option = { # 
 		name = nw_greece.3.a
 		
 		ENG = { add_to_faction = GRE }
@@ -440,7 +440,7 @@ country_event = {
 	
 	immediate = { log = "[GetDateText]: [Root.GetName]: event nw_greece.4" }
 	
-	option = { # Kurwa
+	option = { # 
 		name = nw_greece.4.a
 		
 		add_opinion_modifier = { target = ENG modifier = GRE_ENG_refused }
@@ -493,6 +493,7 @@ country_event = {
 				OR = {
 					GRE = { surrender_progress > 0.3 }
 					ITA = { controls_state = 842 }
+					ITA = { controls_state = 1031 }
 				}
 			}
 		}
@@ -503,13 +504,10 @@ country_event = {
 				white_peace = GRE
 			}
 			transfer_state = 842
-			diplomatic_relation = {
-				country = ITA
-				relation = non_aggression_pact
-				active = yes
-			}
+			transfer_state = 1031
+			add_to_faction = GRE
 		}
-		hidden_effect = { GRE = { country_event = { id = nw_greece.7 hours = 3 } } }
+		hidden_effect = { GRE = { country_event = { id = nw_greece.10 hours = 3 } } }
 	}
 	
 	option = { # No
@@ -532,54 +530,76 @@ country_event = {
 				GRE = { add_opinion_modifier = { target = ITA modifier = GRE_ENG_refused } }
 			}
 		}
-		hidden_effect = { GRE = { country_event = { id = nw_greece.8 hours = 3 } } }
+		hidden_effect = { GRE = { country_event = { id = nw_greece.11 hours = 3 } } }
 	}
 }
 
-# Италия согласилась
+# Король голый
 country_event = {
 	id = nw_greece.7
 	title = nw_greece.7.t
 	desc = nw_greece.7.d
 	picture = GFX_report_event_fascist_militia
+
+	mean_time_to_happen = {
+		days = 7
+	}
 	
-	is_triggered_only = yes
+	trigger = {
+		original_tag = GRE
+		OR = {
+			has_completed_focus = GRE_entry_to_the_axis
+			AND = {
+				is_in_faction_with = GER
+				GER = { has_government = fascism }
+			}
+		}
+		has_idea = GRE_idea_pro_british_king
+		NOT = { has_country_flag = nw_greece7 }
+	}
 	
 	immediate = { log = "[GetDateText]: [Root.GetName]: event nw_greece.7" }
 	
-	option = { # Perfectly
+	option = { # 
 		name = nw_greece.7.a
 		
-		if = {
-			limit = { has_war_with = GRE }
-			white_peace = GRE
-		}
-		ITA = { transfer_state = 842 }
-		diplomatic_relation = {
-			country = ITA
-			relation = non_aggression_pact
-			active = yes
+		add_stability = -20
+		set_country_flag = nw_greece7
+		
+		hidden_effect = {
+			country_event = { id = nw_greece.8 days = 14 random = 7 }
 		}
 	}
 }
 
-# Италия отказалась
+# Проверка условий для nw_greece.12
 country_event = {
 	id = nw_greece.8
-	title = nw_greece.8.t
-	desc = nw_greece.8.d
-	picture = GFX_report_event_fascist_militia
+	
+	hidden = yes
 	
 	is_triggered_only = yes
 	
-	immediate = { log = "[GetDateText]: [Root.GetName]: event nw_greece.8" }
-	
-	option = { # Kurwa
-		name = nw_greece.8.a
+	immediate = { 
+		log = "[GetDateText]: [Root.GetName]: event nw_greece.8" 
 		
-		if = { 
-			limit = { NOT = { has_war_with = ITA } }
-			add_opinion_modifier = { target = ITA modifier = GRE_ENG_refused }
+		if = {
+			limit = {
+				original_tag = GRE
+				OR = {
+					has_completed_focus = GRE_entry_to_the_axis
+					AND = {
+						is_in_faction_with = GER
+						GER = { has_government = fascism }
+					}
+				}
+				has_idea = GRE_idea_pro_british_king
+			}
+			country_event = { id = nw_greece.12 }
+			
+			else = {
+				clr_country_flag = nw_greece7
+			}
 		}
 	}
 }
@@ -648,7 +668,22 @@ country_event = {
 	option = { # Perfectly
 		name = nw_greece.10.a
 		
-		GER = { add_to_faction = GRE }
+		FROM = { add_to_faction = GRE }
+		
+		if = {
+			limit = {
+				FROM = { original_tag = ITA }
+			}
+			white_peace = FROM
+			if = {
+				limit = { 842 = { is_owned_and_controlled_by = ROOT } }
+				FROM = { transfer_state = 842 }
+			}
+			if = {
+				limit = { 1031 = { is_owned_and_controlled_by = ROOT } }
+				FROM = { transfer_state = 1031 }
+			}
+		}
 		
 		hidden_effect = {
 			retire_country_leader = yes
@@ -681,12 +716,41 @@ country_event = {
 	
 	is_triggered_only = yes
 	
-	immediate = { log = "[GetDateText]: [Root.GetName]: event nw_greece.11" }
+	immediate = { 
+		log = "[GetDateText]: [Root.GetName]: event nw_greece.11" 
+		hidden_effect = {
+			set_variable = { var = ruling_party_popular value = party_popularity@neutrality }
+			add_to_variable = { var = ruling_party_popular value = party_popularity@fascism }
+		}
+	}
 	
-	option = { # Kurwa
+	option = { # 
 		name = nw_greece.11.a
 		
-		add_opinion_modifier = { target = GER modifier = GRE_ENG_refused }
+		if = {
+			limit = { NOT = { has_war_with = FROM } }
+			add_opinion_modifier = { target = FROM modifier = GRE_ENG_refused }
+		}
+		
+		hidden_effect = {
+			retire_country_leader = yes
+			create_country_leader = {
+				name = "Ioannis Metaxas"
+				desc = "POLITICS_IOANNIS_METAXAS_DESC"
+				picture = "Portrait_Greece_Ioannis_Metaxas.dds"
+				expire = "1965.1.1"
+				ideology = nazism
+				traits = {
+					metaxism
+					reformator
+				}
+			}
+			add_popularity = { ideology = neutrality popularity = -100 }
+			add_popularity = { ideology = fascism popularity = -100 }
+			add_popularity = { ideology = fascism popularity = ruling_party_popular }
+		}
+		set_politics = { ruling_party = fascism }
+		add_political_power = ruling_party_popular
 	}
 }
 
@@ -697,23 +761,7 @@ country_event = {
 	desc = nw_greece.12.d
 	picture = GFX_report_event_fascist_militia
 	
-	fire_only_once = yes
-
-	mean_time_to_happen = {
-		days = 1
-	}
-	
-	trigger = {
-		original_tag = GRE
-		OR = {
-			has_completed_focus = GRE_entry_to_the_axis
-			AND = {
-				is_in_faction_with = GER
-				GER = { has_government = fascism }
-			}
-		}
-		has_idea = GRE_idea_pro_british_king
-	}
+	is_triggered_only = yes
 	
 	immediate = { log = "[GetDateText]: [Root.GetName]: event nw_greece.12" }
 	
@@ -772,6 +820,100 @@ country_event = {
 					}
 				}
 			}
+			if = {
+				limit = { any_state = { is_owned_by = CRE } }
+				if = {
+					limit = { ROM = { has_guaranteed = GRE } }
+					ROM = {
+						diplomatic_relation = {
+							country = GRE
+							relation = guarantee
+							active = no
+						}
+					}
+				}
+				GRE = {
+					transfer_ship = { type = light_cruiser target = CRE }
+					transfer_ship = { type = light_cruiser target = CRE }
+					transfer_ship = { type = destroyer target = CRE }
+					transfer_ship = { type = destroyer target = CRE }
+					transfer_ship = { type = destroyer target = CRE }
+					transfer_ship = { type = submarine target = CRE }
+					transfer_ship = { type = submarine target = CRE }
+					transfer_ship = { type = submarine target = CRE }
+					transfer_ship = { type = submarine target = CRE }
+					transfer_ship = { type = submarine target = CRE }
+				}
+				CRE = {
+					if = {
+						limit = {
+							NOT = { has_template = "Trigonikó Pezikoú" }
+						}
+						division_template = {
+							name = "Trigonikó Pezikoú"
+							division_names_group = GRE_INF_01
+							regiments = {
+								infantry = { x = 0 y = 0 }
+								infantry = { x = 0 y = 1 }
+								infantry = { x = 0 y = 2 }
+								infantry = { x = 1 y = 0 }
+								infantry = { x = 1 y = 1 }
+								infantry = { x = 1 y = 2 }
+								infantry = { x = 2 y = 0 }
+								infantry = { x = 2 y = 1 }
+								infantry = { x = 2 y = 2 }
+							}
+						}
+					}
+					random_owned_controlled_state = { create_unit = {
+						division = "name = \"1. Trigonikó Pezikoú\" division_template = \"Trigonikó Pezikoú\" start_experience_factor = 0.6 start_equipment_factor = 1.0"
+						owner = CRE
+					} }
+					random_owned_controlled_state = { create_unit = {
+						division = "name = \"2. Trigonikó Pezikoú\" division_template = \"Trigonikó Pezikoú\" start_experience_factor = 0.5 start_equipment_factor = 1.0"
+						owner = CRE
+					} }
+					random_owned_controlled_state = { create_unit = {
+						division = "name = \"3. Trigonikó Pezikoú\" division_template = \"Trigonikó Pezikoú\" start_experience_factor = 0.5 start_equipment_factor = 1.0"
+						owner = CRE
+					} }
+					random_owned_controlled_state = { create_unit = {
+						division = "name = \"4. Trigonikó Pezikoú\" division_template = \"Trigonikó Pezikoú\" start_experience_factor = 0.6 start_equipment_factor = 1.0"
+						owner = CRE
+					} }
+					random_owned_controlled_state = { create_unit = {
+						division = "name = \"5. Trigonikó Pezikoú\" division_template = \"Trigonikó Pezikoú\" start_experience_factor = 0.43 start_equipment_factor = 0.9"
+						owner = CRE
+					} }
+					random_owned_controlled_state = { create_unit = {
+						division = "name = \"6. Trigonikó Pezikoú\" division_template = \"Trigonikó Pezikoú\" start_experience_factor = 0.4 start_equipment_factor = 0.85"
+						owner = CRE
+					} }
+					
+					if = {
+						limit = {
+							GRE = { has_idea = GRE_idea_social_crisis NOT = { has_idea = GRE_idea_asphalia } }
+						}
+						random_owned_controlled_state = { create_unit = {
+							division = "name = \"7. Trigonikó Pezikoú\" division_template = \"Trigonikó Pezikoú\" start_experience_factor = 0.4 start_equipment_factor = 0.85"
+							owner = CRE
+						} }
+						random_owned_controlled_state = { create_unit = {
+							division = "name = \"7. Trigonikó Pezikoú\" division_template = \"Trigonikó Pezikoú\" start_experience_factor = 0.4 start_equipment_factor = 0.85"
+							owner = CRE
+						} }
+						random_owned_controlled_state = { create_unit = {
+							division = "name = \"8. Trigonikó Pezikoú\" division_template = \"Trigonikó Pezikoú\" start_experience_factor = 0.4 start_equipment_factor = 0.85"
+							owner = CRE
+						} }
+						random_owned_controlled_state = { create_unit = {
+							division = "name = \"10. Trigonikó Pezikoú\" division_template = \"Trigonikó Pezikoú\" start_experience_factor = 0.4 start_equipment_factor = 0.85"
+							owner = CRE
+						} }
+						
+					}
+				}
+			}
 		}
 	}
 	
@@ -802,7 +944,7 @@ country_event = {
 					limit = { is_core_of = GRE }
 					add_core_of = CRE
 				}
-			} 
+			}
 		}
 	}
 	
@@ -888,8 +1030,11 @@ country_event = {
 		
 		if = {
 			limit = {
-				GRE = { has_capitulated = no }
-				NOT = { has_government = democratic }
+				has_capitulated = no
+				NOT = { 
+					has_government = democratic 
+					has_completed_focus = GRE_support_the_liberals
+				}
 			}
 			country_event = { id = nw_greece.13 }
 		}
@@ -966,7 +1111,7 @@ country_event = {
 	
 	is_triggered_only = yes
 	
-	immediate = { 
+	immediate = {
 		log = "[GetDateText]: [Root.GetName]: event nw_greece.17" 
 		hidden_effect = {
 			if = {
@@ -995,16 +1140,63 @@ country_event = {
 					}
 				}
 			}
-			EMA = {
-				inherit_technology = GRE
-				declare_war_on = {
-					target = GRE
-					type = annex_everything
-				}
-			}
 			if = {
-				limit = { CRE = { has_country_flag = EMA_CRE_attack } }
-				CRE = { puppet = EMA }
+				limit = {
+					any_state = {
+						is_owned_and_controlled_by = EMA
+					}
+				}
+				EMA = {
+					inherit_technology = GRE
+					declare_war_on = {
+						target = GRE
+						type = annex_everything
+					}
+					if = {
+						limit = {
+							NOT = { has_template = "Trigonikó Pezikoú" }
+						}
+						division_template = {
+							name = "Trigonikó Pezikoú"
+							division_names_group = GRE_INF_01
+							regiments = {
+								infantry = { x = 0 y = 0 }
+								infantry = { x = 0 y = 1 }
+								infantry = { x = 0 y = 2 }
+								infantry = { x = 1 y = 0 }
+								infantry = { x = 1 y = 1 }
+								infantry = { x = 1 y = 2 }
+								infantry = { x = 2 y = 0 }
+								infantry = { x = 2 y = 1 }
+								infantry = { x = 2 y = 2 }
+							}
+						}
+					}
+					random_owned_controlled_state = { create_unit = {
+						division = "name = \"1. Trigonikó Pezikoú\" division_template = \"Trigonikó Pezikoú\" start_experience_factor = 0.6 start_equipment_factor = 1.0"
+						owner = CRE
+					} }
+					random_owned_controlled_state = { create_unit = {
+						division = "name = \"2. Trigonikó Pezikoú\" division_template = \"Trigonikó Pezikoú\" start_experience_factor = 0.5 start_equipment_factor = 1.0"
+						owner = CRE
+					} }
+					random_owned_controlled_state = { create_unit = {
+						division = "name = \"3. Trigonikó Pezikoú\" division_template = \"Trigonikó Pezikoú\" start_experience_factor = 0.5 start_equipment_factor = 1.0"
+						owner = CRE
+					} }
+					random_owned_controlled_state = { create_unit = {
+						division = "name = \"4. Trigonikó Pezikoú\" division_template = \"Trigonikó Pezikoú\" start_experience_factor = 0.6 start_equipment_factor = 1.0"
+						owner = CRE
+					} }
+					random_owned_controlled_state = { create_unit = {
+						division = "name = \"5. Trigonikó Pezikoú\" division_template = \"Trigonikó Pezikoú\" start_experience_factor = 0.43 start_equipment_factor = 0.9"
+						owner = CRE
+					} }
+				}
+				if = {
+					limit = { CRE = { has_country_flag = EMA_CRE_attack } }
+					CRE = { puppet = EMA }
+				}
 			}
 		}
 	}
@@ -1529,7 +1721,10 @@ country_event = {
 			factor = 1
 			modifier = {
 				factor = 0
-				has_war_with = CRE
+				OR = {
+					has_war_with = CRE
+					has_government = trozkism
+				}
 			}
 		}
 		
@@ -1545,6 +1740,7 @@ country_event = {
 				OR = {
 					has_war = yes
 					threat > 0.4
+					has_government = trozkism
 				}
 			}
 		}
@@ -1690,7 +1886,8 @@ country_event = {
 # Megalo
 country_event = {
 	id = nw_greece.32
-	title = nw_greece.32.t
+	title = { text = nw_greece.32.t trigger = { GRE = { NOT = { has_completed_focus = GRE_return_to_anatolia } } } }
+	title = { text = nw_greece.32.tgre trigger = { GRE = { has_completed_focus = GRE_return_to_anatolia } } }
 	desc = nw_greece.32.d
 	picture = GFX_report_event_fascist_militia
 	
@@ -1819,18 +2016,20 @@ country_event = {
 		CRE = { 
 			if = {
 				limit = { TUR = { owns_state = 341 } }
-				transfer_state = 341			
+				transfer_state = 341		
+				hidden_effect = { 341 = { set_demilitarized_zone = no } }				
 			}
 			if = {
-				limit = { TUR = { owns_state = 341 } }
+				limit = { TUR = { owns_state = 339 } }
 				transfer_state = 339
 			}
 			if = {
-				limit = { TUR = { owns_state = 341 } }
+				limit = { TUR = { owns_state = 964 } }
 				transfer_state = 964
+				hidden_effect = { 964 = { set_demilitarized_zone = no } }
 			}
 			if = {
-				limit = { TUR = { owns_state = 341 } }
+				limit = { TUR = { owns_state = 843 } }
 				transfer_state = 843
 			}
 			add_state_core = 341
@@ -2372,6 +2571,973 @@ country_event = {
 	}
 }
 
+# Единство Балкан
+country_event = {
+	id = nw_greece.42
+	title = { text = nw_greece.42.t trigger = { NOT = { has_country_flag = GRE_refuse_us } } }
+	title = { text = nw_greece.42.trefuse trigger = { has_country_flag = GRE_refuse_us } }
+	desc = { text = nw_greece.42.d trigger = { NOT = { has_country_flag = GRE_refuse_us } } }
+	desc = { text = nw_greece.42.drefuse trigger = { has_country_flag = GRE_refuse_us } }
+	picture = GFX_report_event_fascist_militia
+	
+	is_triggered_only = yes
+	
+	immediate = {  log = "[GetDateText]: [Root.GetName]: event nw_greece.42" }
+	
+	option = { # Венгр
+		name = nw_greece.42.a
+		ai_chance = { factor = 90 }
+		
+		trigger = {
+			HUN = {
+				has_government = democratic 
+				is_faction_leader = yes
+				has_completed_focus = HUN_the_balkan_pact
+				NOT = { has_country_flag = GRE_refuse }
+			}
+		}
+		
+		HUN = { country_event = { id = nw_greece.43 hours = 6 } }
+	}
+	
+	option = { # Чех
+		name = nw_greece.42.b
+		ai_chance = { factor = 90 }
+		
+		trigger = {
+			CZE = {
+				has_government = democratic 
+				is_faction_leader = yes
+				has_completed_focus = CZE_an_entente_of_our_own
+				NOT = { has_country_flag = GRE_refuse }
+			}
+		}
+		
+		CZE = { country_event = { id = nw_greece.43 hours = 6 } }
+	}
+	
+	option = { # Другой
+		name = nw_greece.42.c
+		ai_chance = { factor = 10 }
+		
+		set_rule = { can_create_factions = yes }
+		create_faction = BALKAN_ENTENTE
+		if = {
+			limit = {
+				ROM = {
+					exists = yes
+					OR = {
+						has_government = democratic
+						has_government = neutrality
+						has_government = monarchy
+					}
+					NOT = { has_war_with = GRE }
+					is_subject = no
+					NOT = { is_in_faction_with = ROOT }
+				}
+			}
+			ROM = { country_event = { id = nw_greece.44 hours = 3 } }
+		}
+		if = {
+			limit = {
+				YUG = {
+					exists = yes
+					OR = {
+						has_government = democratic
+						has_government = neutrality
+						has_government = monarchy
+					}
+					NOT = { has_war_with = ROOT }
+					is_subject = no
+				}
+			}
+			YUG = { country_event = { id = nw_greece.44 hours = 3 } }
+		}
+		if = {
+			limit = {
+				SER = {
+					exists = yes
+					OR = {
+						has_government = democratic
+						has_government = neutrality
+						has_government = monarchy
+					}
+					NOT = { has_war_with = ROOT }
+					is_subject = no
+					NOT = { is_in_faction_with = ROOT }
+				}
+			}
+			SER = { country_event = { id = nw_greece.44 hours = 3 } }
+		}
+		if = {
+			limit = {
+				CRO = {
+					exists = yes
+					OR = {
+						has_government = democratic
+						has_government = neutrality
+						has_government = monarchy
+					}
+					NOT = { has_war_with = ROOT }
+					is_subject = no
+					NOT = { is_in_faction_with = ROOT }
+				}
+			}
+			CRO = { country_event = { id = nw_greece.44 hours = 3 } }
+		}
+		if = {
+			limit = {
+				MNT = {
+					exists = yes
+					OR = {
+						has_government = democratic
+						has_government = neutrality
+						has_government = monarchy
+					}
+					NOT = { has_war_with = ROOT }
+					is_subject = no
+					NOT = { is_in_faction_with = ROOT }
+				}
+			}
+			MNT = { country_event = { id = nw_greece.44 hours = 3 } }
+		}
+		if = {
+			limit = {
+				MAC = {
+					exists = yes
+					OR = {
+						has_government = democratic
+						has_government = neutrality
+						has_government = monarchy
+					}
+					NOT = { has_war_with = ROOT }
+					is_subject = no
+					NOT = { is_in_faction_with = ROOT }
+				}
+			}
+			MAC = { country_event = { id = nw_greece.44 hours = 3 } }
+		}
+	}
+}
+
+# Вступ Греции в альянс
+country_event = {
+	id = nw_greece.43
+	title = { text = nw_greece.43.t }
+	desc = { text = nw_greece.43.d }
+	picture = GFX_report_event_fascist_militia
+	
+	is_triggered_only = yes
+	
+	immediate = {  log = "[GetDateText]: [Root.GetName]: event nw_greece.43" }
+	
+	option = { # Да
+		name = nw_greece.43.a
+		ai_chance = { factor = 5 }
+		
+		add_to_faction = GRE
+		GRE = { set_country_flag = GRE_balkan_unity }
+	}
+	
+	option = { # Нет
+		name = nw_greece.43.b
+		ai_chance = { 
+			factor = 0 
+			modifier = { 
+				factor = 95
+				any_country = {
+					has_war_with = GRE
+					NOT = { has_war_with = ROOT }
+					is_major = yes
+				}
+			}
+		}
+		set_country_flag = GRE_refuse
+		
+		GRE = { set_country_flag = GRE_refuse_us country_event = { id = nw_greece.42 hours = 6 } }
+	}
+}
+
+# Приглашение в альянс
+country_event = {
+	id = nw_greece.44
+	title = { text = nw_greece.44.t }
+	desc = { text = nw_greece.44.d }
+	picture = GFX_report_event_fascist_militia
+	
+	is_triggered_only = yes
+	
+	immediate = {  log = "[GetDateText]: [Root.GetName]: event nw_greece.44" }
+	
+	option = { # Да
+		name = nw_greece.44.a
+		ai_chance = { 
+			factor = 100
+			modifier = { 
+				factor = 0
+				OR = {
+					any_state = {
+						is_owned_by = GRE
+						OR = {
+							is_core_of = ROOT
+							is_claimed_by = ROOT
+						}
+					}
+					is_faction_leader = yes
+					any_country = {
+						is_major = yes
+						is_in_faction_with = ROOT
+					}
+				}
+			}
+		}
+		
+		if = {
+			limit = { is_in_faction = yes }
+			leave_faction = yes
+		}
+		effect_tooltip = { GRE = { add_to_faction = ROOT } }
+		hidden_effect = { GRE = { country_event = { id = nw_greece.45 hours = 2 } } }
+	}
+	
+	option = { # Нет
+		name = nw_greece.44.b
+		ai_chance = { 
+			factor = 0 
+			modifier = { 
+				factor = 100
+				OR = {
+					any_state = {
+						is_owned_by = GRE
+						OR = {
+							is_core_of = ROOT
+							is_claimed_by = ROOT
+						}
+					}
+					is_faction_leader = yes
+					any_country = {
+						is_major = yes
+						is_in_faction_with = ROOT
+					}
+				}
+			}
+		}
+		
+		hidden_effect = { GRE = { country_event = { id = nw_greece.46 hours = 2 } } }
+	}
+}
+
+country_event = {
+	id = nw_greece.45
+	title = { text = nw_greece.45.t trigger = { original_tag = GRE } }
+	title = { text = nw_greece.45.tub trigger = { NOT = { original_tag = GRE } } }
+	desc = { text = nw_greece.45.d trigger = { original_tag = GRE } }
+	desc = { text = nw_greece.45.dub trigger = { NOT = { original_tag = GRE } } }
+	picture = GFX_report_event_fascist_militia
+	
+	is_triggered_only = yes
+	
+	immediate = {  log = "[GetDateText]: [Root.GetName]: event nw_greece.45" }
+	
+	option = { # Отлично
+		name = nw_greece.45.a
+		
+		add_to_faction = FROM
+	}
+}
+
+country_event = {
+	id = nw_greece.46
+	title = nw_greece.46.t
+	desc = nw_greece.46.d
+	picture = GFX_report_event_fascist_militia
+	
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName]: event nw_greece.46" }
+	
+	option = { # 
+		name = nw_greece.46.a
+	}
+}
+
+# Приглашение Турции
+country_event = {
+	id = nw_greece.47
+	title = { text = nw_greece.47.t trigger = { GRE_balkan_unity_trigger = no } }
+	title = { text = nw_greece.47.tbu trigger = { GRE_balkan_unity_trigger = yes } }
+	desc = { text = nw_greece.47.d trigger = { GRE_balkan_unity_trigger = no } }
+	desc = { text = nw_greece.47.dbu trigger = { GRE_balkan_unity_trigger = yes } }
+	picture = GFX_report_event_fascist_militia
+	
+	is_triggered_only = yes
+	
+	immediate = {  log = "[GetDateText]: [Root.GetName]: event nw_greece.47" }
+	
+	option = { # Yes
+		name = nw_greece.47.a
+		ai_chance = { 
+			factor = 100
+			modifier = {
+				factor = 0
+				OR = {
+					has_government = trozkism
+					has_government = communism
+					has_government = fascism
+					is_faction_leader = yes
+					any_country = {
+						is_major = yes
+						is_in_faction_with = ROOT
+					}
+				}
+			}
+		}
+		
+		if = {
+			limit = { is_in_faction = yes }
+			leave_faction = yes
+		}
+		effect_tooltip = { GRE = { add_to_faction = ROOT } }
+		
+		hidden_effect = { 
+			if = {
+				limit = { GRE = { is_faction_leader = yes } }
+				GRE = { country_event = { id = nw_greece.45 hours = 2 } } 
+			
+				else = {
+					random_country = {
+						limit = { 
+							is_faction_leader = yes
+							is_in_faction_with = GRE
+						}
+					}
+					country_event = { id = nw_greece.45 hours = 2 }
+				}
+			}
+		}
+	}
+	
+	option = { # No
+		name = nw_greece.47.b
+		ai_chance = { 
+			factor = 0
+			modifier = {
+				factor = 100
+				OR = {
+					has_government = trozkism
+					has_government = communism
+					has_government = fascism
+					is_faction_leader = yes
+					any_country = {
+						is_major = yes
+						is_in_faction_with = ROOT
+					}
+				}
+			}
+		}
+		
+		hidden_effect = { 
+			if = {
+				limit = { GRE = { is_faction_leader = yes } }
+				GRE = { country_event = { id = nw_greece.46 hours = 2 } } 
+			
+				else = {
+					random_country = {
+						limit = { 
+							is_faction_leader = yes
+							is_in_faction_with = GRE
+						}
+					}
+					country_event = { id = nw_greece.46 hours = 2 }
+				}
+			}
+		}
+	}
+}
+
+# Приглашение Болгарии
+country_event = {
+	id = nw_greece.48
+	title = { text = nw_greece.47.t trigger = { GRE_balkan_unity_trigger = no } }
+	title = { text = nw_greece.47.tbu trigger = { GRE_balkan_unity_trigger = yes } }
+	desc = { text = nw_greece.47.d trigger = { GRE_balkan_unity_trigger = no } }
+	desc = { text = nw_greece.47.dbu trigger = { GRE_balkan_unity_trigger = yes } }
+	picture = GFX_report_event_fascist_militia
+	
+	is_triggered_only = yes
+	
+	immediate = {  log = "[GetDateText]: [Root.GetName]: event nw_greece.48" }
+	
+	option = { # Yes
+		name = nw_greece.48.a
+		ai_chance = { 
+			factor = 100
+			modifier = {
+				factor = 0
+				OR = {
+					has_government = trozkism
+					has_government = communism
+					has_government = fascism
+					is_faction_leader = yes
+					any_country = {
+						is_major = yes
+						is_in_faction_with = ROOT
+					}
+					AND = {
+						ROM = { is_in_faction_with = GRE }
+						any_state = {
+							is_owned_by = ROM
+							OR = {
+								is_claimed_by = ROOT
+								is_core_of = ROOT
+							}
+						}
+					}
+					any_state = {
+						is_owned_by = GRE
+						OR = {
+							is_claimed_by = ROOT
+							is_core_of = ROOT
+						}
+					}
+				}
+			}
+		}
+		
+		if = {
+			limit = { is_in_faction = yes }
+			leave_faction = yes
+		}
+		effect_tooltip = { GRE = { add_to_faction = ROOT } }
+		
+		hidden_effect = { 
+			if = {
+				limit = { GRE = { is_faction_leader = yes } }
+				GRE = { country_event = { id = nw_greece.45 hours = 2 } } 
+			
+				else = {
+					random_country = {
+						limit = { 
+							is_faction_leader = yes
+							is_in_faction_with = GRE
+						}
+					}
+					country_event = { id = nw_greece.45 hours = 2 }
+				}
+			}
+		}
+	}
+	
+	option = { # No
+		name = nw_greece.48.b
+		ai_chance = { 
+			factor = 0
+			modifier = {
+				factor = 100
+				OR = {
+					has_government = trozkism
+					has_government = communism
+					has_government = fascism
+					is_faction_leader = yes
+					any_country = {
+						is_major = yes
+						is_in_faction_with = ROOT
+					}
+					AND = {
+						ROM = { is_in_faction_with = GRE }
+						any_state = {
+							is_owned_by = ROM
+							OR = {
+								is_claimed_by = ROOT
+								is_core_of = ROOT
+							}
+						}
+					}
+					any_state = {
+						is_owned_by = GRE
+						OR = {
+							is_claimed_by = ROOT
+							is_core_of = ROOT
+						}
+					}
+				}
+			}
+		}
+		
+		hidden_effect = { 
+			if = {
+				limit = { GRE = { is_faction_leader = yes } }
+				GRE = { country_event = { id = nw_greece.46 hours = 2 } } 
+			}
+		}
+	}
+}
+
+# Приглашение Албании
+country_event = {
+	id = nw_greece.49
+	title = { text = nw_greece.47.t trigger = { GRE_balkan_unity_trigger = no } }
+	title = { text = nw_greece.47.tbu trigger = { GRE_balkan_unity_trigger = yes } }
+	desc = { text = nw_greece.47.d trigger = { GRE_balkan_unity_trigger = no } }
+	desc = { text = nw_greece.47.dbu trigger = { GRE_balkan_unity_trigger = yes } }
+	picture = GFX_report_event_fascist_militia
+	
+	is_triggered_only = yes
+	
+	immediate = {  log = "[GetDateText]: [Root.GetName]: event nw_greece.49" }
+	
+	option = { # Yes
+		name = nw_greece.49.a
+		ai_chance = { 
+			factor = 100
+			modifier = {
+				factor = 0
+				any_country = {
+					is_major = yes
+					is_in_faction_with = ROOT
+				}
+			}
+		}
+		
+		effect_tooltip = { GRE = { add_to_faction = ROOT } }
+		
+		hidden_effect = { 
+			if = {
+				limit = { GRE = { is_faction_leader = yes } }
+				GRE = { country_event = { id = nw_greece.45 hours = 2 } } 
+			
+				else = {
+					random_country = {
+						limit = { 
+							is_faction_leader = yes
+							is_in_faction_with = GRE
+						}
+					}
+					country_event = { id = nw_greece.45 hours = 2 }
+				}
+			}
+		}
+	}
+	
+	option = { # No
+		name = nw_greece.49.b
+		ai_chance = { 
+			factor = 0
+			modifier = {
+				factor = 0
+				any_country = {
+					is_major = yes
+					is_in_faction_with = ROOT
+				}
+			}
+		}
+		
+		hidden_effect = { 
+			if = {
+				limit = { GRE = { is_faction_leader = yes } }
+				GRE = { country_event = { id = nw_greece.46 hours = 2 } } 
+			}
+		}
+	}
+}
+
+# Приглашение Венгрии
+country_event = {
+	id = nw_greece.50
+	title = { text = nw_greece.47.t trigger = { GRE_balkan_unity_trigger = no } }
+	title = { text = nw_greece.47.tbu trigger = { GRE_balkan_unity_trigger = yes } }
+	desc = { text = nw_greece.47.d trigger = { GRE_balkan_unity_trigger = no } }
+	desc = { text = nw_greece.47.dbu trigger = { GRE_balkan_unity_trigger = yes } }
+	picture = GFX_report_event_fascist_militia
+	
+	is_triggered_only = yes
+	
+	immediate = {  log = "[GetDateText]: [Root.GetName]: event nw_greece.50" }
+	
+	option = { # Yes
+		name = nw_greece.50.a
+		ai_chance = { 
+			factor = 100
+			modifier = {
+				factor = 0
+				OR = {
+					any_country = {
+						is_major = yes
+						is_in_faction_with = ROOT
+					}
+					is_faction_leader = yes
+				}
+			}
+		}
+		
+		effect_tooltip = { GRE = { add_to_faction = ROOT } }
+		
+		hidden_effect = { 
+			if = {
+				limit = { GRE = { is_faction_leader = yes } }
+				GRE = { country_event = { id = nw_greece.45 hours = 2 } } 
+			
+				else = {
+					random_country = {
+						limit = { 
+							is_faction_leader = yes
+							is_in_faction_with = GRE
+						}
+					}
+					country_event = { id = nw_greece.45 hours = 2 }
+				}
+			}
+		}
+	}
+	
+	option = { # No
+		name = nw_greece.50.b
+		ai_chance = { 
+			factor = 0
+			modifier = {
+				factor = 0
+				OR = {
+					any_country = {
+						is_major = yes
+						is_in_faction_with = ROOT
+					}
+					is_faction_leader = yes
+				}
+			}
+		}
+		
+		hidden_effect = { 
+			if = {
+				limit = { GRE = { is_faction_leader = yes } }
+				GRE = { country_event = { id = nw_greece.46 hours = 2 } } 
+			}
+		}
+	}
+}
+
+# Реакция Италии
+country_event = {
+	id = nw_greece.51
+	title = nw_greece.51.t
+	desc = nw_greece.51.d
+	picture = GFX_report_event_fascist_militia
+	
+	is_triggered_only = yes
+	
+	immediate = {  log = "[GetDateText]: [Root.GetName]: event nw_greece.51" }
+	
+	option = { # Нет
+		name = nw_greece.51.a
+		ai_chance = { factor = 50 }
+		
+		add_political_power = -50
+		ALB = { country_event = { id = nw_greece.52 hours = 6 } }
+	}
+	
+	option = { # Ок
+		name = nw_greece.51.b
+		ai_chance = {
+			factor = 50
+			modifier = {
+				factor = 0
+				OR = {
+					has_government = fascism
+					has_government = communism
+					has_government = trozkism
+				}
+			}
+		}
+		
+		add_political_power = 20
+		hidden_effect = { 
+			ALB = { country_event = { id = nw_greece.49 hours = 2 } }
+		}
+	}
+}
+
+# Итальянский вопрос (Албания)
+country_event = {
+	id = nw_greece.52
+	title = { text = nw_greece.52.t trigger = { GRE_balkan_unity_trigger = no } }
+	title = { text = nw_greece.52.tbu trigger = { GRE_balkan_unity_trigger = yes } }
+	desc = { text = nw_greece.52.d trigger = { GRE_balkan_unity_trigger = no } }
+	desc = { text = nw_greece.52.dbu trigger = { GRE_balkan_unity_trigger = yes } }
+	picture = GFX_report_event_fascist_militia
+	
+	is_triggered_only = yes
+	
+	immediate = {  log = "[GetDateText]: [Root.GetName]: event nw_greece.52" }
+	
+	option = { # Yes
+		name = nw_greece.52.a
+		ai_chance = { 
+			factor = 100
+			modifier = {
+				factor = 0
+				any_country = {
+					is_major = yes
+					is_in_faction_with = ROOT
+				}
+			}
+		}
+		
+		effect_tooltip = {
+			GRE = { add_to_faction = ROOT }
+			ITA = { 
+				diplomatic_relation = {
+					country = ALB
+					relation = guarantee
+					active = no
+				}
+			} 
+		}
+		
+		hidden_effect = { 
+			ITA = { country_event = { id = nw_greece.54 hours = 2 } }
+			if = {
+				limit = { GRE = { is_faction_leader = yes } }
+				GRE = { country_event = { id = nw_greece.45 hours = 2 } } 
+			
+				else = {
+					random_country = {
+						limit = { 
+							is_faction_leader = yes
+							is_in_faction_with = GRE
+						}
+					}
+					country_event = { id = nw_greece.45 hours = 2 }
+				}
+			}
+		}
+	}
+	
+	option = { # No
+		name = nw_greece.52.b
+		ai_chance = { 
+			factor = 0
+			modifier = {
+				factor = 0
+				any_country = {
+					is_major = yes
+					is_in_faction_with = ROOT
+				}
+			}
+		}
+		
+		effect_tooltip = { ITA = { add_opinion_modifier = { target = ROOT modifier = ALB_italian_alies } } }
+		
+		hidden_effect = { 
+			ITA = { country_event = { id = nw_greece.53 hours = 2 } }
+			if = {
+				limit = { GRE = { is_faction_leader = yes } }
+				GRE = { country_event = { id = nw_greece.46 hours = 2 } } 
+			
+				else = {
+					random_country = {
+						limit = { 
+							is_faction_leader = yes
+							is_in_faction_with = GRE
+						}
+					}
+					country_event = { id = nw_greece.46 hours = 2 }
+				}
+			}
+		}
+	}
+}
+
+# 
+country_event = {
+	id = nw_greece.53
+	title = nw_greece.53.t
+	desc = nw_greece.53.d
+	picture = GFX_report_event_fascist_militia
+	
+	is_triggered_only = yes
+	
+	immediate = {  log = "[GetDateText]: [Root.GetName]: event nw_greece.53" }
+	
+	option = { # 
+		name = nw_greece.53.a
+		
+		add_opinion_modifier = { target = ROOT modifier = ALB_italian_alies }
+	}
+}
+
+# 
+country_event = {
+	id = nw_greece.54
+	title = nw_greece.54.t
+	desc = nw_greece.54.d
+	picture = GFX_report_event_fascist_militia
+	
+	is_triggered_only = yes
+	
+	immediate = {  log = "[GetDateText]: [Root.GetName]: event nw_greece.54" }
+	
+	option = { # 
+		name = nw_greece.54.a
+		
+		diplomatic_relation = {
+			country = ALB
+			relation = guarantee
+			active = no
+		}
+	}
+}
+
+# Смерть Венизелоса
+country_event = {
+	id = nw_greece.55
+	title = nw_greece.55.t
+	desc = nw_greece.55.d
+	picture = GFX_report_event_fascist_militia
+	
+	fire_only_once = yes
+	
+	trigger = {
+		original_tag = GRE
+		has_country_leader = { name = "Eleftherios Venizelos" }
+		date > 1936.03.18
+	}
+	
+	immediate = { log = "[GetDateText]: [Root.GetName]: event nw_greece.55" }
+	
+	option = { # 
+		name = nw_greece.55.a
+		
+		add_stability = -0.1
+		kill_country_leader = yes
+		create_country_leader = {
+			name = "Themistoklis Sofoulis"
+			desc = "POLITICS_THEMIASTOKLIS_SOFOULIS_DESC"
+			picture = "Portrait_Themistoklis_Sofoulis.dds"
+			expire = "1965.1.1"
+			ideology = liberalism
+			traits = {
+			
+			}
+		}
+	}
+}
+
+# Метаксас поднял восстание!
+country_event = {
+	id = nw_greece.56
+	title = nw_greece.56.t
+	desc = nw_greece.56.d
+	picture = GFX_report_event_fascist_militia
+	
+	fire_only_once = yes
+	
+	trigger = {
+		original_tag = GRE
+		has_stability < 0.5
+		NOT = { has_government = neutrality }
+		has_completed_focus = GRE_support_the_liberals
+		NOT = { has_completed_focus = GRE_arrest_of_metaxas }
+	}
+	
+	immediate = { 
+		log = "[GetDateText]: [Root.GetName]: event nw_greece.56" 
+		if = {
+			limit = {
+				has_idea = GRE_idea_social_crisis
+			}
+			
+			start_civil_war = {
+				ideology = neutrality
+				size = 0.4
+				only_own_territory = no
+				capital = 1024
+				states = { 1027 186 }
+			}
+			
+			else = {
+				start_civil_war = {
+					ideology = neutrality
+					size = 0.3
+					only_own_territory = no
+					capital = 1024
+					states = { 1027 }
+				}
+			}
+		}
+	}
+	
+	option = { # 
+		name = nw_greece.56.a
+		
+		add_stability = -0.1
+	}
+}
+
+# Пульсар
+country_event = {
+	id = nw_greece.57
+	
+	hidden = yes
+	
+	trigger = {
+		OR = {
+			original_tag = GRE
+			original_tag = CRE
+		}
+		has_war_with = ITA
+		NOT = { has_country_flag = nw_greece57_stop }
+	}
+	
+	immediate = { 
+		log = "[GetDateText]: [Root.GetName]: event nw_greece.57" 
+		
+		country_event = { id = nw_greece.58 days = 40 random = 10 }
+		set_country_flag = nw_greece57_stop
+	}
+}
+
+# Проверка условий
+country_event = {
+	id = nw_greece.57
+	
+	hidden = yes
+	
+	is_triggered_only = yes
+	
+	immediate = { 
+		log = "[GetDateText]: [Root.GetName]: event nw_greece.57" 
+		
+		if = {
+			limit = {
+				OR = {
+					GRE = { has_war_with = ITA }
+					CRE = { has_war_with = ITA }
+				}
+				any_country = {
+					NOT = { 
+						original_tag = ITA
+						is_subject_of = ITA
+					}
+					has_war_with = ROOT
+				}
+				ITA = {
+					any_country = {
+						NOT = { 
+							original_tag = GRE
+							is_subject_of = GRE
+							original_tag = CRE
+							is_subject_of = CRE
+						}
+						has_war_with = PREV
+					}
+				}
+			}
+			clr_country_flag = nw_greece57_stop
+			
+			else = { ITA = { set_country_flag = nw_greece57_peace } }
+		}
+	}
+}
+
 # Test
 country_event = {
 	id = nw_greece.999
@@ -2386,6 +3552,11 @@ country_event = {
 	option = { # Kurwa
 		name = nw_greece.999.a
 		
-		CRE = { transfer_state = 164 }
+		if = {
+			limit = {
+				HUN = { is_subject = yes }
+			}
+			add_political_power = 1488
+		}
 	}
 }
