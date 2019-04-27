@@ -933,6 +933,25 @@ on_actions = {
 					drop_cosmetic_tag = yes
 				}
 			}
+			
+			#Жор каталонии-марионетки // Либеральная ГВ
+			if = {
+				limit = {
+					has_global_flag = liberal_spanish_civil_war
+					NOT = { has_global_flag = scw_over }
+					ROOT = { tag = SPR }
+				}
+			
+				if = {
+					limit = { CAT = { is_subject_of = ROOT } }
+					FROM = {
+						annex_country = {
+							target = CAT
+							transfer_troops = no
+						}
+					}
+				}
+			}
 		}
 	}
 	
@@ -1028,6 +1047,8 @@ on_actions = {
 			#Пульсар побед лагерей // правые
 			if = {
 				limit = {
+					has_global_flag = liberal_spanish_civil_war
+					NOT = { has_global_flag = scw_over }
 					FROM = {
 						OR = {
 							tag = SPC
@@ -1035,42 +1056,15 @@ on_actions = {
 							tag = ARA
 						}
 					}
-					SPC = { exists = no }
-					AND = { exists = no }
-					ARA = { exists = no }
 				}
-				if = {
-					limit = { CAS = { exists = yes } }
-					CAS = {
-						declare_war_on = {
-							target = NAV
-							type = annex_everything
-						}
-					}
-				}
-				if = {
-					limit = { NAV = { exists = yes } }
-					NAV = {
-						declare_war_on = {
-							target = SEU
-							type = annex_everything
-						}
-					}
-				}
-				if = {
-					limit = { SEU = { exists = yes } }
-					SEU = {
-						declare_war_on = {
-							target = CAS
-							type = annex_everything
-						}
-					}
-				}
+				ROOT = { country_event = { id = NWspain.51 } }
 			}
 			
 			#Пульсар побед лагерей // левые
 			if = {
 				limit = {
+					has_global_flag = liberal_spanish_civil_war
+					NOT = { has_global_flag = scw_over }
 					FROM = {
 						OR = {
 							tag = CAS
@@ -1078,40 +1072,68 @@ on_actions = {
 							tag = SEU
 						}
 					}
-					CAS = { exists = no }
-					NAV = { exists = no }
-					SEU = { exists = no }
 				}
-				if = {
-					limit = { SPC = { exists = yes } }
-					SPC = {
-						declare_war_on = {
-							target = AND
-							type = annex_everything
+				ROOT = { country_event = { id = NWspain.51 } }
+			}
+			
+			#Снятие клеймов и корок у проигравшего минора Испании
+			if = {
+				limit = {
+					has_global_flag = liberal_spanish_civil_war
+					NOT = { has_global_flag = scw_over }
+					FROM = {
+						OR = {
+							tag = SPR
+							tag = CAS
+							tag = NAV
+							tag = SEU
+							tag = SPC
+							tag = AND
+							tag = ARA
 						}
 					}
 				}
-				if = {
-					limit = { AND = { exists = yes } }
-					AND = {
-						declare_war_on = {
-							target = ARA
-							type = annex_everything
+				every_state = {
+					limit = { is_claimed_by = FROM }
+					remove_claim_by = FROM
+				}
+				every_state = {
+					limit = { is_core_of = FROM }
+					remove_core_of = FROM
+				}
+			}
+			
+			#Определение победителя // Конец ГВ либералов
+			if = {
+				limit = {
+					has_global_flag = liberal_spanish_civil_war
+					NOT = { has_global_flag = scw_over }
+					ROOT = {
+						OR = {
+							tag = SPR
+							tag = CAS
+							tag = NAV
+							tag = SEU
+							tag = SPC
+							tag = AND
+							tag = ARA
+						}
+					}
+					FROM = {
+						OR = {
+							tag = SPR
+							tag = CAS
+							tag = NAV
+							tag = SEU
+							tag = SPC
+							tag = AND
+							tag = ARA
 						}
 					}
 				}
-				if = {
-					limit = { ARA = { exists = yes } }
-					ARA = {
-						declare_war_on = {
-							target = SPC
-							type = annex_everything
-						}
-					}
-				}
+				ROOT = { country_event = { id = NWspain.50 } }
 			}
 		}
 	}
-
 }
 
