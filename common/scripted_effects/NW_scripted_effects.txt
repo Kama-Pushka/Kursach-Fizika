@@ -1,0 +1,33 @@
+add_var_manpower = {
+	set_variable = { var_statistic@ROOT = 0 }
+	every_state = { 																	# Набивается количество насселения на оккупированной территории
+		limit = {
+			is_owned_by = ROOT
+			is_core_of = ROOT
+			NOT = { is_controlled_by = ROOT }
+		}
+		ROOT = { add_to_variable = { var_statistic@ROOT = PREV.state_population_k } }
+	}
+	round_variable = var_statistic@ROOT													# Заокругление
+	multiply_variable = { var = var_statistic@ROOT value = 0.2 }						# Уменьшение полученного числа в необходимые рамки
+	multiply_variable = { var = var_statistic@ROOT value = has_war_support@ROOT }
+	clamp_variable = {
+		var = var_statistic@ROOT
+		min = 220
+		max = 7206
+	}
+	set_variable = { var_second@ROOT = var_statistic@ROOT }								# Создание видимости рандома
+	multiply_variable = { var = var_second@ROOT value = 0.02 }
+	random_list = {
+		1 = {
+			add_to_variable = { var = var_statistic@ROOT value = var_second@ROOT }
+		}
+		1 = {
+			subtract_from_variable = { var = var_statistic@ROOT value = var_second@ROOT }
+		}
+		1 = {
+		
+		}
+	}
+	round_variable = var_statistic@ROOT
+}

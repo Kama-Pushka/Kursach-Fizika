@@ -1,5 +1,670 @@
 resistance_movements = {
+	form_a_rebel_army = {
 
+		icon = generic_civil_support
+
+		allowed = {
+			always = yes
+		}
+
+		available = {
+		}
+
+		days_remove = 1
+
+		cost = 50
+
+		fire_only_once = no
+
+		visible = {
+			has_capitulated = yes
+			NOT = { has_country_flag = Form_rebel_army }
+		}
+
+		modifier = {
+		}
+
+		complete_effect = {
+		}
+
+		remove_effect = {
+			add_legitimacy = 10
+			set_country_flag = Form_rebel_army
+			custom_effect_tooltip = formed_rebel_army_tt
+			hidden_effect = {
+				if = {
+					limit = {
+						NOT = { check_variable = { var = rebel_infantry_equipment@ROOT value = 0 compare = greater_than } }
+					}
+					set_variable = { var = rebel_infantry_equipment@ROOT value = 750 }
+				}
+				if = {
+					limit = {
+						NOT = { check_variable = { var = rebel_support_equipment@ROOT value = 0 compare = greater_than } }
+					}
+					set_variable = { var = rebel_support_equipment@ROOT value = 100 }
+				}
+				if = {
+					limit = {
+						NOT = { check_variable = { var = rebel_artillery_equipment@ROOT value = 0 compare = greater_than } }
+					}
+					set_variable = { var = rebel_artillery_equipment@ROOT value = 45 }
+				}
+				if = {
+					limit = {
+						NOT = { check_variable = { var = rebel_manpower@ROOT value = 0 compare = greater_than } }
+					}
+					add_var_manpower = yes
+					set_variable = { var = rebel_manpower@ROOT value = var_statistic@ROOT }
+				}
+				if = {
+					limit = { NOT = { original_tag = POL has_template = "Rebel Division" } }
+					division_template = {
+						name = "Rebel Division"
+						is_locked = yes
+						
+						regiments = {
+							infantry = { x = 0 y = 0 }
+							infantry = { x = 0 y = 1 }
+							infantry = { x = 1 y = 0 }
+							infantry = { x = 1 y = 1 }
+							infantry = { x = 2 y = 0 }
+							infantry = { x = 2 y = 1 }
+						}
+						support = { 
+							engineer = { x = 0 y = 0 }
+							artillery = { x = 0 y = 1 }
+						} 
+					}	
+					division_template = {
+						name = "Light Rebel Division"
+						is_locked = yes
+						
+						regiments = {
+							infantry = { x = 0 y = 0 }
+							infantry = { x = 0 y = 1 }
+							infantry = { x = 1 y = 0 }
+							infantry = { x = 1 y = 1 }
+						}
+					}
+				}
+				else_if = {
+					limit = { original_tag = POL NOT = { has_template = "Armia Krajowa" } }
+					division_template = {
+						name = "Dywizja Armii Krajowej"
+						is_locked = yes
+						
+						regiments = {
+							infantry = { x = 0 y = 0 }
+							infantry = { x = 0 y = 1 }
+							infantry = { x = 1 y = 0 }
+							infantry = { x = 1 y = 1 }
+							infantry = { x = 2 y = 0 }
+							infantry = { x = 2 y = 1 }
+						}
+						support = { 
+							engineer = { x = 0 y = 0 }
+							artillery = { x = 0 y = 1 }
+						} 
+					}	
+					division_template = {
+						name = "Lekka Dywizja Armii Krajowej"
+						is_locked = yes
+						
+						regiments = {
+							infantry = { x = 0 y = 0 }
+							infantry = { x = 0 y = 1 }
+							infantry = { x = 1 y = 0 }
+							infantry = { x = 1 y = 1 }
+						}
+					}
+				}
+				every_state = {
+					limit = { is_owned_by = ROOT NOT = { is_controlled_by = ROOT } controller = { NOT = { has_country_flag = reb_received_notification} } }
+					controller = { 
+						set_country_flag = reb_received_notification 
+						country_event = { id = resistance.1 days = 5 random = 5 }
+					}
+				}
+			}
+		}
+	}
+	
+	transfer_light_weapons_to_the_partisans = {
+
+		icon = generic_prepare_civil_war
+
+		allowed = {
+			always = yes
+		}
+
+		available = {
+			command_power > 9
+			has_equipment = {
+				infantry_equipment > 299
+			}
+		}
+
+		days_remove = 20
+
+		cost = 0
+
+		fire_only_once = no
+
+		visible = {
+			has_capitulated = yes
+			has_country_flag = Form_rebel_army
+		}
+
+		modifier = { 
+			
+		}
+
+		complete_effect = {
+			add_command_power = -10
+			hidden_effect = {
+				add_equipment_to_stockpile = {
+					type = infantry_equipment
+					amount = -300
+				}
+			}
+		}
+
+		remove_effect = {
+			custom_effect_tooltip = bedzie_dodano_bron_powstancam_tt
+			add_to_variable = { var = rebel_infantry_equipment@ROOT value = 300 }
+		}
+	}
+	
+	transfer_additional_equipment_to_the_partisans = {
+
+		icon = generic_prepare_civil_war
+
+		allowed = {
+			always = yes
+		}
+
+		available = {
+			command_power > 9
+			has_equipment = {
+				support_equipment_1 > 39
+			}
+		}
+
+		days_remove = 20
+
+		cost = 0
+
+		fire_only_once = no
+
+		visible = {
+			has_capitulated = yes
+			has_country_flag = Form_rebel_army
+		}
+
+		modifier = { 
+			
+		}
+
+		complete_effect = {
+			add_command_power = -10
+			hidden_effect = {
+				add_equipment_to_stockpile = {
+					type = support_equipment_1
+					amount = -40
+				}
+			}
+		}
+
+		remove_effect = {
+			custom_effect_tooltip = bedzie_dodano_support_equipment_powstancam_tt
+			add_to_variable = { var = rebel_support_equipment@ROOT value = 40 }
+		}
+	}
+	
+	transfer_heavy_weapons_to_the_partisans = {
+
+		icon = generic_prepare_civil_war
+
+		allowed = {
+			always = yes
+		}
+
+		available = {
+			command_power > 9
+			has_equipment = {
+				artillery_equipment > 19
+			}
+		}
+
+		days_remove = 20
+
+		cost = 0
+
+		fire_only_once = no
+
+		visible = {
+			has_capitulated = yes
+			has_country_flag = Form_rebel_army
+		}
+
+		modifier = { 
+			
+		}
+
+		complete_effect = {
+			add_command_power = -10
+			hidden_effect = {
+				add_equipment_to_stockpile = {
+					type = artillery_equipment
+					amount = -20
+				}
+			}
+		}
+
+		remove_effect = {
+			custom_effect_tooltip = bedzie_dodano_rebel_artillery_equipment_powstancam_tt
+			add_to_variable = { var = rebel_artillery_equipment@ROOT value = 20 }
+		}
+	}
+	
+	recruit_to_the_rebel_army = {
+
+		icon = eng_blackshirt_march
+
+		allowed = {
+			always = yes
+		}
+
+		available = {
+			command_power > 14
+		}
+
+		days_remove = 40
+
+		cost = 0
+
+		fire_only_once = no
+
+		visible = {
+			has_capitulated = yes
+			has_country_flag = Form_rebel_army
+		}
+
+		modifier = { 
+			
+		}
+
+		complete_effect = {
+			add_command_power = -15
+		}
+
+		remove_effect = {
+			if = {
+				limit = {
+					check_variable = { var_statistic@ROOT > 0 } 
+				}
+				custom_effect_tooltip = bedzie_dodano_powstancow_cis_tt
+				else = { custom_effect_tooltip = bedzie_dodano_powstancow_tt }
+			}
+			hidden_effect = {
+				add_var_manpower = yes
+				add_to_variable = { var = rebel_manpower@ROOT value = var_statistic@ROOT }
+			}
+		}
+	}
+	
+	attack_on_an_enemy_officer = {
+
+		icon = generic_ignite_civil_war
+
+		allowed = {
+			always = yes
+		}
+
+		available = {
+			command_power > 9
+		}
+
+		days_remove = 40
+
+		cost = 0
+
+		fire_only_once = no
+
+		visible = {
+			has_capitulated = yes
+			has_country_flag = Form_rebel_army
+		}
+
+		modifier = { 
+			
+		}
+
+		complete_effect = {
+			add_command_power = -10
+		}
+
+		remove_effect = {
+			
+		}
+	}
+	
+	capture_warehouse = {
+
+		icon = generic_scorched_earth
+
+		allowed = {
+			always = yes
+		}
+
+		available = {
+			command_power > 9
+		}
+
+		days_remove = 40
+
+		cost = 0
+
+		fire_only_once = no
+
+		visible = {
+			has_capitulated = yes
+			has_country_flag = Form_rebel_army
+		}
+
+		modifier = { 
+			
+		}
+
+		complete_effect = {
+			add_command_power = -10
+		}
+
+		remove_effect = {
+			
+		}
+	}
+	
+	undermining_the_industrial_complex = {
+		icon = generic_ignite_civil_war
+
+		allowed = {
+			always = yes
+		}
+
+		available = {
+			command_power > 9
+		}
+
+		days_remove = 40
+
+		cost = 0
+
+		fire_only_once = no
+
+		visible = {
+			has_capitulated = yes
+			has_country_flag = Form_rebel_army
+		}
+
+		modifier = { 
+			
+		}
+
+		complete_effect = {
+			add_command_power = -10
+		}
+
+		remove_effect = {
+			
+		}
+	}
+	
+	undermining_the_arms_factory = {
+		icon = generic_ignite_civil_war
+
+		allowed = {
+			always = yes
+		}
+
+		available = {
+			command_power > 9
+		}
+
+		days_remove = 40
+
+		cost = 0
+
+		fire_only_once = no
+
+		visible = {
+			has_capitulated = yes
+			has_country_flag = Form_rebel_army
+		}
+
+		modifier = { 
+			
+		}
+
+		complete_effect = {
+			add_command_power = -10
+		}
+
+		remove_effect = {
+			
+		}
+	}
+	
+	undermining_the_dockyard = {
+		icon = generic_ignite_civil_war
+
+		allowed = {
+			always = yes
+		}
+
+		available = {
+			command_power > 9
+		}
+
+		days_remove = 40
+
+		cost = 0
+
+		fire_only_once = no
+
+		visible = {
+			has_capitulated = yes
+			has_country_flag = Form_rebel_army
+		}
+
+		modifier = { 
+			
+		}
+
+		complete_effect = {
+			add_command_power = -10
+		}
+
+		remove_effect = {
+			
+		}
+	}
+	
+	undermining_the_infrastructure = {
+		icon = generic_ignite_civil_war
+
+		allowed = {
+			always = yes
+		}
+
+		available = {
+			command_power > 9
+		}
+
+		days_remove = 40
+
+		cost = 0
+
+		fire_only_once = no
+
+		visible = {
+			has_capitulated = yes
+			has_country_flag = Form_rebel_army
+		}
+
+		modifier = { 
+			
+		}
+
+		complete_effect = {
+			add_command_power = -10
+		}
+
+		remove_effect = {
+			
+		}
+	}
+	
+	undermining_the_aviabase = {
+		icon = generic_ignite_civil_war
+
+		allowed = {
+			always = yes
+		}
+
+		available = {
+			command_power > 9
+		}
+
+		days_remove = 40
+
+		cost = 0
+
+		fire_only_once = no
+
+		visible = {
+			has_capitulated = yes
+			has_country_flag = Form_rebel_army
+		}
+
+		modifier = { 
+			
+		}
+
+		complete_effect = {
+			add_command_power = -10
+		}
+
+		remove_effect = {
+			
+		}
+	}
+	
+	undermining_the_nuclear = {
+		icon = generic_ignite_civil_war
+
+		allowed = {
+			always = yes
+		}
+
+		available = {
+			command_power > 9
+		}
+
+		days_remove = 40
+
+		cost = 0
+
+		fire_only_once = no
+
+		visible = {
+			has_capitulated = yes
+			has_country_flag = Form_rebel_army
+		}
+
+		modifier = { 
+			
+		}
+
+		complete_effect = {
+			add_command_power = -10
+		}
+
+		remove_effect = {
+			
+		}
+	}
+	
+	sabotage_in_fortifications = {
+		icon = generic_ignite_civil_war
+
+		allowed = {
+			always = yes
+		}
+
+		available = {
+			command_power > 9
+		}
+
+		days_remove = 40
+
+		cost = 0
+
+		fire_only_once = no
+
+		visible = {
+			has_capitulated = yes
+			has_country_flag = Form_rebel_army
+		}
+
+		modifier = { 
+			
+		}
+
+		complete_effect = {
+			add_command_power = -10
+		}
+
+		remove_effect = {
+			
+		}
+	}
+	
+	airborne_special_forces_on_the_occupied_territory = {
+		icon = eng_puppet_usa
+
+		allowed = {
+			always = yes
+		}
+
+		available = {
+			command_power > 9
+		}
+
+		days_remove = 40
+
+		cost = 0
+
+		fire_only_once = no
+
+		visible = {
+			has_capitulated = yes
+			has_country_flag = Form_rebel_army
+		}
+
+		modifier = { 
+			
+		}
+
+		complete_effect = {
+			add_command_power = -10
+		}
+
+		remove_effect = {
+			
+		}
+	}
 }
 
 country_in_exiled_dec = {
@@ -27,7 +692,7 @@ country_in_exiled_dec = {
 
 		visible = {
 			has_capitulated = yes
-			NOT = { original_tag = HOL has_completed_focus = HOL_request_allied_favors }
+			NOT = { has_completed_focus = HOL_request_allied_favors }
 		}
 
 		modifier = {
@@ -63,7 +728,7 @@ country_in_exiled_dec = {
 		visible = {
 			has_capitulated = yes
 			check_variable = { var = obtain_dockyard_counter@ROOT value = 3 compare = less_than }
-			NOT = { original_tag = HOL has_completed_focus = HOL_request_allied_favors }
+			NOT = { has_completed_focus = HOL_request_allied_favors }
 		}
 
 		modifier = {
@@ -134,7 +799,7 @@ country_in_exiled_dec = {
 
 		visible = {
 			has_capitulated = yes
-			NOT = { original_tag = HOL has_completed_focus = HOL_request_allied_favors }
+			NOT = { has_completed_focus = HOL_request_allied_favors }
 		}
 
 		modifier = {
@@ -183,7 +848,7 @@ country_in_exiled_dec = {
 
 		visible = {
 			has_capitulated = yes
-			NOT = { original_tag = HOL has_completed_focus = HOL_request_allied_favors }
+			NOT = { has_completed_focus = HOL_request_allied_favors }
 		}
 
 		modifier = {
@@ -252,7 +917,7 @@ country_in_exiled_dec = {
 		visible = {
 			has_capitulated = yes
 			check_variable = { var = industrialists_counter@ROOT value = 3 compare = less_than }
-			NOT = { original_tag = HOL has_completed_focus = HOL_request_allied_favors }
+			NOT = { has_completed_focus = HOL_request_allied_favors }
 		}
 
 		modifier = {
@@ -295,7 +960,7 @@ country_in_exiled_dec = {
 
 		visible = {
 			has_capitulated = yes
-			NOT = { original_tag = HOL has_completed_focus = HOL_request_allied_favors }
+			NOT = { has_completed_focus = HOL_request_allied_favors }
 		}
 
 		modifier = {
@@ -355,7 +1020,7 @@ country_in_exiled_dec = {
 
 		visible = {
 			has_capitulated = yes
-			NOT = { original_tag = HOL has_completed_focus = HOL_request_allied_favors }
+			NOT = { has_completed_focus = HOL_request_allied_favors }
 		}
 
 		modifier = {
