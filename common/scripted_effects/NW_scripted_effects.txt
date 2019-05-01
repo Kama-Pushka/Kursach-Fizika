@@ -1,6 +1,6 @@
 add_var_manpower = {
 	set_variable = { var_statistic@ROOT = 0 }
-	every_state = { 																	# Набивается количество насселения на оккупированной территории
+	every_state = { 							# Набивается количество насселения на оккупированной территории
 		limit = {
 			is_owned_by = ROOT
 			is_core_of = ROOT
@@ -8,15 +8,15 @@ add_var_manpower = {
 		}
 		ROOT = { add_to_variable = { var_statistic@ROOT = PREV.state_population_k } }
 	}
-	round_variable = var_statistic@ROOT													# Заокругление
-	multiply_variable = { var = var_statistic@ROOT value = 0.2 }						# Уменьшение полученного числа в необходимые рамки
+	round_variable = var_statistic@ROOT			# Заокругление
+	multiply_variable = { var = var_statistic@ROOT value = 0.2 }	# Уменьшение полученного числа в необходимые рамки
 	multiply_variable = { var = var_statistic@ROOT value = has_war_support@ROOT }
 	clamp_variable = {
 		var = var_statistic@ROOT
 		min = 220
 		max = 7206
 	}
-	set_variable = { var_second@ROOT = var_statistic@ROOT }								# Создание видимости рандома
+	set_variable = { var_second@ROOT = var_statistic@ROOT }			# Создание видимости рандома
 	multiply_variable = { var = var_second@ROOT value = 0.02 }
 	random_list = {
 		1 = {
@@ -30,4 +30,45 @@ add_var_manpower = {
 		}
 	}
 	round_variable = var_statistic@ROOT
+}
+
+GENERAL_STRIKE = {
+	if = {
+		limit = { check_variable = { THIS.resistance < 0.05 } }
+		random_list = {
+			1 = { country_event = { id = resistance.2 } }
+			1 = { country_event = { id = resistance.3 } }
+			1 = { country_event = { id = resistance.4 } }
+		}
+	}
+	else_if = {
+		limit = { check_variable = { THIS.resistance < 0.1 } }
+		random_list = {
+			2 = { country_event = { id = resistance.2 } }
+			4 = { country_event = { id = resistance.3 } }
+			3 = { country_event = { id = resistance.4 } }
+		}
+	}
+	else_if = {
+		limit = { check_variable = { THIS.resistance < 0.2 } }
+		random_list = {
+			3 = { country_event = { id = resistance.2 } }
+			4 = { country_event = { id = resistance.3 } }
+			5 = { country_event = { id = resistance.4 } }
+		}
+	}
+	else_if = {
+		limit = { check_variable = { THIS.resistance < 0.4 } }
+		random_list = {
+			1 = { country_event = { id = resistance.2 } }
+			4 = { country_event = { id = resistance.3 } }
+			8 = { country_event = { id = resistance.4 } }
+		}
+	}
+	else = {
+		random_list = {
+			2 = { country_event = { id = resistance.3 } }
+			8 = { country_event = { id = resistance.4 } }
+		}
+	}
 }

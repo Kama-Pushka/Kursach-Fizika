@@ -1,5 +1,6 @@
 ﻿add_namespace = resistance
 
+# Основано сопротивление
 country_event = {
 	id = resistance.1
 	title = resistance.1.t
@@ -12,5 +13,77 @@ country_event = {
 	option = {
 		name = resistance.1.a
 		clr_country_flag = reb_received_notification
+	}
+}
+
+# Удар Сопротивления! - неудача
+country_event = {
+	id = resistance.2
+	title = { text = resistance.2.t.infrastructure trigger = { FROM = { has_country_flag = strike_to_infrastructure } } }
+	desc = { text = resistance.2.d.infrastructure trigger = { FROM = { has_country_flag = strike_to_infrastructure } } }
+	
+	is_triggered_only = yes
+	
+	immediate = { 
+		log = "[GetDateText]: [Root.GetName]: event resistance.2"		
+		
+		hidden_effect = {
+			if = {
+				limit = { FROM = { has_country_flag = strike_to_infrastructure } }
+				random_state = {
+					limit = {
+						is_owned_by = FROM
+						NOT = { is_controlled_by = FROM }
+						has_state_flag = undermining_the_infrastructure_flag
+					}
+					clr_state_flag = undermining_the_infrastructure_flag
+				}
+				FROM = { clr_country_flag = strike_to_infrastructure }
+			}
+		}
+	}
+	
+	option = {
+		name = resistance.2.a
+		
+		custom_effect_tooltip = failed_rebels_tt
+		hidden_effect = {
+			
+		}
+	}
+}
+
+# Удар Сопротивления! - удача
+country_event = {
+	id = resistance.4
+	title = { text = resistance.4.t.infrastructure trigger = { FROM = { has_country_flag = strike_to_infrastructure } } }
+	desc = { text = resistance.4.d.infrastructure trigger = { FROM = { has_country_flag = strike_to_infrastructure } } }
+	
+	is_triggered_only = yes
+	
+	immediate = { 
+		log = "[GetDateText]: [Root.GetName]: event resistance.4"
+	}
+	
+	option = {
+		name = resistance.4.a
+		
+		
+		if = {
+			limit = { FROM = { has_country_flag = strike_to_infrastructure } }
+			random_state = {
+				limit = {
+					is_owned_by = FROM
+					NOT = { is_controlled_by = FROM }
+					has_state_flag = undermining_the_infrastructure_flag
+				}
+				clr_state_flag = undermining_the_infrastructure_flag
+				damage_building = {
+					type = infrastructure
+					damage = 1
+				}
+			}
+			FROM = { clr_country_flag = strike_to_infrastructure }
+		}
 	}
 }

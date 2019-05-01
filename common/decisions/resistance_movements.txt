@@ -126,6 +126,17 @@ resistance_movements = {
 						country_event = { id = resistance.1 days = 5 random = 5 }
 					}
 				}
+				if = {
+					limit = { difficulty < 1 }
+					add_ideas = resistance_defficulty_0
+				}
+				else_if = {
+					limit = { difficulty < 2 }
+					add_ideas = resistance_defficulty_1
+				}
+				random_army_leader = {
+					add_unit_leader_trait = resistance_leader
+				}
 			}
 		}
 	}
@@ -292,7 +303,6 @@ resistance_movements = {
 		}
 
 		modifier = { 
-			
 		}
 
 		complete_effect = {
@@ -500,9 +510,17 @@ resistance_movements = {
 
 		available = {
 			command_power > 9
+			any_state = {
+				is_owned_by = ROOT
+				NOT = { is_controlled_by = ROOT }
+				custom_trigger_tooltip = {
+					tooltip = necessary_resistance_level_tt	
+					check_variable = { THIS.resistance > 0.1 }
+				}
+			}
 		}
 
-		days_remove = 40
+		days_remove = 2
 
 		cost = 0
 
@@ -516,13 +534,58 @@ resistance_movements = {
 		modifier = { 
 			
 		}
-
+		
+		cancel_trigger = {
+			custom_trigger_tooltip = {
+				tooltip = undermining_will_be_canceled_tt	
+				any_state = {
+					is_owned_by = ROOT
+					has_state_flag = undermining_the_infrastructure_flag
+					OR = {
+						custom_trigger_tooltip = {
+							tooltip = minimal_resistance_level_tt	
+							check_variable = { THIS.resistance = 0 }
+						}
+						is_controlled_by = ROOT
+					}
+				}
+			}
+		}
+		
 		complete_effect = {
 			add_command_power = -10
+			hidden_effect = {
+				every_state = {
+					limit = { 
+						is_owned_by = ROOT
+						has_state_flag = undermining_the_infrastructure_flag 
+					}
+					clr_state_flag = undermining_the_infrastructure_flag
+				}
+				random_state = {
+					limit = {
+						is_owned_by = ROOT
+						NOT = { is_controlled_by = ROOT }
+						check_variable = { THIS.resistance > 0.1 }
+					}
+					set_state_flag = undermining_the_infrastructure_flag
+				}
+			}
 		}
 
 		remove_effect = {
-			
+			custom_effect_tooltip = strike_to_infrastructure_tt
+			hidden_effect = {
+				set_country_flag = strike_to_infrastructure
+				random_state = {
+					limit = {
+						is_owned_by = ROOT
+						NOT = { is_controlled_by = ROOT }
+						has_state_flag = undermining_the_infrastructure_flag
+					}
+					controller = { GENERAL_STRIKE = yes	}
+				}
+			}
 		}
 	}
 	
@@ -967,13 +1030,6 @@ country_in_exiled_dec = {
 		}
 		
 		complete_effect = {
-			if = {
-				limit = { check_variable = { add_mans_weekly@ROOT = 0 } }
-				custom_effect_tooltip = bedzie_dodano_manpower_tt
-				else = {
-					custom_effect_tooltip = bedzie_dodano_pewny_manpower_tt
-				}
-			}
 			hidden_effect = {
 				set_variable = { add_mans_weekly@ROOT = 0 }
 				every_state = {
@@ -981,21 +1037,24 @@ country_in_exiled_dec = {
 						is_owned_by = ROOT
 						is_core_of = ROOT
 					}
-					ROOT = { add_to_variable = { add_mans_weekly@ROOT = 25 } }
+					ROOT = { add_to_variable = { add_mans_weekly@ROOT = 150 } }
 				}
 				clamp_variable = {
 					var = add_mans_weekly@ROOT
-					min = 125
-					max = 2750
+					min = 750
+					max = 16500
 				}
-				#add_dynamic_modifier = { 
-				#	modifier = dynamic_modifier_manpower_in_exile
-				#	days = 60
-				#}
 			}
 		}
 
 		remove_effect = {
+			if = {
+				limit = { check_variable = { add_mans_weekly@ROOT = 0 } }
+				custom_effect_tooltip = bedzie_dodano_manpower_tt
+				else = {
+					custom_effect_tooltip = bedzie_dodano_pewny_manpower_tt
+				}
+			}
 		}
 
 	}
