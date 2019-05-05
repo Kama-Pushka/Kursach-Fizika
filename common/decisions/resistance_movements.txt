@@ -1,3 +1,5 @@
+@THE_TIME_TO_DIE = 5
+
 resistance_movements = {
 	form_a_rebel_army = {
 
@@ -6,8 +8,13 @@ resistance_movements = {
 		allowed = {
 			always = yes
 		}
-
+		
+		ai_will_do = {
+			factor = 10
+		}
+		
 		available = {
+			is_subject = no
 		}
 
 		days_remove = 1
@@ -54,8 +61,21 @@ resistance_movements = {
 					limit = {
 						NOT = { check_variable = { var = rebel_manpower@ROOT value = 0 compare = greater_than } }
 					}
+					set_variable = { var = rebel_manpower@ROOT value = 150 }
 					add_var_manpower = yes
-					set_variable = { var = rebel_manpower@ROOT value = var_statistic@ROOT }
+					add_to_variable = { var = rebel_manpower@ROOT value = var_statistic@ROOT }
+				}
+				if = {
+					limit = {
+						NOT = { check_variable = { var = num_division@ROOT value = 0 compare = greater_than } }
+					}
+					set_variable = { var = num_division@ROOT value = 0 }
+				}
+				if = {
+					limit = {
+						NOT = { check_variable = { var = num_small_division@ROOT value = 0 compare = greater_than } }
+					}
+					set_variable = { var = num_small_division@ROOT value = 0 }
 				}
 				if = {
 					limit = { NOT = { original_tag = POL has_template = "Rebel Division" } }
@@ -89,7 +109,7 @@ resistance_movements = {
 					}
 				}
 				else_if = {
-					limit = { original_tag = POL NOT = { has_template = "Armia Krajowa" } }
+					limit = { original_tag = POL NOT = { has_template = "Dywizja Armii Krajowej" } NOT = { has_government = communism } }
 					division_template = {
 						name = "Dywizja Armii Krajowej"
 						is_locked = yes
@@ -109,6 +129,37 @@ resistance_movements = {
 					}	
 					division_template = {
 						name = "Lekka Dywizja Armii Krajowej"
+						is_locked = yes
+						
+						regiments = {
+							infantry = { x = 0 y = 0 }
+							infantry = { x = 0 y = 1 }
+							infantry = { x = 1 y = 0 }
+							infantry = { x = 1 y = 1 }
+						}
+					}
+				}
+				else_if = {
+					limit = { original_tag = POL NOT = { has_template = "Dywizja Armii Ludowej" } has_government = communism }
+					division_template = {
+						name = "Dywizja Armii Ludowej"
+						is_locked = yes
+						
+						regiments = {
+							infantry = { x = 0 y = 0 }
+							infantry = { x = 0 y = 1 }
+							infantry = { x = 1 y = 0 }
+							infantry = { x = 1 y = 1 }
+							infantry = { x = 2 y = 0 }
+							infantry = { x = 2 y = 1 }
+						}
+						support = { 
+							engineer = { x = 0 y = 0 }
+							artillery = { x = 0 y = 1 }
+						} 
+					}	
+					division_template = {
+						name = "Lekka Dywizja Armii Ludowej"
 						is_locked = yes
 						
 						regiments = {
@@ -141,6 +192,107 @@ resistance_movements = {
 		}
 	}
 	
+	
+	czas_w = {
+
+		icon = generic_civil_support
+
+		allowed = {
+			always = yes
+		}
+
+		available = {
+			 custom_trigger_tooltip = {
+				tooltip = czas_w_level_tt	
+				OR = { 
+					check_variable = { num_division@ROOT > 0 }
+					check_variable = { num_small_division@ROOT > 0 }
+				}
+				NOT = { has_idea = resistance_failed }
+			 }
+		}
+
+		cost = 50
+
+		fire_only_once = no
+
+		visible = {
+			 has_country_flag = Form_rebel_army
+			 OR = { 
+				check_variable = { num_division@ROOT > 0 }
+				check_variable = { num_small_division@ROOT > 0 }
+			 }
+			 any_state = {
+				is_core_of = ROOT
+				is_owned_by = ROOT
+				NOT = { is_controlled_by = ROOT }
+			}
+			NOT = { has_country_flag = baptized_in_fire }
+		}
+
+		complete_effect = {
+			custom_effect_tooltip = czas_w_tt
+			hidden_effect = {
+				set_country_flag = baptized_in_fire
+				
+				if = {
+					limit = { check_variable = { num_division@ROOT > 0 } }
+					country_event = { id = resistance.7 }
+				}
+				if = {
+					limit = { check_variable = { num_small_division@ROOT > 0 } }
+					country_event = { id = resistance.8 }
+				}
+			}
+			if = {
+				limit = { 
+					original_tag = POL
+					owns_state = 10
+					NOT = { controls_state = 10 }
+					NOT = { has_global_flag = POL_powstanie_warszawskie }
+				}
+				country_event = { id = resistance.44 } ### Dzień dobry, kurwo 
+			}
+		}
+
+	}
+	
+	open_magazyn = {
+
+		icon = generic_civil_support
+
+		allowed = {
+			always = yes
+		}
+
+		fire_only_once = no
+
+		visible = {
+			has_country_flag = baptized_in_fire
+		}
+
+		complete_effect = {
+			add_equipment_to_stockpile = {
+				type = infantry_equipment
+				amount = rebel_infantry_equipment@ROOT
+			}
+			set_variable = { var = rebel_infantry_equipment@ROOT value = 0 }
+			add_equipment_to_stockpile = {
+				type = infantry_equipment
+				amount = rebel_support_equipment@ROOT
+			}
+			set_variable = { var = rebel_support_equipment@ROOT value = 0 }
+			add_equipment_to_stockpile = {
+				type = infantry_equipment
+				amount = rebel_artillery_equipment@ROOT
+			}
+			set_variable = { var = rebel_artillery_equipment@ROOT value = 0 }
+			add_manpower = rebel_manpower@ROOT
+			set_variable = { var = rebel_manpower@ROOT value = 0 }
+		}
+
+	}
+	
 	transfer_light_weapons_to_the_partisans = {
 
 		icon = generic_prepare_civil_war
@@ -150,7 +302,6 @@ resistance_movements = {
 		}
 
 		available = {
-			command_power > 9
 			has_equipment = {
 				infantry_equipment > 299
 			}
@@ -158,7 +309,10 @@ resistance_movements = {
 
 		days_remove = 20
 
-		cost = 0
+		custom_cost_trigger = {
+			NOT = { command_power < 10 }
+		}
+		custom_cost_text = command_power_texticon
 
 		fire_only_once = no
 
@@ -196,7 +350,6 @@ resistance_movements = {
 		}
 
 		available = {
-			command_power > 9
 			has_equipment = {
 				support_equipment_1 > 39
 			}
@@ -204,7 +357,10 @@ resistance_movements = {
 
 		days_remove = 20
 
-		cost = 0
+		custom_cost_trigger = {
+			NOT = { command_power < 10 }
+		}
+		custom_cost_text = command_power_texticon
 
 		fire_only_once = no
 
@@ -242,7 +398,6 @@ resistance_movements = {
 		}
 
 		available = {
-			command_power > 9
 			has_equipment = {
 				artillery_equipment > 19
 			}
@@ -250,7 +405,10 @@ resistance_movements = {
 
 		days_remove = 20
 
-		cost = 0
+		custom_cost_trigger = {
+			NOT = { command_power < 10 }
+		}
+		custom_cost_text = command_power_texticon
 
 		fire_only_once = no
 
@@ -288,12 +446,19 @@ resistance_movements = {
 		}
 
 		available = {
-			command_power > 14
+			any_state = {
+				is_owned_by = ROOT
+				is_core_of = ROOT
+				NOT = { is_controlled_by = ROOT }
+			}
 		}
 
 		days_remove = 40
 
-		cost = 0
+		custom_cost_trigger = {
+			NOT = { command_power < 15 }
+		}
+		custom_cost_text = 15_command_power_texticon
 
 		fire_only_once = no
 
@@ -332,13 +497,12 @@ resistance_movements = {
 			always = yes
 		}
 
-		available = {
-			command_power > 9
-		}
-
 		days_remove = 40
 
-		cost = 0
+		custom_cost_trigger = {
+			NOT = { command_power < 10 }
+		}
+		custom_cost_text = command_power_texticon
 
 		fire_only_once = no
 
@@ -368,13 +532,12 @@ resistance_movements = {
 			always = yes
 		}
 
-		available = {
-			command_power > 9
-		}
-
 		days_remove = 40
 
-		cost = 0
+		custom_cost_trigger = {
+			NOT = { command_power < 10 }
+		}
+		custom_cost_text = command_power_texticon
 
 		fire_only_once = no
 
@@ -404,30 +567,141 @@ resistance_movements = {
 		}
 
 		available = {
-			command_power > 9
+			any_state = {
+				is_owned_by = ROOT
+				NOT = { is_controlled_by = ROOT }
+				custom_trigger_tooltip = {
+					tooltip = necessary_resistance_level_tt	
+					check_variable = { THIS.resistance > 0.1 }
+				}
+				industrial_complex > 0
+			}
 		}
 
-		days_remove = 40
-
+		custom_cost_trigger = {
+			NOT = { command_power < 10 }
+		}
+		custom_cost_text = command_power_texticon
+		
 		cost = 0
 
 		fire_only_once = no
 
 		visible = {
-			has_capitulated = yes
 			has_country_flag = Form_rebel_army
-		}
-
-		modifier = { 
-			
+			NOT = { has_active_mission = resist_undermining_the_industrial_complex }
+			any_state = {
+				is_owned_by = ROOT
+				NOT = { is_controlled_by = ROOT }
+				industrial_complex > 0
+			}
 		}
 
 		complete_effect = {
 			add_command_power = -10
+			hidden_effect = {
+				random_state = {
+					limit = {
+						is_owned_by = ROOT
+						NOT = { is_controlled_by = ROOT }
+						 check_variable = { THIS.resistance > 0.1 }
+						industrial_complex > 0
+					}
+					set_state_flag = undermining_the_industrial_complex_flag
+					# controller = { ITS_TIME_TO_DIE = yes }
+				}
+			}
+			activate_mission = resist_undermining_the_industrial_complex
+		}
+	}
+	
+	resist_undermining_the_industrial_complex = {
+
+		allowed = { always = no }
+
+		icon = generic_ignite_civil_war
+
+		available = {
+			custom_trigger_tooltip = {
+				any_state = {
+					is_owned_by = ROOT
+					has_state_flag = undermining_the_industrial_complex_flag
+					OR = {
+						custom_trigger_tooltip = {
+							tooltip = minimal_resistance_level_tt	
+							check_variable = { THIS.resistance = 0 }
+						}
+						is_controlled_by = ROOT
+					}
+					industrial_complex > 0
+				}
+			}
 		}
 
+		selectable_mission = no
+		days_mission_timeout = @THE_TIME_TO_DIE
+		is_good = yes
+
+		cancel_trigger = {
+			custom_trigger_tooltip = {
+				tooltip = undermining_will_be_canceled_tt	
+				any_state = {
+					is_owned_by = ROOT
+					has_state_flag = undermining_the_industrial_complex_flag
+					OR = {
+						custom_trigger_tooltip = {
+							tooltip = minimal_resistance_level_tt	
+							check_variable = { THIS.resistance = 0 }
+						}
+						is_controlled_by = ROOT
+						industrial_complex < 1
+					}
+				}
+			}
+		}
+		
 		remove_effect = {
-			
+			hidden_effect = {
+				every_state = {
+					limit = { 
+						is_owned_by = ROOT
+						has_state_flag = undermining_the_industrial_complex_flag 
+					}
+					clr_state_flag = undermining_the_industrial_complex_flag
+					controller = { remove_mission = contr_undermining_the_industrial_complex }
+				}
+			}
+		}
+
+		complete_effect = {
+			hidden_effect = {
+				every_state = {
+					limit = { 
+						is_owned_by = ROOT
+						has_state_flag = undermining_the_industrial_complex_flag 
+					}
+					controller = { remove_mission = contr_undermining_the_industrial_complex }
+					clr_state_flag = undermining_the_industrial_complex_flag
+				}
+			}
+		}
+
+		timeout_effect = {
+			custom_effect_tooltip = strike_to_industrial_complex_tt
+			hidden_effect = {
+				set_country_flag = strike_to_industrial_complex
+				random_state = {
+					limit = {
+						is_owned_by = ROOT
+						NOT = { is_controlled_by = ROOT }
+						has_state_flag = undermining_the_industrial_complex_flag
+					}
+					controller = { 
+						GENERAL_STRIKE = yes	
+						remove_mission = contr_undermining_the_industrial_complex
+					}
+				}
+			}
 		}
 	}
 	
@@ -439,30 +713,141 @@ resistance_movements = {
 		}
 
 		available = {
-			command_power > 9
+			any_state = {
+				is_owned_by = ROOT
+				NOT = { is_controlled_by = ROOT }
+				custom_trigger_tooltip = {
+					tooltip = necessary_resistance_level_tt	
+					 check_variable = { THIS.resistance > 0.1 }
+				}
+				arms_factory > 0
+			}
 		}
-
-		days_remove = 40
-
+		
+		custom_cost_trigger = {
+			NOT = { command_power < 10 }
+		}
+		custom_cost_text = command_power_texticon
+		
 		cost = 0
 
 		fire_only_once = no
 
 		visible = {
-			has_capitulated = yes
 			has_country_flag = Form_rebel_army
-		}
-
-		modifier = { 
-			
+			NOT = { has_active_mission = resist_undermining_the_arms_factory }
+			any_state = {
+				is_owned_by = ROOT
+				NOT = { is_controlled_by = ROOT }
+				arms_factory > 0
+			}
 		}
 
 		complete_effect = {
 			add_command_power = -10
+			hidden_effect = {
+				random_state = {
+					limit = {
+						is_owned_by = ROOT
+						NOT = { is_controlled_by = ROOT }
+						 check_variable = { THIS.resistance > 0.1 }
+						arms_factory > 0
+					}
+					set_state_flag = undermining_the_arms_factory_flag
+					# controller = { ITS_TIME_TO_DIE = yes }
+				}
+			}
+			activate_mission = resist_undermining_the_arms_factory
+		}
+	}
+	
+	resist_undermining_the_arms_factory = {
+
+		allowed = { always = no }
+
+		icon = generic_ignite_civil_war
+
+		available = {
+			custom_trigger_tooltip = {
+				any_state = {
+					is_owned_by = ROOT
+					has_state_flag = undermining_the_arms_factory_flag
+					OR = {
+						custom_trigger_tooltip = {
+							tooltip = minimal_resistance_level_tt	
+							check_variable = { THIS.resistance = 0 }
+						}
+						is_controlled_by = ROOT
+					}
+					arms_factory > 0
+				}
+			}
 		}
 
+		selectable_mission = no
+		days_mission_timeout = @THE_TIME_TO_DIE
+		is_good = yes
+
+		cancel_trigger = {
+			custom_trigger_tooltip = {
+				tooltip = undermining_will_be_canceled_tt	
+				any_state = {
+					is_owned_by = ROOT
+					has_state_flag = undermining_the_arms_factory_flag
+					OR = {
+						custom_trigger_tooltip = {
+							tooltip = minimal_resistance_level_tt	
+							check_variable = { THIS.resistance = 0 }
+						}
+						is_controlled_by = ROOT
+						arms_factory < 1
+					}
+				}
+			}
+		}
+		
 		remove_effect = {
-			
+			hidden_effect = {
+				every_state = {
+					limit = { 
+						is_owned_by = ROOT
+						has_state_flag = undermining_the_arms_factory_flag 
+					}
+					clr_state_flag = undermining_the_arms_factory_flag
+					controller = { remove_mission = contr_undermining_the_arms_factory }
+				}
+			}
+		}
+
+		complete_effect = {
+			hidden_effect = {
+				every_state = {
+					limit = { 
+						is_owned_by = ROOT
+						has_state_flag = undermining_the_arms_factory_flag 
+					}
+					controller = { remove_mission = contr_undermining_the_arms_factory }
+					clr_state_flag = undermining_the_arms_factory_flag
+				}
+			}
+		}
+
+		timeout_effect = {
+			custom_effect_tooltip = strike_to_arms_factory_tt
+			hidden_effect = {
+				set_country_flag = strike_to_arms_factory
+				random_state = {
+					limit = {
+						is_owned_by = ROOT
+						NOT = { is_controlled_by = ROOT }
+						has_state_flag = undermining_the_arms_factory_flag
+					}
+					controller = { 
+						GENERAL_STRIKE = yes	
+						remove_mission = contr_undermining_the_arms_factory
+					}
+				}
+			}
 		}
 	}
 	
@@ -474,30 +859,141 @@ resistance_movements = {
 		}
 
 		available = {
-			command_power > 9
+			any_state = {
+				is_owned_by = ROOT
+				NOT = { is_controlled_by = ROOT }
+				custom_trigger_tooltip = {
+					tooltip = necessary_resistance_level_tt	
+					 check_variable = { THIS.resistance > 0.1 }
+				}
+				dockyard > 0
+			}
 		}
 
-		days_remove = 40
-
+		custom_cost_trigger = {
+			NOT = { command_power < 10 }
+		}
+		custom_cost_text = command_power_texticon
+		
 		cost = 0
 
 		fire_only_once = no
 
 		visible = {
-			has_capitulated = yes
 			has_country_flag = Form_rebel_army
-		}
-
-		modifier = { 
-			
+			NOT = { has_active_mission = resist_undermining_the_dockyard }
+			any_state = {
+				is_owned_by = ROOT
+				NOT = { is_controlled_by = ROOT }
+				dockyard > 0
+			}
 		}
 
 		complete_effect = {
 			add_command_power = -10
+			hidden_effect = {
+				random_state = {
+					limit = {
+						is_owned_by = ROOT
+						NOT = { is_controlled_by = ROOT }
+						 check_variable = { THIS.resistance > 0.1 }
+						dockyard > 0
+					}
+					set_state_flag = undermining_the_dockyard_flag
+					# controller = { ITS_TIME_TO_DIE = yes }
+				}
+			}
+			activate_mission = resist_undermining_the_dockyard
+		}
+	}
+	
+	resist_undermining_the_dockyard = {
+
+		allowed = { always = no }
+
+		icon = generic_ignite_civil_war
+
+		available = {
+			custom_trigger_tooltip = {
+				any_state = {
+					is_owned_by = ROOT
+					has_state_flag = undermining_the_dockyard_flag
+					OR = {
+						custom_trigger_tooltip = {
+							tooltip = minimal_resistance_level_tt	
+							check_variable = { THIS.resistance = 0 }
+						}
+						is_controlled_by = ROOT
+					}
+					dockyard > 0
+				}
+			}
 		}
 
+		selectable_mission = no
+		days_mission_timeout = @THE_TIME_TO_DIE
+		is_good = yes
+
+		cancel_trigger = {
+			custom_trigger_tooltip = {
+				tooltip = undermining_will_be_canceled_tt	
+				any_state = {
+					is_owned_by = ROOT
+					has_state_flag = undermining_the_dockyard_flag
+					OR = {
+						custom_trigger_tooltip = {
+							tooltip = minimal_resistance_level_tt	
+							check_variable = { THIS.resistance = 0 }
+						}
+						is_controlled_by = ROOT
+						dockyard < 1
+					}
+				}
+			}
+		}
+		
 		remove_effect = {
-			
+			hidden_effect = {
+				every_state = {
+					limit = { 
+						is_owned_by = ROOT
+						has_state_flag = undermining_the_dockyard_flag 
+					}
+					clr_state_flag = undermining_the_dockyard_flag
+					controller = { remove_mission = contr_undermining_the_dockyard }
+				}
+			}
+		}
+
+		complete_effect = {
+			hidden_effect = {
+				every_state = {
+					limit = { 
+						is_owned_by = ROOT
+						has_state_flag = undermining_the_dockyard_flag 
+					}
+					controller = { remove_mission = contr_undermining_the_dockyard }
+					clr_state_flag = undermining_the_dockyard_flag
+				}
+			}
+		}
+
+		timeout_effect = {
+			custom_effect_tooltip = strike_to_dockyard_tt
+			hidden_effect = {
+				set_country_flag = strike_to_dockyard
+				random_state = {
+					limit = {
+						is_owned_by = ROOT
+						NOT = { is_controlled_by = ROOT }
+						has_state_flag = undermining_the_dockyard_flag
+					}
+					controller = { 
+						GENERAL_STRIKE = yes	
+						remove_mission = contr_undermining_the_dockyard
+					}
+				}
+			}
 		}
 	}
 	
@@ -509,32 +1005,78 @@ resistance_movements = {
 		}
 
 		available = {
-			command_power > 9
 			any_state = {
 				is_owned_by = ROOT
 				NOT = { is_controlled_by = ROOT }
 				custom_trigger_tooltip = {
 					tooltip = necessary_resistance_level_tt	
-					check_variable = { THIS.resistance > 0.1 }
+					 check_variable = { THIS.resistance > 0.1 }
 				}
 			}
 		}
-
-		days_remove = 2
-
+		
+		custom_cost_trigger = {
+			NOT = { command_power < 10 }
+		}
+		custom_cost_text = command_power_texticon
+		
 		cost = 0
 
 		fire_only_once = no
 
 		visible = {
-			has_capitulated = yes
 			has_country_flag = Form_rebel_army
-		}
-
-		modifier = { 
-			
+			NOT = { has_active_mission = resist_undermining_the_infrastructure }
+			any_state = {
+				is_owned_by = ROOT
+				NOT = { is_controlled_by = ROOT }
+			}
 		}
 		
+		complete_effect = {
+			add_command_power = -10
+			hidden_effect = {
+				random_state = {
+					limit = {
+						is_owned_by = ROOT
+						is_core_of = ROOT
+						NOT = { is_controlled_by = ROOT }
+						 check_variable = { THIS.resistance > 0.1 }
+					}
+					set_state_flag = undermining_the_infrastructure_flag
+					# controller = { ITS_TIME_TO_DIE = yes }
+				}
+			}
+			activate_mission = resist_undermining_the_infrastructure
+		}
+	}
+	
+	resist_undermining_the_infrastructure = {
+
+		allowed = { always = no }
+
+		icon = generic_ignite_civil_war
+
+		available = {
+			custom_trigger_tooltip = {
+				any_state = {
+					is_owned_by = ROOT
+					has_state_flag = undermining_the_infrastructure_flag
+					OR = {
+						custom_trigger_tooltip = {
+							tooltip = minimal_resistance_level_tt	
+							check_variable = { THIS.resistance = 0 }
+						}
+						is_controlled_by = ROOT
+					}
+				}
+			}
+		}
+
+		selectable_mission = no
+		days_mission_timeout = @THE_TIME_TO_DIE
+		is_good = yes
+
 		cancel_trigger = {
 			custom_trigger_tooltip = {
 				tooltip = undermining_will_be_canceled_tt	
@@ -552,8 +1094,7 @@ resistance_movements = {
 			}
 		}
 		
-		complete_effect = {
-			add_command_power = -10
+		remove_effect = {
 			hidden_effect = {
 				every_state = {
 					limit = { 
@@ -561,19 +1102,25 @@ resistance_movements = {
 						has_state_flag = undermining_the_infrastructure_flag 
 					}
 					clr_state_flag = undermining_the_infrastructure_flag
-				}
-				random_state = {
-					limit = {
-						is_owned_by = ROOT
-						NOT = { is_controlled_by = ROOT }
-						check_variable = { THIS.resistance > 0.1 }
-					}
-					set_state_flag = undermining_the_infrastructure_flag
+					controller = { remove_mission = contr_undermining_the_infrastructure }
 				}
 			}
 		}
 
-		remove_effect = {
+		complete_effect = {
+			hidden_effect = {
+				every_state = {
+					limit = { 
+						is_owned_by = ROOT
+						has_state_flag = undermining_the_infrastructure_flag 
+					}
+					clr_state_flag = undermining_the_infrastructure_flag
+					controller = { remove_mission = contr_undermining_the_infrastructure }
+				}
+			}
+		}
+
+		timeout_effect = {
 			custom_effect_tooltip = strike_to_infrastructure_tt
 			hidden_effect = {
 				set_country_flag = strike_to_infrastructure
@@ -583,7 +1130,10 @@ resistance_movements = {
 						NOT = { is_controlled_by = ROOT }
 						has_state_flag = undermining_the_infrastructure_flag
 					}
-					controller = { GENERAL_STRIKE = yes	}
+					controller = { 
+						GENERAL_STRIKE = yes	
+						remove_mission = contr_undermining_the_infrastructure
+					}
 				}
 			}
 		}
@@ -597,30 +1147,143 @@ resistance_movements = {
 		}
 
 		available = {
-			command_power > 9
+			any_state = {
+				is_owned_by = ROOT
+				NOT = { is_controlled_by = ROOT }
+				custom_trigger_tooltip = {
+					tooltip = necessary_resistance_level_tt	
+					 check_variable = { THIS.resistance > 0.1 }
+				}
+				air_base > 0
+			}
 		}
 
-		days_remove = 40
-
+		custom_cost_trigger = {
+			NOT = { command_power < 10 }
+		}
+		custom_cost_text = command_power_texticon
+		
 		cost = 0
 
 		fire_only_once = no
 
 		visible = {
-			has_capitulated = yes
 			has_country_flag = Form_rebel_army
-		}
-
-		modifier = { 
-			
+			NOT = { has_active_mission = resist_undermining_the_aviabase }
+			any_state = {
+				is_owned_by = ROOT
+				is_core_of = ROOT
+				NOT = { is_controlled_by = ROOT }
+				air_base > 0
+			}
 		}
 
 		complete_effect = {
 			add_command_power = -10
+			hidden_effect = {
+				random_state = {
+					limit = {
+						is_owned_by = ROOT
+						is_core_of = ROOT
+						NOT = { is_controlled_by = ROOT }
+						 check_variable = { THIS.resistance > 0.1 }
+						air_base > 0
+					}
+					set_state_flag = undermining_the_aviabase_flag
+					# controller = { ITS_TIME_TO_DIE = yes }
+				}
+			}
+			activate_mission = resist_undermining_the_aviabase
+		}
+	}
+	
+	resist_undermining_the_aviabase = {
+
+		allowed = { always = no }
+
+		icon = generic_ignite_civil_war
+
+		available = {
+			custom_trigger_tooltip = {
+				any_state = {
+					is_owned_by = ROOT
+					has_state_flag = undermining_the_aviabase_flag
+					OR = {
+						custom_trigger_tooltip = {
+							tooltip = minimal_resistance_level_tt	
+							check_variable = { THIS.resistance = 0 }
+						}
+						is_controlled_by = ROOT
+					}
+					air_base > 0
+				}
+			}
 		}
 
+		selectable_mission = no
+		days_mission_timeout = @THE_TIME_TO_DIE
+		is_good = yes
+
+		cancel_trigger = {
+			custom_trigger_tooltip = {
+				tooltip = undermining_will_be_canceled_tt	
+				any_state = {
+					is_owned_by = ROOT
+					has_state_flag = undermining_the_aviabase_flag
+					OR = {
+						custom_trigger_tooltip = {
+							tooltip = minimal_resistance_level_tt	
+							check_variable = { THIS.resistance = 0 }
+						}
+						is_controlled_by = ROOT
+						air_base < 1
+					}
+				}
+			}
+		}
+		
 		remove_effect = {
-			
+			hidden_effect = {
+				every_state = {
+					limit = { 
+						is_owned_by = ROOT
+						has_state_flag = undermining_the_aviabase_flag 
+					}
+					clr_state_flag = undermining_the_aviabase_flag
+					controller = { remove_mission = contr_undermining_the_aviabase }
+				}
+			}
+		}
+
+		complete_effect = {
+			hidden_effect = {
+				every_state = {
+					limit = { 
+						is_owned_by = ROOT
+						has_state_flag = undermining_the_aviabase_flag 
+					}
+					controller = { remove_mission = contr_undermining_the_aviabase }
+					clr_state_flag = undermining_the_aviabase_flag
+				}
+			}
+		}
+
+		timeout_effect = {
+			custom_effect_tooltip = strike_to_aviabase_tt
+			hidden_effect = {
+				set_country_flag = strike_to_aviabase
+				random_state = {
+					limit = {
+						is_owned_by = ROOT
+						NOT = { is_controlled_by = ROOT }
+						has_state_flag = undermining_the_aviabase_flag
+					}
+					controller = { 
+						GENERAL_STRIKE = yes	
+						remove_mission = contr_undermining_the_aviabase
+					}
+				}
+			}
 		}
 	}
 	
@@ -632,30 +1295,877 @@ resistance_movements = {
 		}
 
 		available = {
-			command_power > 9
+			any_state = {
+				is_owned_by = ROOT
+				NOT = { is_controlled_by = ROOT }
+				custom_trigger_tooltip = {
+					tooltip = necessary_resistance_level_tt	
+					 check_variable = { THIS.resistance > 0.1 }
+				}
+				nuclear_reactor > 0
+			}
 		}
 
-		days_remove = 40
-
+		custom_cost_trigger = {
+			NOT = { command_power < 10 }
+		}
+		custom_cost_text = command_power_texticon
+		
 		cost = 0
 
 		fire_only_once = no
 
 		visible = {
-			has_capitulated = yes
 			has_country_flag = Form_rebel_army
-		}
-
-		modifier = { 
-			
+			NOT = { has_active_mission = resist_undermining_the_nuclear }
+			any_state = {
+				is_owned_by = ROOT
+				NOT = { is_controlled_by = ROOT }
+				nuclear_reactor > 0
+			}
 		}
 
 		complete_effect = {
 			add_command_power = -10
+			hidden_effect = {
+				random_state = {
+					limit = {
+						is_owned_by = ROOT
+						NOT = { is_controlled_by = ROOT }
+						 check_variable = { THIS.resistance > 0.1 }
+						nuclear_reactor > 0
+					}
+					set_state_flag = undermining_the_nuclear_flag
+					# controller = { ITS_TIME_TO_DIE = yes }
+				}
+			}
+			activate_mission = resist_undermining_the_nuclear
+		}
+		
+	}
+	
+	resist_undermining_the_nuclear = {
+
+		allowed = { always = no }
+
+		icon = generic_ignite_civil_war
+
+		available = {
+			custom_trigger_tooltip = {
+				any_state = {
+					is_owned_by = ROOT
+					has_state_flag = undermining_the_nuclear_flag
+					OR = {
+						custom_trigger_tooltip = {
+							tooltip = minimal_resistance_level_tt	
+							check_variable = { THIS.resistance = 0 }
+						}
+						is_controlled_by = ROOT
+					}
+					nuclear_reactor > 0
+				}
+			}
 		}
 
+		selectable_mission = no
+		days_mission_timeout = @THE_TIME_TO_DIE
+		is_good = yes
+
+		cancel_trigger = {
+			custom_trigger_tooltip = {
+				tooltip = undermining_will_be_canceled_tt	
+				any_state = {
+					is_owned_by = ROOT
+					has_state_flag = undermining_the_nuclear_flag
+					OR = {
+						custom_trigger_tooltip = {
+							tooltip = minimal_resistance_level_tt	
+							check_variable = { THIS.resistance = 0 }
+						}
+						is_controlled_by = ROOT
+						nuclear_reactor < 1
+					}
+				}
+			}
+		}
+		
 		remove_effect = {
-			
+			hidden_effect = {
+				every_state = {
+					limit = { 
+						is_owned_by = ROOT
+						has_state_flag = undermining_the_nuclear_flag 
+					}
+					clr_state_flag = undermining_the_nuclear_flag
+					controller = { remove_mission = contr_undermining_the_nuclear }
+				}
+			}
+		}
+
+		complete_effect = {
+			hidden_effect = {
+				every_state = {
+					limit = { 
+						is_owned_by = ROOT
+						has_state_flag = undermining_the_nuclear_flag 
+					}
+					controller = { remove_mission = contr_undermining_the_nuclear }
+					clr_state_flag = undermining_the_nuclear_flag
+				}
+			}
+		}
+
+		timeout_effect = {
+			custom_effect_tooltip = strike_to_nuclear_tt
+			hidden_effect = {
+				set_country_flag = strike_to_nuclear
+				random_state = {
+					limit = {
+						is_owned_by = ROOT
+						NOT = { is_controlled_by = ROOT }
+						has_state_flag = undermining_the_nuclear_flag
+					}
+					controller = { 
+						GENERAL_STRIKE = yes	
+						remove_mission = contr_undermining_the_nuclear
+					}
+				}
+			}
+		}
+	}
+	
+	undermining_the_anti_air_building = {
+		icon = generic_ignite_civil_war
+
+		allowed = {
+			always = yes
+		}
+
+		available = {
+			any_state = {
+				is_owned_by = ROOT
+				NOT = { is_controlled_by = ROOT }
+				custom_trigger_tooltip = {
+					tooltip = necessary_resistance_level_tt	
+					 check_variable = { THIS.resistance > 0.1 }
+				}
+				anti_air_building > 0
+			}
+		}
+
+		custom_cost_trigger = {
+			NOT = { command_power < 10 }
+		}
+		custom_cost_text = command_power_texticon
+		
+		cost = 0
+
+		fire_only_once = no
+
+		visible = {
+			has_country_flag = Form_rebel_army
+			NOT = { has_active_mission = resist_undermining_the_anti_air_building }
+			any_state = {
+				is_owned_by = ROOT
+				NOT = { is_controlled_by = ROOT }
+				anti_air_building > 0
+			}
+		}
+
+		complete_effect = {
+			add_command_power = -10
+			hidden_effect = {
+				random_state = {
+					limit = {
+						is_owned_by = ROOT
+						NOT = { is_controlled_by = ROOT }
+						 check_variable = { THIS.resistance > 0.1 }
+						anti_air_building > 0
+					}
+					set_state_flag = undermining_the_anti_air_building_flag
+					# controller = { ITS_TIME_TO_DIE = yes }
+				}
+			}
+			activate_mission = resist_undermining_the_anti_air_building
+		}
+		
+	}
+	
+	resist_undermining_the_anti_air_building = {
+
+		allowed = { always = no }
+
+		icon = generic_ignite_civil_war
+
+		available = {
+			custom_trigger_tooltip = {
+				any_state = {
+					is_owned_by = ROOT
+					has_state_flag = undermining_the_anti_air_building_flag
+					OR = {
+						custom_trigger_tooltip = {
+							tooltip = minimal_resistance_level_tt	
+							check_variable = { THIS.resistance = 0 }
+						}
+						is_controlled_by = ROOT
+					}
+					anti_air_building > 0
+				}
+			}
+		}
+
+		selectable_mission = no
+		days_mission_timeout = @THE_TIME_TO_DIE
+		is_good = yes
+
+		cancel_trigger = {
+			custom_trigger_tooltip = {
+				tooltip = undermining_will_be_canceled_tt	
+				any_state = {
+					is_owned_by = ROOT
+					has_state_flag = undermining_the_anti_air_building_flag
+					OR = {
+						custom_trigger_tooltip = {
+							tooltip = minimal_resistance_level_tt	
+							check_variable = { THIS.resistance = 0 }
+						}
+						is_controlled_by = ROOT
+						anti_air_building < 1
+					}
+				}
+			}
+		}
+		
+		remove_effect = {
+			hidden_effect = {
+				every_state = {
+					limit = { 
+						is_owned_by = ROOT
+						has_state_flag = undermining_the_anti_air_building_flag 
+					}
+					clr_state_flag = undermining_the_anti_air_building_flag
+					controller = { remove_mission = contr_undermining_the_anti_air_building }
+				}
+			}
+		}
+
+		complete_effect = {
+			hidden_effect = {
+				every_state = {
+					limit = { 
+						is_owned_by = ROOT
+						has_state_flag = undermining_the_anti_air_building_flag 
+					}
+					controller = { remove_mission = contr_undermining_the_anti_air_building }
+					clr_state_flag = undermining_the_anti_air_building_flag
+				}
+			}
+		}
+
+		timeout_effect = {
+			custom_effect_tooltip = strike_to_anti_air_building_tt
+			hidden_effect = {
+				set_country_flag = strike_to_anti_air_building
+				random_state = {
+					limit = {
+						is_owned_by = ROOT
+						NOT = { is_controlled_by = ROOT }
+						has_state_flag = undermining_the_anti_air_building_flag
+					}
+					controller = { 
+						GENERAL_STRIKE = yes	
+						remove_mission = contr_undermining_the_anti_air_building
+					}
+				}
+			}
+		}
+	}
+	
+	undermining_the_synthetic_refinery = {
+		icon = generic_ignite_civil_war
+
+		allowed = {
+			always = yes
+		}
+
+		available = {
+			any_state = {
+				is_owned_by = ROOT
+				NOT = { is_controlled_by = ROOT }
+				custom_trigger_tooltip = {
+					tooltip = necessary_resistance_level_tt	
+					 check_variable = { THIS.resistance > 0.1 }
+				}
+				synthetic_refinery > 0
+			}
+		}
+		
+		custom_cost_trigger = {
+			NOT = { command_power < 10 }
+		}
+		custom_cost_text = command_power_texticon
+		
+		cost = 0
+
+		fire_only_once = no
+
+		visible = {
+			has_country_flag = Form_rebel_army
+			NOT = { has_active_mission = resist_undermining_the_synthetic_refinery }
+			any_state = {
+				is_owned_by = ROOT
+				NOT = { is_controlled_by = ROOT }
+				synthetic_refinery > 0
+			}
+		}
+
+		complete_effect = {
+			add_command_power = -10
+			hidden_effect = {
+				random_state = {
+					limit = {
+						is_owned_by = ROOT
+						NOT = { is_controlled_by = ROOT }
+						 check_variable = { THIS.resistance > 0.1 }
+						synthetic_refinery > 0
+					}
+					set_state_flag = undermining_the_synthetic_refinery_flag
+					# controller = { ITS_TIME_TO_DIE = yes }
+				}
+			}
+			activate_mission = resist_undermining_the_synthetic_refinery
+		}
+		
+	}
+	
+	resist_undermining_the_synthetic_refinery = {
+
+		allowed = { always = no }
+
+		icon = generic_ignite_civil_war
+
+		available = {
+			custom_trigger_tooltip = {
+				any_state = {
+					is_owned_by = ROOT
+					has_state_flag = undermining_the_synthetic_refinery_flag
+					OR = {
+						custom_trigger_tooltip = {
+							tooltip = minimal_resistance_level_tt	
+							check_variable = { THIS.resistance = 0 }
+						}
+						is_controlled_by = ROOT
+					}
+					synthetic_refinery > 0
+				}
+			}
+		}
+
+		selectable_mission = no
+		days_mission_timeout = @THE_TIME_TO_DIE
+		is_good = yes
+
+		cancel_trigger = {
+			custom_trigger_tooltip = {
+				tooltip = undermining_will_be_canceled_tt	
+				any_state = {
+					is_owned_by = ROOT
+					has_state_flag = undermining_the_synthetic_refinery_flag
+					OR = {
+						custom_trigger_tooltip = {
+							tooltip = minimal_resistance_level_tt	
+							check_variable = { THIS.resistance = 0 }
+						}
+						is_controlled_by = ROOT
+						synthetic_refinery < 1
+					}
+				}
+			}
+		}
+		
+		remove_effect = {
+			hidden_effect = {
+				every_state = {
+					limit = { 
+						is_owned_by = ROOT
+						has_state_flag = undermining_the_synthetic_refinery_flag 
+					}
+					clr_state_flag = undermining_the_synthetic_refinery_flag
+					controller = { remove_mission = contr_undermining_the_synthetic_refinery }
+				}
+			}
+		}
+
+		complete_effect = {
+			hidden_effect = {
+				every_state = {
+					limit = { 
+						is_owned_by = ROOT
+						has_state_flag = undermining_the_synthetic_refinery_flag 
+					}
+					controller = { remove_mission = contr_undermining_the_synthetic_refinery }
+					clr_state_flag = undermining_the_synthetic_refinery_flag
+				}
+			}
+		}
+
+		timeout_effect = {
+			custom_effect_tooltip = strike_to_synthetic_refinery_tt
+			hidden_effect = {
+				set_country_flag = strike_to_synthetic_refinery
+				random_state = {
+					limit = {
+						is_owned_by = ROOT
+						NOT = { is_controlled_by = ROOT }
+						has_state_flag = undermining_the_synthetic_refinery_flag
+					}
+					controller = { 
+						GENERAL_STRIKE = yes	
+						remove_mission = contr_undermining_the_synthetic_refinery
+					}
+				}
+			}
+		}
+	}
+	
+	undermining_the_fuel_silo = {
+		icon = generic_ignite_civil_war
+
+		allowed = {
+			always = yes
+		}
+
+		available = {
+			any_state = {
+				is_owned_by = ROOT
+				NOT = { is_controlled_by = ROOT }
+				custom_trigger_tooltip = {
+					tooltip = necessary_resistance_level_tt	
+					 check_variable = { THIS.resistance > 0.1 }
+				}
+				fuel_silo > 0
+			}
+		}
+
+		custom_cost_trigger = {
+			NOT = { command_power < 10 }
+		}
+		custom_cost_text = command_power_texticon
+		
+		cost = 0
+
+		fire_only_once = no
+
+		visible = {
+			has_country_flag = Form_rebel_army
+			NOT = { has_active_mission = resist_undermining_the_fuel_silo }
+			any_state = {
+				is_owned_by = ROOT
+				NOT = { is_controlled_by = ROOT }
+				fuel_silo > 0
+			}
+		}
+
+		complete_effect = {
+			add_command_power = -10
+			hidden_effect = {
+				random_state = {
+					limit = {
+						is_owned_by = ROOT
+						NOT = { is_controlled_by = ROOT }
+						 check_variable = { THIS.resistance > 0.1 }
+						fuel_silo > 0
+					}
+					set_state_flag = undermining_the_fuel_silo_flag
+					# controller = { ITS_TIME_TO_DIE = yes }
+				}
+			}
+			activate_mission = resist_undermining_the_fuel_silo
+		}
+		
+	}
+	
+	resist_undermining_the_fuel_silo = {
+
+		allowed = { always = no }
+
+		icon = generic_ignite_civil_war
+
+		available = {
+			custom_trigger_tooltip = {
+				any_state = {
+					is_owned_by = ROOT
+					has_state_flag = undermining_the_fuel_silo_flag
+					OR = {
+						custom_trigger_tooltip = {
+							tooltip = minimal_resistance_level_tt	
+							check_variable = { THIS.resistance = 0 }
+						}
+						is_controlled_by = ROOT
+					}
+					fuel_silo > 0
+				}
+			}
+		}
+
+		selectable_mission = no
+		days_mission_timeout = @THE_TIME_TO_DIE
+		is_good = yes
+
+		cancel_trigger = {
+			custom_trigger_tooltip = {
+				tooltip = undermining_will_be_canceled_tt	
+				any_state = {
+					is_owned_by = ROOT
+					has_state_flag = undermining_the_fuel_silo_flag
+					OR = {
+						custom_trigger_tooltip = {
+							tooltip = minimal_resistance_level_tt	
+							check_variable = { THIS.resistance = 0 }
+						}
+						is_controlled_by = ROOT
+						fuel_silo < 1
+					}
+				}
+			}
+		}
+		
+		remove_effect = {
+			hidden_effect = {
+				every_state = {
+					limit = { 
+						is_owned_by = ROOT
+						has_state_flag = undermining_the_fuel_silo_flag 
+					}
+					clr_state_flag = undermining_the_fuel_silo_flag
+					controller = { remove_mission = contr_undermining_the_fuel_silo }
+				}
+			}
+		}
+
+		complete_effect = {
+			hidden_effect = {
+				every_state = {
+					limit = { 
+						is_owned_by = ROOT
+						has_state_flag = undermining_the_fuel_silo_flag 
+					}
+					controller = { remove_mission = contr_undermining_the_fuel_silo }
+					clr_state_flag = undermining_the_fuel_silo_flag
+				}
+			}
+		}
+
+		timeout_effect = {
+			custom_effect_tooltip = strike_to_fuel_silo_tt
+			hidden_effect = {
+				set_country_flag = strike_to_fuel_silo
+				random_state = {
+					limit = {
+						is_owned_by = ROOT
+						NOT = { is_controlled_by = ROOT }
+						has_state_flag = undermining_the_fuel_silo_flag
+					}
+					controller = { 
+						GENERAL_STRIKE = yes	
+						remove_mission = contr_undermining_the_fuel_silo
+					}
+				}
+			}
+		}
+	}
+	
+	undermining_the_radar_station = {
+		icon = generic_ignite_civil_war
+
+		allowed = {
+			always = yes
+		}
+
+		available = {
+			any_state = {
+				is_owned_by = ROOT
+				NOT = { is_controlled_by = ROOT }
+				custom_trigger_tooltip = {
+					tooltip = necessary_resistance_level_tt	
+					 check_variable = { THIS.resistance > 0.1 }
+				}
+				radar_station > 0
+			}
+		}
+		
+		custom_cost_trigger = {
+			NOT = { command_power < 10 }
+		}
+		custom_cost_text = command_power_texticon
+		
+		cost = 0
+
+		fire_only_once = no
+
+		visible = {
+			has_country_flag = Form_rebel_army
+			NOT = { has_active_mission = resist_undermining_the_radar_station }
+			any_state = {
+				is_owned_by = ROOT
+				NOT = { is_controlled_by = ROOT }
+				radar_station > 0
+			}
+		}
+
+		complete_effect = {
+			add_command_power = -10
+			hidden_effect = {
+				random_state = {
+					limit = {
+						is_owned_by = ROOT
+						NOT = { is_controlled_by = ROOT }
+						 check_variable = { THIS.resistance > 0.1 }
+						radar_station > 0
+					}
+					set_state_flag = undermining_the_radar_station_flag
+					# controller = { ITS_TIME_TO_DIE = yes }
+				}
+			}
+			activate_mission = resist_undermining_the_radar_station
+		}
+		
+	}
+	
+	resist_undermining_the_radar_station = {
+
+		allowed = { always = no }
+
+		icon = generic_ignite_civil_war
+
+		available = {
+			custom_trigger_tooltip = {
+				any_state = {
+					is_owned_by = ROOT
+					has_state_flag = undermining_the_radar_station_flag
+					OR = {
+						custom_trigger_tooltip = {
+							tooltip = minimal_resistance_level_tt	
+							check_variable = { THIS.resistance = 0 }
+						}
+						is_controlled_by = ROOT
+					}
+					radar_station > 0
+				}
+			}
+		}
+
+		selectable_mission = no
+		days_mission_timeout = @THE_TIME_TO_DIE
+		is_good = yes
+
+		cancel_trigger = {
+			custom_trigger_tooltip = {
+				tooltip = undermining_will_be_canceled_tt	
+				any_state = {
+					is_owned_by = ROOT
+					has_state_flag = undermining_the_radar_station_flag
+					OR = {
+						custom_trigger_tooltip = {
+							tooltip = minimal_resistance_level_tt	
+							check_variable = { THIS.resistance = 0 }
+						}
+						is_controlled_by = ROOT
+						radar_station < 1
+					}
+				}
+			}
+		}
+		
+		remove_effect = {
+			hidden_effect = {
+				every_state = {
+					limit = { 
+						is_owned_by = ROOT
+						has_state_flag = undermining_the_radar_station_flag 
+					}
+					clr_state_flag = undermining_the_radar_station_flag
+					controller = { remove_mission = contr_undermining_the_radar_station }
+				}
+			}
+		}
+
+		complete_effect = {
+			hidden_effect = {
+				every_state = {
+					limit = { 
+						is_owned_by = ROOT
+						has_state_flag = undermining_the_radar_station_flag 
+					}
+					controller = { remove_mission = contr_undermining_the_radar_station }
+					clr_state_flag = undermining_the_radar_station_flag
+				}
+			}
+		}
+
+		timeout_effect = {
+			custom_effect_tooltip = strike_to_radar_station_tt
+			hidden_effect = {
+				set_country_flag = strike_to_radar_station
+				random_state = {
+					limit = {
+						is_owned_by = ROOT
+						NOT = { is_controlled_by = ROOT }
+						has_state_flag = undermining_the_radar_station_flag
+					}
+					controller = { 
+						GENERAL_STRIKE = yes	
+						remove_mission = contr_undermining_the_radar_station
+					}
+				}
+			}
+		}
+	}
+	
+	undermining_the_rocket_site = {
+		icon = generic_ignite_civil_war
+
+		allowed = {
+			always = yes
+		}
+
+		available = {
+			any_state = {
+				is_owned_by = ROOT
+				NOT = { is_controlled_by = ROOT }
+				custom_trigger_tooltip = {
+					tooltip = necessary_resistance_level_tt	
+					 check_variable = { THIS.resistance > 0.1 }
+				}
+				rocket_site > 0
+			}
+		}
+
+		custom_cost_trigger = {
+			NOT = { command_power < 10 }
+		}
+		custom_cost_text = command_power_texticon
+		
+		cost = 0
+
+		fire_only_once = no
+
+		visible = {
+			has_country_flag = Form_rebel_army
+			NOT = { has_active_mission = resist_undermining_the_rocket_site }
+			any_state = {
+				is_owned_by = ROOT
+				NOT = { is_controlled_by = ROOT }
+				rocket_site > 0
+			}
+		}
+
+		complete_effect = {
+			add_command_power = -10
+			hidden_effect = {
+				random_state = {
+					limit = {
+						is_owned_by = ROOT
+						NOT = { is_controlled_by = ROOT }
+						 check_variable = { THIS.resistance > 0.1 }
+						rocket_site > 0
+					}
+					set_state_flag = undermining_the_rocket_site_flag
+					# controller = { ITS_TIME_TO_DIE = yes }
+				}
+			}
+			activate_mission = resist_undermining_the_rocket_site
+		}
+		
+	}
+	
+	resist_undermining_the_rocket_site = {
+
+		allowed = { always = no }
+
+		icon = generic_ignite_civil_war
+
+		available = {
+			custom_trigger_tooltip = {
+				any_state = {
+					is_owned_by = ROOT
+					has_state_flag = undermining_the_rocket_site_flag
+					OR = {
+						custom_trigger_tooltip = {
+							tooltip = minimal_resistance_level_tt	
+							check_variable = { THIS.resistance = 0 }
+						}
+						is_controlled_by = ROOT
+					}
+					rocket_site > 0
+				}
+			}
+		}
+
+		selectable_mission = no
+		days_mission_timeout = @THE_TIME_TO_DIE
+		is_good = yes
+
+		cancel_trigger = {
+			custom_trigger_tooltip = {
+				tooltip = undermining_will_be_canceled_tt	
+				any_state = {
+					is_owned_by = ROOT
+					has_state_flag = undermining_the_rocket_site_flag
+					OR = {
+						custom_trigger_tooltip = {
+							tooltip = minimal_resistance_level_tt	
+							check_variable = { THIS.resistance = 0 }
+						}
+						is_controlled_by = ROOT
+						rocket_site < 1
+					}
+				}
+			}
+		}
+		
+		remove_effect = {
+			hidden_effect = {
+				every_state = {
+					limit = { 
+						is_owned_by = ROOT
+						has_state_flag = undermining_the_rocket_site_flag 
+					}
+					clr_state_flag = undermining_the_rocket_site_flag
+					controller = { remove_mission = contr_undermining_the_rocket_site }
+				}
+			}
+		}
+
+		complete_effect = {
+			hidden_effect = {
+				every_state = {
+					limit = { 
+						is_owned_by = ROOT
+						has_state_flag = undermining_the_rocket_site_flag 
+					}
+					controller = { remove_mission = contr_undermining_the_rocket_site }
+					clr_state_flag = undermining_the_rocket_site_flag
+				}
+			}
+		}
+
+		timeout_effect = {
+			custom_effect_tooltip = strike_to_rocket_site_tt
+			hidden_effect = {
+				set_country_flag = strike_to_rocket_site
+				random_state = {
+					limit = {
+						is_owned_by = ROOT
+						NOT = { is_controlled_by = ROOT }
+						has_state_flag = undermining_the_rocket_site_flag
+					}
+					controller = { 
+						GENERAL_STRIKE = yes	
+						remove_mission = contr_undermining_the_rocket_site
+					}
+				}
+			}
 		}
 	}
 	
@@ -667,7 +2177,7 @@ resistance_movements = {
 		}
 
 		available = {
-			command_power > 9
+			NOT = { command_power < 10 }
 		}
 
 		days_remove = 40
@@ -677,8 +2187,12 @@ resistance_movements = {
 		fire_only_once = no
 
 		visible = {
-			has_capitulated = yes
 			has_country_flag = Form_rebel_army
+			any_state = {
+				is_core_of = ROOT
+				is_owned_by = ROOT
+				NOT = { is_controlled_by = ROOT }
+			}
 		}
 
 		modifier = { 
@@ -702,7 +2216,7 @@ resistance_movements = {
 		}
 
 		available = {
-			command_power > 9
+			NOT = { command_power < 10 }
 		}
 
 		days_remove = 40
@@ -712,8 +2226,12 @@ resistance_movements = {
 		fire_only_once = no
 
 		visible = {
-			has_capitulated = yes
 			has_country_flag = Form_rebel_army
+			any_state = {
+				is_core_of = ROOT
+				is_owned_by = ROOT
+				NOT = { is_controlled_by = ROOT }
+			}
 		}
 
 		modifier = { 
@@ -726,6 +2244,211 @@ resistance_movements = {
 
 		remove_effect = {
 			
+		}
+	}
+	
+	reserve_division = {
+
+		icon = generic_prepare_civil_war
+
+		allowed = {
+			always = yes
+		}
+
+		available = {
+			custom_trigger_tooltip = {
+				tooltip = reserve_division_tt	
+				check_variable = { rebel_infantry_equipment@ROOT > 609 } 
+				check_variable = { rebel_support_equipment@ROOT > 29 } 
+				check_variable = { rebel_artillery_equipment@ROOT > 11 } 
+				check_variable = { rebel_manpower@ROOT > 6599 } 
+			}
+		}
+
+		cost = 0
+
+		fire_only_once = no
+
+		visible = {
+			has_country_flag = Form_rebel_army
+			any_state = {
+				is_core_of = ROOT
+				is_owned_by = ROOT
+				NOT = { is_controlled_by = ROOT }
+			}
+		}
+
+		complete_effect = {
+			add_to_variable = { var = rebel_infantry_equipment@ROOT value = -610 }
+			add_to_variable = { var = rebel_support_equipment@ROOT value = -30 }
+			add_to_variable = { var = rebel_artillery_equipment@ROOT value = -12 }
+			add_to_variable = { var = rebel_manpower@ROOT value = -6600 }
+			
+			add_to_variable = { var = num_division@ROOT value = 1 }
+		}
+	}
+	
+	reserve_small_division = {
+
+		icon = generic_prepare_civil_war
+
+		allowed = {
+			always = yes
+		}
+
+		available = {
+			custom_trigger_tooltip = {
+				tooltip = reserve_small_division_tt	
+				check_variable = { rebel_infantry_equipment@ROOT > 399 }
+				check_variable = { rebel_manpower@ROOT > 3999 } 
+			}
+		}
+
+		cost = 0
+
+		fire_only_once = no
+
+		visible = {
+			has_country_flag = Form_rebel_army
+			any_state = {
+				is_core_of = ROOT
+				is_owned_by = ROOT
+				NOT = { is_controlled_by = ROOT }
+			}
+		}
+
+		complete_effect = {
+			add_to_variable = { var = rebel_infantry_equipment@ROOT value = -400 }
+			add_to_variable = { var = rebel_manpower@ROOT value = -4000 }
+			
+			add_to_variable = { var = num_small_division@ROOT value = 1 }
+		}
+	}
+	
+	the_return_home = {
+
+		icon = generic_prepare_civil_war
+
+		allowed = {
+			always = yes
+		}
+
+		available = {
+			NOT = {
+				any_state = {
+					is_core_of = ROOT
+					is_owned_by = ROOT
+					NOT = { is_controlled_by = ROOT }
+				}
+			}
+		}
+
+		cost = 0
+
+		fire_only_once = no
+
+		visible = {
+			has_country_flag = Form_rebel_army
+			has_capitulated = no
+		}
+
+		complete_effect = {
+			if = {
+				limit = {
+					original_tag = POL
+					has_global_flag = POL_powstanie_warszawskie
+				}
+				set_country_flag = dayVinWarszawa
+			}
+			hidden_effect = {
+				if = {
+					limit = { check_variable = { num_division@ROOT > 0 } }
+					country_event = { id = resistance.5 }
+				}
+				if = {
+					limit = { check_variable = { num_small_division@ROOT > 0 } }
+					country_event = { id = resistance.6 }
+				}
+			}
+			add_equipment_to_stockpile = {
+				type = infantry_equipment
+				amount = rebel_infantry_equipment@ROOT
+			}
+			set_variable = { var = rebel_infantry_equipment@ROOT value = 0 }
+			add_equipment_to_stockpile = {
+				type = infantry_equipment
+				amount = rebel_support_equipment@ROOT
+			}
+			set_variable = { var = rebel_support_equipment@ROOT value = 0 }
+			add_equipment_to_stockpile = {
+				type = infantry_equipment
+				amount = rebel_artillery_equipment@ROOT
+			}
+			set_variable = { var = rebel_artillery_equipment@ROOT value = 0 }
+			add_manpower = rebel_manpower@ROOT
+			set_variable = { var = rebel_manpower@ROOT value = 0 }
+			
+			custom_effect_tooltip = disbanding_divisions_tt
+			hidden_effect = {
+				random_army_leader = {
+					limit = { has_trait = resistance_leader }
+					remove_unit_leader_trait = resistance_leader
+				}
+				if = {
+					limit = { has_idea = resistance_defficulty_0 }
+					remove_ideas = resistance_defficulty_0
+				}
+				if = {
+					limit = { has_idea = resistance_defficulty_1 }
+					remove_ideas = resistance_defficulty_1
+				}
+				if = {
+					limit = { has_idea = resistance_failed }
+					remove_ideas = resistance_failed
+				}
+				if = {
+					limit = { has_idea = resistance_failed }
+					remove_ideas = resistance_failed
+				}
+				clr_country_flag = Form_rebel_army
+				
+				if = {
+					limit = { has_template = "Dywizja Armii Krajowej" }
+					set_division_template_lock = { division_template = "Dywizja Armii Krajowej" is_locked = no }
+				}
+				if = {
+					limit = { has_template = "Lekka Dywizja Armii Krajowej" }
+					set_division_template_lock = { division_template = "Lekka Dywizja Armii Krajowej" is_locked = no }
+				}
+				if = {
+					limit = { has_template = "Dywizja Armii Ludowej" }
+					set_division_template_lock = { division_template = "Dywizja Armii Ludowej" is_locked = no }
+				}
+				if = {
+					limit = { has_template = "Lekka Dywizja Armii Ludowej" }
+					set_division_template_lock = { division_template = "Lekka Dywizja Armii Ludowej" is_locked = no }
+				}
+				if = {
+					limit = { has_template = "Rebel Division" }
+					set_division_template_lock = { division_template = "Rebel Division" is_locked = no }
+				}
+				if = {
+					limit = { has_template = "Light Rebel Division" }
+					set_division_template_lock = { division_template = "Light Rebel Division" is_locked = no }
+				}
+				every_state = {
+					limit = {
+						has_state_flag = general_resistance
+						is_owned_by = ROOT
+					}
+					clr_state_flag = general_resistance
+				}
+				if = {
+					limit = { original_tag = POL }
+					news_event = { id = news.1945 days = 1 }
+				}
+			}
+			add_political_power = 120
 		}
 	}
 }
@@ -1055,6 +2778,9 @@ country_in_exiled_dec = {
 					custom_effect_tooltip = bedzie_dodano_pewny_manpower_tt
 				}
 			}
+			hidden_effect = {
+				add_manpower = add_mans_weekly@ROOT
+			}
 		}
 
 	}
@@ -1126,6 +2852,123 @@ country_in_exiled_dec = {
 					}
 				}
 			}
+		}
+	}
+}
+
+political_actions = {
+	crush_warszawa = {
+
+		allowed = {
+			always = yes
+		}
+
+		available = {
+			OR = {
+				has_government = fascism
+				has_government = communism
+				has_government = trozkism
+			}
+			divisions_in_state = {
+				size > 0
+				state = 10
+			}
+			10 = { infrastructure > 2 }
+		}
+		
+		fire_only_once = no
+		
+		days_remove = 7
+		
+		cost = 0
+		
+		visible = {
+			has_country_flag = prawo_msci
+			NOT = { owns_state = 10 }
+			controls_state = 10
+			NOT = { has_government = democratic }
+		}
+		
+		cancel_trigger = {
+			OR = {
+				owns_state = 10
+				NOT = { controls_state = 10 }
+				NOT = { has_country_flag = prawo_msci }
+			}
+		}
+		
+		remove_effect = {
+			10 = {
+				remove_building = {
+					type = infrastructure
+					level = 2
+				}
+				add_manpower = -68000
+			}
+			if = {
+				limit = { infrastructure < 4 }
+				set_province_name = { id = 3544 name = THE_FALLEN_WARSZAWA }
+				10 = { set_state_flag = fallen_city set_state_category = rural }
+			}
+		}
+
+		ai_will_do = {
+			factor = 10
+		}
+	}
+	
+	rebuild_warszawa = {
+
+		allowed = {
+			original_tag = POL
+		}
+		
+		fire_only_once = no
+		
+		days_remove = 210
+		
+		cost = 0
+		
+		visible = {
+			10 = { 
+				has_state_flag = fallen_city 
+				is_owned_and_controlled_by = ROOT
+			}
+			num_of_civilian_factories > 2
+		}
+		
+		modifier = {
+			civilian_factory_use = 3
+		}
+		
+		cancel_trigger = {
+			10 = { 
+				NOT = { has_state_flag = fallen_city }
+				NOT = { is_owned_and_controlled_by = ROOT }
+			}
+			NOT = { num_of_civilian_factories > 2 }
+		}
+		
+		complete_effect = {
+			hidden_effect = { set_country_flag = POL_active_decision }
+		}
+		
+		remove_effect = {
+			10 = {
+				set_building_level = {
+					type = infrastructure
+					level = 8
+					instant_build = yes
+				}
+				clr_state_flag = fallen_city
+				set_state_category = large_city
+			}
+			reset_province_name = 3544
+			clr_country_flag = POL_active_decision
+		}
+
+		ai_will_do = {
+			factor = 1000
 		}
 	}
 }
