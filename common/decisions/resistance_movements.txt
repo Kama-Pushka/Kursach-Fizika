@@ -170,12 +170,14 @@ resistance_movements = {
 						}
 					}
 				}
-				every_state = {
-					limit = { is_owned_by = ROOT NOT = { is_controlled_by = ROOT } controller = { NOT = { has_country_flag = reb_received_notification} } }
-					controller = { 
-						set_country_flag = reb_received_notification 
-						country_event = { id = resistance.1 }
+				every_country = {
+					limit = {
+						any_state = {
+							is_owned_by = ROOT 
+							is_controlled_by = PREV
+						}
 					}
+					country_event = { id = resistance.1 }
 				}
 				if = {
 					limit = { difficulty < 1 }
@@ -493,11 +495,23 @@ resistance_movements = {
 
 		icon = generic_ignite_civil_war
 
-		allowed = {
-			always = yes
+		available = {
+			any_state = {
+				is_owned_by = ROOT
+				NOT = { is_controlled_by = ROOT }
+			}
 		}
-
-		days_remove = 40
+		
+		cancel_trigger = {
+			NOT = {
+				any_state = {
+					is_owned_by = ROOT
+					NOT = { is_controlled_by = ROOT }
+				}
+			}
+		}
+		
+		days_remove = 60
 
 		custom_cost_trigger = {
 			NOT = { command_power < 10 }
@@ -507,12 +521,7 @@ resistance_movements = {
 		fire_only_once = no
 
 		visible = {
-			has_capitulated = yes
 			has_country_flag = Form_rebel_army
-		}
-
-		modifier = { 
-			
 		}
 
 		complete_effect = {
@@ -520,7 +529,18 @@ resistance_movements = {
 		}
 
 		remove_effect = {
-			
+			custom_effect_tooltip = attack_on_an_enemy_officer_tt
+			hidden_effect = {
+				random_country = {
+					limit = {
+						any_state = {
+							is_owned_by = ROOT 
+							is_controlled_by = PREV
+						}
+					}
+					country_event = { id = resistance.13 }
+				}
+			}
 		}
 	}
 	
@@ -2178,6 +2198,7 @@ resistance_movements = {
 
 		available = {
 			NOT = { command_power < 10 }
+			has_country_flag = dont_worry_be_happy
 		}
 
 		days_remove = 40
@@ -2235,8 +2256,9 @@ resistance_movements = {
 
 		custom_cost_trigger = {
 			NOT = { command_power < 10 }
+			NOT = { has_air_experience < 10 }
 		}
-		custom_cost_text = command_power_texticon
+		custom_cost_text = avia_command_power_texticon
 
 		fire_only_once = no
 
@@ -2257,6 +2279,7 @@ resistance_movements = {
 
 		complete_effect = {
 			add_command_power = -10
+			air_experience = -10
 		}
 
 		remove_effect = {
@@ -2898,7 +2921,7 @@ country_in_exiled_dec = {
 
 		cost = 50
 
-		fire_only_once = no
+		fire_only_once = yes
 
 		visible = {
 			has_country_flag = Form_rebel_army
