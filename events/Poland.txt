@@ -705,4 +705,169 @@ country_event = {
 #                                    |___/                                               |_|                        
 #
 
-# Coming soon
+# Coming soon v0.2-0.3
+
+######## FLAVOR
+# Падеревский умирает
+country_event = {
+	id = poland.flavor.1
+	title = poland.flavor.1.t
+	desc = { text = poland.flavor.1.d trigger = { date > 1944.07.25 } }
+	desc = { text = poland.flavor.1.cw trigger = { has_country_flag = POL_communism_civil_war has_civil_war = yes } }
+	desc = { text = poland.flavor.1.ex trigger = { is_government_in_exile = yes } }
+	picture = GFX_report_event_polish_tanks_01
+	
+	trigger = {
+		original_tag = POL
+		OR = {
+			AND = { 
+				has_country_flag = POL_communism_civil_war 
+				has_civil_war = yes
+			}
+			AND = { 
+				date > 1941.06.10
+				is_government_in_exile = yes
+			}
+			date > 1944.07.25
+		}
+		NOT = { has_country_flag = POL_paderewski_dead }
+	}
+
+	mean_time_to_happen = {
+		days = 60
+	}
+
+	fire_only_once = yes
+
+	immediate = { log = "[GetDateText]: [Root.GetName]: event poland.flavor.1" }
+	
+	option = { # 
+		name = poland.flavor.1.a
+		
+		set_country_flag = POL_paderewski_dead
+		if = {
+			limit = {
+				has_country_leader = { id = 19799 }
+			}
+			kill_country_leader = yes
+		}
+	}
+}
+
+# День независимости
+country_event = {
+	id = poland.flavor.2
+	title = poland.flavor.2.t
+	desc = { text = poland.flavor.2.d trigger = { has_capitulated = no } }
+	desc = { text = poland.flavor.2.dcap trigger = { has_capitulated = yes } }
+	picture = GFX_report_event_polish_tanks_01
+	
+	is_triggered_only = yes
+
+	immediate = { 
+		log = "[GetDateText]: [Root.GetName]: event poland.flavor.2" 
+		hidden_effect = {
+			if = {
+				limit = { has_capitulated = no }
+				sound_effect = polish_anthem
+			}
+		}
+	}
+	
+	option = { # 
+		name = poland.flavor.2.a
+		
+		if = {
+			limit = { has_capitulated = no }
+			add_political_power = 20
+			else = { add_political_power = 50 }
+		}
+		hidden_effect = { country_event = { id = poland.flavor.2 days = 365 } }
+	}
+}
+
+# Коронация Саски
+country_event = {
+	id = poland.flavor.3
+	title = poland.flavor.3.t
+	desc = { text = poland.flavor.3.d }
+	picture = GFX_report_event_polish_tanks_01
+	
+	is_triggered_only = yes
+
+	immediate = { log = "[GetDateText]: [Root.GetName]: event poland.flavor.3" }
+	
+	option = { # 
+		name = poland.flavor.3.a
+		
+		hidden_effect = {
+			if = {
+				limit = { has_country_leader = { id = 19884 } }
+				retire_country_leader = yes
+			}
+		}
+		
+		add_autonomy_ratio = { value = -0.1 localization = POL_crown_saxon_prince }
+		create_country_leader = {
+			name = "Fryderyk Krystian Saski"
+			desc = "POLITICS_FRYDERYK_KRYSTIAN_SASKI_DESC"
+			picture = "gfx/leaders/POL/Portrait_Friedrich_Christian_von_Wettin.tga"
+			expire = "1965.1.1"
+			ideology = monarchy_ideology
+			id = 19883
+			traits = {
+				
+			}
+		}
+	}
+}
+
+# Коронация Габсбурга
+country_event = {
+	id = poland.flavor.4
+	title = poland.flavor.4.t
+	desc = { text = poland.flavor.4.d trigger = { NOT = { date < 1939.01.01 } } }
+	desc = { text = poland.flavor.4.dson trigger = { date < 1939.01.01 } }
+	picture = GFX_report_event_polish_tanks_01
+	
+	is_triggered_only = yes
+
+	immediate = { log = "[GetDateText]: [Root.GetName]: event poland.flavor.4" }
+	
+	option = { # 
+		name = poland.flavor.4.a
+		
+		hidden_effect = {
+			if = {
+				limit = { has_country_leader = { id = 19883 } }
+				retire_country_leader = yes
+			}
+		}
+		
+		add_autonomy_ratio = { value = -0.1 localization = POL_crown_habsburg_prince }
+		create_country_leader = {
+			name = "Karol Olbracht Habsburg-Lothringen"
+			desc = "POLITICS_KAROL_OLBRACHT_HABSBURG_DESC"
+			picture = "gfx/leaders/POL/Portrait_Olbracht_von_Habsburg.tga"
+			expire = "1965.1.1"
+			ideology = monarchy_ideology
+			id = 19884
+			traits = {
+				
+			}
+		}
+		if = {
+			limit = { date < 1939.01.01 }
+			create_corps_commander = {
+				name = "Leon Karol Habsburg-Lotaryński"
+				picture = "gfx/leaders/POL/Portrait_Leon_Karol_Lotarynski.dds"
+				traits = { media_personality brilliant_strategist career_officer }
+				skill = 1
+				attack_skill = 1
+				defense_skill = 2
+				planning_skill = 2
+				logistics_skill = 2
+			}
+		}
+	}
+}
