@@ -1,12 +1,14 @@
-﻿add_namespace = portugal
+﻿add_namespace = NW_portugal
 
 #моряки
 country_event = {
-	id = portugal.0
-	title = portugal.0.t
-	desc = portugal.0.d
+	id = NW_portugal.0
+	title = NW_portugal.0.t
+	desc = NW_portugal.0.d
 	picture = GFX_report_event_usa_british_sailors_destroyers
 	fire_only_once = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName]: event NW_portugal.0" }
 	
 	trigger = { 
 		OR = {	
@@ -21,7 +23,7 @@ country_event = {
 		}
 	}
 	option = {
-		name = portugal.0.a
+		name = NW_portugal.0.a
 		ai_chance = {
 			factor = 1
 			modifier = {
@@ -29,42 +31,46 @@ country_event = {
 				is_historical_focus_on = yes
 			}
 		}
-		unlock_national_focus = POR_prison_kabo_verde
-		if = { limit = { date > 1937.6.3 } country_event = { id = portugal.1 days = 1 } }
+		if = { limit = { date > 1937.6.3 } country_event = { id = NW_portugal.1 days = 1 } }
 	}
 	option = {
-		name = portugal.0.b
-		unlock_national_focus = POR_prison_kabo_verde
+		name = NW_portugal.0.b
 		add_stability = 0.02
 		add_war_support = 0.02
 		add_popularity = {
 			ideology = communism
 			popularity = 0.04
 		}
-		if = { limit = { date > 1937.6.3 } country_event = { id = portugal.2 days = 1 } }
+		if = { limit = { date > 1937.6.3 } country_event = { id = NW_portugal.2 days = 1 } }
 	}
 }
+
 country_event = { #покушение на салазара не удалось
-	id = portugal.1
-	title = portugal.1.t
-	desc = portugal.1.d
+	id = NW_portugal.1
+	title = NW_portugal.1.t
+	desc = NW_portugal.1.d
 	picture = GFX_report_event_hungary_refused
+	
+	immediate = { log = "[GetDateText]: [Root.GetName]: event NW_portugal.1" }
 	
 	is_triggered_only = yes
 	option = {
-		name = portugal.1.a
+		name = NW_portugal.1.a
 		add_war_support = 0.02
 	}
 }
+
 country_event = { #однако удалось
-	id = portugal.2
-	title = portugal.2.t
-	desc = portugal.2.d
+	id = NW_portugal.2
+	title = NW_portugal.2.t
+	desc = NW_portugal.2.d
 	picture = GFX_report_event_europe_funeral
-	
 	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName]: event NW_portugal.2" }
+	
 	option = {
-		name = portugal.3.a
+		name = NW_portugal.2.a
 		add_stability = -0.2
 		add_war_support = -0.2
 		add_popularity = {
@@ -80,60 +86,105 @@ country_event = { #однако удалось
 			ideology = authoritarian_democracy
 			traits = { }
 		}
-		unlock_national_focus = POR_return_for_strongest_gov
-		if = { limit = { has_completed_focus = POR_portugal_legion } country_event = { id = portugal.3 days = 10 } }
-		if = { limit = { NOT = { has_completed_focus = POR_portugal_legion } } country_event = { id = portugal.4 days = 10 } }
+		complete_national_focus = POR_return_for_strongest_gov
 	}
 }
 country_event = { #коммунисты восстают
-	id = portugal.3
-	title = portugal.3.t
-	desc = portugal.3.d
+	id = NW_portugal.3
+	title = NW_portugal.3.t
+	desc = NW_portugal.3.d
 	picture = GFX_report_event_generic_riot
 	
-	is_triggered_only = yes
+	trigger = {
+		NOT = { 
+			has_country_leader = {
+				name = "António de Oliveira Salazar"
+				ruling_only = yes
+			}
+		}
+		has_completed_focus = POR_rebirth_of_catolic_centre
+	}
+	
+	immediate = { log = "[GetDateText]: [Root.GetName]: event NW_portugal.3" }
+	
 	option = {
-		name = portugal.3.a
+		name = NW_portugal.3.a
+		add_stability = -0.10
 		set_politics = {
 			ruling_party = communism
 		}
-		add_popularity = { ideology = communism popularity = 0.1 }
-	}
-	option = {
-		name = portugal.3.b
+		add_popularity = { ideology = communism popularity = 0.2 }
+		complete_national_focus = POR_politic_anticrelicarism
 		start_civil_war = {
-			ideology = communism
+			ideology = monarchy
+			size = 0.45
 		}
 	}
+	option = {
+		name = NW_portugal.3.b
+		add_stability = -0.15
+		if = { limit = { has_completed_focus = POR_portugal_legion } start_civil_war = { ideology = communism size = 0.6 } }
+		if = { limit = { NOT = { has_completed_focus = POR_portugal_legion } } start_civil_war = { ideology = communism } }
+	}
 }
-country_event = { #коммунисты восстают2
-	id = portugal.4
-	title = portugal.4.t
-	desc = portugal.4.d
-	picture = GFX_report_event_generic_riot
-	
+
+#Португалия предлагает обсудить статус Оливенсы // Фокус «Решить вопрос с Оливенсой»
+country_event = {
+	id = NW_portugal.4
+	title = NW_portugal.4.t
+	desc = NW_portugal.4.desc
+	picture = GFX_report_event_generic_conference
 	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName]: event NW_portugal.4" }
+	
 	option = {
-		name = portugal.4.a
-		add_stability = -0.05
-	}
-	option = {
-		name = portugal.4.b
-		start_civil_war = {
-			ideology = communism
+		name = NW_portugal.4.a
+		ai_chance = {
+			factor = 10
+		}
+		
+		FROM = { transfer_state = 1040 }
+		1040 = {
+			remove_core_of = ROOT
+			add_core_of = FROM
 		}
 	}
+	
+	option = {
+		name = NW_portugal.4.b
+		ai_chance = {
+			factor = 50
+		}
+		trigger = { NOT = { has_government = anarchism } }
+		
+		add_opinion_modifier = { target = FROM modifier = diplomatic_affront }
+		FROM = { add_opinion_modifier = { target = ROOT modifier = diplomatic_affront } }
+		FROM = { country_event = { id = NW_portugal.19 } }
+	}
+	
+	option = {
+		name = NW_portugal.4.c
+		ai_chance = {
+			factor = 25
+		}
+		trigger = { NOT = { has_government = anarchism } }
+		FROM = { country_event = { id = NW_portugal.20 } }
+	}
 }
+
 country_event = { #мануэль и стронники
-	id = portugal.5
-	title = portugal.5.t
-	desc = portugal.5.d
+	id = NW_portugal.5
+	title = NW_portugal.5.t
+	desc = NW_portugal.5.d
 	picture = GFX_report_event_german_politician_speech
 	fire_only_once = yes
 	
+	immediate = { log = "[GetDateText]: [Root.GetName]: event NW_portugal.5" }
+	
 	trigger = { focus_progress = { focus = POR_politic_anticrelicarism progress > 0.1 } }
 	option = {
-		name = portugal.5.a
+		name = NW_portugal.5.a
 		create_country_leader = {
 			name = "Manuel Gonçalves Cerejeira"
 			desc = "POLITICS_Manuel_Goncalves_Cerejeira_DESC"
@@ -152,137 +203,161 @@ country_event = { #мануэль и стронники
 		}
 	}
 	option = {
-		name = portugal.5.b
+		name = NW_portugal.5.b
 		add_stability = -0.1
 		start_civil_war = { ideology = communism }
 	}
 }
 country_event = { #ибериский союз событие
-	id = portugal.6
-	title = portugal.6.t
-	desc = portugal.6.d
+	id = NW_portugal.6
+	title = NW_portugal.6.t
+	desc = NW_portugal.6.d
 	picture = GFX_report_event_poland_rejects
 	
 	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName]: event NW_portugal.6" }
+	
 	option = {
-		name = portugal.6.a
+		name = NW_portugal.6.a
 		give_guarantee = POR
 		POR = { give_guarantee = ROOT }
 	}
 	option = {
-		name = portugal.6.b
+		name = NW_portugal.6.b
 		POR = { add_opinion_modifier = { target = ROOT modifier = POR_spa_union_deagree } }
 	}
 }
 country_event = { #ибериский союз фокус
-	id = portugal.7
-	title = portugal.7.t
-	desc = portugal.7.d
+	id = NW_portugal.7
+	title = NW_portugal.7.t
+	desc = NW_portugal.7.d
 	picture = GFX_report_event_poland_rejects
 	
 	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName]: event NW_portugal.7" }
+	
 	option = {
-		name = portugal.7.a
+		name = NW_portugal.7.a
 		POR = { create_faction = por_iberian_union }
 		POR = { add_to_faction = SPA }
 	}
 	option = {
-		name = portugal.7.b
+		name = NW_portugal.7.b
 		POR = { add_opinion_modifier = { target = ROOT modifier = POR_spa_union_deagree } }
 	}
 }
 country_event = { #ибериский союз коммунаров
-	id = portugal.8
-	title = portugal.8.t
-	desc = portugal.8.d
+	id = NW_portugal.8
+	title = NW_portugal.8.t
+	desc = NW_portugal.8.d
 	picture = GFX_report_event_generic_communist_congress
 	
 	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName]: event NW_portugal.8" }
+	
 	option = {
-		name = portugal.8.a
+		name = NW_portugal.8.a
 		POR = { create_faction = por_iberian_union_com }
 		POR = { add_to_faction = SPR }
 	}
 	option = {
-		name = portugal.8.b
+		name = NW_portugal.8.b
 		POR = { add_opinion_modifier = { target = ROOT modifier = POR_spa_union_deagree } }
 	}
 }
 country_event = { #папский союз
-	id = portugal.9
-	title = portugal.9.t
-	desc = portugal.9.d
+	id = NW_portugal.9
+	title = NW_portugal.9.t
+	desc = NW_portugal.9.d
 	picture = GFX_report_event_ast_parliament_house
 	
 	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName]: event NW_portugal.9" }
+	
 	option = {
-		name = portugal.9.a
+		name = NW_portugal.9.a
 		create_faction = por_holy_union
 		ROOT = { add_to_faction = POR }
 	}
 	option = {
-		name = portugal.9.b
+		name = NW_portugal.9.b
 		POR = { add_opinion_modifier = { target = ROOT modifier = POR_spa_union_deagree } }
 	}
 }
 country_event = { #ибериский союз франкисты
-	id = portugal.10
-	title = portugal.10.t
-	desc = portugal.10.d
+	id = NW_portugal.10
+	title = NW_portugal.10.t
+	desc = NW_portugal.10.d
 	picture = GFX_report_event_fascists_posing
 	
 	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName]: event NW_portugal.10" }
+	
 	option = {
-		name = portugal.10.a
+		name = NW_portugal.10.a
 		POR = { create_faction = por_iberian_union }
 		POR = { add_to_faction = ROOT }
 	}
 	option = {
-		name = portugal.10.b
+		name = NW_portugal.10.b
 		POR = { add_opinion_modifier = { target = ROOT modifier = POR_spa_union_deagree } }
 	}
 }
 country_event = { #коминтерн
-	id = portugal.11
-	title = portugal.11.t
-	desc = portugal.11.d
+	id = NW_portugal.11
+	title = NW_portugal.11.t
+	desc = NW_portugal.11.d
 	picture = GFX_report_event_stalin_meeting
 	
 	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName]: event NW_portugal.11" }
+	
 	option = {
-		name = portugal.11.a
+		name = NW_portugal.11.a
 		POR = { SOV = { add_to_faction = comintern } }
 	}
 	option = {
-		name = portugal.11.b
+		name = NW_portugal.11.b
 		POR = { add_opinion_modifier = { target = SOV modifier = POR_spa_union_deagree } }
 	}
 }
 country_event = { #600-летний союз
-	id = portugal.12
-	title = portugal.12.t
-	desc = portugal.12.d
+	id = NW_portugal.12
+	title = NW_portugal.12.t
+	desc = NW_portugal.12.d
 	picture = GFX_report_event_FDR_speech
 	
 	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName]: event NW_portugal.12" }
+	
 	option = {
-		name = portugal.12.a
+		name = NW_portugal.12.a
 		POR = { ENG = { add_to_faction = allies } }
 	}
 	option = {
-		name = portugal.12.b
+		name = NW_portugal.12.b
 		POR = { add_opinion_modifier = { target = ENG modifier = POR_spa_union_deagree } }
 	}
 }
 country_event = { #конкордат
-	id = portugal.13
-	title = portugal.13.t
-	desc = portugal.13.d
+	id = NW_portugal.13
+	title = NW_portugal.13.t
+	desc = NW_portugal.13.d
 	picture = GFX_report_event_generic_read_write
 	
 	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName]: event NW_portugal.13" }
+	
 	option = {
-		name = portugal.13.a
+		name = NW_portugal.13.a
 		ai_chance = {
 			factor = 1
 			modifier = {
@@ -294,50 +369,59 @@ country_event = { #конкордат
 		add_political_power = 50
 	}
 	option = {
-		name = portugal.13.b
+		name = NW_portugal.13.b
 		POR = { add_ideas = POR_cordonat_with_vatican2_idea }
 		add_political_power = 20
 	}
 }
 country_event = { #ось
-	id = portugal.14
-	title = portugal.14.t
-	desc = portugal.14.d
+	id = NW_portugal.14
+	title = NW_portugal.14.t
+	desc = NW_portugal.14.d
 	picture = GFX_report_event_hitler_croatia_handshake
 	
 	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName]: event NW_portugal.14" }
+	
 	option = {
-		name = portugal.14.a
+		name = NW_portugal.14.a
 		POR = { GER = { add_to_faction = axis } }
 	}
 	option = {
-		name = portugal.14.b
+		name = NW_portugal.14.b
 		POR = { add_opinion_modifier = { target = GER modifier = POR_spa_union_deagree } }
 	}
 }
 country_event = { #базы
-	id = portugal.15
-	title = portugal.15.t
-	desc = portugal.15.d
+	id = NW_portugal.15
+	title = NW_portugal.15.t
+	desc = NW_portugal.15.d
 	picture = GFX_report_event_king_speech
 	
 	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName]: event NW_portugal.15" }
+	
 	option = {
-		name = portugal.15.a
+		name = NW_portugal.15.a
 		ENG = { transfer_state = 698 }
 		add_political_power = 20
 	}
 	option = {
-		name = portugal.15.b
+		name = NW_portugal.15.b
 		add_opinion_modifier = { target = ENG modifier = POR_spa_union_deagree }
 		USA = { create_wargoal = { type = take_state generator = { 698 } } }
 	}
 }
 country_event = { #базы2
-	id = portugal.16
-	title = portugal.16.t
-	desc = portugal.16.d
+	id = NW_portugal.16
+	title = NW_portugal.16.t
+	desc = NW_portugal.16.d
 	picture = GFX_report_event_iww_demonstration
+	
+	immediate = { log = "[GetDateText]: [Root.GetName]: event NW_portugal.16" }
+	
 	fire_only_once = yes
 	
 	trigger = { 
@@ -347,25 +431,28 @@ country_event = { #базы2
 		}
 	}
 	option = {
-		name = portugal.16.a
+		name = NW_portugal.16.a
 		POR = { transfer_state = 698 }
 	}
 	option = {
-		name = portugal.16.b
+		name = NW_portugal.16.b
 		add_stability = -0.04
 		POR = { add_opinion_modifier = { target = ROOT modifier = POR_spa_union_deagree } }
 		POR = { create_wargoal = { type = take_state generator = { 698 } } }
 	}
 }
 country_event = { #кордонат2
-	id = portugal.17
-	title = portugal.17.t
-	desc = portugal.17.d
+	id = NW_portugal.17
+	title = NW_portugal.17.t
+	desc = NW_portugal.17.d
 	picture = GFX_report_event_generic_read_write
 	
 	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName]: event NW_portugal.17" }
+	
 	option = {
-		name = portugal.17.a
+		name = NW_portugal.17.a
 		ai_chance = {
 			factor = 1
 			modifier = {
@@ -377,34 +464,183 @@ country_event = { #кордонат2
 		add_political_power = 50
 	}
 	option = {
-		name = portugal.17.b
+		name = NW_portugal.17.b
 		POR = { add_ideas = POR_cordonat_with_vatican2_idea }
 		add_political_power = 20
 	}
 	option = {
-		name = portugal.17.c
+		name = NW_portugal.17.c
 		POR = { add_opinion_modifier = { target = ROOT modifier = POR_spa_union_deagree } }
 	}
 }
 country_event = { #угнетёныенароды
-	id = portugal.18
-	title = portugal.18.t
-	desc = portugal.18.d
+	id = NW_portugal.18
+	title = NW_portugal.18.t
+	desc = NW_portugal.18.d
 	picture = GFX_report_event_african_soldiers
+	
+	immediate = { log = "[GetDateText]: [Root.GetName]: event NW_portugal.18" }
+	
 	fire_only_once = yes
 	
 	trigger = { has_civil_war = yes POR = { has_government = communism } }
 	option = {
-		name = portugal.18.a
-		release = MOZ
-		release = ANG
+		name = NW_portugal.18.a
+		release_puppet = MZB
+		release_puppet = ANG
 		add_war_support = 0.05
 	}
 	option = {
-		name = portugal.18.b
-		release = MOZ
+		name = NW_portugal.18.b
+		release = MZB
 		release = ANG
-		declare_war_on = { target = MOZ type = annex_everything }
+		declare_war_on = { target = MZB type = annex_everything }
 		declare_war_on = { target = ANG type = annex_everything }
+	}
+}
+
+#Отказ возвращать Оливенсу
+country_event = {
+	id = NW_portugal.19
+	title = NW_portugal.19.t
+	desc = NW_portugal.19.desc
+	picture = GFX_report_event_generic_conference
+	
+	immediate = { log = "[GetDateText]: [Root.GetName]: event NW_portugal.19" }
+	
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName]: event NW_portugal.19" }
+	
+	option = {
+		name = NW_portugal.19.a
+	}
+}
+
+#Предложение Оливенсы в обмен на острова Зелёного мыса
+country_event = {
+	id = NW_portugal.20
+	title = NW_portugal.20.t
+	desc = NW_portugal.20.desc
+	picture = GFX_report_event_generic_conference
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName]: event NW_portugal.20" }
+	
+	option = {
+		name = NW_portugal.20.a
+		ai_chance = {
+			factor = 50
+		}
+		
+		ROOT = { transfer_state = 1040 }
+		1040 = {
+			remove_core_of = FROM
+			add_core_of = ROOT
+		}
+		
+		FROM = { transfer_state = 702 }
+		702 = {
+			remove_core_of = ROOT
+			add_core_of = FROM
+		}
+	}
+	
+	option = {
+		name = NW_portugal.20.b
+		ai_chance = {
+			factor = 50
+		}
+	}
+}
+
+#Коронация Дуарте I
+country_event = {
+	id = NW_portugal.21
+	title = NW_portugal.21.t
+	desc = NW_portugal.21.desc
+	picture = GFX_report_event_generic_rally_3
+	fire_only_once = yes
+	
+	trigger = {
+		tag = POR
+		POR = { has_completed_focus = POR_return_monarchism }
+		has_civil_war = yes
+		NOT = { has_government = communism }
+	}
+	
+	immediate = { log = "[GetDateText]: [Root.GetName]: event NW_portugal.21" }
+	
+	option = {
+		name = NW_portugal.21.a
+		ai_chance = {
+			factor = 50
+		}
+		create_country_leader = {
+			name = "Duerte I"
+			desc = "POLITICS_DUERTE_I_DESC"
+			picture = "gfx/leaders/POR/Portrait_Leader_Duerte_I.dds"
+			expire = "1965.1.1"
+			ideology = monarchy_ideology
+			traits = {
+			}
+		}
+		add_war_support = -0.15
+	}
+	
+	option = {
+		name = NW_portugal.21.b
+		ai_chance = {
+			factor = 50
+		}
+		release = ANG
+		ANG = {
+			create_country_leader = {
+				name = "Duerte I"
+				desc = "POLITICS_DUERTE_I_DESC"
+				picture = "gfx/leaders/POR/Portrait_Leader_Duerte_I.dds"
+				expire = "1965.1.1"
+				ideology = monarchy_ideology
+				traits = {
+				}
+			}
+			declare_war_on = { target = ROOT type = annex_everything }
+		}
+		if = {
+			limit = { ROOT = { has_civil_war = yes } }
+			random_other_country = {
+				limit = {
+					original_tag = ROOT
+					NOT = { tag = ROOT }
+				}
+				ANG = { declare_war_on = { target = PREV type = annex_everything } }
+			}
+		}
+		hidden_effect = {
+			ANG = {
+				set_politics = {
+					parties = {
+						democratic = { 
+							popularity = 0
+						}
+						monarchy = {
+							popularity = 100
+						}
+						neutrality = {
+							popularity = 0
+						}
+						trozkism = {
+							popularity = 0
+						}
+						anarchism = {
+							popularity = 0
+						}
+					}
+					ruling_party = monarchy
+					elections_allowed = no
+				}
+				add_popularity = { ideology = monarchy popularity = 1.0 }
+			}
+		}
 	}
 }

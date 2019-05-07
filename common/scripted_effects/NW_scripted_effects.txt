@@ -1,0 +1,385 @@
+add_var_manpower = {
+	set_variable = { var_statistic@ROOT = 0 }
+	every_state = { 							# Набивается количество насселения на оккупированной территории
+		limit = {
+			is_owned_by = ROOT
+			is_core_of = ROOT
+			NOT = { is_controlled_by = ROOT }
+		}
+		ROOT = { add_to_variable = { var_statistic@ROOT = PREV.state_population_k } }
+	}
+	round_variable = var_statistic@ROOT			# Заокругление
+	multiply_variable = { var = var_statistic@ROOT value = 0.2 }	# Уменьшение полученного числа в необходимые рамки
+	multiply_variable = { var = var_statistic@ROOT value = has_war_support@ROOT }
+	clamp_variable = {
+		var = var_statistic@ROOT
+		min = 220
+		max = 7206
+	}
+	set_variable = { var_second = 0 }			# Немного рандомного разброса
+	set_variable = { var_third = 0 }
+	every_state = { 							
+		limit = {
+			is_owned_by = ROOT
+			is_core_of = ROOT
+			NOT = { is_controlled_by = ROOT }
+		}
+		add_to_variable = { var_second = THIS.resistance }
+		add_to_variable = { var_third = 1 }
+	}
+	multiply_variable = { var = var_second value = var_third }
+	multiply_variable = { var = var_second value = 0.3 } # Чтобы не слишком было читорно в отдельных случаях
+	add_to_variable = { var_statistic@ROOT = var_second }
+	
+	round_variable = var_statistic@ROOT       # Фиксируем прибыль
+}
+
+GENERAL_STRIKE = {
+	if = {
+		limit = { check_variable = { THIS.resistance < 0.05 } }
+		random_list = {
+			1 = { country_event = { id = resistance.2 } }
+			1 = { country_event = { id = resistance.3 } }
+			1 = { country_event = { id = resistance.4 } }
+		}
+	}
+	else_if = {
+		limit = { check_variable = { THIS.resistance < 0.1 } }
+		random_list = {
+			2 = { country_event = { id = resistance.2 } }
+			4 = { country_event = { id = resistance.3 } }
+			3 = { country_event = { id = resistance.4 } }
+		}
+	}
+	else_if = {
+		limit = { check_variable = { THIS.resistance < 0.2 } }
+		random_list = {
+			3 = { country_event = { id = resistance.2 } }
+			4 = { country_event = { id = resistance.3 } }
+			5 = { country_event = { id = resistance.4 } }
+		}
+	}
+	else_if = {
+		limit = { check_variable = { THIS.resistance < 0.4 } }
+		random_list = {
+			1 = { country_event = { id = resistance.2 } }
+			4 = { country_event = { id = resistance.3 } }
+			8 = { country_event = { id = resistance.4 } }
+		}
+	}
+	else = {
+		random_list = {
+			2 = { country_event = { id = resistance.3 } }
+			8 = { country_event = { id = resistance.4 } }
+		}
+	}
+}
+
+# Механика подсчёта необходимого количества дней для решений Сопротивления в зависимости от уровня развития средств шифрования и дешифрования
+ITS_TIME_TO_DIE = {
+	every_country = {
+		limit = {
+			OR = {
+				original_tag = ROOT
+				original_tag = PREV
+			}
+		}
+		set_variable = { var_first@ROOT = 0 }			# Непосредственно, сама переменная для времени
+		set_variable = { var_second@ROOT = 0 }			# Переменная для шифрования
+		set_variable = { var_second@PREV = 0 }
+		set_variable = { var_third@ROOT = 0 }			# Переменная для дешифрования
+		set_variable = { var_third@PREV = 0 }
+		
+		if = { 											# Установка значений
+			limit = { ROOT = { has_tech = basic_encryption } }
+			add_to_variable = { var = var_second@ROOT value = 1 }
+		}
+		if = {
+			limit = { ROOT = { has_tech = improved_encryption } }
+			add_to_variable = { var = var_second@ROOT value = 1 }
+		}
+		if = {
+			limit = { ROOT = { has_tech = advanced_encryption } }
+			add_to_variable = { var = var_second@ROOT value = 1 }
+		}
+		
+		if = {
+			limit = { ROOT = { has_tech = basic_decryption } }
+			add_to_variable = { var = var_third@ROOT value = 1 }
+		}
+		if = {
+			limit = { ROOT = { has_tech = improved_decryption } }
+			add_to_variable = { var = var_third@ROOT value = 1 }
+		}
+		if = {
+			limit = { ROOT = { has_tech = advanced_decryption } }
+			add_to_variable = { var = var_third@ROOT value = 1 }
+		}
+		
+		if = { 											# Установка значений для противника
+			limit = { PREV = { has_tech = basic_encryption } }
+			add_to_variable = { var = var_second@PREV value = 1 }
+		}
+		if = {
+			limit = { PREV = { has_tech = improved_encryption } }
+			add_to_variable = { var = var_second@PREV value = 1 }
+		}
+		if = {
+			limit = { PREV = { has_tech = advanced_encryption } }
+			add_to_variable = { var = var_second@PREV value = 1 }
+		}
+		
+		if = {
+			limit = { PREV = { has_tech = basic_decryption } }
+			add_to_variable = { var = var_third@PREV value = 1 }
+		}
+		if = {
+			limit = { PREV = { has_tech = improved_decryption } }
+			add_to_variable = { var = var_third@PREV value = 1 }
+		}
+		if = {
+			limit = { PREV = { has_tech = advanced_decryption } }
+			add_to_variable = { var = var_third@PREV value = 1 }
+		}
+	}
+	
+	ROOT = {										# Вот теперь самое весёлое
+		subtract_from_variable = { var_second@ROOT = var_second@PREV }
+		subtract_from_variable = { var_third@ROOT = var_third@PREV }
+		add_to_variable = { var_second@ROOT = var_third@ROOT }
+		
+		if = {
+			limit = { check_variable = { var_second@ROOT = -6 } }
+			set_variable = { var_first@ROOT = 80 }
+		}
+		else_if = {
+			limit = { check_variable = { var_second@ROOT = -5 } }
+			set_variable = { var_first@ROOT = 77 }
+		}
+		else_if = {
+			limit = { check_variable = { var_second@ROOT = -4 } }
+			set_variable = { var_first@ROOT = 72 }
+		}
+		else_if = {
+			limit = { check_variable = { var_second@ROOT = -3 } }
+			set_variable = { var_first@ROOT = 65 }
+		}
+		else_if = {
+			limit = { check_variable = { var_second@ROOT = -2 } }
+			set_variable = { var_first@ROOT = 55 }
+		}
+		else_if = {
+			limit = { check_variable = { var_second@ROOT = -1 } }
+			set_variable = { var_first@ROOT = 48 }
+		}
+		else_if = {
+			limit = { check_variable = { var_second@ROOT = 0 } }
+			set_variable = { var_first@ROOT = 35 }
+		}
+		else_if = {
+			limit = { check_variable = { var_second@ROOT = 1 } }
+			set_variable = { var_first@ROOT = 25 }
+		}
+		else_if = {
+			limit = { check_variable = { var_second@ROOT = 2 } }
+			set_variable = { var_first@ROOT = 18 }
+		}
+		else_if = {
+			limit = { check_variable = { var_second@ROOT = 3 } }
+			set_variable = { var_first@ROOT = 12 }
+		}
+		else_if = {
+			limit = { check_variable = { var_second@ROOT = 4 } }
+			set_variable = { var_first@ROOT = 8 }
+		}
+		else_if = {
+			limit = { check_variable = { var_second@ROOT = 5 } }
+			set_variable = { var_first@ROOT = 5 }
+		}
+		else_if = {
+			limit = { check_variable = { var_second@ROOT = 6 } }
+			set_variable = { var_first@ROOT = 3 }
+		}
+	}
+}
+attack_to = {
+	log = "[GetDateText]: [Root.GetName]: okay"
+		if = {
+			limit = { FROM = { has_country_flag = strike_to_infrastructure } }
+			log = "[GetDateText]: [Root.GetName]: okay 2"
+			random_state = {
+				limit = {
+					is_owned_by = FROM
+					NOT = { is_controlled_by = FROM }
+					has_state_flag = undermining_the_infrastructure_flag
+				}
+				log = "[GetDateText]: [Root.GetName]: okay 3"
+				clr_state_flag = undermining_the_infrastructure_flag
+				damage_building = {
+					type = infrastructure
+					damage = 1
+				}
+			}
+			FROM = { clr_country_flag = strike_to_infrastructure }
+		}
+		else_if = {
+			limit = { FROM = { has_country_flag = strike_to_dockyard } }
+			random_state = {
+				limit = {
+					is_owned_by = FROM
+					NOT = { is_controlled_by = FROM }
+					has_state_flag = undermining_the_dockyard_flag
+				}
+				clr_state_flag = undermining_the_dockyard_flag
+				damage_building = {
+					type = dockyard
+					damage = 1
+				}
+			}
+			FROM = { clr_country_flag = strike_to_dockyard }
+		}
+		else_if = {
+			limit = { FROM = { has_country_flag = strike_to_arms_factory } }
+			random_state = {
+				limit = {
+					is_owned_by = FROM
+					NOT = { is_controlled_by = FROM }
+					has_state_flag = undermining_the_arms_factory
+				}
+				clr_state_flag = undermining_the_arms_factory
+				damage_building = {
+					type = arms_factory
+					damage = 1
+				}
+			}
+			FROM = { clr_country_flag = strike_to_arms_factory }
+		}
+		else_if = {
+			limit = { FROM = { has_country_flag = strike_to_industrial_complex } }
+			random_state = {
+				limit = {
+					is_owned_by = FROM
+					NOT = { is_controlled_by = FROM }
+					has_state_flag = undermining_the_industrial_complex
+				}
+				clr_state_flag = undermining_the_industrial_complex
+				damage_building = {
+					type = industrial_complex
+					damage = 1
+				}
+			}
+			FROM = { clr_country_flag = strike_to_industrial_complex }
+		}
+		else_if = {
+			limit = { FROM = { has_country_flag = strike_to_anti_air_building } }
+			random_state = {
+				limit = {
+					is_owned_by = FROM
+					NOT = { is_controlled_by = FROM }
+					has_state_flag = undermining_the_anti_air_building
+				}
+				clr_state_flag = undermining_the_anti_air_building
+				damage_building = {
+					type = anti_air_building
+					damage = 1
+				}
+			}
+			FROM = { clr_country_flag = strike_to_anti_air_building }
+		}
+		else_if = {
+			limit = { FROM = { has_country_flag = strike_to_synthetic_refinery } }
+			random_state = {
+				limit = {
+					is_owned_by = FROM
+					NOT = { is_controlled_by = FROM }
+					has_state_flag = undermining_the_synthetic_refinery
+				}
+				clr_state_flag = undermining_the_synthetic_refinery
+				damage_building = {
+					type = synthetic_refinery
+					damage = 1
+				}
+			}
+			FROM = { clr_country_flag = strike_to_synthetic_refinery }
+		}
+		else_if = {
+			limit = { FROM = { has_country_flag = strike_to_fuel_silo } }
+			random_state = {
+				limit = {
+					is_owned_by = FROM
+					NOT = { is_controlled_by = FROM }
+					has_state_flag = undermining_the_fuel_silo
+				}
+				clr_state_flag = undermining_the_fuel_silo
+				damage_building = {
+					type = fuel_silo
+					damage = 1
+				}
+			}
+			FROM = { clr_country_flag = strike_to_fuel_silo }
+		}
+		else_if = {
+			limit = { FROM = { has_country_flag = strike_to_radar_station } }
+			random_state = {
+				limit = {
+					is_owned_by = FROM
+					NOT = { is_controlled_by = FROM }
+					has_state_flag = undermining_the_radar_station
+				}
+				clr_state_flag = undermining_the_radar_station
+				damage_building = {
+					type = radar_station
+					damage = 1
+				}
+			}
+			FROM = { clr_country_flag = strike_to_radar_station }
+		}
+		else_if = {
+			limit = { FROM = { has_country_flag = strike_to_rocket_site } }
+			random_state = {
+				limit = {
+					is_owned_by = FROM
+					NOT = { is_controlled_by = FROM }
+					has_state_flag = undermining_the_rocket_site
+				}
+				clr_state_flag = undermining_the_rocket_site
+				damage_building = {
+					type = rocket_site
+					damage = 1
+				}
+			}
+			FROM = { clr_country_flag = strike_to_rocket_site }
+		}
+		else_if = {
+			limit = { FROM = { has_country_flag = strike_to_nuclear } }
+			random_state = {
+				limit = {
+					is_owned_by = FROM
+					NOT = { is_controlled_by = FROM }
+					has_state_flag = undermining_the_nuclear_flag
+				}
+				clr_state_flag = undermining_the_nuclear_flag
+				damage_building = {
+					type = nuclear_reactor
+					damage = 1
+				}
+			}
+			FROM = { clr_country_flag = strike_to_nuclear }
+		}
+		else_if = {
+			limit = { FROM = { has_country_flag = strike_to_aviabase } }
+			random_state = {
+				limit = {
+					is_owned_by = FROM
+					NOT = { is_controlled_by = FROM }
+					has_state_flag = undermining_the_aviabase_flag
+				}
+				clr_state_flag = undermining_the_aviabase_flag
+				damage_building = {
+					type = air_base
+					damage = 1
+				}
+			}
+			FROM = { clr_country_flag = strike_to_aviabase }
+		}
+ }

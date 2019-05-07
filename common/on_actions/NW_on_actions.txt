@@ -153,6 +153,10 @@ on_actions = {
 				country_event = { id = nw_greece.14 days = 730 }
 			}
 			set_variable = { var = var_add_pop value = 0 }
+			
+			# Poland
+			POL = { country_event = { id = poland.flavor.2 days = 314 } }
+			
 		}
 	}
 	
@@ -453,40 +457,6 @@ on_actions = {
 				}
 				set_country_leader_ideology = militarism
 			}
-			#if = {
-			#	limit = {
-			#		has_focus_tree = generic_focus
-			#		has_civil_war = no
-			#		OR = {
-			#			AND = {
-			#				has_government = fascism
-			#				NOT = { has_completed_focus = nationalism_focus }
-			#			}
-			#			AND = {
-			#				has_government = communism
-			#				NOT = { has_completed_focus = internationalism_focus }
-			#			}
-			#			AND = {
-			#				has_government = trozkism
-			#				NOT = { has_completed_focus = revolution_focus }
-			#			}
-			#			AND = {
-			#				has_government = democratic
-			#				NOT = { has_completed_focus = democratic_focus }
-			#			}
-			#			AND = {
-			#				has_government = neutrality
-			#				NOT = { has_completed_focus = neutrality_focus }
-			#			}
-			#			AND = {
-			#				has_government = monarchy
-			#				NOT = { has_completed_focus = monarchism_focus }
-			#			}
-			#		}
-			#	}
-			#	log = "[GetDateText]: [Root.GetName]: reload focus to [Root.GetRulingIdeology]"
-			#	country_event = { id = TRpolitical.106 }
-			#}
 		}
 	}
 	
@@ -521,6 +491,16 @@ on_actions = {
 					FROM = { tag = FRA }
 				}
 				drop_cosmetic_tag = yes
+			}
+			if = {
+				limit = {
+					ROOT = { original_tag = POL }
+					OR = {
+						has_country_leader = { id = 19883 }
+						has_country_leader = { id = 19884 }
+					}
+				}
+				retire_country_leader = yes
 			}
 		}
 	}
@@ -936,6 +916,34 @@ on_actions = {
 		}
 	}
 	
+	on_uncapitulation = {
+		effect = {
+			# Уборка фабрик и доков вне карты после возвращения домой
+			if = {
+				limit = {
+					original_tag = ROOT
+					check_variable = { var = industrialists_counter@ROOT value > 0 }
+				}
+				set_variable = { var_null@ROOT = 0 }
+				subtract_from_variable = { var_null@ROOT = industrialists_counter@ROOT }
+				add_offsite_building = { type = arms_factory level = var_null@ROOT }
+				add_offsite_building = { type = industrial_complex level = var_null@ROOT }
+				set_variable = { industrialists_counter@ROOT = 0 }
+			}
+			if = {
+				limit = {
+					original_tag = ROOT
+					check_variable = { var = obtain_dockyard_counter@ROOT value > 0 }
+				}
+				set_variable = { var_null@ROOT = 0 }
+				multiply_variable = { industrialists_counter@ROOT = 2 }				
+				subtract_from_variable = { var_null@ROOT = obtain_dockyard_counter@ROOT }
+				add_offsite_building = { type = dockyard level = var_null@ROOT }
+				set_variable = { obtain_dockyard_counter@ROOT = 0 }
+			}
+		}
+	}
+	
 	#ROOT is winner #FROM gets annexed - For civil wars on_civil_war_end is also fired
 	on_annex = {
 		effect = {
@@ -1023,8 +1031,158 @@ on_actions = {
 					}
 				}
 			}
+			
+			
+			#Пульсар побед лагерей // правые
+			if = {
+				limit = {
+					has_global_flag = liberal_spanish_civil_war
+					NOT = { has_global_flag = scw_over }
+					FROM = {
+						OR = {
+							tag = SPC
+							tag = ANL
+							tag = ARA
+						}
+					}
+				}
+				ROOT = { country_event = { id = NWspain.51 hours = 6 } }
+			}
+			
+			#Пульсар побед лагерей // левые
+			if = {
+				limit = {
+					has_global_flag = liberal_spanish_civil_war
+					NOT = { has_global_flag = scw_over }
+					FROM = {
+						OR = {
+							tag = CAS
+							tag = NAV
+							tag = SEU
+						}
+					}
+				}
+				ROOT = { country_event = { id = NWspain.52 hours = 6 } }
+			}
+			
+			#Снятие клеймов и корок у проигравшего минора Испании
+			if = {
+				limit = {
+					has_global_flag = liberal_spanish_civil_war
+					NOT = { has_global_flag = scw_over }
+					FROM = {
+						OR = {
+							tag = SPR
+							tag = CAS
+							tag = NAV
+							tag = SEU
+							tag = SPC
+							tag = ANL
+							tag = ARA
+						}
+					}
+				}
+				every_state = {
+					limit = { is_claimed_by = FROM }
+					remove_claim_by = FROM
+				}
+				every_state = {
+					limit = { is_core_of = FROM }
+					remove_core_of = FROM
+				}
+			}
+			
+			#Жор каталонии-марионетки // Либеральная ГВ
+			if = {
+				limit = {
+					has_global_flag = liberal_spanish_civil_war
+					NOT = { has_global_flag = scw_over }
+					FROM = { tag = SPR }
+				}
+				if = {
+					limit = {
+						country_exists = CAT
+						CAT = {
+							is_ai = yes
+							OR = {
+								has_war_with = CAS
+								has_war_with = NAV
+								has_war_with = SEU
+								has_war_with = SPC
+								has_war_with = ANL
+								has_war_with = ARA
+								has_war_with = ROOT
+							}
+						}
+					}
+					ROOT = {
+						annex_country = {
+							target = CAT
+							transfer_troops = no
+						}
+					}
+				}
+				else_if = {
+					limit = {
+						country_exists = CAT
+						CAT = {
+							NOT = {
+								has_war_with = CAS
+								has_war_with = NAV
+								has_war_with = SEU
+								has_war_with = SPC
+								has_war_with = ANL
+								has_war_with = ARA
+								has_war_with = ROOT
+							}
+						}
+					}
+					ROOT = {
+						add_ai_strategy = {
+							type = antagonize
+							id = "CAT"
+							value = 500
+						}
+						add_ai_strategy = {
+							type = conquer
+							id = "CAT" 
+							value = 500
+						}
+					}
+				}
+			}
+			
+			#Определение победителя // Конец ГВ либералов
+			if = {
+				limit = {
+					has_global_flag = liberal_spanish_civil_war
+					NOT = { has_global_flag = scw_over }
+					ROOT = {
+						OR = {
+							tag = SPR
+							tag = CAS
+							tag = NAV
+							tag = SEU
+							tag = SPC
+							tag = ANL
+							tag = ARA
+						}
+					}
+					FROM = {
+						OR = {
+							tag = SPR
+							tag = CAS
+							tag = NAV
+							tag = SEU
+							tag = SPC
+							tag = ANL
+							tag = ARA
+						}
+					}
+				}
+				ROOT = { country_event = { id = NWspain.50 hours = 6 } }
+			}
 		}
 	}
-
 }
 
