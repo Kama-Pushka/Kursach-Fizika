@@ -325,7 +325,10 @@ focus_tree = {
 				popularity = -0.05
 			}
 			if = {
-				limit = { NOT = { has_war_with = SPA } }
+				limit = {
+					country_exists = SPA
+					NOT = { has_war_with = SPA }
+				}
 				create_wargoal = {
 					type = annex_everything
 					target = SPA
@@ -486,12 +489,29 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus ARA_support_from_madrid"
-			add_tech_bonus = {
-				name = infantry_artillery_bonus
-				bonus = 1.0
-				uses = 2
-				category = infantry_weapons
-				category = artillery
+			if = {
+				limit = {
+					OR = {
+						country_exists = SPR
+						country_exists = SPA
+					}
+				}
+				add_tech_bonus = {
+					name = infantry_artillery_bonus
+					bonus = 1.0
+					uses = 2
+					category = infantry_weapons
+					category = artillery
+				}
+			}
+			else = {
+				add_tech_bonus = {
+					name = infantry_artillery_bonus
+					bonus = 1.0
+					uses = 3
+					category = infantry_weapons
+					category = artillery
+				}
 			}
 		}
 	}
@@ -517,12 +537,28 @@ focus_tree = {
 			
 		}
 		bypass = {
-			SPR = { exists = no }
 		}
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus ARA_propaganda_in_spain"
-			SPR = { add_timed_idea = { idea = ARA_propaganda_in_spain_idea days = 60 } }
+			if = {
+				limit = { country_exists = SPR }
+				SPR = { add_timed_idea = { idea = ARA_propaganda_in_spain_idea days = 60 } }
+			}
+			if = {
+				limit = { country_exists = SPA }
+				SPA = { add_timed_idea = { idea = ARA_propaganda_in_spain_idea days = 60 } }
+			}
+			if = {
+				limit = {
+					NOT = { country_exists = SPA }
+					NOT = { country_exists = SPR }
+				}
+				add_popularity = {
+					ideology = anarchism
+					popularity = 0.15
+				}
+			}
 		}
 	}
 	
@@ -591,29 +627,37 @@ focus_tree = {
 			factor = 15
 		}
 		available = {
-			NOT = { SPR = { has_government = anarchism } }
 		}
 		bypass = {
-			SPR = { exists = no }
-			SPA = { exists = no }
 		}
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus ARA_new_revolution"
-			OVERLORD = {
-				set_autonomy = {
-					target = ROOT
-					autonomy_state = autonomy_free
+			if = {
+				limit = { is_subject = yes }
+				OVERLORD = {
+					set_autonomy = {
+						target = ROOT
+						autonomy_state = autonomy_free
+					}
 				}
 			}
-			create_wargoal = {
-				type = annex_everything
-				target = SPR
+			if = {
+				limit = { country_exists = SPR }
+				create_wargoal = {
+					type = annex_everything
+					target = SPR
+				}
 			}
-			create_wargoal = {
-				type = annex_everything
-				target = SPA
+			if = {
+				limit = { country_exists = SPA }
+				create_wargoal = {
+					type = annex_everything
+					target = SPA
+				}
 			}
+			add_ideas = ARA_new_revolution
+			
 			hidden_effect = {
 				if = {
 					limit = { SPR = { has_completed_focus = SPR_support_stalinists } }

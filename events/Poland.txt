@@ -758,7 +758,8 @@ country_event = {
 country_event = {
 	id = poland.flavor.2
 	title = poland.flavor.2.t
-	desc = { text = poland.flavor.2.d trigger = { has_capitulated = no } }
+	desc = { text = poland.flavor.2.d trigger = { has_capitulated = no NOT = { is_in_faction_with = GER is_in_faction_with = SOV } } }
+	desc = { text = poland.flavor.2.other trigger = { has_capitulated = no OR = { is_in_faction_with = GER is_in_faction_with = SOV } } }
 	desc = { text = poland.flavor.2.dcap trigger = { has_capitulated = yes } }
 	picture = GFX_report_event_polish_tanks_01
 	
@@ -768,7 +769,22 @@ country_event = {
 		log = "[GetDateText]: [Root.GetName]: event poland.flavor.2" 
 		hidden_effect = {
 			if = {
-				limit = { has_capitulated = no }
+				limit = {
+					NOT = { check_variable = { var = independence_day@POL value = 0 compare = greater_than } }
+				}
+				set_variable = { var = independence_day@POL value = 18 }
+			}
+			if = {
+				limit = { 
+					has_capitulated = no 
+					POL = { is_ai = no }
+					NOT = {
+						any_country = {
+							NOT = { original_tag = POL }
+							is_ai = no
+						}
+					}
+				}
 				sound_effect = polish_anthem
 			}
 		}
@@ -782,7 +798,10 @@ country_event = {
 			add_political_power = 20
 			else = { add_political_power = 50 }
 		}
-		hidden_effect = { country_event = { id = poland.flavor.2 days = 365 } }
+		hidden_effect = { 
+			country_event = { id = poland.flavor.2 days = 365 } 
+			add_to_variable = { var = independence_day@POL value = 1 }
+		}
 	}
 }
 
@@ -860,9 +879,10 @@ country_event = {
 			limit = { date < 1939.01.01 }
 			create_corps_commander = {
 				name = "Leon Karol Habsburg-Lotaryński"
-				picture = "gfx/leaders/POL/Portrait_Leon_Karol_Lotarynski.dds"
+				portrait_path = "gfx/leaders/POL/Portrait_Leon_Karol_Lotarynski.dds"
 				traits = { media_personality brilliant_strategist career_officer }
 				skill = 1
+				id = 19840
 				attack_skill = 1
 				defense_skill = 2
 				planning_skill = 2
