@@ -34,6 +34,53 @@ add_var_manpower = {
 	round_variable = var_statistic@ROOT       # Фиксируем прибыль
 }
 
+OFFICER_KILL = {
+	# Убийство генерала
+	set_variable = { del_exp@ROOT = 0 }
+	set_variable = { var_second = 0 }			# Немного рандомного разброса
+	set_variable = { var_third = 0 }
+	every_state = {		
+		limit = {
+			is_owned_by = FROM
+			is_core_of = FROM
+			is_controlled_by = ROOT
+		}
+		add_to_variable = { var_second = THIS.resistance }
+		add_to_variable = { var_third = 1 }
+	}
+	multiply_variable = { var = var_second value = var_third }
+	
+	if = {
+		limit = { check_variable = { var_second < 0.05 } }
+		set_variable = { del_exp@ROOT = 2 }
+	}
+	else_if = {
+		limit = { check_variable = { var_second < 0.1 } }
+		set_variable = { del_exp@ROOT = 5 }
+	}
+	else_if = {
+		limit = { check_variable = { var_second < 0.2 } }
+		set_variable = { del_exp@ROOT = 10 }
+	}
+	else_if = {
+		limit = { check_variable = { var_second < 0.4 } }
+		set_variable = { del_exp@ROOT = 20 }
+	}
+	else_if = {
+		limit = { 
+			NOT = { check_variable = { var_second < 0.4 } } 
+			NOT = { FROM = { has_country_flag = kill_to_boss } }
+			NOT = { has_game_rule = { rule = kill_general option = FORBIDDEN_TO_KILL } }
+		}
+		FROM = { set_country_flag = kill_to_boss }
+		set_country_flag = i_kill_you
+		set_variable = { del_exp@ROOT = 25 }
+	}
+	else = {
+		set_variable = { del_exp@ROOT = 25 }
+	}
+}
+
 GENERAL_STRIKE = {
 	if = {
 		limit = { check_variable = { THIS.resistance < 0.05 } }
@@ -77,72 +124,17 @@ GENERAL_STRIKE = {
 
 # Механика подсчёта необходимого количества дней для решений Сопротивления в зависимости от уровня развития средств шифрования и дешифрования
 ITS_TIME_TO_DIE = {
-	every_country = {
-		limit = {
-			OR = {
-				original_tag = ROOT
-				original_tag = PREV
-			}
-		}
-		set_variable = { var_first@ROOT = 0 }			# Непосредственно, сама переменная для времени
-		set_variable = { var_second@ROOT = 0 }			# Переменная для шифрования
-		set_variable = { var_second@PREV = 0 }
-		set_variable = { var_third@ROOT = 0 }			# Переменная для дешифрования
-		set_variable = { var_third@PREV = 0 }
-		
-		if = { 											# Установка значений
-			limit = { ROOT = { has_tech = basic_encryption } }
-			add_to_variable = { var = var_second@ROOT value = 1 }
-		}
-		if = {
-			limit = { ROOT = { has_tech = improved_encryption } }
-			add_to_variable = { var = var_second@ROOT value = 1 }
-		}
-		if = {
-			limit = { ROOT = { has_tech = advanced_encryption } }
-			add_to_variable = { var = var_second@ROOT value = 1 }
-		}
-		
-		if = {
-			limit = { ROOT = { has_tech = basic_decryption } }
-			add_to_variable = { var = var_third@ROOT value = 1 }
-		}
-		if = {
-			limit = { ROOT = { has_tech = improved_decryption } }
-			add_to_variable = { var = var_third@ROOT value = 1 }
-		}
-		if = {
-			limit = { ROOT = { has_tech = advanced_decryption } }
-			add_to_variable = { var = var_third@ROOT value = 1 }
-		}
-		
-		if = { 											# Установка значений для противника
-			limit = { PREV = { has_tech = basic_encryption } }
-			add_to_variable = { var = var_second@PREV value = 1 }
-		}
-		if = {
-			limit = { PREV = { has_tech = improved_encryption } }
-			add_to_variable = { var = var_second@PREV value = 1 }
-		}
-		if = {
-			limit = { PREV = { has_tech = advanced_encryption } }
-			add_to_variable = { var = var_second@PREV value = 1 }
-		}
-		
-		if = {
-			limit = { PREV = { has_tech = basic_decryption } }
-			add_to_variable = { var = var_third@PREV value = 1 }
-		}
-		if = {
-			limit = { PREV = { has_tech = improved_decryption } }
-			add_to_variable = { var = var_third@PREV value = 1 }
-		}
-		if = {
-			limit = { PREV = { has_tech = advanced_decryption } }
-			add_to_variable = { var = var_third@PREV value = 1 }
-		}
-	}
-	
+	set_variable = { var_second@THIS = 0 }
+				
+	if = { limit = { has_tech = basic_encryption } add_to_variable = { var = var_second@THIS value = 1 } }
+	if = { limit = { has_tech = improved_encryption } add_to_variable = { var = var_second@THIS value = 1 } }
+	if = { limit = { has_tech = advanced_encryption } add_to_variable = { var = var_second@THIS value = 1 } }
+	if = { limit = { has_tech = basic_decryption } add_to_variable = { var = var_second@THIS value = 1 } }
+	if = { limit = { has_tech = improved_decryption } add_to_variable = { var = var_second@THIS value = 1 } }
+	if = { limit = { has_tech = advanced_decryption } add_to_variable = { var = var_second@THIS value = 1 } }
+}
+
+ITS_TIME_TO_DIE_SET = {
 	ROOT = {										# Вот теперь самое весёлое
 		subtract_from_variable = { var_second@ROOT = var_second@PREV }
 		subtract_from_variable = { var_third@ROOT = var_third@PREV }
@@ -202,6 +194,7 @@ ITS_TIME_TO_DIE = {
 		}
 	}
 }
+
 attack_to = {
 	log = "[GetDateText]: [Root.GetName]: okay"
 		if = {
