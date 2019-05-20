@@ -310,10 +310,6 @@ country_event = {
 	is_triggered_only = yes
 	
 	immediate = { log = "[GetDateText]: [Root.GetName]: event NWgreece_hel.5" }
-	immediate = {
-		set_global_flag = ger_form_hel_end_flag
-		every_country = { clear_variable = war_score_gre }
-	}
 	
 	option = {
 		name = NWgreece_hel.5.a
@@ -453,6 +449,7 @@ country_event = {
 	is_triggered_only = yes
 	
 	immediate = { log = "[GetDateText]: [Root.GetName]: event NWgreece_hel.7" }
+	immediate = { set_global_flag = ger_form_hel_end_flag }
 	
 	option = {
 		name = NWgreece_hel.7.a
@@ -476,6 +473,191 @@ country_event = {
 				add_core_of = CRE
 				remove_core_of = HEL
 				CRE = { transfer_state = PREV }
+			}
+		}
+	}
+}
+
+#Рост сопротивления
+country_event = {
+	id = NWgreece_hel.8
+	title = NWgreece_hel.8.t
+	desc = NWgreece_hel.8.desc
+	picture = GFX_report_event_chinese_soldiers_running
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName]: event NWgreece_hel.8" }
+	immediate = { subtract_from_variable = { resistance_score = 1 } }
+	
+	option = {
+		name = NWgreece_hel.8.a
+		ai_chance = {
+			factor = 50
+		}
+		GRE = {
+			add_popularity = { ideology = communism popularity = 0.01 }
+			hidden_effect = {
+				division_template = {
+					name = "Greek Militia"
+					priority = 1
+					is_locked = yes
+					regiments = {
+						infantry = { x = 0 y = 0 }
+						infantry = { x = 0 y = 1 }
+					}
+				}
+				random_state = {
+					limit = {
+						is_controlled_by = GRE
+						is_on_continent = europe
+					}
+					create_unit = {
+						division = "name = \"Greek Militia\" division_template = \"Greek Militia\" start_experience_factor = 0.2" 
+						owner = GRE
+					}
+					create_unit = {
+						division = "name = \"Greek Militia\" division_template = \"Greek Militia\" start_experience_factor = 0.2" 
+						owner = GRE
+					}
+					create_unit = {
+						division = "name = \"Greek Militia\" division_template = \"Greek Militia\" start_experience_factor = 0.2" 
+						owner = GRE
+					}
+					random_list = {
+						50 = {
+							create_unit = {
+								division = "name = \"Greek Militia\" division_template = \"Greek Militia\" start_experience_factor = 0.2" 
+								owner = GRE
+							}
+						}
+						50 = { }
+					}
+				}
+			}
+		}
+		if = {
+			limit = {
+				NOT = {
+					any_state = {
+						is_controlled_by = ROOT
+						is_core_of = GRE
+					}
+				}
+			}
+			clear_variable = resistance_score
+		}
+		if = {
+			limit = { check_variable = { resistance_score > 0 } }
+			country_event = { id = NWgreece_hel.8 days = 30 }
+		}
+	}
+	
+	option = {
+		name = NWgreece_hel.8.b
+		ai_chance = {
+			factor = 50
+		}
+		trigger = {
+			tag = HEL
+			has_political_power > 99
+		}
+		add_political_power = -50
+		
+		if = {
+			limit = {
+				NOT = {
+					any_state = {
+						is_controlled_by = ROOT
+						is_core_of = GRE
+					}
+				}
+			}
+			clear_variable = resistance_score
+		}
+		if = {
+			limit = { check_variable = { resistance_score > 0 } }
+			country_event = { id = NWgreece_hel.8 days = 30 }
+		}
+	}
+}
+
+#Столкновение с Национально-освободительным фронтом
+country_event = {
+	id = NWgreece_hel.9
+	title = NWgreece_hel.9.t
+	desc = NWgreece_hel.9.desc
+	picture = GFX_report_event_generic_rally_3
+	fire_only_once = yes
+	
+	trigger = {
+		tag = GRE
+		communism > 0.34
+	}
+	
+	option = {
+		name = NWgreece_hel.9.a
+		every_state = {
+			limit = {
+				is_core_of = GRE
+				controller = {
+					OR = {
+						tag = GRE
+						is_in_faction_with = GRE
+					}
+				}
+			}
+			GRE = { transfer_state = PREV }
+		}
+		GRE = {
+			set_politics = {
+				ruling_party = communism
+				elections_allowed = no
+			}
+			hidden_effect = {
+				if = {
+					limit = { NOT = { has_template = "Greek Militia" } }
+					division_template = {
+						name = "Greek Militia"
+						priority = 1
+						is_locked = yes
+						regiments = {
+							infantry = { x = 0 y = 0 }
+							infantry = { x = 0 y = 1 }
+						}
+					}
+				}
+				create_unit = {
+					division = "name = \"Greek Militia\" division_template = \"Greek Militia\" start_experience_factor = 0.2" 
+					owner = GRE
+				}
+				create_unit = {
+					division = "name = \"Greek Militia\" division_template = \"Greek Militia\" start_experience_factor = 0.2" 
+					owner = GRE
+				}
+				create_unit = {
+					division = "name = \"Greek Militia\" division_template = \"Greek Militia\" start_experience_factor = 0.2" 
+					owner = GRE
+				}
+				create_unit = {
+					division = "name = \"Greek Militia\" division_template = \"Greek Militia\" start_experience_factor = 0.2" 
+					owner = GRE
+				}
+				create_unit = {
+					division = "name = \"Greek Militia\" division_template = \"Greek Militia\" start_experience_factor = 0.2" 
+					owner = GRE
+				}
+				create_unit = {
+					division = "name = \"Greek Militia\" division_template = \"Greek Militia\" start_experience_factor = 0.2" 
+					owner = GRE
+				}
+				create_unit = {
+					division = "name = \"Greek Militia\" division_template = \"Greek Militia\" start_experience_factor = 0.2" 
+					owner = GRE
+				}
+			}
+			declare_war_on = {
+				target = HEL
+				type = civil_war
 			}
 		}
 	}
