@@ -721,7 +721,7 @@ focus_tree = {
 			if = {
 				limit = { NOT = { has_war_with = SPR } }
 				declare_war_on = {
-					type = annex_everything
+					type = civil_war
 					target = SPR
 				}
 			}
@@ -731,7 +731,7 @@ focus_tree = {
 					NOT = { has_war_with = SPA }
 				}
 				declare_war_on = {
-					type = annex_everything
+					type = civil_war
 					target = SPA
 				}
 			}
@@ -954,15 +954,9 @@ focus_tree = {
 							id = "SPA" 
 							value = 500
 						}
-						
 						add_ai_strategy = {
 							type = protect
 							id = "ARA" 
-							value = 500
-						}
-						add_ai_strategy = {
-							type = ignore
-							id = "FRA" 
 							value = 500
 						}
 						ARA = {
@@ -983,12 +977,25 @@ focus_tree = {
 					}
 					ARA = { give_military_access = CAT }
 					CAT = { country_event = { id = NWspain.901 } }
-					SPR = {
-						declare_war_on = {
-							target = CAT
-							type = annex_everything
+					if = {
+						limit = { country_exists = SPR }
+						SPR = {
+							declare_war_on = {
+								target = CAT
+								type = civil_war
+							}
+							remove_ideas = SPR_catalon_nationalism
 						}
-						remove_ideas = SPR_catalon_nationalism
+					}
+					if = {
+						limit = { country_exists = SPA }
+						SPA = {
+							declare_war_on = {
+								target = CAT
+								type = civil_war
+							}
+							remove_ideas = SPR_catalon_nationalism
+						}
 					}
 				}
 			}
@@ -1029,6 +1036,11 @@ focus_tree = {
 
 		ai_will_do = {
 			factor = 5
+			modifier = {
+				factor = 4
+				country_exists = CAT
+				NOT = { has_war_with = CAT }
+			}
 		}
 		available = {
 			
@@ -1173,6 +1185,18 @@ focus_tree = {
 
 		ai_will_do = {
 			factor = 5
+			modifier = {
+				factor = 0
+				has_war = yes
+			}
+			modifier = {
+				factor = 2
+				enemies_strength_ratio < 1
+			}
+			modifier = {
+				factor = 5
+				enemies_strength_ratio < 0.5
+			}
 		}
 		available = {
 			
@@ -1189,6 +1213,16 @@ focus_tree = {
 			create_wargoal = {
 				type = puppet_wargoal_focus
 				target = POR
+			}
+			add_ai_strategy = {
+				type = antagonize
+				id = "POR"
+				value = 500
+			}
+			add_ai_strategy = {
+				type = conquer
+				id = "POR" 
+				value = 500
 			}
 		}
 	}
