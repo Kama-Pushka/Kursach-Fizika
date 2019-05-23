@@ -1,0 +1,860 @@
+﻿###########################
+# Ветка Франции
+###########################
+
+add_namespace = NWfrance
+
+#Выбор объекта сотрудничества
+country_event = {
+	id = NWfrance.1
+	title = NWfrance.1.t
+	desc = NWfrance.1.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName]: event NWfrance.1" }
+	
+	option = {
+		name = NWfrance.1.a
+		ai_chance = {
+			factor = 50
+		}
+		add_popularity = {
+			ideology = neutrality
+			popularity = 0.05
+		}
+		add_stability = 0.05
+		set_country_flag = peten_support_flag
+	}
+	option = {
+		name = NWfrance.1.b
+		ai_chance = {
+			factor = 50
+		}
+		add_popularity = {
+			ideology = fascism
+			popularity = 0.03
+		}
+		add_stability = 0.07
+		set_country_flag = block_leon_blum_flag
+	}
+}
+
+#Покушение на Леона Блюма
+country_event = {
+	id = NWfrance.2
+	title = NWfrance.2.t
+	desc = NWfrance.2.desc
+	picture = GFX_report_event_generic_rally_3
+	fire_only_once = yes
+	
+	trigger = {
+		tag = FRA
+		date > 1936.02.11
+		NOT = { has_country_flag = block_leon_blum_flag }
+	}
+	
+	immediate = { log = "[GetDateText]: [Root.GetName]: event NWfrance.2" }
+	
+	option = {
+		name = NWfrance.2.a
+		add_popularity = {
+			ideology = fascism
+			popularity = -0.01
+		}
+		add_stability = -0.03
+	}
+}
+
+#Убийство Леона Блюма
+country_event = {
+	id = NWfrance.3
+	title = NWfrance.3.t
+	desc = NWfrance.3.desc
+	picture = GFX_report_event_generic_rally_3
+	fire_only_once = yes
+	
+	trigger = {
+		tag = FRA
+		date > 1936.02.11
+		has_country_flag = block_leon_blum_flag
+	}
+	
+	immediate = { log = "[GetDateText]: [Root.GetName]: event NWfrance.3" }
+	
+	option = {
+		name = NWfrance.3.a
+		add_popularity = {
+			ideology = democratic
+			popularity = -0.1
+		}
+		add_stability = -0.1
+		hidden_effect = {
+			SOV = { country_event = { id = NWfrance.4 days = 3 } }
+		}
+	}
+}
+
+#Фашиствующая буржуазия накаляет обстановку во Франции // SOV
+country_event = {
+	id = NWfrance.4
+	title = NWfrance.4.t
+	desc = NWfrance.4.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName]: event NWfrance.4" }
+	
+	option = {
+		name = NWfrance.4.a
+		ai_chance = {
+			factor = 50
+		}
+		FROM = { country_event = { id = NWfrance.5 } }
+	}
+	
+	option = {
+		name = NWfrance.4.b
+		ai_chance = {
+			factor = 50
+		}
+	}
+}
+
+#Коммунисты поднимают восстание
+country_event = {
+	id = NWfrance.5
+	title = NWfrance.5.t
+	desc = NWfrance.5.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName]: event NWfrance.5" }
+	immediate = { set_country_flag = FRA_commi_revolt_flag }
+	
+	option = {
+		name = NWfrance.5.a
+		add_stability = -0.2
+		remove_ideas = FRA_disjointed_government
+		FRC = {
+			transfer_state = 1035
+			transfer_state = 22
+			transfer_state = 31
+			transfer_state = 19
+			transfer_state = 18
+			transfer_state = 26
+			transfer_state = 20
+		}
+		hidden_effect = {
+			every_state = {
+				limit = { is_core_of = FRA }
+				add_core_of = FRC
+			}
+			FRC = {
+				add_equipment_to_stockpile = {
+					type = infantry_equipment
+					amount = 10000
+				}
+			}
+			country_event = { id = NWfrance.6 days = 1 }
+		}
+		FRC = {
+			declare_war_on = {
+				target = FRA
+				type = civil_war
+			}
+		}
+	}
+}
+
+#Французское действие захватывает власть в стране
+country_event = {
+	id = NWfrance.6
+	title = NWfrance.6.t
+	desc = NWfrance.6.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName]: event NWfrance.6" }
+	
+	option = {
+		name = NWfrance.6.a
+		add_popularity = {
+			ideology = fascism
+			popularity = 0.1
+		}
+		set_politics = {
+			ruling_party = fascism
+			elections_allowed = no
+		}
+		add_stability = 0.05
+		add_opinion_modifier = { target = GER modifier = FRA_support_maurras }
+		GER = { add_opinion_modifier = { target = ROOT modifier = FRA_support_maurras } }
+		complete_national_focus = FRA_support_maurras
+		custom_effect_tooltip = nw_french_right_focus_tt
+		hidden_effect = {
+			load_focus_tree = nw_french_right_focus
+		}
+	}
+}
+
+#Выборы в парламент
+country_event = {
+	id = NWfrance.7
+	title = NWfrance.7.t
+	desc = NWfrance.7.desc
+	picture = GFX_report_event_generic_rally_3
+	fire_only_once = yes
+
+	trigger = {
+		tag = FRA
+		date > 1936.05.01
+		NOT = { has_completed_focus = FRA_support_maurras }
+	}
+	
+	immediate = { log = "[GetDateText]: [Root.GetName]: event NWfrance.7" }
+	immediate = { complete_national_focus = FRA_parliamentary_elections }
+	
+	option = {
+		name = NWfrance.7.a
+		trigger = {
+			has_completed_focus = FRA_yield_radical_socialists
+		}
+		complete_national_focus = FRA_victory_popular_front
+		add_ideas = FRA_cagulars
+		custom_effect_tooltip = nw_french_left_focus_tt
+		hidden_effect = {
+			load_focus_tree = nw_french_left_focus
+		}
+	}
+	
+	option = {
+		name = NWfrance.7.b
+		trigger = {
+			has_country_flag = peten_support_flag
+		}
+		complete_national_focus = FRA_third_way
+		custom_effect_tooltip = nw_french_right_focus_tt
+		hidden_effect = {
+			load_focus_tree = nw_french_right_focus
+		}
+	}
+}
+
+#Вооружённое восстание кагуляров в Париже
+country_event = {
+	id = NWfrance.8
+	title = NWfrance.8.t
+	desc = NWfrance.8.desc
+	picture = GFX_report_event_generic_rally_3
+	fire_only_once = yes
+
+	trigger = {
+		tag = FRA
+		date > 1937.10.12
+		NOT = { has_completed_focus = FRA_reform_paris_police }
+	}
+	
+	immediate = { log = "[GetDateText]: [Root.GetName]: event NWfrance.8" }
+	
+	option = {
+		name = NWfrance.8.a
+		add_stability = -0.1
+		add_manpower = -50000
+		add_popularity = {
+			ideology = democratic
+			popularity = -0.1
+		}
+	}
+}
+
+#Неудавшееся восстание кагуляров
+country_event = {
+	id = NWfrance.9
+	title = NWfrance.9.t
+	desc = NWfrance.9.desc
+	picture = GFX_report_event_generic_rally_3
+	fire_only_once = yes
+
+	trigger = {
+		tag = FRA
+		date > 1937.10.12
+		has_completed_focus = FRA_reform_paris_police
+	}
+	
+	immediate = { log = "[GetDateText]: [Root.GetName]: event NWfrance.9" }
+	
+	option = {
+		name = NWfrance.9.a
+		remove_ideas = FRA_cagulars
+	}
+}
+
+#Становление Камиля Шотана премьер-министром
+country_event = {
+	id = NWfrance.10
+	title = NWfrance.10.t
+	desc = NWfrance.10.desc
+	picture = GFX_report_event_generic_rally_3
+	fire_only_once = yes
+
+	trigger = {
+		tag = FRA
+		date > 1937.06.20
+	}
+	
+	immediate = { log = "[GetDateText]: [Root.GetName]: event NWfrance.10" }
+	
+	option = {
+		name = NWfrance.10.a
+		add_political_power = 20
+		create_country_leader = {
+			name = "Camille Chautemps"
+			desc = "POLITICS_CAMILLE_CHAUTEMPS_DESC"
+			picture = "gfx/leaders/FRA/Portrait_Camille_Chautemps.dds"
+			expire = "1965.1.1"
+			ideology = conservatism
+			traits = {
+			}
+		}
+	}
+}
+
+#Возвращение Леона Блюма на пост премьер-министра
+country_event = {
+	id = NWfrance.11
+	title = NWfrance.11.t
+	desc = NWfrance.11.desc
+	picture = GFX_report_event_generic_rally_3
+	fire_only_once = yes
+
+	trigger = {
+		tag = FRA
+		date > 1938.03.10
+	}
+	
+	immediate = { log = "[GetDateText]: [Root.GetName]: event NWfrance.11" }
+	
+	option = {
+		name = NWfrance.11.a
+		create_country_leader = {
+			name = "Léon Blum"
+			desc = "POLITICS_LEON_BLUM_DESC"
+			picture = "gfx/leaders/FRA/Portrait_Leon_Blum.dds"
+			expire = "1965.1.1"
+			ideology = socialism
+			traits = {
+			}
+		}
+	}
+}
+
+#Провал Народного фронта
+country_event = {
+	id = NWfrance.12
+	title = NWfrance.12.t
+	desc = NWfrance.12.desc
+	picture = GFX_report_event_generic_rally_3
+	fire_only_once = yes
+
+	trigger = {
+		tag = FRA
+		date > 1938.04.07
+		has_idea = FRA_social_crisis
+	}
+	
+	immediate = { log = "[GetDateText]: [Root.GetName]: event NWfrance.12" }
+	
+	option = {
+		name = NWfrance.12.a
+		add_stability = -0.05
+		create_country_leader = {
+			name = "Édouard Daladier"
+			desc = "POLITICS_EDOUARD_DALADIER_DESC"
+			picture = "gfx/leaders/FRA/Portrait_France_Edouard_Daladier.dds"
+			expire = "1965.1.1"
+			ideology = conservatism
+			traits = {
+			}
+		}
+		set_country_flag = FRA_strengthen_left_direction_block_flag
+	}
+}
+
+#Отставка Эдуарда Даладьё
+country_event = {
+	id = NWfrance.13
+	title = NWfrance.13.t
+	desc = NWfrance.13.desc
+	picture = GFX_report_event_generic_rally_3
+	fire_only_once = yes
+
+	trigger = {
+		tag = FRA
+		date > 1938.04.07
+		has_war_with = GER
+		has_global_flag = FIN_has_defeat_from_ussr_flag
+	}
+	
+	immediate = { log = "[GetDateText]: [Root.GetName]: event NWfrance.13" }
+	
+	option = {
+		name = NWfrance.13.a
+		set_party_name = { ideology = democratic name = FRA_democratic_ally long_name = FRA_democratic_ally }
+		add_stability = -0.05
+		create_country_leader = {
+			name = "Paul Reynaud"
+			desc = "POLITICS_PAUL_REYNAUD_DESC"
+			picture = "gfx/leaders/FRA/Portrait_Paul_Reynaud.dds"
+			expire = "1965.1.1"
+			ideology = conservatism
+			traits = {
+			}
+		}
+	}
+}
+
+#Франция предлагает подписать пакт о ненападении
+country_event = {
+	id = NWfrance.14
+	title = NWfrance.14.t
+	desc = NWfrance.14.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+
+	immediate = { log = "[GetDateText]: [Root.GetName]: event NWfrance.14" }
+	
+	option = {
+		name = NWfrance.14.a
+		ai_chance = {
+			factor = 20
+		}
+		diplomatic_relation = {
+			country = FROM
+			relation = non_aggression_pact
+			active = yes
+		}
+	}
+	
+	option = {
+		name = NWfrance.14.b
+		ai_chance = {
+			factor = 40
+		}
+		FROM = { country_event = { id = NWfrance.15 days = 1 } }
+	}
+	
+	option = {
+		name = NWfrance.14.c
+		ai_chance = {
+			factor = 40
+		}
+		FROM = { country_event = { id = NWfrance.17 days = 1 } }
+	}
+}
+
+#Германия требует Эльзас и Лотарингию
+country_event = {
+	id = NWfrance.15
+	title = NWfrance.15.t
+	desc = NWfrance.15.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+
+	immediate = { log = "[GetDateText]: [Root.GetName]: event NWfrance.15" }
+	
+	option = {
+		name = NWfrance.15.a
+		ai_chance = {
+			factor = 30
+		}
+		FROM = { transfer_state = 28 }
+		28 = {
+			add_core_of = FROM
+			remove_core_of = FROM
+		}
+		diplomatic_relation = {
+			country = FROM
+			relation = non_aggression_pact
+			active = yes
+		}
+		hidden_effect = {
+			if = {
+				limit = { ROOT = { NOT = { has_government = communism } } }
+				ROOT = { country_event = { id = NWfrance.5 days = 3 } }
+			}
+		}
+	}
+	
+	option = {
+		name = NWfrance.15.b
+		ai_chance = {
+			factor = 70
+		}
+		FROM = { country_event = { id = NWfrance.16 days = 1 } }
+	}
+}
+
+#Французский отказ
+country_event = {
+	id = NWfrance.16
+	title = NWfrance.16.t
+	desc = NWfrance.16.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+
+	immediate = { log = "[GetDateText]: [Root.GetName]: event NWfrance.16" }
+	
+	option = {
+		name = NWfrance.16.a
+	}
+}
+
+#Германский отказ
+country_event = {
+	id = NWfrance.17
+	title = NWfrance.17.t
+	desc = NWfrance.17.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+
+	immediate = { log = "[GetDateText]: [Root.GetName]: event NWfrance.17" }
+	
+	option = {
+		name = NWfrance.17.a
+	}
+}
+
+#Смерть Жана Орлеанского
+country_event = {
+	id = NWfrance.18
+	title = NWfrance.18.t
+	desc = NWfrance.18.desc
+	picture = GFX_report_event_generic_rally_3
+	fire_only_once = yes
+	
+	trigger = {
+		tag = FRA
+		date > 1940.08.22
+		has_idea = FRA_jean_orleans
+	}
+	
+	immediate = { log = "[GetDateText]: [Root.GetName]: event NWfrance.18" }
+	
+	option = {
+		name = NWfrance.18.a
+		add_stability = -0.05
+		swap_ideas = {
+			remove_idea = FRA_jean_orleans
+			add_idea = FRA_henry_orleans
+		}
+	}
+}
+
+#Франция предлагает заключить союз
+country_event = {
+	id = NWfrance.19
+	title = NWfrance.19.t
+	desc = NWfrance.19.desc
+	picture = GFX_report_event_german_parade_paris
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName]: event NWfrance.19" }
+	
+	option = {
+		name = NWfrance.19.a
+		FRA = {
+			if = {
+				limit = { is_in_faction = no }
+				create_faction = "FRA_franko_italian_faction"
+			}
+		}
+		FRA = {	add_to_faction = ITA }
+		ITA = {
+			add_ai_strategy = {
+				type = alliance
+				id = "FRA"
+				value = 200
+			}
+		}
+		FRA = {
+			add_ai_strategy = {
+				type = alliance
+				id = "ITA"
+				value = 200
+			}
+		}
+		hidden_effect = {
+			news_event = { hours = 6 id = news.181 }
+		}
+	}
+	option = {
+		name = NWfrance.19.b
+		ai_chance = { factor = 0 }
+		FRA = {
+			add_opinion_modifier = { target = ITA modifier = ITA_FRA_woo_italy_reject }
+		}	
+		hidden_effect = {
+			news_event = { hours = 6 id = news.183 }
+		}
+	}
+}
+
+#Франция предлагает разделить Египет
+country_event = {
+	id = NWfrance.20
+	title = NWfrance.20.t
+	desc = NWfrance.20.desc
+	picture = GFX_report_event_military_planning
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName]: event NWfrance.20" }
+	
+	option = {
+		name = NWfrance.20.a
+		ai_chance = {
+			factor = 90
+		}
+		every_state = {
+			limit = {
+				is_core_of = EGY
+				NOT = {
+					state = 446
+					state = 453
+				}
+			}
+			add_claim_by = ITA
+		}
+		every_state = {
+			limit = {
+				OR = {
+					state = 446
+					state = 453
+				}
+			}
+			add_claim_by = FRA
+		}
+	}
+	
+	option = {
+		name = NWfrance.20.b
+		ai_chance = {
+			factor = 10
+		}
+		every_state = {
+			limit = { is_core_of = EGY }
+			add_claim_by = ROOT
+		}
+	}
+}
+
+#Выборы в парламент // пульсар старт
+country_event = {
+	id = NWfrance.21
+	title = NWfrance.21.t
+	desc = NWfrance.21.desc
+	picture = GFX_report_event_poland_rejects
+	fire_only_once = yes
+	hidden = yes
+	
+	trigger = {
+		tag = FRA
+		date > 1940.05.01
+	}
+	
+	immediate = { log = "[GetDateText]: [Root.GetName]: event NWfrance.21" }
+	
+	option = {
+		name = NWfrance.21.a
+		if = {
+			limit = {
+				has_war = no
+				is_puppet = no
+				OR = {
+					has_government = neutrality
+					has_government = democratic
+				}
+			}
+			FRA = { country_event = { id = NWfrance.23 } }
+		}
+	}
+}
+
+#Выборы в парламент // пульсар
+country_event = {
+	id = NWfrance.22
+	title = NWfrance.22.t
+	desc = NWfrance.22.desc
+	picture = GFX_report_event_poland_rejects
+	is_triggered_only = yes
+	hidden = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName]: event NWfrance.22" }
+	
+	option = {
+		name = NWfrance.22.a
+		if = {
+			limit = {
+				has_war = no
+				is_puppet = no
+				OR = {
+					has_government = neutrality
+					has_government = democratic
+				}
+			}
+			FRA = { country_event = { id = NWfrance.23 } }
+		}
+	}
+}
+
+#Выборы в парламент
+country_event = {
+	id = NWfrance.23
+	title = NWfrance.23.t
+	desc = NWfrance.23.desc
+	picture = GFX_report_event_poland_rejects
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName]: event NWfrance.23" }
+	immediate = {
+		set_variable = { fra_comm = party_popularity@communism }
+		set_variable = { fra_neut = party_popularity@neutrality }
+		set_variable = { fra_demo = party_popularity@democratic }
+	}
+	
+	option = { #commi
+		name = NWfrance.23.a
+		trigger = {
+			NOT = { has_completed_focus = FRA_ban_communist_party }
+			AND = {
+				check_variable = { var = fra_comm value = fra_neut compare = greater_than_or_equals }
+				check_variable = { var = fra_comm value = fra_demo compare = greater_than_or_equals }
+			}
+		}
+		
+		set_politics = {
+			ruling_party = communism
+			elections_allowed = no
+		}
+		hidden_effect = {
+			clear_variable = fra_comm
+			clear_variable = fra_neut
+			clear_variable = fra_demo
+			if = {
+				limit = { date < 1948.05.01 }
+				FRA = { country_event = { id = NWfrance.22 days = 1460 } }
+			}
+		}
+	}
+	
+	option = { #neut
+		name = NWfrance.23.b
+		trigger = {
+			AND = {
+				check_variable = { var = fra_neut value = fra_comm compare = greater_than_or_equals }
+				check_variable = { var = fra_neut value = fra_demo compare = greater_than_or_equals }
+			}
+		}
+		
+		if = {
+			limit = { NOT = { has_government = neutrality } }
+			set_politics = {
+				ruling_party = neutrality
+				elections_allowed = no
+			}
+		}
+		else = {
+			add_political_power = 50
+			add_popularity = {
+				ideology = neutrality
+				popularity = 0.05
+			}
+		}
+		
+		hidden_effect = {
+			clear_variable = fra_comm
+			clear_variable = fra_neut
+			clear_variable = fra_demo
+			if = {
+				limit = { date < 1948.05.01 }
+				FRA = { country_event = { id = NWfrance.22 days = 1460 } }
+			}
+		}
+	}
+	
+	option = { #demo
+		name = NWfrance.23.c
+		trigger = {
+			AND = {
+				check_variable = { var = fra_demo value = fra_neut compare = greater_than_or_equals }
+				check_variable = { var = fra_demo value = fra_comm compare = greater_than_or_equals }
+			}
+		}
+		
+		if = {
+			limit = { NOT = { has_government = democratic } }
+			set_politics = {
+				ruling_party = democratic
+				elections_allowed = no
+			}
+		}
+		else = {
+			add_political_power = 50
+			add_popularity = {
+				ideology = democratic
+				popularity = 0.05
+			}
+		}
+		hidden_effect = {
+			clear_variable = fra_comm
+			clear_variable = fra_neut
+			clear_variable = fra_demo
+			if = {
+				limit = { date < 1948.05.01 }
+				FRA = { country_event = { id = NWfrance.22 days = 1460 } }
+			}
+		}
+	}
+}
+
+
+#test
+country_event = {
+	id = NWfrance.999
+	title = "TEST"
+	desc = "TEST EVENT"
+	picture = GFX_report_event_poland_rejects
+	fire_only_once = yes
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName]: event NWfrance.999" }
+	
+	option = {
+		name = 1
+		complete_national_focus = FRA_victory_popular_front
+		custom_effect_tooltip = nw_french_left_focus_tt
+		hidden_effect = {
+			load_focus_tree = nw_french_left_focus
+		}
+	}
+	
+	option = {
+		name = 2
+		complete_national_focus = FRA_third_way
+		custom_effect_tooltip = nw_french_right_focus_tt
+		hidden_effect = {
+			load_focus_tree = nw_french_right_focus
+		}
+	}
+	
+	option = {
+		name = 3
+		complete_national_focus = FRA_support_maurras
+		custom_effect_tooltip = nw_french_right_focus_tt
+		hidden_effect = {
+			load_focus_tree = nw_french_right_focus
+		}
+	}
+}
+
+
