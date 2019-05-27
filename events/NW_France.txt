@@ -843,6 +843,572 @@ country_event = {
 }
 
 
+
+########
+## Коллаборационистская FRA
+########
+
+#Передача власти Петену
+country_event = {
+	id = NWfrance.101
+	title = NWfrance.101.t
+	desc = NWfrance.101.desc
+	picture = GFX_report_event_FDR_speech
+	fire_only_once = yes
+	
+	trigger = {
+		tag = FRA
+		OR = {
+			has_government = democratic
+			has_government = neutrality
+		}
+		NOT = { has_war_with = FRC }
+		OR = {
+			AND = {
+				has_war_with = GER
+				NOT = { has_war_with = ITA }
+			}
+			AND = {
+				has_war_with = ITA
+				NOT = { has_war_with = GER }
+			}
+			AND = {
+				has_war_with = GER
+				has_war_with = ITA
+				ITA = { is_in_faction_with = GER }
+			}
+		}
+		NOT = {
+			any_state = {
+				is_controlled_by = FRA
+				OR = {
+					is_owned_by = GER
+					is_owned_by = ITA
+				}
+			}
+		}
+		16 = {
+			OR = {
+				is_controlled_by = GER
+				is_controlled_by = ITA
+			}
+		}
+	}
+	
+	immediate = { log = "[GetDateText]: [Root.GetName]: event NWfrance.101" }
+	
+	option = {
+		name = NWfrance.101.a
+		ai_chance = {
+			factor = 90
+		}
+		
+		if = {
+			limit = { neutrality < 0.15 }
+			add_popularity = {
+				ideology = neutrality
+				popularity = 0.15
+			}
+			else = {
+				add_popularity = {
+					ideology = neutrality
+					popularity = 0.1
+				}
+			}
+		}
+		set_politics = {
+			ruling_party = neutrality
+			elections_allowed = no
+		}
+		create_country_leader = {
+			name = "Philippe Pétain"
+			desc = "POLITICS_PHILIPPE_PETAIN_DESC"
+			picture = "gfx/leaders/FRA/Portrait_France_Philippe_Petain.dds"
+			expire = "1965.1.1"
+			ideology = despotism
+			traits = {
+			}
+		}
+		
+		load_focus_tree = nw_collaborationist_french_focus
+		custom_effect_tooltip = unlock_decision_peace_tt
+		
+		hidden_effect = {
+			set_country_flag = FRA_peace_flag
+			every_state = {
+				limit = {
+					is_owned_by = FRA
+					is_controlled_by = GER
+				}
+				add_to_variable = { GER_FRA_occupy_state = 1 }
+			}
+			every_state = {
+				limit = {
+					is_owned_by = FRA
+					is_controlled_by = ITA
+				}
+				add_to_variable = { ITA_FRA_occupy_state = 1 }
+			}
+			if = {
+				limit = { check_variable = { var = GER_FRA_occupy_state value = ITA_FRA_occupy_state compare = greater_than_or_equals } }
+				GER = { save_event_target_as = france_occupy_leader }
+				else = { ITA = { save_event_target_as = france_occupy_leader } }
+			}
+			clear_variable = GER_FRA_occupy_state
+			clear_variable = ITA_FRA_occupy_state
+		}
+	}
+	
+	option = {
+		name = NWfrance.101.b
+		ai_chance = {
+			factor = 10
+		}
+		add_war_support = 0.1
+	}
+}
+
+#Франция запрашивает мир // решение
+country_event = {
+	id = NWfrance.102
+	title = NWfrance.102.t
+	desc = NWfrance.102.desc
+	picture = GFX_report_event_finnish_letter
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName]: event NWfrance.102" }
+	
+	option = {
+		name = NWfrance.102.a
+		ai_chance = {
+			factor = 60
+		}
+		FROM = { country_event = { id = NWfrance.103 days = 1 } }
+	}
+	option = {
+		name = NWfrance.102.b
+		ai_chance = {
+			factor = 30
+		}
+		hidden_effect = {
+			if = {
+				limit = { FROM = { is_in_faction_with = ENG } }
+				ENG = { country_event = { id = NWfrance.105 days = 11 } }
+			}
+		}
+		FROM = { leave_faction = yes }
+		every_country = {
+			limit = { has_war_with = FROM }
+			white_peace = FROM
+		}
+		#Проверить популярность
+		set_autonomy = {
+			target = FROM
+			autonomy_state = autonomy_satellite
+		}
+		add_ideas = {
+			FRA_french_prisoners_of_war
+			FRA_french_payments
+			FRA_french_food
+		}
+		FROM = {
+			add_ideas = {
+				FRA_prisoners_war_in_foreign_land
+				FRA_payments_to_winners
+				FRA_hunger_in_big_cities
+			}
+		}
+	}
+	option = {
+		name = NWfrance.102.c
+		ai_chance = {
+			factor = 10
+		}
+	}
+}
+
+#FROM.CountryName выдвигает условия перемирия
+country_event = {
+	id = NWfrance.103
+	title = NWfrance.103.t
+	desc = NWfrance.103.desc
+	picture = GFX_report_event_poland_rejects
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName]: event NWfrance.103" }
+	
+	option = {
+		name = NWfrance.103.a
+		ai_chance = {
+			factor = 75
+		}
+		hidden_effect = {
+			if = {
+				limit = { is_in_faction_with = ENG }
+				ENG = { country_event = { id = NWfrance.105 days = 11 } }
+			}
+		}
+		leave_faction = yes
+		every_country = {
+			limit = { has_war_with = ROOT }
+			white_peace = ROOT
+		}
+		#Проверить популярность
+		FROM = {
+			set_autonomy = {
+				target = ROOT
+				autonomy_state = autonomy_satellite
+			}
+		}
+		if = {
+			limit = { FROM = { tag = ITA } }
+			every_state = {
+				limit = {
+					OR = {
+						state = 1
+						state = 1032
+						state = 21
+						state = 32
+						state = 735
+						state = 1034
+						state = 1033
+						state = 1035
+						state = 22
+						state = 31
+						state = 1043
+						state = 20
+						state = 26
+						state = 25
+						state = 19
+						state = 1050
+					}
+				}
+				ITA = { transfer_state = PREV }
+			}
+			if = {
+				limit = { GER = { is_in_faction_with = ITA } }
+				every_state = {
+					limit = {
+						OR = {
+							state = 28
+							state = 1036
+						}
+					}
+					GER = { transfer_state = PREV }
+				}
+			}
+		}
+		if = {
+			limit = { FROM = { tag = GER } }
+			every_state = {
+				limit = {
+					OR = {
+						state = 19
+						state = 23
+						state = 30
+						state = 1039
+						state = 14
+						state = 15
+						state = 24
+						state = 27
+						state = 17
+						state = 1036
+						state = 28
+						state = 16
+						state = 1016
+						state = 29
+						state = 1038
+						state = 1037
+					}
+				}
+				GER = { transfer_state = PREV }
+			}
+			if = {
+				limit = { ITA = { is_in_faction_with = GER } }
+				every_state = {
+					limit = {
+						OR = {
+							state = 1032
+							state = 735
+							state = 1034
+						}
+					}
+					ITA = { transfer_state = PREV }
+				}
+			}
+		}
+		FROM = {
+			add_ideas = {
+				FRA_french_prisoners_of_war
+				FRA_french_payments
+				FRA_french_food
+			}
+		}
+		add_ideas = {
+			FRA_prisoners_war_in_foreign_land
+			FRA_payments_to_winners
+			FRA_hunger_in_big_cities
+		}
+	}
+	option = {
+		name = NWfrance.103.b
+		ai_chance = {
+			factor = 25
+		}
+		FROM = { country_event = { id = NWfrance.104 days = 1 } }
+	}
+}
+
+#Французский отказ
+country_event = {
+	id = NWfrance.104
+	title = NWfrance.104.t
+	desc = NWfrance.104.desc
+	picture = GFX_report_event_british_artillery
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName]: event NWfrance.104" }
+	
+	option = {
+		name = NWfrance.104.a
+	}
+}
+
+#Французский флот
+country_event = {
+	id = NWfrance.105
+	title = NWfrance.105.t
+	desc = NWfrance.105.desc
+	picture = GFX_report_event_ast_navy
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName]: event NWfrance.105" }
+	
+	option = {
+		name = NWfrance.105.a
+		ai_chance = {
+			factor = 50
+		}
+		declare_war_on = {
+			target = FRA
+			type = annex_everything
+		}
+		FRA = {
+			add_manpower = -297
+			destroy_ships = {
+				type = destroyer
+				count = 1
+			}
+			destroy_ships = {
+				type = battleship
+				count = 1
+			}
+		}
+	}
+	
+	option = {
+		name = NWfrance.105.b
+		ai_chance = {
+			factor = 50
+		}
+		FRA = { add_opinion_modifier = { target = ROOT modifier = FRA_neutrals } }
+		ROOT = { add_opinion_modifier = { target = FRA modifier = FRA_neutrals } }
+	}
+}
+
+
+#Оккупация Северной Африки
+country_event = {
+	id = NWfrance.106
+	title = NWfrance.106.t
+	desc = NWfrance.106.desc
+	picture = GFX_report_event_FDR_speech
+	fire_only_once = yes
+	
+	trigger = {
+		OR = {
+			tag = GER
+			tag = ITA
+		}
+		FRA = {
+			is_subject_of = ROOT
+			owns_state = 459
+			owns_state = 460
+		}
+		any_country = {
+			has_war_with = ROOT
+			controls_state = 459
+			controls_state = 460
+		}
+	}
+	
+	immediate = { log = "[GetDateText]: [Root.GetName]: event NWfrance.106" }
+	
+	option = {
+		name = NWfrance.106.a
+		ai_chance = {
+			factor = 50
+		}
+		FRA = {
+			add_autonomy_ratio = {
+				value = 1.0
+			}
+			add_manpower = -50000
+		}
+	}
+	
+	option = {
+		name = NWfrance.106.b
+		ai_chance = {
+			factor = 50
+		}
+	}
+}
+
+#Место базирования правительства
+country_event = {
+	id = NWfrance.107
+	title = NWfrance.107.t
+	desc = NWfrance.107.desc
+	picture = GFX_report_event_generic_conference
+	fire_only_once = yes
+	
+	trigger = {
+		tag = FRA
+		is_subject = yes
+		has_government = neutrality
+		NOT = { controls_state = 16 }
+	}
+	
+	immediate = { log = "[GetDateText]: [Root.GetName]: event NWfrance.107" }
+	
+	option = {
+		name = NWfrance.107.a
+		trigger = { owns_state = 26 }
+		ai_chance = {
+			factor = 25
+		}
+		add_political_power = -50
+		set_capital = 26
+		set_cosmetic_tag = FRA_vichy
+	}
+	
+	option = {
+		name = NWfrance.107.b
+		trigger = { owns_state = 1035 }
+		ai_chance = {
+			factor = 25
+			modifier = {
+				factor = 0
+				is_historical_focus_on = yes
+			}
+		}
+		add_stability = -0.05
+		set_capital = 1035
+		set_cosmetic_tag = FRA_marsel
+	}
+	
+	option = {
+		name = NWfrance.107.c
+		trigger = { owns_state = 20 }
+		ai_chance = {
+			factor = 25
+			modifier = {
+				factor = 0
+				is_historical_focus_on = yes
+			}
+		}
+		add_popularity = {
+			ideology = democratic
+			popularity = 0.05
+		}
+		set_capital = 20
+		set_cosmetic_tag = FRA_lion
+	}
+	
+	option = {
+		name = NWfrance.107.d
+		trigger = { owns_state = 1050 }
+		ai_chance = {
+			factor = 25
+			modifier = {
+				factor = 0
+				is_historical_focus_on = yes
+			}
+		}
+		add_popularity = {
+			ideology = communism
+			popularity = 0.05
+		}
+		set_capital = 1050
+		set_cosmetic_tag = FRA_tuluza
+	}
+}
+
+
+#Франция запрашивает о поддержке в восстании против Германии
+country_event = {
+	id = NWfrance.108
+	title = NWfrance.108.t
+	desc = NWfrance.108.desc
+	picture = GFX_report_event_worried_french
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName]: event NWfrance.108" }
+	
+	option = {
+		name = NWfrance.108.a
+		ai_chance = {
+			factor = 90
+		}
+		FROM = { country_event = { id = NWfrance.109 days = 1 } }
+	}
+	option = {
+		name = NWfrance.108.b
+		ai_chance = {
+			factor = 10
+		}
+		FROM = { country_event = { id = NWfrance.110 days = 1 } }
+	}
+}
+
+#Британия согласилась помочь
+country_event = {
+	id = NWfrance.109
+	title = NWfrance.109.t
+	desc = NWfrance.109.desc
+	picture = GFX_report_event_worried_french
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName]: event NWfrance.109" }
+	
+	option = {
+		name = NWfrance.109.a
+	}
+}
+
+#Британия отказалась помочь
+country_event = {
+	id = NWfrance.110
+	title = NWfrance.110.t
+	desc = NWfrance.110.desc
+	picture = GFX_report_event_worried_french
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName]: event NWfrance.110" }
+	
+	option = {
+		name = NWfrance.110.a
+	}
+}
+
+
+
+
+
+
+
+
 #test
 country_event = {
 	id = NWfrance.999
