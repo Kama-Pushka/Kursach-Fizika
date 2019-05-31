@@ -251,7 +251,7 @@ focus_tree = {
 	focus = {
 		id = FRC_socialism_in_single_france
 		icon = GFX_focus_generic_self_management
-		prerequisite = { focus = FRC_alliance_with_kremlin }
+		prerequisite = { focus = FRC_alliance_with_kremlin focus = FRC_french_revolutionary_union }
 		prerequisite = { focus = FRC_ban_petty_bourgeois_parties }
 		x = 0
 		y = 1
@@ -277,6 +277,10 @@ focus_tree = {
 			log = "[GetDateText]: [Root.GetName]: Focus FRC_socialism_in_single_france"
 			add_stability = 0.1
 			add_ideas = FRC_socialism_in_single_france
+			if = {
+				limit = { has_idea = FRC_trotskyist_cell }
+				remove_ideas = FRC_trotskyist_cell
+			}
 		}
 	}
 	
@@ -808,7 +812,7 @@ focus_tree = {
 		available_if_capitulated = yes
 
 		ai_will_do = {
-			factor = 5
+			factor = 10
 		}
 		available = {
 		}
@@ -819,6 +823,7 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus FRC_stalinist_persecution"
+			add_popularity = { ideology = communism popularity = -0.1 }
 		}
 	}
 	
@@ -848,6 +853,7 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus FRC_implementation_dictatorship_proletariat"
+			add_war_support = 0.05
 		}
 	}
 	
@@ -866,7 +872,7 @@ focus_tree = {
 		available_if_capitulated = yes
 
 		ai_will_do = {
-			factor = 5
+			factor = 10
 		}
 		available = {
 		}
@@ -877,6 +883,35 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus FRC_cooperation_with_trade_unions"
+			add_popularity = {
+				ideology = anarchism
+				popularity = 0.1
+			}
+			random_owned_controlled_state = {
+				limit = {
+					free_building_slots = {
+						building = industrial_complex
+						size > 1
+						include_locked = yes
+					}
+					free_building_slots = {
+						building = arms_factory
+						size > 0
+						include_locked = yes
+					}
+				}
+				add_extra_state_shared_building_slots = 3
+				add_building_construction = {
+					type = industrial_complex
+					level = 2
+					instant_build = yes
+				}
+				add_building_construction = {
+					type = arms_factory
+					level = 1
+					instant_build = yes
+				}
+			}
 		}
 	}
 	
@@ -899,6 +934,8 @@ focus_tree = {
 			factor = 5
 		}
 		available = {
+			NOT = { has_war_with = FRA }
+			has_civil_war = no
 		}
 		bypass = {
 		}
@@ -907,6 +944,14 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus FRC_fourth_international"
+			if = {
+				limit = { KMX = { is_faction_leader = yes } }
+				KMX = { country_event = { id = generic.2 } }
+			}
+			else = {
+				set_rule = can_create_factions
+				create_faction = MEX_international4
+			}
 		}
 	}
 	
@@ -936,13 +981,15 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus FRC_marxist_science"
+			add_to_tech_sharing_group = FRC_marxist_science_group
 		}
 	}
 	
 	focus = {
 		id = FRC_protection_of_fatherland
 		icon = GFX_focus_generic_self_management
-		prerequisite = { focus = FRC_fourth_international }
+		prerequisite = { focus = FRC_fourth_international focus = FRC_french_revolutionary_union }
+		prerequisite = { focus = FRC_stalinist_persecution }
 		x = 0
 		y = 1
 		relative_position_id = FRC_fourth_international
@@ -965,6 +1012,9 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus FRC_protection_of_fatherland"
+			add_war_support = 0.2
+			add_country_leader_trait = FRC_protection_of_fatherland
+			add_ideas = FRC_protection_of_fatherland
 		}
 	}
 	
@@ -994,6 +1044,22 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus FRC_introduction_war_communism"
+			random_owned_controlled_state = {
+				limit = {
+					free_building_slots = {
+						building = arms_factory
+						size > 1
+						include_locked = yes
+					}
+				}
+				add_extra_state_shared_building_slots = 2
+				add_building_construction = {
+					type = arms_factory
+					level = 2
+					instant_build = yes
+				}
+			}
+			add_ideas = FRC_introduction_war_communism
 		}
 	}
 	
@@ -1023,6 +1089,7 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus FRC_union_in_name_of_equality"
+			add_ideas = FRC_union_in_name_of_equality
 		}
 	}
 	
@@ -1041,26 +1108,79 @@ focus_tree = {
 		available_if_capitulated = yes
 
 		ai_will_do = {
-			factor = 5
+			factor = 0.5
+			modifier = {
+				factor = 10
+				strength_ratio = {
+					tag = ENG
+					ratio > 2
+				}
+				strength_ratio = {
+					tag = GER
+					ratio > 2
+				}
+				strength_ratio = {
+					tag = ITA
+					ratio > 2
+				}
+			}
+			modifier = {
+				factor = 20
+				strength_ratio = {
+					tag = ENG
+					ratio > 3
+				}
+				strength_ratio = {
+					tag = GER
+					ratio > 3
+				}
+				strength_ratio = {
+					tag = ITA
+					ratio > 3
+				}
+			}
+			modifier = {
+				factor = 10
+				alliance_strength_ratio > 1
+			}
+			modifier = {
+				factor = 20
+				alliance_strength_ratio > 2
+			}
 		}
 		available = {
 		}
 		bypass = {
+			has_war_with = ENG
+			has_war_with = GER
+			has_war_with = ITA
 		}
 		select_effect = {
 		}
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus FRC_preventing_counter_revolution"
+			declare_war_on = {
+				target = ENG
+				type = annex_everything
+			}
+			declare_war_on = {
+				target = GER
+				type = annex_everything
+			}
+			declare_war_on = {
+				target = ITA
+				type = annex_everything
+			}
 		}
 	}
 	
 	focus = {
 		id = FRC_correction_of_deformed_union
 		icon = GFX_focus_generic_self_management
-		prerequisite = { focus = FRC_preventing_counter_revolution }
+		prerequisite = { focus = FRC_protection_of_fatherland }
 		mutually_exclusive = { focus = FRC_division_world_with_soviet_union }
-		x = -2
+		x = -1
 		y = 1
 		relative_position_id = FRC_preventing_counter_revolution
 		
@@ -1071,26 +1191,53 @@ focus_tree = {
 		available_if_capitulated = yes
 
 		ai_will_do = {
-			factor = 5
+			factor = 1.25
+			modifier = {
+				factor = 4
+				strength_ratio = {
+					tag = SOV
+					ratio > 1
+				}
+			}
+			modifier = {
+				factor = 8
+				strength_ratio = {
+					tag = SOV
+					ratio > 2
+				}
+			}
+			modifier = {
+				factor = 4
+				alliance_strength_ratio > 1
+			}
+			modifier = {
+				factor = 10
+				alliance_strength_ratio > 2
+			}
 		}
 		available = {
 		}
 		bypass = {
+			has_war_with = SOV
 		}
 		select_effect = {
 		}
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus FRC_correction_of_deformed_union"
+			create_wargoal = {
+				type = puppet_wargoal_focus
+				target = SOV
+			}
 		}
 	}
 	
 	focus = {
 		id = FRC_division_world_with_soviet_union
 		icon = GFX_focus_generic_self_management
-		prerequisite = { focus = FRC_preventing_counter_revolution }
+		prerequisite = { focus = FRC_protection_of_fatherland }
 		mutually_exclusive = { focus = FRC_correction_of_deformed_union }
-		x = 0
+		x = 1
 		y = 1
 		relative_position_id = FRC_preventing_counter_revolution
 		
@@ -1101,9 +1248,10 @@ focus_tree = {
 		available_if_capitulated = yes
 
 		ai_will_do = {
-			factor = 5
+			factor = 4
 		}
 		available = {
+			NOT = { has_war_with = SOV }
 		}
 		bypass = {
 		}
@@ -1112,6 +1260,7 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus FRC_division_world_with_soviet_union"
+			SOV = { country_event = { id = NWfrance.310 } }
 		}
 	}
 	
@@ -1119,7 +1268,7 @@ focus_tree = {
 		id = FRC_supporting_spanish_revolution
 		icon = GFX_focus_generic_self_management
 		prerequisite = { focus = FRC_preventing_counter_revolution }
-		x = 1
+		x = 0
 		y = 2
 		relative_position_id = FRC_preventing_counter_revolution
 		
@@ -1130,7 +1279,7 @@ focus_tree = {
 		available_if_capitulated = yes
 
 		ai_will_do = {
-			factor = 5
+			factor = 10
 		}
 		available = {
 		}
@@ -1141,6 +1290,50 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus FRC_supporting_spanish_revolution"
+			add_war_support = 0.05
+			if = {
+				limit = {
+					country_exists = SPA 
+					SPA = { NOT = { has_government = trozkism } }
+				}
+				declare_war_on = {
+					target = SPA
+					type = annex_everything
+				}
+			}
+			if = {
+				limit = {
+					country_exists = SPR 
+				}
+				if = {
+					limit = { SPR = { NOT = { has_government = trozkism } } }
+					declare_war_on = {
+						target = SPR
+						type = annex_everything
+					}
+				}
+				else = {
+					SPR = { add_opinion_modifier = { target = ROOT modifier = FRC_supporting_spanish_revolution } }
+					ROOT = { add_opinion_modifier = { target = SPR modifier = FRC_supporting_spanish_revolution } }
+				}
+			}
+			if = {
+				limit = {
+					country_exists = ARA 
+					is_subject = no
+				}
+				if = {
+					limit = { ARA = { NOT = { has_government = trozkism } } }
+					declare_war_on = {
+						target = ARA
+						type = annex_everything
+					}
+				}
+				else = {
+					ARA = { add_opinion_modifier = { target = ROOT modifier = FRC_supporting_spanish_revolution } }
+					ROOT = { add_opinion_modifier = { target = ARA modifier = FRC_supporting_spanish_revolution } }
+				}
+			}
 		}
 	}
 	
@@ -1159,7 +1352,7 @@ focus_tree = {
 		available_if_capitulated = yes
 
 		ai_will_do = {
-			factor = 5
+			factor = 4
 		}
 		available = {
 		}
@@ -1170,6 +1363,33 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus FRC_attack_from_north"
+			add_war_support = 0.05
+			add_timed_idea = {
+				idea = FRC_attack_from_north
+				days = 365
+			}
+			if = {
+				limit = {
+					country_exists = GER
+					NOT = { has_war_with = GER }
+					GER = { NOT = { is_in_faction_with = ROOT } }
+				}
+				declare_war_on = {
+					target = GER
+					type = annex_everything
+				}
+			}
+			if = {
+				limit = {
+					country_exists = POL
+					NOT = { has_war_with = POL }
+					POL = { NOT = { is_in_faction_with = ROOT } }
+				}
+				declare_war_on = {
+					target = POL
+					type = annex_everything
+				}
+			}
 		}
 	}
 	
@@ -1188,7 +1408,7 @@ focus_tree = {
 		available_if_capitulated = yes
 
 		ai_will_do = {
-			factor = 5
+			factor = 4
 		}
 		available = {
 		}
@@ -1199,6 +1419,77 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus FRC_attack_from_south"
+			add_war_support = 0.05
+			add_timed_idea = {
+				idea = FRC_attack_from_south
+				days = 365
+			}
+			if = {
+				limit = {
+					country_exists = YUG
+					NOT = { has_war_with = YUG }
+					YUG = { NOT = { is_in_faction_with = ROOT } }
+				}
+				declare_war_on = {
+					target = YUG
+					type = annex_everything
+				}
+			}
+			if = {
+				limit = {
+					country_exists = BUL
+					NOT = { has_war_with = BUL }
+					BUL = { NOT = { is_in_faction_with = ROOT } }
+				}
+				declare_war_on = {
+					target = BUL
+					type = annex_everything
+				}
+			}
+			if = {
+				limit = {
+					country_exists = ROM
+					NOT = { has_war_with = ROM }
+					ROM = { NOT = { is_in_faction_with = ROOT } }
+				}
+				declare_war_on = {
+					target = ROM
+					type = annex_everything
+				}
+			}
+			if = {
+				limit = {
+					country_exists = GRE
+					NOT = { has_war_with = GRE }
+					GRE = { NOT = { is_in_faction_with = ROOT } }
+				}
+				declare_war_on = {
+					target = GRE
+					type = annex_everything
+				}
+			}
+			if = {
+				limit = {
+					country_exists = CRE
+					NOT = { has_war_with = CRE }
+					CRE = { NOT = { is_in_faction_with = ROOT } }
+				}
+				declare_war_on = {
+					target = CRE
+					type = annex_everything
+				}
+			}
+			if = {
+				limit = {
+					country_exists = HEL
+					NOT = { has_war_with = HEL }
+					HEL = { NOT = { is_in_faction_with = ROOT } }
+				}
+				declare_war_on = {
+					target = HEL
+					type = annex_everything
+				}
+			}
 		}
 	}
 	
@@ -1229,6 +1520,36 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus FRC_fill_fields_blood_our_enemies"
+			add_war_support = 0.1
+			hidden_effect = {
+				division_template = {
+					name = "Troskists Brigada"
+					is_locked = no
+					regiments = {
+						infantry = { x = 0 y = 0 }
+						infantry = { x = 0 y = 1 }
+						infantry = { x = 0 y = 2 }
+						infantry = { x = 1 y = 0 }
+						infantry = { x = 1 y = 1 }
+						infantry = { x = 1 y = 2 }
+						infantry = { x = 2 y = 0 }
+						artillery_brigade = { x = 2 y = 1 }
+						artillery_brigade = { x = 2 y = 2 }
+					}
+					support = {
+						recon = { x = 0 y = 0 }
+						engineer = { x = 0 y = 1 }
+						artillery = { x = 0 y = 2 }
+					}
+				}
+			}
+			every_owned_state = {
+				limit = { state_strategic_value > 0 }
+				create_unit = {
+					division = "name = \"Troskists Brigada\" division_template = \"Troskists Brigada\" start_experience_factor = 0.3" 
+					owner = ROOT
+				}
+			}
 		}
 	}
 	
@@ -1251,6 +1572,7 @@ focus_tree = {
 			factor = 5
 		}
 		available = {
+			always = no
 		}
 		bypass = {
 		}
@@ -1259,6 +1581,14 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus FRC_government_general_confederation_labour"
+			add_popularity = {
+				ideology = anarchism
+				popularity = 0.05
+			}
+			set_politics = {
+				ruling_party = anarchism
+				elections_allowed = no
+			}
 		}
 	}
 	
@@ -1288,6 +1618,11 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus FRC_getting_rid_of_state"
+			add_popularity = {
+				ideology = anarchism
+				popularity = 0.05
+			}
+			add_ideas = FRC_getting_rid_of_state
 		}
 	}
 	
@@ -1317,6 +1652,8 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus FRC_creation_of_working_communities"
+			add_stability = 0.05
+			add_ideas = FRC_creation_of_working_communities
 		}
 	}
 	
@@ -1347,6 +1684,7 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus FRC_gradual_abolition_of_money"
+			add_ideas = FRC_gradual_abolition_of_money
 		}
 	}
 	
@@ -1376,6 +1714,21 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus FRC_involvement_members_cgt_to_work"
+			random_owned_controlled_state = {
+				limit = {
+					free_building_slots = {
+						building = industrial_complex
+						size > 1
+						include_locked = yes
+					}
+				}
+				add_extra_state_shared_building_slots = 2
+				add_building_construction = {
+					type = industrial_complex
+					level = 2
+					instant_build = yes
+				}
+			}
 		}
 	}
 	
@@ -1406,6 +1759,11 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus FRC_abolition_of_republican_institutions"
+			add_political_power = 50
+			add_popularity = {
+				ideology = democratic
+				popularity = -0.1
+			}
 		}
 	}
 	
@@ -1435,6 +1793,7 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus FRC_development_of_theories_of_syndicalism"
+			add_ideas = FRC_development_of_theories_of_syndicalism
 		}
 	}
 	
@@ -1464,6 +1823,7 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus FRC_increasing_role_trade_unions"
+			add_war_support = 0.1
 		}
 	}
 	
@@ -1493,6 +1853,9 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus FRC_legacy_of_bakunin"
+			set_rule = { can_create_factions = yes }
+			create_faction = FRC_second_anarchist_international
+			add_ideas = FRC_legacy_of_bakunin
 		}
 	}
 	
@@ -1516,12 +1879,27 @@ focus_tree = {
 		available = {
 		}
 		bypass = {
+			has_war_with = LUX
+			has_war_with = BEL
+			has_war_with = HOL
 		}
 		select_effect = {
 		}
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus FRC_dethronisation_monarchs_benelux"
+			create_wargoal = {
+				type = annex_everything
+				target = LUX
+			}
+			create_wargoal = {
+				type = annex_everything
+				target = BEL
+			}
+			create_wargoal = {
+				type = annex_everything
+				target = HOL
+			}
 		}
 	}
 	
@@ -1543,14 +1921,20 @@ focus_tree = {
 			factor = 5
 		}
 		available = {
+			GER = { has_government = fascism }
 		}
 		bypass = {
+			has_war_with = GER
 		}
 		select_effect = {
 		}
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus FRC_implementation_antifascism"
+			create_wargoal = {
+				type = annex_everything
+				target = GER
+			}
 		}
 	}
 	

@@ -2084,6 +2084,238 @@ country_event = {
 	}
 }
 
+#Франция предлагает разделить мир
+country_event = {
+	id = NWfrance.310
+	title = NWfrance.310.t
+	desc = NWfrance.310.desc
+	picture = GFX_report_event_degaulle_inspect_troops
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName]: event NWfrance.310" }
+	
+	option = {
+		name = NWfrance.310.a
+		ai_chance = {
+			factor = 50
+		}
+		add_stability = -0.1
+		FROM = { add_stability = -0.1 }
+		if = {
+			limit = { FROM = { has_war = yes } }
+			if = {
+				limit = { ROOT = { is_faction_leader = yes } }
+				ROOT = { set_faction_name = FRC_united_commintern }
+			}
+			else = {
+				FROM = {
+					set_rule = { can_create_factions = yes }
+					create_faction = FRC_united_commintern
+				}
+			}
+			ROOT = {
+				every_country = {
+					limit = { is_in_faction_with = FROM }
+					country_event = { id = NWfrance.311 hours = 6 }
+					add_ai_strategy = {
+						type = alliance
+						id = ROOT
+						value = 200
+					}
+				}
+			}
+			FROM = {
+				dismantle_faction = yes
+				add_ai_strategy = {
+					type = alliance
+					id = ROOT
+					value = 200
+				}
+			}
+			ROOT = {
+				add_to_faction = FROM
+				add_ai_strategy = {
+					type = alliance
+					id = FROM
+					value = 200
+				}
+			}
+		}
+		else = {
+			if = {
+				limit = { FROM = { has_completed_focus = FRC_french_revolutionary_union } }
+				if = {
+					limit = { FROM = { is_faction_leader = yes } }
+					FROM = { set_faction_name = FRC_united_international }
+				}
+				else = {
+					FROM = {
+						set_rule = { can_create_factions = yes }
+						set_faction_name = FRC_united_international
+					}
+				}
+				FROM = {
+					every_country = {
+						limit = { is_in_faction_with = ROOT }
+						country_event = { id = NWfrance.311 hours = 6 }
+						add_ai_strategy = {
+							type = alliance
+							id = FROM
+							value = 200
+						}
+					}
+				}
+				ROOT = {
+					dismantle_faction = yes
+					add_ai_strategy = {
+						type = alliance
+						id = FROM
+						value = 200
+					}
+				}
+				FROM = {
+					add_to_faction = ROOT
+					add_ai_strategy = {
+						type = alliance
+						id = ROOT
+						value = 200
+					}
+				}
+			}
+			if = {
+				limit = { FROM = { has_completed_focus = FRC_fourth_international } }
+				if = {
+					limit = { FROM = { is_faction_leader = yes } }
+					FROM = { set_faction_name = FRC_three_half_international }
+				}
+				else = {
+					FROM = {
+						set_rule = { can_create_factions = yes }
+						set_faction_name = FRC_three_half_international
+					}
+				}
+				FROM = {
+					every_country = {
+						limit = { is_in_faction_with = ROOT }
+						country_event = { id = NWfrance.311 hours = 6 }
+						add_ai_strategy = {
+							type = alliance
+							id = FROM
+							value = 200
+						}
+					}
+				}
+				ROOT = {
+					dismantle_faction = yes
+					add_ai_strategy = {
+						type = alliance
+						id = FROM
+						value = 200
+					}
+				}
+				FROM = {
+					add_to_faction = ROOT
+					add_ai_strategy = {
+						type = alliance
+						id = ROOT
+						value = 200
+					}
+				}
+			}
+		}
+	}
+	
+	option = {
+		name = NWfrance.310.b
+		ai_chance = {
+			factor = 50
+		}
+	}
+}
+
+#Вступление в обновленный Интернационал
+country_event = {
+	id = NWfrance.311
+	title = NWfrance.311.t
+	desc = NWfrance.311.desc
+	picture = GFX_report_event_degaulle_inspect_troops
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName]: event NWfrance.311" }
+	
+	option = {
+		name = NWfrance.311.a
+		ai_chance = {
+			factor = 90
+		}
+		FROM = { add_to_faction = ROOT }
+		add_stability = -0.05
+		add_popularity = {
+			ideology = trozkism
+			popularity = -0.1
+		}
+	}
+	
+	option = {
+		name = NWfrance.311.b
+		ai_chance = {
+			factor = 10
+		}
+		add_stability = 0.05
+		create_wargoal = {
+			type = puppet_wargoal_focus
+			target = FROM
+		}
+	}
+}
+
+#Крупные забастовки профсоюзников
+country_event = {
+	id = NWfrance.312
+	title = NWfrance.312.t
+	desc = NWfrance.312.desc
+	picture = GFX_report_event_degaulle_inspect_troops
+	fire_only_once = yes
+	
+	trigger = {
+		tag = FRC
+		has_government = trozkism
+		NOT = {
+			has_completed_focus = FRC_alliance_with_kremlin
+			has_completed_focus = FRC_french_revolutionary_union
+			has_completed_focus = FRC_fourth_international
+			has_completed_focus = FRC_implementation_dictatorship_proletariat
+		}
+		has_completed_focus = FRC_stalinist_persecution
+		has_completed_focus = FRC_cooperation_with_trade_unions
+		NOT = { has_war_with = FRA }
+		has_civil_war = no
+	}
+	
+	immediate = { log = "[GetDateText]: [Root.GetName]: event NWfrance.312" }
+	
+	option = {
+		name = NWfrance.312.a
+		ai_chance = {
+			factor = 10
+		}
+		add_popularity = {
+			ideology = anarchism
+			popularity = -0.1
+		}
+		16 = { add_manpower = -200000 }
+	}
+	
+	option = {
+		name = NWfrance.312.b
+		ai_chance = {
+			factor = 90
+		}
+		complete_national_focus = FRC_government_general_confederation_labour
+		add_ideas = FRC_no_ideological_unity
+	}
+}
+
 
 
 
@@ -2093,7 +2325,6 @@ country_event = {
 	title = "TEST"
 	desc = "TEST EVENT"
 	picture = GFX_report_event_poland_rejects
-	fire_only_once = yes
 	is_triggered_only = yes
 	
 	immediate = { log = "[GetDateText]: [Root.GetName]: event NWfrance.999" }
