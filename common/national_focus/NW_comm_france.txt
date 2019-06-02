@@ -463,7 +463,7 @@ focus_tree = {
 	}
 	
 	focus = {
-		id = FRC_autonomy_for_french_people
+		id = FRC_heavy_industry_alsace_lorraine
 		icon = GFX_focus_generic_self_management
 		prerequisite = { focus = FRC_socialism_in_single_france }
 		x = 0
@@ -487,19 +487,30 @@ focus_tree = {
 		}
 
 		completion_reward = {
-			log = "[GetDateText]: [Root.GetName]: Focus FRC_autonomy_for_french_people"
-			release_puppet = KRS
-			release_puppet = BRE
+			log = "[GetDateText]: [Root.GetName]: Focus FRC_heavy_industry_alsace_lorraine"
+			28 = {
+				add_extra_state_shared_building_slots = 2
+				add_building_construction = {
+					type = industrial_complex
+					level = 1
+					instant_build = yes
+				}
+				add_building_construction = {
+					type = arms_factory
+					level = 1
+					instant_build = yes
+				}
+			}
 		}
 	}
 	
 	focus = {
 		id = FRC_integration_saar
 		icon = GFX_focus_generic_self_management
-		prerequisite = { focus = FRC_autonomy_for_french_people }
+		prerequisite = { focus = FRC_heavy_industry_alsace_lorraine }
 		x = 0
 		y = 1
-		relative_position_id = FRC_autonomy_for_french_people
+		relative_position_id = FRC_heavy_industry_alsace_lorraine
 		
 		cost = 10
 		
@@ -949,7 +960,7 @@ focus_tree = {
 				KMX = { country_event = { id = generic.2 } }
 			}
 			else = {
-				set_rule = can_create_factions
+				set_rule = { can_create_factions = yes }
 				create_faction = MEX_international4
 			}
 		}
@@ -1953,9 +1964,22 @@ focus_tree = {
 		available_if_capitulated = yes
 
 		ai_will_do = {
-			factor = 5
+			factor = 10
 		}
 		available = {
+			OR = {
+				NOT = { has_global_flag = scw_over }
+				41 = {
+					controller = {
+						NOT = {
+							tag = SPA
+							tag = SPR
+							tag = ARA
+						}
+						has_war = no
+					}
+				}
+			}
 		}
 		bypass = {
 		}
@@ -1964,6 +1988,47 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus FRC_liberation_spain"
+			if = {
+				limit = {
+					country_exists = ARA
+					NOT = { country_exists = SPR }
+					ARA = { has_government = ROOT }
+				}
+				ARA = { country_event = { id = generic.2 } }
+			}
+			else_if = {
+				limit = {
+					country_exists = SPR
+					SPR = { has_government = ROOT }
+				}
+				SPR = { country_event = { id = generic.2 } }
+			}
+			else_if = {
+				limit = { has_full_control_of_state = 41 }
+				every_state = {
+					limit = {
+						OR = {
+							is_core_of = SPR
+							is_core_of = SPA
+							is_core_of = ARA
+							is_core_of = CAT
+						}
+					}
+					add_core_of = ROOT
+				}
+			}
+			else = {
+				41 = {
+					controller = {
+						ROOT = {
+							create_wargoal = {
+								type = annex_everything
+								target = PREV
+							}
+						}
+					}
+				}
+			}
 		}
 	}
 	
@@ -1993,6 +2058,10 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus FRC_direction_to_italy"
+			create_wargoal = {
+				type = annex_everything
+				target = ITA
+			}
 		}
 	}
 	
@@ -2022,7 +2091,13 @@ focus_tree = {
 		}
 
 		completion_reward = {
-			log = "[GetDateText]: [Root.GetName]: Focus FRC_abolition_of_republican_institutions"
+			log = "[GetDateText]: [Root.GetName]: Focus FRC_association_with_afa"
+			add_political_power = 100
+			add_popularity = {
+				ideology = anarchism
+				popularity = 0.05
+			}
+			add_ideas = FRC_association_with_afa
 		}
 	}
 	
@@ -2052,6 +2127,7 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus FRC_synthetic_organization"
+			add_ideas = FRC_synthetic_organization
 		}
 	}
 	
@@ -2081,6 +2157,11 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus FRC_principles_of_anarchosocialism"
+			add_popularity = {
+				ideology = anarchism
+				popularity = 0.1
+			}
+			add_ideas = FRC_principles_of_anarchosocialism
 		}
 	}
 	
@@ -2099,7 +2180,7 @@ focus_tree = {
 		available_if_capitulated = yes
 
 		ai_will_do = {
-			factor = 5
+			factor = 10
 		}
 		available = {
 		}
@@ -2110,6 +2191,7 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus FRC_preparing_for_possible_war_with_nazis"
+			add_ideas = FRC_preparing_for_possible_war
 		}
 	}
 	
@@ -2139,6 +2221,27 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus FRC_extension_of_maginot_line"
+			every_owned_state = {
+				limit = {
+					is_controlled_by = ROOT
+					any_neighbor_state = {
+						OR = {
+							is_fully_controlled_by = LUX
+							is_fully_controlled_by = WLN
+							is_fully_controlled_by = FLA
+							is_fully_controlled_by = BEL
+						}
+					}
+				}
+				add_building_construction = {
+					type = bunker
+					level = 2
+					instant_build = yes
+					province = {
+						limit_to_border = yes
+					}
+				}
+			}
 		}
 	}
 	
@@ -2163,12 +2266,17 @@ focus_tree = {
 		available = {
 		}
 		bypass = {
+			has_war_with = ENG
 		}
 		select_effect = {
 		}
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus FRC_give_syndicalism_to_islands"
+			create_wargoal = {
+				type = annex_everything
+				target = ENG
+			}
 		}
 	}
 	
@@ -2198,6 +2306,22 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus FRC_attracting_faure_management"
+			add_political_power = 100
+			if = {
+				limit = { has_idea = FRC_no_ideological_unity }
+				remove_ideas = FRC_no_ideological_unity
+			}
+			create_country_leader = {
+				name = "Sébastien Faure"
+				desc = "POLITICS_SEBASTIEN_FAURE_DESC"
+				picture = "gfx/leaders/FRA/Portrait_Sebastien_Faure.dds"
+				expire = "1965.1.1"
+				ideology = sinthetic_anarchism
+				traits = {
+					FRC_synthetist
+				}
+			}
+			set_party_name = { ideology = anarchism name = FRA_anarchism_afa long_name = FRA_anarchism_afa_long }
 		}
 	}
 	
@@ -2227,6 +2351,21 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus FRC_principles_of_anarchoindividualism"
+			random_owned_controlled_state = {
+				limit = {
+					free_building_slots = {
+						building = industrial_complex
+						size > 1
+						include_locked = yes
+					}
+				}
+				add_extra_state_shared_building_slots = 2
+				add_building_construction = {
+					type = industrial_complex
+					level = 2
+					instant_build = yes
+				}
+			}
 		}
 	}
 	
@@ -2256,10 +2395,23 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus FRC_preservation_of_private_property"
+			random_owned_controlled_state = {
+				limit = {
+					free_building_slots = {
+						building = arms_factory
+						size > 1
+						include_locked = yes
+					}
+				}
+				add_extra_state_shared_building_slots = 2
+				add_building_construction = {
+					type = arms_factory
+					level = 2
+					instant_build = yes
+				}
+			}
 		}
 	}
-	
-	
 	
 	
 	### DECOLONIAL BRANCH ###
@@ -2267,6 +2419,7 @@ focus_tree = {
 	focus = {
 		id = FRC_collapse_of_imperialist_policy
 		icon = GFX_focus_generic_self_management
+		mutually_exclusive = { focus = FRC_principle_of_federalism }
 		x = 29
 		y = 0
 		
@@ -2288,6 +2441,8 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus FRC_collapse_of_imperialist_policy"
+			add_political_power = 100
+			add_manpower = 10000
 		}
 	}
 	
@@ -2317,6 +2472,15 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus FRC_preparation_of_wild_peoples_to_socialism"
+			add_political_power = 50
+			459 = {
+				add_extra_state_shared_building_slots = 1
+				add_building_construction = {
+					type = industrial_complex
+					level = 1
+					instant_build = yes
+				}
+			}
 		}
 	}
 	
@@ -2346,6 +2510,8 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus FRC_organization_of_trade_unions_and_communist_parties"
+			add_political_power = 50
+			add_manpower = 100000
 		}
 	}
 	
@@ -2524,7 +2690,150 @@ focus_tree = {
 		}
 	}
 	
-	
+	focus = {
+		id = FRC_principle_of_federalism
+		icon = GFX_focus_generic_self_management
+		mutually_exclusive = { focus = FRC_collapse_of_imperialist_policy }
+		x = 2
+		y = 0
+		relative_position_id = FRC_collapse_of_imperialist_policy
+		
+		cost = 10
+		
+		cancel_if_invalid = yes
+		continue_if_invalid = no
+		available_if_capitulated = yes
 
+		ai_will_do = {
+			factor = 5
+		}
+		available = {
+		}
+		bypass = {
+		}
+		select_effect = {
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: Focus FRC_principle_of_federalism"
+		}
+	}
+	
+	focus = {
+		id = FRC_organization_party_cells_in_africa
+		icon = GFX_focus_generic_self_management
+		prerequisite = { focus = FRC_principle_of_federalism }
+		x = 0
+		y = 1
+		relative_position_id = FRC_principle_of_federalism
+		
+		cost = 10
+		
+		cancel_if_invalid = yes
+		continue_if_invalid = no
+		available_if_capitulated = yes
+
+		ai_will_do = {
+			factor = 5
+		}
+		available = {
+		}
+		bypass = {
+		}
+		select_effect = {
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: Focus FRC_organization_party_cells_in_africa"
+		}
+	}
+	
+	focus = {
+		id = FRC_strengthening_of_djibouti
+		icon = GFX_focus_generic_self_management
+		prerequisite = { focus = FRC_organization_party_cells_in_africa }
+		x = 2
+		y = 1
+		relative_position_id = FRC_organization_party_cells_in_africa
+		
+		cost = 10
+		
+		cancel_if_invalid = yes
+		continue_if_invalid = no
+		available_if_capitulated = yes
+
+		ai_will_do = {
+			factor = 5
+		}
+		available = {
+		}
+		bypass = {
+		}
+		select_effect = {
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: Focus FRC_strengthening_of_djibouti"
+		}
+	}
+	
+	focus = {
+		id = FRC_organization_of_party_cells_in_indochina
+		icon = GFX_focus_generic_self_management
+		prerequisite = { focus = FRC_organization_party_cells_in_africa }
+		x = 0
+		y = 1
+		relative_position_id = FRC_organization_party_cells_in_africa
+		
+		cost = 10
+		
+		cancel_if_invalid = yes
+		continue_if_invalid = no
+		available_if_capitulated = yes
+
+		ai_will_do = {
+			factor = 5
+		}
+		available = {
+		}
+		bypass = {
+		}
+		select_effect = {
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: Focus FRC_organization_of_party_cells_in_indochina"
+		}
+	}
+	
+	focus = {
+		id = FRC_french_federation
+		icon = GFX_focus_generic_self_management
+		prerequisite = { focus = FRC_organization_party_cells_in_africa }
+		x = 0
+		y = 1
+		relative_position_id = FRC_organization_party_cells_in_africa
+		
+		cost = 10
+		
+		cancel_if_invalid = yes
+		continue_if_invalid = no
+		available_if_capitulated = yes
+
+		ai_will_do = {
+			factor = 5
+		}
+		available = {
+		}
+		bypass = {
+		}
+		select_effect = {
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: Focus FRC_french_federation"
+		}
+	}
+	
 	
 }
