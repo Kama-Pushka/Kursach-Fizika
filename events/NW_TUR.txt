@@ -1613,6 +1613,7 @@ country_event = {
 		remove_unit_leader = 1800
 		custom_effect_tooltip = TUR_civwar_tt
 		hidden_effect = {
+			add_ideas = TUR_civil_war
 			set_country_flag = same_ideology_civil_war_flag
 			start_civil_war = {
 				ideology = fascism
@@ -1624,6 +1625,7 @@ country_event = {
 					original_tag = TUR
 					has_government = fascism
 				}
+				add_ideas = TUR_civil_war
 				set_country_flag = same_ideology_civil_war_flag
 				set_politics = {
 					parties = {
@@ -1644,12 +1646,11 @@ country_event = {
 					picture = "gfx/leaders/TUR/Portrait_Fevzi_Cakmak.dds"
 					expire = "1965.1.1"
 					ideology = kemalism
-					traits = {
-						#
-					}
+					traits = { }
 				}
 			}
 			news_event = { id = trworldnews.56 }
+			set_global_flag = cakmak_turkey_civil_war
 		}
 	}
 	
@@ -1682,6 +1683,7 @@ country_event = {
 					ruling_party = neutrality
 					elections_allowed = no
 				}
+				add_ideas = TUR_civil_war
 				set_cosmetic_tag = TUR_dictatorship_tag
 				create_country_leader = {
 					name = "Fevzi Çakmak"
@@ -1689,9 +1691,7 @@ country_event = {
 					picture = "gfx/leaders/TUR/Portrait_Fevzi_Cakmak.dds"
 					expire = "1965.1.1"
 					ideology = kemalism
-					traits = {
-						#
-					}
+					traits = { }
 				}
 			}
 			
@@ -1731,6 +1731,7 @@ country_event = {
 				}
 			}
 			news_event = { id = trworldnews.56 }
+			set_global_flag = cakmak_trk_turkey_civil_war
 		}
 	}
 }
@@ -2088,13 +2089,20 @@ country_event = {
 		name = NWturkey.35.a
 		
 		hidden_effect = {
-		
+
 			#Онли Фаши
 			if = {
 				limit = {
 					fascism > 0.099
 					#democratic < 0.1
 				}
+				
+				if = {
+					limit = { NOT = { has_global_flag = troz_turkey_civil_war } }
+					set_global_flag = troz_turkey_civil_war
+				}
+				
+				add_ideas = TUR_civil_war
 				
 				every_state = {
 					limit = {
@@ -2133,6 +2141,7 @@ country_event = {
 					load_focus_tree = { tree = turkish_focus keep_completed = yes }
 					unlock_national_focus = TUR_organize_fair_elections
 					complete_national_focus = TUR_proclaim_panturkism
+					add_ideas = TUR_civil_war
 					#
 					if = {
 						limit = { TUR = { has_completed_focus = TUR_revolution } }
@@ -2245,6 +2254,15 @@ country_event = {
 					neutrality > 0.1
 				}
 				
+				if = {
+					limit = { NOT = { has_global_flag = troz_turkey_civil_war } }
+					set_global_flag = troz_turkey_civil_war
+				}
+				if = {
+					limit = { NOT = { has_idea = TUR_civil_war } }
+					add_ideas = TUR_civil_war
+				}
+				
 				start_civil_war = {
 					ideology = neutrality
 					size = 0.49
@@ -2256,6 +2274,7 @@ country_event = {
 						original_tag = TUR
 						has_government = neutrality
 					}
+					add_ideas = TUR_civil_war
 					set_cosmetic_tag = TUR_dictatorship_tag
 					declare_war_on = {
 						target = TRK
@@ -2267,9 +2286,7 @@ country_event = {
 						picture = "gfx/leaders/TUR/Portrait_Fevzi_Cakmak.dds"
 						expire = "1965.1.1"
 						ideology = kemalism
-						traits = {
-							#
-						}
+						traits = { }
 					}
 					if = {
 						limit = { has_idea = TUR_great_depression }
@@ -2751,6 +2768,11 @@ country_event = {
 				limit = { is_faction_leader = yes }
 				dismantle_faction = yes
 			}
+			if = {
+				limit = { NOT = { has_global_flag = mona_turkey_civil_war } }
+				set_global_flag = mona_turkey_civil_war
+			}
+			add_ideas = TUR_civil_war
 			complete_national_focus = TUR_force_of_order
 			news_event = { id = trworldnews.61 }
 
@@ -2765,6 +2787,7 @@ country_event = {
 					original_tag = TUR
 					has_government = neutrality
 				}
+				add_ideas = TUR_civil_war
 				set_cosmetic_tag = TUR_dictatorship_tag
 				create_country_leader = {
 					name = "Fevzi Çakmak"
@@ -2772,9 +2795,7 @@ country_event = {
 					picture = "gfx/leaders/TUR/Portrait_Fevzi_Cakmak.dds"
 					expire = "1965.1.1"
 					ideology = kemalism
-					traits = {
-						#
-					}
+					traits = { }
 				}
 			}
 		}
@@ -4851,6 +4872,96 @@ country_event = {
 	}
 }
 
+#Сброс нац.духа на ГВ у всех
+country_event = {
+	id = NWturkey.76
+	title = NWturkey.76.t
+	desc = NWturkey.76.desc
+	picture = GFX_report_event_generic_rally_3
+	fire_only_once = yes
+	hidden = yes
+	
+	trigger = {
+		OR = {
+			has_global_flag = turkey_civil_war
+			has_global_flag = cakmak_turkey_civil_war
+			has_global_flag = cakmak_trk_turkey_civil_war
+		}
+		NOT = { has_global_flag = tcw_over }
+		OR = {
+			AND = { #Победил Исмет 3х
+				TUR = { has_civil_war = no }
+				any_other_country = {
+					original_tag = TUR
+					NOT = { has_government = fascism }
+				}
+				all_country = {
+					OR = {
+						NOT = { original_tag = TUR }
+						NOT = { has_government = fascism }
+					}
+				}
+				NOT = { country_exists = TRK }
+			}
+			AND = { #Победил Исмет 2х
+				TUR = { has_civil_war = no }
+				any_other_country = {
+					original_tag = TUR
+					NOT = { has_completed_focus = TUR_dictatorship_cakmak }
+				}
+				all_country = {
+					OR = {
+						NOT = { original_tag = TUR }
+						NOT = { has_completed_focus = TUR_dictatorship_cakmak }
+					}
+				}
+				NOT = { country_exists = TRK }
+			}
+			AND = { #Победил Фаш 3х
+				TUR = { has_civil_war = no }
+				any_other_country = {
+					original_tag = TUR
+					has_government = fascism
+				}
+				all_country = {
+					OR = {
+						NOT = { original_tag = TUR }
+						has_government = fascism
+					}
+				}
+				NOT = { country_exists = TRK }
+			}
+			AND = { #Победил Чакмак 2х
+				TUR = { has_civil_war = no }
+				any_other_country = {
+					original_tag = TUR
+					has_completed_focus = TUR_dictatorship_cakmak
+				}
+				all_country = {
+					OR = {
+						NOT = { original_tag = TUR }
+						has_completed_focus = TUR_dictatorship_cakmak
+					}
+				}
+				NOT = { country_exists = TRK }
+			}
+			AND = { #Победил Чакмак-TRK
+				all_country = {
+					NOT = { original_tag = TUR }
+				}
+				country_exists = TRK
+			}
+		}
+	}
+	
+	immediate = { log = "[GetDateText]: [Root.GetName]: event NWturkey.76" }
+	immediate = { set_global_flag = tcw_over }
+	
+	option = {
+		name = NWturkey.76.a
+		every_country = { remove_ideas = TUR_civil_war }
+	}
+}
 
 
 
