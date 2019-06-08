@@ -909,6 +909,25 @@ on_actions = {
 					FRA = { transfer_state = PREV }
 				}
 			}
+			#Франко ГВ
+			if = {
+				limit = {
+					FROM = {
+						OR = {
+							tag = FRA
+							tag = FRC
+						}
+					}
+					ROOT = {
+						OR = {
+							tag = FRA
+							tag = FRC
+						}
+					}
+				}
+				FROM = { add_ideas = FRA_civil_war }
+				ROOT = { add_ideas = FRA_civil_war }
+			}
 		}
 	}
 	
@@ -1503,6 +1522,70 @@ on_actions = {
 					POL = { has_cosmetic_tag = POL_SOV }
 				}
 				POL = { drop_cosmetic_tag = yes }
+			}
+		}
+	}
+	
+	#ROOT is winner #FROM is loser
+	on_peaceconference_ended = {
+		effect = {
+			if = {
+				limit = {
+					original_tag = GER
+					FROM = { original_tag = HOL }
+				}
+				remove_ideas = HOL_german_defectors_2
+			}
+			# USA 'civil war' ends
+			if = {
+				limit = {
+					tag = CSA
+					FROM = { original_tag = USA }
+				}
+				load_focus_tree = { tree = usa_focus keep_completed = no }
+				unlock_national_focus = USA_reestablish_the_gold_standard
+				complete_national_focus = USA_america_first
+				unlock_national_focus = USA_ally_with_the_silver_shirts
+				unlock_national_focus = USA_invite_foreign_support
+			}
+			#France
+			if = {
+				limit = {
+					FROM = { tag = FRA }
+					ROOT = { tag = FRC }
+				}
+				every_state = {
+					limit = { is_claimed_by = FROM }
+					remove_claim_by = FROM
+				}
+				every_state = {
+					limit = { is_core_of = FROM }
+					remove_core_of = FROM
+				}
+				every_country = {
+					limit = {
+						has_war_with = ROOT
+						NOT = { original_tag = ROOT }
+						NOT = { original_tag = FROM }
+					}
+					white_peace = ROOT
+				}
+				ROOT = { remove_ideas = FRA_civil_war }
+			}
+			if = {
+				limit = {
+					FROM = { tag = FRC }
+					ROOT = { tag = FRA }
+				}
+				every_state = {
+					limit = { is_claimed_by = FROM }
+					remove_claim_by = FROM
+				}
+				every_state = {
+					limit = { is_core_of = FROM }
+					remove_core_of = FROM
+				}
+				ROOT = { remove_ideas = FRA_civil_war }
 			}
 		}
 	}
