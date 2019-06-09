@@ -1300,7 +1300,7 @@ focus_tree = {
 							add_ai_strategy = {
 								type = conquer
 								id = PREV
-								value = 200
+								value = 100
 							}
 						}
 					}
@@ -2067,6 +2067,10 @@ focus_tree = {
 			set_rule = { can_create_factions = yes }
 			create_faction = FRC_second_anarchist_international
 			add_ideas = FRC_legacy_of_bakunin
+			if = {
+				limit = { has_idea = FRC_no_ideological_unity }
+				remove_ideas = FRC_no_ideological_unity
+			}
 		}
 	}
 	
@@ -2103,13 +2107,43 @@ focus_tree = {
 				type = annex_everything
 				target = LUX
 			}
+			add_ai_strategy = {
+				type = antagonize
+				id = "LUX"
+				value = 200
+			}
+			add_ai_strategy = {
+				type = conquer
+				id = "LUX" 
+				value = 100
+			}
 			create_wargoal = {
 				type = annex_everything
 				target = BEL
 			}
+			add_ai_strategy = {
+				type = antagonize
+				id = "BEL"
+				value = 200
+			}
+			add_ai_strategy = {
+				type = conquer
+				id = "BEL" 
+				value = 100
+			}
 			create_wargoal = {
 				type = annex_everything
 				target = HOL
+			}
+			add_ai_strategy = {
+				type = antagonize
+				id = "HOL"
+				value = 200
+			}
+			add_ai_strategy = {
+				type = conquer
+				id = "HOL" 
+				value = 100
 			}
 		}
 	}
@@ -2130,6 +2164,20 @@ focus_tree = {
 
 		ai_will_do = {
 			factor = 6
+			modifier = {
+				factor = 0.5
+				strength_ratio = {
+					tag = GER
+					ratio < 1
+				}
+			}
+			modifier = {
+				factor = 0.1
+				strength_ratio = {
+					tag = GER
+					ratio < 2
+				}
+			}
 		}
 		available = {
 			GER = { has_government = fascism }
@@ -2145,6 +2193,16 @@ focus_tree = {
 			create_wargoal = {
 				type = annex_everything
 				target = GER
+			}
+			add_ai_strategy = {
+				type = antagonize
+				id = "GER"
+				value = 200
+			}
+			add_ai_strategy = {
+				type = conquer
+				id = "GER" 
+				value = 100
 			}
 		}
 	}
@@ -2165,10 +2223,21 @@ focus_tree = {
 
 		ai_will_do = {
 			factor = 10
+			modifier = {
+				factor = 0.5
+				41 = {
+					controller = {
+						strength_ratio = {
+							tag = FRA
+							ratio > 1
+						}
+					}
+				}
+			}
 		}
 		available = {
 			OR = {
-				NOT = { has_global_flag = scw_over }
+				has_global_flag = scw_over
 				41 = {
 					controller = {
 						NOT = {
@@ -2190,13 +2259,19 @@ focus_tree = {
 			log = "[GetDateText]: [Root.GetName]: Focus FRC_liberation_spain"
 			if = {
 				limit = {
+					country_exists = CAT
+					CAT = { has_government = ROOT }
+				}
+				ARA = { country_event = { id = generic.2 } }
+			}
+			if = {
+				limit = {
 					country_exists = ARA
-					NOT = { country_exists = SPR }
 					ARA = { has_government = ROOT }
 				}
 				ARA = { country_event = { id = generic.2 } }
 			}
-			else_if = {
+			if = {
 				limit = {
 					country_exists = SPR
 					SPR = { has_government = ROOT }
@@ -2217,13 +2292,24 @@ focus_tree = {
 					add_core_of = ROOT
 				}
 			}
-			else = {
+			else_if = {
+				limit = { 41 = { controller = { NOT = { has_government = ROOT } } } }
 				41 = {
 					controller = {
 						ROOT = {
 							create_wargoal = {
 								type = annex_everything
 								target = PREV
+							}
+							add_ai_strategy = {
+								type = antagonize
+								id = PREV
+								value = 200
+							}
+							add_ai_strategy = {
+								type = conquer
+								id = PREV
+								value = 100
 							}
 						}
 					}
@@ -2248,6 +2334,13 @@ focus_tree = {
 
 		ai_will_do = {
 			factor = 6
+			modifier = {
+				factor = 0.5
+				strength_ratio = {
+					tag = ITA
+					ratio < 1
+				}
+			}
 		}
 		available = {
 		}
@@ -2261,6 +2354,16 @@ focus_tree = {
 			create_wargoal = {
 				type = annex_everything
 				target = ITA
+			}
+			add_ai_strategy = {
+				type = antagonize
+				id = "ITA"
+				value = 200
+			}
+			add_ai_strategy = {
+				type = conquer
+				id = "ITA" 
+				value = 100
 			}
 		}
 	}
@@ -2425,24 +2528,55 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus FRC_extension_of_maginot_line"
-			every_owned_state = {
+			if = {
 				limit = {
-					is_controlled_by = ROOT
-					any_neighbor_state = {
-						OR = {
-							is_fully_controlled_by = LUX
-							is_fully_controlled_by = WLN
-							is_fully_controlled_by = FLA
-							is_fully_controlled_by = BEL
+					OR = {
+						country_exists = LUX
+						country_exists = WLN
+						country_exists = FLA
+						country_exists = BEL
+					}
+				}
+				every_owned_state = {
+					limit = {
+						is_controlled_by = ROOT
+						any_neighbor_state = {
+							OR = {
+								is_fully_controlled_by = LUX
+								is_fully_controlled_by = WLN
+								is_fully_controlled_by = FLA
+								is_fully_controlled_by = BEL
+							}
+						}
+					}
+					add_building_construction = {
+						type = bunker
+						level = 2
+						instant_build = yes
+						province = {
+							limit_to_border = yes
 						}
 					}
 				}
-				add_building_construction = {
-					type = bunker
-					level = 2
-					instant_build = yes
-					province = {
-						limit_to_border = yes
+			}
+			else = {
+				every_owned_state = {
+					limit = {
+						is_controlled_by = ROOT
+						OR = {
+							state = 1062
+							state = 1016
+							state = 1038
+							state = 1037
+						}
+					}
+					add_building_construction = {
+						type = bunker
+						level = 2
+						instant_build = yes
+						province = {
+							limit_to_border = yes
+						}
 					}
 				}
 			}
@@ -2466,6 +2600,13 @@ focus_tree = {
 
 		ai_will_do = {
 			factor = 6
+			modifier = {
+				factor = 0.1
+				strength_ratio = {
+					tag = ENG
+					ratio < 1
+				}
+			}
 		}
 		available = {
 		}
@@ -2480,6 +2621,16 @@ focus_tree = {
 			create_wargoal = {
 				type = annex_everything
 				target = ENG
+			}
+			add_ai_strategy = {
+				type = antagonize
+				id = "ENG"
+				value = 200
+			}
+			add_ai_strategy = {
+				type = conquer
+				id = "ENG" 
+				value = 100
 			}
 		}
 	}
@@ -2525,7 +2676,10 @@ focus_tree = {
 					FRC_synthetist
 				}
 			}
-			set_party_name = { ideology = anarchism name = FRA_anarchism_afa long_name = FRA_anarchism_afa_long }
+			set_party_name = { ideology = anarchism name = FRC_anarchism_afa long_name = FRC_anarchism_afa_long }
+			set_cosmetic_tag = FRC_synthetic
+			set_rule = { can_create_factions = yes }
+			create_faction = FRC_anarchist_federation
 		}
 	}
 	
