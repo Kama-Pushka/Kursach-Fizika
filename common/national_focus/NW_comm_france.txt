@@ -14,6 +14,9 @@ focus_tree = {
 	
 	continuous_focus_position = { x = 50 y = 1500 }
 	
+	shared_focus = FRA_navy_focus
+	shared_focus = FRA_air_focus
+	
 	focus = {
 		id = FRC_popular_uprising
 		icon = GFX_z_goal_civil_war_lessons
@@ -38,13 +41,25 @@ focus_tree = {
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus FRC_popular_uprising"
 			add_political_power = 100
+			if = {
+				limit = { has_country_flag = FRC_prof_revolt_flag }
+				add_manpower = 100000
+			}
 			hidden_effect = {
 				if = {
-					limit = { has_country_flag = new_french_revolution_block_flag }
+					limit = {
+						has_country_flag = new_french_revolution_block_flag
+						NOT = { has_country_flag = FRC_prof_revolt_flag }
+					}
 					country_event = { id = NWfrance.303 days = 1 }
 				}
 				if = {
-					limit = { NOT = { has_country_flag = new_french_revolution_block_flag } }
+					limit = {
+						NOT = {
+							has_country_flag = new_french_revolution_block_flag
+							has_country_flag = FRC_prof_revolt_flag
+						}
+					}
 					country_event = { id = NWfrance.304 days = 1 }
 				}
 			}
@@ -81,7 +96,7 @@ focus_tree = {
 			NOT = { has_government = trozkism }
 			NOT = { has_country_flag = trotskyist_military_coup_block_flag }
 			hidden_trigger = {
-				NOT = { has_global_flag = FRC_prof_revolt_flag }
+				NOT = { has_country_flag = FRC_prof_revolt_flag }
 			}
 		}
 		bypass = {
@@ -802,7 +817,7 @@ focus_tree = {
 			set_rule = { can_create_factions = yes }
 			create_faction = FRC_french_revolutionary_union
 			if = {
-				limit = { has_global_flag = FRC_prof_revolt_flag }
+				limit = { has_country_flag = FRC_prof_revolt_flag }
 				add_popularity = {
 					ideology = trozkism
 					popularity = 0.2
@@ -850,9 +865,12 @@ focus_tree = {
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus FRC_new_french_revolution"
 			add_popularity = { ideology = trozkism popularity = 0.1 }
-			set_politics = {
-				ruling_party = trozkism
-				elections_allowed = yes
+			if = {
+				limit = { has_government = communism }
+				set_politics = {
+					ruling_party = trozkism
+					elections_allowed = yes
+				}
 			}
 		}
 	}
@@ -1030,7 +1048,7 @@ focus_tree = {
 				create_faction = MEX_international4
 			}
 			if = {
-				limit = { has_global_flag = FRC_prof_revolt_flag }
+				limit = { has_country_flag = FRC_prof_revolt_flag }
 				add_popularity = {
 					ideology = trozkism
 					popularity = 0.2
@@ -1749,7 +1767,10 @@ focus_tree = {
 			factor = 6
 		}
 		available = {
-			always = no
+			OR = {
+				always = no
+				has_country_flag = FRC_prof_revolt_flag
+			}
 		}
 		bypass = {
 		}
@@ -1760,7 +1781,7 @@ focus_tree = {
 			log = "[GetDateText]: [Root.GetName]: Focus FRC_government_general_confederation_labour"
 			add_popularity = {
 				ideology = anarchism
-				popularity = 0.05
+				popularity = 0.1
 			}
 			set_politics = {
 				ruling_party = anarchism
@@ -1941,9 +1962,18 @@ focus_tree = {
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus FRC_abolition_of_republican_institutions"
 			add_political_power = 50
-			add_popularity = {
-				ideology = democratic
-				popularity = -0.1
+			if = {
+				limit = { has_country_flag = FRC_prof_revolt_flag }
+				add_popularity = {
+					ideology = trozkism
+					popularity = -0.1
+				}
+			}
+			else = {
+				add_popularity = {
+					ideology = democratic
+					popularity = -0.1
+				}
 			}
 		}
 	}
@@ -5427,11 +5457,20 @@ focus_tree = {
 		ai_will_do = {
 			factor = 5
 			modifier = {
-				factor = 1.5
+				factor = 1.4
 				OR = {
 					has_war = yes
-					any_neighbor_country = {
-						has_war = yes
+					any_country = {
+						OR = {
+							has_wargoal_against = ROOT
+							is_justifying_wargoal_against = ROOT
+						}
+					}
+					AND = {
+						date > 1939.01.01
+						any_neighbor_country = {
+							has_offensive_war = yes
+						}
 					}
 				}
 			}
@@ -5475,11 +5514,20 @@ focus_tree = {
 		ai_will_do = {
 			factor = 5
 			modifier = {
-				factor = 1.5
+				factor = 1.4
 				OR = {
 					has_war = yes
-					any_neighbor_country = {
-						has_war = yes
+					any_country = {
+						OR = {
+							has_wargoal_against = ROOT
+							is_justifying_wargoal_against = ROOT
+						}
+					}
+					AND = {
+						date > 1939.01.01
+						any_neighbor_country = {
+							has_offensive_war = yes
+						}
 					}
 				}
 			}
@@ -5519,11 +5567,20 @@ focus_tree = {
 		ai_will_do = {
 			factor = 5
 			modifier = {
-				factor = 1.5
+				factor = 1.4
 				OR = {
 					has_war = yes
-					any_neighbor_country = {
-						has_war = yes
+					any_country = {
+						OR = {
+							has_wargoal_against = ROOT
+							is_justifying_wargoal_against = ROOT
+						}
+					}
+					AND = {
+						date > 1939.01.01
+						any_neighbor_country = {
+							has_offensive_war = yes
+						}
 					}
 				}
 			}
@@ -5563,11 +5620,20 @@ focus_tree = {
 		ai_will_do = {
 			factor = 5
 			modifier = {
-				factor = 1.5
+				factor = 1.4
 				OR = {
 					has_war = yes
-					any_neighbor_country = {
-						has_war = yes
+					any_country = {
+						OR = {
+							has_wargoal_against = ROOT
+							is_justifying_wargoal_against = ROOT
+						}
+					}
+					AND = {
+						date > 1939.01.01
+						any_neighbor_country = {
+							has_offensive_war = yes
+						}
 					}
 				}
 			}
@@ -5600,11 +5666,20 @@ focus_tree = {
 		ai_will_do = {
 			factor = 5
 			modifier = {
-				factor = 1.5
+				factor = 1.4
 				OR = {
 					has_war = yes
-					any_neighbor_country = {
-						has_war = yes
+					any_country = {
+						OR = {
+							has_wargoal_against = ROOT
+							is_justifying_wargoal_against = ROOT
+						}
+					}
+					AND = {
+						date > 1939.01.01
+						any_neighbor_country = {
+							has_offensive_war = yes
+						}
 					}
 				}
 			}
@@ -5704,11 +5779,20 @@ focus_tree = {
 		ai_will_do = {
 			factor = 5
 			modifier = {
-				factor = 1.5
+				factor = 1.4
 				OR = {
 					has_war = yes
-					any_neighbor_country = {
-						has_war = yes
+					any_country = {
+						OR = {
+							has_wargoal_against = ROOT
+							is_justifying_wargoal_against = ROOT
+						}
+					}
+					AND = {
+						date > 1939.01.01
+						any_neighbor_country = {
+							has_offensive_war = yes
+						}
 					}
 				}
 			}
@@ -5743,13 +5827,22 @@ focus_tree = {
 		available_if_capitulated = yes
 
 		ai_will_do = {
-			factor = 3
+			factor = 5
 			modifier = {
-				factor = 2
+				factor = 1.4
 				OR = {
 					has_war = yes
-					any_neighbor_country = {
-						has_war = yes
+					any_country = {
+						OR = {
+							has_wargoal_against = ROOT
+							is_justifying_wargoal_against = ROOT
+						}
+					}
+					AND = {
+						date > 1939.01.01
+						any_neighbor_country = {
+							has_offensive_war = yes
+						}
 					}
 				}
 			}
@@ -5785,13 +5878,22 @@ focus_tree = {
 		available_if_capitulated = yes
 
 		ai_will_do = {
-			factor = 3
+			factor = 5
 			modifier = {
-				factor = 2
+				factor = 1.4
 				OR = {
 					has_war = yes
-					any_neighbor_country = {
-						has_war = yes
+					any_country = {
+						OR = {
+							has_wargoal_against = ROOT
+							is_justifying_wargoal_against = ROOT
+						}
+					}
+					AND = {
+						date > 1939.01.01
+						any_neighbor_country = {
+							has_offensive_war = yes
+						}
 					}
 				}
 			}
@@ -5827,13 +5929,22 @@ focus_tree = {
 		available_if_capitulated = yes
 
 		ai_will_do = {
-			factor = 3
+			factor = 5
 			modifier = {
-				factor = 2
+				factor = 1.4
 				OR = {
 					has_war = yes
-					any_neighbor_country = {
-						has_war = yes
+					any_country = {
+						OR = {
+							has_wargoal_against = ROOT
+							is_justifying_wargoal_against = ROOT
+						}
+					}
+					AND = {
+						date > 1939.01.01
+						any_neighbor_country = {
+							has_offensive_war = yes
+						}
 					}
 				}
 			}
