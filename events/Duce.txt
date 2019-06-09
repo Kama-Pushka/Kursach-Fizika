@@ -1788,6 +1788,8 @@ country_event = {
 		ai_chance = {
 			factor = 50
 		}
+		add_stability = -0.2
+		add_war_support = -0.2
 		set_country_flag = pietro_badoglio_run_flag
 		set_country_flag = ugo_cavallero_run_flag
 		set_country_flag = emilio_de_bono_run_flag
@@ -1850,6 +1852,8 @@ country_event = {
 		ai_chance = {
 			factor = 50
 		}
+		add_stability = -0.2
+		add_war_support = -0.2
 		set_country_flag = pietro_badoglio_run_flag
 		set_country_flag = ugo_cavallero_run_flag
 		set_country_flag = emilio_de_bono_run_flag
@@ -2444,8 +2448,6 @@ country_event = {
 		NOT = { 
 			has_idea = ITA_ethiopian_partisans_idea
 			has_country_flag = ethiopian_partisans_win_flag
-			271 = { has_state_flag = ethiopian_partisans_flag }
-			1051 = { has_state_flag = ethiopian_partisans_flag }
 		}
 		OR = {
 			ETH = { 
@@ -2458,8 +2460,20 @@ country_event = {
 			}
 		}
 		OR = {
-			controls_state = 271
-			controls_state = 1051
+			AND = {
+				controls_state = 271
+				OR = {
+					NOT = { 271 = { has_state_flag = ethiopian_partisans_flag } }
+					NOT = { 271 = { has_state_flag = has_state_flag = ethiopian_partisans_state_win_flag } }
+				}
+			}
+			AND = {
+				controls_state = 1051
+				OR = {
+					NOT = { 1051 = { has_state_flag = ethiopian_partisans_flag } }
+					NOT = { 1051 = { has_state_flag = has_state_flag = ethiopian_partisans_state_win_flag } }
+				}
+			}
 		}
 	}
 	
@@ -2473,8 +2487,38 @@ country_event = {
 			factor = 100
 		}
 		add_ideas = ITA_ethiopian_partisans_idea
-		271 = { set_state_flag = ethiopian_partisans_flag }
-		1051 = { set_state_flag = ethiopian_partisans_flag }
+		IF = {
+			limit = {
+				ROOT = { controls_state = 271 }
+				NOT = { 
+					271 = {
+						OR = {
+							has_state_flag = ethiopian_partisans_state_win_flag
+							has_state_flag = ethiopian_partisans_flag
+						}
+					} 	
+				}
+			}
+			271 = {
+				set_state_flag = ethiopian_partisans_flag
+			}
+		}
+		IF = {
+			limit = {
+				ROOT = { controls_state = 1051 }
+				NOT = { 
+					1051 = {
+						OR = {
+							has_state_flag = ethiopian_partisans_state_win_flag
+							has_state_flag = ethiopian_partisans_flag
+						}
+					} 	
+				}
+			}
+			1051 = {
+				set_state_flag = ethiopian_partisans_flag
+			}
+		}
 	}
 }
 
@@ -2501,6 +2545,20 @@ country_event = {
 	
     immediate = {
         clr_country_flag = ethiopian_partisans_win_flag
+		IF = {
+			limit = { NOT = { ROOT = { controls_state = 271 } } }
+			271 = {
+				set_state_flag = ethiopian_partisans_flag
+				crl_state_flag = ethiopian_partisans_state_win_flag
+			}
+		}
+		IF = {
+			limit = { NOT = { ROOT = { controls_state = 1051 } } }
+			1051 = { 
+				set_state_flag = ethiopian_partisans_flag
+				crl_state_flag = ethiopian_partisans_state_win_flag
+			}
+		}
     }
 }
 
@@ -2643,16 +2701,7 @@ country_event = {
 			}
 			has_war_with = RSI
 		}
-		any_country = {
-			has_war_with = ITA
-			ITA = {
-				casualties_inflicted_by = { 
-					opponent = PREV
-					thousands > 300
-				}
-			}
-		}
-		has_stability < 0.4
+		ITA = {casualties > 300000 }
 	}
 
 	option = {
@@ -2660,7 +2709,13 @@ country_event = {
 		ai_chance = {
 			factor = 50
 		}
+		add_stability = -0.5
+		add_war_support = -0.4
 		set_cosmetic_tag = ITA_salo_republic
+		set_country_flag = ITA_salo_republic_flag
+		hidden_effect = {
+			load_focus_tree = Salo_focus
+		}
 		set_party_name = { ideology = fascism long_name = ITA_republican_fashist_long name = ITA_republican_fashist }
 		create_country_leader = {
 			name = "Rodolfo Graziani"
@@ -2773,9 +2828,11 @@ country_event = {
 					type = annex_everything
 				}
 			}
+			add_ideas = ITA_partisans_idea
 			every_state = {
 				limit = { is_core_of = ITA}
 				add_core_of = RSI
+				set_state_flag = italian_partisans_flag
 			}
 			IF = {
 				limit = { has_idea = ITA_logistics_idea }
@@ -2799,7 +2856,7 @@ country_event = {
 			}
 			IF = {
 				limit = { has_idea = victor_emmanuel }
-				RSI = { add_ideas = RSI_umberto_king }
+				RSI = { add_ideas = victor_emmanuel }
 			}
 			remove_ideas = victor_emmanuel
 			IF = {
@@ -2817,7 +2874,13 @@ country_event = {
 		ai_chance = {
 			factor = 50
 		}
+		add_stability = -0.5
+		add_war_support = -0.4
 		set_cosmetic_tag = ITA_salo_republic
+		set_country_flag = ITA_salo_republic_flag
+		hidden_effect = {
+			load_focus_tree = Salo_focus
+		}
 		set_party_name = { ideology = fascism long_name = ITA_republican_fashist_long name = ITA_republican_fashist }
 		create_country_leader = {
 			name = "Rodolfo Graziani"
@@ -2931,9 +2994,11 @@ country_event = {
 				}
 				change_tag_from = ROOT
 			}
+			add_ideas = ITA_partisans_idea
 			every_state = {
 				limit = { is_core_of = ITA}
 				add_core_of = RSI
+				set_state_flag = italian_partisans_flag
 			}
 			IF = {
 				limit = { has_idea = ITA_logistics_idea }
@@ -2957,7 +3022,7 @@ country_event = {
 			}
 			IF = {
 				limit = { has_idea = victor_emmanuel }
-				RSI = { add_ideas = RSI_umberto_king }
+				RSI = { add_ideas = victor_emmanuel }
 			}
 			remove_ideas = victor_emmanuel
 			IF = {
@@ -3216,6 +3281,7 @@ country_event = {
 		name = duce.30.a
 		create_country_leader = {
 			name = "Benito Mussolini"
+			id = 66666666666
 			desc = "POLITICS_BENITO_MUSSOLINI_DESC"
 			picture = "Portrait_Italy_Benito_Mussolini.dds"
 			expire = "1965.1.1"
@@ -3810,5 +3876,4 @@ country_event = {
 			create_faction = ITA_fascist_international
 		}
 	}
-	
 }
