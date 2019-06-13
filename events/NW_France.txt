@@ -2065,10 +2065,7 @@ country_event = {
 	fire_only_once = yes
 	
 	trigger = {
-		OR = {
-			tag = FRA
-			tag = FRC
-		}
+		tag = FRA
 		OR = {
 			has_government = democratic
 			has_government = neutrality
@@ -2206,7 +2203,7 @@ country_event = {
 				limit = { FROM = { is_in_faction_with = ENG } }
 				ENG = { country_event = { id = NWfrance.105 days = 11 } }
 			}
-			FRA = { country_event = { id = NWfrance.201 days = 14 } }
+			FRA = { country_event = { id = NWfrance.202 days = 14 } }
 		}
 		FROM = { leave_faction = yes }
 		every_country = {
@@ -2259,7 +2256,7 @@ country_event = {
 				limit = { is_in_faction_with = ENG }
 				ENG = { country_event = { id = NWfrance.105 days = 11 } }
 			}
-			FRA = { country_event = { id = NWfrance.201 days = 14 } }
+			FRA = { country_event = { id = NWfrance.202 days = 14 } }
 		}
 		leave_faction = yes
 		every_country = {
@@ -2749,19 +2746,46 @@ country_event = {
 ## Свободная Франция // FRR
 ########
 
-
-#Свободная Франция
+#Пульсар для FRC
 country_event = {
 	id = NWfrance.201
 	title = NWfrance.201.t
 	desc = NWfrance.201.desc
-	picture = GFX_report_event_degaulle_inspect_troops
-	is_triggered_only = yes
+	picture = GFX_report_event_poland_rejects
+	fire_only_once = yes
+	hidden = yes
+	
+	trigger = {
+		tag = FRC
+		NOT = { country_exists = FRA }
+	}
+	
+	mean_time_to_happen = { days = 14 }
 	
 	immediate = { log = "[GetDateText]: [Root.GetName]: event NWfrance.201" }
 	
 	option = {
 		name = NWfrance.201.a
+		FRC = { country_event = { id = NWfrance.202 } }
+		hidden_effect = {
+			FRC = { country_event = { id = NWfrance.203 days = 180 } }
+		}
+	}
+}
+
+
+#Свободная Франция // FRA и FRC
+country_event = {
+	id = NWfrance.202
+	title = NWfrance.202.t
+	desc = NWfrance.202.desc
+	picture = GFX_report_event_degaulle_inspect_troops
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName]: event NWfrance.202" }
+	
+	option = {
+		name = NWfrance.202.a
 		remove_unit_leader = 101
 		every_state = {
 			limit = {
@@ -2782,7 +2806,7 @@ country_event = {
 		}
 		FRR = {
 			declare_war_on = {
-				target = FRA
+				target = ROOT
 				type = civil_war
 			}
 		}
@@ -2790,7 +2814,7 @@ country_event = {
 			every_state = {
 				limit = {
 					OR = {
-						is_core_of = FRA
+						is_core_of = ROOT
 						state = 1005
 						state = 1006
 						state = 660
@@ -2803,16 +2827,22 @@ country_event = {
 			}
 			every_state = {
 				limit = {
-					is_owned_by = FRA
+					is_owned_by = ROOT
 				}
 				add_claim_by = FRR
+			}
+			every_state = {
+				limit = {
+					is_owned_by = FRR
+				}
+				add_claim_by = ROOT
 			}
 			if = {
 				limit = {
 					ENG = {
 						has_government = democratic
 						is_faction_leader = yes
-						has_war_with = FRA
+						has_war_with = ROOT
 					}
 				}
 				ENG = { add_to_faction = FRR }
@@ -2821,9 +2851,10 @@ country_event = {
 				add_ideas = { FRR_armed_uprising_june FRR_illegitimate_government }
 				add_equipment_to_stockpile = {
 					type = infantry_equipment
-					amount = 10000
+					amount = 15000
 				}
-				inherit_technology = FRA
+				inherit_technology = ROOT
+				load_oob = "FRR_rise"
 			}
 			FRA = {
 				every_army_leader = {
@@ -2834,7 +2865,7 @@ country_event = {
 	}
 	
 	option = {
-		name = NWfrance.201.b
+		name = NWfrance.202.b
 		trigger = { is_ai = no }
 		remove_unit_leader = 101
 		every_state = {
@@ -2856,7 +2887,7 @@ country_event = {
 		}
 		FRR = {
 			declare_war_on = {
-				target = FRA
+				target = ROOT
 				type = civil_war
 			}
 		}
@@ -2864,7 +2895,7 @@ country_event = {
 			every_state = {
 				limit = {
 					OR = {
-						is_core_of = FRA
+						is_core_of = ROOT
 						state = 1005
 						state = 1006
 						state = 660
@@ -2877,16 +2908,22 @@ country_event = {
 			}
 			every_state = {
 				limit = {
-					is_owned_by = FRA
+					is_owned_by = ROOT
 				}
 				add_claim_by = FRR
+			}
+			every_state = {
+				limit = {
+					is_owned_by = FRR
+				}
+				add_claim_by = ROOT
 			}
 			if = {
 				limit = {
 					ENG = {
 						has_government = democratic
 						is_faction_leader = yes
-						has_war_with = FRA
+						has_war_with = ROOT
 					}
 				}
 				ENG = { add_to_faction = FRR }
@@ -2895,9 +2932,10 @@ country_event = {
 				add_ideas = { FRR_armed_uprising_june FRR_illegitimate_government }
 				add_equipment_to_stockpile = {
 					type = infantry_equipment
-					amount = 10000
+					amount = 15000
 				}
-				inherit_technology = FRA
+				inherit_technology = ROOT
+				load_oob = "FRR_rise"
 			}
 			FRA = {
 				every_army_leader = {
@@ -2906,6 +2944,91 @@ country_event = {
 			}
 		}
 		FRR = { change_tag_from = ROOT }
+	}
+}
+
+#Пульсар для FRC на мир с FRR
+country_event = {
+	id = NWfrance.203
+	title = NWfrance.203.t
+	desc = NWfrance.203.desc
+	picture = GFX_report_event_poland_rejects
+	is_triggered_only = yes
+	hidden = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName]: event NWfrance.203" }
+	
+	option = {
+		name = NWfrance.203.a
+		set_country_flag = peace_flag_FRR_enable
+	}
+}
+
+country_event = {
+	id = NWfrance.204
+	title = NWfrance.204.t
+	desc = NWfrance.204.desc
+	picture = GFX_report_event_poland_rejects
+	fire_only_once = yes
+	
+	trigger = {
+		OR = {
+			tag = FRC
+			tag = FRR
+		}
+		FRC = { has_war_with = FRR }
+		has_country_flag = peace_flag_FRR_enable
+		all_state = {
+			OR = {
+				NOT = { is_on_continent = africa }
+				NOT = { controller = { tag = FRC } }
+			}
+		}
+		all_state = {
+			OR = {
+				NOT = { is_on_continent = europe }
+				NOT = { is_core_of = FRC }
+				NOT = { controller = { tag = FRR } }
+			}
+		}
+	}
+	
+	mean_time_to_happen = { days = 5 }
+	
+	immediate = { log = "[GetDateText]: [Root.GetName]: event NWfrance.204" }
+	immediate = { clr_country_flag = peace_flag_FRR_enable }
+	
+	option = {
+		name = NWfrance.204.a
+		if = {	
+			limit = { ROOT = { tag = FRC } }
+			hidden_effect = {
+				every_state = {
+					limit = {
+						is_owned_by = FRC
+						is_controlled_by = FRR
+					}
+					FRR = { transfer_state = PREV }
+					remove_claim_by = FRC
+				}
+			}
+			FRC = { white_peace = FRR }
+			hidden_effect = {
+				every_state = {
+					limit = { is_owned_by = FRR }
+					add_claim_by = FRC
+				}
+				every_state = {
+					limit = { is_owned_by = FRC }
+					add_claim_by = FRR
+				}
+			}
+		}
+		else = {
+			effect_tooltip = {
+				FRR = { white_peace = FRC }
+			}
+		}
 	}
 }
 
@@ -3641,6 +3764,7 @@ country_event = {
 					OR = {
 						tag = SYR
 						tag = LEB
+						tag = FIC
 					}
 				}
 				white_peace = ROOT
