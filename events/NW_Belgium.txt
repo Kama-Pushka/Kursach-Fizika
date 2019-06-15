@@ -1,0 +1,420 @@
+﻿###########################
+# Ветка Бельгии
+###########################
+
+add_namespace = NWbelgium
+
+#Выборы в парламент
+country_event = {
+	id = NWbelgium.1
+	title = NWbelgium.1.t
+	desc = NWbelgium.1.desc
+	picture = GFX_report_event_generic_rally_3
+	fire_only_once = yes
+
+	trigger = {
+		tag = BEL
+		date > 1936.05.20
+	}
+	
+	immediate = { log = "[GetDateText]: [Root.GetName]: event NWbelgium.1" }
+	immediate = { complete_national_focus = BEL_parliamentary_elections }
+	
+	option = {
+		name = NWbelgium.1.a
+		ai_chance = {
+			factor = 50
+		}
+		complete_national_focus = BEL_van_zeland_office
+	}
+	
+	option = {
+		name = NWbelgium.1.b
+		ai_chance = {
+			factor = 50
+		}
+		complete_national_focus = BEL_office_vandervelde
+	}
+}
+
+#FROM приглашает нас в Бинелюкс (науч. группа)
+country_event = {
+	id = NWbelgium.2
+	title = NWbelgium.2.t
+	desc = NWbelgium.2.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+
+	
+	immediate = { log = "[GetDateText]: [Root.GetName]: event NWbelgium.2" }
+	
+	option = {
+		name = NWbelgium.2.a
+		ai_chance = {
+			factor = 90
+		}
+		add_to_tech_sharing_group = BEL_benelux_group
+		add_ideas = BEL_benelux_customs_union
+	}
+	
+	option = {
+		name = NWbelgium.2.b
+		ai_chance = {
+			factor = 10
+		}
+		
+	}
+}
+
+
+#Уличение премьер-министра в коррупции
+country_event = {
+	id = NWbelgium.3
+	title = NWbelgium.3.t
+	desc = NWbelgium.3.desc
+	picture = GFX_report_event_generic_rally_3
+	fire_only_once = yes
+
+	trigger = {
+		tag = BEL
+		has_country_leader = {
+			name = "Paul Van Zeeland"
+			ruling_only = yes
+		}
+		date > 1937.10.20
+	}
+
+	immediate = { log = "[GetDateText]: [Root.GetName]: event NWbelgium.3" }
+	
+	option = {
+		name = NWbelgium.3.a
+		create_country_leader = {
+			name = "Paul-Emile Janson"
+			desc = "POLITICS_PAUL_EMILE_JANSON_DESC"
+			picture = "gfx/leaders/BEL/Portrait_Paul-Emile_Janson.dds"
+			expire = "1965.1.1"
+			ideology = democratic_socialism
+			traits = {
+			}
+		}
+	}
+}
+
+#Неудача в формировании правительства национального объединения
+country_event = {
+	id = NWbelgium.4
+	title = NWbelgium.4.t
+	desc = NWbelgium.4.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+
+	immediate = { log = "[GetDateText]: [Root.GetName]: event NWbelgium.4" }
+	
+	option = {
+		name = NWbelgium.4.a
+		effect_tooltip = {
+			add_popularity = {
+				ideology = democratic
+				popularity = -0.22
+			}
+		}
+		set_party_name = { ideology = democratic name = BEL_social_party long_name = BEL_social_party_long }
+		hidden_effect = {
+			add_popularity = {
+				ideology = fascism
+				popularity = 0.12
+			}
+			add_popularity = {
+				ideology = neutrality
+				popularity = 0.1
+			}
+		}
+	}
+}
+
+#Бельгия хочет заключить с нами союз // FRA/FRC
+country_event = {
+	id = NWbelgium.5
+	title = NWbelgium.5.t
+	desc = NWbelgium.5.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+
+	immediate = { log = "[GetDateText]: [Root.GetName]: event NWbelgium.5" }
+	
+	option = {
+		name = NWbelgium.5.a
+		ai_chance = {
+			factor = 90
+		}
+		if = {
+			limit = { ROOT = { is_faction_leader = yes } }
+			add_to_faction = FROM
+		}
+		if = {
+			limit = {
+				ROOT = {
+					is_in_faction = yes
+					is_faction_leader = no
+				}
+			}
+			random_country = {
+				limit = {
+					is_in_faction_with = ROOT
+					is_faction_leader = yes
+				}
+				add_to_faction = FROM
+			}
+		}
+		if = {
+			limit = {
+				ROOT = {
+					original_tag = FRA
+					is_in_faction = no
+				}
+			}
+			set_rule = { can_create_factions = yes }
+			create_faction = french_entente_alliance
+			add_to_faction = FROM
+			hidden_effect = {
+				news_event = { hours = 6 id = news.177 }
+			}
+		}
+		if = {
+			limit = {
+				ROOT = {
+					original_tag = FRC
+					is_in_faction = no
+				}
+			}
+			set_rule = { can_create_factions = yes }
+			create_faction = FRC_french_revolutionary_union
+			add_to_faction = FROM
+		}
+	}
+	
+	option = {
+		name = NWbelgium.5.b
+		ai_chance = {
+			factor = 10
+		}
+	}
+}
+
+#Восстание во Фландрии
+country_event = {
+	id = NWbelgium.6
+	title = NWbelgium.6.t
+	desc = NWbelgium.6.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+
+	immediate = { log = "[GetDateText]: [Root.GetName]: event NWbelgium.6" }
+	immediate = { remove_ideas = BEL_flemish_walloon_conflict remove_ideas = BEL_flemish_walloon_conflict_2 }
+	
+	option = {
+		name = NWbelgium.6.a
+		ai_chance = {
+			factor = 90
+		}
+		FLA = {
+			transfer_state = 975
+			declare_war_on = {
+				target = ROOT
+				type = annex_everything
+			}
+			hidden_effect = {
+				set_popularities = {
+					democratic = 35
+					fascism = 10
+					communism = 5
+					neutrality = 50
+				}
+				set_politics = {
+					ruling_party = neutrality
+					last_election = "1932.11.27"
+					election_frequency = 48
+					elections_allowed = yes
+				}
+				load_oob = "FLA_rise"
+			}
+		}
+		if = {
+			limit = { NOT = { has_completed_focus = BEL_propaganda_against_rexists } }
+			country_event = { id = NWbelgium.7 days = 1 }
+		}
+	}
+	
+	option = {
+		name = NWbelgium.6.b
+		ai_chance = {
+			factor = 10
+		}
+		trigger = { NOT = { WLN = { is_subject_of = ROOT } } }
+		FLA = { transfer_state = 975 }
+		puppet = FLA
+		hidden_effect = { FLA = { load_oob = "FLA_rise" } }
+	}
+}
+
+#Восстание в Люксембурге
+country_event = {
+	id = NWbelgium.7
+	title = NWbelgium.7.t
+	desc = NWbelgium.7.desc
+	picture = GFX_report_event_bel_luxemburg_problem
+	is_triggered_only = yes
+
+	immediate = { log = "[GetDateText]: [Root.GetName]: event NWbelgium.7" }
+	immediate = { complete_national_focus = BEL_rexist_coup }
+	
+	option = {
+		name = NWbelgium.7.a
+		if = {
+			limit = { has_war_with = FLA }
+			white_peace = FLA
+		}
+		if = {
+			limit = { NOT = { country_exists = FLA } }
+			FLA = { transfer_state = 975 }
+		}
+		hidden_effect = {
+			transfer_state = 6
+			FLA = {
+				set_popularities = {
+					democratic = 35
+					fascism = 10
+					communism = 5
+					neutrality = 50
+				}
+				set_politics = {
+					ruling_party = neutrality
+					last_election = "1932.11.27"
+					election_frequency = 48
+					elections_allowed = yes
+				}
+			}
+		}
+		puppet = FLA
+		start_civil_war = {
+			ideology = democratic
+			size = 0.5
+			capital = 6
+			states = { 1061 34 6 }
+		}
+		hidden_effect = {
+			random_country = {
+				limit = {
+					original_tag = BEL
+					has_government = democratic
+				}
+				declare_war_on = {
+					target = FLA
+					type = civil_war
+				}
+			}
+		}
+	}
+}
+
+#Бельгия предлагает примирение // GER
+country_event = {
+	id = NWbelgium.8
+	title = NWbelgium.8.t
+	desc = NWbelgium.8.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+
+	immediate = { log = "[GetDateText]: [Root.GetName]: event NWbelgium.8" }
+	
+	option = {
+		name = NWbelgium.8.a
+		ai_chance = {
+			factor = 50
+		}
+		GER = { add_to_faction = FROM }
+	}
+	
+	option = {
+		name = NWbelgium.8.b
+		ai_chance = {
+			factor = 50
+		}
+		FROM = { country_event = { id = NWbelgium.10 days = 1 } }
+	}
+	
+	option = {
+		name = NWbelgium.8.c
+		ai_chance = {
+			factor = 5
+		}
+		FROM = { country_event = { id = NWbelgium.9 days = 1 } }
+	}
+}
+
+#Германский отказ // BEL
+country_event = {
+	id = NWbelgium.9
+	title = NWbelgium.9.t
+	desc = NWbelgium.9.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+
+	immediate = { log = "[GetDateText]: [Root.GetName]: event NWbelgium.9" }
+	
+	option = {
+		name = NWbelgium.9.a
+	}
+}
+
+#Германия требует передать Эйпен-Мальмеди // BEL
+country_event = {
+	id = NWbelgium.10
+	title = NWbelgium.10.t
+	desc = NWbelgium.10.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+
+	immediate = { log = "[GetDateText]: [Root.GetName]: event NWbelgium.10" }
+	
+	option = {
+		name = NWbelgium.10.a
+		ai_chance = {
+			factor = 75
+		}
+		766 = {
+			GER = { transfer_state = PREV }
+			add_core_of = GER
+			remove_core_of = ROOT
+		}
+		GER = { add_to_faction = ROOT }
+	}
+	
+	option = {
+		name = NWbelgium.10.b
+		ai_chance = {
+			factor = 25
+		}
+		FROM = { country_event = { id = NWbelgium.11 days = 1 } }
+	}
+}
+
+#Бельгия отказалась передавать свою территорию // GER
+country_event = {
+	id = NWbelgium.11
+	title = NWbelgium.11.t
+	desc = NWbelgium.11.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+
+	immediate = { log = "[GetDateText]: [Root.GetName]: event NWbelgium.11" }
+	
+	option = {
+		name = NWbelgium.11.a
+		add_opinion_modifier = { target = FROM modifier = BEL_refused_transfer_territory }
+		FROM = { add_opinion_modifier = { target = ROOT modifier = BEL_refused_transfer_territory } }
+	}
+}
+
+
+
