@@ -2093,8 +2093,8 @@ country_event = {
 				NOT = { has_war_with = GER }
 			}
 			AND = {
-				has_war_with = GER
-				has_war_with = ITA
+				GER = { has_war_with = FRA }
+				ITA = { has_war_with = FRA }
 				ITA = { is_in_faction_with = GER }
 			}
 		}
@@ -2127,12 +2127,12 @@ country_event = {
 			limit = { neutrality < 0.15 }
 			add_popularity = {
 				ideology = neutrality
-				popularity = 0.15
+				popularity = 0.25
 			}
 			else = {
 				add_popularity = {
 					ideology = neutrality
-					popularity = 0.1
+					popularity = 0.15
 				}
 			}
 		}
@@ -2171,11 +2171,26 @@ country_event = {
 			}
 			if = {
 				limit = { check_variable = { var = GER_FRA_occupy_state value = ITA_FRA_occupy_state compare = greater_than_or_equals } }
-				GER = { save_event_target_as = france_occupy_leader }
-				else = { ITA = { save_event_target_as = france_occupy_leader } }
+				GER = { save_global_event_target_as = france_occupy_leader }
+				log = "[GetDateText]: [Root.GetName]: GER is france_occupy_leader"
+				else = {
+					ITA = { save_global_event_target_as = france_occupy_leader }
+					log = "[GetDateText]: [Root.GetName]: ITA is france_occupy_leader"
+				}
 			}
 			clear_variable = GER_FRA_occupy_state
 			clear_variable = ITA_FRA_occupy_state
+			remove_ideas = {
+				FRA_victors_of_wwi
+				FRA_disjointed_government
+				FRA_protected_by_the_maginot_line
+				FRA_social_crisis
+				FRA_strengthen_democracy
+				FRA_strengthen_left_direction
+				FRA_rise_communism
+			}
+			add_ideas = partial_economic_mobilisation
+			add_ideas = extensive_conscription
 		}
 	}
 	
@@ -2197,6 +2212,14 @@ country_event = {
 	is_triggered_only = yes
 	
 	immediate = { log = "[GetDateText]: [Root.GetName]: event NWfrance.102" }
+	immediate = {
+		FROM = {
+			set_variable = { fra_comm = party_popularity@communism }
+			set_variable = { fra_demo = party_popularity@democratic }
+			set_variable = { fra_fash = party_popularity@fascism }
+			set_variable = { fra_neut = party_popularity@neutrality }
+		}
+	}
 	
 	option = {
 		name = NWfrance.102.a
@@ -2215,14 +2238,13 @@ country_event = {
 				limit = { FROM = { is_in_faction_with = ENG } }
 				ENG = { country_event = { id = NWfrance.105 days = 11 } }
 			}
-			FRA = { country_event = { id = NWfrance.202 days = 14 } }
+			FROM = { country_event = { id = NWfrance.202 days = 14 } }
 		}
 		FROM = { leave_faction = yes }
 		every_country = {
 			limit = { has_war_with = FROM }
 			white_peace = FROM
 		}
-		#Проверить популярность
 		set_autonomy = {
 			target = FROM
 			autonomy_state = autonomy_satellite
@@ -2237,6 +2259,24 @@ country_event = {
 				FRA_prisoners_war_in_foreign_land
 				FRA_payments_to_winners
 				FRA_hunger_in_big_cities
+			}
+		}
+		hidden_effect = {
+			FROM = {
+				set_popularities = {
+					communism = var:fra_comm
+					democratic = var:fra_demo
+					fascism = var:fra_fash
+					neutrality = var:fra_neut
+				}
+				set_politics = {
+					ruling_party = neutrality
+					elections_allowed = no
+				}
+				clear_variable = fra_comm
+				clear_variable = fra_demo
+				clear_variable = fra_fash
+				clear_variable = fra_neut
 			}
 		}
 	}
@@ -2261,21 +2301,20 @@ country_event = {
 	option = {
 		name = NWfrance.103.a
 		ai_chance = {
-			factor = 75
+			factor = 85
 		}
 		hidden_effect = {
 			if = {
 				limit = { is_in_faction_with = ENG }
 				ENG = { country_event = { id = NWfrance.105 days = 11 } }
 			}
-			FRA = { country_event = { id = NWfrance.202 days = 14 } }
+			country_event = { id = NWfrance.202 days = 14 }
 		}
 		leave_faction = yes
 		every_country = {
 			limit = { has_war_with = ROOT }
 			white_peace = ROOT
 		}
-		#Проверить популярность
 		FROM = {
 			set_autonomy = {
 				target = ROOT
@@ -2308,7 +2347,7 @@ country_event = {
 				ITA = { transfer_state = PREV }
 			}
 			if = {
-				limit = { GER = { is_in_faction_with = ITA } }
+				limit = { ITA = { is_in_faction_with = GER } }
 				every_state = {
 					limit = {
 						OR = {
@@ -2325,6 +2364,7 @@ country_event = {
 			every_state = {
 				limit = {
 					OR = {
+						state = 18
 						state = 19
 						state = 23
 						state = 30
@@ -2341,6 +2381,7 @@ country_event = {
 						state = 29
 						state = 1038
 						state = 1037
+						state = 1062
 					}
 				}
 				GER = { transfer_state = PREV }
@@ -2371,13 +2412,33 @@ country_event = {
 			FRA_payments_to_winners
 			FRA_hunger_in_big_cities
 		}
+		hidden_effect = {
+			set_popularities = {
+				communism = var:fra_comm
+				democratic = var:fra_demo
+				fascism = var:fra_fash
+				neutrality = var:fra_neut
+			}
+			set_politics = {
+				ruling_party = neutrality
+				elections_allowed = no
+			}
+			clear_variable = fra_comm
+			clear_variable = fra_demo
+			clear_variable = fra_fash
+			clear_variable = fra_neut
+		}
 	}
 	option = {
 		name = NWfrance.103.b
 		ai_chance = {
-			factor = 25
+			factor = 15
 		}
 		FROM = { country_event = { id = NWfrance.104 days = 1 } }
+		clear_variable = fra_comm
+		clear_variable = fra_demo
+		clear_variable = fra_fash
+		clear_variable = fra_neut
 	}
 }
 
@@ -2868,9 +2929,12 @@ country_event = {
 				inherit_technology = ROOT
 				load_oob = "FRR_rise"
 			}
-			FRA = {
-				every_army_leader = {
-					set_nationality = FRR
+			if = {
+				limit = { NOT = { tag = FRA } }
+				FRA = {
+					every_army_leader = {
+						set_nationality = FRR
+					}
 				}
 			}
 		}
@@ -2949,9 +3013,12 @@ country_event = {
 				inherit_technology = ROOT
 				load_oob = "FRR_rise"
 			}
-			FRA = {
-				every_army_leader = {
-					set_nationality = FRR
+			if = {
+				limit = { NOT = { tag = FRA } }
+				FRA = {
+					every_army_leader = {
+						set_nationality = FRR
+					}
 				}
 			}
 		}
