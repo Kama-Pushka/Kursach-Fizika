@@ -1097,7 +1097,7 @@ focus_tree = {
 		}
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus COG_military_in_civ_lives"
-			add_manpower = 5000
+			add_ideas = COG_freedomloving_generals
 		}
 	}
 	focus = {
@@ -1235,7 +1235,7 @@ focus_tree = {
 	}
 	focus = {
 		id = COG_burning_out_white_heresy
-		icon = GFX_goal_generic_political_pressure
+		icon = GFX_z_goal_monarchism_19
 		prerequisite = { focus = COG_protection_of_black_continent }
 		x = 0
 		y = 1
@@ -1253,7 +1253,7 @@ focus_tree = {
 				factor = 0
 				NOT = {
 					has_war_with = ENG
-					has_war_with = FRA
+					has_war_with = event_target:NW_france_scope
 					has_war_with = FRC
 					has_war_with = FRR
 					has_war_with = BEL
@@ -1413,6 +1413,13 @@ focus_tree = {
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus COG_stronges_aparteid"
 			add_stability = 0.1
+			if = {
+				limit = { has_idea = COG_low_skill_iq }
+				swap_ideas = {
+					remove_idea = COG_low_skill_iq
+					add_idea = COG_cheap_labor
+				}
+			}
 		}
 	}
 	focus = {
@@ -1433,6 +1440,10 @@ focus_tree = {
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus COG_create_a_congo_republic"
 			add_ideas = COG_create_a_congo_republic_idea
+			if = {
+				limit = { is_puppet = yes }
+				OVERLORD = { country_event = { id = cog.20 } }
+			}
 		}
 	}
 	focus = {
@@ -1639,8 +1650,8 @@ focus_tree = {
 			factor = 1
 		}
 		available = {
-			country_exists = FRA
-			NOT = { has_war_with = FRA }
+			country_exists = event_target:NW_france_scope
+			NOT = { has_war_with = event_target:NW_france_scope }
 		}
 		bypass = {
 		}
@@ -1680,8 +1691,8 @@ focus_tree = {
 					instant_build = yes
 				}
 			}
-			add_opinion_modifier = { target = FRA modifier = COG_french_investment }
-			FRA = { add_opinion_modifier = { target = ROOT modifier = COG_french_investment } }
+			add_opinion_modifier = { target = event_target:NW_france_scope modifier = COG_french_investment }
+			event_target:NW_france_scope = { add_opinion_modifier = { target = ROOT modifier = COG_french_investment } }
 		}
 	}
 	focus = {
@@ -1703,8 +1714,8 @@ focus_tree = {
 		}
 		available = {
 			industrial_complex > 2
-			539 = { owner = { tag = FRA } }
-			1005 = { owner = { tag = FRA } }
+			539 = { owner = { tag = event_target:NW_france_scope } }
+			1005 = { owner = { tag = event_target:NW_france_scope } }
 		}
 		bypass = {
 		}
@@ -1713,7 +1724,7 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus COG_middle_congo"
-			FRA = { country_event = { id = cog.14 } }
+			event_target:NW_france_scope = { country_event = { id = cog.14 } }
 		}
 	}
 	focus = {
@@ -2103,8 +2114,8 @@ focus_tree = {
 			add_ideas = COG_seek_alliance_with_great_powers_idea
 			if = {
 				limit = { has_completed_focus = COG_french_investment }
-				add_opinion_modifier = { target = FRA modifier = COG_seek_alliance_with_great_powers_idea }
-				FRA = { add_opinion_modifier = { target = ROOT modifier = COG_seek_alliance_with_great_powers_idea } }
+				add_opinion_modifier = { target = event_target:NW_france_scope modifier = COG_seek_alliance_with_great_powers_idea }
+				event_target:NW_france_scope = { add_opinion_modifier = { target = ROOT modifier = COG_seek_alliance_with_great_powers_idea } }
 			}
 			if = {
 				limit = { has_completed_focus = COG_british_investment }
@@ -2201,22 +2212,77 @@ focus_tree = {
 		}
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus COG_angola_liberty"
-			add_state_claim = 1056
+			every_state = {
+				limit = {
+					OR = {
+						state = 1056
+						state = 540
+					}
+				}
+				add_core_of = ROOT
+			}
 			1056 = {
 				controller = {
 					ROOT = {
+						create_wargoal = {
+							type = take_state_focus
+							target = PREV
+							generator = { 1056 540 }
+						}
 						add_ai_strategy = {
 							type = antagonize
 							id = PREV
-							value = 500
+							value = 200
 						}
 						add_ai_strategy = {
 							type = conquer
 							id = PREV
-							value = 500
+							value = 100
 						}
 					}
 				}
+			}
+		}
+	}
+	focus = {
+		id = COG_saving_south_africa_from_apartheid
+		icon = GFX_focus_generic_strike_at_democracy1
+		prerequisite = { focus = COG_angola_liberty }
+		x = 0
+		y = 1
+		relative_position_id = COG_angola_liberty
+		
+		cost = 10
+		
+		cancel_if_invalid = yes
+		continue_if_invalid = no
+		available_if_capitulated = yes
+
+		ai_will_do = {
+			factor = 1
+		}
+		available = {
+		}
+		bypass = {
+		}
+		select_effect = {
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: Focus COG_saving_south_africa_from_apartheid"
+			every_state = {
+				limit = { is_owned_by = SAF }
+				add_claim_by = ROOT
+			}
+			add_ai_strategy = {
+				type = antagonize
+				id = "SAF"
+				value = 200
+			}
+			add_ai_strategy = {
+				type = conquer
+				id = "SAF"
+				value = 100
 			}
 		}
 	}
@@ -2235,8 +2301,91 @@ focus_tree = {
 		}
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus COG_liberty_french_colony"
-			add_state_core = 1005
-			add_state_core = 539
+			every_state = {
+				limit = {
+					OR = {
+						state = 1005
+						state = 539
+					}
+				}
+				add_core_of = ROOT
+			}
+			1005 = {
+				controller = {
+					ROOT = {
+						create_wargoal = {
+							type = take_state_focus
+							target = PREV
+							generator = { 1005 539 }
+						}
+						add_ai_strategy = {
+							type = antagonize
+							id = PREV
+							value = 200
+						}
+						add_ai_strategy = {
+							type = conquer
+							id = PREV
+							value = 100
+						}
+					}
+				}
+			}
+		}
+	}
+	focus = {
+		id = COG_negroes_of_equatorial_sahara
+		icon = GFX_goal_poland_goal
+		prerequisite = { focus = COG_liberty_french_colony }
+		x = 0
+		y = 1
+		relative_position_id = COG_liberty_french_colony
+		
+		cost = 10
+		
+		cancel_if_invalid = yes
+		continue_if_invalid = no
+		available_if_capitulated = yes
+
+		ai_will_do = {
+			factor = 1
+		}
+		available = {
+		}
+		bypass = {
+		}
+		select_effect = {
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: Focus COG_negroes_of_equatorial_sahara"
+			every_state = {
+				limit = {
+					OR = {
+						state = 1006
+						state = 660
+						state = 1019
+						state = 297
+					}
+				}
+				add_claim_by = ROOT
+			}
+			1006 = {
+				controller = {
+					ROOT = {
+						add_ai_strategy = {
+							type = antagonize
+							id = PREV
+							value = 200
+						}
+						add_ai_strategy = {
+							type = conquer
+							id = PREV
+							value = 100
+						}
+					}
+				}
+			}
 		}
 	}
 	focus = {
@@ -2254,21 +2403,33 @@ focus_tree = {
 		}
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus COG_east_afr_reborn"
-			add_state_claim = 546
-			add_state_claim = 547
-			add_state_claim = 548
+			every_state = {
+				limit = {
+					OR = {
+						state = 546
+						state = 547
+						state = 548
+					}
+				}
+				add_core_of = ROOT
+			}
 			546 = {
 				controller = {
 					ROOT = {
+						create_wargoal = {
+							type = take_state_focus
+							target = PREV
+							generator = { 546 547 548 }
+						}
 						add_ai_strategy = {
 							type = antagonize
 							id = PREV
-							value = 500
+							value = 200
 						}
 						add_ai_strategy = {
 							type = conquer
 							id = PREV
-							value = 500
+							value = 100
 						}
 					}
 				}
@@ -2279,12 +2440,12 @@ focus_tree = {
 						add_ai_strategy = {
 							type = antagonize
 							id = PREV
-							value = 500
+							value = 200
 						}
 						add_ai_strategy = {
 							type = conquer
 							id = PREV
-							value = 500
+							value = 100
 						}
 					}
 				}
@@ -2295,12 +2456,154 @@ focus_tree = {
 						add_ai_strategy = {
 							type = antagonize
 							id = PREV
-							value = 500
+							value = 200
 						}
 						add_ai_strategy = {
 							type = conquer
 							id = PREV
-							value = 500
+							value = 100
+						}
+					}
+				}
+			}
+		}
+	}
+	focus = {
+		id = COG_orthodox_ethiopia
+		icon = GFX_z_goal_monarchism_11
+		prerequisite = { focus = COG_east_afr_reborn }
+		x = 0
+		y = 1
+		relative_position_id = COG_east_afr_reborn
+		
+		cost = 10
+		
+		cancel_if_invalid = yes
+		continue_if_invalid = no
+		available_if_capitulated = yes
+
+		ai_will_do = {
+			factor = 1
+		}
+		available = {
+		}
+		bypass = {
+		}
+		select_effect = {
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: Focus COG_orthodox_ethiopia"
+			if = {
+				limit = { NOT = { country_exists = ETH } }
+				every_state = {
+					limit = { is_core_of = ETH }
+					add_claim_by = ROOT
+					controller = {
+						ROOT = {
+							add_ai_strategy = {
+								type = antagonize
+								id = PREV
+								value = 200
+							}
+							add_ai_strategy = {
+								type = conquer
+								id = PREV
+								value = 100
+							}
+						}
+					}
+				}
+			}
+			else = { ETH = { country_event = { id = cog.18 } } }
+		}
+	}
+	
+	focus = {
+		id = COG_empire_of_black_christ
+		icon = GFX_z_goal_monarchism_21
+		prerequisite = { focus = COG_saving_south_africa_from_apartheid }
+		prerequisite = { focus = COG_negroes_of_equatorial_sahara }
+		prerequisite = { focus = COG_orthodox_ethiopia }
+		x = 0
+		y = 1
+		relative_position_id = COG_negroes_of_equatorial_sahara
+		
+		cost = 10
+		
+		cancel_if_invalid = yes
+		continue_if_invalid = no
+		available_if_capitulated = yes
+
+		ai_will_do = {
+			factor = 2
+		}
+		available = {
+		}
+		bypass = {
+		}
+		select_effect = {
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: Focus COG_empire_of_black_christ"
+			add_political_power = 100
+			add_stability = 0.1
+			add_war_support = 0.1
+			set_cosmetic_tag = COG_black_empire
+		}
+	}
+	
+	focus = {
+		id = COG_crusade_against_muslims
+		icon = GFX_z_goal_boards
+		prerequisite = { focus = COG_empire_of_black_christ }
+		x = 0
+		y = 1
+		relative_position_id = COG_empire_of_black_christ
+		
+		cost = 10
+		
+		cancel_if_invalid = yes
+		continue_if_invalid = no
+		available_if_capitulated = yes
+
+		ai_will_do = {
+			factor = 1
+		}
+		available = {
+		}
+		bypass = {
+		}
+		select_effect = {
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: Focus COG_crusade_against_muslims"
+			every_state = {
+				limit = {
+					OR = {
+						is_core_of = MOR
+						is_core_of = ALG
+						is_core_of = TUN
+						is_core_of = EGY
+						is_core_of = LBA
+						is_core_of = SOM
+						is_core_of = ERI
+					}
+				}
+				add_claim_by = ROOT
+				controller = {
+					ROOT = {
+						add_ai_strategy = {
+							type = antagonize
+							id = PREV
+							value = 200
+						}
+						add_ai_strategy = {
+							type = conquer
+							id = PREV
+							value = 100
 						}
 					}
 				}
