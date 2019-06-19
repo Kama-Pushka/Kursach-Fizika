@@ -950,7 +950,7 @@ focus_tree = {
 	focus = {
 		id = BEL_parliamentary_elections
 		icon = GFX_z_goal_elections
-		x = 12
+		x = 14
 		y = 0
 		relative_position_id = BEL_introduction_paid_leave
 		
@@ -982,8 +982,11 @@ focus_tree = {
 		id = BEL_van_zeland_office
 		icon = GFX_z_goal_BEL_van_zeland_office
 		prerequisite = { focus = BEL_parliamentary_elections }
-		mutually_exclusive = { focus = BEL_office_vandervelde }
-		x = -2
+		mutually_exclusive = {
+			focus = BEL_office_vandervelde
+			focus = BEL_uncertainty_in_government
+		}
+		x = -4
 		y = 1
 		relative_position_id = BEL_parliamentary_elections
 		
@@ -1221,7 +1224,7 @@ focus_tree = {
 		icon = GFX_z_goal_brain
 		prerequisite = { focus = BEL_transatlantic_alliance focus = BEL_cooperation_with_allies }
 		x = 0
-		y = 5
+		y = 6
 		relative_position_id = BEL_transatlantic_alliance
 		
 		cost = 10
@@ -1525,8 +1528,11 @@ focus_tree = {
 		id = BEL_office_vandervelde
 		icon = GFX_z_goal_BEL_office_vandervelde
 		prerequisite = { focus = BEL_parliamentary_elections }
-		mutually_exclusive = { focus = BEL_van_zeland_office }
-		x = 2
+		mutually_exclusive = {
+			focus = BEL_van_zeland_office
+			focus = BEL_uncertainty_in_government
+		}
+		x = 0
 		y = 1
 		relative_position_id = BEL_parliamentary_elections
 		
@@ -1982,7 +1988,7 @@ focus_tree = {
 			create_country_leader = {
 				name = "Henri de Man"
 				desc = "POLITICS_HENRI_DE_MAN_DESC"
-				picture = "gfx/leaders/BEL/Portrait_Paul-Emile_Janson.dds"
+				picture = "gfx/leaders/BEL/Portrait_Henri_de_Man.dds"
 				expire = "1965.1.1"
 				ideology = centrism
 				traits = {
@@ -1993,7 +1999,7 @@ focus_tree = {
 			create_country_leader = {
 				name = "Émile Coulonvaux"
 				desc = "POLITICS_EMILE_COULONVAUX_DESC"
-				picture = "gfx/leaders/BEL/Portrait_Paul-Emile_Janson.dds"
+				picture = "gfx/leaders/Europe/Portrait_Europe_Generic_7.dds"
 				expire = "1965.1.1"
 				ideology = liberalism
 				traits = {
@@ -2009,7 +2015,7 @@ focus_tree = {
 		id = BEL_alliance_with_germany
 		icon = GFX_goal_support_fascism
 		prerequisite = { focus = BEL_rotate_right }
-		mutually_exclusive = { focus = BEL_alliance_with_britain }
+		mutually_exclusive = { focus = BEL_your_own_third_way }
 		x = 0
 		y = 1
 		relative_position_id = BEL_rotate_right
@@ -2025,7 +2031,10 @@ focus_tree = {
 		}
 		available = {
 			country_exists = GER
-			GER = { has_government = fascism }
+			GER = {
+				has_government = fascism
+				is_faction_leader = yes
+			}
 			NOT = { has_war_with = GER }
 			hidden_trigger = {
 				NOT = { has_completed_focus = BEL_rexist_coup }
@@ -2038,7 +2047,255 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus BEL_alliance_with_germany"
-			
+			GER = { country_event = { id = NWbelgium.8 days = 1 } }
+		}
+	}
+	
+	focus = {
+		id = BEL_your_own_third_way
+		icon = GFX_goal_generic_alliance
+		prerequisite = { focus = BEL_rotate_right }
+		mutually_exclusive = { focus = BEL_alliance_with_germany }
+		x = 2
+		y = 1
+		relative_position_id = BEL_rotate_right
+		
+		cost = 10
+		
+		cancel_if_invalid = yes
+		continue_if_invalid = no
+		available_if_capitulated = yes
+
+		ai_will_do = {
+			factor = 5
+		}
+		available = {
+		}
+		bypass = {
+		}
+		select_effect = {
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: Focus BEL_your_own_third_way"
+			add_ideas = BEL_your_own_third_way
+		}
+	}
+	
+	focus = {
+		id = BEL_plan_de_mana
+		icon = GFX_goal_generic_forceful_treaty
+		prerequisite = { focus = BEL_alliance_with_germany focus = BEL_your_own_third_way }
+		x = 1
+		y = 1
+		relative_position_id = BEL_alliance_with_germany
+		
+		cost = 10
+		
+		cancel_if_invalid = yes
+		continue_if_invalid = no
+		available_if_capitulated = yes
+
+		ai_will_do = {
+			factor = 5
+		}
+		available = {
+		}
+		bypass = {
+		}
+		select_effect = {
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: Focus BEL_plan_de_mana"
+			add_stability = -0.15
+			add_ideas = BEL_plan_de_mana
+			random_owned_controlled_state = {
+				limit = {
+					free_building_slots = {
+						building = arms_factory
+						size > 1
+						include_locked = yes
+					}
+				}
+				add_extra_state_shared_building_slots = 1
+				add_building_construction = {
+					type = arms_factory
+					level = 1
+					instant_build = yes
+				}
+			}
+		}
+	}
+	
+	focus = {
+		id = BEL_protection_from_enemies
+		icon = GFX_goal_generic_defence
+		prerequisite = { focus = BEL_plan_de_mana }
+		x = -1
+		y = 1
+		relative_position_id = BEL_plan_de_mana
+		
+		cost = 10
+		
+		cancel_if_invalid = yes
+		continue_if_invalid = no
+		available_if_capitulated = yes
+
+		ai_will_do = {
+			factor = 5
+		}
+		available = {
+		}
+		bypass = {
+		}
+		select_effect = {
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: Focus BEL_protection_from_enemies"
+			add_tech_bonus = {
+				name = BEL_protection_from_enemies
+				bonus = 1.0
+				uses = 1
+				category = land_doctrine
+			}
+		}
+	}
+	
+	focus = {
+		id = BEL_subordination_of_congo
+		icon = GFX_focus_eng_move_to_secure_the_dominions
+		prerequisite = { focus = BEL_plan_de_mana }
+		x = 1
+		y = 1
+		relative_position_id = BEL_plan_de_mana
+		
+		cost = 10
+		
+		cancel_if_invalid = yes
+		continue_if_invalid = no
+		available_if_capitulated = yes
+
+		ai_will_do = {
+			factor = 5
+		}
+		available = {
+		}
+		bypass = {
+		}
+		select_effect = {
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: Focus BEL_subordination_of_congo"
+			if = {
+				limit = {
+					COG = {
+						compare_autonomy_state < autonomy_dominion
+						NOT = { has_autonomy_state = autonomy_integrated_puppet }
+					}
+				}
+				COG = { add_ideas = BEL_subordination_of_congo }
+			}
+			if = {
+				limit = { COG = { is_subject_of = ROOT } }
+				unlock_decision_tooltip = BEL_integrate_cog
+			}
+			if = {
+				limit = {
+					COG = {
+						OR = {
+							is_subject = no
+							AND = {
+								is_subject_of = ROOT
+								has_autonomy_state = autonomy_dominion
+							}
+						}
+					}
+				}
+				if = {
+					limit = { COG = { is_subject_of = ROOT } }
+					set_autonomy = {
+						target = COG
+						autonomy_state = autonomy_free
+					}
+				}
+				create_wargoal = {
+					type = annex_everything
+					target = COG
+				}
+				hidden_effect = {
+					add_ai_strategy = {
+						type = antagonize
+						id = "COG"
+						value = 200
+					}
+					add_ai_strategy = {
+						type = conquer
+						id = "COG" 
+						value = 100
+					}
+					COG = {
+						add_ai_strategy = {
+							type = antagonize
+							id = ROOT
+							value = 200
+						}
+						add_ai_strategy = {
+							type = conquer
+							id = ROOT
+							value = 100
+						}
+					}
+				}
+			}
+		}
+	}
+	
+	focus = {
+		id = BEL_mobilize_enterprise
+		icon = GFX_goal_generic_construct_mil_factory
+		prerequisite = { focus = BEL_protection_from_enemies }
+		prerequisite = { focus = BEL_subordination_of_congo }
+		x = 1
+		y = 1
+		relative_position_id = BEL_protection_from_enemies
+		
+		cost = 10
+		
+		cancel_if_invalid = yes
+		continue_if_invalid = no
+		available_if_capitulated = yes
+
+		ai_will_do = {
+			factor = 5
+		}
+		available = {
+		}
+		bypass = {
+		}
+		select_effect = {
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: Focus BEL_mobilize_enterprise"
+			add_ideas = BEL_mobilize_enterprise
+			random_owned_controlled_state = {
+				limit = {
+					free_building_slots = {
+						building = arms_factory
+						size > 1
+						include_locked = yes
+					}
+				}
+				add_extra_state_shared_building_slots = 1
+				add_building_construction = {
+					type = arms_factory
+					level = 1
+					instant_build = yes
+				}
+			}
 		}
 	}
 	
@@ -2188,7 +2445,7 @@ focus_tree = {
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus BEL_alliance_with_france"
 			if = {
-				limit = { 16 = { controller = { OR = { tag = event_target:NW_france_scope tag = FRC } } } }
+				limit = { 16 = { controller = { tag = event_target:NW_france_scope } } }
 				16 = {
 					controller = {
 						country_event = { id = NWbelgium.5 }
@@ -2259,7 +2516,437 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus BEL_step_left"
+			add_timed_idea = { idea = BEL_communism_idea days = 300 }
 			custom_effect_tooltip = TUR_focus_autocomplete_tt
+		}
+	}
+	
+	focus = {
+		id = BEL_socialist_europe
+		icon = GFX_focus_ger_great_red_menace
+		prerequisite = { focus = BEL_step_left }
+		mutually_exclusive = { focus = BEL_alliance_with_soviet_union }
+		x = -2
+		y = 1
+		relative_position_id = BEL_step_left
+		
+		cost = 10
+		
+		cancel_if_invalid = yes
+		continue_if_invalid = no
+		available_if_capitulated = yes
+
+		ai_will_do = {
+			factor = 5
+			modifier = {
+				factor = 5
+				OR = {
+					event_target:NW_france_scope = {
+						has_government = communism
+						is_faction_leader = yes
+					}
+					HOL = {
+						has_government = communism
+						is_faction_leader = yes
+					}
+				}
+			}
+		}
+		available = {
+			hidden_trigger = {
+				NOT = { has_completed_focus = BEL_rexist_coup }
+			}
+		}
+		bypass = {
+		}
+		select_effect = {
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: Focus BEL_socialist_europe"
+			set_rule = { can_create_factions = yes }
+			if = {
+				limit = {
+					OR = {
+						event_target:NW_france_scope = {
+							has_government = communism
+							is_faction_leader = yes
+						}
+						HOL = {
+							has_government = communism
+							is_faction_leader = yes
+						}
+					}
+				}
+				country_event = { id = NWbelgium.16 }
+			}
+		}
+	}
+	
+	focus = {
+		id = BEL_alliance_with_soviet_union
+		icon = GFX_focus_chi_mission_to_the_soviet_union
+		prerequisite = { focus = BEL_step_left }
+		mutually_exclusive = { focus = BEL_socialist_europe }
+		x = 0
+		y = 1
+		relative_position_id = BEL_step_left
+		
+		cost = 10
+		
+		cancel_if_invalid = yes
+		continue_if_invalid = no
+		available_if_capitulated = yes
+
+		ai_will_do = {
+			factor = 15
+		}
+		available = {
+			country_exists = SOV
+			SOV = {
+				has_government = communism
+				is_faction_leader = yes
+			}
+			NOT = { has_war_with = SOV }
+			hidden_trigger = {
+				NOT = { has_completed_focus = BEL_rexist_coup }
+			}
+		}
+		bypass = {
+		}
+		select_effect = {
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: Focus BEL_alliance_with_soviet_union"
+			SOV = { country_event = { id = generic.2 days = 1 } }
+		}
+	}
+	
+	focus = {
+		id = BEL_organization_of_councils
+		icon = GFX_focus_generic_soviet_politics
+		prerequisite = { focus = BEL_socialist_europe focus = BEL_alliance_with_soviet_union }
+		x = 1
+		y = 1
+		relative_position_id = BEL_socialist_europe
+		
+		cost = 10
+		
+		cancel_if_invalid = yes
+		continue_if_invalid = no
+		available_if_capitulated = yes
+
+		ai_will_do = {
+			factor = 5
+		}
+		available = {
+			hidden_trigger = {
+				NOT = { has_completed_focus = BEL_rexist_coup }
+			}
+		}
+		bypass = {
+		}
+		select_effect = {
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: Focus BEL_organization_of_councils"
+			add_manpower = 50000
+			add_stability = 0.05
+			add_popularity = {
+				ideology = communism
+				popularity = 0.05
+			}
+		}
+	}
+	
+	focus = {
+		id = BEL_decolonization_of_congo
+		icon = GFX_focus_generic_self_management
+		prerequisite = { focus = BEL_organization_of_councils }
+		x = -1
+		y = 1
+		relative_position_id = BEL_organization_of_councils
+		
+		cost = 10
+		
+		cancel_if_invalid = yes
+		continue_if_invalid = no
+		available_if_capitulated = yes
+
+		ai_will_do = {
+			factor = 7
+		}
+		available = {
+			hidden_trigger = {
+				NOT = { has_completed_focus = BEL_rexist_coup }
+			}
+		}
+		bypass = {
+		}
+		select_effect = {
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: Focus BEL_decolonization_of_congo"
+			if = {
+				limit = { COG = { compare_autonomy_state < autonomy_dominion } }
+				COG = { add_ideas = BEL_decolonization_of_congo_idea }
+			}
+			if = {
+				limit = {
+					COG = {
+						OR = {
+							is_subject = no
+							AND = {
+								is_subject_of = ROOT
+								has_autonomy_state = autonomy_dominion
+								NOT = { has_government = communism }
+							}
+						}
+					}
+				}
+				if = {
+					limit = { COG = { is_subject_of = ROOT } }
+					set_autonomy = {
+						target = COG
+						autonomy_state = autonomy_free
+					}
+				}
+				create_wargoal = {
+					type = puppet_wargoal_focus
+					target = COG
+				}
+				hidden_effect = {
+					add_ai_strategy = {
+						type = antagonize
+						id = "COG"
+						value = 200
+					}
+					add_ai_strategy = {
+						type = conquer
+						id = "COG" 
+						value = 100
+					}
+					COG = {
+						add_ai_strategy = {
+							type = antagonize
+							id = ROOT
+							value = 200
+						}
+						add_ai_strategy = {
+							type = conquer
+							id = ROOT
+							value = 100
+						}
+					}
+				}
+			}
+		}
+	}
+	
+	focus = {
+		id = BEL_red_benelux
+		icon = GFX_z_goal_benelux
+		prerequisite = { focus = BEL_organization_of_councils }
+		x = 1
+		y = 1
+		relative_position_id = BEL_organization_of_councils
+		
+		cost = 10
+		
+		cancel_if_invalid = yes
+		continue_if_invalid = no
+		available_if_capitulated = yes
+
+		ai_will_do = {
+			factor = 7
+		}
+		available = {
+			hidden_trigger = {
+				NOT = { has_completed_focus = BEL_rexist_coup }
+			}
+		}
+		bypass = {
+		}
+		select_effect = {
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: Focus BEL_red_benelux"
+			if = {
+				limit = {
+					country_exists = HOL
+					HOL = { NOT = { has_government = communism } }
+				}
+				create_wargoal = {
+					type = puppet_wargoal_focus
+					target = HOL
+				}
+				add_ai_strategy = {
+					type = antagonize
+					id = "HOL"
+					value = 200
+				}
+				add_ai_strategy = {
+					type = conquer
+					id = "HOL"
+					value = 100
+				}
+			}
+			if = {
+				limit = { HOL = { has_government = communism } }
+				add_opinion_modifier = { target = HOL modifier = BEL_red_benelux }
+				HOL = { add_opinion_modifier = { target = ROOT modifier = BEL_red_benelux } }
+			}
+			if = {
+				limit = {
+					country_exists = LUX
+					LUX = { NOT = { has_government = communism } }
+				}
+				create_wargoal = {
+					type = puppet_wargoal_focus
+					target = LUX
+				}
+				add_ai_strategy = {
+					type = antagonize
+					id = "LUX"
+					value = 200
+				}
+				add_ai_strategy = {
+					type = conquer
+					id = "LUX"
+					value = 100
+				}
+			}
+			if = {
+				limit = { LUX = { has_government = communism } }
+				add_opinion_modifier = { target = LUX modifier = BEL_red_benelux }
+				LUX = { add_opinion_modifier = { target = ROOT modifier = BEL_red_benelux } }
+			}
+		}
+	}
+	
+	focus = {
+		id = BEL_nazis_next_door
+		icon = GFX_focus_generic_anti_fascist_diplomacy
+		prerequisite = { focus = BEL_decolonization_of_congo }
+		prerequisite = { focus = BEL_red_benelux }
+		x = 1
+		y = 1
+		relative_position_id = BEL_decolonization_of_congo
+		
+		cost = 10
+		
+		cancel_if_invalid = yes
+		continue_if_invalid = no
+		available_if_capitulated = yes
+
+		ai_will_do = {
+			factor = 7
+		}
+		available = {
+			hidden_trigger = {
+				NOT = { has_completed_focus = BEL_rexist_coup }
+			}
+		}
+		bypass = {
+		}
+		select_effect = {
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: Focus BEL_nazis_next_door"
+			if = {
+				limit = { GER = { has_government = fascism } }
+				create_wargoal = {
+					type = puppet_wargoal_focus
+					target = GER
+				}
+				add_ai_strategy = {
+					type = antagonize
+					id = "GER"
+					value = 200
+				}
+				add_ai_strategy = {
+					type = conquer
+					id = "GER"
+					value = 100
+				}
+				GER = {
+					add_ai_strategy = {
+						type = antagonize
+						id = ROOT
+						value = 200
+					}
+					add_ai_strategy = {
+						type = conquer
+						id = ROOT
+						value = 100
+					}
+				}
+			}
+			else_if = {
+				limit = { event_target:NW_france_scope = { has_government = fascism } }
+				create_wargoal = {
+					type = puppet_wargoal_focus
+					target = event_target:NW_france_scope
+				}
+				add_ai_strategy = {
+					type = antagonize
+					id = event_target:NW_france_scope
+					value = 200
+				}
+				add_ai_strategy = {
+					type = conquer
+					id = event_target:NW_france_scope 
+					value = 100
+				}
+				event_target:NW_france_scope = {
+					add_ai_strategy = {
+						type = antagonize
+						id = ROOT
+						value = 200
+					}
+					add_ai_strategy = {
+						type = conquer
+						id = ROOT
+						value = 100
+					}
+				}
+			}
+			else_if = {
+				random_neighbor_country = {
+					limit = { has_government = fascism }
+					add_ai_strategy = {
+						type = antagonize
+						id = ROOT
+						value = 200
+					}
+					add_ai_strategy = {
+						type = conquer
+						id = ROOT 
+						value = 100
+					}
+					ROOT = {
+						create_wargoal = {
+							type = puppet_wargoal_focus
+							target = PREV
+						}
+						add_ai_strategy = {
+							type = antagonize
+							id = PREV
+							value = 200
+						}
+						add_ai_strategy = {
+							type = conquer
+							id = PREV
+							value = 100
+						}
+					}
+				}
+			}
 		}
 	}
 	
@@ -2329,12 +3016,75 @@ focus_tree = {
 	}
 	
 	focus = {
-		id = BEL_belgian_socialism
-		icon = GFX_z_goal_socialist
+		id = BEL_struggle_for_freedom
+		icon = GFX_z_goal_flames_of_rebellion
 		prerequisite = { focus = BEL_defense_of_belgium }
-		x = 0
+		x = -1
 		y = 1
 		relative_position_id = BEL_defense_of_belgium
+		
+		cost = 10
+		
+		cancel_if_invalid = yes
+		continue_if_invalid = no
+		available_if_capitulated = yes
+
+		ai_will_do = {
+			factor = 5
+		}
+		available = {
+			
+		}
+		bypass = {
+		}
+		select_effect = {
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: Focus BEL_struggle_for_freedom"
+			add_war_support = 0.05
+		}
+	}
+	
+	focus = {
+		id = BEL_social_state
+		icon = GFX_z_focus_the_workers
+		prerequisite = { focus = BEL_defense_of_belgium }
+		x = 1
+		y = 1
+		relative_position_id = BEL_defense_of_belgium
+		
+		cost = 10
+		
+		cancel_if_invalid = yes
+		continue_if_invalid = no
+		available_if_capitulated = yes
+
+		ai_will_do = {
+			factor = 5
+		}
+		available = {
+			
+		}
+		bypass = {
+		}
+		select_effect = {
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: Focus BEL_social_state"
+			add_ideas = BEL_social_state
+		}
+	}
+	
+	focus = {
+		id = BEL_belgian_socialism
+		icon = GFX_z_goal_socialist
+		prerequisite = { focus = BEL_struggle_for_freedom }
+		prerequisite = { focus = BEL_social_state }
+		x = 1
+		y = 1
+		relative_position_id = BEL_struggle_for_freedom
 		
 		cost = 10
 		
@@ -2863,7 +3613,7 @@ focus_tree = {
 		icon = GFX_z_goal_BEL_national_unity
 		prerequisite = { focus = BEL_cooperation_with_allies focus = BEL_walloon_legion }
 		x = 0
-		y = 4
+		y = 5
 		relative_position_id = BEL_walloon_legion
 		
 		cost = 10
@@ -3258,7 +4008,6 @@ focus_tree = {
 					add_claim_by = ROOT
 				}
 			}
-			set_country_flag = BEL_integrate_category_flag
 			unlock_decision_category_tooltip = BEL_integrate_category
 		}
 	}
@@ -3333,6 +4082,876 @@ focus_tree = {
 		}
 	}
 	
+	##MONARHY BRANCH
+	
+	focus = {
+		id = BEL_uncertainty_in_government
+		icon = GFX_focus_rom_royal_dictatorship
+		prerequisite = { focus = BEL_parliamentary_elections }
+		mutually_exclusive = {
+			focus = BEL_van_zeland_office
+			focus = BEL_office_vandervelde
+		}
+		x = 15
+		y = 1
+		relative_position_id = BEL_parliamentary_elections
+		
+		cost = 10
+		
+		cancel_if_invalid = yes
+		continue_if_invalid = no
+		available_if_capitulated = yes
+
+		ai_will_do = {
+			factor = 5
+		}
+		available = {
+			always = no
+		}
+		bypass = {
+		}
+		select_effect = {
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: Focus BEL_uncertainty_in_government"
+			add_popularity = {
+				ideology = monarchy
+				popularity = 0.25
+			}
+			set_politics = {
+				ruling_party = monarchy
+				elections_allowed = no
+			}
+			custom_effect_tooltip = TUR_focus_autocomplete_tt
+			
+		}
+	}
+	
+	focus = {
+		id = BEL_state_of_emergency
+		icon = GFX_goal_generic_propaganda
+		prerequisite = { focus = BEL_uncertainty_in_government }
+		x = -1
+		y = 1
+		relative_position_id = BEL_uncertainty_in_government
+		
+		cost = 10
+		
+		cancel_if_invalid = yes
+		continue_if_invalid = no
+		available_if_capitulated = yes
+
+		ai_will_do = {
+			factor = 5
+		}
+		available = {
+		}
+		bypass = {
+		}
+		select_effect = {
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: Focus BEL_state_of_emergency"
+			add_political_power = 150
+			add_popularity = {
+				ideology = monarchy
+				popularity = 0.15
+			}
+		}
+	}
+	
+	focus = {
+		id = BEL_monarch_above_civil_law
+		icon = GFX_z_goal_monarchism_14
+		prerequisite = { focus = BEL_uncertainty_in_government }
+		x = 1
+		y = 1
+		relative_position_id = BEL_uncertainty_in_government
+		
+		cost = 10
+		
+		cancel_if_invalid = yes
+		continue_if_invalid = no
+		available_if_capitulated = yes
+
+		ai_will_do = {
+			factor = 5
+		}
+		available = {
+		}
+		bypass = {
+		}
+		select_effect = {
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: Focus BEL_monarch_above_civil_law"
+			add_political_power = 150
+			add_popularity = {
+				ideology = monarchy
+				popularity = 0.15
+			}
+			country_event = { id = NWbelgium.17 days = 1 }
+		}
+	}
+	
+	focus = {
+		id = BEL_independent_belgium
+		icon = GFX_z_national_liber
+		prerequisite = { focus = BEL_state_of_emergency }
+		prerequisite = { focus = BEL_monarch_above_civil_law }
+		x = 1
+		y = 1
+		relative_position_id = BEL_state_of_emergency
+		
+		cost = 10
+		
+		cancel_if_invalid = yes
+		continue_if_invalid = no
+		available_if_capitulated = yes
+
+		ai_will_do = {
+			factor = 5
+		}
+		available = {
+		}
+		bypass = {
+		}
+		select_effect = {
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: Focus BEL_independent_belgium"
+			add_ideas = neutrality_idea
+			add_ideas = BEL_independent_belgium
+		}
+	}
+	
+	focus = {
+		id = BEL_specialists_from_france
+		icon = GFX_focus_chi_reach_out_to_france
+		prerequisite = { focus = BEL_independent_belgium }
+		x = -2
+		y = 1
+		relative_position_id = BEL_independent_belgium
+		
+		cost = 10
+		
+		cancel_if_invalid = yes
+		continue_if_invalid = no
+		available_if_capitulated = yes
+
+		ai_will_do = {
+			factor = 5
+		}
+		available = {
+		}
+		bypass = {
+		}
+		select_effect = {
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: Focus BEL_specialists_from_france"
+			add_tech_bonus = {
+				name = BEL_specialists_from_france
+				bonus = 1.0
+				uses = 2
+				category = air_doctrine
+				category = naval_doctrine
+			}
+		}
+	}
+	
+	focus = {
+		id = BEL_accelerated_rearmament
+		icon = GFX_goal_generic_small_arms
+		prerequisite = { focus = BEL_independent_belgium }
+		x = 0
+		y = 1
+		relative_position_id = BEL_independent_belgium
+		
+		cost = 10
+		
+		cancel_if_invalid = yes
+		continue_if_invalid = no
+		available_if_capitulated = yes
+
+		ai_will_do = {
+			factor = 5
+		}
+		available = {
+		}
+		bypass = {
+		}
+		select_effect = {
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: Focus BEL_accelerated_rearmament"
+			add_tech_bonus = {
+				name = BEL_accelerated_rearmament
+				bonus = 1.0
+				uses = 2
+				category = infantry_weapons
+				category = artillery
+			}
+			country_event = { id = NWbelgium.18 days = 1 }
+		}
+	}
+	
+	focus = {
+		id = BEL_studying_tactics_wehrmacht
+		icon = GFX_goal_rhineland
+		prerequisite = { focus = BEL_independent_belgium }
+		x = 2
+		y = 1
+		relative_position_id = BEL_independent_belgium
+		
+		cost = 10
+		
+		cancel_if_invalid = yes
+		continue_if_invalid = no
+		available_if_capitulated = yes
+
+		ai_will_do = {
+			factor = 5
+		}
+		available = {
+		}
+		bypass = {
+		}
+		select_effect = {
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: Focus BEL_studying_tactics_wehrmacht"
+			add_tech_bonus = {
+				name = BEL_studying_tactics_wehrmacht
+				bonus = 1.0
+				uses = 2
+				category = land_doctrine
+			}
+			add_tech_bonus = {
+				name = BEL_studying_tactics_wehrmacht
+				bonus = 1.0
+				uses = 1
+				category = infantry_weapons
+			}
+		}
+	}
+	
+	focus = {
+		id = BEL_protection_border_germany
+		icon = GFX_goal_generic_construct_military
+		prerequisite = { focus = BEL_specialists_from_france }
+		prerequisite = { focus = BEL_accelerated_rearmament }
+		x = 1
+		y = 1
+		relative_position_id = BEL_specialists_from_france
+		
+		cost = 10
+		
+		cancel_if_invalid = yes
+		continue_if_invalid = no
+		available_if_capitulated = yes
+
+		ai_will_do = {
+			factor = 5
+		}
+		available = {
+			766 = {
+				owner = {
+					OR = {
+						tag = ROOT
+						is_in_faction_with = ROOT
+						is_subject_of = ROOT
+					}
+				}
+			}
+			973 = {
+				owner = {
+					OR = {
+						tag = ROOT
+						is_in_faction_with = ROOT
+						is_subject_of = ROOT
+					}
+				}
+			}
+		}
+		bypass = {
+		}
+		select_effect = {
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: Focus BEL_protection_border_germany"
+			766 = {
+				add_building_construction = {
+					type = bunker
+					level = 3
+					instant_build = yes
+					province = 3488 
+				}
+			}
+			973 = {
+				add_building_construction = {
+					type = bunker
+					level = 3
+					instant_build = yes
+					province = 11407 
+				}
+				add_building_construction = {
+					type = bunker
+					level = 3
+					instant_build = yes
+					province = 9418 
+				}
+			}
+		}
+	}
+	
+	focus = {
+		id = BEL_protection_border_netherlands
+		icon = GFX_goal_generic_fortify_city
+		prerequisite = { focus = BEL_accelerated_rearmament }
+		prerequisite = { focus = BEL_studying_tactics_wehrmacht }
+		x = 1
+		y = 1
+		relative_position_id = BEL_accelerated_rearmament
+		
+		cost = 10
+		
+		cancel_if_invalid = yes
+		continue_if_invalid = no
+		available_if_capitulated = yes
+
+		ai_will_do = {
+			factor = 5
+		}
+		available = {
+			1061 = {
+				owner = {
+					OR = {
+						tag = ROOT
+						is_in_faction_with = ROOT
+						is_subject_of = ROOT
+					}
+				}
+			}
+			975 = {
+				owner = {
+					OR = {
+						tag = ROOT
+						is_in_faction_with = ROOT
+						is_subject_of = ROOT
+					}
+				}
+			}
+			6 = {
+				owner = {
+					OR = {
+						tag = ROOT
+						is_in_faction_with = ROOT
+						is_subject_of = ROOT
+					}
+				}
+			}
+		}
+		bypass = {
+		}
+		select_effect = {
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: Focus BEL_protection_border_netherlands"
+			1061 = {
+				add_building_construction = {
+					type = bunker
+					level = 3
+					instant_build = yes
+					province = 6537
+				}
+				add_building_construction = {
+					type = bunker
+					level = 3
+					instant_build = yes
+					province = 11519 
+				}
+			}
+			975 = {
+				add_building_construction = {
+					type = bunker
+					level = 3
+					instant_build = yes
+					province = 13068 
+				}
+				add_building_construction = {
+					type = bunker
+					level = 3
+					instant_build = yes
+					province = 9574 
+				}
+				add_building_construction = {
+					type = bunker
+					level = 3
+					instant_build = yes
+					province = 11419 
+				}
+				add_building_construction = {
+					type = bunker
+					level = 3
+					instant_build = yes
+					province = 6598 
+				}
+			}
+			6 = {
+				add_building_construction = {
+					type = bunker
+					level = 3
+					instant_build = yes
+					province = 6560
+				}
+			}
+		}
+	}
+	
+	focus = {
+		id = BEL_belgian_fortress
+		icon = GFX_goal_generic_defence
+		prerequisite = { focus = BEL_protection_border_germany }
+		prerequisite = { focus = BEL_protection_border_netherlands }
+		x = 1
+		y = 1
+		relative_position_id = BEL_protection_border_germany
+		
+		cost = 10
+		
+		cancel_if_invalid = yes
+		continue_if_invalid = no
+		available_if_capitulated = yes
+
+		ai_will_do = {
+			factor = 10
+		}
+		available = {
+		}
+		bypass = {
+		}
+		select_effect = {
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: Focus BEL_belgian_fortress"
+			remove_ideas = BEL_social_pacifism
+			add_ideas = BEL_belgian_fortress
+		}
+	}
+	
+	focus = {
+		id = BEL_promotion_of_military_service_2
+		icon = GFX_z_goal_conscription
+		prerequisite = { focus = BEL_belgian_fortress }
+		x = -1
+		y = 1
+		relative_position_id = BEL_belgian_fortress
+		
+		cost = 10
+		
+		cancel_if_invalid = yes
+		continue_if_invalid = no
+		available_if_capitulated = yes
+
+		ai_will_do = {
+			factor = 10
+		}
+		available = {
+		}
+		bypass = {
+		}
+		select_effect = {
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: Focus BEL_promotion_of_military_service_2"
+			add_war_support = 0.1
+			add_ideas = BEL_promotion_of_military_service_2
+		}
+	}
+	
+	focus = {
+		id = BEL_putting_economy_on_war_footing
+		icon = GFX_z_goal_monarchists_factories
+		prerequisite = { focus = BEL_belgian_fortress }
+		x = 1
+		y = 1
+		relative_position_id = BEL_belgian_fortress
+		
+		cost = 10
+		
+		cancel_if_invalid = yes
+		continue_if_invalid = no
+		available_if_capitulated = yes
+
+		ai_will_do = {
+			factor = 10
+		}
+		available = {
+		}
+		bypass = {
+		}
+		select_effect = {
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: Focus BEL_putting_economy_on_war_footing"
+			random_owned_controlled_state = {
+				limit = {
+					free_building_slots = {
+						building = arms_factory
+						size > 2
+						include_locked = yes
+					}
+				}
+				add_extra_state_shared_building_slots = 3
+				add_building_construction = {
+					type = arms_factory
+					level = 3
+					instant_build = yes
+				}
+			}
+		}
+	}
+	
+	focus = {
+		id = BEL_best_defense_offense
+		icon = GFX_z_goal_swing_the_sword
+		prerequisite = { focus = BEL_promotion_of_military_service_2 }
+		prerequisite = { focus = BEL_putting_economy_on_war_footing }
+		x = 1
+		y = 1
+		relative_position_id = BEL_promotion_of_military_service_2
+		
+		cost = 10
+		
+		cancel_if_invalid = yes
+		continue_if_invalid = no
+		available_if_capitulated = yes
+
+		ai_will_do = {
+			factor = 6
+		}
+		available = {
+			threat > 0.35
+		}
+		bypass = {
+		}
+		select_effect = {
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: Focus BEL_best_defense_offense"
+			if = {
+				limit = {
+					event_target:NW_france_scope = {
+						OR = {
+							has_government = fascism
+							has_government = communism
+							has_government = trozkism
+							has_government = anarchism
+						}
+					}
+				}
+				create_wargoal = {
+					type = puppet_wargoal_focus
+					target = event_target:NW_france_scope
+				}
+				add_ai_strategy = {
+					type = antagonize
+					id = event_target:NW_france_scope
+					value = 200
+				}
+				add_ai_strategy = {
+					type = conquer
+					id = event_target:NW_france_scope
+					value = 100
+				}
+			}
+			if = {
+				limit = {
+					ENG = {
+						OR = {
+							has_government = fascism
+							has_government = communism
+							has_government = trozkism
+							has_government = anarchism
+						}
+					}
+				}
+				create_wargoal = {
+					type = puppet_wargoal_focus
+					target = ENG
+				}
+				add_ai_strategy = {
+					type = antagonize
+					id = "ENG"
+					value = 200
+				}
+				add_ai_strategy = {
+					type = conquer
+					id = "ENG"
+					value = 100
+				}
+			}
+			if = {
+				limit = {
+					GER = {
+						OR = {
+							has_government = fascism
+							has_government = monarchy
+							has_government = communism
+							has_government = trozkism
+							has_government = anarchism
+						}
+					}
+				}
+				create_wargoal = {
+					type = puppet_wargoal_focus
+					target = GER
+				}
+				add_ai_strategy = {
+					type = antagonize
+					id = "GER"
+					value = 200
+				}
+				add_ai_strategy = {
+					type = conquer
+					id = "GER"
+					value = 100
+				}
+			}
+			add_named_threat = { 
+				threat = 3
+				name = BEL_best_defense_offense
+			}
+		}
+	}
+	
+	focus = {
+		id = BEL_strengthening_coastline
+		icon = GFX_focus_generic_coastal_fort
+		prerequisite = { focus = BEL_protection_border_netherlands }
+		x = 1
+		y = 1
+		relative_position_id = BEL_protection_border_netherlands
+		
+		cost = 10
+		
+		cancel_if_invalid = yes
+		continue_if_invalid = no
+		available_if_capitulated = yes
+
+		ai_will_do = {
+			factor = 10
+		}
+		available = {
+			6 = {
+				owner = {
+					OR = {
+						tag = ROOT
+						is_in_faction_with = ROOT
+						is_subject_of = ROOT
+					}
+				}
+			}
+			975 = {
+				owner = {
+					OR = {
+						tag = ROOT
+						is_in_faction_with = ROOT
+						is_subject_of = ROOT
+					}
+				}
+			}
+		}
+		bypass = {
+		}
+		select_effect = {
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: Focus BEL_strengthening_coastline"
+			6 = {
+				add_building_construction = {
+					type = coastal_bunker
+					level = 1
+					instant_build = yes
+					province = 6446
+				}
+				add_building_construction = {
+					type = coastal_bunker
+					level = 1
+					instant_build = yes
+					province = 6560
+				}
+			}
+			975 = {
+				add_building_construction = {
+					type = coastal_bunker
+					level = 1
+					instant_build = yes
+					province = 6598
+				}
+				add_building_construction = {
+					type = coastal_bunker
+					level = 1
+					instant_build = yes
+					province = 11419
+				}
+			}
+			country_event = { id = NWbelgium.20 days = 1 }
+		}
+	}
+	
+	focus = {
+		id = BEL_competitor_to_british_navy
+		icon = GFX_goal_generic_construct_naval_dockyard
+		prerequisite = { focus = BEL_strengthening_coastline }
+		x = 1
+		y = 1
+		relative_position_id = BEL_strengthening_coastline
+		
+		cost = 10
+		
+		cancel_if_invalid = yes
+		continue_if_invalid = no
+		available_if_capitulated = yes
+
+		ai_will_do = {
+			factor = 10
+		}
+		available = {
+			6 = {
+				owner = {
+					OR = {
+						tag = ROOT
+						is_in_faction_with = ROOT
+						is_subject_of = ROOT
+					}
+				}
+			}
+		}
+		bypass = {
+		}
+		select_effect = {
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: Focus BEL_competitor_to_british_navy"
+			6 = {
+				add_extra_state_shared_building_slots = 2
+				add_building_construction = {
+					type = dockyard
+					level = 2
+					instant_build = yes
+				}
+			}
+		}
+	}
+	
+	focus = {
+		id = BEL_restructuring_redoubts
+		icon = GFX_goal_generic_construction
+		prerequisite = { focus = BEL_protection_border_germany }
+		x = -1
+		y = 1
+		relative_position_id = BEL_protection_border_germany
+		
+		cost = 10
+		
+		cancel_if_invalid = yes
+		continue_if_invalid = no
+		available_if_capitulated = yes
+
+		ai_will_do = {
+			factor = 5
+		}
+		available = {
+			6 = {
+				owner = {
+					OR = {
+						tag = ROOT
+						is_in_faction_with = ROOT
+						is_subject_of = ROOT
+					}
+				}
+			}
+		}
+		bypass = {
+		}
+		select_effect = {
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: Focus BEL_restructuring_redoubts"
+			add_ideas = BEL_restructuring_redoubts
+			6 = {
+				add_building_construction = {
+					type = bunker
+					level = 1
+					instant_build = yes
+					province = 516 
+				}
+				add_building_construction = {
+					type = bunker
+					level = 1
+					instant_build = yes
+					province = 13877
+				}
+				add_building_construction = {
+					type = bunker
+					level = 1
+					instant_build = yes
+					province = 13876 
+				}
+			}
+			country_event = { id = NWbelgium.19 days = 1 }
+		}
+	}
+	
+	focus = {
+		id = BEL_congo_as_backup
+		icon = GFX_z_goal_broken_state
+		prerequisite = { focus = BEL_restructuring_redoubts }
+		x = -1
+		y = 1
+		relative_position_id = BEL_restructuring_redoubts
+		
+		cost = 10
+		
+		cancel_if_invalid = yes
+		continue_if_invalid = no
+		available_if_capitulated = yes
+
+		ai_will_do = {
+			factor = 5
+		}
+		available = {
+			
+		}
+		bypass = {
+		}
+		select_effect = {
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: Focus BEL_congo_as_backup"
+			unlock_decision_tooltip = BEL_congo_as_backup
+		}
+	}
+	
 	######################
 	#### AVIA SECTION ####
 	######################
@@ -3341,7 +4960,7 @@ focus_tree = {
 		id = BEL_rearmament_program
 		icon = GFX_goal_generic_position_armies
 		x = 16
-		y = 11
+		y = 13
 		cost = 5
 		
 		cancel_if_invalid = yes
