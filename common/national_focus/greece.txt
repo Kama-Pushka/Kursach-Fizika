@@ -33,7 +33,10 @@ focus_tree = {
 	focus = {
 		id = GRE_support_the_liberals
 		icon = GFX_goal_support_democracy
-		mutually_exclusive = { focus = GRE_bringing_metaxas_to_authority }
+		mutually_exclusive = {
+			focus = GRE_bringing_metaxas_to_authority
+			focus = GRE_government_of_george
+		}
 		x = 14
 		y = 0
 		cost = 10
@@ -744,13 +747,43 @@ focus_tree = {
 		}
 	}
 	
+	focus = {
+		id = GRE_protection_of_peninsula_from_italy
+		icon = GFX_goal_generic_defence
+		prerequisite = { focus = GRE_bulgaria_invitation }
+		x = 0
+		y = 2
+		relative_position_id = GRE_bulgaria_invitation
+		cost = 10
+
+		ai_will_do = {
+			factor = 2
+		}
+		
+		bypass = {
+		}
+		
+		available = {
+		}
+		
+		available_if_capitulated = yes
+
+		completion_reward = { 
+			log = "[GetDateText]: [Root.GetName]: Focus GRE_protection_of_peninsula_from_italy"
+			ITA = { country_event = { id = nw_greece.67 } }
+		}
+	}
+	
 	###################
 	################### Metaxas
 	
 	focus = {
 		id = GRE_bringing_metaxas_to_authority
 		icon = GFX_z_goal_bringing_metaxas
-		mutually_exclusive = { focus = GRE_support_the_liberals }
+		mutually_exclusive = {
+			focus = GRE_support_the_liberals
+			focus = GRE_government_of_george
+		}
 		x = 22
 		y = 0
 		cost = 10
@@ -1090,6 +1123,35 @@ focus_tree = {
 	}
 	
 	focus = {
+		id = GRE_day_no
+		icon = GFX_focus_generic_little_entente
+		prerequisite = { focus = GRE_metaxas_line }
+		x = -2
+		y = 1
+		relative_position_id = GRE_metaxas_line
+		cost = 5
+
+		ai_will_do = {
+			factor = 30
+		}
+		
+		available = {
+			any_country = {
+				is_major = yes
+				has_war_with = ROOT
+			}
+		}
+
+		available_if_capitulated = yes
+		
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: Focus GRE_day_no"
+			add_war_support = 0.3
+			add_timed_idea = { idea = GRE_day_no days = 180 }
+		}
+	}
+	
+	focus = {
 		id = GRE_lessons_of_guerrilla_warfare
 		icon = GFX_z_goal_swing_the_sword
 		prerequisite = { focus = GRE_metaxas_line }
@@ -1269,6 +1331,27 @@ focus_tree = {
 	}
 	
 	focus = {
+		id = GRE_peaceful_development_greece
+		icon = GFX_focus_generic_the_giant_wakes
+		prerequisite = { focus = GRE_continuation_of_the_line_of_metaxas }
+		x = 0
+		y = 1
+		relative_position_id = GRE_continuation_of_the_line_of_metaxas
+		cost = 10
+
+		ai_will_do = {
+			factor = 10
+		}
+
+		available_if_capitulated = yes
+		
+		completion_reward = { 
+			log = "[GetDateText]: [Root.GetName]: Focus GRE_peaceful_development_greece"
+			
+		}
+	}
+	
+	focus = {
 		id = GRE_strengthening_relations_with_britain
 		icon = GFX_focus_chi_british_cooperation
 		prerequisite = { focus = GRE_lessons_of_guerrilla_warfare focus = GRE_cooperation_with_the_west }
@@ -1323,12 +1406,56 @@ focus_tree = {
 	}
 	
 	focus = {
-		id = GRE_union_technology_exchange
-		icon = GFX_goal_generic_scientific_exchange
+		id = GRE_development_of_macedonia
+		icon = GFX_goal_generic_construction
 		prerequisite = { focus = GRE_union_with_britain }
 		x = 0
 		y = 1
 		relative_position_id = GRE_union_with_britain
+		cost = 10
+
+		ai_will_do = {
+			factor = 10
+		}
+
+		available_if_capitulated = yes
+		
+		available = {
+			1028 = {
+				owner = {
+					OR = {
+						tag = ROOT
+						is_subject_of = ROOT
+					}
+				}
+			}
+		}
+		
+		completion_reward = { 
+			log = "[GetDateText]: [Root.GetName]: Focus GRE_development_of_macedonia"
+			1028 = {
+				add_extra_state_shared_building_slots = 6
+				add_building_construction = {
+					type = industrial_complex
+					level = 2
+					instant_build = yes
+				}
+				add_building_construction = {
+					type = arms_factory
+					level = 2
+					instant_build = yes
+				}
+			}
+		}
+	}
+	
+	focus = {
+		id = GRE_union_technology_exchange
+		icon = GFX_goal_generic_scientific_exchange
+		prerequisite = { focus = GRE_development_of_macedonia }
+		x = 0
+		y = 1
+		relative_position_id = GRE_development_of_macedonia
 		cost = 10
 
 		ai_will_do = {
@@ -1355,6 +1482,87 @@ focus_tree = {
 				}
 			}
 			ENG = { country_event = { id = nw_greece.5 } }
+		}
+	}
+	
+	focus = {
+		id = GRE_investments_from_london
+		icon = GFX_z_goal_gold_up
+		prerequisite = { focus = GRE_union_technology_exchange }
+		mutually_exclusive = { focus = GRE_selling_britain_greek_tobacco }
+		x = -1
+		y = 1
+		relative_position_id = GRE_union_technology_exchange
+		cost = 10
+
+		ai_will_do = {
+			factor = 20
+		}
+
+		available_if_capitulated = yes
+		
+		available = {
+			is_in_faction_with = ENG
+		}
+		
+		completion_reward = { 
+			log = "[GetDateText]: [Root.GetName]: Focus GRE_investments_from_london"
+			random_owned_controlled_state = {
+				limit = {
+					free_building_slots = {
+						building = industrial_complex
+						size > 2
+						include_locked = yes
+					}
+				}
+				add_extra_state_shared_building_slots = 3
+				add_building_construction = {
+					type = industrial_complex
+					level = 3
+					instant_build = yes
+				}
+			}
+		}
+	}
+	
+	focus = {
+		id = GRE_selling_britain_greek_tobacco
+		icon = GFX_z_goal_agriculture3
+		prerequisite = { focus = GRE_union_technology_exchange }
+		mutually_exclusive = { focus = GRE_investments_from_london }
+		x = 1
+		y = 1
+		relative_position_id = GRE_union_technology_exchange
+		cost = 10
+
+		ai_will_do = {
+			factor = 20
+		}
+
+		available_if_capitulated = yes
+		
+		available = {
+		}
+		
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: Focus GRE_investments_from_london"
+			random_owned_controlled_state = {
+				limit = {
+					free_building_slots = {
+						building = industrial_complex
+						size > 0
+						include_locked = yes
+					}
+				}
+				add_extra_state_shared_building_slots = 1
+				add_building_construction = {
+					type = industrial_complex
+					level = 1
+					instant_build = yes
+				}
+			}
+			ENG = { country_event = { id = nw_greece.69 } }
+			custom_effect_tooltip = GRE_selling_britain_greek_tobacco_tt
 		}
 	}
 	
@@ -2230,6 +2438,259 @@ focus_tree = {
 		}
 	}
 	
+	###################
+	################### Georg II
+	
+	focus = {
+		id = GRE_government_of_george
+		icon = GFX_
+		mutually_exclusive = {
+			focus = GRE_support_the_liberals
+			focus = GRE_bringing_metaxas_to_authority
+		}
+		x = 34
+		y = 0
+		cost = 10
+
+		ai_will_do = {
+			factor = 100
+		}
+
+		available_if_capitulated = yes
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: Focus GRE_government_of_george"
+			country_event = { id = nw_greece.72 }
+		}
+	}
+	
+	focus = {
+		id = GRE_ban_liberal_party
+		icon = GFX_z_goal_anti_democracy
+		prerequisite = { focus = GRE_government_of_george }
+		x = -2
+		y = 1
+		relative_position_id = GRE_government_of_george
+		cost = 10
+
+		ai_will_do = {
+			factor = 5
+		}
+
+		available_if_capitulated = yes
+
+		completion_reward = { 
+			log = "[GetDateText]: [Root.GetName]: Focus GRE_ban_liberal_party"
+			add_popularity = {
+				ideology = democratic
+				popularity = -0.15
+			}
+		}
+	}
+	
+	focus = {
+		id = GRE_deport_communists_aegean_islands
+		icon = GFX_z_goal_getting_rid_left
+		prerequisite = { focus = GRE_government_of_george }
+		x = 2
+		y = 1
+		relative_position_id = GRE_government_of_george
+		cost = 10
+
+		ai_will_do = {
+			factor = 5
+		}
+
+		available_if_capitulated = yes
+
+		completion_reward = { 
+			log = "[GetDateText]: [Root.GetName]: Focus GRE_ban_liberal_party"
+			add_popularity = {
+				ideology = communism
+				popularity = -0.15
+			}
+		}
+	}
+	
+	focus = {
+		id = GRE_theory_general_metaxas
+		icon = GFX_z_goal_fate_greece
+		prerequisite = { focus = GRE_government_of_george }
+		x = 0
+		y = 1
+		relative_position_id = GRE_government_of_george
+		cost = 10
+
+		ai_will_do = {
+			factor = 5
+		}
+
+		available_if_capitulated = yes
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: Focus GRE_theory_general_metaxas"
+			country_event = { id = nw_greece.73 }
+		}
+	}
+	
+	focus = {
+		id = GRE_deification_of_ones_own_power
+		icon = GFX_z_goal_fate_greece
+		prerequisite = { focus = GRE_theory_general_metaxas }
+		x = 0
+		y = 1
+		relative_position_id = GRE_theory_general_metaxas
+		cost = 10
+
+		ai_will_do = {
+			factor = 5
+		}
+
+		available_if_capitulated = yes
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: Focus GRE_deification_of_ones_own_power"
+			add_political_power = 100
+		}
+	}
+	
+	focus = {
+		id = GRE_symphony
+		icon = GFX_z_national_greatness
+		prerequisite = { focus = GRE_theory_general_metaxas }
+		x = 0
+		y = 1
+		relative_position_id = GRE_theory_general_metaxas
+		cost = 10
+
+		ai_will_do = {
+			factor = 5
+		}
+
+		available_if_capitulated = yes
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: Focus GRE_symphony"
+			country_event = { id = nw_greece.74 }
+		}
+	}
+	
+	focus = {
+		id = GRE_caesaropapism
+		icon = GFX_z_goal_fate_greece
+		prerequisite = { focus = GRE_symphony }
+		mutually_exclusive = { focus = GRE_papocaesarism }
+		x = -2
+		y = 1
+		relative_position_id = GRE_symphony
+		cost = 10
+
+		ai_will_do = {
+			factor = 5
+		}
+
+		available_if_capitulated = yes
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: Focus GRE_caesaropapism"
+			add_popularity = {
+				ideology = monarchy
+				popularity = 0.1
+			}
+		}
+	}
+	
+	focus = {
+		id = GRE_emperor_george
+		icon = GFX_z_goal_fate_greece
+		prerequisite = { focus = GRE_caesaropapism }
+		x = 0
+		y = 1
+		relative_position_id = GRE_caesaropapism
+		cost = 10
+
+		ai_will_do = {
+			factor = 5
+		}
+
+		available_if_capitulated = yes
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: Focus GRE_emperor_george"
+			add_ideas = GRE_emperor_george
+		}
+	}
+	
+	focus = {
+		id = GRE_two_great_empires
+		icon = GFX_z_goal_fate_greece
+		prerequisite = { focus = GRE_emperor_george }
+		x = 0
+		y = 1
+		relative_position_id = GRE_emperor_george
+		cost = 10
+
+		ai_will_do = {
+			factor = 5
+		}
+
+		available_if_capitulated = yes
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: Focus GRE_two_great_empires"
+			ENG = { country_event = { id = nw_greece.75 } }
+		}
+	}
+	
+	focus = {
+		id = GRE_papocaesarism
+		icon = GFX_z_goal_fate_greece
+		prerequisite = { focus = GRE_symphony }
+		mutually_exclusive = { focus = GRE_caesaropapism }
+		x = 2
+		y = 1
+		relative_position_id = GRE_symphony
+		cost = 10
+
+		ai_will_do = {
+			factor = 5
+		}
+
+		available_if_capitulated = yes
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: Focus GRE_caesaropapism"
+			add_popularity = {
+				ideology = fascism
+				popularity = 0.1
+			}
+		}
+	}
+	
+	focus = {
+		id = GRE_orthodox_cathedral
+		icon = GFX_z_goal_fate_greece
+		prerequisite = { focus = GRE_papocaesarism }
+		x = 0
+		y = 1
+		relative_position_id = GRE_papocaesarism
+		cost = 10
+
+		ai_will_do = {
+			factor = 5
+		}
+
+		available_if_capitulated = yes
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: Focus GRE_orthodox_cathedral"
+			add_popularity = {
+				ideology = fascism
+				popularity = 0.1
+			}
+		}
+	}
+	
 	############################
 	#### ECONOMICAL SECTION ####
 	############################
@@ -2237,7 +2698,7 @@ focus_tree = {
 	focus = {
 		id = GRE_corporate_economics
 		icon = GFX_goal_generic_consumer_goods
-		x = 33
+		x = 41
 		y = 0
 		cost = 10
 
