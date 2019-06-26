@@ -66,3 +66,77 @@ add_popularity_se = {
 	}
 	set_variable = { var = var_add_pop value = 0 }
 }
+
+level_inflation_down = {
+	if = {
+		limit = { has_dynamic_modifier = { modifier = GRE_idea_high_inflation_dyn } }
+		subtract_from_variable = { var_industrial_capacity_factory = 0.05 }
+		add_to_variable = { var_consumer_goods_factor = 0.05 }
+		custom_effect_tooltip = GRE_level_inflation_down_tt
+	}
+	else_if = {
+		limit = { has_idea = GRE_idea_significant_inflation }
+		remove_ideas = GRE_idea_significant_inflation
+		set_variable = { var_consumer_goods_factor = 0.2 }
+		set_variable = { var_industrial_capacity_factory = 0 }
+		subtract_from_variable = { var_industrial_capacity_factory = var_consumer_goods_factor }
+		add_dynamic_modifier = { modifier = GRE_idea_high_inflation_dyn }
+	}
+	else_if = {
+		limit = { has_idea = GRE_idea_normal_inflation }
+		swap_ideas = {
+			remove_idea = GRE_idea_normal_inflation
+			add_idea = GRE_idea_significant_inflation
+		}
+	}
+	else_if = {
+		limit = { has_idea = GRE_idea_low_inflation }
+		swap_ideas = {
+			remove_idea = GRE_idea_low_inflation
+			add_idea = GRE_idea_normal_inflation
+		}
+	}
+}
+
+level_inflation_up = {
+	if = {
+		limit = {
+			has_dynamic_modifier = { modifier = GRE_idea_high_inflation_dyn }
+			check_variable = { var = var_consumer_goods_factor value = 0.2 compare = greater_than }
+			check_variable = { var = var_industrial_capacity_factory value = -0.2 compare = less_than }
+		}
+		add_to_variable = { var_industrial_capacity_factory = 0.05 }
+		subtract_from_variable = { var_consumer_goods_factor = 0.05 }
+		custom_effect_tooltip = GRE_level_inflation_up_tt
+	}
+	else_if = {
+		limit = {
+			has_dynamic_modifier = { modifier = GRE_idea_high_inflation_dyn }
+			check_variable = { var_consumer_goods_factor = 0.2 }
+			check_variable = { var_industrial_capacity_factory = -0.2 }
+		}
+		remove_dynamic_modifier = { modifier = GRE_idea_high_inflation_dyn }
+		add_ideas = GRE_idea_significant_inflation
+	}
+	else_if = {
+		limit = { has_idea = GRE_idea_significant_inflation }
+		swap_ideas = {
+			remove_idea = GRE_idea_significant_inflation
+			add_idea = GRE_idea_normal_inflation
+		}
+	}
+	else_if = {
+		limit = { has_idea = GRE_idea_normal_inflation }
+		swap_ideas = {
+			remove_idea = GRE_idea_normal_inflation
+			add_idea = GRE_idea_low_inflation
+		}
+	}
+	else_if = {
+		limit = { has_idea = GRE_idea_low_inflation }
+		remove_ideas = GRE_idea_low_inflation
+		country_event = { id = nw_greece.97 }
+		custom_effect_tooltip = GRE_low_inflation_tt
+	}
+}
+
