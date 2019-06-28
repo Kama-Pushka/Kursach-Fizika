@@ -266,7 +266,7 @@ focus_tree = {
 		y = 1
 		relative_position_id = GRE_greek_cavalry
 		
-		cost = 10
+		cost = 5
 		
 		cancel_if_invalid = yes
 		continue_if_invalid = no
@@ -284,7 +284,30 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus GRE_mechanized_regiment_giannitsa"
-			
+			hidden_effect = {
+				division_template = {
+					name = "Mechanized division"
+					is_locked = no
+					regiments = {
+						motorized = { x = 0 y = 0 }
+						motorized = { x = 0 y = 1 }
+						motorized = { x = 0 y = 2 }
+						motorized = { x = 1 y = 0 }
+						light_armor = { x = 1 y = 1 }
+						light_armor = { x = 1 y = 2 }
+					}
+					support = {
+						engineer = { x = 0 y = 0 }
+						artillery = { x = 0 y = 1 }
+					}
+				}
+			}
+			capital_scope = {
+				create_unit = {
+					division = "name = \"1st Mechanized division\" division_template = \"Mechanized division\" start_experience_factor = 1.0" 
+					owner = ROOT
+				}
+			}
 		}
 	}
 	
@@ -336,6 +359,15 @@ focus_tree = {
 			factor = 1
 		}
 		available = {
+			1024 = {
+				owner = {
+					OR = {
+						tag = ROOT
+						is_in_faction_with = ROOT
+						is_subject_of = ROOT
+					}
+				}
+			}
 		}
 		bypass = {
 		}
@@ -344,7 +376,16 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus GRE_revival_greek_navy"
-			
+			1024 = {
+				add_extra_state_shared_building_slots = 2
+				add_building_construction = {
+					type = dockyard
+					level = 2
+					instant_build = yes
+				}
+			}
+			add_ideas = GRE_revival_greek_navy_idea
+			level_inflation_down = yes
 		}
 	}
 	
@@ -374,7 +415,10 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus GRE_increase_in_budget_of_navy"
-			
+			swap_ideas = {
+				remove_idea = GRE_revival_greek_navy_idea
+				add_idea = GRE_revival_greek_navy_idea_2
+			}
 		}
 	}
 	
@@ -404,7 +448,10 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus GRE_young_admirals"
-			
+			swap_ideas = {
+				remove_idea = GRE_revival_greek_navy_idea_2
+				add_idea = GRE_revival_greek_navy_idea_3
+			}
 		}
 	}
 	
@@ -434,7 +481,21 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus GRE_new_shipyards_and_ports_scaramanga"
-			
+			1024 = {
+				add_extra_state_shared_building_slots = 2
+				add_building_construction = {
+					type = dockyard
+					level = 2
+					instant_build = yes
+				}
+				add_building_construction = {
+					type = naval_base
+					province = 4109
+					level = 2
+					instant_build = yes
+				}
+			}
+			level_inflation_down = yes
 		}
 	}
 	
@@ -456,15 +517,30 @@ focus_tree = {
 			factor = 1
 		}
 		available = {
+			NOT = { has_war_with = ENG }
+			ENG = {
+				exists = yes
+				is_puppet = no
+				has_navy_size = {
+					size > 5
+					type = screen_ship
+				}
+			}
 		}
 		bypass = {
+			OR = {
+				has_war_with = ENG
+				NOT = { country_exists = ENG }
+			}
 		}
 		select_effect = {
 		}
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus GRE_purchase_of_destroyers"
-			
+			ENG = { 
+				country_event = { id = nw_greece.62 hours = 6 }
+			}
 		}
 	}
 	
@@ -495,7 +571,7 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus GRE_return_trust"
-			
+			remove_ideas = GRE_idea_consequences_of_rebellion
 		}
 	}
 	
@@ -526,7 +602,13 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus GRE_modernization_of_destroyers"
-			
+			navy_experience = 15
+			add_tech_bonus = {
+				name = GRE_modernization_of_destroyers
+				bonus = 1.0
+				uses = 2
+				category = dd_tech
+			}
 		}
 	}
 	
@@ -557,7 +639,17 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus GRE_heritage_of_athens"
-			
+			add_war_support = 0.1
+			add_tech_bonus = {
+				name = GRE_heritage_of_athens
+				bonus = 1.0
+				uses = 2
+				category = marine_tech
+			}
+			swap_ideas = {
+				remove_idea = GRE_revival_greek_navy_idea_3
+				add_idea = GRE_revival_greek_navy_idea_4
+			}
 		}
 	}
 	
@@ -576,7 +668,7 @@ focus_tree = {
 		available_if_capitulated = yes
 
 		ai_will_do = {
-			factor = 1
+			factor = 5
 		}
 		available = {
 		}
@@ -587,7 +679,39 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus GRE_last_stronghold"
-			
+			182 = {
+				add_extra_state_shared_building_slots = 1
+				add_building_construction = {
+					type = dockyard
+					level = 1
+					instant_build = yes
+				}
+				add_building_construction = {
+					type = naval_base
+					province = 9940
+					level = 2
+					instant_build = yes
+				}
+				add_building_construction = {
+					type = coastal_bunker
+					province = 9940
+					level = 3
+					instant_build = yes
+				}
+				add_building_construction = {
+					type = naval_base
+					province = 1162
+					level = 2
+					instant_build = yes
+				}
+				add_building_construction = {
+					type = coastal_bunker
+					province = 1162
+					level = 3
+					instant_build = yes
+				}
+			}
+			level_inflation_down = yes
 		}
 	}
 	
@@ -617,7 +741,7 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus GRE_greek_armed_forces"
-			
+			add_ideas = GRE_greek_air_force_idea
 		}
 	}
 	
@@ -648,7 +772,7 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus GRE_in_favor_of_aircraft_for_air_force"
-			
+			add_ideas = GRE_in_favor_of_aircraft_for_air_force_idea
 		}
 	}
 	
@@ -660,7 +784,7 @@ focus_tree = {
 		y = 2
 		relative_position_id = GRE_in_favor_of_aircraft_for_air_force
 		
-		cost = 10
+		cost = 5
 		
 		cancel_if_invalid = yes
 		continue_if_invalid = no
@@ -678,7 +802,8 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus GRE_bidding_for_sky"
-			
+			add_political_power = 50
+			add_stability = 0.02
 		}
 	}
 	
@@ -694,7 +819,7 @@ focus_tree = {
 		y = 1
 		relative_position_id = GRE_bidding_for_sky
 		
-		cost = 10
+		cost = 5
 		
 		cancel_if_invalid = yes
 		continue_if_invalid = no
@@ -704,6 +829,11 @@ focus_tree = {
 			factor = 1
 		}
 		available = {
+			NOT = { has_war_with = GER }
+			GER = {
+				exists = yes
+				is_puppet = no
+			}
 		}
 		bypass = {
 		}
@@ -712,7 +842,35 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus GRE_german_air_force"
-			
+			add_opinion_modifier = { target = GER modifier = GRE_german_air_force }
+			GER = { add_opinion_modifier = { target = ROOT modifier = GRE_german_air_force } }
+			create_production_license = {
+				target = GER
+				equipment = {
+					type = fighter_equipment_2
+				}
+				cost_factor = 0
+			}
+			create_production_license = {
+				target = GER
+				equipment = {
+					type = tac_bomber_equipment_2
+				}
+				cost_factor = 0
+			}
+			create_production_license = {
+				target = GER
+				equipment = {
+					type = heavy_fighter_equipment_2
+				}
+				cost_factor = 0
+			}
+			remove_ideas = GRE_idea_aviation_under_foreign_flags
+			swap_ideas = {
+				remove_idea = GRE_in_favor_of_aircraft_for_air_force_idea
+				add_idea = GRE_in_favor_of_aircraft_for_air_force_idea_2
+			}
+			GER = { add_ideas = GRE_gold_greece }
 		}
 	}
 	
@@ -728,7 +886,7 @@ focus_tree = {
 		y = 1
 		relative_position_id = GRE_bidding_for_sky
 		
-		cost = 10
+		cost = 5
 		
 		cancel_if_invalid = yes
 		continue_if_invalid = no
@@ -738,6 +896,11 @@ focus_tree = {
 			factor = 1
 		}
 		available = {
+			NOT = { has_war_with = ENG }
+			ENG = {
+				exists = yes
+				is_puppet = no
+			}
 		}
 		bypass = {
 		}
@@ -746,7 +909,35 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus GRE_british_air_force"
-			
+			add_opinion_modifier = { target = ENG modifier = GRE_british_air_force }
+			ENG = { add_opinion_modifier = { target = ROOT modifier = GRE_british_air_force } }
+			create_production_license = {
+				target = ENG
+				equipment = {
+					type = fighter_equipment_2
+				}
+				cost_factor = 0
+			}
+			create_production_license = {
+				target = ENG
+				equipment = {
+					type = tac_bomber_equipment_2
+				}
+				cost_factor = 0
+			}
+			create_production_license = {
+				target = ENG
+				equipment = {
+					type = heavy_fighter_equipment_2
+				}
+				cost_factor = 0
+			}
+			remove_ideas = GRE_idea_aviation_under_foreign_flags
+			swap_ideas = {
+				remove_idea = GRE_in_favor_of_aircraft_for_air_force_idea
+				add_idea = GRE_in_favor_of_aircraft_for_air_force_idea_2
+			}
+			ENG = { add_ideas = GRE_gold_greece }
 		}
 	}
 	
@@ -762,7 +953,7 @@ focus_tree = {
 		y = 1
 		relative_position_id = GRE_bidding_for_sky
 		
-		cost = 10
+		cost = 5
 		
 		cancel_if_invalid = yes
 		continue_if_invalid = no
@@ -772,6 +963,11 @@ focus_tree = {
 			factor = 1
 		}
 		available = {
+			NOT = { has_war_with = POL }
+			POL = {
+				exists = yes
+				is_puppet = no
+			}
 		}
 		bypass = {
 		}
@@ -780,7 +976,35 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus GRE_polish_air_force"
-			
+			add_opinion_modifier = { target = POL modifier = GRE_polish_air_force }
+			POL = { add_opinion_modifier = { target = ROOT modifier = GRE_polish_air_force } }
+			create_production_license = {
+				target = POL
+				equipment = {
+					type = fighter_equipment_2
+				}
+				cost_factor = 0
+			}
+			create_production_license = {
+				target = POL
+				equipment = {
+					type = tac_bomber_equipment_2
+				}
+				cost_factor = 0
+			}
+			create_production_license = {
+				target = POL
+				equipment = {
+					type = heavy_fighter_equipment_2
+				}
+				cost_factor = 0
+			}
+			remove_ideas = GRE_idea_aviation_under_foreign_flags
+			swap_ideas = {
+				remove_idea = GRE_in_favor_of_aircraft_for_air_force_idea
+				add_idea = GRE_in_favor_of_aircraft_for_air_force_idea_2
+			}
+			POL = { add_ideas = GER_greek_tobacco }
 		}
 	}
 		
@@ -810,7 +1034,11 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus GRE_voluntary_work"
-			
+			add_popularity = {
+				ideology = communism
+				popularity = 0.02
+			}
+			add_ideas = GRE_voluntary_work
 		}
 	}
 	
@@ -840,7 +1068,30 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus GRE_extension_pyrtiodopioio"
-			
+			if = {
+				limit = { has_idea = GER_trade_with_germany }
+				remove_ideas = GER_trade_with_germany
+			}
+			if = {
+				limit = { any_country = { has_idea = GRE_gold_greece } }
+				random_other_country = { remove_ideas = GRE_gold_greece }
+			}
+			random_owned_controlled_state = {
+				limit = {
+					free_building_slots = {
+						building = arms_factory
+						size > 1
+						include_locked = yes
+					}
+				}
+				add_extra_state_shared_building_slots = 2
+				add_building_construction = {
+					type = arms_factory
+					level = 2
+					instant_build = yes
+				}
+			}
+			level_inflation_down = yes
 		}
 	}
 	
@@ -866,11 +1117,15 @@ focus_tree = {
 		bypass = {
 		}
 		select_effect = {
+			country_event = { id = nw_greece.98 days = 10 }
 		}
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus GRE_academy_of_icarus"
-			
+			swap_ideas = {
+				remove_idea = GRE_greek_air_force_idea
+				add_idea = GRE_greek_air_force_idea_2
+			}
 		}
 	}
 	
@@ -900,7 +1155,12 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus GRE_13_squadron"
-			
+			add_tech_bonus = {
+				name = GRE_13_squadron
+				bonus = 1.0
+				uses = 2
+				category = tactical_bomber
+			}
 		}
 	}
 	
@@ -931,7 +1191,10 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus GRE_initiative_of_economicos"
-			
+			swap_ideas = {
+				remove_idea = GRE_greek_air_force_idea_2
+				add_idea = GRE_greek_air_force_idea_3
+			}
 		}
 	}
 	
@@ -961,7 +1224,11 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus GRE_aviation_fund"
-			
+			add_war_support = 0.05
+			swap_ideas = {
+				remove_idea = GRE_greek_air_force_idea_3
+				add_idea = GRE_greek_air_force_idea_4
+			}
 		}
 	}
 	
@@ -991,7 +1258,26 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus GRE_kea_extension"
-			
+			swap_ideas = {
+				remove_idea = GRE_idea_aviation_under_foreign_flags
+				add_idea = GRE_idea_aviation_under_foreign_flags_2
+			}
+			random_owned_controlled_state = {
+				limit = {
+					free_building_slots = {
+						building = arms_factory
+						size > 3
+						include_locked = yes
+					}
+				}
+				add_extra_state_shared_building_slots = 4
+				add_building_construction = {
+					type = arms_factory
+					level = 4
+					instant_build = yes
+				}
+			}
+			level_inflation_down = yes
 		}
 	}
 	
@@ -1022,7 +1308,137 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus GRE_air_web"
-			
+			random_owned_controlled_state = {
+				limit = {
+					free_building_slots = {
+						building = air_base
+						size > 0
+					}
+				}
+				add_building_construction = {
+					type = air_base
+					level = 1
+					instant_build = yes
+				}
+			}
+			random_owned_controlled_state = {
+				limit = {
+					free_building_slots = {
+						building = air_base
+						size > 0
+					}
+				}
+				add_building_construction = {
+					type = air_base
+					level = 1
+					instant_build = yes
+				}
+			}
+			random_owned_controlled_state = {
+				limit = {
+					free_building_slots = {
+						building = air_base
+						size > 0
+					}
+				}
+				add_building_construction = {
+					type = air_base
+					level = 1
+					instant_build = yes
+				}
+			}
+			random_owned_controlled_state = {
+				limit = {
+					free_building_slots = {
+						building = air_base
+						size > 0
+					}
+				}
+				add_building_construction = {
+					type = air_base
+					level = 1
+					instant_build = yes
+				}
+			}
+			random_owned_controlled_state = {
+				limit = {
+					free_building_slots = {
+						building = air_base
+						size > 0
+					}
+				}
+				add_building_construction = {
+					type = air_base
+					level = 1
+					instant_build = yes
+				}
+			}
+			random_owned_controlled_state = {
+				limit = {
+					free_building_slots = {
+						building = air_base
+						size > 0
+					}
+				}
+				add_building_construction = {
+					type = air_base
+					level = 1
+					instant_build = yes
+				}
+			}
+			random_owned_controlled_state = {
+				limit = {
+					free_building_slots = {
+						building = air_base
+						size > 0
+					}
+				}
+				add_building_construction = {
+					type = air_base
+					level = 1
+					instant_build = yes
+				}
+			}
+			random_owned_controlled_state = {
+				limit = {
+					free_building_slots = {
+						building = air_base
+						size > 0
+					}
+				}
+				add_building_construction = {
+					type = air_base
+					level = 1
+					instant_build = yes
+				}
+			}
+			random_owned_controlled_state = {
+				limit = {
+					free_building_slots = {
+						building = air_base
+						size > 0
+					}
+				}
+				add_building_construction = {
+					type = air_base
+					level = 1
+					instant_build = yes
+				}
+			}
+			random_owned_controlled_state = {
+				limit = {
+					free_building_slots = {
+						building = air_base
+						size > 0
+					}
+				}
+				add_building_construction = {
+					type = air_base
+					level = 1
+					instant_build = yes
+				}
+			}
+			level_inflation_down = yes
 		}
 	}
 	
@@ -1052,7 +1468,10 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus GRE_our_sky"
-			
+			swap_ideas = {
+				remove_idea = GRE_idea_aviation_under_foreign_flags_2
+				add_idea = GRE_idea_aviation_under_foreign_flags_3
+			}
 		}
 	}
 	
@@ -1082,7 +1501,13 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus GRE_project_helidon"
-			
+			add_tech_bonus = {
+				name = GRE_project_helidon
+				bonus = 1.0
+				uses = 2
+				category = light_fighter
+				category = cat_heavy_fighter
+			}
 		}
 	}
 	
@@ -1112,7 +1537,10 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus GRE_calibre_selection"
-			
+			swap_ideas = {
+				remove_idea = GRE_idea_aviation_under_foreign_flags_3
+				add_idea = GRE_idea_aviation_under_foreign_flags_4
+			}
 		}
 	}
 	
@@ -1142,7 +1570,16 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus GRE_peasant_rain"
-			
+			add_tech_bonus = {
+				name = GRE_peasant_rain
+				bonus = 1.0
+				uses = 2
+				category = para_tech
+			}
+			swap_ideas = {
+				remove_idea = GRE_idea_aviation_under_foreign_flags_4
+				add_idea = GRE_idea_aviation_under_foreign_flags_5
+			}
 		}
 	}
 	
