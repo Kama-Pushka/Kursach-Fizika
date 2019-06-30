@@ -43,7 +43,7 @@ focus_tree = {
 
 		available_if_capitulated = yes
 
-		x = -3
+		x = -4
 		y = 1
 		relative_position_id = RSI_speech_badaglio
 		cost = 5
@@ -170,12 +170,15 @@ focus_tree = {
 	}
 	
 	focus = {
-		id = RSI_national_comitet_democratic
-		icon = GFX_goal_support_democracy
+		id = RSI_victory_of_syndicalism
+		icon = GFX_z_goal_generic_support_anarchism
 		prerequisite = { focus = RSI_national_comitet }
-		mutually_exclusive = { focus = RSI_national_comitet_communist }
+		mutually_exclusive = {
+			focus = RSI_national_comitet_democratic
+			focus = RSI_national_comitet_communist
+		}
 		available = {
-			has_government = democratic
+			#has_government = anarchism
 			NOT = {
 				has_war_with = ITA
 			}
@@ -188,7 +191,104 @@ focus_tree = {
 		relative_position_id = RSI_national_comitet
 		cost = 10
 		ai_will_do = {
+			factor = 50
+		}	
+		completion_reward = {
+			add_popularity = { ideology = anarchism popularity = 0.10 }
+			set_politics = {
+				ruling_party = anarchism
+				elections_allowed = no
+			}
+			if = {
+				limit = {
+					OR = {
+						FRC = {
+							has_government = anarchism
+							is_faction_leader = yes
+						}
+						SPR = {
+							has_government = anarchism
+							is_faction_leader = yes
+						}
+						ARA = {
+							has_government = anarchism
+							is_faction_leader = yes
+						}
+					}
+				}
+				country_event = { id = new_italy.14 days = 2 }
+			}
+		}
+	}
+	
+	focus = {
+		id = RSI_labour_confederation
+		icon = GFX_z_goal_syndicalism_1
+		prerequisite = { focus = RSI_victory_of_syndicalism }
+
+		available_if_capitulated = yes
+
+		x = 0
+		y = 1
+		relative_position_id = RSI_victory_of_syndicalism
+		cost = 10
+		ai_will_do = {
 			factor = 5
+		}	
+		completion_reward = {
+			add_ideas = RSI_labour_confederation
+		}
+	}
+	
+	focus = {
+		id = RSI_gradual_elimination_of_state_institutions
+		icon = GFX_z_goal_syndicalism_3
+		prerequisite = { focus = RSI_labour_confederation }
+
+		available_if_capitulated = yes
+
+		x = 0
+		y = 1
+		relative_position_id = RSI_labour_confederation
+		cost = 10
+		ai_will_do = {
+			factor = 5
+		}	
+		completion_reward = {
+			add_popularity = {
+				ideology = democratic
+				popularity = -0.1
+			}
+			add_popularity = {
+				ideology = anarchism
+				popularity = 0.25
+			}
+		}
+	}
+	
+	focus = {
+		id = RSI_national_comitet_democratic
+		icon = GFX_goal_support_democracy
+		prerequisite = { focus = RSI_national_comitet }
+		mutually_exclusive = {
+			focus = RSI_victory_of_syndicalism
+			focus = RSI_national_comitet_communist
+		}
+		available = {
+			#has_government = democratic
+			NOT = {
+				has_war_with = ITA
+			}
+		}
+
+		available_if_capitulated = yes
+
+		x = 0
+		y = 1
+		relative_position_id = RSI_national_comitet
+		cost = 10
+		ai_will_do = {
+			factor = 50
 		}	
 		completion_reward = {
 			add_popularity = { ideology = democratic popularity = 0.10 }
@@ -203,9 +303,12 @@ focus_tree = {
 		id = RSI_national_comitet_communist
 		icon = GFX_goal_support_communism
 		prerequisite = { focus = RSI_national_comitet }
-		mutually_exclusive = { focus = RSI_national_comitet_democratic }
+		mutually_exclusive = {
+			focus = RSI_victory_of_syndicalism
+			focus = RSI_national_comitet_democratic
+		}
 		available = {
-			has_government = communism
+			#has_government = communism
 			NOT = {
 				has_war_with = ITA
 			}
@@ -213,12 +316,12 @@ focus_tree = {
 
 		available_if_capitulated = yes
 
-		x = 2
+		x = 4
 		y = 1
 		relative_position_id = RSI_national_comitet
 		cost = 10
 		ai_will_do = {
-			factor = 5
+			factor = 50
 		}	
 		completion_reward = {
 			add_popularity = { ideology = communism popularity = 0.10 }
@@ -232,7 +335,11 @@ focus_tree = {
 	focus = {
 		id = RSI_referendum_monarchy
 		icon = GFX_focus_rom_abdicate
-		prerequisite = { focus = RSI_national_comitet_democratic focus = RSI_national_comitet_communist }
+		prerequisite = {
+			focus = RSI_victory_of_syndicalism
+			focus = RSI_national_comitet_democratic
+			focus = RSI_national_comitet_communist
+		}
 
 		available_if_capitulated = yes
 
@@ -245,25 +352,6 @@ focus_tree = {
 		}	
 		completion_reward = {
 			add_popularity = { ideology = monarchy popularity = -0.25 }
-		}
-	}
-	
-	focus = {
-		id = RSI_labour_confederation
-		icon = GFX_goal_generic_national_unity
-		prerequisite = { focus = RSI_referendum_monarchy }
-
-		available_if_capitulated = yes
-
-		x = 0
-		y = 1
-		relative_position_id = RSI_referendum_monarchy
-		cost = 10
-		ai_will_do = {
-			factor = 5
-		}	
-		completion_reward = {
-			add_ideas = RSI_labour_union_idea
 		}
 	}
 	
