@@ -289,6 +289,7 @@
 		mutually_exclusive = { focus = ITA_support_austria }
 		available = {
 			#has_government = fascism
+			is_subject = no
 			NOT = { has_war_with = GER }
 			OR = {
 				AND = {
@@ -392,6 +393,7 @@
 			}
 		}
 		available = {
+			is_subject = no
 			NOT = { is_in_faction_with = GER }
 		}
 		completion_reward = {
@@ -411,10 +413,11 @@
 		prerequisite = { focus = ITA_support_austria }
 		mutually_exclusive = { focus = ITA_fra_coalition focus = ITA_fascist_international }
 		available = {
+			is_subject = no
 			country_exists = ENG
 			NOT = { has_war_with = ENG }
 			is_in_faction = no
-			ENG = { is_puppet = no }
+			ENG = { is_subject = no }
 		}
 		bypass = {
 			ENG = {
@@ -443,10 +446,11 @@
 		prerequisite = { focus = ITA_support_austria }
 		mutually_exclusive = { focus = ITA_allies focus = ITA_fascist_international }
 		available = {
+			is_subject = no
 			country_exists = event_target:NW_france_scope
 			NOT = { has_war_with = event_target:NW_france_scope }
 			is_in_faction = no
-			event_target:NW_france_scope = { is_puppet = no }
+			event_target:NW_france_scope = { is_subject = no }
 		}
 		bypass = {
 			event_target:NW_france_scope = {
@@ -483,7 +487,8 @@
 		cost = 10
 		ai_will_do = {
 			factor = 4
-		}	
+		}
+		available = { is_subject = no }
 		completion_reward = {
 			set_rule = { can_create_factions = yes }
 			country_event = { id = duce.54 }
@@ -652,7 +657,7 @@
 	
 	shared_focus = {
 		id = ITA_alliance_spain
-		icon = GFX_goal_generic_military_deal
+		icon = GFX_z_goal_spain_nobody
 		prerequisite = { focus = ITA_fascist_international }
 		available = {
 			is_faction_leader = yes
@@ -689,7 +694,7 @@
 	
 	shared_focus = {
 		id = ITA_alliance_portugal
-		icon = GFX_goal_generic_military_deal
+		icon = GFX_z_goal_friend_portugal
 		prerequisite = { focus = ITA_fascist_international }
 		available = {
 			is_faction_leader = yes
@@ -735,7 +740,7 @@
 
 		cost = 10
 		ai_will_do = {
-			factor = 10
+			factor = 20
 			modifier = {
 				factor = 0
 				date < 1937.1.1
@@ -755,9 +760,9 @@
 			NOT = { is_in_faction_with = YUG }
 			NOT = { has_war_with = YUG }
 			country_exists = YUG
-			YUG = {
-				has_opinion = { target = ROOT value > 49 }
-			}
+			#YUG = {
+			#	has_opinion = { target = ROOT value > 49 }
+			#}
 		}
 		bypass = {
 			is_in_faction_with = YUG
@@ -768,6 +773,10 @@
 		cost = 10
 		ai_will_do = {
 			factor = 1
+			modifier = {
+				factor = 0
+				is_historical_focus_on = yes
+			}
 		}
 
 		completion_reward = {
@@ -889,9 +898,9 @@
 			NOT = { is_in_faction_with = ROM }
 			NOT = { has_war_with = ROM }
 			country_exists = ROM
-			ROM = {
-				has_opinion = { target = ROOT value > 49 }
-			}
+			#ROM = {
+			#	has_opinion = { target = ROOT value > 49 }
+			#}
 		}
 		bypass = {
 			is_in_faction_with = GRE
@@ -939,6 +948,8 @@
 			ROM = { NOT = { is_puppet_of = ITA } }
 			country_exists = ROM
 		}
+		
+		bypass = { has_war_with = ROM }
 
 		x = 4
 		y = 1
@@ -959,9 +970,18 @@
 		}	
 		completion_reward = {
 			create_wargoal = {
-				type = take_state_focus
+				type = annex_everything
 				target = ROM
-				generator = { 46 } # Athens
+			}
+			add_ai_strategy = {
+				type = antagonize
+				id = "ROM"
+				value = 200
+			}
+			add_ai_strategy = {
+				type = conquer
+				id = "ROM" 
+				value = 200
 			}
 		}
 	}
@@ -974,18 +994,21 @@
 		x = -2
 		y = 1
 		relative_position_id = ITA_yugoslavia_friend
-		relative_position_id = ITA_yugoslavia_friend
 		cost = 10
 		ai_will_do = {
 			factor = 10
+			modifier = {
+				factor = 0
+				is_historical_focus_on = yes
+			}
 		}
 		available = {
 			NOT = { is_in_faction_with = GRE }
 			NOT = { has_war_with = GRE }
 			country_exists = GRE
-			GRE = {
-				has_opinion = { target = ROOT value > 49 }
-			}
+			#GRE = {
+			#	has_opinion = { target = ROOT value > 49 }
+			#}
 		}
 		bypass = {
 			is_in_faction_with = GRE
@@ -1038,15 +1061,30 @@
 		ai_will_do = {
 			factor = 20
 			modifier = {
+				factor = 0
+				is_historical_focus_on = yes
+				date < 1940.1.1 
+			}
+			modifier = {
 				factor = 100
 				is_historical_focus_on = yes
+				date > 1940.1.1 
 			}
 		}	
 		completion_reward = {
 			create_wargoal = {
-				type = take_state_focus
+				type = annex_everything
 				target = GRE
-				generator = { 47 } # Athens
+			}
+			add_ai_strategy = {
+				type = antagonize
+				id = "GRE"
+				value = 200
+			}
+			add_ai_strategy = {
+				type = conquer
+				id = "GRE" 
+				value = 200
 			}
 
 			hidden_effect = {
@@ -1071,9 +1109,9 @@
 			NOT = { is_in_faction_with = BUL }
 			NOT = { has_war_with = BUL }
 			country_exists = BUL
-			BUL = {
-				has_opinion = { target = ROOT value > 49 }
-			}
+			#BUL = {
+			#	has_opinion = { target = ROOT value > 49 }
+			#}
 		}
 		bypass = {
 			is_in_faction_with = BUL
@@ -1127,9 +1165,18 @@
 		}	
 		completion_reward = {
 			create_wargoal = {
-				type = take_state_focus
+				type = annex_everything
 				target = BUL
-				generator = { 48 } # Athens
+			}
+			add_ai_strategy = {
+				type = antagonize
+				id = "BUL"
+				value = 200
+			}
+			add_ai_strategy = {
+				type = conquer
+				id = "BUL" 
+				value = 200
 			}
 
 			hidden_effect = {
@@ -1154,9 +1201,9 @@
 			NOT = { is_in_faction_with = HUN }
 			NOT = { has_war_with = HUN }
 			country_exists = HUN
-			HUN = {
-				has_opinion = { target = ROOT value > 49 }
-			}
+			#HUN = {
+			#	has_opinion = { target = ROOT value > 49 }
+			#}
 		}
 		bypass = {
 			is_in_faction_with = HUN
@@ -1210,9 +1257,18 @@
 		}	
 		completion_reward = {
 			create_wargoal = {
-				type = take_state_focus
+				type = annex_everything
 				target = HUN
-				generator = { 43 } # Athens
+			}
+			add_ai_strategy = {
+				type = antagonize
+				id = "HUN"
+				value = 200
+			}
+			add_ai_strategy = {
+				type = conquer
+				id = "HUN" 
+				value = 200
 			}
 
 			hidden_effect = {
@@ -1237,6 +1293,7 @@
 			}
 		}
 		available = {
+			is_subject = no
 			country_exists = AUS
 			NOT = {
 				has_war_with = AUS
@@ -1289,7 +1346,7 @@
 		
 		completion_reward = {
 			create_wargoal = {
-				type = puppet_wargoal_focus
+				type = annex_everything
 				target = GER
 			}
 			add_ai_strategy = {
@@ -1346,6 +1403,10 @@
 		ai_will_do = {
 			factor = 3
 			modifier = {
+				factor = 0
+				date < 1940.1.1
+			}
+			modifier = {
 				factor = 5
 				event_target:NW_france_scope = { has_war = yes }
 				ROOT = { NOT = { has_war_with = GER } }
@@ -1357,39 +1418,19 @@
 			}
 		}
 		completion_reward = {
-			if = {
-				limit = { country_exists = event_target:NW_france_scope }
-				create_wargoal = {
-					type = puppet_wargoal_focus
-					target = event_target:NW_france_scope
-				}
-				add_ai_strategy = {
-					type = antagonize
-					id = "event_target:NW_france_scope"
-					value = 500
-				}
-				add_ai_strategy = {
-					type = conquer
-					id = "event_target:NW_france_scope" 
-					value = 500
-				}
+			create_wargoal = {
+				type = annex_everything
+				target = event_target:NW_france_scope
 			}
-			else_if = {
-				limit = { country_exists = FRC }
-				create_wargoal = {
-					type = puppet_wargoal_focus
-					target = FRC
-				}
-				add_ai_strategy = {
-					type = antagonize
-					id = "FRC"
-					value = 500
-				}
-				add_ai_strategy = {
-					type = conquer
-					id = "FRC" 
-					value = 500
-				}
+			add_ai_strategy = {
+				type = antagonize
+				id = "event_target:NW_france_scope"
+				value = 500
+			}
+			add_ai_strategy = {
+				type = conquer
+				id = "event_target:NW_france_scope" 
+				value = 500
 			}
 		}
 	}
@@ -1411,12 +1452,16 @@
 		cost = 10
 		ai_will_do = {
 			factor = 10
+			modifier = {
+				factor = 0
+				is_historical_focus_on = yes
+				date < 1944.1.1 
+			}
 		}	
 		completion_reward = {
 			create_wargoal = {
-				type = take_state_focus
+				type = annex_everything
 				target = TUR
-				generator = { 49 } # Athens
 			}
 			add_ai_strategy = {
 				type = antagonize
@@ -1451,9 +1496,9 @@
 			NOT = { is_in_faction_with = IRQ }
 			NOT = { has_war_with = IRQ }
 			country_exists = IRQ
-			IRQ = {
-				has_opinion = { target = ROOT value > 49 }
-			}
+			#IRQ = {
+			#	has_opinion = { target = ROOT value > 49 }
+			#}
 		}
 		bypass = {
 			is_in_faction_with = IRQ
@@ -1503,9 +1548,8 @@
 		}	
 		completion_reward = {
 			create_wargoal = {
-				type = take_state_focus
+				type = annex_everything
 				target = IRQ
-				generator = { 291 } # Athens
 			}
 			add_ai_strategy = {
 				type = antagonize
@@ -1537,7 +1581,7 @@
 		}	
 		completion_reward = {
 			create_wargoal = {
-				type = puppet_wargoal_focus
+				type = annex_everything
 				target = SAU
 			}
 			add_ai_strategy = {
@@ -1553,7 +1597,7 @@
 			
 		
 			create_wargoal = {
-				type = puppet_wargoal_focus
+				type = annex_everything
 				target = OMA
 			}
 			add_ai_strategy = {
@@ -1568,7 +1612,7 @@
 			}
 		
 			create_wargoal = {
-				type = puppet_wargoal_focus
+				type = annex_everything
 				target = YEM
 			}
 			add_ai_strategy = {
@@ -3874,9 +3918,9 @@ shared_focus = {
 ###################Air######################
 ############################################
 
-shared_focus = {
+	shared_focus = {
 		id = ITA_center_aviation
-		icon = GFX_goal_generic_build_airforce
+		icon = GFX_z_goal_center_aviation
 		prerequisite = { focus = ITA_march_steel }
 		x = 5
 		y = 1
