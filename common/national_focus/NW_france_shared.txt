@@ -2431,7 +2431,7 @@
 		icon = GFX_z_goal_fra_support_maurras
 		prerequisite = { focus = FRA_parliamentary_elections }
 		mutually_exclusive = { focus = FRA_victory_popular_front focus = FRA_third_way }
-		x = 10
+		x = 11
 		y = 1
 		relative_position_id = FRA_parliamentary_elections
 		
@@ -2744,7 +2744,7 @@
 		icon = GFX_z_goal_swing_the_sword
 		prerequisite = { focus = FRA_return_to_prerevolutionary_order }
 		mutually_exclusive = { focus = FRA_enlightened_absolutism }
-		x = -4
+		x = -5
 		y = 1
 		relative_position_id = FRA_return_to_prerevolutionary_order
 		
@@ -2783,8 +2783,11 @@
 		id = FRA_revival_of_great_france
 		icon = GFX_z_national_greatness
 		prerequisite = { focus = FRA_proclamation_integral_nationalism }
-		mutually_exclusive = { focus = FRA_alliance_with_italy }
-		x = -1
+		mutually_exclusive = {
+			focus = FRA_alliance_with_italy
+			focus = FRA_alliance_with_germany
+		}
+		x = -2
 		y = 1
 		relative_position_id = FRA_proclamation_integral_nationalism
 		
@@ -2910,8 +2913,11 @@
 		id = FRA_alliance_with_italy
 		icon = GFX_z_goal_italy
 		prerequisite = { focus = FRA_proclamation_integral_nationalism }
-		mutually_exclusive = { focus = FRA_revival_of_great_france }
-		x = 1
+		mutually_exclusive = {
+			focus = FRA_revival_of_great_france
+			focus = FRA_alliance_with_germany
+		}
+		x = 0
 		y = 1
 		relative_position_id = FRA_proclamation_integral_nationalism
 		
@@ -3244,11 +3250,140 @@
 	}
 	
 	shared_focus = {
+		id = FRA_alliance_with_germany
+		icon = GFX_focus_chi_mission_to_germany
+		prerequisite = { focus = FRA_proclamation_integral_nationalism }
+		mutually_exclusive = {
+			focus = FRA_revival_of_great_france
+			focus = FRA_alliance_with_italy
+		}
+		x = 2
+		y = 1
+		relative_position_id = FRA_proclamation_integral_nationalism
+		
+		cost = 10
+		
+		cancel_if_invalid = yes
+		continue_if_invalid = no
+		available_if_capitulated = yes
+
+		ai_will_do = {
+			factor = 6
+			modifier = {
+				factor = 10
+				ITA = { NOT = { has_government = fascism } }
+			}
+			modifier = {
+				factor = 10
+				ITA = { is_in_faction_with = ENG }
+			}
+		}
+		available = {
+	 		is_puppet = no
+	 		NOT = { has_war_with = GER }
+	 		has_government = fascism
+	 		OR = {
+	 			is_faction_leader = yes
+	 			is_in_faction = no
+	 		}
+	 		GER = {
+	 			exists = yes
+	 			has_government = fascism
+	 			is_puppet = no
+	 		}
+		}
+		bypass = {
+			is_in_faction_with = GER
+			NOT = {
+				has_completed_focus = FRA_revival_of_great_france
+				has_completed_focus = FRA_alliance_with_italy
+			}
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: Focus FRA_alliance_with_germany"
+			if = {
+				limit = {
+					GER = {
+						is_faction_leader = no
+						is_in_faction = no
+					}
+				}
+				GER = { country_event = { id = NWfrance.50 days = 1 } }
+			}
+			if = {
+				limit = {
+					GER = {
+						is_faction_leader = no
+						is_in_faction = yes
+					}
+				}
+				random_other_country = {
+					limit = {
+						is_faction_leader = yes
+						is_in_faction_with = GER
+					}
+					country_event = { id = generic.5 days = 1 }
+				}
+			}
+			if = {
+				limit = { GER = { is_faction_leader = yes } }
+				GER = { country_event = { id = germany.91 days = 1 } }
+				GER = {
+					add_ai_strategy = {
+						type = alliance
+						id = ROOT
+						value = 200
+					}
+					ROOT = {
+						add_ai_strategy = {
+							type = alliance
+							id = PREV
+							value = 200
+						}
+					}
+				}
+			}
+		}
+	}
+	
+	shared_focus = {
+		id = FRA_alliance_science_with_germany
+		icon = GFX_goal_generic_scientific_exchange
+		prerequisite = { focus = FRA_alliance_with_germany }
+
+		x = 0
+		y = 1
+		relative_position_id = FRA_alliance_with_germany
+		
+		cost = 10
+		
+		cancel_if_invalid = yes
+		continue_if_invalid = no
+		available_if_capitulated = yes
+
+		ai_will_do = {
+			factor = 6
+		}
+		available = {
+	 		is_in_faction_with = GER
+		}
+		bypass = {
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: Focus FRA_alliance_science_with_germany"
+			add_to_tech_sharing_group = FRA_GER_group
+			GER = { add_to_tech_sharing_group = FRA_GER_group }
+		}
+	}
+	
+	shared_focus = {
 		id = FRA_enlightened_absolutism
 		icon = GFX_z_goal_fra_enlightened_absolutism
 		prerequisite = { focus = FRA_return_to_prerevolutionary_order }
 		mutually_exclusive = { focus = FRA_proclamation_integral_nationalism }
-		x = 4
+		x = 5
 		y = 1
 		relative_position_id = FRA_return_to_prerevolutionary_order
 		
@@ -3886,7 +4021,7 @@
 		id = FRA_french_self_affirmation
 		icon = GFX_z_goal_french_self_affirmation
 		prerequisite = { focus = FRA_their_own_efforts focus = FRA_integration_wallonia }
-		x = -3
+		x = -4
 		y = 2
 		relative_position_id = FRA_integration_wallonia
 		
