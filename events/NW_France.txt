@@ -172,6 +172,7 @@ country_event = {
 		add_stability = -0.2
 		remove_ideas = FRA_disjointed_government
 		hidden_effect = {
+			add_war_support = 0.2
 			news_event = { id = trworldnews.77 hours = 6 }
 			FRC = { transfer_state = 1035 }
 			if = {
@@ -287,6 +288,7 @@ country_event = {
 		add_stability = -0.2
 		remove_ideas = FRA_disjointed_government
 		hidden_effect = {
+			add_war_support = 0.2
 			news_event = { id = trworldnews.77 hours = 6 }
 			FRC = { transfer_state = 1035 }
 			if = {
@@ -539,8 +541,7 @@ country_event = {
 		remove_ideas = FRA_disjointed_government
 		hidden_effect = {
 			news_event = { id = trworldnews.78 hours = 6 }
-			set_stability = 0.4
-			set_war_support = 0.4
+			add_war_support = 0.2
 			FRC = {
 				transfer_state = 1035
 				add_popularity = {
@@ -702,8 +703,7 @@ country_event = {
 		remove_ideas = FRA_disjointed_government
 		hidden_effect = {
 			news_event = { id = trworldnews.78 hours = 6 }
-			set_stability = 0.4
-			set_war_support = 0.4
+			add_war_support = 0.2
 			FRC = {
 				transfer_state = 1035
 				add_popularity = {
@@ -2507,6 +2507,16 @@ country_event = {
 		add_threat = 1
 		FRA = { add_opinion_modifier = { target = ROOT modifier = diplomatic_affront } }
 		ROOT = { add_opinion_modifier = { target = FRA modifier = diplomatic_affront } }
+		if = {
+			limit = {
+				ROOT = {
+					has_country_flag = hbbrg_flag
+					has_completed_focus = HBBRG_first_state_europe
+				}
+			}
+			add_stability = -0.2
+			custom_effect_tooltip = HBBRG_counsil_decline_tt
+		}
 	}
 }
 
@@ -2891,14 +2901,34 @@ country_event = {
 					}
 				}
 			}
-			every_country = {
+			if = {
 				limit = {
-					OR = {
+					any_other_country = {
+						has_country_flag = hbbrg_flag
+						has_completed_focus = HBBRG_first_state_europe
 						has_country_flag = paneuropean_council_member_flag
-						tag = ROOT
 					}
 				}
-				country_event = { id = NWfrance.45 } #Центр будущего союза
+				every_country = {
+					limit = {
+						OR = {
+							has_country_flag = paneuropean_council_member_flag
+							tag = ROOT
+						}
+					}
+					country_event = { id = NWfrance.45 } #Центр будущего союза
+				}
+			}
+			else = {
+				every_country = {
+					limit = {
+						OR = {
+							has_country_flag = paneuropean_council_member_flag
+							tag = ROOT
+						}
+					}
+					country_event = { id = NWfrance.47 days = 1 } #Создание торгового союза
+				}
 			}
 		}
 		if = {
@@ -2940,6 +2970,7 @@ country_event = {
 				OR = {
 					tag = FRA
 					is_in_faction_with = FRA
+					is_subject_of = FRA
 				}
 			}
 		}
@@ -2956,6 +2987,7 @@ country_event = {
 				OR = {
 					tag = FRA
 					is_in_faction_with = FRA
+					is_subject_of = FRA
 				}
 			}
 			modifier = {
@@ -2966,62 +2998,11 @@ country_event = {
 				factor = 10
 				OR = {
 					has_government = neutrality
-					has_government = monarchy
+					has_government = democratic
 				}
 			}
 		}
-		trigger = { 4 = { owner = { has_country_flag = paneuropean_council_member_flag } } }
-		FRA = { add_to_variable = { vienna_var = 1 } }
-		country_event = { id = NWfrance.47 days = 1 }
-	}
-	
-	option = {
-		name = NWfrance.45.c
-		ai_chance = {
-			factor = 50
-			modifier = {
-				factor = 0
-				OR = {
-					tag = FRA
-					is_in_faction_with = FRA
-				}
-			}
-			modifier = {
-				factor = 10
-				owns_state = 2
-			}
-			modifier = {
-				factor = 10
-				has_government = fascism
-			}
-		}
-		trigger = { 2 = { owner = { has_country_flag = paneuropean_council_member_flag } } }
-		FRA = { add_to_variable = { rome_var = 1 } }
-		country_event = { id = NWfrance.47 days = 1 }
-	}
-	
-	option = {
-		name = NWfrance.45.d
-		ai_chance = {
-			factor = 50
-			modifier = {
-				factor = 0
-				OR = {
-					tag = FRA
-					is_in_faction_with = FRA
-				}
-			}
-			modifier = {
-				factor = 10
-				owns_state = 6
-			}
-			modifier = {
-				factor = 10
-				has_government = democratic
-			}
-		}
-		trigger = { 6 = { owner = { has_country_flag = paneuropean_council_member_flag } } }
-		FRA = { add_to_variable = { brussels_var = 1 } }
+		FRA = { add_to_variable = { habbs_var = 1 } }
 		country_event = { id = NWfrance.47 days = 1 }
 	}
 }
@@ -3070,7 +3051,7 @@ country_event = {
 }
 
 #Создание торгового союза
-country_event = {	
+country_event = {
 	id = NWfrance.47
 	title = NWfrance.47.t
 	desc = NWfrance.47.desc
@@ -3132,11 +3113,7 @@ country_event = {
 	option = {
 		name = NWfrance.48.a
 		trigger = {
-			AND = {
-				check_variable = { var = FRA.paris_var value = FRA.vienna_var compare = greater_than }
-				check_variable = { var = FRA.paris_var value = FRA.rome_var compare = greater_than }
-				check_variable = { var = FRA.paris_var value = FRA.brussels_var compare = greater_than }
-			}
+			check_variable = { var = FRA.paris_var value = FRA.habbs_var compare = greater_than }
 		}
 		add_ideas = FRA_european_federal_union
 		if = {
@@ -3222,15 +3199,16 @@ country_event = {
 	option = {
 		name = NWfrance.48.b
 		trigger = {
-			AND = {
-				check_variable = { var = FRA.vienna_var value = FRA.paris_var compare = greater_than }
-				check_variable = { var = FRA.vienna_var value = FRA.rome_var compare = greater_than }
-				check_variable = { var = FRA.vienna_var value = FRA.brussels_var compare = greater_than }
-			}
+			check_variable = { var = FRA.habbs_var value = FRA.paris_var compare = greater_than }
 		}
 		add_ideas = FRA_european_federal_union
 		if = {
-			limit = { 4 = { is_owned_by = ROOT } }
+			limit = {
+				ROOT = {
+					has_country_flag = hbbrg_flag
+					has_completed_focus = HBBRG_first_state_europe
+				}
+			}
 			set_country_flag = paneuropean_leader
 			set_cosmetic_tag = European_Union
 			create_faction = European_Union_fascism
@@ -3311,190 +3289,21 @@ country_event = {
 			}
 		}
 	}
-	
 	option = {
 		name = NWfrance.48.c
 		trigger = {
-			AND = {
-				check_variable = { var = FRA.rome_var value = FRA.paris_var compare = greater_than }
-				check_variable = { var = FRA.rome_var value = FRA.vienna_var compare = greater_than }
-				check_variable = { var = FRA.rome_var value = FRA.brussels_var compare = greater_than }
-			}
+			check_variable = { var = FRA.paris_var = 0 }
+			check_variable = { var = FRA.habbs_var = 0 }
 		}
 		add_ideas = FRA_european_federal_union
 		if = {
-			limit = { 2 = { is_owned_by = ROOT } }
+			limit = { ROOT = { tag = FRA } }
 			set_country_flag = paneuropean_leader
 			set_cosmetic_tag = European_Union
 			create_faction = European_Union_fascism
-			every_country = {
-				limit = {
-					OR = {
-						has_country_flag = paneuropean_council_member_flag
-						tag = FRA
-					}
-					NOT = { has_country_flag = paneuropean_leader }
-				}
-				every_other_country = {
-					limit = { is_subject_of = PREV }
-					save_party_popularity = yes
-					PREV = { end_puppet = THIS }
-					random_country = {
-						limit = { has_country_flag = paneuropean_leader }
-						if = {
-							limit = { check_variable = { var = FRA.confederation_system_var value = FRA.independent_system_var compare = greater_than } }
-							set_autonomy = {
-								target = PREV
-								autonomy_state = autonomy_dominion
-							}
-						}
-						else = {
-							set_autonomy = {
-								target = PREV
-								autonomy_state = autonomy_european_union_state
-							}
-						}
-					}
-					load_party_popularity = yes
-				}
-				save_party_popularity = yes
-				random_country = {
-					limit = { has_country_flag = paneuropean_leader }
-					if = {
-						limit = { check_variable = { var = FRA.confederation_system_var value = FRA.independent_system_var compare = greater_than } }
-						set_autonomy = {
-							target = PREV
-							autonomy_state = autonomy_dominion
-						}
-					}
-					else = {
-						set_autonomy = {
-							target = PREV
-							autonomy_state = autonomy_european_union_state
-						}
-					}
-				}
-				load_party_popularity = yes
-			}
 		}
 		else = {
-			effect_tooltip = {
-				every_country = {
-					limit = {
-						has_country_flag = paneuropean_council_member_flag
-						NOT = { has_country_flag = paneuropean_leader }
-					}
-					random_country = {
-						limit = { has_country_flag = paneuropean_leader }
-						if = {
-							limit = { check_variable = { var = FRA.confederation_system_var value = FRA.independent_system_var compare = greater_than } }
-							set_autonomy = {
-								target = PREV
-								autonomy_state = autonomy_dominion
-							}
-						}
-						else = {
-							set_autonomy = {
-								target = PREV
-								autonomy_state = autonomy_european_union_state
-							}
-						}
-					}
-				}
-			}
-		}
-	}
-	
-	option = {
-		name = NWfrance.48.d
-		trigger = {
-			AND = {
-				check_variable = { var = FRA.brussels_var value = FRA.paris_var compare = greater_than }
-				check_variable = { var = FRA.brussels_var value = FRA.vienna_var compare = greater_than }
-				check_variable = { var = FRA.brussels_var value = FRA.rome_var compare = greater_than }
-			}
-		}
-		add_ideas = FRA_european_federal_union
-		if = {
-			limit = { 6 = { is_owned_by = ROOT } }
-			set_country_flag = paneuropean_leader
-			set_cosmetic_tag = European_Union
-			create_faction = European_Union_fascism
-			every_country = {
-				limit = {
-					OR = {
-						has_country_flag = paneuropean_council_member_flag
-						tag = FRA
-					}
-					NOT = { has_country_flag = paneuropean_leader }
-				}
-				every_other_country = {
-					limit = { is_subject_of = PREV }
-					save_party_popularity = yes
-					PREV = { end_puppet = THIS }
-					random_country = {
-						limit = { has_country_flag = paneuropean_leader }
-						if = {
-							limit = { check_variable = { var = FRA.confederation_system_var value = FRA.independent_system_var compare = greater_than } }
-							set_autonomy = {
-								target = PREV
-								autonomy_state = autonomy_dominion
-							}
-						}
-						else = {
-							set_autonomy = {
-								target = PREV
-								autonomy_state = autonomy_european_union_state
-							}
-						}
-					}
-					load_party_popularity = yes
-				}
-				save_party_popularity = yes
-				random_country = {
-					limit = { has_country_flag = paneuropean_leader }
-					if = {
-						limit = { check_variable = { var = FRA.confederation_system_var value = FRA.independent_system_var compare = greater_than } }
-						set_autonomy = {
-							target = PREV
-							autonomy_state = autonomy_dominion
-						}
-					}
-					else = {
-						set_autonomy = {
-							target = PREV
-							autonomy_state = autonomy_european_union_state
-						}
-					}
-				}
-				load_party_popularity = yes
-			}
-		}
-		else = {
-			effect_tooltip = {
-				every_country = {
-					limit = {
-						has_country_flag = paneuropean_council_member_flag
-						NOT = { has_country_flag = paneuropean_leader }
-					}
-					random_country = {
-						limit = { has_country_flag = paneuropean_leader }
-						if = {
-							limit = { check_variable = { var = FRA.confederation_system_var value = FRA.independent_system_var compare = greater_than } }
-							set_autonomy = {
-								target = PREV
-								autonomy_state = autonomy_dominion
-							}
-						}
-						else = {
-							set_autonomy = {
-								target = PREV
-								autonomy_state = autonomy_european_union_state
-							}
-						}
-					}
-				}
-			}
+			FRA = { add_to_faction = ROOT }
 		}
 	}
 }
