@@ -86,6 +86,7 @@ focus_tree = {
 				factor = 10
 				any_other_country = {
 					has_government = monarchy
+					is_faction_leader = yes
 					is_in_faction_with = ROOT
 				}
 			}
@@ -197,6 +198,9 @@ focus_tree = {
 		}
 		available = {
 			#has_government = anarchism
+			NOT = {
+				has_war_with = ITA
+			}
 		}
 
 		available_if_capitulated = yes
@@ -710,18 +714,59 @@ focus_tree = {
 		cost = 5
 		ai_will_do = {
 			factor = 5
-		}	
+		}
+		
+		available = {
+			OR = {
+				has_full_control_of_state = 114
+				has_full_control_of_state = 115
+			}
+		}
+		
 		completion_reward = {
-			SRD = { transfer_state = 114 }
-			puppet = SRD
-			SIC = { transfer_state = 115 }
-			puppet = SIC
+			if = {
+				limit = { has_full_control_of_state = 114 }
+				SRD = { transfer_state = 114 }
+				puppet = SRD
+			}
+			if = {
+				limit = { has_full_control_of_state = 115 }
+				SIC = { transfer_state = 115 }
+				puppet = SIC
+			}
+			if = {
+				limit = { controls_state = 1 }
+				KRS = { transfer_state = 1 }
+				puppet = KRS
+			}
 			
 			hidden_effect = {
 				if = {
 					limit = { has_government = anarchism }
-					SRD = { set_country_leader_ideology = anarcho_sindicalism }
-					SIC = { set_country_leader_ideology = anarcho_sindicalism }
+					if = {
+						limit = {
+							country_exists = SRD
+							is_subject_of = ROOT
+							SRD = { has_government = anarchism }
+						}
+						SRD = { set_country_leader_ideology = anarcho_sindicalism }
+					}
+					if = {
+						limit = {
+							country_exists = SIC
+							is_subject_of = ROOT
+							SIC = { has_government = anarchism }
+						}
+						SIC = { set_country_leader_ideology = anarcho_sindicalism }
+					}
+					if = {
+						limit = {
+							country_exists = KRS
+							is_subject_of = ROOT
+							KRS = { has_government = anarchism }
+						}
+						KRS = { set_country_leader_ideology = anarcho_sindicalism }
+					}
 				}
 			}
 		}

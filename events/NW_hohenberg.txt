@@ -1,0 +1,286 @@
+﻿###########################
+# Ветка Гогенбергов
+###########################
+
+add_namespace = NWhohenberg
+
+#Расширение сторонников // Габс
+country_event = {
+	id = NWhohenberg.1
+	title = NWhohenberg.1.t
+	desc = NWhohenberg.1.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName]: event NWhohenberg.1" }
+	
+	option = {
+		name = NWhohenberg.1.a
+		ai_chance = {
+			factor = 50
+		}
+		add_political_power = -25
+		add_popularity = { ideology = monarchy popularity = 0.03 }
+		add_ideas = HHNBRG_support_aristocrats
+		hidden_effect = {
+			if = {
+				limit = { ROOT = { tag = AUS } }
+				country_event = { id = NWhohenberg.2 days = 7 }
+			}
+			else = {
+				country_event = { id = NWhohenberg.2 days = 7 }
+				AUS = { country_event = { id = NWhohenberg.2 days = 7 } }
+			}
+		}
+	}
+	
+	option = {
+		name = NWhohenberg.1.b
+		ai_chance = {
+			factor = 50
+		}
+		add_political_power = -50
+		add_popularity = { ideology = democratic popularity = 0.06 }
+		add_ideas = HHNBRG_support_capitalists
+		hidden_effect = {
+			if = {
+				limit = { ROOT = { tag = AUS } }
+				country_event = { id = NWhohenberg.2 days = 7 }
+			}
+			else = {
+				country_event = { id = NWhohenberg.2 days = 7 }
+				AUS = { country_event = { id = NWhohenberg.2 days = 7 } }
+			}
+		}
+	}
+	
+	option = {
+		name = NWhohenberg.1.c
+		ai_chance = {
+			factor = 50
+		}
+		add_political_power = -75
+		add_popularity = { ideology = communism popularity = 0.03 }
+		add_popularity = { ideology = trozkism popularity = 0.03 }
+		add_popularity = { ideology = anarchism popularity = 0.03 }
+		add_ideas = HHNBRG_support_worker
+	}
+}
+
+#Митинги в Австрийских землях // AUS и Габс
+country_event = {
+	id = NWhohenberg.2
+	title = NWhohenberg.2.t
+	desc = NWhohenberg.2.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = {
+		log = "[GetDateText]: [Root.GetName]: event NWhohenberg.2"
+		country_event = { id = NWhohenberg.3 days = 14 }
+	}
+	
+	option = {
+		name = NWhohenberg.2.a
+		trigger = { has_country_flag = hbbrg_flag }
+		add_stability = -0.05
+		if = {
+			limit = { tag = AUS }
+			add_timed_idea = {
+				idea = HHNBRG_support_sophia
+				days = 45
+			}
+		}
+	}
+	
+	option = {
+		name = NWhohenberg.2.b
+		trigger = {
+			tag = AUS
+			NOT = { has_country_flag = hbbrg_flag }
+		}
+		add_stability = -0.05
+		add_timed_idea = {
+			idea = HHNBRG_support_sophia
+			days = 45
+		}
+	}
+}
+
+#Митинги в Чехословакии и Венгрии // AUS и Габс
+country_event = {
+	id = NWhohenberg.3
+	title = NWhohenberg.3.t
+	desc = NWhohenberg.3.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = {
+		log = "[GetDateText]: [Root.GetName]: event NWhohenberg.3"
+		random_country = {
+			limit = {
+				has_country_flag = hbbrg_flag
+				has_idea = HHNBRG_support_aristocrats
+			}
+			country_event = { id = NWhohenberg.4 days = 7 }
+		}
+	}
+	
+	option = {
+		name = NWhohenberg.3.a
+		trigger = {
+			has_country_flag = hbbrg_flag
+			has_idea = HHNBRG_support_capitalists
+		}
+		add_political_power = 25
+	}
+	
+	option = {
+		name = NWhohenberg.3.b
+		trigger = {
+			has_country_flag = hbbrg_flag
+			has_idea = HHNBRG_support_aristocrats
+		}
+		add_stability = -0.05
+		every_country = {
+			limit = {
+				NOT = { has_idea = HHNBRG_support_sophia }
+				OR = {
+					tag = HUN
+					tag = CZE
+					has_country_flag = hbbrg_flag
+				}
+			}
+			add_timed_idea = {
+				idea = HHNBRG_support_sophia
+				days = 45
+			}
+		}
+	}
+	
+	option = {
+		name = NWhohenberg.3.c
+		trigger = {
+			tag = AUS
+			NOT = { has_country_flag = hbbrg_flag }
+		}
+		add_political_power = 50
+	}
+}
+
+#Стрельба на митинге // сначала Габс, потом AUS
+country_event = {
+	id = NWhohenberg.4
+	title = NWhohenberg.4.t
+	desc = NWhohenberg.4.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName]: event NWhohenberg.4" }
+	
+	option = {
+		name = NWhohenberg.4.a
+		trigger = {
+			has_country_flag = hbbrg_flag
+			NOT = { tag = AUS }
+		}
+		if = {
+			limit = { country_exists = AUS }
+			AUS = { country_event = { id = NWhohenberg.4 } }
+		}
+		else = {
+			every_state = {
+				limit = {
+					is_core_of = AUS
+				}
+				AUS = { transfer_state = PREV }
+			}
+			AUS = {
+				load_oob = "AUS_1936"
+				country_event = { id = NWhohenberg.4 }
+			}
+		}
+	}
+	
+	option = {
+		name = NWhohenberg.4.b
+		trigger = {
+			tag = AUS
+		}
+		set_country_flag = hhnbrg_flag
+		add_popularity = { ideology = monarchy popularity = 0.4 }
+		set_politics = {
+			ruling_party = monarchy
+			elections_allowed = no
+		}
+		create_country_leader = {
+			name = "Sophie von Hohenberg"
+			desc = "POLITICS_SOPHIE_VON_HOHENBERG_DESC"
+			picture = "gfx/leaders/AUS/Portrait_Sophie_von_Hohenberg.dds"
+			expire = "1965.1.1"
+			ideology = monarchy_ideology
+			traits = {
+				popular_figurehead2
+			}
+		}
+		set_cosmetic_tag = HOHENBERG
+		load_focus_tree = hohenberg_focus
+		if = {
+			limit = { NOT = { has_country_flag = hbbrg_flag } }
+			declare_war_on = {
+				target = PREV
+				type = civil_war
+			}
+		}
+		else = {
+			effect_tooltip = {
+				start_civil_war = {
+					ideology = monarchy
+					size = 0.49
+				}
+			}
+			hidden_effect = {
+				start_civil_war = {
+					ideology = fascism
+					size = 0.49
+				}
+				set_country_flag = same_ideology_civil_war_flag
+				every_country = { clr_country_flag = hbbrg_flag }
+				random_other_country = {
+					limit = {
+						original_tag = AUS
+						has_government = fascism
+					}
+					set_country_flag = same_ideology_civil_war_flag
+					add_popularity = { ideology = monarchy popularity = 0.4 }
+					add_popularity = { ideology = fascism popularity = -1 }
+					set_politics = {
+						ruling_party = monarchy
+						elections_allowed = no
+					}
+					set_country_flag = hbbrg_flag
+					load_focus_tree = hbbrg_focus
+					set_cosmetic_tag = HABSBURGS
+					set_major = yes
+					create_country_leader = {
+						name = "Otto von Habsburg"
+						desc = "POLITICS_OTTO_VON_HABSBURG_DESC"
+						picture = GFX_Portrait_hungary_otto_von_hapsburg
+						expire = "1965.1.1"
+						ideology = monarchy_ideology
+						traits = {
+						}
+					}
+					add_ideas = HUN_habsburg_restored
+					set_party_name = { ideology = democratic long_name = habsburg_democratic_party name = habsburg_democratic_party }
+					set_party_name = { ideology = communism long_name = habsburg_communism_party name = habsburg_communism_party }
+					set_party_name = { ideology = fascism long_name = habsburg_fascism_party name = habsburg_fascism_party }
+					set_party_name = { ideology = monarchy long_name = habsburg_monarchy_party name = habsburg_monarchy_party }
+					add_country_leader_trait = kingAUS
+					set_country_flag = kingAUS_flag
+				}
+			}
+		}
+	}
+}
+
