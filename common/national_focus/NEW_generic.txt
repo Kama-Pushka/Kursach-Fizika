@@ -19,6 +19,7 @@ focus_tree = {
 	focus = {
 		id = political_effort
 		icon = GFX_z_goal_diplomacy_1
+		mutually_exclusive = { focus = generic_AUS_discuss_establishment_monarchy }
 		x = 30
 		y = 0
 		cost = 10
@@ -29,6 +30,161 @@ focus_tree = {
 			add_political_power = 120
 		}
 	}
+	
+	### БЛОК АВСТРИИ ###
+	
+	focus = {
+		id = generic_AUS_discuss_establishment_monarchy
+		icon = GFX_focus_generic_home_defense
+		mutually_exclusive = { focus = political_effort }
+		available = {
+			has_government = neutrality
+			is_in_faction = no
+			any_other_country = {
+				NOT = { has_guaranteed = ROOT }
+			}
+			GER = { has_government = fascism }
+		}
+		allow_branch = {
+			tag = AUS
+		}
+		x = 4
+		y = 0
+		relative_position_id = political_effort
+		cost = 15
+
+		available_if_capitulated = yes
+
+
+		ai_will_do = {
+			factor = 10
+		}
+		
+		select_effect = {
+			country_event = { id = NWhohenberg.100 days = 5 }
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: Focus generic_AUS_discuss_establishment_monarchy"
+			add_political_power = 120
+			add_timed_idea = { idea = generic_AUS_discuss_establishment_monarchy_idea days = 300 }
+			hidden_effect = {
+				if = {
+					limit = { NOT = { has_country_flag = nobles_imposed_restrictions_on_otto } }
+					country_event = { id = NWhohenberg.101 }
+				}
+			}
+		}
+	}
+	
+	
+	focus = {
+		id = generic_AUS_restore_habsburg_empire
+		icon = GFX_focus_hun_elect_a_king
+		prerequisite = { focus = generic_AUS_discuss_establishment_monarchy }
+		available = {
+			
+		}
+		
+		x = 0
+		y = 1
+		relative_position_id = generic_AUS_discuss_establishment_monarchy
+		cost = 15
+
+		available_if_capitulated = yes
+
+
+		ai_will_do = {
+			factor = 500
+		}
+		
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: Focus generic_AUS_restore_habsburg_empire"
+			add_popularity = {
+				ideology = monarchy
+				popularity = 0.2
+			}
+			set_politics = {
+				ruling_party = monarchy
+				elections_allowed = no
+			}
+		}
+		
+		completion_reward = {
+			save_global_event_target_as = NW_hbbrg_scope
+			create_country_leader = {
+				name = "Otto von Habsburg"
+				desc = "POLITICS_OTTO_VON_HABSBURG_DESC"
+				picture = GFX_Portrait_hungary_otto_von_hapsburg
+				expire = "1965.1.1"
+				ideology = monarchy_ideology
+				traits = {
+					kingAUS
+				}
+			}
+			set_country_flag = kingAUS_flag
+			add_ideas = HUN_habsburg_restored
+			#set_rule = { can_create_factions = yes }
+			hidden_effect = {
+				news_event = { id = news.290 }
+			}
+			set_cosmetic_tag = HABSBURGS
+			set_major = yes
+			if = {
+				limit = {
+					OR = {
+						NOT = { event_target:NW_france_scope = { has_completed_focus = FRA_little_entente_new } } 
+						event_target:NW_france_scope = { exists = no }
+						event_target:NW_france_scope = { is_subject = yes }
+					}
+					OR = {
+						has_idea = HUN_treaty_of_triannon
+						has_idea = HUN_treaty_of_triannon_2
+						has_idea = HUN_treaty_of_triannon_3
+					}
+				} #Romania gets the event if France not engaged in Balkans
+				ROM = { country_event = { id = DOD_hungary.40 } }
+			}
+			hidden_effect = {
+				load_focus_tree = hbbrg_focus
+				set_country_flag = hbbrg_flag
+				set_politics = {
+					ruling_party = monarchy
+					elections_allowed = no
+				}
+				set_political_party = {
+					ideology = monarchy
+					popularity = 50
+				}
+				if = {
+					limit = { NOT = { has_global_flag = anti_hbbrg_flag } }
+					ROM = { country_event = { id = NWmonarchy.40 } }
+				}
+				set_party_name = { ideology = democratic long_name = habsburg_democratic_party name = habsburg_democratic_party }
+				set_party_name = { ideology = communism long_name = habsburg_communism_party name = habsburg_communism_party }
+				set_party_name = { ideology = fascism long_name = habsburg_fascism_party name = habsburg_fascism_party }
+				set_party_name = { ideology = monarchy long_name = habsburg_monarchy_party name = habsburg_monarchy_party }
+				GER = { country_event = { id = TRpolitical.104 } }
+				CZE = { country_event = { id = TRpolitical.104 } }
+				AUS = { country_event = { id = TRpolitical.104 } }
+				YUG = { country_event = { id = TRpolitical.104 } }
+				ROM = { country_event = { id = TRpolitical.104 } }
+				TUR = { country_event = { id = TRpolitical.104 } }
+				if = {
+					limit = { SPA = { has_idea = SPA_otto_von_habsburg } }
+					set_autonomy = {
+						target = SPA
+						autonomy_state = autonomy_dominion
+					}
+					add_country_leader_trait = kingSPA
+				}
+			}
+		}
+	}
+	
+	####
+	
+	
 
 	focus = {
 		id = collectivist_ethos
