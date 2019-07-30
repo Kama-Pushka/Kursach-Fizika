@@ -276,7 +276,7 @@ focus_tree = {
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus HHNBRG_hired_crews"
 			custom_effect_tooltip = HHNBRG_hired_crews_tt
-			hidden_effect = { country_event = { id = NWhohenberg.11 } }
+			hidden_effect = { country_event = { id = NWhohenberg.11 days = 20 } }
 		}
 	}
 	
@@ -309,7 +309,31 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus HHNBRG_rebirth_empire"
-			
+			add_political_power = 100
+			add_popularity = { ideology = monarchy popularity = 0.1 }
+			add_popularity = { ideology = anarchism popularity = 0.1 }
+			set_party_name = { ideology = anarchism long_name = hhnbrg_anarchism_party name = hhnbrg_anarchism_party }
+			set_party_name = { ideology = monarchy long_name = hhnbrg_monarchy_party name = hhnbrg_monarchy_party }
+			create_country_leader = {
+				name = "Sophie von Hohenberg"
+				desc = "POLITICS_SOPHIE_VON_HOHENBERG_DESC"
+				picture = "gfx/leaders/AUS/Portrait_Sophie_von_Hohenberg.dds"
+				expire = "1965.1.1"
+				ideology = monarchy_ideology
+				traits = {
+					popular_figurehead2
+				}
+			}
+			create_country_leader = {
+				name = "Sophie von Hohenberg"
+				desc = "POLITICS_SOPHIE_VON_HOHENBERG_DESC"
+				picture = "gfx/leaders/AUS/Portrait_Sophie_von_Hohenberg.dds"
+				expire = "1965.1.1"
+				ideology = anarcho_monarchism
+				traits = {
+					popular_figurehead2
+				}
+			}
 		}
 	}
 	
@@ -337,7 +361,8 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus HHNBRG_blood_is_not_water"
-			
+			add_popularity = { ideology = anarchism popularity = 0.1 }
+			add_ideas = HHNBRG_right_rule
 		}
 	}
 	
@@ -365,7 +390,7 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus HHNBRG_structure_empire"
-			
+			add_stability = 0.05
 		}
 	}
 	
@@ -384,7 +409,7 @@ focus_tree = {
 		y = 1
 		relative_position_id = HHNBRG_structure_empire
 
-		cost = 10
+		cost = 5
 		
 		cancel_if_invalid = yes
 		continue_if_invalid = no
@@ -400,7 +425,12 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus HHNBRG_peoples_monarchy"
-			
+			add_popularity = { ideology = anarchism popularity = 0.1 }
+			set_politics = {
+				ruling_party = anarchism
+				elections_allowed = no
+			}
+			add_ideas = HHNBRG_peoples_monarchy
 		}
 	}
 	
@@ -412,7 +442,7 @@ focus_tree = {
 		y = 1
 		relative_position_id = HHNBRG_peoples_monarchy
 
-		cost = 10
+		cost = 5
 		
 		cancel_if_invalid = yes
 		continue_if_invalid = no
@@ -428,7 +458,12 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus HHNBRG_adoption_peoples_charter"
-			
+			add_stability = 0.1
+			add_popularity = { ideology = anarchism popularity = 0.1 }
+			swap_ideas = {
+				remove_idea = HHNBRG_peoples_monarchy
+				add_idea = HHNBRG_peoples_monarchy_2
+			}
 		}
 	}
 	
@@ -456,7 +491,8 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus HHNBRG_support_of_peoples_empress"
-			
+			add_popularity = { ideology = anarchism popularity = 0.05 }
+			add_political_power = 100
 		}
 	}
 	
@@ -484,7 +520,7 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus HHNBRG_cancellation_of_licenses_for_weapons"
-			
+			add_ideas = HHNBRG_free_buy_weapons
 		}
 	}
 	
@@ -506,13 +542,37 @@ focus_tree = {
 			factor = 10
 		}
 		available = {
+			845 = {
+				owner = {
+					OR = { 
+						tag = ROOT
+						is_subject_of = ROOT
+					}
+				}
+			}
 		}
 		bypass = {
 		}
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus HHNBRG_gun_conveyors"
-			
+			random_owned_controlled_state = {
+				prioritize = { 845 }
+				limit = { 
+					free_building_slots = {
+						building = arms_factory
+						size > 1
+						include_locked = yes
+					}
+				}
+				add_extra_state_shared_building_slots = 2
+				add_building_construction = {
+					type = arms_factory
+					level = 2
+					instant_build = yes
+				}
+			}
+			add_ideas = HHNBRG_gun_conveyors
 		}
 	}
 	
@@ -534,6 +594,18 @@ focus_tree = {
 			factor = 10
 		}
 		available = {
+			any_state = {
+				any_neighbor_state = {
+					is_owned_by = POL
+				}
+				owner = {
+					OR = {
+						tag = ROOT
+						is_subject_of = ROOT
+						is_in_faction_with = ROOT
+					}
+				}
+			}
 		}
 		bypass = {
 		}
