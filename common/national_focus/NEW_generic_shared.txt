@@ -15,7 +15,7 @@
 			army_experience = 5
 			add_tech_bonus = {
 				name = land_doc_bonus
-				bonus = 0.5
+				bonus = 1
 				uses = 1
 				category = land_doctrine
 			}
@@ -104,7 +104,7 @@
 		completion_reward = {
 			add_tech_bonus = {
 				name = infantry_bonus
-				bonus = 0.5
+				bonus = 1
 				uses = 1
 				category = infantry_weapons
 			}
@@ -126,7 +126,7 @@
 			army_experience = 5
 			add_tech_bonus = {
 				name = land_doc_bonus
-				bonus = 0.5
+				bonus = 1
 				uses = 1
 				category = land_doctrine
 			}
@@ -147,7 +147,7 @@
 		completion_reward = {
 			add_tech_bonus = {
 				name = motorized_bonus
-				ahead_reduction = 0.75
+				ahead_reduction = 2
 				uses = 1
 				category = motorized_equipment
 			}
@@ -168,7 +168,7 @@
 		completion_reward = {
 			add_tech_bonus = {
 				name = infantry_bonus
-				bonus = 0.5
+				bonus = 1
 				uses = 1
 				category = infantry_weapons
 			}
@@ -189,7 +189,7 @@
 		completion_reward = {
 			add_tech_bonus = {
 				name = artillery_bonus
-				bonus = 0.5
+				bonus = 1
 				uses = 1
 				category = artillery
 			}
@@ -211,8 +211,9 @@
 			army_experience = 5
 			add_tech_bonus = {
 				name = land_doc_bonus
-				bonus = 0.5
-				uses = 1
+				ahead_reduction = 2
+				bonus = 1
+				uses = 2
 				category = land_doctrine
 			}
 		}
@@ -233,7 +234,7 @@
 			army_experience = 5
 			add_tech_bonus = {
 				name = armor_bonus
-				bonus = 0.5
+				bonus = 1
 				uses = 2
 				category = armor
 			}
@@ -255,7 +256,7 @@
 			army_experience = 5
 			add_tech_bonus = {
 				name = support_bonus
-				bonus = 0.5
+				bonus = 1
 				uses = 1
 				category = support_tech
 			}
@@ -879,7 +880,7 @@
 		completion_reward = {
 			add_tech_bonus = {
 				name = fleet_in_being_bonus
-				bonus = 0.6
+				bonus = 0.75
 				uses = 2
 				category = dd_tech 
 				category = cl_tech  
@@ -1075,7 +1076,7 @@
 		completion_reward = {
 			add_tech_bonus = {
 				name = capital_ships_bonus
-				bonus = 0.6
+				bonus = 0.75
 				uses = 2
 				category = bc_tech
 				category = bb_tech
@@ -1116,8 +1117,8 @@
 				}
 				add_tech_bonus = {
 					name = fleet_in_being_bonus
-					bonus = 0.7
-					uses = 3
+					bonus = 0.75
+					uses = 4
 					technology = basic_battery
 					technology = basic_light_battery
 					technology = improved_light_battery
@@ -1143,7 +1144,7 @@
 				add_tech_bonus = {
 					name = fleet_in_being_bonus
 					bonus = 1.0
-					uses = 1
+					uses = 2
 					category = naval_equipment
 				}
 			}
@@ -1181,8 +1182,8 @@
 				}
 				add_tech_bonus = {
 					name = fleet_in_being_bonus
-					bonus = 1.0
-					uses = 1
+					bonus = 0.75
+					uses = 2
 					technology = fire_control_methods_1
 					technology = fire_control_methods_2
 					technology = fire_control_methods_3
@@ -1191,8 +1192,8 @@
 			else = {
 				add_tech_bonus = {
 					name = fleet_in_being_bonus
-					bonus = 0.6
-					uses = 1
+					bonus = 1.0
+					uses = 2
 					category = naval_equipment
 				}
 			}
@@ -1217,7 +1218,7 @@
 		completion_reward = {
 			add_tech_bonus = {
 				name = industrial_bonus
-				bonus = 0.25
+				bonus = 0.75
 				uses = 1
 				category = industry
 			}
@@ -1225,24 +1226,6 @@
 
 		ai_will_do = {
 			factor = 3
-			modifier = {
-				factor = 0
-				date < 1939.1.1
-				OR = { 
-					# we dont want chinese minors to go crazy on slots early since they get eaten
-					tag = GXC 
-					tag = YUN
-					tag = SHX
-					tag = XSM
-					tag = BEL
-					tag = LUX
-					tag = HOL
-					tag = DEN
-
-					# we also dont want tiny nations to go crazy with slots right away
-					num_of_controlled_states < 2
-				}				
-			}
 		}
 	}
 
@@ -1293,6 +1276,8 @@
 		}
 
 		completion_reward = {
+			custom_effect_tooltip = heavy_industry_investment_tt
+			show_ideas_tooltip = industry_investment_effect
 			random_owned_controlled_state = {
 				limit = {
 					free_building_slots = {
@@ -1448,22 +1433,17 @@
 			}
 		}
 
-		complete_tooltip = {
-			add_building_construction = {
-				type = infrastructure
-				level = 1
-				instant_build = yes
-			}
-			add_building_construction = {
-				type = infrastructure
-				level = 1
-				instant_build = yes
-			}
-		}
-
 		completion_reward = {
-			random_owned_controlled_state = {
+			capital_scope = {
+				add_building_construction = {
+					type = infrastructure
+					level = 2
+					instant_build = yes
+				}
+			}
+			every_owned_state = {
 				limit = {
+					any_neighbor_state = { is_owned_by = ROOT is_capital = yes }
 					free_building_slots = {
 						building = infrastructure
 						size > 0
@@ -1486,33 +1466,6 @@
 				add_building_construction = {
 					type = infrastructure
 					level = 1
-					instant_build = yes
-				}
-			}
-			random_owned_controlled_state = {
-				limit = {
-					free_building_slots = {
-						building = infrastructure
-						size > 1
-					}
-					OR = {
-						is_in_home_area = yes
-						NOT = {
-							owner = {
-								any_owned_state = {
-									free_building_slots = {
-										building = infrastructure
-										size > 1
-									}
-									is_in_home_area = yes
-								}
-							}
-						}
-					}
-				}
-				add_building_construction = {
-					type = infrastructure
-					level = 2
 					instant_build = yes
 				}
 			}
@@ -1565,6 +1518,8 @@
 		}
 
 		completion_reward = {
+			custom_effect_tooltip = heavy_industry_investment_tt
+			show_ideas_tooltip = industry_investment_effect
 			random_owned_controlled_state = {
 				limit = {
 					free_building_slots = {
@@ -1713,22 +1668,17 @@
 			}
 		}
 
-		complete_tooltip = {
-			add_building_construction = {
-				type = infrastructure
-				level = 1
-				instant_build = yes
-			}
-			add_building_construction = {
-				type = infrastructure
-				level = 1
-				instant_build = yes
-			}
-		}
-
 		completion_reward = {
-			random_owned_controlled_state = {
+			capital_scope = {
+				add_building_construction = {
+					type = infrastructure
+					level = 2
+					instant_build = yes
+				}
+			}
+			every_owned_state = {
 				limit = {
+					any_neighbor_state = { is_owned_by = ROOT is_capital = yes }
 					free_building_slots = {
 						building = infrastructure
 						size > 0
@@ -1754,33 +1704,6 @@
 					instant_build = yes
 				}
 			}
-			random_owned_controlled_state = {
-				limit = {
-					free_building_slots = {
-						building = infrastructure
-						size > 1
-					}
-					OR = {
-						is_in_home_area = yes
-						NOT = {
-							owner = {
-								any_owned_state = {
-									free_building_slots = {
-										building = infrastructure
-										size > 1
-									}
-									is_in_home_area = yes
-								}
-							}
-						}
-					}
-				}
-				add_building_construction = {
-					type = infrastructure
-					level = 2
-					instant_build = yes
-				}
-			}
 		}
 	}
 
@@ -1801,8 +1724,8 @@
 
 		completion_reward = {
 			add_tech_bonus = {
-				name = railways_construction
-				bonus = 0.25
+				name = industrial_bonus
+				bonus = 0.5
 				uses = 2
 				category = industry
 			}
@@ -1814,7 +1737,7 @@
 		icon = GFX_z_goal_vienna_circle
 		prerequisite = { focus = economic_researches }
 		available = {
-			num_of_factories > 4
+			num_of_factories > 5
 		}
 		cancel_if_invalid = no
 		continue_if_invalid = yes
@@ -1870,6 +1793,7 @@
 		}
 
 		completion_reward = {
+			add_political_power = 100
 			random_owned_controlled_state = {
 				limit = {
 					free_building_slots = {
@@ -1934,21 +1858,21 @@
 		}
 
 		complete_tooltip = {
-			add_extra_state_shared_building_slots = 1
+			add_extra_state_shared_building_slots = 2
 			add_building_construction = {
 				type = arms_factory
-				level = 1
+				level = 2
 				instant_build = yes
 			}
 		}		
 
 		completion_reward = {
-			add_political_power = 100
+			army_experience = 100
 			random_owned_controlled_state = {
 				limit = {
 					free_building_slots = {
 						building = arms_factory
-						size > 0
+						size > 1
 						include_locked = yes
 					}
 					OR = {
@@ -1958,7 +1882,7 @@
 								any_owned_state = {
 									free_building_slots = {
 										building = arms_factory
-										size > 0
+										size > 1
 										include_locked = yes
 									}
 									is_in_home_area = yes
@@ -1967,10 +1891,10 @@
 						}
 					}
 				}
-				add_extra_state_shared_building_slots = 1
+				add_extra_state_shared_building_slots = 2
 				add_building_construction = {
 					type = arms_factory
-					level = 1
+					level = 2
 					instant_build = yes
 				}
 			}
