@@ -778,7 +778,8 @@ TUR_create_pact_category = {
 		icon = generic_form_nation
 
 		available = {
-			has_country_flag = new_saadabad_creator_flag
+			is_subject = no
+			is_in_faction = no
 		}
 
 		visible = {
@@ -816,7 +817,8 @@ TUR_create_pact_category = {
 		icon = generic_form_nation
 
 		available = {
-			has_country_flag = TUR_create_pact_flag
+			is_subject = no
+			NOT = { has_war_with = FROM }
 			FROM = {
 				NOT = { tag = ROOT }
 				OR = {
@@ -830,6 +832,7 @@ TUR_create_pact_category = {
 					tag = KRD
 				}
 				is_in_faction = no
+				is_subject = no
 			}
 		}
 
@@ -874,6 +877,7 @@ TUR_create_pact_category = {
 					id = ROOT
 					value = 200
 				}
+				country_event = { id = generic.5 }
 			}
 			ROOT = {
 				add_ai_strategy = {
@@ -887,9 +891,6 @@ TUR_create_pact_category = {
 					value = 200
 				}
 			}
-			ROOT = {
-				add_to_faction = FROM
-			}
 		}
 
 		ai_will_do = {
@@ -902,8 +903,16 @@ TUR_create_pact_category = {
 		icon = generic_form_nation
 
 		available = {
+			is_subject = no
 			num_faction_members > 5
-			has_country_flag = TUR_create_pact_flag
+			if = {
+				limit = { country_exists = PAK }
+				NOT = { has_war_with = PAK }
+				PAK = {
+					is_subject = no
+					is_in_faction = no
+				}
+			}
 		}
 
 		visible = {
@@ -920,51 +929,81 @@ TUR_create_pact_category = {
 			RAJ = {
 				add_opinion_modifier = { target = ROOT modifier = TUR_expand_the_sadabat_pact }
 			}
-			PAK = {
-				transfer_state = 440
-				transfer_state = 441
-				transfer_state = 442
-				transfer_state = 443
-				transfer_state = 444
-				transfer_state = 445
-				add_state_core = 440
-				add_state_core = 441
-				add_state_core = 442
-				add_state_core = 443
-				add_state_core = 444
-				add_state_core = 445
-			}
-			ROOT = {
-				add_ai_strategy = {
-					type = befriend
-					id = "PAK"
-					value = 1000
+			if = {
+				limit = { country_exists = PAK }
+				PAK = { country_event = { id = generic.5 } }
+				ROOT = {
+					add_ai_strategy = {
+						type = befriend
+						id = "PAK"
+						value = 1000
+					}
+					add_ai_strategy = {
+						type = alliance
+						id = "PAK"
+						value = 200
+					}
 				}
-				add_ai_strategy = {
-					type = alliance
-					id = "PAK"
-					value = 200
-				}
-			}
-			PAK = {
-				add_ai_strategy = {
-					type = befriend
-					id = ROOT
-					value = 1000
-				}
-				add_ai_strategy = {
-					type = alliance
-					id = ROOT
-					value = 200
+				PAK = {
+					add_ai_strategy = {
+						type = befriend
+						id = ROOT
+						value = 1000
+					}
+					add_ai_strategy = {
+						type = alliance
+						id = ROOT
+						value = 200
+					}
 				}
 			}
-			ROOT = {
-				add_to_faction = PAK
-			}
-			RAJ = {
-				declare_war_on = {
-					type = puppet_wargoal_focus
-					target = PAK
+			else = {
+				PAK = {
+					transfer_state = 440
+					transfer_state = 441
+					transfer_state = 442
+					transfer_state = 443
+					transfer_state = 444
+					transfer_state = 445
+					add_state_core = 440
+					add_state_core = 441
+					add_state_core = 442
+					add_state_core = 443
+					add_state_core = 444
+					add_state_core = 445
+				}
+				ROOT = {
+					add_ai_strategy = {
+						type = befriend
+						id = "PAK"
+						value = 1000
+					}
+					add_ai_strategy = {
+						type = alliance
+						id = "PAK"
+						value = 200
+					}
+				}
+				PAK = {
+					add_ai_strategy = {
+						type = befriend
+						id = ROOT
+						value = 1000
+					}
+					add_ai_strategy = {
+						type = alliance
+						id = ROOT
+						value = 200
+					}
+				}
+				ROOT = {
+					add_to_faction = PAK
+				}
+				RAJ = {
+					declare_war_on = {
+						type = puppet_wargoal_focus
+						target = PAK
+					}
 				}
 			}
 		}
