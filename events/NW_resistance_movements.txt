@@ -1,4 +1,5 @@
 ﻿add_namespace = resistance
+add_namespace = rm_news
 
 # Основано сопротивление
 country_event = {
@@ -154,16 +155,16 @@ country_event = {
 		add_to_variable = { var = rebel_artillery_equipment@ROOT value = 12 }
 		
 		if = {
-			limit = { check_variable = { num_division@ROOT > 0 } }
-			add_to_variable = { var = num_division@ROOT value = -1 }
+			limit = { ROOT = { check_variable = { num_division@ROOT > 0 } } }
+			subtract_from_variable = { var = num_division@ROOT value = 1 }
 		}
 		else_if = {
-			limit = { check_variable = { num_division_trained_1@ROOT > 0 } }
-			add_to_variable = { var = num_division_trained_1@ROOT value = -1 }
+			limit = { ROOT = { check_variable = { num_division_trained_1@ROOT > 0 } } }
+			subtract_from_variable = { var = num_division_trained_1@ROOT value = 1 }
 		}
 		else_if = {
-			limit = { check_variable = { num_division_trained_2@ROOT > 0 } }
-			add_to_variable = { var = num_division_trained_2@ROOT value = -1 }
+			limit = { ROOT = { check_variable = { num_division_trained_2@ROOT > 0 } } }
+			subtract_from_variable = { var = num_division_trained_2@ROOT value = 1 }
 		}
 		
 		if = {
@@ -194,16 +195,16 @@ country_event = {
 		add_to_variable = { var = rebel_infantry_equipment@ROOT value = 400 }
 		
 		if = {
-			limit = { check_variable = { num_small_division@ROOT > 0 } }
-			add_to_variable = { var = num_small_division@ROOT value = -1 }
+			limit = { ROOT = { check_variable = { num_small_division@ROOT > 0 } } }
+			subtract_from_variable = { var = num_small_division@ROOT value = 1 }
 		}
 		else_if = {
-			limit = { check_variable = { num_small_division_trained_1@ROOT > 0 } }
-			add_to_variable = { var = num_small_division_trained_1@ROOT value = -1 }
+			limit = { ROOT = { check_variable = { num_small_division_trained_1@ROOT > 0 } } }
+			subtract_from_variable = { var = num_small_division_trained_1@ROOT value = 1 }
 		}
 		else_if = {
-			limit = { check_variable = { num_small_division_trained_2@ROOT > 0 } }
-			add_to_variable = { var = num_small_division_trained_2@ROOT value = -1 }
+			limit = { ROOT = { check_variable = { num_small_division_trained_2@ROOT > 0 } } }
+			subtract_from_variable = { var = num_small_division_trained_2@ROOT value = 1 }
 		}
 		
 		if = {
@@ -227,8 +228,8 @@ country_event = {
 	
 	is_triggered_only = yes
 	
-	immediate = { 
-		log = "[GetDateText]: [Root.GetName]: event resistance.7" 
+	immediate = {
+		log = "[GetDateText]: [Root.GetName]: event resistance.7 [?num_division@ROOT]" 
 		
 		if = {
 			limit = {
@@ -246,77 +247,80 @@ country_event = {
 				load_oob = "POL_AK_Warszawa"
 			}
 			else_if = {
-				limit = {  has_template = "Dywizja Armii Ludowej" }
+				limit = { has_template = "Dywizja Armii Ludowej" }
 				load_oob = "POL_AL_Warszawa"
 			}
 			set_country_flag = set_to_warszawa
-			else = {
-				random_state = {
-					limit = { 
-						is_owned_by = ROOT
-						is_core_of = ROOT
+		}
+		else = {
+			random_state = {
+				limit = { 
+					is_owned_by = ROOT
+					is_core_of = ROOT
+					OR = {
 						NOT = { is_controlled_by = ROOT }
+						has_state_flag = general_resistance
 					}
-					set_state_flag = general_resistance
-					ROOT = { set_state_controller = PREV }
+				}
+				set_state_flag = general_resistance
+				ROOT = { set_state_controller = PREV }
+				if = {
+					limit = { ROOT = { has_template = "Rebel Division" } }
 					if = {
-						limit = { ROOT = { has_template = "Rebel Division" } }
-						if = {
-							limit = { check_variable = { num_division_trained_2@ROOT > 0 } }
-							add_to_variable = { var = num_division_trained_2@ROOT value = -1 }
-							create_unit = { division = "name = \"Rebel Division\" division_template = \"Rebel Division\" start_experience_factor = 0.6" owner = ROOT }
-						}
-						else_if = {
-							limit = { check_variable = { num_division_trained_1@ROOT > 0 } }
-							add_to_variable = { var = num_division_trained_1@ROOT value = -1 }
-							create_unit = { division = "name = \"Rebel Division\" division_template = \"Rebel Division\" start_experience_factor = 0.4" owner = ROOT }
-						}
-						else_if = {
-							limit = { check_variable = { num_division@ROOT > 0 } }
-							add_to_variable = { var = num_division@ROOT value = -1 }
-							create_unit = { division = "name = \"Rebel Division\" division_template = \"Rebel Division\" start_experience_factor = 0.2" owner = ROOT }
-						}
+						limit = { ROOT = { check_variable = { num_division_trained_2@ROOT > 0 } } }
+						OWNER = { subtract_from_variable = { var = num_division_trained_2@ROOT value = 1 } }
+						create_unit = { division = "name = \"Rebel Division\" division_template = \"Rebel Division\" start_experience_factor = 0.4" owner = ROOT }
 					}
 					else_if = {
-						limit = { ROOT = { has_template = "Dywizja Armii Krajowej" } }
-						if = {
-							limit = { check_variable = { num_division_trained_2@ROOT > 0 } }
-							add_to_variable = { var = num_division_trained_2@ROOT value = -1 }
-							create_unit = { division = "name = \"Dywizja Armii Krajowej\" division_template = \"Dywizja Armii Krajowej\" start_experience_factor = 0.6" owner = ROOT }
-						}
-						else_if = {
-							limit = { check_variable = { num_division_trained_1@ROOT > 0 } }
-							add_to_variable = { var = num_division_trained_1@ROOT value = -1 }
-							create_unit = { division = "name = \"Dywizja Armii Krajowej\" division_template = \"Dywizja Armii Krajowej\" start_experience_factor = 0.4" owner = ROOT }
-						}
-						else_if = {
-							limit = { check_variable = { num_division@ROOT > 0 } }
-							add_to_variable = { var = num_division@ROOT value = -1 }
-							create_unit = { division = "name = \"Dywizja Armii Krajowej\" division_template = \"Dywizja Armii Krajowej\" start_experience_factor = 0.2" owner = ROOT }
-						}
+						limit = { ROOT = { check_variable = { num_division_trained_1@ROOT > 0 } } }
+						OWNER = { subtract_from_variable = { var = num_division_trained_1@ROOT value = 1 } }
+						create_unit = { division = "name = \"Rebel Division\" division_template = \"Rebel Division\" start_experience_factor = 0.2" owner = ROOT }
 					}
 					else_if = {
-						limit = { ROOT = { has_template = "Dywizja Armii Ludowej" } }
-						if = {
-							limit = { check_variable = { num_division_trained_2@ROOT > 0 } }
-							add_to_variable = { var = num_division_trained_2@ROOT value = -1 }
-							create_unit = { division = "name = \"Dywizja Armii Ludowej\" division_template = \"Dywizja Armii Ludowej\" start_experience_factor = 0.6" owner = ROOT }
-						}
-						else_if = {
-							limit = { check_variable = { num_division_trained_1@ROOT > 0 } }
-							add_to_variable = { var = num_division_trained_1@ROOT value = -1 }
-							create_unit = { division = "name = \"Dywizja Armii Ludowej\" division_template = \"Dywizja Armii Ludowej\" start_experience_factor = 0.4" owner = ROOT }
-						}
-						else_if = {
-							limit = { check_variable = { num_division@ROOT > 0 } }
-							add_to_variable = { var = num_division@ROOT value = -1 }
-							create_unit = { division = "name = \"Dywizja Armii Ludowej\" division_template = \"Dywizja Armii Ludowej\" start_experience_factor = 0.2" owner = ROOT }
-						}
+						limit = { ROOT = { check_variable = { num_division@ROOT > 0 } } }
+						OWNER = { subtract_from_variable = { var = num_division@ROOT value = 1 } }
+						create_unit = { division = "name = \"Rebel Division\" division_template = \"Rebel Division\" start_experience_factor = 0.05" owner = ROOT }
+					}
+				}
+				else_if = {
+					limit = { ROOT = { has_template = "Dywizja Armii Krajowej" } }
+					if = {
+						limit = { ROOT = { check_variable = { num_division_trained_2@ROOT > 0 } } }
+						OWNER = { subtract_from_variable = { var = num_division_trained_2@ROOT value = 1 } }
+						create_unit = { division = "name = \"Dywizja Armii Krajowej\" division_template = \"Dywizja Armii Krajowej\" start_experience_factor = 0.4" owner = ROOT }
+					}
+					else_if = {
+						limit = { ROOT = { check_variable = { num_division_trained_1@ROOT > 0 } } }
+						OWNER = { subtract_from_variable = { var = num_division_trained_1@ROOT value = 1 } }
+						create_unit = { division = "name = \"Dywizja Armii Krajowej\" division_template = \"Dywizja Armii Krajowej\" start_experience_factor = 0.2" owner = ROOT }
+					}
+					else_if = {
+						limit = { ROOT = { check_variable = { num_division@ROOT > 0 } } }
+						OWNER = { subtract_from_variable = { var = num_division@ROOT value = 1 } }
+						create_unit = { division = "name = \"Dywizja Armii Krajowej\" division_template = \"Dywizja Armii Krajowej\" start_experience_factor = 0.05" owner = ROOT }
+					}
+				}
+				else_if = {
+					limit = { ROOT = { has_template = "Dywizja Armii Ludowej" } }
+					log = "[GetDateText]: [Root.GetName]: event resistance.7 AK" 
+					if = {
+						limit = { ROOT = { check_variable = { num_division_trained_2@ROOT > 0 } } }
+						OWNER = { subtract_from_variable = { var = num_division_trained_2@ROOT value = 1 } }
+						create_unit = { division = "name = \"Dywizja Armii Ludowej\" division_template = \"Dywizja Armii Ludowej\" start_experience_factor = 0.4" owner = ROOT }
+					}
+					else_if = {
+						limit = { ROOT = { check_variable = { num_division_trained_1@ROOT > 0 } } }
+						OWNER = { subtract_from_variable = { var = num_division_trained_1@ROOT value = 1 } }
+						create_unit = { division = "name = \"Dywizja Armii Ludowej\" division_template = \"Dywizja Armii Ludowej\" start_experience_factor = 0.2" owner = ROOT }
+					}
+					else_if = {
+						limit = { ROOT = { check_variable = { num_division@ROOT > 0 } } }
+						OWNER = { subtract_from_variable = { var = num_division@ROOT value = 1 } }
+						create_unit = { division = "name = \"Dywizja Armii Ludowej\" division_template = \"Dywizja Armii Ludowej\" start_experience_factor = 0.05" owner = ROOT }
 					}
 				}
 			}
 		}
-		
 		
 		if = {
 			limit = { 
@@ -339,69 +343,72 @@ country_event = {
 	
 	is_triggered_only = yes
 	
-	immediate = { 
+	immediate = {
 		log = "[GetDateText]: [Root.GetName]: event resistance.8" 
 		
 		random_state = {
 			limit = { 
 				is_owned_by = ROOT
 				is_core_of = ROOT
-				NOT = { is_controlled_by = ROOT }
+				OR = {
+					NOT = { is_controlled_by = ROOT }
+					has_state_flag = general_resistance
+				}
 			}
 			set_state_flag = general_resistance
 			ROOT = { set_state_controller = PREV }
 			if = {
 				limit = { ROOT = { has_template = "Light Rebel Division" } }
 				if = {
-					limit = { check_variable = { num_small_division_trained_2@ROOT > 0 } }
-					add_to_variable = { var = num_small_division_trained_2@ROOT value = -1 }
-					create_unit = { division = "name = \"Light Rebel Division\" division_template = \"Light Rebel Division\" start_experience_factor = 0.6" owner = ROOT }
-				}
-				else_if = {
-					limit = { check_variable = { num_small_division_trained_1@ROOT > 0 } }
-					add_to_variable = { var = num_small_division_trained_1@ROOT value = -1 }
+					limit = { ROOT = { check_variable = { num_small_division_trained_2@ROOT > 0 } } }
+					OWNER = { subtract_from_variable = { var = num_small_division_trained_2@ROOT value = 1 } }
 					create_unit = { division = "name = \"Light Rebel Division\" division_template = \"Light Rebel Division\" start_experience_factor = 0.4" owner = ROOT }
 				}
 				else_if = {
-					limit = { check_variable = { num_small_division@ROOT > 0 } }
-					add_to_variable = { var = num_small_division@ROOT value = -1 }
+					limit = { ROOT = { check_variable = { num_small_division_trained_1@ROOT > 0 } } }
+					OWNER = { subtract_from_variable = { var = num_small_division_trained_1@ROOT value = 1 } }
 					create_unit = { division = "name = \"Light Rebel Division\" division_template = \"Light Rebel Division\" start_experience_factor = 0.2" owner = ROOT }
+				}
+				else_if = {
+					limit = { ROOT = { check_variable = { num_small_division@ROOT > 0 } } }
+					OWNER = { subtract_from_variable = { var = num_small_division@ROOT value = 1 } }
+					create_unit = { division = "name = \"Light Rebel Division\" division_template = \"Light Rebel Division\" start_experience_factor = 0.05" owner = ROOT }
 				}
 			}
 			else_if = {
 				limit = { ROOT = { has_template = "Lekka Dywizja Armii Krajowej" } }
 				if = {
-					limit = { check_variable = { num_small_division_trained_2@ROOT > 0 } }
-					add_to_variable = { var = num_small_division_trained_2@ROOT value = -1 }
-					create_unit = { division = "name = \"Dywizja Armii Krajowej\" division_template = \"Lekka Dywizja Armii Krajowej\" start_experience_factor = 0.6" owner = ROOT }
-				}
-				else_if = {
-					limit = { check_variable = { num_small_division_trained_1@ROOT > 0 } }
-					add_to_variable = { var = num_small_division_trained_1@ROOT value = -1 }
+					limit = { ROOT = { check_variable = { num_small_division_trained_2@ROOT > 0 } } }
+					OWNER = { subtract_from_variable = { var = num_small_division_trained_2@ROOT value = 1 } }
 					create_unit = { division = "name = \"Dywizja Armii Krajowej\" division_template = \"Lekka Dywizja Armii Krajowej\" start_experience_factor = 0.4" owner = ROOT }
 				}
 				else_if = {
-					limit = { check_variable = { num_small_division@ROOT > 0 } }
-					add_to_variable = { var = num_small_division@ROOT value = -1 }
+					limit = { ROOT = { check_variable = { num_small_division_trained_1@ROOT > 0 } } }
+					OWNER = { subtract_from_variable = { var = num_small_division_trained_1@ROOT value = 1 } }
 					create_unit = { division = "name = \"Dywizja Armii Krajowej\" division_template = \"Lekka Dywizja Armii Krajowej\" start_experience_factor = 0.2" owner = ROOT }
+				}
+				else_if = {
+					limit = { ROOT = { check_variable = { num_small_division@ROOT > 0 } } }
+					OWNER = { subtract_from_variable = { var = num_small_division@ROOT value = 1 } }
+					create_unit = { division = "name = \"Dywizja Armii Krajowej\" division_template = \"Lekka Dywizja Armii Krajowej\" start_experience_factor = 0.05" owner = ROOT }
 				}
 			}
 			else_if = {
 				limit = { ROOT = { has_template = "Lekka Dywizja Armii Ludowej" } }
 				if = {
-					limit = { check_variable = { num_small_division_trained_2@ROOT > 0 } }
-					add_to_variable = { var = num_small_division_trained_2@ROOT value = -1 }
-					create_unit = { division = "name = \"Lekka Dywizja Armii Ludowej\" division_template = \"Lekka Dywizja Armii Ludowej\" start_experience_factor = 0.6" owner = ROOT }
-				}
-				else_if = {
-					limit = { check_variable = { num_small_division_trained_1@ROOT > 0 } }
-					add_to_variable = { var = num_small_division_trained_1@ROOT value = -1 }
+					limit = { ROOT = { check_variable = { num_small_division_trained_2@ROOT > 0 } } }
+					OWNER = { subtract_from_variable = { var = num_small_division_trained_2@ROOT value = 1 } }
 					create_unit = { division = "name = \"Lekka Dywizja Armii Ludowej\" division_template = \"Lekka Dywizja Armii Ludowej\" start_experience_factor = 0.4" owner = ROOT }
 				}
 				else_if = {
-					limit = { check_variable = { num_small_division@ROOT > 0 } }
-					add_to_variable = { var = num_small_division@ROOT value = -1 }
+					limit = { ROOT = { check_variable = { num_small_division_trained_1@ROOT > 0 } } }
+					OWNER = { subtract_from_variable = { var = num_small_division_trained_1@ROOT value = 1 } }
 					create_unit = { division = "name = \"Lekka Dywizja Armii Ludowej\" division_template = \"Lekka Dywizja Armii Ludowej\" start_experience_factor = 0.2" owner = ROOT }
+				}
+				else_if = {
+					limit = { ROOT = { check_variable = { num_small_division@ROOT > 0 } } }
+					OWNER = { subtract_from_variable = { var = num_small_division@ROOT value = 1 } }
+					create_unit = { division = "name = \"Lekka Dywizja Armii Ludowej\" division_template = \"Lekka Dywizja Armii Ludowej\" start_experience_factor = 0.05" owner = ROOT }
 				}
 			}
 		}
@@ -465,7 +472,7 @@ country_event = {
 		}
 		if = {
 			limit = { original_tag = POL owns_state = 10 has_global_flag = POL_powstanie_warszawskie }
-			news_event = { id = news.1946 days = 1 }
+			news_event = { id = rm_news.4 days = 1 }
 		}
 	}
 }
@@ -484,12 +491,21 @@ country_event = {
 		name = resistance.10.a
 		ai_chance = { factor = 100 }
 		
-		add_political_power = -20
-		add_tech_bonus = {
-			bonus = 0.5
-			uses = 1
-			category = decryption_tech
+		if = { 
+			limit = { has_country_flag = resistance10a }
+			
+			add_political_power = -20
 		}
+		else = {
+			add_political_power = -40
+			add_tech_bonus = {
+				bonus = 1.0
+				uses = 1
+				category = decryption_tech
+			}
+		}
+		
+		set_country_flag = resistance10a
 		hidden_effect = { FROM = { country_event = { id = resistance.11 } } }
 	}
 	
@@ -516,7 +532,7 @@ country_event = {
 		name = resistance.11.a
 		
 		add_tech_bonus = {
-			bonus = 1.0
+			bonus = 3.0
 			uses = 1
 			category = decryption_tech
 		}				
@@ -605,9 +621,9 @@ country_event = {
 				FROM = { country_event = { id = resistance.17 } } 
 			}
 			
-			else = {
-				hidden_effect = { FROM = { country_event = { id = resistance.17 } } } 
-			}
+		}
+		else = {
+			hidden_effect = { FROM = { country_event = { id = resistance.17 } } } 
 		}
 		
 		army_experience = del_exp@ROOT
@@ -660,9 +676,9 @@ country_event = {
 				FROM = { country_event = { id = resistance.16 } } 
 			}
 			
-			else = {
-				hidden_effect = { FROM = { country_event = { id = resistance.17 } } } 
-			}
+		}
+		else = {
+			hidden_effect = { FROM = { country_event = { id = resistance.17 } } } 
 		}
 		
 		army_experience = del_exp@ROOT
@@ -833,6 +849,26 @@ country_event = {
 	}
 }
 
+# Завершение войны
+country_event = {
+	id = resistance.22
+	
+	trigger = {
+		has_war = no
+		has_country_flag = Form_rebel_army
+	}
+	
+	hidden = yes
+	
+	mean_time_to_happen = { days = 14 }
+	
+	immediate = { 
+		log = "[GetDateText]: [Root.GetName]: event resistance.22"
+		
+		ROOT = { clr_country_flag = Form_rebel_army }
+	}
+}
+
 
  #                        ↓ Проход для белых ходоков  #                                           #                                    #
 ################              ##########################################################################################################
@@ -863,7 +899,7 @@ country_event = {
 			idea = POL_czas_w
 			days = 90
 		}
-		news_event = { id = news.1944 days = 1 }
+		news_event = { id = rm_news.2 days = 1 }
 		set_global_flag = POL_powstanie_warszawskie
 	}
 	
@@ -880,7 +916,7 @@ country_event = {
 			idea = POL_czas_w
 			days = 90
 		}
-		news_event = { id = news.1944 days = 1 }
+		news_event = { id = rm_news.3 days = 1 }
 		set_global_flag = POL_powstanie_warszawskie
 	}
 }
@@ -893,9 +929,7 @@ country_event = {
 	
 	fire_only_once = yes
 
-	mean_time_to_happen = {
-		days = 7
-	}
+	mean_time_to_happen = { days = 1 }
 	
 	trigger = {
 		has_global_flag = POL_powstanie_warszawskie
@@ -913,7 +947,7 @@ country_event = {
 		name = resistance.45.a
 		
 		# remove_ideas = POL_czas_w
-		# news_event = { id = news.1945 days = 1 }
+		# news_event = { id = rm_news.4 days = 1 }
 		add_stability = -0.1
 		10 = {
 			remove_building = {
@@ -1083,6 +1117,27 @@ country_event = {
 	}
 }
 
+# Дебафф при столице
+country_event = {
+	id = resistance.49
+	immediate = {log = "[GetDateText]: [Root.GetName]: event rename.49"}
+	
+	trigger = {
+		original_tag = POL
+		10 = { 
+			is_capital = yes 
+			has_state_flag = fallen_city
+		}
+		NOT = { has_idea = POL_defeat_capital } 
+	}
+	
+	hidden = yes mean_time_to_happen = { days = 3 }
+	
+	option = { 
+		ROOT = { add_ideas = POL_defeat_capital }
+	}
+}
+
 # Возвращение убитых генералов
 country_event = {
 	id = resistance.100
@@ -1095,5 +1150,203 @@ country_event = {
 	
 	option = {
 		name = resistance.100.a
+	}
+}
+
+news_event = {
+	id = rm_news.1
+	title = rm_news.1.t
+	desc = rm_news.1.d
+	picture = GFX_news_event_ger_civil_war
+	
+	major = yes
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rm_news.1.a
+		trigger = {
+			NOT = {
+				TAG = FROM
+				all_country = {
+					has_war_with = FROM
+				}
+			}
+		}
+	}
+	option = {
+		name = rm_news.1.b
+		trigger = { TAG = FROM }
+	}
+	option = {
+		name = rm_news.1.c
+		trigger = { 
+			all_country = { 
+				has_war_with = FROM
+			}
+		}
+	}
+}
+
+news_event = {
+	id = rm_news.2
+	title = rm_news.2.t
+	desc = rm_news.2.d
+	picture = GFX_news_event_polish_resistance_warsaw
+	
+	major = yes
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rm_news.2.a
+		trigger = {
+			NOT = {
+				TAG = FROM
+				all_country = {
+					has_war_with = FROM
+				}
+			}
+		}
+	}
+	option = {
+		name = rm_news.2.b
+		trigger = { TAG = FROM }
+	}
+	option = {
+		name = rm_news.2.c
+		trigger = { 
+			all_country = { 
+				has_war_with = FROM
+			}
+		}
+	}
+}
+
+news_event = {
+	id = rm_news.3
+	title = rm_news.3.t
+	desc = rm_news.3.d
+	picture = GFX_news_event_polish_resistance_warsaw
+	
+	major = yes
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rm_news.3.a
+		trigger = {
+			NOT = {
+				TAG = FROM
+				all_country = {
+					has_war_with = FROM
+				}
+			}
+		}
+	}
+	option = {
+		name = rm_news.3.b
+		trigger = { TAG = FROM }
+	}
+	option = {
+		name = rm_news.3.c
+		trigger = { 
+			all_country = { 
+				has_war_with = FROM
+			}
+		}
+	}
+}
+
+news_event = {
+	id = rm_news.4
+	title = rm_news.4.t
+	desc = rm_news.4.d
+	picture = GFX_news_event_fallen_warszawa
+	
+	major = yes
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rm_news.4.a
+		trigger = {
+			NOT = {
+				TAG = FROM
+				all_country = {
+					has_war_with = FROM
+				}
+			}
+		}
+	}
+	option = {
+		name = rm_news.4.b
+		trigger = { TAG = FROM }
+	}
+	option = {
+		name = rm_news.4.c
+		trigger = { 
+			all_country = { 
+				has_war_with = FROM
+			}
+		}
+	}
+}
+
+news_event = {
+	id = rm_news.5
+	title = rm_news.5.t
+	desc = rm_news.5.d
+	picture = GFX_news_event_pilecki
+	
+	major = yes
+	
+	fire_only_once = yes
+	
+	trigger = {
+		GER = { 
+			has_war_with = POL 
+			has_government = fascism
+			controls_state = 937 # Oświencim
+		}
+		POL = {
+			OR = {
+				has_country_flag = airborne_special_forces
+				AND = { date > 1943.1.1 }
+			}
+		}
+	}
+	
+	mean_time_to_happen = {
+		days = 365
+	}
+	
+	option = {
+		name = rm_news.5.a
+		trigger = {
+			NOT = {
+				OR = {
+					original_tag = GER
+					is_in_faction_with = GER
+				}
+			}
+		}
+		
+		if = {
+			limit = { original_tag = POL }
+			add_legitimacy = 10
+		}
+	}
+	option = {
+		name = rm_news.5.b
+		trigger = { original_tag = GER }
+		
+		add_political_power = -20
+	}
+	option = {
+		name = rm_news.5.c
+		trigger = { is_in_faction_with = GER }
+		
+		add_political_power = -5
 	}
 }
