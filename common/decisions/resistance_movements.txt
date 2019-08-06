@@ -122,6 +122,12 @@ resistance_movements = {
 					}
 					set_variable = { var = num_small_division_trained_2@ROOT value = 0 }
 				}
+				if = {
+					limit = {
+						NOT = { check_variable = { var = num_all_division@ROOT value = 0 compare = greater_than } }
+					}
+					set_variable = { var = num_all_division@ROOT value = 0 }
+				}
 				
 				delete_rebel_template = yes
 				
@@ -282,7 +288,7 @@ resistance_movements = {
 				tooltip = czas_w_level_tt	
 				OR = {
 					NOT = { original_tag = POL }
-					AND = { check_variable = { num_division_trained_2@ROOT > 0 } original_tag = POL }
+					AND = { check_variable = { num_division_trained_2@ROOT > 0 } original_tag = POL NOT = { has_global_flag = POL_powstanie_warszawskie } }
 				}
 				NOT = { has_idea = resistance_failed }
 			 }
@@ -330,13 +336,24 @@ resistance_movements = {
 					}
 					NOT = { has_global_flag = POL_powstanie_warszawskie }
 				}
-				ROOT = { country_event = { id = resistance.44 } } ### Puk-puk, dzień dobry, kurwo 
+				
+				if = {
+					limit = {
+						check_variable = { num_all_division@ROOT > 4}
+					}
+					ROOT = { country_event = { id = resistance.50 } } ### Powstanie Polskie 
+				}
+				else = {
+					ROOT = { country_event = { id = resistance.44 } } ### Puk-puk, dzień dobry, kurwo 
+					set_country_flag = warszaw_battle
+				}
 			}
 			else = {
 				hidden_effect = {
 					news_event = { id = rm_news.1 }
 				}
 			}
+			
 			hidden_effect = {
 				set_country_flag = baptized_in_fire
 				
@@ -2538,10 +2555,11 @@ resistance_movements = {
 		complete_effect = {
 			add_command_power = -10
 			air_experience = -10
+			set_country_flag = airborne_special_forces
 		}
 
 		remove_effect = {
-			
+			clr_country_flag = airborne_special_forces
 		}
 	}
 	
@@ -2589,6 +2607,7 @@ resistance_movements = {
 			add_to_variable = { var = rebel_manpower@ROOT value = -6600 }
 			
 			add_to_variable = { var = num_division@ROOT value = 1 }
+			add_to_variable = { var = num_all_division@ROOT value = 1 }
 		}
 	}
 	
@@ -2632,6 +2651,7 @@ resistance_movements = {
 			add_to_variable = { var = rebel_manpower@ROOT value = -4000 }
 			
 			add_to_variable = { var = num_small_division@ROOT value = 1 }
+			add_to_variable = { var = num_all_division@ROOT value = 1 }
 		}
 	}
 	
@@ -3645,6 +3665,99 @@ political_actions = {
 				factor = 1000
 				10 = { is_core_of = ROOT }
 			}
+		}
+	}
+}
+
+contr_resistance_movements = {
+	raids_on_the_occupied_territory = {
+
+		icon = generic_ignite_civil_war
+
+		days_remove = 120
+		
+		allowed = { always = yes }
+
+		visible = {
+			has_war = yes
+		}
+		
+		cancel_trigger = {
+			NOT = {
+				FROM = {
+					has_war_with = ROOT
+					has_country_flag = Form_rebel_army
+				}
+				OR = {
+					any_state = {
+						is_controlled_by = ROOT
+						is_owned_by = FROM
+						NOT = { is_core_of = ROOT }
+					}
+					any_state = {
+						is_owned_and_controlled_by = ROOT
+						NOT = { is_core_of = ROOT }
+						is_core_of = FROM
+					}
+				}
+			}
+		}
+		
+		fixed_random_seed = no
+		
+		target_trigger = {
+			FROM = {
+				has_war_with = ROOT
+				has_country_flag = Form_rebel_army
+			}
+			OR = {
+				any_state = {
+					is_controlled_by = ROOT
+					is_owned_by = FROM
+					NOT = { is_core_of = ROOT }
+				}
+				any_state = {
+					is_owned_and_controlled_by = ROOT
+					NOT = { is_core_of = ROOT }
+					is_core_of = FROM
+				}
+			}
+		}
+
+		remove_effect = {
+			hidden_effect = {
+				random_list = {
+					30 = {
+						FROM = {
+							set_variable = { var_second = 0 }			# Расчёт потерь оккупанта
+							set_variable = { var_third = 0 }
+							every_state = {
+								limit = {
+									is_owned_by = THIS
+									is_core_of = THIS
+									NOT = { is_controlled_by = THIS }
+								}
+								PREV = { add_to_variable = { var_second = PREV.resistance } }
+								PREV = { add_to_variable = { var = var_third value = 1 } }
+							}
+							divide_variable = { var = var_second value = var_third }
+							multiply_variable = { var = var_second value = 100 }
+						}
+						country_event = { id = resistance.23 }
+					}
+					70 = {
+						country_event = { id = resistance.24 }
+					}
+				}
+			}
+		}
+
+		modifier = {
+			political_power_cost = 0.5
+		}
+
+		ai_will_do = {
+			factor = 0
 		}
 	}
 }
