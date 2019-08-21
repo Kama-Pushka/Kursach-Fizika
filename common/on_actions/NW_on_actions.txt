@@ -178,6 +178,7 @@ on_actions = {
 				}
 				POL = { country_event = { id = poland.flavor.2 days = 89 } }
 			}
+			POL = { country_event = { id = poland.story.1 } }
 			
 			if = {
 				limit = {
@@ -1014,23 +1015,27 @@ on_actions = {
 				limit = {
 					has_global_flag = sov_yes_pact
 					NOT = { GER = { is_in_faction_with = SOV } }
+					POL = {
+						is_in_faction = yes
+						is_faction_leader = no
+					}
 					OR = {
 						POL = { has_war_with = GER }
 						POL = { has_war_with = SOV }
 					}
 					OR = {
-						AND = { 
+						AND = {
 							FROM = { OR = { tag = SOV tag = GER } }
 							ROOT = { tag = POL }
 						}
-						AND = { 
+						AND = {
 							FROM = { tag = POL }
 							ROOT = { OR = { tag = SOV tag = GER } }
 						}
 					}
 				}
-				# FROM = { set_country_flag = POL_truce }
-				# ROOT = { set_country_flag = POL_truce }
+				FROM = { set_country_flag = POL_truce }
+				ROOT = { set_country_flag = POL_truce }
 				
 
 				random_country = {
@@ -1038,13 +1043,14 @@ on_actions = {
 						is_in_faction_with = POL
 						is_faction_leader = yes
 					}
-					# country_event = { id = poland.war.42 hours = 3 } 
-				}
-				if = {
-					limit = {
-						POL = { is_in_faction = no }
+					if = {
+						limit = { NOT = { has_war_with = FROM has_war_with = ROOT } }
+						country_event = { id = poland.war.42 }
 					}
-					# POL = { country_event = { id = poland.war.43 hours = 3 } } 
+					else = {
+						FROM = { clr_country_flag = POL_truce }
+						ROOT = { clr_country_flag = POL_truce }
+					}
 				}
 			}
 		}
