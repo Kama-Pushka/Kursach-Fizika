@@ -223,6 +223,10 @@ country_event = {
 			set_cosmetic_tag = HOHENBERG
 			load_focus_tree = hohenberg_focus
 			set_party_name = { ideology = neutrality long_name = hhnbrg_neutrality_party name = hhnbrg_neutrality_party }
+			hidden_effect = {
+				HUN = { add_timed_idea = { idea = HHNBRG_neutrality_influence days = 365 } }
+				CZE = { add_timed_idea = { idea = HHNBRG_neutrality_influence days = 365 } }
+			}
 		}
 		if = {
 			limit = { NOT = { has_country_flag = hbbrg_flag } }
@@ -329,6 +333,18 @@ country_event = {
 			set_cosmetic_tag = HOHENBERG
 			load_focus_tree = hohenberg_focus
 			set_party_name = { ideology = neutrality long_name = hhnbrg_neutrality_party name = hhnbrg_neutrality_party }
+			if = {
+				limit = { NOT = { ROOT = { tag = CZE } } }
+				CZE = { add_timed_idea = { idea = HHNBRG_neutrality_influence days = 365 } }
+			}
+			if = {
+				limit = { NOT = { ROOT = { tag = AUS } } }
+				AUS = { add_timed_idea = { idea = HHNBRG_neutrality_influence days = 365 } }
+			}
+			if = {
+				limit = { NOT = { ROOT = { tag = HUN } } }
+				HUN = { add_timed_idea = { idea = HHNBRG_neutrality_influence days = 365 } }
+			}
 		}
 	}
 }
@@ -545,6 +561,18 @@ country_event = {
 			}
 			set_major = yes
 			set_cosmetic_tag = HOHENBERG
+			if = {
+				limit = { NOT = { ROOT = { tag = CZE } } }
+				CZE = { add_timed_idea = { idea = HHNBRG_neutrality_influence days = 365 } }
+			}
+			if = {
+				limit = { NOT = { ROOT = { tag = AUS } } }
+				AUS = { add_timed_idea = { idea = HHNBRG_neutrality_influence days = 365 } }
+			}
+			if = {
+				limit = { NOT = { ROOT = { tag = HUN } } }
+				HUN = { add_timed_idea = { idea = HHNBRG_neutrality_influence days = 365 } }
+			}
 		}
 		load_focus_tree = hohenberg_focus
 	}
@@ -614,6 +642,18 @@ country_event = {
 			clear_global_event_target = NW_hbbrg_scope
 			set_country_flag = hhnbrg_flag
 			clr_country_flag = hbbrg_flag
+			if = {
+				limit = { NOT = { ROOT = { tag = CZE } } }
+				CZE = { add_timed_idea = { idea = HHNBRG_neutrality_influence days = 365 } }
+			}
+			if = {
+				limit = { NOT = { ROOT = { tag = AUS } } }
+				AUS = { add_timed_idea = { idea = HHNBRG_neutrality_influence days = 365 } }
+			}
+			if = {
+				limit = { NOT = { ROOT = { tag = HUN } } }
+				HUN = { add_timed_idea = { idea = HHNBRG_neutrality_influence days = 365 } }
+			}
 		}
 		set_cosmetic_tag = HOHENBERG
 		load_focus_tree = hohenberg_focus
@@ -1051,6 +1091,351 @@ country_event = {
 }
 
 
+#AUS
+country_event = {
+	id = NWhohenberg.21
+	title = NWhohenberg.21.t
+	desc = NWhohenberg.21.desc
+	is_triggered_only = yes
+
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWhohenberg.21" }
+	
+	option = {
+		log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): choose option NWhohenberg.21.a"
+		name = NWhohenberg.21.a
+		ai_chance = {
+			factor = 10
+		}
+		add_political_power = -100
+		create_wargoal = {
+			type = puppet_wargoal_focus
+			target = AUS
+		}
+	}
+	option = {
+		log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): choose option NWhohenberg.21.b"
+		name = NWhohenberg.21.b
+		ai_chance = {
+			factor = 90
+		}
+		AUS = { country_event = { id = NWhohenberg.22 days = 1 } }
+		custom_effect_tooltip = HHNBRG_austrian_ttt
+	}
+}
+
+#Ref обобщенный ивент для всех стран
+country_event = {
+	id = NWhohenberg.22
+	title = NWhohenberg.22.t
+	desc = NWhohenberg.22.desc
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWhohenberg.22" }
+	immediate = { set_variable = { neut = party_popularity@neutrality } }
+
+	option = {
+		log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): choose option NWhohenberg.22.a"
+		name = NWhohenberg.22.a
+		if = {
+			limit = { check_variable = { neut > 0.499 } }
+			every_state = {
+				limit = {
+					is_core_of = ROOT
+				}
+				add_core_of = FROM
+			}
+			ROOT = {
+				every_unit_leader = {
+					set_nationality = FROM
+				}
+			}
+			FROM = {
+				annex_country = {
+					target = ROOT
+					transfer_troops = yes
+				}
+			}
+		}
+		else_if = {
+			limit = {
+				AND = {
+					check_variable = { neut > 0.299 }
+					check_variable = { neut < 0.500 }
+				}
+			}
+			FROM = { puppet = ROOT }
+		}
+		else_if = {
+			limit = { check_variable = { neut < 0.300 } }
+			FROM = { country_event = { id = NWhohenberg.23 days = 1 } }
+		}
+		clear_variable = neut
+	}
+}
+
+#Референдум провалился
+country_event = {
+	id = NWhohenberg.23
+	title = NWhohenberg.23.t
+	desc = NWhohenberg.23.desc
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWhohenberg.23" }
+	
+	option = {
+		log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): choose option NWhohenberg.23.a"
+		name = NWhohenberg.23.a
+		ai_chance = {
+			factor = 25
+			modifier = {
+				factor = 10
+				strength_ratio = {
+					tag = FROM
+					ratio > 2
+				}
+			}
+			modifier = {
+				factor = 10
+				alliance_strength_ratio > 3
+			}
+		}
+		add_political_power = -200
+		create_wargoal = {
+			type = puppet_wargoal_focus
+			target = FROM
+		}
+	}
+	
+	option = {
+		log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): choose option NWhohenberg.23.b"
+		name = NWhohenberg.23.b
+		ai_chance = {
+			factor = 50
+			modifier = {
+				factor = 50
+				has_war = yes
+			}
+		}
+	}
+}
+
+#HUN
+country_event = {
+	id = NWhohenberg.24
+	title = NWhohenberg.24.t
+	desc = NWhohenberg.24.desc
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWhohenberg.24" }
+	
+	option = {
+		log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): choose option NWhohenberg.24.a"
+		name = NWhohenberg.24.a
+		ai_chance = {
+			factor = 10
+		}
+		add_political_power = -100
+		create_wargoal = {
+			type = puppet_wargoal_focus
+			target = HUN
+		}
+	}
+	option = {
+		log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): choose option NWhohenberg.24.b"
+		name = NWhohenberg.24.b
+		ai_chance = {
+			factor = 90
+			modifier = {
+				factor = 5
+				has_war = yes
+			}
+		}
+		HUN = { country_event = { id = NWhohenberg.22 days = 1 } }
+		custom_effect_tooltip = HHNBRG_hungary_ttt
+	}
+}
+
+#CZE
+country_event = {
+	id = NWhohenberg.25
+	title = NWhohenberg.25.t
+	desc = NWhohenberg.25.desc
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWhohenberg.25" }
+	
+	option = {
+		log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): choose option NWhohenberg.25.a"
+		name = NWhohenberg.25.a
+		ai_chance = {
+			factor = 0
+		}
+		add_political_power = -100
+		create_wargoal = {
+			type = puppet_wargoal_focus
+			target = CZE
+		}
+	}
+	
+	option = {
+		log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): choose option NWhohenberg.25.b"
+		name = NWhohenberg.25.b
+		ai_chance = {
+			factor = 100
+			modifier = {
+				factor = 5
+				has_war = yes
+			}
+		}
+		CZE = { country_event = { id = NWhohenberg.22 days = 1 } }
+		custom_effect_tooltip = HHNBRG_czechoslovakia_ttt
+	}
+	
+	option = {
+		log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): choose option NWhohenberg.25.c"
+		name = NWhohenberg.25.c
+		ai_chance = {
+			factor = 1
+		}
+		CZE = { country_event = { id = NWhohenberg.26 days = 1 } }
+	}
+}
+
+#Дипломатия с Чехословаком
+country_event = {
+	id = NWhohenberg.26
+	title = NWhohenberg.26.t
+	desc = NWhohenberg.26.desc
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWhohenberg.26" }
+	
+	option = {
+		log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): choose option NWhohenberg.26.a"
+		name = NWhohenberg.26.a
+		ai_chance = {
+			factor = 1
+		}
+	}
+	option = {
+		log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): choose option NWhohenberg.26.b"
+		name = NWhohenberg.26.b
+		trigger = {
+			all_state = {
+				is_core_of = CZE
+				NOT = { is_core_of = SLO }
+				is_fully_controlled_by = CZE
+			}
+		}
+		ai_chance = {
+			factor = 25
+		}
+		set_country_flag = CZE_b
+		FROM = { country_event = { id = NWhohenberg.27 days = 1 } }
+	}
+	option = {
+		log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): choose option NWhohenberg.26.c"
+		name = NWhohenberg.26.c
+		trigger = {
+			all_state = {
+				is_core_of = SLO
+				is_fully_controlled_by = CZE
+			}
+		}
+		ai_chance = {
+			factor = 25
+		}
+		set_country_flag = CZE_c
+		FROM = { country_event = { id = NWhohenberg.27 days = 1 } }
+	}
+	option = {
+		log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): choose option NWhohenberg.26.d"
+		name = NWhohenberg.26.d
+		ai_chance = {
+			factor = 25
+		}
+		set_country_flag = CZE_d
+		FROM = { country_event = { id = NWhohenberg.27 days = 1 } }
+	}
+}
+
+#Ответ Гогенов
+country_event = {
+	id = NWhohenberg.27
+	title = NWhohenberg.27.t
+	desc = NWhohenberg.27.desc
+	is_triggered_only = yes
+
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWhohenberg.27" }
+	
+	option = {
+		log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): choose option NWhohenberg.27.a"
+		name = NWhohenberg.27.a
+		ai_chance = {
+			factor = 10
+		}
+	}
+	
+	option = {
+		log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): choose option NWhohenberg.27.b"
+		name = NWhohenberg.27.b
+		trigger = {
+			CZE = { has_country_flag = CZE_b }
+		}
+		ai_chance = {
+			factor = 90
+		}
+		
+		every_state = {
+			limit = {
+				is_core_of = CZE
+				NOT = { is_core_of = SLO }
+			}
+			ROOT = { transfer_state = PREV }
+			add_core_of = ROOT
+		}
+		
+		ROOT = { give_guarantee = CZE }
+		CZE = { clr_country_flag = CZE_b }
+	}
+	
+	option = {
+		log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): choose option NWhohenberg.27.c"
+		name = NWhohenberg.27.c
+		trigger = {
+			CZE = { has_country_flag = CZE_c }
+		}
+		ai_chance = {
+			factor = 90
+		}
+		
+		every_state = {
+			limit = {
+				is_core_of = SLO
+			}
+			ROOT = { transfer_state = PREV }
+			add_core_of = ROOT
+		}
+		
+		ROOT = { give_guarantee = CZE }
+		CZE = { clr_country_flag = CZE_c }
+	}
+	
+	option = {
+		log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): choose option NWhohenberg.27.d"
+		name = NWhohenberg.27.d
+		trigger = {
+			CZE = { has_country_flag = CZE_d }
+		}
+		ai_chance = {
+			factor = 90
+		}
+		puppet = FROM
+		CZE = { clr_country_flag = CZE_d }
+	}
+}
+
+
 
 
 
@@ -1143,6 +1528,8 @@ country_event = {
 				}
 				set_party_name = { ideology = neutrality long_name = hhnbrg_neutrality_party name = hhnbrg_neutrality_party }
 			}
+			CZE = { add_timed_idea = { idea = HHNBRG_neutrality_influence days = 365 } }
+			HUN = { add_timed_idea = { idea = HHNBRG_neutrality_influence days = 365 } }
 		}
 	}
 	
@@ -1194,6 +1581,18 @@ country_event = {
 				}
 			}
 			set_party_name = { ideology = neutrality long_name = hhnbrg_neutrality_party name = hhnbrg_neutrality_party }
+			if = {
+				limit = { NOT = { ROOT = { tag = CZE } } }
+				CZE = { add_timed_idea = { idea = HHNBRG_neutrality_influence days = 365 } }
+			}
+			if = {
+				limit = { NOT = { ROOT = { tag = AUS } } }
+				AUS = { add_timed_idea = { idea = HHNBRG_neutrality_influence days = 365 } }
+			}
+			if = {
+				limit = { NOT = { ROOT = { tag = HUN } } }
+				HUN = { add_timed_idea = { idea = HHNBRG_neutrality_influence days = 365 } }
+			}
 		}
 	}
 }
