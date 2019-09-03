@@ -818,7 +818,18 @@ country_event = {
 	title = NWspain.11.t
 	desc = NWspain.11.desc
 	picture = GFX_report_event_generic_rally_3
-	is_triggered_only = yes
+	#is_triggered_only = yes
+	fire_only_once = yes
+	
+	trigger = {
+		tag = SPR
+		date > 1936.08.1
+		NOT = { SPR = { has_war_with = SPA } }
+		SPR = { has_completed_focus = SPR_victory_popular_front }
+		has_idea = SPR_desire_for_decentralization
+		has_full_control_of_state = 981
+		NOT = { country_exists = BAS }
+	}
 	
 	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWspain.11" }
 	
@@ -830,6 +841,10 @@ country_event = {
 		release_puppet = BAS
 		remove_ideas = SPR_basks_nationalism
 		BAS = { inherit_technology = SPR }
+		if = {
+			limit = { SPR = { has_full_control_of_state = 172 } }
+			BAS = { transfer_state = 172 }
+		}
 		hidden_effect = {
 			BAS = {
 				add_equipment_to_stockpile = {
@@ -2556,7 +2571,10 @@ country_event = {
 			load_oob = "SPA_Civil_War"
 			SPR = { load_oob = "SPR_Civil_War" }
 			if = {
-				limit = { SPR = { has_idea = SPR_basks_nationalism } }
+				limit = {
+					date > 1936.09.1
+					SPR = { has_idea = SPR_basks_nationalism }
+				}
 				transfer_state = 981
 				SPR = { remove_ideas = SPR_basks_nationalism }
 			}
@@ -7394,6 +7412,99 @@ country_event = {
 		remove_unit_leader = 4712
 		add_popularity = { ideology = trozkism popularity = -0.03 }
 		add_political_power = -30
+	}
+}
+
+#Устав автономии Страны Басков // SPR при ГВ
+country_event = {
+	id = NWspain.68
+	title = NWspain.68.t
+	desc = NWspain.68.desc
+	picture = GFX_report_event_generic_rally_3
+	fire_only_once = yes
+	
+	trigger = {
+		tag = SPR
+		date > 1936.10.1
+		SPR = { has_war_with = SPA }
+		NOT = { country_exists = BAS }
+	}
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWspain.68" }
+	
+	option = {
+		name = NWspain.68.a
+		ai_chance = {
+			factor = 70
+		}
+		release_puppet = BAS
+		remove_ideas = SPR_basks_nationalism
+		BAS = {
+			transfer_state = 172
+			inherit_technology = SPR
+		}
+		hidden_effect = {
+			BAS = {
+				load_focus_tree = bascov_focus
+				add_equipment_to_stockpile = {
+					type = infantry_equipment
+					amount = 5000
+				}
+				set_popularities = {
+					democratic = 33
+					fascism = 0
+					communism = 0
+					monarchy = 32
+					neutrality = 35
+				}
+				set_politics = {	
+					ruling_party = neutrality
+					last_election = "1935.1.1"
+					election_frequency = 36
+					elections_allowed = yes
+				}
+				division_template = {
+					name = "Basks Brigada"
+					priority = 1
+					is_locked = no
+					regiments = {
+						infantry = { x = 0 y = 0 }
+						infantry = { x = 0 y = 1 }
+						infantry = { x = 0 y = 2 }
+					}
+				}
+				every_owned_state = {
+					create_unit = {
+						division = "name = \"1. Basks Brigada\" division_template = \"Basks Brigada\" start_experience_factor = 0.4" 
+						owner = BAS
+					}
+					create_unit = {
+						division = "name = \"2. Basks Brigada\" division_template = \"Basks Brigada\" start_experience_factor = 0.4" 
+						owner = BAS
+					}
+					create_unit = {
+						division = "name = \"3. Basks Brigada\" division_template = \"Basks Brigada\" start_experience_factor = 0.4" 
+						owner = BAS
+					}
+					create_unit = {
+						division = "name = \"4. Basks Brigada\" division_template = \"Basks Brigada\" start_experience_factor = 0.4" 
+						owner = BAS
+					}
+				}
+			}
+		}
+	}
+	
+	option = {
+		name = NWspain.68.b
+		ai_chance = {
+			factor = 30
+			modifier = {
+				factor = 0
+				is_historical_focus_on = yes
+			}
+		}
+		add_stability = -0.1
 	}
 }
 
