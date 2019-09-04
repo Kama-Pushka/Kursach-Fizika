@@ -1922,10 +1922,13 @@
 
 		available_if_capitulated = yes
 		
-		available = { always = no }
+		available = {
+			num_subjects > 0
+		}
 
 		completion_reward = {
-			
+			add_stability = 0.015
+			add_political_power = 25
 		}
 
 		ai_will_do = {
@@ -1944,9 +1947,21 @@
 		cost = 7.15
 
 		available_if_capitulated = yes
+		
+		available = {
+			num_subjects > 0
+		}
 
 		completion_reward = {
-			
+			add_political_power = 50
+			every_country = {
+				limit = {
+					is_subject_of = ROOT
+				}
+				add_political_power = 50
+			}
+			unlock_decision_category_tooltip = generic_colonial_policy_category
+			custom_effect_tooltip = policy_of_protectorates_tt
 		}
 
 		ai_will_do = {
@@ -1965,9 +1980,21 @@
 		cost = 7.15
 
 		available_if_capitulated = yes
+		
+		available = {
+			num_subjects > 0
+		}
 
 		completion_reward = {
-			
+			every_country = {
+				limit = {
+					is_puppet_of = ROOT
+				}
+				add_timed_idea = {
+					idea = colonial_policy
+					days = 500
+				}
+			}
 		}
 
 		ai_will_do = {
@@ -1985,13 +2012,17 @@
 		cost = 7.15
 
 		available_if_capitulated = yes
+		
+		available = {
+			num_subjects > 0
+		}
 
 		completion_reward = {
-			
+			unlock_decision_category_tooltip = generic_investment_in_subject_category
 		}
 
 		ai_will_do = {
-			factor = 3
+			factor = 10
 		}
 	}
 	
@@ -2005,9 +2036,49 @@
 		cost = 7.15
 
 		available_if_capitulated = yes
+		
+		available = {
+			num_subjects > 0
+		}
 
 		completion_reward = {
-			
+			every_country = {
+				limit = {
+					is_subject_of = ROOT
+					OR = {
+						has_autonomy_state = autonomy_dominion
+						has_autonomy_state = autonomy_satellite
+					}
+				}
+				add_ideas = coordination_committee_dominion
+			}
+			every_country = {
+				limit = {
+					is_subject_of = ROOT
+					has_autonomy_state = autonomy_colony
+				}
+				add_ideas = coordination_committee_colony
+			}
+			every_country = {
+				limit = {
+					is_subject_of = ROOT
+					OR = {
+						has_autonomy_state = autonomy_puppet
+						has_autonomy_state = autonomy_reichsprotectorate
+					}
+				}
+				add_ideas = coordination_committee_puppet
+			}
+			every_country = {
+				limit = {
+					is_subject_of = ROOT
+					OR = {
+						has_autonomy_state = autonomy_integrated_puppet
+						has_autonomy_state = autonomy_reichskommissariat
+					}
+				}
+				add_ideas = coordination_committee_integrated_puppet
+			}
 		}
 
 		ai_will_do = {
@@ -2026,13 +2097,49 @@
 		cost = 7.15
 
 		available_if_capitulated = yes
+		
+		available = {
+			num_subjects > 0
+		}
 
 		completion_reward = {
-			
+			set_temp_variable = { ROOT.total_manpower = 0 }
+			every_country = {
+				limit = {
+					is_subject_of = ROOT
+					OR = {
+						has_autonomy_state = autonomy_dominion
+						has_autonomy_state = autonomy_satellite
+					}
+				}
+				add_ideas = military_cooperation_dominion
+				add_to_temp_variable = { ROOT.total_manpower = 40000 }
+			}
+			every_country = {
+				limit = {
+					is_subject_of = ROOT
+					has_autonomy_state = autonomy_colony
+				}
+				add_ideas = military_cooperation_colony
+				add_to_temp_variable = { ROOT.total_manpower = 20000 }
+			}
+			custom_effect_tooltip = military_cooperation_tt
+			hidden_effect = { add_manpower = ROOT.total_manpower }
 		}
 
 		ai_will_do = {
 			factor = 3
+			modifier = {
+				factor = 0
+				any_country = {
+					is_subject_of = ROOT
+					NOT = {
+						has_autonomy_state = autonomy_dominion
+						has_autonomy_state = autonomy_colony
+						has_autonomy_state = autonomy_satellite
+					}
+				}
+			}
 		}
 	}
 	
@@ -2046,9 +2153,68 @@
 		cost = 7.15
 
 		available_if_capitulated = yes
+		
+		available = {
+			num_subjects > 0
+		}
 
 		completion_reward = {
-			
+			every_country = {
+				limit = {
+					is_subject_of = ROOT
+					OR = {
+						has_autonomy_state = autonomy_dominion
+						has_autonomy_state = autonomy_colony
+						has_autonomy_state = autonomy_satellite
+					}
+				}
+				add_tech_bonus = {
+					name = land_doc_bonus
+					bonus = 1
+					uses = 1
+					category = land_doctrine
+				}
+			}
+			set_temp_variable = { ROOT.total_army_exp = 0 }
+			every_country = {
+				limit = {
+					is_subject_of = ROOT
+					OR = {
+						has_autonomy_state = autonomy_dominion
+						has_autonomy_state = autonomy_satellite
+					}
+				}
+				add_to_temp_variable = { ROOT.total_army_exp = 4 }
+			}
+			every_country = {
+				limit = {
+					is_subject_of = ROOT
+					has_autonomy_state = autonomy_colony
+				}
+				add_to_temp_variable = { ROOT.total_army_exp = 3 }
+			}
+			every_country = {
+				limit = {
+					is_subject_of = ROOT
+					OR = {
+						has_autonomy_state = autonomy_puppet
+						has_autonomy_state = autonomy_reichsprotectorate
+					}
+				}
+				add_to_temp_variable = { ROOT.total_army_exp = 2 }
+			}
+			every_country = {
+				limit = {
+					is_subject_of = ROOT
+					OR = {
+						has_autonomy_state = autonomy_integrated_puppet
+						has_autonomy_state = autonomy_reichskommissariat
+					}
+				}
+				add_to_temp_variable = { ROOT.total_army_exp = 1 }
+			}
+			custom_effect_tooltip = joint_military_exercise_tt
+			hidden_effect = { army_experience = ROOT.total_army_exp }
 		}
 
 		ai_will_do = {
@@ -2067,13 +2233,77 @@
 		cost = 7.15
 
 		available_if_capitulated = yes
+		
+		available = {
+			num_subjects > 0
+		}
 
 		completion_reward = {
-			
+			if = {
+				limit = {
+					OR = {
+						num_subjects < 1
+						any_country = {
+							is_subject_of = ROOT
+							NOT = {
+								has_country_flag = generic_investment_in_subject_flag_1
+								has_country_flag = generic_investment_in_subject_flag_2
+							}
+						}
+					}
+				}
+				custom_effect_tooltip = analysis_of_results_tt
+			}
+			every_country = {
+				limit = {
+					is_subject_of = ROOT
+					OR = {
+						has_country_flag = generic_investment_in_subject_flag_1
+						has_country_flag = generic_investment_in_subject_flag_2
+					}
+				}
+				random_owned_controlled_state = {
+					limit = { 
+						free_building_slots = {
+							building = industrial_complex
+							size > 1
+							include_locked = yes
+						}
+					}
+					add_extra_state_shared_building_slots = 2
+					add_building_construction = {
+						type = industrial_complex
+						level = 2
+						instant_build = yes
+					}
+				}
+			}
 		}
 
 		ai_will_do = {
-			factor = 3
+			factor = 2
+			modifier = {
+				factor = 0.1
+				any_country = {
+					is_subject_of = ROOT
+					NOT = {
+						has_country_flag = generic_investment_in_subject_flag_1
+						has_country_flag = generic_investment_in_subject_flag_2
+					}
+				}
+			}
+			modifier = {
+				factor = 5
+				any_country = {
+					is_subject_of = ROOT
+					NOT = {
+						NOT = {
+							has_country_flag = generic_investment_in_subject_flag_1
+							has_country_flag = generic_investment_in_subject_flag_2
+						}
+					}
+				}
+			}
 		}
 	}
 	
@@ -2087,13 +2317,64 @@
 		cost = 7.15
 
 		available_if_capitulated = yes
+		
+		available = {
+			num_subjects > 0
+		}
 
 		completion_reward = {
-			
+			custom_effect_tooltip = involvement_in_civil_sphere_tt
+			hidden_effect = {
+				set_temp_variable = { ROOT.total_factory = 0 }
+				set_temp_variable = { ROOT.total_colony = 0 }
+				every_country = {
+					limit = {
+						is_subject_of = ROOT
+						OR = {
+							has_autonomy_state = autonomy_dominion
+							has_autonomy_state = autonomy_satellite
+						}
+					}
+					capital_scope = {
+						add_extra_state_shared_building_slots = 2
+					}
+					add_to_temp_variable = { ROOT.total_factory = 1 }
+				}
+				every_country = {
+					limit = {
+						is_subject_of = ROOT
+						has_autonomy_state = autonomy_colony
+					}
+					capital_scope = {
+						add_extra_state_shared_building_slots = 1
+					}
+					add_to_temp_variable = { ROOT.total_colony = 1 }
+				}
+				divide_temp_variable = { total_colony = 2 }
+				add_to_temp_variable = { total_factory = total_colony }
+				divide_temp_variable = { total_factory = 2 }
+				round_variable = total_factory
+				clamp_temp_variable = {
+					var = total_factory
+					min = 1
+					max = 999
+				}
+			}
 		}
 
 		ai_will_do = {
 			factor = 3
+			modifier = {
+				factor = 0
+				any_country = {
+					is_subject_of = ROOT
+					NOT = {
+						has_autonomy_state = autonomy_dominion
+						has_autonomy_state = autonomy_colony
+						has_autonomy_state = autonomy_satellite
+					}
+				}
+			}
 		}
 	}
 	
@@ -2107,13 +2388,73 @@
 		cost = 7.15
 
 		available_if_capitulated = yes
+		
+		available = {
+			num_subjects > 0
+		}
 
 		completion_reward = {
-			
+			custom_effect_tooltip = unification_of_railway_tt
+			hidden_effect = {
+				every_country = {
+					limit = {
+						is_subject_of = ROOT
+						OR = {
+							has_autonomy_state = autonomy_dominion
+							has_autonomy_state = autonomy_satellite
+						}
+					}
+					capital_scope = {
+						add_building_construction = {
+							type = infrastructure
+							level = 2
+							instant_build = yes
+						}
+						every_neighbor_state = {
+							add_building_construction = {
+								type = infrastructure
+								level = 2
+								instant_build = yes
+							}
+						} 
+					}
+				}
+				every_country = {
+					limit = {
+						is_subject_of = ROOT
+						has_autonomy_state = autonomy_colony
+					}
+					capital_scope = {
+						add_building_construction = {
+							type = infrastructure
+							level = 1
+							instant_build = yes
+						}
+						every_neighbor_state = {
+							add_building_construction = {
+								type = infrastructure
+								level = 1
+								instant_build = yes
+							}
+						} 
+					}
+				}
+			}
 		}
 
 		ai_will_do = {
 			factor = 3
+			modifier = {
+				factor = 0
+				any_country = {
+					is_subject_of = ROOT
+					NOT = {
+						has_autonomy_state = autonomy_dominion
+						has_autonomy_state = autonomy_colony
+						has_autonomy_state = autonomy_satellite
+					}
+				}
+			}
 		}
 	}
 	
@@ -2128,13 +2469,58 @@
 		cost = 7.15
 
 		available_if_capitulated = yes
+		
+		available = {
+			num_subjects > 0
+		}
 
 		completion_reward = {
-			
+			if = {
+				limit = { num_subjects < 1 }
+				custom_effect_tooltip = network_of_cities_mills_tt
+			}
+			every_country = {
+				limit = {
+					is_subject_of = ROOT
+					OR = {
+						has_autonomy_state = autonomy_dominion
+						has_autonomy_state = autonomy_satellite
+					}
+				}
+				capital_scope = {
+					add_extra_state_shared_building_slots = 1
+					add_building_construction = {
+						type = industrial_complex
+						level = 1
+						instant_build = yes
+					}
+					up_state_category = yes
+				}
+			}
+			every_country = {
+				limit = {
+					is_subject_of = ROOT
+					has_autonomy_state = autonomy_colony
+				}
+				capital_scope = {
+					up_state_category = yes
+				}
+			}
 		}
 
 		ai_will_do = {
 			factor = 3
+			modifier = {
+				factor = 0
+				any_country = {
+					is_subject_of = ROOT
+					NOT = {
+						has_autonomy_state = autonomy_dominion
+						has_autonomy_state = autonomy_colony
+						has_autonomy_state = autonomy_satellite
+					}
+				}
+			}
 		}
 	}
 	
@@ -2148,13 +2534,59 @@
 		cost = 7.15
 
 		available_if_capitulated = yes
+		
+		available = {
+			num_subjects > 0
+		}
 
 		completion_reward = {
-			
+			custom_effect_tooltip = city_forming_enterprises_tt
+			hidden_effect = {
+				every_country = {
+					limit = {
+						is_subject_of = ROOT
+						OR = {
+							has_autonomy_state = autonomy_dominion
+							has_autonomy_state = autonomy_satellite
+						}
+					}
+					capital_scope = {
+						add_building_construction = {
+							type = industrial_complex
+							level = 2
+							instant_build = yes
+						}
+					}
+				}
+				every_country = {
+					limit = {
+						is_subject_of = ROOT
+						has_autonomy_state = autonomy_colony
+					}
+					capital_scope = {
+						add_building_construction = {
+							type = industrial_complex
+							level = 1
+							instant_build = yes
+						}
+					}
+				}
+			}
 		}
 
 		ai_will_do = {
 			factor = 3
+			modifier = {
+				factor = 0
+				any_country = {
+					is_subject_of = ROOT
+					NOT = {
+						has_autonomy_state = autonomy_dominion
+						has_autonomy_state = autonomy_colony
+						has_autonomy_state = autonomy_satellite
+					}
+				}
+			}
 		}
 	}
 	
@@ -2168,13 +2600,50 @@
 		cost = 7.15
 
 		available_if_capitulated = yes
+		
+		available = {
+			num_subjects > 0
+		}
 
 		completion_reward = {
-			
+			every_country = {
+				limit = {
+					is_subject_of = ROOT
+					OR = {
+						has_autonomy_state = autonomy_dominion
+						has_autonomy_state = autonomy_satellite
+					}
+				}
+				add_timed_idea = {
+					idea = new_housing_program_dominion
+					days = 602
+				}
+			}
+			every_country = {
+				limit = {
+					is_subject_of = ROOT
+					has_autonomy_state = autonomy_colony
+				}
+				add_timed_idea = {
+					idea = new_housing_program_colony
+					days = 301
+				}
+			}
 		}
 
 		ai_will_do = {
 			factor = 3
+			modifier = {
+				factor = 0
+				any_country = {
+					is_subject_of = ROOT
+					NOT = {
+						has_autonomy_state = autonomy_dominion
+						has_autonomy_state = autonomy_colony
+						has_autonomy_state = autonomy_satellite
+					}
+				}
+			}
 		}
 	}
 	
@@ -2189,13 +2658,48 @@
 		cost = 7.15
 
 		available_if_capitulated = yes
+		
+		available = {
+			num_subjects > 0
+		}
 
 		completion_reward = {
-			
+			set_temp_variable = { ROOT.military_city = 0 }
+			every_country = {
+				limit = {
+					is_subject_of = ROOT
+					OR = {
+						has_autonomy_state = autonomy_dominion
+						has_autonomy_state = autonomy_satellite
+					}
+				}
+				add_ideas = military_city
+				add_to_temp_variable = { ROOT.military_city = 50000 }
+			}
+			every_country = {
+				limit = {
+					is_subject_of = ROOT
+					has_autonomy_state = autonomy_colony
+				}
+				add_to_temp_variable = { ROOT.military_city = 35000 }
+			}
+			custom_effect_tooltip = military_city_tt
+			hidden_effect = { add_manpower = ROOT.military_city }
 		}
 
 		ai_will_do = {
 			factor = 3
+			modifier = {
+				factor = 0
+				any_country = {
+					is_subject_of = ROOT
+					NOT = {
+						has_autonomy_state = autonomy_dominion
+						has_autonomy_state = autonomy_colony
+						has_autonomy_state = autonomy_satellite
+					}
+				}
+			}
 		}
 	}
 	
@@ -2210,9 +2714,84 @@
 		cost = 7.15
 
 		available_if_capitulated = yes
+		
+		available = {
+			num_subjects > 0
+			any_country = {
+				is_subject_of = ROOT
+				OR = {
+					has_autonomy_state = autonomy_dominion
+					has_autonomy_state = autonomy_colony
+					has_autonomy_state = autonomy_satellite
+				}
+			}
+		}
 
 		completion_reward = {
-			
+			custom_effect_tooltip = cooperative_defense_production_tt
+			hidden_effect = {
+				every_country = {
+					limit = {
+						is_subject_of = ROOT
+						OR = {
+							has_autonomy_state = autonomy_dominion
+							has_autonomy_state = autonomy_satellite
+						}
+					}
+					random_owned_controlled_state = {
+						limit = { 
+							free_building_slots = {
+								building = arms_factory
+								size > 1
+								include_locked = yes
+							}
+						}
+						add_extra_state_shared_building_slots = 2
+						add_building_construction = {
+							type = arms_factory
+							level = 2
+							instant_build = yes
+						}
+					}
+				}
+				every_country = {
+					limit = {
+						is_subject_of = ROOT
+						has_autonomy_state = autonomy_colony
+					}
+					random_owned_controlled_state = {
+						limit = {
+							free_building_slots = {
+								building = arms_factory
+								size > 0
+								include_locked = yes
+							}
+						}
+						add_extra_state_shared_building_slots = 1
+						add_building_construction = {
+							type = arms_factory
+							level = 1
+							instant_build = yes
+						}
+					}
+				}
+			}
+			every_country = {
+				limit = {
+					OR = {
+						tag = ROOT
+						AND = {
+							is_subject_of = ROOT
+							OR = {
+								has_autonomy_state = autonomy_dominion
+								has_autonomy_state = autonomy_satellite
+								has_autonomy_state = autonomy_colony
+							}
+						}
+					}
+				}
+				add_ideas = cooperative_defense_production
+			}
 		}
 
 		ai_will_do = {
@@ -2232,9 +2811,39 @@
 		cost = 7.15
 
 		available_if_capitulated = yes
+		
+		available = {
+			num_subjects > 0
+			any_country = {
+				is_subject_of = ROOT
+				OR = {
+					has_autonomy_state = autonomy_dominion
+					has_autonomy_state = autonomy_colony
+					has_autonomy_state = autonomy_satellite
+				}
+			}
+		}
 
 		completion_reward = {
-			
+			add_political_power = 200
+			every_country = {
+				limit = {
+					is_subject_of = ROOT
+					OR = {
+						has_autonomy_state = autonomy_dominion
+						has_autonomy_state = autonomy_satellite
+					}
+				}
+				add_political_power = 100
+			}
+			every_country = {
+				limit = {
+					is_subject_of = ROOT
+					has_autonomy_state = autonomy_colony
+				}
+				add_political_power = 50
+			}
+			unlock_decision_category_tooltip = generic_project_of_union_constitution_category
 		}
 
 		ai_will_do = {
@@ -2254,6 +2863,11 @@
 		cost = 7.15
 
 		available_if_capitulated = yes
+		
+		available = {
+			always = no
+			num_subjects > 0
+		}
 
 		completion_reward = {
 			
@@ -2274,6 +2888,10 @@
 		cost = 7.15
 
 		available_if_capitulated = yes
+		
+		available = {
+			num_subjects > 0
+		}
 
 		completion_reward = {
 			
@@ -2295,6 +2913,10 @@
 		cost = 7.15
 
 		available_if_capitulated = yes
+		
+		available = {
+			num_subjects > 0
+		}
 
 		completion_reward = {
 			
@@ -2316,6 +2938,10 @@
 		cost = 7.15
 
 		available_if_capitulated = yes
+		
+		available = {
+			num_subjects > 0
+		}
 
 		completion_reward = {
 			
@@ -2337,6 +2963,10 @@
 		cost = 7.15
 
 		available_if_capitulated = yes
+		
+		available = {
+			num_subjects > 0
+		}
 
 		completion_reward = {
 			
@@ -2358,6 +2988,10 @@
 		cost = 7.15
 
 		available_if_capitulated = yes
+		
+		available = {
+			num_subjects > 0
+		}
 
 		completion_reward = {
 			
@@ -2378,6 +3012,10 @@
 		cost = 7.15
 
 		available_if_capitulated = yes
+		
+		available = {
+			num_subjects > 0
+		}
 
 		completion_reward = {
 			
@@ -2398,9 +3036,29 @@
 		cost = 7.15
 
 		available_if_capitulated = yes
+		
+		available = {
+			num_subjects > 0
+		}
 
 		completion_reward = {
-			
+			add_tech_bonus = {
+				name = infantry_bonus
+				bonus = 1
+				uses = 1
+				category = infantry_weapons
+			}
+			every_country = {
+				limit = {
+					is_subject_of = ROOT
+				}
+				add_tech_bonus = {
+					name = infantry_bonus
+					bonus = 1
+					uses = 1
+					category = infantry_weapons
+				}
+			}
 		}
 
 		ai_will_do = {
@@ -2420,6 +3078,10 @@
 		cost = 7.15
 
 		available_if_capitulated = yes
+		
+		available = {
+			num_subjects > 0
+		}
 
 		completion_reward = {
 			
@@ -2441,6 +3103,10 @@
 		cost = 7.15
 
 		available_if_capitulated = yes
+		
+		available = {
+			num_subjects > 0
+		}
 
 		completion_reward = {
 			
@@ -2462,6 +3128,10 @@
 		cost = 7.15
 
 		available_if_capitulated = yes
+		
+		available = {
+			num_subjects > 0
+		}
 
 		completion_reward = {
 			
@@ -2483,6 +3153,10 @@
 		cost = 7.15
 
 		available_if_capitulated = yes
+		
+		available = {
+			num_subjects > 0
+		}
 
 		completion_reward = {
 			
@@ -2504,6 +3178,10 @@
 		cost = 7.15
 
 		available_if_capitulated = yes
+		
+		available = {
+			num_subjects > 0
+		}
 
 		completion_reward = {
 			
@@ -2525,6 +3203,10 @@
 		cost = 7.15
 
 		available_if_capitulated = yes
+		
+		available = {
+			num_subjects > 0
+		}
 
 		completion_reward = {
 			
@@ -2549,7 +3231,10 @@
 
 		available_if_capitulated = yes
 		
-		available = { always = no }
+		available = {
+			always = no
+			is_subject = yes
+		}
 
 		completion_reward = {
 			
@@ -2570,6 +3255,10 @@
 		cost = 7.15
 
 		available_if_capitulated = yes
+		
+		available = {
+			is_subject = yes
+		}
 
 		completion_reward = {
 			
@@ -2590,6 +3279,10 @@
 		cost = 7.15
 
 		available_if_capitulated = yes
+		
+		available = {
+			is_subject = yes
+		}
 
 		completion_reward = {
 			
@@ -2611,6 +3304,10 @@
 		cost = 7.15
 
 		available_if_capitulated = yes
+		
+		available = {
+			is_subject = yes
+		}
 
 		completion_reward = {
 			
@@ -2632,6 +3329,10 @@
 		cost = 7.15
 
 		available_if_capitulated = yes
+		
+		available = {
+			is_subject = yes
+		}
 
 		completion_reward = {
 			
@@ -2653,6 +3354,10 @@
 		cost = 7.15
 
 		available_if_capitulated = yes
+		
+		available = {
+			is_subject = yes
+		}
 
 		completion_reward = {
 			
@@ -2673,6 +3378,10 @@
 		cost = 7.15
 
 		available_if_capitulated = yes
+		
+		available = {
+			is_subject = yes
+		}
 
 		completion_reward = {
 			
@@ -2693,6 +3402,10 @@
 		cost = 7.15
 
 		available_if_capitulated = yes
+		
+		available = {
+			is_subject = yes
+		}
 
 		completion_reward = {
 			
@@ -2714,6 +3427,10 @@
 		cost = 7.15
 
 		available_if_capitulated = yes
+		
+		available = {
+			is_subject = yes
+		}
 
 		completion_reward = {
 			
@@ -2734,6 +3451,10 @@
 		cost = 7.15
 
 		available_if_capitulated = yes
+		
+		available = {
+			is_subject = yes
+		}
 
 		completion_reward = {
 			
@@ -2754,6 +3475,10 @@
 		cost = 7.15
 
 		available_if_capitulated = yes
+		
+		available = {
+			is_subject = yes
+		}
 
 		completion_reward = {
 			
@@ -2775,6 +3500,10 @@
 		cost = 7.15
 
 		available_if_capitulated = yes
+		
+		available = {
+			is_subject = yes
+		}
 
 		completion_reward = {
 			
@@ -2797,6 +3526,10 @@
 		cost = 7.15
 
 		available_if_capitulated = yes
+		
+		available = {
+			is_subject = yes
+		}
 
 		completion_reward = {
 			
@@ -2817,6 +3550,10 @@
 		cost = 7.15
 
 		available_if_capitulated = yes
+		
+		available = {
+			is_subject = yes
+		}
 
 		completion_reward = {
 			
@@ -2837,6 +3574,10 @@
 		cost = 7.15
 
 		available_if_capitulated = yes
+		
+		available = {
+			is_subject = yes
+		}
 
 		completion_reward = {
 			
@@ -2857,6 +3598,10 @@
 		cost = 7.15
 
 		available_if_capitulated = yes
+		
+		available = {
+			is_subject = yes
+		}
 
 		completion_reward = {
 			
@@ -2878,6 +3623,10 @@
 		cost = 7.15
 
 		available_if_capitulated = yes
+		
+		available = {
+			is_subject = yes
+		}
 
 		completion_reward = {
 			
@@ -2898,6 +3647,10 @@
 		cost = 7.15
 
 		available_if_capitulated = yes
+		
+		available = {
+			is_subject = yes
+		}
 
 		completion_reward = {
 			
@@ -2918,6 +3671,10 @@
 		cost = 7.15
 
 		available_if_capitulated = yes
+		
+		available = {
+			is_subject = yes
+		}
 
 		completion_reward = {
 			
@@ -2939,6 +3696,10 @@
 		cost = 7.15
 
 		available_if_capitulated = yes
+		
+		available = {
+			is_subject = yes
+		}
 
 		completion_reward = {
 			
@@ -2959,6 +3720,10 @@
 		cost = 7.15
 
 		available_if_capitulated = yes
+		
+		available = {
+			is_subject = yes
+		}
 
 		completion_reward = {
 			
@@ -2979,6 +3744,10 @@
 		cost = 7.15
 
 		available_if_capitulated = yes
+		
+		available = {
+			is_subject = yes
+		}
 
 		completion_reward = {
 			
@@ -2999,6 +3768,10 @@
 		cost = 7.15
 
 		available_if_capitulated = yes
+		
+		available = {
+			is_subject = yes
+		}
 
 		completion_reward = {
 			
@@ -3021,6 +3794,10 @@
 		cost = 7.15
 
 		available_if_capitulated = yes
+		
+		available = {
+			is_subject = yes
+		}
 
 		completion_reward = {
 			
@@ -3041,6 +3818,10 @@
 		cost = 7.15
 
 		available_if_capitulated = yes
+		
+		available = {
+			is_subject = yes
+		}
 
 		completion_reward = {
 			
@@ -3061,6 +3842,10 @@
 		cost = 7.15
 
 		available_if_capitulated = yes
+		
+		available = {
+			is_subject = yes
+		}
 
 		completion_reward = {
 			
@@ -3081,6 +3866,10 @@
 		cost = 7.15
 
 		available_if_capitulated = yes
+		
+		available = {
+			is_subject = yes
+		}
 
 		completion_reward = {
 			
@@ -3102,6 +3891,10 @@
 		cost = 7.15
 
 		available_if_capitulated = yes
+		
+		available = {
+			is_subject = yes
+		}
 
 		completion_reward = {
 			
@@ -3122,6 +3915,10 @@
 		cost = 7.15
 
 		available_if_capitulated = yes
+		
+		available = {
+			is_subject = yes
+		}
 
 		completion_reward = {
 			
@@ -3143,6 +3940,10 @@
 		cost = 7.15
 
 		available_if_capitulated = yes
+		
+		available = {
+			is_subject = yes
+		}
 
 		completion_reward = {
 			
@@ -3165,6 +3966,10 @@
 		cost = 7.15
 
 		available_if_capitulated = yes
+		
+		available = {
+			is_subject = yes
+		}
 
 		completion_reward = {
 			
@@ -3187,7 +3992,9 @@
 
 		available_if_capitulated = yes
 		
-		available = { is_subject = yes }
+		available = {
+			is_subject = yes
+		}
 
 		completion_reward = {
 			
@@ -3209,7 +4016,9 @@
 
 		available_if_capitulated = yes
 		
-		available = { is_subject = yes }
+		available = {
+			is_subject = yes
+		}
 
 		completion_reward = {
 			
@@ -3231,7 +4040,9 @@
 
 		available_if_capitulated = yes
 		
-		available = { is_subject = yes }
+		available = {
+			is_subject = yes
+		}
 
 		completion_reward = {
 			
@@ -3254,7 +4065,9 @@
 
 		available_if_capitulated = yes
 		
-		available = { is_subject = yes }
+		available = {
+			is_subject = yes
+		}
 
 		completion_reward = {
 			
@@ -3276,7 +4089,9 @@
 
 		available_if_capitulated = yes
 		
-		available = { is_subject = yes }
+		available = {
+			is_subject = yes
+		}
 
 		completion_reward = {
 			
@@ -3298,7 +4113,9 @@
 
 		available_if_capitulated = yes
 		
-		available = { is_subject = yes }
+		available = {
+			is_subject = yes
+		}
 
 		completion_reward = {
 			
@@ -3320,7 +4137,9 @@
 
 		available_if_capitulated = yes
 		
-		available = { is_subject = yes }
+		available = {
+			is_subject = yes
+		}
 
 		completion_reward = {
 			
@@ -3342,7 +4161,9 @@
 
 		available_if_capitulated = yes
 		
-		available = { is_subject = yes }
+		available = {
+			is_subject = yes
+		}
 
 		completion_reward = {
 			
@@ -3366,7 +4187,9 @@
 
 		available_if_capitulated = yes
 		
-		available = { is_subject = yes }
+		available = {
+			is_subject = yes
+		}
 
 		completion_reward = {
 			
@@ -3390,7 +4213,9 @@
 
 		available_if_capitulated = yes
 		
-		available = { is_subject = yes }
+		available = {
+			is_subject = yes
+		}
 
 		completion_reward = {
 			
