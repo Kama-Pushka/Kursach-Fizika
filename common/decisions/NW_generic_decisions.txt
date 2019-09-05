@@ -1,4 +1,4 @@
-generic_colonial_policy_category = {
+generic_protectorate_policy_category = {
 
 	generic_provide_independence_to_subject = {
 
@@ -310,6 +310,124 @@ generic_project_of_union_constitution_category = {
 			modifier = {
 				factor = 10
 				FROM = { is_ai = no }
+			}
+		}
+	}
+}
+
+
+generic_gem_among_colonies_category = {
+
+	generic_gem_among_colonies = {
+
+		icon = eng_trade_unions_support
+		
+		available = {
+			num_subjects > 0
+			FROM = {
+				is_subject_of = ROOT
+			}
+			custom_trigger_tooltip = {
+				tooltip = generic_gem_among_colonies_trigger_tt		
+				NOT = {
+					any_country = {
+						is_subject_of = ROOT
+						has_country_flag = is_gem_among_colonies_flag_@ROOT
+					}
+				}
+			}
+		}
+		
+		visible = {
+			has_completed_focus = gem_among_colonies
+			num_subjects > 0
+			FROM = {
+				exists = yes
+				is_subject_of = ROOT
+				NOT = { has_country_flag = is_gem_among_colonies_flag_@ROOT }
+			}
+			NOT = {
+				any_country = {
+					is_subject_of = ROOT
+					has_country_flag = is_gem_among_colonies_flag_@ROOT
+				}
+			}
+		}
+		
+		target_trigger = {
+			FROM = {
+				is_subject_of = ROOT
+			}
+		}
+		
+		cost = 0
+		
+		complete_effect = {
+			hidden_effect = {
+				if = {
+					limit = {
+						FROM = { has_autonomy_state = autonomy_reichskommissariat }
+					}
+					set_autonomy = {
+						target = FROM
+						autonomy_state = autonomy_reichsprotectorate
+					}
+				}
+				else_if = {
+					limit = {
+						FROM = {
+							OR = {
+								has_autonomy_state = autonomy_integrated_puppet
+								has_autonomy_state = autonomy_puppet
+							}
+						}
+					}
+					set_autonomy = {
+						target = FROM
+						autonomy_state = autonomy_colony
+					}
+				}
+				FROM = { set_country_flag = is_gem_among_colonies_flag_@ROOT }
+			}
+			custom_effect_tooltip = generic_gem_among_colonies_effect_tt
+		}
+		
+		ai_will_do = {
+			factor = 10
+			modifier = {
+				add = 20
+				FROM = { is_ai = no }
+			}
+			modifier = {
+				add = 5
+				FROM = {
+					OR = {
+						has_autonomy_state = autonomy_puppet
+						has_autonomy_state = autonomy_reichskommissariat
+					}
+				}
+			}
+			modifier = {
+				add = 20
+				FROM = {
+					OR = {
+						has_autonomy_state = autonomy_reichsprotectorate
+						has_autonomy_state = autonomy_colony
+					}
+				}
+			}
+			modifier = {
+				add = 30
+				FROM = {
+					OR = {
+						has_autonomy_state = autonomy_dominion
+						has_autonomy_state = autonomy_satellite
+					}
+				}
+			}
+			modifier = {
+				set_temp_variable = { num_factories_of_gem = FROM.num_of_factories }
+				add = num_factories_of_gem
 			}
 		}
 	}

@@ -1950,6 +1950,13 @@
 		
 		available = {
 			num_subjects > 0
+			OR = {
+				has_government = communism
+				has_government = trozkism
+				has_government = democratic
+				has_government = neutrality
+				has_government = fascism
+			}
 		}
 
 		completion_reward = {
@@ -1960,12 +1967,16 @@
 				}
 				add_political_power = 50
 			}
-			unlock_decision_category_tooltip = generic_colonial_policy_category
+			unlock_decision_category_tooltip = generic_protectorate_policy_category
 			custom_effect_tooltip = policy_of_protectorates_tt
 		}
 
 		ai_will_do = {
 			factor = 3
+			modifier = {
+				add = 1.5
+				has_government = democratic
+			}
 		}
 	}
 	
@@ -1983,6 +1994,12 @@
 		
 		available = {
 			num_subjects > 0
+			OR = {
+				has_government = monarchy
+				has_government = democratic
+				has_government = neutrality
+				has_government = fascism
+			}
 		}
 
 		completion_reward = {
@@ -1995,10 +2012,15 @@
 					days = 500
 				}
 			}
+			custom_effect_tooltip = colonial_policy_tt
 		}
 
 		ai_will_do = {
 			factor = 3
+			modifier = {
+				add = 3
+				has_government = fascism
+			}
 		}
 	}
 	
@@ -2103,7 +2125,7 @@
 		}
 
 		completion_reward = {
-			set_temp_variable = { ROOT.total_manpower = 0 }
+			set_temp_variable = { total_manpower = 0 }
 			every_country = {
 				limit = {
 					is_subject_of = ROOT
@@ -2124,7 +2146,7 @@
 				add_to_temp_variable = { ROOT.total_manpower = 20000 }
 			}
 			custom_effect_tooltip = military_cooperation_tt
-			hidden_effect = { add_manpower = ROOT.total_manpower }
+			hidden_effect = { add_manpower = total_manpower }
 		}
 
 		ai_will_do = {
@@ -2175,7 +2197,7 @@
 					category = land_doctrine
 				}
 			}
-			set_temp_variable = { ROOT.total_army_exp = 0 }
+			set_temp_variable = { total_army_exp = 0 }
 			every_country = {
 				limit = {
 					is_subject_of = ROOT
@@ -2214,7 +2236,7 @@
 				add_to_temp_variable = { ROOT.total_army_exp = 1 }
 			}
 			custom_effect_tooltip = joint_military_exercise_tt
-			hidden_effect = { army_experience = ROOT.total_army_exp }
+			hidden_effect = { army_experience = total_army_exp }
 		}
 
 		ai_will_do = {
@@ -2325,8 +2347,8 @@
 		completion_reward = {
 			custom_effect_tooltip = involvement_in_civil_sphere_tt
 			hidden_effect = {
-				set_temp_variable = { ROOT.total_factory = 0 }
-				set_temp_variable = { ROOT.total_colony = 0 }
+				set_temp_variable = { total_factory = 0 }
+				set_temp_variable = { total_colony = 0 }
 				every_country = {
 					limit = {
 						is_subject_of = ROOT
@@ -2357,9 +2379,10 @@
 				clamp_temp_variable = {
 					var = total_factory
 					min = 1
-					max = 999
+					max = 99
 				}
 			}
+			build_civil_factory = yes
 		}
 
 		ai_will_do = {
@@ -2664,27 +2687,29 @@
 		}
 
 		completion_reward = {
-			set_temp_variable = { ROOT.military_city = 0 }
-			every_country = {
-				limit = {
-					is_subject_of = ROOT
-					OR = {
-						has_autonomy_state = autonomy_dominion
-						has_autonomy_state = autonomy_satellite
-					}
-				}
-				add_ideas = military_city
-				add_to_temp_variable = { ROOT.military_city = 50000 }
-			}
-			every_country = {
-				limit = {
-					is_subject_of = ROOT
-					has_autonomy_state = autonomy_colony
-				}
-				add_to_temp_variable = { ROOT.military_city = 35000 }
-			}
 			custom_effect_tooltip = military_city_tt
-			hidden_effect = { add_manpower = ROOT.military_city }
+			hidden_effect = {
+				set_temp_variable = { military_city = 0 }
+				every_country = {
+					limit = {
+						is_subject_of = ROOT
+						OR = {
+							has_autonomy_state = autonomy_dominion
+							has_autonomy_state = autonomy_satellite
+						}
+					}
+					add_ideas = military_city
+					add_to_temp_variable = { ROOT.military_city = 50000 }
+				}
+				every_country = {
+					limit = {
+						is_subject_of = ROOT
+						has_autonomy_state = autonomy_colony
+					}
+					add_to_temp_variable = { ROOT.military_city = 35000 }
+				}
+				add_manpower = military_city
+			}
 		}
 
 		ai_will_do = {
@@ -2865,16 +2890,43 @@
 		available_if_capitulated = yes
 		
 		available = {
-			always = no
 			num_subjects > 0
 		}
 
 		completion_reward = {
-			
+			custom_effect_tooltip = overseas_service_tt
+			hidden_effect = {
+				set_temp_variable = { overseas_service = 0 }
+				every_country = {
+					limit = {
+						is_subject_of = ROOT
+						OR = {
+							has_autonomy_state = autonomy_puppet
+							has_autonomy_state = autonomy_reichsprotectorate
+							has_autonomy_state = autonomy_integrated_puppet
+							has_autonomy_state = autonomy_reichskommissariat
+						}
+					}
+					add_to_temp_variable = { ROOT.overseas_service = 60000 }
+				}
+				add_manpower = overseas_service
+			}
 		}
 
 		ai_will_do = {
 			factor = 3
+			modifier = {
+				factor = 0
+				any_country = {
+					is_subject_of = ROOT
+					NOT = {
+						has_autonomy_state = autonomy_puppet
+						has_autonomy_state = autonomy_reichsprotectorate
+						has_autonomy_state = autonomy_integrated_puppet
+						has_autonomy_state = autonomy_reichskommissariat
+					}
+				}
+			}
 		}
 	}
 	
@@ -2894,11 +2946,81 @@
 		}
 
 		completion_reward = {
-			
+			if = {
+				limit = { num_subjects < 1 }
+				custom_effect_tooltip = foreign_investor_tt
+			}
+			every_country = {
+				limit = {
+					is_subject_of = ROOT
+					OR = {
+						has_autonomy_state = autonomy_puppet
+						has_autonomy_state = autonomy_reichsprotectorate
+						has_autonomy_state = autonomy_integrated_puppet
+						has_autonomy_state = autonomy_reichskommissariat
+					}
+					NOT = { has_country_flag = is_gem_among_colonies_flag_@ROOT }
+				}
+				random_owned_controlled_state = {
+					limit = { 
+						free_building_slots = {
+							building = industrial_complex
+							size > 0
+							include_locked = yes
+						}
+					}
+					add_extra_state_shared_building_slots = 1
+					add_building_construction = {
+						type = industrial_complex
+						level = 1
+						instant_build = yes
+					}
+				}
+			}
+			every_country = {
+				limit = {
+					is_subject_of = ROOT
+					has_country_flag = is_gem_among_colonies_flag_@ROOT
+				}
+				random_owned_controlled_state = {
+					limit = { 
+						free_building_slots = {
+							building = industrial_complex
+							size > 1
+							include_locked = yes
+						}
+					}
+					add_extra_state_shared_building_slots = 2
+					add_building_construction = {
+						type = industrial_complex
+						level = 2
+						instant_build = yes
+					}
+				}
+			}
 		}
 
 		ai_will_do = {
 			factor = 3
+			modifier = {
+				factor = 0
+				any_country = {
+					is_subject_of = ROOT
+					NOT = {
+						has_autonomy_state = autonomy_puppet
+						has_autonomy_state = autonomy_reichsprotectorate
+						has_autonomy_state = autonomy_integrated_puppet
+						has_autonomy_state = autonomy_reichskommissariat
+					}
+				}
+			}
+			modifier = {
+				factor = 0.5
+				any_country = {
+					is_subject_of = ROOT
+					NOT = { has_country_flag = is_gem_among_colonies_flag_@ROOT }
+				}
+			}
 		}
 	}
 	
@@ -2919,11 +3041,79 @@
 		}
 
 		completion_reward = {
-			
+			if = {
+				limit = { num_subjects < 1 }
+				custom_effect_tooltip = infrastructure_improvement_tt
+			}
+			every_country = {
+				limit = {
+					is_subject_of = ROOT
+					OR = {
+						has_autonomy_state = autonomy_puppet
+						has_autonomy_state = autonomy_reichsprotectorate
+						has_autonomy_state = autonomy_integrated_puppet
+						has_autonomy_state = autonomy_reichskommissariat
+					}
+					NOT = { has_country_flag = is_gem_among_colonies_flag_@ROOT }
+				}
+				capital_scope = {
+					add_building_construction = {
+						type = infrastructure
+						level = 2
+						instant_build = yes
+					}
+					every_neighbor_state = {
+						add_building_construction = {
+							type = infrastructure
+							level = 2
+							instant_build = yes
+						}
+					} 
+				}
+			}
+			every_country = {
+				limit = {
+					is_subject_of = ROOT
+					has_country_flag = is_gem_among_colonies_flag_@ROOT
+				}
+				capital_scope = {
+					add_building_construction = {
+						type = infrastructure
+						level = 3
+						instant_build = yes
+					}
+					every_neighbor_state = {
+						add_building_construction = {
+							type = infrastructure
+							level = 3
+							instant_build = yes
+						}
+					} 
+				}
+			}
 		}
 
 		ai_will_do = {
 			factor = 3
+			modifier = {
+				factor = 0
+				any_country = {
+					is_subject_of = ROOT
+					NOT = {
+						has_autonomy_state = autonomy_puppet
+						has_autonomy_state = autonomy_reichsprotectorate
+						has_autonomy_state = autonomy_integrated_puppet
+						has_autonomy_state = autonomy_reichskommissariat
+					}
+				}
+			}
+			modifier = {
+				factor = 0.5
+				any_country = {
+					is_subject_of = ROOT
+					NOT = { has_country_flag = is_gem_among_colonies_flag_@ROOT }
+				}
+			}
 		}
 	}
 	
@@ -2944,11 +3134,11 @@
 		}
 
 		completion_reward = {
-			
+			unlock_decision_category_tooltip = generic_gem_among_colonies_category
 		}
 
 		ai_will_do = {
-			factor = 3
+			factor = 10
 		}
 	}
 	
@@ -2969,11 +3159,49 @@
 		}
 
 		completion_reward = {
-			
+			every_country = {
+				limit = {
+					is_subject_of = ROOT
+					OR = {
+						has_autonomy_state = autonomy_puppet
+						has_autonomy_state = autonomy_reichsprotectorate
+						has_autonomy_state = autonomy_integrated_puppet
+						has_autonomy_state = autonomy_reichskommissariat
+					}
+					NOT = { has_country_flag = is_gem_among_colonies_flag_@ROOT }
+				}
+				add_ideas = resource_extraction_in_colonies_puppet
+			}
+			every_country = {
+				limit = {
+					is_subject_of = ROOT
+					has_country_flag = is_gem_among_colonies_flag_@ROOT
+				}
+				add_ideas = resource_extraction_in_colonies_gem
+			}
 		}
 
 		ai_will_do = {
 			factor = 3
+			modifier = {
+				factor = 0
+				any_country = {
+					is_subject_of = ROOT
+					NOT = {
+						has_autonomy_state = autonomy_puppet
+						has_autonomy_state = autonomy_reichsprotectorate
+						has_autonomy_state = autonomy_integrated_puppet
+						has_autonomy_state = autonomy_reichskommissariat
+					}
+				}
+			}
+			modifier = {
+				factor = 0.5
+				any_country = {
+					is_subject_of = ROOT
+					NOT = { has_country_flag = is_gem_among_colonies_flag_@ROOT }
+				}
+			}
 		}
 	}
 	
@@ -2994,11 +3222,74 @@
 		}
 
 		completion_reward = {
-			
+			custom_effect_tooltip = cheap_labor_tt
+			hidden_effect = {
+				set_variable = { cheap_labor_var = 0 }
+				every_country = {
+					limit = {
+						is_subject_of = ROOT
+						OR = {
+							has_autonomy_state = autonomy_puppet
+							has_autonomy_state = autonomy_reichsprotectorate
+							has_autonomy_state = autonomy_integrated_puppet
+							has_autonomy_state = autonomy_reichskommissariat
+						}
+						NOT = { has_country_flag = is_gem_among_colonies_flag_@ROOT }
+					}
+					add_to_variable = { ROOT.cheap_labor_var = 0.01 }
+					add_ideas = cheap_labor_puppet
+				}
+				every_country = {
+					limit = {
+						is_subject_of = ROOT
+						has_country_flag = is_gem_among_colonies_flag_@ROOT
+					}
+					add_to_variable = { ROOT.cheap_labor_var = 0.01 }
+				}
+				clamp_variable = {
+					var = cheap_labor_var
+					min = 0.01
+					max = 0.15
+				}
+				add_dynamic_modifier = { modifier = cheap_labor_dyn }
+				every_country = {
+					limit = {
+						is_subject_of = ROOT
+						has_country_flag = is_gem_among_colonies_flag_@ROOT
+					}
+					set_variable = { cheap_labor_gem_var = 0 }
+					add_to_variable = { cheap_labor_gem_var = ROOT.cheap_labor_var }
+						clamp_variable = {
+						var = cheap_labor_gem_var
+						min = 0.01
+						max = 0.05
+					}
+					add_dynamic_modifier = { modifier = cheap_labor_gem_dyn }
+				}
+			}
 		}
 
 		ai_will_do = {
 			factor = 3
+			modifier = {
+				factor = 0
+				any_country = {
+					is_subject_of = ROOT
+					NOT = {
+						has_autonomy_state = autonomy_puppet
+						has_autonomy_state = autonomy_reichsprotectorate
+						has_autonomy_state = autonomy_integrated_puppet
+						has_autonomy_state = autonomy_reichskommissariat
+					}
+				}
+			}
+			modifier = {
+				factor = 0.5
+				any_country = {
+					is_subject_of = ROOT
+					NOT = { has_country_flag = is_gem_among_colonies_flag_@ROOT }
+				}
+			}
 		}
 	}
 	
@@ -3018,11 +3309,113 @@
 		}
 
 		completion_reward = {
-			
+			custom_effect_tooltip = increased_military_presence_tt
+			hidden_effect = {
+				every_country = {
+					limit = {
+						OR = {
+							tag = ROOT
+							AND = {
+								is_subject_of = ROOT
+								OR = {
+									has_autonomy_state = autonomy_puppet
+									has_autonomy_state = autonomy_reichsprotectorate
+									has_autonomy_state = autonomy_integrated_puppet
+									has_autonomy_state = autonomy_reichskommissariat
+									has_country_flag = is_gem_among_colonies_flag_@ROOT
+								}
+							}
+						}
+					}
+					add_war_support = 0.03
+					if = {
+						limit = { NOT = { has_template = "Military Legion" } }
+						division_template = {
+							name = "Military Legion"
+							is_locked = no
+							regiments = {
+								infantry = { x = 0 y = 0 }
+								infantry = { x = 0 y = 1 }
+								infantry = { x = 0 y = 2 }
+								infantry = { x = 1 y = 0 }
+								infantry = { x = 1 y = 1 }
+								infantry = { x = 1 y = 2 }
+								infantry = { x = 2 y = 0 }
+								artillery_brigade = { x = 2 y = 1 }
+								artillery_brigade = { x = 2 y = 2 }
+							}
+							support = {
+								recon = { x = 0 y = 0 }
+								engineer = { x = 0 y = 1 }
+								artillery = { x = 0 y = 2 }
+							}
+						}
+					}
+				}
+				every_country = {
+					limit = {
+						is_subject_of = ROOT
+						OR = {
+							has_autonomy_state = autonomy_puppet
+							has_autonomy_state = autonomy_reichsprotectorate
+							has_autonomy_state = autonomy_integrated_puppet
+							has_autonomy_state = autonomy_reichskommissariat
+						}
+						NOT = { has_country_flag = is_gem_among_colonies_flag_@ROOT }
+					}
+					capital_scope = {
+						create_unit = {
+							division = "name = \"Military Legion\" division_template = \"Military Legion\" start_experience_factor = 0.6" 
+							owner = PREV
+						}
+					}
+				}
+				every_country = {
+					limit = {
+						is_subject_of = ROOT
+						has_country_flag = is_gem_among_colonies_flag_@ROOT
+					}
+					capital_scope = {
+						create_unit = {
+							division = "name = \"Military Legion\" division_template = \"Military Legion\" start_experience_factor = 0.6" 
+							owner = PREV
+						}
+						create_unit = {
+							division = "name = \"Military Legion\" division_template = \"Military Legion\" start_experience_factor = 0.6" 
+							owner = PREV
+						}
+					}
+				}
+				capital_scope = {
+					create_unit = {
+						division = "name = \"Military Legion\" division_template = \"Military Legion\" start_experience_factor = 0.6" 
+						owner = ROOT
+					}
+				}
+			}
 		}
 
 		ai_will_do = {
 			factor = 3
+			modifier = {
+				factor = 0
+				any_country = {
+					is_subject_of = ROOT
+					NOT = {
+						has_autonomy_state = autonomy_puppet
+						has_autonomy_state = autonomy_reichsprotectorate
+						has_autonomy_state = autonomy_integrated_puppet
+						has_autonomy_state = autonomy_reichskommissariat
+					}
+				}
+			}
+			modifier = {
+				factor = 0.5
+				any_country = {
+					is_subject_of = ROOT
+					NOT = { has_country_flag = is_gem_among_colonies_flag_@ROOT }
+				}
+			}
 		}
 	}
 	
@@ -3062,7 +3455,7 @@
 		}
 
 		ai_will_do = {
-			factor = 3
+			factor = 5
 		}
 	}
 	
@@ -3084,11 +3477,84 @@
 		}
 
 		completion_reward = {
-			
+			if = {
+				limit = { num_subjects < 1 }
+				custom_effect_tooltip = foreign_investor_tt
+			}
+			add_ideas = transfer_of_harmful_industries_idea
+			every_country = {
+				limit = {
+					is_subject_of = ROOT
+					OR = {
+						has_autonomy_state = autonomy_puppet
+						has_autonomy_state = autonomy_reichsprotectorate
+						has_autonomy_state = autonomy_integrated_puppet
+						has_autonomy_state = autonomy_reichskommissariat
+					}
+					NOT = { has_country_flag = is_gem_among_colonies_flag_@ROOT }
+				}
+				random_owned_controlled_state = {
+					limit = { 
+						free_building_slots = {
+							building = industrial_complex
+							size > 0
+							include_locked = yes
+						}
+					}
+					add_extra_state_shared_building_slots = 1
+					add_building_construction = {
+						type = industrial_complex
+						level = 1
+						instant_build = yes
+					}
+				}
+				add_ideas = transfer_of_harmful_industries_puppet
+			}
+			every_country = {
+				limit = {
+					is_subject_of = ROOT
+					has_country_flag = is_gem_among_colonies_flag_@ROOT
+				}
+				random_owned_controlled_state = {
+					limit = { 
+						free_building_slots = {
+							building = industrial_complex
+							size > 1
+							include_locked = yes
+						}
+					}
+					add_extra_state_shared_building_slots = 2
+					add_building_construction = {
+						type = industrial_complex
+						level = 2
+						instant_build = yes
+					}
+				}
+				add_ideas = transfer_of_harmful_industries_puppet
+			}
 		}
 
 		ai_will_do = {
 			factor = 3
+			modifier = {
+				factor = 0
+				any_country = {
+					is_subject_of = ROOT
+					NOT = {
+						has_autonomy_state = autonomy_puppet
+						has_autonomy_state = autonomy_reichsprotectorate
+						has_autonomy_state = autonomy_integrated_puppet
+						has_autonomy_state = autonomy_reichskommissariat
+					}
+				}
+			}
+			modifier = {
+				factor = 0.5
+				any_country = {
+					is_subject_of = ROOT
+					NOT = { has_country_flag = is_gem_among_colonies_flag_@ROOT }
+				}
+			}
 		}
 	}
 	
@@ -3109,11 +3575,67 @@
 		}
 
 		completion_reward = {
-			
+			if = {
+				limit = { num_subjects < 1 }
+				custom_effect_tooltip = foreign_investor_tt
+			}
+			every_country = {
+				limit = {
+					is_subject_of = ROOT
+					OR = {
+						has_autonomy_state = autonomy_puppet
+						has_autonomy_state = autonomy_reichsprotectorate
+						has_autonomy_state = autonomy_integrated_puppet
+						has_autonomy_state = autonomy_reichskommissariat
+					}
+					NOT = { has_country_flag = is_gem_among_colonies_flag_@ROOT }
+				}
+				capital_scope = {
+					add_extra_state_shared_building_slots = 1
+					add_building_construction = {
+						type = industrial_complex
+						level = 1
+						instant_build = yes
+					}
+				}
+			}
+			every_country = {
+				limit = {
+					is_subject_of = ROOT
+					has_country_flag = is_gem_among_colonies_flag_@ROOT
+				}
+				capital_scope = {
+					add_extra_state_shared_building_slots = 2
+					add_building_construction = {
+						type = industrial_complex
+						level = 2
+						instant_build = yes
+					}
+				}
+			}
 		}
 
 		ai_will_do = {
 			factor = 3
+			modifier = {
+				factor = 0
+				any_country = {
+					is_subject_of = ROOT
+					NOT = {
+						has_autonomy_state = autonomy_puppet
+						has_autonomy_state = autonomy_reichsprotectorate
+						has_autonomy_state = autonomy_integrated_puppet
+						has_autonomy_state = autonomy_reichskommissariat
+					}
+				}
+			}
+			modifier = {
+				factor = 0.5
+				any_country = {
+					is_subject_of = ROOT
+					NOT = { has_country_flag = is_gem_among_colonies_flag_@ROOT }
+				}
+			}
 		}
 	}
 	
@@ -3134,11 +3656,54 @@
 		}
 
 		completion_reward = {
-			
+			set_temp_variable = { colonial_elite = 0 }
+			add_ideas = colonial_elite_idea
+			every_country = {
+				limit = {
+					is_subject_of = ROOT
+					OR = {
+						has_autonomy_state = autonomy_puppet
+						has_autonomy_state = autonomy_reichsprotectorate
+						has_autonomy_state = autonomy_integrated_puppet
+						has_autonomy_state = autonomy_reichskommissariat
+					}
+					NOT = { has_country_flag = is_gem_among_colonies_flag_@ROOT }
+				}
+				add_to_temp_variable = { ROOT.colonial_elite = 20 }
+			}
+			every_country = {
+				limit = {
+					is_subject_of = ROOT
+					has_country_flag = is_gem_among_colonies_flag_@ROOT
+				}
+				add_to_temp_variable = { ROOT.colonial_elite = 20 }
+				add_ideas = colonial_elite_gem
+			}
+			custom_effect_tooltip = colonial_elite_tt
+			hidden_effect = { add_political_power = colonial_elite }
 		}
 
 		ai_will_do = {
 			factor = 3
+			modifier = {
+				factor = 0
+				any_country = {
+					is_subject_of = ROOT
+					NOT = {
+						has_autonomy_state = autonomy_puppet
+						has_autonomy_state = autonomy_reichsprotectorate
+						has_autonomy_state = autonomy_integrated_puppet
+						has_autonomy_state = autonomy_reichskommissariat
+					}
+				}
+			}
+			modifier = {
+				factor = 0.5
+				any_country = {
+					is_subject_of = ROOT
+					NOT = { has_country_flag = is_gem_among_colonies_flag_@ROOT }
+				}
+			}
 		}
 	}
 	
@@ -3159,11 +3724,46 @@
 		}
 
 		completion_reward = {
-			
+			custom_effect_tooltip = passportization_of_colonists_tt
+			hidden_effect = {
+				set_temp_variable = { passportization_of_colonists = 0 }
+				every_country = {
+					limit = {
+						is_subject_of = ROOT
+						OR = {
+							has_autonomy_state = autonomy_puppet
+							has_autonomy_state = autonomy_reichsprotectorate
+							has_autonomy_state = autonomy_integrated_puppet
+							has_autonomy_state = autonomy_reichskommissariat
+						}
+					}
+					add_to_temp_variable = { ROOT.passportization_of_colonists = 10000 }
+				}
+				add_manpower = passportization_of_colonists
+			}
 		}
 
 		ai_will_do = {
 			factor = 3
+			modifier = {
+				factor = 0
+				any_country = {
+					is_subject_of = ROOT
+					NOT = {
+						has_autonomy_state = autonomy_puppet
+						has_autonomy_state = autonomy_reichsprotectorate
+						has_autonomy_state = autonomy_integrated_puppet
+						has_autonomy_state = autonomy_reichskommissariat
+					}
+				}
+			}
+			modifier = {
+				factor = 0.5
+				any_country = {
+					is_subject_of = ROOT
+					NOT = { has_country_flag = is_gem_among_colonies_flag_@ROOT }
+				}
+			}
 		}
 	}
 	
@@ -3184,11 +3784,42 @@
 		}
 
 		completion_reward = {
-			
+			every_country = {
+				limit = {
+					is_subject_of = ROOT
+					OR = {
+						has_autonomy_state = autonomy_puppet
+						has_autonomy_state = autonomy_reichsprotectorate
+						has_autonomy_state = autonomy_integrated_puppet
+						has_autonomy_state = autonomy_reichskommissariat
+						has_country_flag = is_gem_among_colonies_flag_@ROOT
+					}
+				}
+				add_ideas = total_passportization
+			}
 		}
 
 		ai_will_do = {
 			factor = 3
+			modifier = {
+				factor = 0
+				any_country = {
+					is_subject_of = ROOT
+					NOT = {
+						has_autonomy_state = autonomy_puppet
+						has_autonomy_state = autonomy_reichsprotectorate
+						has_autonomy_state = autonomy_integrated_puppet
+						has_autonomy_state = autonomy_reichskommissariat
+					}
+				}
+			}
+			modifier = {
+				factor = 0.5
+				any_country = {
+					is_subject_of = ROOT
+					NOT = { has_country_flag = is_gem_among_colonies_flag_@ROOT }
+				}
+			}
 		}
 	}
 	
@@ -3209,13 +3840,51 @@
 		}
 
 		completion_reward = {
-			
+			set_temp_variable = { consolidation_empire = 0 }
+			every_country = {
+				limit = {
+					is_subject_of = ROOT
+					OR = {
+						has_autonomy_state = autonomy_puppet
+						has_autonomy_state = autonomy_reichsprotectorate
+						has_autonomy_state = autonomy_integrated_puppet
+						has_autonomy_state = autonomy_reichskommissariat
+						has_country_flag = is_gem_among_colonies_flag_@ROOT
+					}
+				}
+				add_to_temp_variable = { ROOT.consolidation_empire = 1 }
+				add_timed_idea = {
+					idea = consolidation_empire
+					days = 1000
+				}
+			}
+			divide_temp_variable = { consolidation_empire = 2 }
+			clamp_temp_variable = {
+				var = consolidation_empire
+				min = 1
+				max = 99
+			}
+			custom_effect_tooltip = consolidation_empire_tt
+			build_arms_factory = yes
 		}
 
 		ai_will_do = {
 			factor = 3
+			modifier = {
+				factor = 0
+				any_country = {
+					is_subject_of = ROOT
+					NOT = {
+						has_autonomy_state = autonomy_puppet
+						has_autonomy_state = autonomy_reichsprotectorate
+						has_autonomy_state = autonomy_integrated_puppet
+						has_autonomy_state = autonomy_reichskommissariat
+					}
+				}
+			}
 		}
 	}
+
 	
 	#########################
 	#### SUBJECT SECTION ####
