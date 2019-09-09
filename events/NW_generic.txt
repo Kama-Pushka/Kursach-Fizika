@@ -114,4 +114,342 @@ country_event = {
 	}
 }
 
+#Субъект проводит своевольную политику // OVERLORD
+country_event = {
+	id = NWgeneric.5
+	title = NWgeneric.5.t
+	desc = NWgeneric.5.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	option = {
+		name = NWgeneric.5.a
+		ai_chance = {
+			factor = 50
+		}
+		if = {
+			limit = { FROM = { has_completed_focus = seek_support } }
+			FROM = { set_country_flag = start_seek_support_flag }
+		}
+	}
+	
+	option = {
+		name = NWgeneric.5.b
+		ai_chance = {
+			factor = 50
+		}
+		FROM = {
+			country_event = { id = NWgeneric.6 days = 1 }
+			set_country_flag = NWgeneric5b_flag
+		}
+		custom_effect_tooltip = NWgeneric5b_tt
+	}
+	
+	option = {
+		name = NWgeneric.5.c
+		ai_chance = {
+			factor = 50
+		}
+		FROM = {
+			country_event = { id = NWgeneric.6 days = 1 }
+			set_country_flag = NWgeneric5c_flag
+		}
+		custom_effect_tooltip = NWgeneric5c_tt
+	}
+}
+
+#Требование прекратить своевольную политику // SUBJECT
+country_event = {
+	id = NWgeneric.6
+	title = NWgeneric.6.t
+	desc = NWgeneric.6.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	option = {
+		name = NWgeneric.6.a
+		ai_chance = {
+			factor = 50
+		}
+		if = {
+			limit = { NOT = { has_completed_focus = seek_support } }
+			set_autonomy = {
+				target = FROM
+				autonomy_state = autonomy_free
+			}
+			declare_war_on = {
+				target = FROM
+				type = annex_everything
+			}
+			clear_gem_flag = yes
+		}
+		else = { set_country_flag = start_seek_support_flag }
+	}
+	
+	option = {
+		name = NWgeneric.6.b
+		ai_chance = {
+			factor = 50
+			modifier = {
+				factor = 0
+				has_completed_focus = seek_support
+			}
+		}
+		trigger = { has_country_flag = NWgeneric5b_flag }
+		clr_country_flag = NWgeneric5b_flag
+		if = {
+			limit = { has_autonomy_state = autonomy_colony }
+			FROM = {
+				set_autonomy = {
+					target = ROOT
+					autonomy_state = autonomy_puppet
+				}
+			}
+		}
+		else_if = {
+			limit = { has_autonomy_state = autonomy_puppet }
+			FROM = {
+				set_autonomy = {
+					target = ROOT
+					autonomy_state = autonomy_integrated_puppet
+				}
+			}
+		}
+		else_if = {
+			limit = { has_autonomy_state = autonomy_integrated_puppet }
+			FROM = {
+				set_autonomy = {
+					target = ROOT
+					autonomy_state = autonomy_supervised_state
+				}
+			}
+		}
+		else_if = {
+			limit = { has_autonomy_state = autonomy_satellite }
+			FROM = {
+				set_autonomy = {
+					target = ROOT
+					autonomy_state = autonomy_reichsprotectorate
+				}
+			}
+		}
+		else_if = {
+			limit = { has_autonomy_state = autonomy_reichsprotectorate }
+			FROM = {
+				set_autonomy = {
+					target = ROOT
+					autonomy_state = autonomy_reichskommissariat
+				}
+			}
+		}
+		else_if = {
+			limit = {
+				OR = {
+					has_autonomy_state = autonomy_reichskommissariat
+					has_autonomy_state = autonomy_supervised_state
+				}
+			}
+			add_autonomy_score = {
+				value = -100
+			}
+		}
+	}
+	
+	option = {
+		name = NWgeneric.6.b
+		ai_chance = {
+			factor = 50
+			modifier = {
+				factor = 0
+				has_completed_focus = seek_support
+			}
+		}
+		trigger = { has_country_flag = NWgeneric5c_flag }
+		clr_country_flag = NWgeneric5c_flag
+		FROM = {
+			set_autonomy = {
+				target = ROOT
+				autonomy_state = autonomy_dominion
+			}
+		}
+		set_country_flag = autonomy_NWgeneric6_adopt
+		custom_effect_tooltip = autonomy_NWgeneric6_adopt_tt
+	}
+}
+
+#Субъект требует независимости // OVERLORD
+country_event = {
+	id = NWgeneric.7
+	title = NWgeneric.7.t
+	desc = NWgeneric.7.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	option = {
+		name = NWgeneric.7.a
+		ai_chance = {
+			factor = 50
+		}
+		set_autonomy = {
+			target = FROM
+			autonomy_state = autonomy_free
+		}
+		FROM = {
+			leave_faction = yes
+			clear_gem_flag = yes
+		}
+	}
+	
+	option = {
+		name = NWgeneric.7.b
+		ai_chance = {
+			factor = 50
+		}
+		set_autonomy = {
+			target = FROM
+			autonomy_state = autonomy_free
+		}
+		declare_war_on = {
+			target = FROM
+			type = annex_everything
+		}
+		FROM = { clear_gem_flag = yes }
+	}
+}
+
+#Другой субъект призывает к борьбе за независимость // SUBJECT
+country_event = {
+	id = NWgeneric.8
+	title = NWgeneric.8.t
+	desc = NWgeneric.8.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	option = {
+		name = NWgeneric.8.a
+		ai_chance = {
+			factor = 30
+			modifier = {
+				add = 40
+				FROM = { is_ai = no }
+			}
+		}
+		set_country_flag = accept_call_to_fight_for_independence
+		custom_effect_tooltip = accept_call_to_fight_for_independence_tt
+	}
+	
+	option = {
+		name = NWgeneric.8.b
+		ai_chance = {
+			factor = 70
+		}
+		set_country_flag = declane_call_to_fight_for_independence
+	}
+}
+
+#Ультиматум метрополии // OVERLORD
+country_event = {
+	id = NWgeneric.9
+	title = NWgeneric.9.t
+	desc = NWgeneric.9.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	option = {
+		name = NWgeneric.9.a
+		ai_chance = {
+			factor = 40
+		}
+		set_autonomy = {
+			target = FROM
+			autonomy_state = autonomy_free
+		}
+		declare_war_on = {
+			target = FROM
+			type = annex_everything
+		}
+		FROM = { clear_gem_flag = yes }
+		hidden_effect = {
+			every_other_country = {
+				limit = {
+					NOT = { tag = FROM }
+					is_subject_of = ROOT
+					has_country_flag = accept_call_to_fight_for_independence
+				}
+				OVERLORD = {
+					set_autonomy = {
+						target = PREV
+						autonomy_state = autonomy_free
+					}
+				}
+				clear_gem_flag = yes
+				add_to_war = {
+					targeted_alliance = FROM
+					enemy = ROOT 
+					hostility_reason = asked_to_join
+				}
+			}
+			every_country = {
+				limit = {
+					is_subject_of = ROOT
+				}
+				clr_country_flag = declane_call_to_fight_for_independence
+			}
+		}
+	}
+	
+	option = {
+		name = NWgeneric.9.b
+		ai_chance = {
+			factor = 0
+		}
+		set_autonomy = {
+			target = FROM
+			autonomy_state = autonomy_free
+		}
+		FROM = {
+			leave_faction = yes
+			clear_gem_flag = yes
+			diplomatic_relation = {
+				country = ROOT
+				relation = non_aggression_pact
+				active = yes
+			}
+		}
+		diplomatic_relation = {
+			country = FROM
+			relation = non_aggression_pact
+			active = yes
+		}
+		hidden_effect = {
+			every_country = {
+				limit = {
+					is_subject_of = ROOT
+				}
+				clr_country_flag = accept_call_to_fight_for_independence
+				clr_country_flag = declane_call_to_fight_for_independence
+			}
+		}
+	}
+}
+
+
+
+
+
+
+#TEST
+country_event = {
+	id = NWgeneric.999
+	title = TEST
+	desc = TEST
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	option = {
+		name = 1
+		set_country_flag = start_seek_support_flag
+	}
+	
+}
 
