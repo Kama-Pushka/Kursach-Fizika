@@ -29,6 +29,24 @@ focus_tree = {
 		ai_will_do = {
 			factor = 1
 		}
+		
+		available = {
+			if = {
+				limit = { is_subject = yes }
+				OR = {
+					has_autonomy_state = autonomy_dominion
+					has_autonomy_state = autonomy_satellite
+					has_completed_focus = guard_of_empire
+					has_completed_focus = control_over_internal_affairs
+					OVERLORD = {
+						OR = {
+							has_completed_focus = project_of_union_constitution
+							has_completed_focus = consolidation_empire
+						}
+					}
+				}
+			}
+		}
 
 		available_if_capitulated = yes
 
@@ -50,6 +68,17 @@ focus_tree = {
 				NOT = { has_guaranteed = ROOT }
 			}
 			GER = { has_government = fascism }
+			if = {
+				limit = { is_subject = yes }
+				OR = {
+					has_autonomy_state = autonomy_dominion
+					has_autonomy_state = autonomy_satellite
+					has_completed_focus = guard_of_empire
+					has_completed_focus = control_over_internal_affairs
+					OVERLORD = { has_completed_focus = project_of_union_constitution }
+					OVERLORD = { has_completed_focus = consolidation_empire }
+				}
+			}
 		}
 		allow_branch = {
 			tag = AUS
@@ -857,13 +886,18 @@ focus_tree = {
 		prerequisite = { focus = generic_promotion_science }
 		prerequisite = { focus = generic_union_country }
 		prerequisite = { focus = generic_political_dominant }
-		x = 0
+		mutually_exclusive = { focus = ideological_expansion }
+		x = -1
 		y = 1
 		relative_position_id = generic_union_country
 
 		cost = 10
 
 		available_if_capitulated = yes
+		
+		ai_will_do = {
+			factor = 6
+		}
 
 		completion_reward = {
 			add_ideas = ideological_fanaticism_focus
@@ -871,6 +905,39 @@ focus_tree = {
 				set_rule = { can_use_kamikaze_pilots = yes }
 			}
 			custom_effect_tooltip = kamikaze_focus_tooltip
+		}
+	}
+	
+	focus = {
+		id = ideological_expansion
+		icon = GFX_z_goal_flames_of_rebellion
+		prerequisite = { focus = generic_promotion_science }
+		prerequisite = { focus = generic_union_country }
+		prerequisite = { focus = generic_political_dominant }
+		mutually_exclusive = { focus = ideological_fanaticism }
+		x = 1
+		y = 1
+		relative_position_id = generic_union_country
+
+		cost = 10
+
+		available_if_capitulated = yes
+		
+		ai_will_do = {
+			factor = 4.5
+			modifier = {
+				factor = 0
+				is_historical_focus_on = yes
+			}
+			modifier = {
+				factor = 2
+				has_government = trozkism
+			}
+		}
+
+		completion_reward = {
+			unlock_decision_category_tooltip = generic_policy_interventions_category
+			unlock_decision_category_tooltip = generic_interventions_start_civil_war_category
 		}
 	}
 	
@@ -1873,13 +1940,17 @@ focus_tree = {
 		id = patriotism_fury
 		icon = GFX_z_national_liber
 		prerequisite = { focus = generic_war_departament focus = why_we_fight focus = imperial_ambition }
-
-		x = 0
+		mutually_exclusive = { focus = patriotism_zeal }
+		x = -1
 		y = 1
 		relative_position_id = why_we_fight
 		cost = 10
 
 		available_if_capitulated = yes
+		
+		ai_will_do = {
+			factor = 6
+		}
 
 		completion_reward = {
 			add_ideas = patriotism_fury
@@ -1887,6 +1958,32 @@ focus_tree = {
 				set_rule = { can_use_kamikaze_pilots = yes }
 			}
 			custom_effect_tooltip = kamikaze_focus_tooltip
+		}
+	}
+	
+	focus = {
+		id = patriotism_zeal
+		icon = GFX_z_goal_generic_communists_soldiers2
+		prerequisite = { focus = generic_war_departament focus = why_we_fight focus = imperial_ambition }
+		mutually_exclusive = { focus = patriotism_fury }
+		x = 1
+		y = 1
+		relative_position_id = why_we_fight
+		cost = 10
+		
+		ai_will_do = {
+			factor = 3
+			modifier = {
+				factor = 0
+				is_historical_focus_on = yes
+			}
+		}
+
+		available_if_capitulated = yes
+
+		completion_reward = {
+			unlock_decision_category_tooltip = generic_policy_interventions_category
+			unlock_decision_category_tooltip = generic_interventions_start_civil_war_category
 		}
 	}
 	
@@ -2052,7 +2149,7 @@ focus_tree = {
 	focus = {
 		id = technology_sharing
 		icon = GFX_goal_generic_scientific_exchange
-		prerequisite = { focus = ideological_fanaticism focus = extra_tech_slot focus = patriotism_fury }
+		prerequisite = { focus = ideological_fanaticism focus = ideological_expansion focus = extra_tech_slot focus = patriotism_fury focus = patriotism_zeal }
 		available = {
 			has_war = yes
 			is_in_faction = yes
