@@ -126,6 +126,10 @@ country_event = {
 		name = NWgeneric.5.a
 		ai_chance = {
 			factor = 50
+			modifier = {
+				factor = 3
+				FROM = { NOT = { has_completed_focus = seek_support } }
+			}
 		}
 		if = {
 			limit = { FROM = { has_completed_focus = seek_support } }
@@ -173,15 +177,47 @@ country_event = {
 		}
 		if = {
 			limit = { NOT = { has_completed_focus = seek_support } }
-			set_autonomy = {
-				target = ROOT
-				autonomy_state = autonomy_free
+			OVERLORD = {
+				set_autonomy = {
+					target = ROOT
+					autonomy_state = autonomy_free
+				}
+			}
+			if = {
+				limit = { is_in_faction = yes }
+				leave_faction = yes
+			}
+			if = {
+				limit = { has_war = yes }
+				custom_effect_tooltip = root_out_of_all_war_tt
+				hidden_effect = {
+					every_enemy_country = {
+						limit = {
+							NOT = {
+								any_state = {
+									is_owned_by = ROOT
+									OR = {
+										is_claimed_by = PREV
+										is_core_of = PREV
+									}
+								}
+								any_state = {
+									is_owned_by = PREV
+									OR = {
+										is_claimed_by = ROOT
+										is_core_of = ROOT
+									}
+								}
+							}
+						}
+						white_peace = ROOT
+					}
+				}
 			}
 			declare_war_on = {
 				target = FROM
 				type = annex_everything
 			}
-			clear_gem_flag = yes
 		}
 		else = { set_country_flag = start_seek_support_flag }
 	}
@@ -199,7 +235,7 @@ country_event = {
 		clr_country_flag = NWgeneric5b_flag
 		if = {
 			limit = { has_autonomy_state = autonomy_colony }
-			FROM = {
+			OVERLORD = {
 				set_autonomy = {
 					target = ROOT
 					autonomy_state = autonomy_puppet
@@ -208,7 +244,7 @@ country_event = {
 		}
 		else_if = {
 			limit = { has_autonomy_state = autonomy_puppet }
-			FROM = {
+			OVERLORD = {
 				set_autonomy = {
 					target = ROOT
 					autonomy_state = autonomy_integrated_puppet
@@ -217,7 +253,7 @@ country_event = {
 		}
 		else_if = {
 			limit = { has_autonomy_state = autonomy_integrated_puppet }
-			FROM = {
+			OVERLORD = {
 				set_autonomy = {
 					target = ROOT
 					autonomy_state = autonomy_supervised_state
@@ -226,7 +262,7 @@ country_event = {
 		}
 		else_if = {
 			limit = { has_autonomy_state = autonomy_satellite }
-			FROM = {
+			OVERLORD = {
 				set_autonomy = {
 					target = ROOT
 					autonomy_state = autonomy_reichsprotectorate
@@ -235,7 +271,7 @@ country_event = {
 		}
 		else_if = {
 			limit = { has_autonomy_state = autonomy_reichsprotectorate }
-			FROM = {
+			OVERLORD = {
 				set_autonomy = {
 					target = ROOT
 					autonomy_state = autonomy_reichskommissariat
@@ -266,7 +302,7 @@ country_event = {
 		}
 		trigger = { has_country_flag = NWgeneric5c_flag }
 		clr_country_flag = NWgeneric5c_flag
-		FROM = {
+		OVERLORD = {
 			set_autonomy = {
 				target = ROOT
 				autonomy_state = autonomy_dominion
@@ -295,8 +331,40 @@ country_event = {
 			autonomy_state = autonomy_free
 		}
 		FROM = {
-			leave_faction = yes
+			if = {
+				limit = { is_in_faction = yes }
+				leave_faction = yes
+			}
 			clear_gem_flag = yes
+		}
+		if = {
+			limit = { FROM = { has_war = yes } }
+			custom_effect_tooltip = from_out_of_all_war_tt
+			hidden_effect = {
+				FROM = {
+					every_enemy_country = {
+						limit = {
+							NOT = {
+								any_state = {
+									is_owned_by = FROM
+									OR = {
+										is_claimed_by = PREV
+										is_core_of = PREV
+									}
+								}
+								any_state = {
+									is_owned_by = PREV
+									OR = {
+										is_claimed_by = FROM
+										is_core_of = FROM
+									}
+								}
+							}
+						}
+						white_peace = FROM
+					}
+				}
+			}
 		}
 	}
 	
@@ -309,11 +377,46 @@ country_event = {
 			target = FROM
 			autonomy_state = autonomy_free
 		}
+		FROM = {
+			if = {
+				limit = { is_in_faction = yes }
+				leave_faction = yes
+			}
+			clear_gem_flag = yes
+		}
 		declare_war_on = {
 			target = FROM
 			type = annex_everything
 		}
-		FROM = { clear_gem_flag = yes }
+		if = {
+			limit = { FROM = { has_war = yes } }
+			custom_effect_tooltip = from_out_of_all_war_tt
+			hidden_effect = {
+				FROM = {
+					every_enemy_country = {
+						limit = {
+							NOT = {
+								any_state = {
+									is_owned_by = FROM
+									OR = {
+										is_claimed_by = PREV
+										is_core_of = PREV
+									}
+								}
+								any_state = {
+									is_owned_by = PREV
+									OR = {
+										is_claimed_by = FROM
+										is_core_of = FROM
+									}
+								}
+							}
+						}
+						white_peace = FROM
+					}
+				}
+			}
+		}
 	}
 }
 
@@ -364,11 +467,46 @@ country_event = {
 			target = FROM
 			autonomy_state = autonomy_free
 		}
+		FROM = {
+			if = {
+				limit = { is_in_faction = yes }
+				leave_faction = yes
+			}
+			clear_gem_flag = yes
+		}
+		if = {
+			limit = { FROM = { has_war = yes } }
+			custom_effect_tooltip = from_out_of_all_war_tt
+			hidden_effect = {
+				FROM = {
+					every_enemy_country = {
+						limit = {
+							NOT = {
+								any_state = {
+									is_owned_by = FROM
+									OR = {
+										is_claimed_by = PREV
+										is_core_of = PREV
+									}
+								}
+								any_state = {
+									is_owned_by = PREV
+									OR = {
+										is_claimed_by = FROM
+										is_core_of = FROM
+									}
+								}
+							}
+						}
+						white_peace = FROM
+					}
+				}
+			}
+		}
 		declare_war_on = {
 			target = FROM
 			type = annex_everything
 		}
-		FROM = { clear_gem_flag = yes }
 		hidden_effect = {
 			every_other_country = {
 				limit = {
@@ -383,6 +521,16 @@ country_event = {
 					}
 				}
 				clear_gem_flag = yes
+				if = {
+					limit = { is_in_faction = yes }
+					leave_faction = yes
+				}
+				if = {
+					limit = { has_war = yes }
+					every_enemy_country = {
+						white_peace = PREV
+					}
+				}
 				add_to_war = {
 					targeted_alliance = FROM
 					enemy = ROOT 
@@ -401,14 +549,17 @@ country_event = {
 	option = {
 		name = NWgeneric.9.b
 		ai_chance = {
-			factor = 0
+			factor = 60
 		}
 		set_autonomy = {
 			target = FROM
 			autonomy_state = autonomy_free
 		}
 		FROM = {
-			leave_faction = yes
+			if = {
+				limit = { is_in_faction = yes }
+				leave_faction = yes
+			}
 			clear_gem_flag = yes
 			diplomatic_relation = {
 				country = ROOT
@@ -430,11 +581,37 @@ country_event = {
 				clr_country_flag = declane_call_to_fight_for_independence
 			}
 		}
+		if = {
+			limit = { FROM = { has_war = yes } }
+			custom_effect_tooltip = from_out_of_all_war_tt
+			hidden_effect = {
+				FROM = {
+					every_enemy_country = {
+						limit = {
+							NOT = {
+								any_state = {
+									is_owned_by = FROM
+									OR = {
+										is_claimed_by = PREV
+										is_core_of = PREV
+									}
+								}
+								any_state = {
+									is_owned_by = PREV
+									OR = {
+										is_claimed_by = FROM
+										is_core_of = FROM
+									}
+								}
+							}
+						}
+						white_peace = FROM
+					}
+				}
+			}
+		}
 	}
 }
-
-
-
 
 
 
