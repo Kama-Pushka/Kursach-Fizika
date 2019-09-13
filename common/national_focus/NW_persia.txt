@@ -53,7 +53,31 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus PER_create_the_sadabat_pact"
-			
+			set_rule = { can_create_factions = yes }
+			create_faction = sadabat_pact
+			add_political_power = 150
+			effect_tooltip = {
+				every_other_country = {
+					limit = {
+						has_country_flag = saadabad_accept_flag
+					}
+					ROOT = { add_to_faction = PREV }
+				}
+			}
+			hidden_effect = {
+				if = {
+					limit = { PER = { has_country_flag = saadabad_accept_flag } }
+					complete_national_focus = PER_expansion_iran
+				}
+				if = {
+					limit = { IRQ = { has_country_flag = saadabad_accept_flag } }
+					complete_national_focus = PER_expansion_iraq
+				}
+				if = {
+					limit = { AFG = { has_country_flag = saadabad_accept_flag } }
+					complete_national_focus = PER_expansion_afgan
+				}
+			}
 		}
 	}
 	
@@ -476,7 +500,16 @@ focus_tree = {
 			factor = 10
 		}
 		available = {
-			
+			OR = {
+				AND = {
+					country_exists = GER
+					NOT = { has_war_with = GER }
+				}
+				AND = {
+					country_exists = ENG
+					NOT = { has_war_with = ENG }
+				}
+			}
 		}
 		bypass = {
 			
@@ -484,10 +517,22 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus PER_between_germany_and_britain"
-			add_opinion_modifier = { target = GER modifier = PER_between_germany_and_britain }
-			GER = { add_opinion_modifier = { target = ROOT modifier = PER_between_germany_and_britain } }
-			add_opinion_modifier = { target = ENG modifier = PER_between_germany_and_britain }
-			ENG = { add_opinion_modifier = { target = ROOT modifier = PER_between_germany_and_britain } }
+			if = {
+				limit = {
+					country_exists = GER
+					NOT = { has_war_with = GER }
+				}
+				add_opinion_modifier = { target = GER modifier = PER_between_germany_and_britain }
+				GER = { add_opinion_modifier = { target = ROOT modifier = PER_between_germany_and_britain } }
+			}
+			if = {
+				limit = {
+					country_exists = ENG
+					NOT = { has_war_with = ENG }
+				}
+				add_opinion_modifier = { target = ENG modifier = PER_between_germany_and_britain }
+				ENG = { add_opinion_modifier = { target = ROOT modifier = PER_between_germany_and_britain } }
+			}
 		}
 	}
 	
@@ -508,9 +553,14 @@ focus_tree = {
 
 		ai_will_do = {
 			factor = 10
+			modifier = {
+				factor = 0
+				GER = { has_civil_war = yes }
+			}
 		}
 		available = {
-			
+			country_exists = GER
+			NOT = { has_war_with = GER }
 		}
 		bypass = {
 			
@@ -519,6 +569,7 @@ focus_tree = {
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus PER_involvement_german_advisers"
 			every_owned_state = { add_extra_state_shared_building_slots = 1 }
+			custom_effect_tooltip = PER_involvement_german_advisers_tt
 		}
 	}
 	
@@ -541,7 +592,8 @@ focus_tree = {
 			factor = 10
 		}
 		available = {
-			
+			country_exists = ENG
+			NOT = { has_war_with = ENG }
 		}
 		bypass = {
 			
@@ -570,9 +622,14 @@ focus_tree = {
 
 		ai_will_do = {
 			factor = 10
+			modifier = {
+				factor = 0
+				GER = { has_civil_war = yes }
+			}
 		}
 		available = {
-			
+			country_exists = GER
+			NOT = { has_war_with = GER }
 		}
 		bypass = {
 			
@@ -617,7 +674,8 @@ focus_tree = {
 			factor = 10
 		}
 		available = {
-			
+			country_exists = ENG
+			NOT = { has_war_with = ENG }
 		}
 		bypass = {
 			
@@ -691,6 +749,10 @@ focus_tree = {
 
 		ai_will_do = {
 			factor = 10
+			modifier = {
+				factor = 3
+				threat < 0.4
+			}
 		}
 		available = {
 			
@@ -709,6 +771,7 @@ focus_tree = {
 				add_opinion_modifier = { target = ROOT modifier = PER_nationalize_oil_industry_op }
 			}
 			add_opinion_modifier = { target = ENG modifier = PER_nationalize_oil_industry_op }
+			custom_effect_tooltip = PER_nationalize_oil_industry_tt
 		}
 	}
 	
@@ -729,9 +792,14 @@ focus_tree = {
 
 		ai_will_do = {
 			factor = 10
+			modifier = {
+				factor = 0
+				GER = { has_civil_war = yes }
+			}
 		}
 		available = {
-			
+			country_exists = GER
+			NOT = { has_war_with = GER }
 		}
 		bypass = {
 			
@@ -739,7 +807,9 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus PER_trade_agreement_with_germany"
-			
+			add_ideas = PER_trade_agreement_with_germany
+			add_opinion_modifier = { target = GER modifier = PER_trade_agreement_with_germany }
+			GER = { add_opinion_modifier = { target = ROOT modifier = PER_trade_agreement_with_germany } }
 		}
 	}
 	
@@ -762,15 +832,30 @@ focus_tree = {
 			factor = 10
 		}
 		available = {
-			
+			country_exists = ENG
+			NOT = { has_war_with = ENG }
 		}
 		bypass = {
 			
 		}
 		
 		completion_reward = {
-			log = "[GetDateText]: [Root.GetName]: Focus PER_trade_agreement_with_germany"
-			
+			log = "[GetDateText]: [Root.GetName]: Focus PER_trade_agreement_with_britain"
+			random_owned_controlled_state = {
+				limit = {
+					free_building_slots = {
+						building = industrial_complex
+						size > 2
+						include_locked = yes
+					}
+				}
+				add_extra_state_shared_building_slots = 3
+				add_building_construction = {
+					type = industrial_complex
+					level = 3
+					instant_build = yes
+				}
+			}
 		}
 	}
 	
@@ -793,15 +878,19 @@ focus_tree = {
 			factor = 10
 		}
 		available = {
-			
+			GER = { is_faction_leader = yes }
+			NOT = { has_war_with = GER }
 		}
 		bypass = {
-			
+			OR = {
+				is_in_faction_with = GER
+				NOT = { country_exists = GER }
+			}
 		}
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus PER_alliance_with_germany"
-			
+			GER = { country_event = { id = generic.2 days = 1 } }
 		}
 	}
 	
@@ -826,12 +915,27 @@ focus_tree = {
 			
 		}
 		bypass = {
-			
+			owns_state = 229
+			owns_state = 896
+			owns_state = 894
+			owns_state = 895
+			owns_state = 230
 		}
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus PER_return_of_azerbaijan"
-			
+			every_state = {
+				limit = {
+					OR = {
+						state = 229
+						state = 896
+						state = 894
+						state = 895
+						state = 230
+					}
+				}
+				add_claim_by = ROOT
+			}
 		}
 	}
 	
@@ -861,7 +965,21 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus PER_international_trade"
-			
+			random_owned_controlled_state = {
+				limit = {
+					free_building_slots = {
+						building = industrial_complex
+						size > 0
+						include_locked = yes
+					}
+				}
+				add_extra_state_shared_building_slots = 1
+				add_building_construction = {
+					type = industrial_complex
+					level = 1
+					instant_build = yes
+				}
+			}
 		}
 	}
 	
@@ -883,7 +1001,8 @@ focus_tree = {
 			factor = 10
 		}
 		available = {
-			
+			country_exists = SOV
+			NOT = { has_war_with = SOV }
 		}
 		bypass = {
 			
@@ -891,7 +1010,23 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus PER_relations_with_ussr"
-			
+			add_opinion_modifier = { target = SOV modifier = PER_relations_with_ussr }
+			SOV = { add_opinion_modifier = { target = ROOT modifier = PER_relations_with_ussr } }
+			random_owned_controlled_state = {
+				limit = {
+					free_building_slots = {
+						building = industrial_complex
+						size > 1
+						include_locked = yes
+					}
+				}
+				add_extra_state_shared_building_slots = 2
+				add_building_construction = {
+					type = industrial_complex
+					level = 2
+					instant_build = yes
+				}
+			}
 		}
 	}
 	
@@ -913,15 +1048,17 @@ focus_tree = {
 			factor = 10
 		}
 		available = {
-			
+			country_exists = ENG
+			ENG = { is_faction_leader = yes }
+			NOT = { has_war_with = ENG }
 		}
 		bypass = {
-			
+			is_in_faction_with = ENG
 		}
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus PER_alliance_with_britain"
-			
+			ENG = { country_event = { id = generic.2 days = 1 } }
 		}
 	}
 	
@@ -955,7 +1092,7 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus PER_policy_westernization"
-			
+			add_political_power = 100
 		}
 	}
 	
@@ -985,7 +1122,7 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus PER_empowerment_women"
-			
+			set_rule = { can_generate_female_aces = yes }
 		}
 	}
 	
@@ -1015,7 +1152,11 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus PER_trial_communists"
-			
+			add_stability = 0.1
+			add_popularity = {
+				ideology = communism
+				popularity = -0.1
+			}
 		}
 	}
 	
@@ -1045,7 +1186,8 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus PER_continued_reform"
-			
+			add_political_power = 50
+			add_ideas = PER_continued_reform
 		}
 	}
 	
@@ -1075,7 +1217,16 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus PER_prohibit_schools_attached_mosques"
-			
+			add_popularity = {
+				ideology = fascism
+				popularity = 0.05
+			}
+			add_tech_bonus = {
+				name = industrial_bonus
+				bonus = 1.0
+				uses = 1
+				category = industry
+			}
 		}
 	}
 	
@@ -1105,7 +1256,16 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus PER_translate_persian_into_latin"
-			
+			add_popularity = {
+				ideology = fascism
+				popularity = 0.05
+			}
+			add_tech_bonus = {
+				name = PER_translate_persian_into_latin
+				bonus = 1.0
+				uses = 1
+				category = electronics
+			}
 		}
 	}
 	
@@ -1135,7 +1295,11 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus PER_prohibit_wearing_hijabs"
-			
+			add_ideas = PER_prohibit_wearing_hijabs_idea
+			add_popularity = {
+				ideology = fascism
+				popularity = 0.05
+			}
 		}
 	}
 	
@@ -1171,7 +1335,10 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus PER_islamic_revolution"
-			
+			add_popularity = {
+				ideology = fascism
+				popularity = 0.1
+			}
 		}
 	}
 	
@@ -1201,7 +1368,8 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus PER_awe_of_allah"
-			
+			add_ideas = PER_awe_of_allah
+			custom_effect_tooltip = PER_awe_of_allah_tt
 		}
 	}
 	
@@ -1231,7 +1399,11 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus PER_holy_jihad"
-			
+			add_ideas = PER_holy_jihad
+			add_named_threat = { 
+				threat = 1 
+				name = PER_holy_jihad
+			}
 		}
 	}
 	
@@ -1261,7 +1433,11 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus PER_cancel_godless_reform"
-			
+			add_political_power = 100
+			add_popularity = {
+				ideology = monarchy
+				popularity = -0.15
+			}
 		}
 	}
 	
@@ -1291,7 +1467,9 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus PER_restore_rights_aristocracy"
-			
+			add_stability = 0.05
+			add_timed_idea = { idea = PER_restore_rights_aristocracy_idea days = 300 }
+			capital_scope = { add_extra_state_shared_building_slots = 1 }
 		}
 	}
 	
@@ -1322,7 +1500,36 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus PER_war_against_sunnis"
-			
+			add_war_support = 0.1
+			add_opinion_modifier = { target = IRQ modifier = PER_war_against_sunnis }
+			add_opinion_modifier = { target = AFG modifier = PER_war_against_sunnis }
+			add_opinion_modifier = { target = TUR modifier = PER_war_against_sunnis }
+			add_opinion_modifier = { target = SYR modifier = PER_war_against_sunnis }
+			add_opinion_modifier = { target = LEB modifier = PER_war_against_sunnis }
+			add_opinion_modifier = { target = BPL modifier = PER_war_against_sunnis }
+			add_opinion_modifier = { target = JOR modifier = PER_war_against_sunnis }
+			add_opinion_modifier = { target = SAU modifier = PER_war_against_sunnis }
+			add_opinion_modifier = { target = OMA modifier = PER_war_against_sunnis }
+			add_opinion_modifier = { target = YEM modifier = PER_war_against_sunnis }
+			every_other_country = {
+				limit = {
+					OR = {
+						tag = IRQ
+						tag = AFG
+						tag = TUR
+						tag = SYR
+						tag = LEB
+						tag = BPL
+						tag = JOR
+						tag = SAU
+						tag = OMA
+						tag = YEM
+					}
+				}
+				add_opinion_modifier = { target = ROOT modifier = PER_war_against_sunnis }
+			}
+			set_rule = { can_create_factions = yes }
+			create_faction = PER_islamic_world
 		}
 	}
 	
@@ -1344,15 +1551,32 @@ focus_tree = {
 			factor = 10
 		}
 		available = {
-			
 		}
 		bypass = {
-			
+			OR = {
+				AFG = { is_subject_of = ROOT }
+				is_subject_of = AFG
+				is_in_faction_with = AFG
+				NOT = { country_exists = AFG }
+			}
 		}
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus PER_conquest_of_afghanistan"
-			
+			create_wargoal = {
+				type = annex_everything
+				target = AFG
+			}
+			add_ai_strategy = {
+				type = antagonize
+				id = "AFG"
+				value = 200
+			}
+			add_ai_strategy = {
+				type = conquer
+				id = "AFG"
+				value = 200
+			}
 		}
 	}
 	
@@ -1377,12 +1601,30 @@ focus_tree = {
 			
 		}
 		bypass = {
-			
+			OR = {
+				TUR = { is_subject_of = ROOT }
+				is_subject_of = TUR
+				is_in_faction_with = TUR
+				NOT = { country_exists = TUR }
+			}
 		}
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus PER_behead_godless_turk"
-			
+			create_wargoal = {
+				type = annex_everything
+				target = TUR
+			}
+			add_ai_strategy = {
+				type = antagonize
+				id = "TUR"
+				value = 200
+			}
+			add_ai_strategy = {
+				type = conquer
+				id = "TUR"
+				value = 200
+			}
 		}
 	}
 	
@@ -1407,12 +1649,30 @@ focus_tree = {
 			
 		}
 		bypass = {
-			
+			OR = {
+				IRQ = { is_subject_of = ROOT }
+				is_subject_of = IRQ
+				is_in_faction_with = IRQ
+				NOT = { country_exists = IRQ }
+			}
 		}
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus PER_conquest_iraq"
-			
+			create_wargoal = {
+				type = annex_everything
+				target = IRQ
+			}
+			add_ai_strategy = {
+				type = antagonize
+				id = "IRQ"
+				value = 200
+			}
+			add_ai_strategy = {
+				type = conquer
+				id = "IRQ"
+				value = 200
+			}
 		}
 	}
 	
@@ -1437,12 +1697,27 @@ focus_tree = {
 			
 		}
 		bypass = {
-			
 		}
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus PER_prophets_homeland"
-			
+			if = {
+				limit = { country_exists = SAU }
+				create_wargoal = {
+					type = annex_everything
+					target = SAU
+				}
+			}
+			add_ai_strategy = {
+				type = antagonize
+				id = "SAU"
+				value = 200
+			}
+			add_ai_strategy = {
+				type = conquer
+				id = "SAU"
+				value = 200
+			}
 		}
 	}
 	
@@ -1465,7 +1740,7 @@ focus_tree = {
 			factor = 10
 		}
 		available = {
-			
+			controls_state = 679
 		}
 		bypass = {
 			
@@ -1473,7 +1748,95 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus PER_shia_islamic_state"
-			
+			add_named_threat = { 
+				threat = 5
+				name = PER_shia_islamic_state
+			}
+			set_cosmetic_tag = PER_islamic_state
+			add_ideas = PER_shia_islamic_state_idea
+			custom_effect_tooltip = PER_shia_islamic_state_tt
+			hidden_effect = {
+				every_state = {
+					limit = {
+						OR = {
+							state = 656
+							state = 790
+							state = 773
+							state = 658
+							state = 944
+							state = 659
+							state = 293
+							state = 941
+							state = 943
+							state = 942
+							state = 294
+							state = 1054
+							state = 1053
+							state = 455
+							state = 1055
+							state = 978
+							state = 454
+							state = 980
+							state = 979
+							state = 553
+							state = 680
+							state = 554
+							state = 677
+							state = 961
+							state = 954
+							state = 441
+							state = 1018
+							state = 442
+							state = 440
+							state = 445
+							state = 443
+							state = 444
+							state = 672
+							state = 335
+							state = 334
+							state = 673
+							state = 667
+							state = 668
+							state = 669
+							is_core_of = EGY
+							is_core_of = LBA
+							is_core_of = MOR
+							is_core_of = TUN
+							is_core_of = ALG
+							is_core_of = SUD
+							is_core_of = TMS
+							is_core_of = TAJ
+							is_core_of = UZB
+							is_core_of = KYR
+							is_core_of = KAZ
+							is_core_of = AZR
+							is_core_of = SIK
+							is_core_of = ALB
+							is_core_of = BOS
+							
+						}
+					}
+					add_claim_by = ROOT
+					owner = {
+						ROOT = {
+							create_wargoal = {
+								type = annex_everything
+								target = PREV
+							}
+							add_ai_strategy = {
+								type = antagonize
+								id = PREV
+								value = 200
+							}
+							add_ai_strategy = {
+								type = conquer
+								id = PREV
+								value = 200
+							}
+						}
+					}
+				}
+			}
 		}
 	}
 	
@@ -1495,7 +1858,12 @@ focus_tree = {
 			factor = 10
 		}
 		available = {
-			
+			OR = {
+				country_exists = GRE
+				country_exists = YUG
+				country_exists = ITA
+				country_exists = VAT
+			}
 		}
 		bypass = {
 			
@@ -1503,7 +1871,32 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus PER_revenge_on_crusaders"
-			
+			every_other_country = {
+				limit = {
+					OR = {
+						tag = GRE
+						tag = YUG
+						tag = ITA
+						tag = VAT
+					}
+				}
+				ROOT = {
+					create_wargoal = {
+						type = annex_everything
+						target = PREV
+					}
+					add_ai_strategy = {
+						type = antagonize
+						id = PREV
+						value = 200
+					}
+					add_ai_strategy = {
+						type = conquer
+						id = PREV
+						value = 200
+					}
+				}
+			}
 		}
 	}
 	
@@ -1534,7 +1927,15 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus PER_weakening_influence_clergy"
-			
+			add_political_power = 50
+			add_popularity = {
+				ideology = fascism
+				popularity = -0.1
+			}
+			swap_ideas = {
+				remove_idea = PER_influential_clergy
+				add_idea = PER_significant_clergy
+			}
 		}
 	}
 	
@@ -1564,7 +1965,8 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus PER_weakening_influence_aristocracy"
-			
+			add_stability = 0.1
+			add_political_power = 50
 		}
 	}
 	
@@ -1600,7 +2002,11 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus PER_last_blow_to_confessors"
-			
+			add_stability = 0.1
+			add_popularity = {
+				ideology = fascism
+				popularity = -0.1
+			}
 		}
 	}
 	
@@ -1631,7 +2037,7 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus PER_keep_personal_dictatorship"
-			
+			add_ideas = PER_dictatorship_of_shah
 		}
 	}
 	
@@ -1666,7 +2072,10 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus PER_eliminate_left_wing_parties"
-			
+			add_popularity = {
+				ideology = communism
+				popularity = -0.3
+			}
 		}
 	}
 	
@@ -1696,7 +2105,13 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus PER_continue_aggressive_reforms"
-			
+			add_stability = 0.1
+			add_tech_bonus = {
+				name = industrial_bonus
+				bonus = 1.0
+				uses = 1
+				category = industry
+			}
 		}
 	}
 	
@@ -1726,7 +2141,11 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus PER_strengthen_personal_power"
-			
+			add_political_power = 100
+			swap_ideas = {
+				remove_idea = PER_dictatorship_of_shah
+				add_idea = PER_dictatorship_of_shah_2
+			}
 		}
 	}
 	
@@ -1756,7 +2175,21 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus PER_strike_blow_conservative_owners"
-			
+			random_owned_controlled_state = {
+				limit = {
+					free_building_slots = {
+						building = industrial_complex
+						size > 1
+						include_locked = yes
+					}
+				}
+				add_extra_state_shared_building_slots = 2
+				add_building_construction = {
+					type = industrial_complex
+					level = 2
+					instant_build = yes
+				}
+			}
 		}
 	}
 	
@@ -1786,7 +2219,8 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus PER_get_rid_dissent"
-			
+			remove_ideas = PER_significant_clergy
+			add_ideas = PER_get_rid_dissent
 		}
 	}
 	
@@ -1817,7 +2251,7 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus PER_iranian_nationalism"
-			
+			add_ideas = PER_iranian_nationalism
 		}
 	}
 	
@@ -1839,7 +2273,14 @@ focus_tree = {
 			factor = 10
 		}
 		available = {
-			
+			410 = {
+				owner = {
+					OR = {
+						tag = ROOT
+						is_subject_of = ROOT
+					}
+				}
+			}
 		}
 		bypass = {
 			
@@ -1847,7 +2288,38 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus PER_fortifications_on_border_with_india"
-			
+			410 = {
+				add_building_construction = {
+					type = bunker
+					level = 3
+					instant_build = yes
+					province = 4891
+				}
+				add_building_construction = {
+					type = bunker
+					level = 3
+					instant_build = yes
+					province = 13082
+				}
+				add_building_construction = {
+					type = bunker
+					level = 3
+					instant_build = yes
+					province = 10782
+				}
+				add_building_construction = {
+					type = bunker
+					level = 3
+					instant_build = yes
+					province = 2070
+				}
+				add_building_construction = {
+					type = bunker
+					level = 3
+					instant_build = yes
+					province = 12895
+				}
+			}
 		}
 	}
 	
@@ -1869,7 +2341,38 @@ focus_tree = {
 			factor = 10
 		}
 		available = {
-			
+			963 = {
+				owner = {
+					OR = {
+						tag = ROOT
+						is_subject_of = ROOT
+					}
+				}
+			}
+			421 = {
+				owner = {
+					OR = {
+						tag = ROOT
+						is_subject_of = ROOT
+					}
+				}
+			}
+			417 = {
+				owner = {
+					OR = {
+						tag = ROOT
+						is_subject_of = ROOT
+					}
+				}
+			}
+			413 = {
+				owner = {
+					OR = {
+						tag = ROOT
+						is_subject_of = ROOT
+					}
+				}
+			}
 		}
 		bypass = {
 			
@@ -1877,7 +2380,74 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus PER_fortifications_on_border_with_turkey_and_iraq"
-			
+			963 = {
+				add_building_construction = {
+					type = bunker
+					level = 3
+					instant_build = yes
+					province = 1636
+				}
+				add_building_construction = {
+					type = bunker
+					level = 3
+					instant_build = yes
+					province = 7604
+				}
+				add_building_construction = {
+					type = bunker
+					level = 3
+					instant_build = yes
+					province = 13821
+				}
+			}
+			421 = {
+				add_building_construction = {
+					type = bunker
+					level = 3
+					instant_build = yes
+					province = 1822
+				}
+				add_building_construction = {
+					type = bunker
+					level = 3
+					instant_build = yes
+					province = 4943
+				}
+				add_building_construction = {
+					type = bunker
+					level = 3
+					instant_build = yes
+					province = 5098
+				}
+			}
+			417 = {
+				add_building_construction = {
+					type = bunker
+					level = 3
+					instant_build = yes
+					province = 829
+				}
+				add_building_construction = {
+					type = bunker
+					level = 3
+					instant_build = yes
+					province = 10774
+				}
+			}
+			413 = {
+				add_building_construction = {
+					type = bunker
+					level = 3
+					instant_build = yes
+					province = 7953
+				}
+				add_building_construction = {
+					type = bunker
+					level = 3
+					instant_build = yes
+					province = 5005
+				}
+			}
 		}
 	}
 	
@@ -1899,7 +2469,22 @@ focus_tree = {
 			factor = 10
 		}
 		available = {
-			
+			420 = {
+				owner = {
+					OR = {
+						tag = ROOT
+						is_subject_of = ROOT
+					}
+				}
+			}
+			419 = {
+				owner = {
+					OR = {
+						tag = ROOT
+						is_subject_of = ROOT
+					}
+				}
+			}
 		}
 		bypass = {
 			
@@ -1907,7 +2492,46 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus PER_fortifications_on_border_with_azerbaijan"
-			
+			420 = {
+				add_building_construction = {
+					type = bunker
+					level = 3
+					instant_build = yes
+					province = 4609
+				}
+			}
+			419 = {
+				add_building_construction = {
+					type = bunker
+					level = 3
+					instant_build = yes
+					province = 4901
+				}
+				add_building_construction = {
+					type = bunker
+					level = 3
+					instant_build = yes
+					province = 10454
+				}
+				add_building_construction = {
+					type = bunker
+					level = 3
+					instant_build = yes
+					province = 4825
+				}
+				add_building_construction = {
+					type = bunker
+					level = 3
+					instant_build = yes
+					province = 4755
+				}
+				add_building_construction = {
+					type = bunker
+					level = 3
+					instant_build = yes
+					province = 13829
+				}
+			}
 		}
 	}
 	
@@ -1929,7 +2553,22 @@ focus_tree = {
 			factor = 10
 		}
 		available = {
-			
+			266 = {
+				owner = {
+					OR = {
+						tag = ROOT
+						is_subject_of = ROOT
+					}
+				}
+			}
+			416 = {
+				owner = {
+					OR = {
+						tag = ROOT
+						is_subject_of = ROOT
+					}
+				}
+			}
 		}
 		bypass = {
 			
@@ -1937,7 +2576,40 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus PER_fortifications_on_border_with_turkmenistan"
-			
+			266 = {
+				add_building_construction = {
+					type = bunker
+					level = 3
+					instant_build = yes
+					province = 7602
+				}
+			}
+			416 = {
+				add_building_construction = {
+					type = bunker
+					level = 3
+					instant_build = yes
+					province = 10351
+				}
+				add_building_construction = {
+					type = bunker
+					level = 3
+					instant_build = yes
+					province = 1521
+				}
+				add_building_construction = {
+					type = bunker
+					level = 3
+					instant_build = yes
+					province = 5029
+				}
+				add_building_construction = {
+					type = bunker
+					level = 3
+					instant_build = yes
+					province = 2000
+				}
+			}
 		}
 	}
 	
@@ -1967,7 +2639,7 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus PER_mobilize_young_people"
-			
+			add_ideas = PER_mobilize_young_people
 		}
 	}
 	
@@ -1997,7 +2669,35 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus PER_strike_in_advance"
-			
+			create_wargoal = {
+				type = annex_everything
+				target = SOV
+			}
+			every_state = {
+				limit = {
+					OR = {
+						state = 584
+						state = 229
+						state = 896
+						state = 895
+					}
+				}
+				add_claim_by = ROOT
+				owner = {
+					ROOT = {
+						add_ai_strategy = {
+							type = antagonize
+							id = PREV
+							value = 200
+						}
+						add_ai_strategy = {
+							type = conquer
+							id = PREV
+							value = 200
+						}
+					}
+				}
+			}
 		}
 	}
 	
@@ -2033,7 +2733,23 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus PER_coup_of_peoples_party_iran"
-			
+			add_popularity = {
+				ideology = communism
+				popularity = 0.3
+			}
+			set_politics = {
+				ruling_party = communism
+				elections_allowed = no
+			}
+			ENG = {
+				remove_resource_rights = 411
+				remove_resource_rights = 412
+				remove_resource_rights = 413
+			}
+			if = {
+				limit = { is_in_faction = yes }
+				leave_faction = yes
+			}
 		}
 	}
 	
@@ -2063,7 +2779,18 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus PER_legacy_of_gilyana"
-			
+			add_popularity = {
+				ideology = communism
+				popularity = 0.05
+			}
+			420 = {
+				add_extra_state_shared_building_slots = 1
+				add_building_construction = {
+					type = arms_factory
+					level = 1
+					instant_build = yes
+				}
+			}
 		}
 	}
 	
@@ -2093,7 +2820,11 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus PER_unite_with_social_democrats"
-			
+			add_political_power = 50
+			add_popularity = {
+				ideology = democratic
+				popularity = -0.15
+			}
 		}
 	}
 	
@@ -2123,7 +2854,41 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus PER_create_armed_militias"
-			
+			hidden_effect = {
+				if = {
+					limit = { NOT = { has_template = "Military Division" } }
+					division_template = {
+						name = "Military Division"
+						is_locked = no
+						regiments = {
+							infantry = { x = 0 y = 0 }
+							infantry = { x = 0 y = 1 }
+							infantry = { x = 0 y = 2 }
+							infantry = { x = 1 y = 0 }
+							infantry = { x = 1 y = 1 }
+							infantry = { x = 1 y = 2 }
+							infantry = { x = 2 y = 0 }
+							infantry = { x = 2 y = 1 }
+							infantry = { x = 2 y = 2 }
+							infantry = { x = 3 y = 0 }
+						}
+					}
+				}
+			}
+			capital_scope = {
+				create_unit = {
+					division = "name = \"1. Military Division\" division_template = \"Military Division\" start_experience_factor = 0.4" 
+					owner = ROOT
+				}
+				create_unit = {
+					division = "name = \"2. Military Division\" division_template = \"Military Division\" start_experience_factor = 0.4" 
+					owner = ROOT
+				}
+				create_unit = {
+					division = "name = \"3. Military Division\" division_template = \"Military Division\" start_experience_factor = 0.4" 
+					owner = ROOT
+				}
+			}
 		}
 	}
 	
@@ -2154,7 +2919,8 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus PER_refuse_stalinist_policy"
-			
+			set_rule = { can_create_factions = yes }
+			create_faction = PER_middle_eastern_socialism
 		}
 	}
 	
@@ -2177,15 +2943,22 @@ focus_tree = {
 			factor = 10
 		}
 		available = {
-			
+			SOV = {
+				is_faction_leader = yes
+				has_government = communism
+			}
+			NOT = { has_war_with = SOV }
 		}
 		bypass = {
-			
+			OR = {
+				is_in_faction_with = SOV
+				NOT = { country_exists = SOV }
+			}
 		}
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus PER_alliance_with_soviet_union"
-			
+			SOV = { country_event = { id = generic.2 days = 1 } }
 		}
 	}
 	
@@ -2215,7 +2988,30 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus PER_expand_oil_production"
-			
+			411 = {
+				add_resource = {
+					type = oil
+					amount = 10
+				}
+			}
+			412 = {
+				add_resource = {
+					type = oil
+					amount = 10
+				}
+			}
+			413 = {
+				add_resource = {
+					type = oil
+					amount = 10
+				}
+			}
+			add_tech_bonus = {
+				name = PER_expand_oil_production
+				bonus = 3.0
+				uses = 1
+				category = synth_resources
+			}
 		}
 	}
 	
@@ -2270,12 +3066,30 @@ focus_tree = {
 			
 		}
 		bypass = {
-			
+			OR = {
+				IRQ = { is_subject_of = ROOT }
+				is_subject_of = IRQ
+				is_in_faction_with = IRQ
+				NOT = { country_exists = IRQ }
+			}
 		}
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus PER_overthrow_iraqi_kings"
-			
+			create_wargoal = {
+				type = annex_everything
+				target = IRQ
+			}
+			add_ai_strategy = {
+				type = antagonize
+				id = "IRQ"
+				value = 200
+			}
+			add_ai_strategy = {
+				type = conquer
+				id = "IRQ"
+				value = 200
+			}
 		}
 	}
 	
@@ -2300,12 +3114,30 @@ focus_tree = {
 			
 		}
 		bypass = {
-			
+			OR = {
+				SAU = { is_subject_of = ROOT }
+				is_subject_of = SAU
+				is_in_faction_with = SAU
+				NOT = { country_exists = SAU }
+			}
 		}
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus PER_communism_in_holy_city_muslims"
-			
+			create_wargoal = {
+				type = annex_everything
+				target = SAU
+			}
+			add_ai_strategy = {
+				type = antagonize
+				id = "SAU"
+				value = 200
+			}
+			add_ai_strategy = {
+				type = conquer
+				id = "SAU"
+				value = 200
+			}
 		}
 	}
 	
@@ -2361,12 +3193,30 @@ focus_tree = {
 			
 		}
 		bypass = {
-			
+			OR = {
+				TUR = { is_subject_of = ROOT }
+				is_subject_of = TUR
+				is_in_faction_with = TUR
+				NOT = { country_exists = TUR }
+			}
 		}
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus PER_defeat_of_kemalism"
-			
+			create_wargoal = {
+				type = annex_everything
+				target = TUR
+			}
+			add_ai_strategy = {
+				type = antagonize
+				id = "TUR"
+				value = 200
+			}
+			add_ai_strategy = {
+				type = conquer
+				id = "TUR"
+				value = 200
+			}
 		}
 	}
 	
@@ -2396,7 +3246,29 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus PER_organization_councils_in_country"
-			
+			every_state = {
+				limit = {
+					is_core_of = ROOT
+					is_fully_controlled_by = ROOT
+				}
+				add_extra_state_shared_building_slots = 1
+			}
+			every_owned_state = {
+				limit = {
+					OR = {
+						state = 266
+						state = 418
+						state = 419
+						state = 413
+					}
+				}
+				add_extra_state_shared_building_slots = 1
+				add_building_construction = {
+					type = industrial_complex
+					level = 1
+					instant_build = yes
+				}
+			}
 		}
 	}
 	
@@ -2432,7 +3304,18 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus PER_right_free_nomination_delegate"
-			
+			add_popularity = {
+				ideology = monarchy
+				popularity = -0.4
+			}
+			add_popularity = {
+				ideology = democratic
+				popularity = 0.4
+			}
+			set_politics = {
+				ruling_party = democratic
+				elections_allowed = yes
+			}
 		}
 	}
 	
@@ -2462,7 +3345,9 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus PER_implement_principles_kemalism"
-			
+			add_ideas = TUR_six_arrows_kemalism
+			add_opinion_modifier = { target = TUR modifier = PER_implement_principles_kemalism_op }
+			TUR = { add_opinion_modifier = { target = ROOT modifier = PER_implement_principles_kemalism_op } }
 		}
 	}
 	
@@ -2492,7 +3377,15 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus PER_call_for_establishment_of_opposition"
-			
+			add_political_power = 50
+			add_popularity = {
+				ideology = fascism
+				popularity = -0.1
+			}
+			add_popularity = {
+				ideology = democratic
+				popularity = 0.15
+			}
 		}
 	}
 	
@@ -2522,7 +3415,11 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus PER_come_to_agreement_with_muslims"
-			
+			add_popularity = {
+				ideology = democratic
+				popularity = 0.1
+			}
+			add_ideas = PER_pliable_clergy
 		}
 	}
 	
@@ -2552,7 +3449,20 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus PER_give_autonomy_minorities"
-			
+			every_state = {
+				limit = {
+					OR = {
+						state = 963
+						state = 421
+					}
+				}
+				MHB = { transfer_state = PREV }
+				add_core_of = MHB
+			}
+			puppet = MHB
+			APG = { transfer_state = 419 }
+			419 = { add_core_of = APG }
+			puppet = APG
 		}
 	}
 	
@@ -2582,7 +3492,16 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus PER_forced_secularization"
-			
+			capital_scope = {
+				add_extra_state_shared_building_slots = 3
+				add_building_construction = {
+					type = industrial_complex
+					level = 3
+					instant_build = yes
+				}
+			}
+			remove_ideas = PER_significant_clergy
+			add_ideas = PER_forced_secularization
 		}
 	}
 	
@@ -2612,7 +3531,52 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus PER_carry_out_market_reforms"
-			
+			add_ideas = PER_carry_out_market_reforms_idea
+			random_owned_controlled_state = {
+				limit = {
+					free_building_slots = {
+						building = industrial_complex
+						size > 0
+						include_locked = yes
+					}
+				}
+				add_extra_state_shared_building_slots = 1
+				add_building_construction = {
+					type = industrial_complex
+					level = 1
+					instant_build = yes
+				}
+			}
+			random_owned_controlled_state = {
+				limit = {
+					free_building_slots = {
+						building = industrial_complex
+						size > 0
+						include_locked = yes
+					}
+				}
+				add_extra_state_shared_building_slots = 1
+				add_building_construction = {
+					type = industrial_complex
+					level = 1
+					instant_build = yes
+				}
+			}
+			random_owned_controlled_state = {
+				limit = {
+					free_building_slots = {
+						building = industrial_complex
+						size > 0
+						include_locked = yes
+					}
+				}
+				add_extra_state_shared_building_slots = 1
+				add_building_construction = {
+					type = industrial_complex
+					level = 1
+					instant_build = yes
+				}
+			}
 		}
 	}
 	
@@ -2642,7 +3606,15 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus PER_study_turkish_experience"
-			
+			add_ideas = PER_study_turkish_experience_idea
+			add_timed_idea = { idea = PER_study_turkish_experience_idea2 days = 180 }
+			add_opinion_modifier = { target = TUR modifier = PER_study_turkish_experience_op }
+			TUR = { add_opinion_modifier = { target = ROOT modifier = PER_study_turkish_experience_op } }
+			every_other_country = {
+				limit = { has_government = democratic }
+				add_opinion_modifier = { target = ROOT modifier = PER_study_turkish_experience_op2 }
+				ROOT = { add_opinion_modifier = { target = PREV modifier = PER_study_turkish_experience_op2 } }
+			}
 		}
 	}
 	
@@ -2830,7 +3802,6 @@ focus_tree = {
 	}
 	
 	
-	
 	######################
 	#### ARMY SECTION ####
 	######################
@@ -2861,7 +3832,12 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus PER_primacy_of_army"
-			
+			add_tech_bonus = {
+				name = PER_primacy_of_army
+				bonus = 1.0
+				uses = 1
+				category = land_doctrine
+			}
 		}
 	}
 	
@@ -3196,6 +4172,7 @@ focus_tree = {
 	}
 	
 	
+	
 	####################################
 	#### NEUTRALITY SECTION PRO GER ####
 	####################################
@@ -3227,7 +4204,34 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus PER_coup_progerman_officers"
-			
+			hidden_effect = {
+				set_politics = {
+					ruling_party = fascism
+					elections_allowed = no
+				}
+				GER = {
+					set_autonomy = {
+						target = ROOT
+						autonomy_state = autonomy_colony
+					}
+				}
+				ENG = {
+					remove_resource_rights = 411
+					remove_resource_rights = 412
+					remove_resource_rights = 413
+				}
+			}
+			add_popularity = {
+				ideology = neutrality
+				popularity = 0.3
+			}
+			set_politics = {
+				ruling_party = neutrality
+				elections_allowed = no
+			}
+			give_resource_rights = { receiver = GER state = 411 }
+			give_resource_rights = { receiver = GER state = 412 }
+			give_resource_rights = { receiver = GER state = 413 }
 		}
 	}
 	
@@ -3252,12 +4256,20 @@ focus_tree = {
 			
 		}
 		bypass = {
-			
+			NOT = { country_exists = GER }
 		}
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus PER_strengthen_relations_with_germany"
-			
+			add_opinion_modifier = { target = GER modifier = PER_strengthen_relations_with_germany_op }
+			GER = { add_opinion_modifier = { target = ROOT modifier = PER_strengthen_relations_with_germany_op } }
+			every_owned_state = {
+				add_building_construction = {
+					type = infrastructure
+					level = 1
+					instant_build = yes
+				}
+			}
 		}
 	}
 	
@@ -3287,7 +4299,51 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus PER_bring_germans_into_country"
-			
+			random_owned_controlled_state = {
+				limit = { 
+					free_building_slots = {
+						building = arms_factory
+						size > 0
+						include_locked = yes
+					}
+				}
+				add_extra_state_shared_building_slots = 1
+				add_building_construction = {
+					type = arms_factory
+					level = 1
+					instant_build = yes
+				}
+			}
+			random_owned_controlled_state = {
+				limit = { 
+					free_building_slots = {
+						building = arms_factory
+						size > 0
+						include_locked = yes
+					}
+				}
+				add_extra_state_shared_building_slots = 1
+				add_building_construction = {
+					type = arms_factory
+					level = 1
+					instant_build = yes
+				}
+			}
+			random_owned_controlled_state = {
+				limit = { 
+					free_building_slots = {
+						building = arms_factory
+						size > 0
+						include_locked = yes
+					}
+				}
+				add_extra_state_shared_building_slots = 1
+				add_building_construction = {
+					type = arms_factory
+					level = 1
+					instant_build = yes
+				}
+			}
 		}
 	}
 	
@@ -3317,7 +4373,56 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus PER_strengthen_german_influence"
-			
+			random_owned_controlled_state = {
+				limit = { 
+					free_building_slots = {
+						building = arms_factory
+						size > 0
+						include_locked = yes
+					}
+					free_building_slots = {
+						building = industrial_complex
+						size > 0
+						include_locked = yes
+					}
+				}
+				add_extra_state_shared_building_slots = 2
+				add_building_construction = {
+					type = arms_factory
+					level = 1
+					instant_build = yes
+				}
+				add_building_construction = {
+					type = industrial_complex
+					level = 1
+					instant_build = yes
+				}
+			}
+			random_owned_controlled_state = {
+				limit = { 
+					free_building_slots = {
+						building = arms_factory
+						size > 0
+						include_locked = yes
+					}
+					free_building_slots = {
+						building = industrial_complex
+						size > 0
+						include_locked = yes
+					}
+				}
+				add_extra_state_shared_building_slots = 2
+				add_building_construction = {
+					type = arms_factory
+					level = 1
+					instant_build = yes
+				}
+				add_building_construction = {
+					type = industrial_complex
+					level = 1
+					instant_build = yes
+				}
+			}
 		}
 	}
 	
@@ -3347,7 +4452,7 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus PER_strengthen_nationalist_ideas"
-			
+			add_ideas = PER_strengthen_nationalist_ideas_idea
 		}
 	}
 	
@@ -3372,7 +4477,16 @@ focus_tree = {
 			
 		}
 		bypass = {
-			
+			OR = {
+				NOT = { country_exists = AFG }
+				AFG = {
+					OR = {
+						is_in_faction_with = GER
+						is_subject_of = GER
+						is_subject_of = ROOT
+					}
+				}
+			}
 		}
 		
 		completion_reward = {
@@ -3407,7 +4521,10 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus PER_claims_to_kurdistan"
-			
+			every_state = {
+				limit = { is_core_of = KRD }
+				add_claim_by = ROOT
+			}
 		}
 	}
 	
@@ -3438,7 +4555,19 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus PER_claims_on_soviet_territory"
-			
+			every_state = {
+				limit = {
+					OR = {
+						state = 584
+						state = 895
+						state = 894
+						state = 896
+						state = 229
+						state = 742
+					}
+				}
+				add_claim_by = ROOT
+			}
 		}
 	}
 	
