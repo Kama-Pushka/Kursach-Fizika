@@ -338,7 +338,11 @@ on_actions = {
 					autonomy_state = autonomy_free
 				}
 				every_other_country = {
-					limit = { has_war_with = ROOT }
+					limit = {
+						has_war_with = ROOT
+						is_subject = no
+						OR = { is_faction_leader = yes is_in_faction = no }
+					}
 					white_peace = PREV
 				}
 				if = {
@@ -372,7 +376,11 @@ on_actions = {
 					autonomy_state = autonomy_free
 				}
 				every_other_country = {
-					limit = { has_war_with = ROOT }
+					limit = {
+						has_war_with = ROOT
+						is_subject = no
+						OR = { is_faction_leader = yes is_in_faction = no }
+					}
 					white_peace = PREV
 				}
 				if = {
@@ -406,7 +414,11 @@ on_actions = {
 					autonomy_state = autonomy_free
 				}
 				every_other_country = {
-					limit = { has_war_with = ROOT }
+					limit = {
+						has_war_with = ROOT
+						is_subject = no
+						OR = { is_faction_leader = yes is_in_faction = no }
+					}
 					white_peace = PREV
 				}
 				if = {
@@ -447,7 +459,11 @@ on_actions = {
 					ENG = { leave_faction = yes }
 				}
 				every_other_country = {
-					limit = { has_war_with = ROOT }
+					limit = {
+						has_war_with = ROOT
+						is_subject = no
+						OR = { is_faction_leader = yes is_in_faction = no }
+					}
 					white_peace = PREV
 				}
 				if = {
@@ -905,7 +921,8 @@ on_actions = {
 					remove_ideas = trozkism_influence6
 				}
 			}
-			#event_target:NW_france_scope // Фокус "Связи с Британией"
+			
+			#FRA // Фокус "Укрепление Сопротивления в Северной Франции"
 			if = {
 				limit = {
 					OR = {
@@ -917,62 +934,13 @@ on_actions = {
 								}
 							}
 							ROOT = {
-								tag = event_target:NW_france_scope
-								has_country_flag = ENG_FRA_war_again_GER_flag
-							}
-						}
-						AND = {
-							FROM = {
-								tag = event_target:NW_france_scope
-								has_country_flag = ENG_FRA_war_again_GER_flag
-							}
-							ROOT = {
-								OR = {
-									tag = ITA
-									tag = GER
-								}
-							}
-						}
-					}
-				}
-				event_target:NW_france_scope = {
-					clr_country_flag = ENG_FRA_war_again_GER_flag
-				}
-				every_country = {
-					limit = {
-						OR = {
-							is_in_faction_with = ENG
-							tag = ENG
-						}
-						has_war_with = event_target:NW_france_scope
-					}
-					white_peace = event_target:NW_france_scope
-				}
-				ENG = { add_to_faction = event_target:NW_france_scope }
-				if = {
-					limit = { FRR = { is_in_faction_with = ENG } }
-					FRR = { leave_faction = yes }
-				}
-			}
-			#event_target:NW_france_scope // Фокус "Укрепление Сопротивления в Северной Франции"
-			if = {
-				limit = {
-					OR = {
-						AND = {
-							FROM = {
-								OR = {
-									tag = ITA
-									tag = GER
-								}
-							}
-							ROOT = {
-								tag = event_target:NW_france_scope
+								tag = FRA
 								has_country_flag = FRA_strengthening_resistance_in_northern_france_flag
 							}
 						}
 						AND = {
 							FROM = {
-								tag = event_target:NW_france_scope
+								tag = FRA
 								has_country_flag = FRA_strengthening_resistance_in_northern_france_flag
 							}
 							ROOT = {
@@ -984,12 +952,24 @@ on_actions = {
 						}
 					}
 				}
-				event_target:NW_france_scope = {
+				FRA = {
 					clr_country_flag = FRA_strengthening_resistance_in_northern_france_flag
 				}
 				every_state = {
-					limit = { is_core_of = event_target:NW_france_scope }
-					event_target:NW_france_scope = { transfer_state = PREV }
+					limit = {
+						is_core_of = FRA
+						controller = {
+							OR = {
+								tag = ITA
+								tag = GER
+								is_in_faction_with = ITA
+								is_in_faction_with = GER
+								is_subject_of = GER
+								is_subject_of = ITA
+							}
+						}
+					}
+					FRA = { transfer_state = PREV }
 				}
 			}
 			#Франко ГВ
@@ -1695,6 +1675,8 @@ on_actions = {
 						has_war_with = ROOT
 						NOT = { original_tag = ROOT }
 						NOT = { original_tag = FROM }
+						is_subject = no
+						OR = { is_faction_leader = yes is_in_faction = no }
 					}
 					white_peace = ROOT
 				}

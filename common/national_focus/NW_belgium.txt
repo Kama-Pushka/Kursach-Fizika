@@ -2092,6 +2092,15 @@ focus_tree = {
 
 		ai_will_do = {
 			factor = 5
+			modifier = {
+				factor = 4
+				OR = {
+					has_government = fascism
+					has_government = neutrality
+					has_country_flag = BEL_rotate_right_flag
+					is_in_faction_with = GER
+				}
+			}
 		}
 		available = {
 			if = {
@@ -2114,7 +2123,7 @@ focus_tree = {
 				ideology = neutrality
 				popularity = 0.25
 			}
-			set_politics = {	
+			set_politics = {
 				ruling_party = neutrality
 				elections_allowed = no
 			}
@@ -2140,7 +2149,7 @@ focus_tree = {
 			}
 			set_party_name = { ideology = democratic name = BEL_liberal_party long_name = BEL_liberal_party_long }
 			add_timed_idea = { idea = BEL_planist_idea days = 300 }
-			custom_effect_tooltip = TUR_focus_autocomplete_tt
+			custom_effect_tooltip = BEL_focus_unlock_tt
 		}
 	}
 	
@@ -2149,7 +2158,7 @@ focus_tree = {
 		icon = GFX_goal_support_fascism
 		prerequisite = { focus = BEL_rotate_right }
 		mutually_exclusive = { focus = BEL_your_own_third_way }
-		x = 0
+		x = -1
 		y = 1
 		relative_position_id = BEL_rotate_right
 		
@@ -2189,7 +2198,7 @@ focus_tree = {
 		icon = GFX_goal_generic_alliance
 		prerequisite = { focus = BEL_rotate_right }
 		mutually_exclusive = { focus = BEL_alliance_with_germany }
-		x = 2
+		x = 1
 		y = 1
 		relative_position_id = BEL_rotate_right
 		
@@ -2456,12 +2465,14 @@ focus_tree = {
 			factor = 5
 		}
 		available = {
+			country_exists = ENG
 			ENG = { is_faction_leader = yes }
 			hidden_trigger = {
 				NOT = { has_completed_focus = BEL_rexist_coup }
 			}
 		}
 		bypass = {
+			is_in_faction_with = ENG
 		}
 		select_effect = {
 		}
@@ -2493,7 +2504,11 @@ focus_tree = {
 		available_if_capitulated = yes
 
 		ai_will_do = {
-			factor = 5
+			factor = 10
+			modifier = {
+				factor = 2
+				has_government = neutrality
+			}
 		}
 		available = {
 			hidden_trigger = {
@@ -2566,47 +2581,21 @@ focus_tree = {
 			factor = 5
 		}
 		available = {
+			country_exists = event_target:NW_france_scope
+			event_target:NW_france_scope = { is_faction_leader = yes }
 			hidden_trigger = {
 				NOT = { has_completed_focus = BEL_rexist_coup }
 			}
 		}
 		bypass = {
+			is_in_faction_with = event_target:NW_france_scope
 		}
 		select_effect = {
 		}
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus BEL_alliance_with_france"
-			if = {
-				limit = { 16 = { controller = { tag = event_target:NW_france_scope } } }
-				16 = {
-					controller = {
-						country_event = { id = NWbelgium.5 }
-					}
-				}
-			}
-			else_if = {
-				limit = { 16 = { controller = { is_faction_leader = yes } } }
-				16 = {
-					controller = {
-						country_event = { id = generic.2 }
-					}
-				}
-			}
-			else_if = {
-				limit = { 16 = { controller = { is_faction_leader = no is_in_faction = yes } } }
-				16 = {
-					controller = {
-						random_country = {
-							limit = {
-								is_faction_leader = yes
-								is_in_faction_with = PREV
-							}
-							ROOT = { PREV = { country_event = { id = generic.2 } } }
-						}
-					}
-				}
-			}
+			event_target:NW_france_scope = { country_event = { id = generic.2 } }
 		}
 	}
 	
@@ -2632,6 +2621,14 @@ focus_tree = {
 
 		ai_will_do = {
 			factor = 5
+			modifier = {
+				factor = 4
+				OR = {
+					has_government = communism
+					has_country_flag = BEL_step_left
+					is_in_faction_with = SOV
+				}
+			}
 		}
 		available = {
 			if = {
@@ -2650,7 +2647,7 @@ focus_tree = {
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus BEL_step_left"
 			add_timed_idea = { idea = BEL_communism_idea days = 300 }
-			custom_effect_tooltip = TUR_focus_autocomplete_tt
+			custom_effect_tooltip = BEL_focus_unlock_tt
 		}
 	}
 	
@@ -2659,7 +2656,7 @@ focus_tree = {
 		icon = GFX_focus_ger_great_red_menace
 		prerequisite = { focus = BEL_step_left }
 		mutually_exclusive = { focus = BEL_alliance_with_soviet_union }
-		x = -2
+		x = -1
 		y = 1
 		relative_position_id = BEL_step_left
 		
@@ -2672,7 +2669,7 @@ focus_tree = {
 		ai_will_do = {
 			factor = 5
 			modifier = {
-				factor = 5
+				factor = 4
 				OR = {
 					event_target:NW_france_scope = {
 						has_government = communism
@@ -2711,8 +2708,9 @@ focus_tree = {
 						}
 					}
 				}
-				country_event = { id = NWbelgium.16 }
+				country_event = { id = NWbelgium.16 days = 1 }
 			}
+			else = { create_faction = BEL_socialist_europe }
 		}
 	}
 	
@@ -2721,7 +2719,7 @@ focus_tree = {
 		icon = GFX_focus_chi_mission_to_the_soviet_union
 		prerequisite = { focus = BEL_step_left }
 		mutually_exclusive = { focus = BEL_socialist_europe }
-		x = 0
+		x = 1
 		y = 1
 		relative_position_id = BEL_step_left
 		
@@ -2733,6 +2731,10 @@ focus_tree = {
 
 		ai_will_do = {
 			factor = 15
+			modifier = {
+				factor = 3
+				is_in_faction_with = SOV
+			}
 		}
 		available = {
 			country_exists = SOV
