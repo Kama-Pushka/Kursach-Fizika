@@ -1,0 +1,202 @@
+﻿###########################
+# Ветка Ирана
+###########################
+
+add_namespace = NWpersian
+
+#Иран национализировал нефтяную промышленность // ENG
+country_event = {
+	id = NWpersian.1
+	title = NWpersian.1.t
+	desc = NWpersian.1.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWpersian.1" }
+	
+	option = {
+		name = NWpersian.1.a
+		ai_chance = {
+			factor = 50
+		}
+		if = {
+			limit = { threat > 0.4 }
+			create_wargoal = {
+				type = annex_everything
+				target = FROM
+			}
+			add_ai_strategy = {
+				type = antagonize
+				id = FROM
+				value = 200
+			}
+			add_ai_strategy = {
+				type = conquer
+				id = FROM
+				value = 200
+			}
+		}
+		effect_tooltip = {
+			add_opinion_modifier = { target = FROM modifier = PER_nationalize_oil_industry_op }
+			FROM = { add_opinion_modifier = { target = ENG modifier = PER_nationalize_oil_industry_op } }
+			remove_resource_rights = 411
+			remove_resource_rights = 412
+			remove_resource_rights = 413
+		}
+		add_state_claim = 411
+		add_state_claim = 412
+		add_state_claim = 413
+	}
+}
+
+#Митинги исламистов // PER
+country_event = {
+	id = NWpersian.2
+	title = NWpersian.2.t
+	desc = NWpersian.2.desc
+	picture = GFX_report_event_generic_rally_3
+	fire_only_once = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWpersian.2" }
+	
+	mean_time_to_happen = { days = 5 }
+	
+	trigger = {
+		tag = PER
+		OR = {
+			has_completed_focus = PER_prohibit_schools_attached_mosques
+			has_completed_focus = PER_translate_persian_into_latin
+			has_completed_focus = PER_prohibit_wearing_hijabs
+		}
+		NOT = { has_completed_focus = PER_weakening_influence_clergy }
+	}
+	
+	option = {
+		name = NWpersian.2.a
+		add_stability = -0.02
+		hidden_effect = {
+			if = {
+				limit = { has_completed_focus = PER_primacy_of_army }
+				ENG = { country_event = { id = NWpersian.3 days = 1 } }
+			}
+			else_if = {
+				limit = { has_completed_focus = PER_involvement_german_advisers }
+				GER = { country_event = { id = NWpersian.4 days = 1 } }
+			}
+		}
+	}
+}
+
+#Беспорядки в Иране // ENG
+country_event = {
+	id = NWpersian.3
+	title = NWpersian.3.t
+	desc = NWpersian.3.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWpersian.3" }
+	
+	option = {
+		name = NWpersian.3.a
+		ai_chance = {
+			factor = 50
+		}
+		add_political_power = -50
+		FROM = { set_country_flag = PER_NWpersian_3a_flag }
+		custom_effect_tooltip = PER_NWpersian_3a_tt
+	}
+	
+	option = {
+		name = NWpersian.3.b
+		ai_chance = {
+			factor = 50
+		}
+		
+	}
+}
+
+#Беспорядки в Иране // GER
+country_event = {
+	id = NWpersian.4
+	title = NWpersian.3.t
+	desc = NWpersian.4.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWpersian.4" }
+	
+	option = {
+		name = NWpersian.3.a
+		ai_chance = {
+			factor = 80
+		}
+		add_political_power = -50
+		FROM = { set_country_flag = PER_NWpersian_4a_flag }
+		custom_effect_tooltip = PER_NWpersian_3a_tt
+	}
+	
+	option = {
+		name = NWpersian.3.b
+		ai_chance = {
+			factor = 20
+		}
+		
+	}
+}
+
+#Шиитское духовенство создаёт своё правительство // PER
+country_event = {
+	id = NWpersian.5
+	title = NWpersian.5.t
+	desc = NWpersian.5.desc
+	picture = GFX_report_event_generic_rally_3
+	fire_only_once = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWpersian.5" }
+	
+	mean_time_to_happen = { days = 5 }
+	
+	trigger = {
+		tag = PER
+		count_triggers = {
+			amount = 2
+			has_completed_focus = PER_prohibit_schools_attached_mosques
+			has_completed_focus = PER_translate_persian_into_latin
+			has_completed_focus = PER_prohibit_wearing_hijabs
+		}
+	}
+	
+	option = {
+		name = NWpersian.5.a
+		add_stability = -0.1
+		start_civil_war = {
+			ideology = fascism
+			size = 0.5
+			states = { 416 410 414 }
+		}
+		hidden_effect = {
+			if = {
+				limit = { NOT = { has_completed_focus = PER_weakening_influence_clergy } }
+				random_other_country = {
+					limit = {
+						original_tag = ROOT
+						has_government = fascism
+					}
+					transfer_state = 411
+				}
+			}
+			if = {
+				limit = { NOT = { has_completed_focus = PER_weakening_influence_aristocracy } }
+				random_other_country = {
+					limit = {
+						original_tag = ROOT
+						has_government = fascism
+					}
+					transfer_state = 412
+				}
+			}
+	}
+}
+
+
