@@ -174,7 +174,7 @@ country_event = {
 		add_stability = -0.1
 		start_civil_war = {
 			ideology = fascism
-			size = 0.5
+			size = 0.51
 			states = { 416 410 414 }
 		}
 		hidden_effect = {
@@ -232,7 +232,7 @@ country_event = {
 			limit = { has_country_flag = PER_NWpersian_3a_flag }
 			start_civil_war = {
 				ideology = neutrality
-				size = 0.5
+				size = 0.51
 				states = { 416 410 414 }
 			}
 			random_other_country = {
@@ -251,7 +251,7 @@ country_event = {
 		else = {
 			start_civil_war = {
 				ideology = monarchy
-				size = 0.5
+				size = 0.51
 				states = { 416 410 414 }
 			}
 		}
@@ -510,7 +510,7 @@ country_event = {
 		}
 		start_civil_war = {
 			ideology = communism
-			size = 0.5
+			size = 0.51
 			states = { 419 963 421 420 416 418 }
 		}
 		hidden_effect = {
@@ -536,7 +536,7 @@ country_event = {
 		complete_national_focus = PER_coup_of_peoples_party_iran
 		start_civil_war = {
 			ideology = monarchy
-			size = 0.5
+			size = 0.51
 			states = { 410 414 412 411 413 }
 		}
 		hidden_effect = {
@@ -655,16 +655,540 @@ country_event = {
 	option = {
 		name = NWpersian.18.a
 		ai_chance = {
-			factor = 50
+			factor = 75
 		}
-		
+		if = {
+			limit = { 267 = { owner = { is_subject_of = FROM } } }
+			if = {
+				limit = { country_exists = TAJ }
+				FROM = { puppet = TAJ }
+			}
+			else = {
+				SOV = { release = TAJ }
+				FROM = { puppet = TAJ }
+			}
+		}
+		else_if = {
+			limit = { 267 = { owner = { tag = FROM } } }
+			if = {
+				limit = { country_exists = TAJ }
+				FROM = {
+					annex_country = {
+						target = TAJ
+					}
+				}
+			}
+			else = {
+				SOV = { release = TAJ }
+				FROM = {
+					annex_country = {
+						target = TAJ
+					}
+				}
+			}
+		}
+		add_manpower = 50000
 	}
 	
 	option = {
 		name = NWpersian.18.b
 		ai_chance = {
+			factor = 25
+		}
+		FROM = { country_event = { id = NWpersian.19 days = 1 } }
+	}
+}
+
+#Советский отказ // PER
+country_event = {
+	id = NWpersian.19
+	title = NWpersian.19.t
+	desc = NWpersian.19.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWpersian.19" }
+	
+	option = {
+		name = NWpersian.19.a
+	}
+}
+
+#Иран призывает к экономической интеграции // NOT PER
+country_event = {
+	id = NWpersian.20
+	title = NWpersian.20.t
+	desc = NWpersian.20.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWpersian.20" }
+	
+	option = {
+		name = NWpersian.20.a
+		ai_chance = {
+			factor = 90
+			modifier = {
+				factor = 0
+				OR = {
+					has_government = anarchism
+					has_government = communism
+				}
+			}
+			modifier = {
+				factor = 0
+				original_tag = TUR
+				has_government = fascism
+			}
+			modifier = {
+				factor = 0
+				original_tag = EGY
+				NOT = {
+					is_in_faction_with = FROM
+					is_subject_of = FROM
+					TUR = {
+						has_government = fascism
+						AND = {
+							is_in_faction_with = GER
+							GER = { has_government = fascism }
+						}
+					}
+				}
+			}
+		}
+		random_owned_controlled_state = {
+			limit = {
+				free_building_slots = {
+					building = industrial_complex
+					size > 1
+					include_locked = yes
+				}
+			}
+			add_extra_state_shared_building_slots = 2
+			add_building_construction = {
+				type = industrial_complex
+				level = 2
+				instant_build = yes
+			}
+		}
+		add_opinion_modifier = { target = FROM modifier = PER_economic_integration_op }
+		set_country_flag = PER_economic_integration_flag
+		FROM = {
+			add_opinion_modifier = { target = ROOT modifier = PER_economic_integration_op }
+			random_owned_controlled_state = {
+				limit = { industrial_complex > 0 }
+				remove_building = {
+					type = industrial_complex
+					level = 1
+				}
+			}
+			random_owned_controlled_state = {
+				limit = { industrial_complex > 0 }
+				remove_building = {
+					type = industrial_complex
+					level = 1
+				}
+			}
+			country_event = { id = NWpersian.21 days = 1 }
+		}
+		custom_effect_tooltip = PER_economic_integration_tt2
+	}
+	
+	option = {
+		name = NWpersian.20.b
+		ai_chance = {
+			factor = 10
+			modifier = {
+				factor = 0
+				original_tag = EGY
+				OR = {
+					is_in_faction_with = FROM
+					is_subject_of = FROM
+					TUR = {
+						OR = {
+							has_government = fascism
+							AND = {
+								is_in_faction_with = GER
+								GER = { has_government = fascism }
+							}
+						}
+					}
+				}
+			}
+		}
+		FROM = { country_event = { id = NWpersian.22 days = 1 } }
+	}
+}
+
+#Договор подписан // PER
+country_event = {
+	id = NWpersian.21
+	title = NWpersian.21.t
+	desc = NWpersian.21.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWpersian.21" }
+	
+	option = {
+		name = NWpersian.21.a
+		add_to_variable = { economic_integration_var = 1 }
+	}
+}
+
+#Договор отклонен // PER
+country_event = {
+	id = NWpersian.22
+	title = NWpersian.22.t
+	desc = NWpersian.22.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWpersian.22" }
+	
+	option = {
+		name = NWpersian.22.a
+	}
+}
+
+#Разрыв договора
+country_event = {
+	id = NWpersian.23
+	title = NWpersian.23.t
+	desc = NWpersian.23.desc
+	picture = GFX_report_event_generic_rally_3
+	fire_only_once = yes
+	
+	immediate = {
+		clr_country_flag = PER_economic_integration_flag
+		PER = { subtract_from_variable = { economic_integration_var = 1 } }
+		log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWpersian.23"
+	}
+	
+	trigger = {
+		has_war_with = PER
+		has_country_flag = PER_economic_integration_flag
+	}
+	
+	mean_time_to_happen = { days = 3 }
+	
+	option = {
+		name = NWpersian.23.a
+		random_owned_controlled_state = {
+			limit = { industrial_complex > 0 }
+			remove_building = {
+				type = industrial_complex
+				level = 1
+			}
+		}
+		random_owned_controlled_state = {
+			limit = { industrial_complex > 0 }
+			remove_building = {
+				type = industrial_complex
+				level = 1
+			}
+		}
+		random_owned_controlled_state = {
+			limit = { industrial_complex > 0 }
+			remove_building = {
+				type = industrial_complex
+				level = 1
+			}
+		}
+	}
+}
+
+#Иран хочет ввести войска на нашу территорию // AFG
+country_event = {
+	id = NWpersian.24
+	title = NWpersian.24.t
+	desc = NWpersian.24.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWpersian.24" }
+	
+	option = {
+		name = NWpersian.24.a
+		ai_chance = {
+			factor = 70
+		}
+		FROM = {
+			set_autonomy = {
+				target = ROOT
+				autonomy_state = autonomy_colony
+			}
+		}
+	}
+	
+	option = {
+		name = NWpersian.24.b
+		ai_chance = {
+			factor = 30
+		}
+		FROM = { country_event = { id = NWpersian.25 days = 1 } }
+	}
+}
+
+#Афганский отказ // PER
+country_event = {
+	id = NWpersian.25
+	title = NWpersian.25.t
+	desc = NWpersian.25.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWpersian.25" }
+	
+	option = {
+		name = NWpersian.25.a
+		create_wargoal = {
+			type = puppet_wargoal_focus
+			target = FROM
+		}
+		add_ai_strategy = {
+			type = antagonize
+			id = FROM
+			value = 200
+		}
+		add_ai_strategy = {
+			type = conquer
+			id = FROM
+			value = 200
+		}
+	}
+}
+
+#Выплаты за продажу нефти
+country_event = {
+	id = NWpersian.26
+	title = NWpersian.26.t
+	desc = NWpersian.26.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWpersian.26"	}
+	
+	option = {
+		name = NWpersian.26.a
+		random_owned_controlled_state = {
+			limit = {
+				free_building_slots = {
+					building = industrial_complex
+					size > 0
+					include_locked = yes
+				}
+			}
+			add_extra_state_shared_building_slots = 1
+			add_building_construction = {
+				type = industrial_complex
+				level = 1
+				instant_build = yes
+			}
+		}
+		random_owned_controlled_state = {
+			limit = {
+				free_building_slots = {
+					building = industrial_complex
+					size > 0
+					include_locked = yes
+				}
+			}
+			add_extra_state_shared_building_slots = 1
+			add_building_construction = {
+				type = industrial_complex
+				level = 1
+				instant_build = yes
+			}
+		}
+		random_owned_controlled_state = {
+			limit = {
+				free_building_slots = {
+					building = industrial_complex
+					size > 0
+					include_locked = yes
+				}
+			}
+			add_extra_state_shared_building_slots = 1
+			add_building_construction = {
+				type = industrial_complex
+				level = 1
+				instant_build = yes
+			}
+		}
+		hidden_effect = { country_event = { id = NWpersian.26 days = 365 } }
+	}
+}
+
+#Антибританские протесты в Тегеране // Пробрит PER
+country_event = {
+	id = NWpersian.27
+	title = NWpersian.27.t
+	desc = NWpersian.27.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWpersian.27" }
+	
+	option = {
+		name = NWpersian.27.a
+		ai_chance = {
+			factor = 30
+		}
+		add_stability = -0.03
+		hidden_effect = {
+			if = {
+				limit = {
+					OR = {
+						fascism > 0
+						monarchy > 0
+					}
+				}
+				country_event = { id = NWpersian.27 days = 60 }
+			}
+		}
+	}
+	
+	option = {
+		name = NWpersian.27.a
+		ai_chance = {
+			factor = 70
+		}
+		add_political_power = -30
+		hidden_effect = {
+			if = {
+				limit = {
+					OR = {
+						fascism > 0
+						monarchy > 0
+					}
+				}
+				country_event = { id = NWpersian.27 days = 30 }
+			}
+		}
+	}
+}
+
+
+############# Англо-советское вторжение #############
+
+#Крупная война в Европе // PER
+country_event = {
+	id = NWpersian.28
+	title = NWpersian.28.t
+	desc = NWpersian.28.desc
+	picture = GFX_report_event_generic_rally_3
+	fire_only_once = yes
+	
+	immediate = {
+		log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWpersian.28"
+	}
+	
+	trigger = {
+		tag = PER
+		SOV = { has_war = yes }
+		ENG = { has_war = yes }
+		GER = { has_war = yes }
+	}
+	
+	mean_time_to_happen = { days = 7 }
+	
+	option = {
+		name = NWpersian.28.a
+		ai_chance = {
+			factor = 30
+		}
+		add_stability = 0.1
+		add_ideas = neutrality_idea
+	}
+	
+	option = {
+		name = NWpersian.28.b
+		ai_chance = {
+			factor = 70
+		}
+	}
+}
+
+#Предложить Советскому Союзу устроить вторжение в Иран // ENG
+country_event = {
+	id = NWpersian.29
+	title = NWpersian.29.t
+	desc = NWpersian.29.desc
+	picture = GFX_report_event_generic_rally_3
+	fire_only_once = yes
+	
+	immediate = {
+		log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWpersian.29"
+	}
+	
+	trigger = {
+		tag = ENG
+		has_war_with = GER
+		NOT = { has_war_with = SOV }
+		SOV = { has_war_with = GER }
+		PER = {
+			OR = {
+				has_completed_focus = PER_involvement_german_advisers
+				NOT = { has_idea = neutrality_idea }
+			}
+			NOT = {
+				is_in_faction_with = SOV
+				is_in_faction_with = ENG
+				has_war_with = GER
+			}
+		}
+	}
+	
+	mean_time_to_happen = { days = 7 }
+	
+	option = {
+		name = NWpersian.29.a
+		ai_chance = {
 			factor = 50
 		}
-		
+		SOV = { country_event = { id = NWpersian.30 days = 1 } }
+	}
+	
+	option = {
+		name = NWpersian.29.b
+		ai_chance = {
+			factor = 50
+			modifier = {
+				factor = 0
+				is_historical_focus_on = yes
+			}
+		}
+	}
+}
+
+#Британия предлагает устроить вторжение в Иран // SOV
+country_event = {
+	id = NWpersian.30
+	title = NWpersian.30.t
+	desc = NWpersian.30.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWpersian.30" }
+	
+	option = {
+		name = NWpersian.30.a
+		ai_chance = {
+			factor = 50
+		}
+		#PER = { country_event = { id = NWpersian.31 days = 1 } }
+	}
+	
+	option = {
+		name = NWpersian.30.b
+		ai_chance = {
+			factor = 50
+			modifier = {
+				factor = 0
+				is_historical_focus_on = yes
+			}
+		}
+		#FROM = { country_event = { id = NWpersian.32 days = 1 } }
 	}
 }
