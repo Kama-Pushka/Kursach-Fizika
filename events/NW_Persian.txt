@@ -1177,7 +1177,7 @@ country_event = {
 		ai_chance = {
 			factor = 50
 		}
-		#PER = { country_event = { id = NWpersian.31 days = 1 } }
+		PER = { country_event = { id = NWpersian.32 days = 1 } }
 	}
 	
 	option = {
@@ -1189,6 +1189,242 @@ country_event = {
 				is_historical_focus_on = yes
 			}
 		}
-		#FROM = { country_event = { id = NWpersian.32 days = 1 } }
+		FROM = { country_event = { id = NWpersian.31 days = 1 } }
+	}
+}
+
+#Советский отказ // ENG
+country_event = {
+	id = NWpersian.31
+	title = NWpersian.31.t
+	desc = NWpersian.31.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWpersian.31" }
+	
+	option = {
+		name = NWpersian.31.a
+	}
+}
+
+#Британский ультиматум // PER
+country_event = {
+	id = NWpersian.32
+	title = NWpersian.32.t
+	desc = NWpersian.32.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWpersian.32" }
+	
+	option = {
+		name = NWpersian.32.a
+		ai_chance = {
+			factor = 50
+			modifier = {
+				factor = 0
+				is_historical_focus_on = yes
+			}
+		}
+		ENG = {
+			set_autonomy = {
+				target = ROOT
+				autonomy_state = autonomy_dominion
+			}
+		}
+		SOV = {
+			transfer_state = 420
+			transfer_state = 419
+			transfer_state = 963
+		}
+	}
+	
+	option = {
+		name = NWpersian.32.b
+		ai_chance = {
+			factor = 50
+		}
+		if = {
+			limit = {
+				OR = {
+					TUR = {
+						OR = {
+							is_in_faction_with = ENG
+							is_in_faction_with = SOV
+							has_completed_focus = TUR_alliance_with_britain
+						}
+					}
+					ENG = { has_country_flag = finding_allies_accept }
+				}
+			}
+			diplomatic_relation = {
+				country = TUR
+				relation = guarantee
+				active = no
+			}
+			TUR = {
+				diplomatic_relation = {
+					country = ROOT
+					relation = guarantee
+					active = no
+				}
+			}
+		}
+		SOV = {
+			declare_war_on = {
+				target = ROOT
+				type = annex_everything
+			}
+		}
+		ENG = {
+			declare_war_on = {
+				target = ROOT
+				type = annex_everything
+			}
+		}
+		set_country_flag = PER_war_against_ENG_SOV
+	}
+}
+
+#Предложить Советскому Союзу устроить вторжение в Иран // PER
+country_event = {
+	id = NWpersian.33
+	title = NWpersian.33.t
+	desc = NWpersian.33.desc
+	picture = GFX_report_event_generic_rally_3
+	fire_only_once = yes
+	
+	immediate = {
+		log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWpersian.33"
+		clr_country_flag = PER_war_against_ENG_SOV
+	}
+	
+	trigger = {
+		tag = PER
+		has_country_flag = PER_war_against_ENG_SOV
+		has_war_with = SOV
+		has_war_with = ENG
+		any_owned_state = {
+			OR = {
+				is_controlled_by = SOV
+				is_controlled_by = ENG
+			}
+		}
+		SOV = {
+			all_owned_state = {
+				NOT = { is_controlled_by = PER }
+			}
+		}
+		ENG = {
+			all_owned_state = {
+				NOT = { is_controlled_by = PER }
+			}
+		}
+	}
+	
+	mean_time_to_happen = { days = 15 }
+	
+	option = {
+		name = NWpersian.33.a
+		ai_chance = {
+			factor = 80
+		}
+		create_country_leader = {
+			name = "Mohammad Ali Foroughi"
+			desc = "POLITICS_MOHAMMAD_ALI_FOROUGHI_DESC"
+			picture = "gfx/leaders/PER/Portrait_Mohammad_Foroughi.dds"
+			expire = "1965.1.1"
+			ideology = monarchy_ideology
+			traits = {
+			}
+		}
+		every_owned_state = {
+			limit = { is_controlled_by = SOV }
+			add_to_temp_variable = { num_per_state_of_sov = 1 }
+		}
+		every_owned_state = {
+			limit = { is_controlled_by = ENG }
+			add_to_temp_variable = { num_per_state_of_eng = 1 }
+		}
+		if = {
+			limit = { check_variable = { num_per_state_of_eng > num_per_state_of_sov } }
+			ENG = { country_event = { id = NWpersian.34 days = 1 } }
+		}
+		else = { SOV = { country_event = { id = NWpersian.34 days = 1 } } }
+		
+	}
+	
+	option = {
+		name = NWpersian.33.b
+		ai_chance = {
+			factor = 20
+			modifier = {
+				factor = 0
+				is_historical_focus_on = yes
+			}
+		}
+		add_war_support = -0.05
+	}
+}
+
+#Иран запрашивает мир // ENG // SOV
+country_event = {
+	id = NWpersian.34
+	title = NWpersian.34.t
+	desc = NWpersian.34.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWpersian.34" }
+	
+	option = {
+		name = NWpersian.34.a
+		trigger = { tag = ENG }
+		ai_chance = {
+			factor = 80
+		}
+		ENG = {
+			set_autonomy = {
+				target = FROM
+				autonomy_state = autonomy_dominion
+			}
+		}
+		give_resource_rights = { receiver = ENG state = 411 }
+		give_resource_rights = { receiver = ENG state = 412 }
+		give_resource_rights = { receiver = ENG state = 413 }
+		SOV = {
+			transfer_state = 419
+			transfer_state = 420
+			transfer_state = 963
+			transfer_state = 1099
+		}
+	}
+	
+	option = {
+		name = NWpersian.34.a
+		trigger = { tag = SOV }
+		ai_chance = {
+			factor = 80
+		}
+		SOV = {
+			set_autonomy = {
+				target = FROM
+				autonomy_state = autonomy_dominion
+			}
+		}
+		ENG = {
+			transfer_state = 411
+			transfer_state = 412
+			transfer_state = 413
+		}
+	}
+	
+	option = {
+		name = NWpersian.34.c
+		ai_chance = {
+			factor = 20
+		}
+		add_war_support = -0.03
 	}
 }
