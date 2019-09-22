@@ -42,7 +42,7 @@ generic_protectorate_policy_category = {
 		fire_only_once = yes
 		
 		complete_effect = {
-			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision generic_provide_independence_to_subject (From [From.GetTag])"
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision generic_provide_independence_to_subject (From [From.GetName] [From.GetTag])"
 			if = {
 				limit = { has_government = fascism }
 				set_autonomy = {
@@ -120,7 +120,7 @@ generic_protectorate_policy_category = {
 		fire_only_once = yes
 		
 		complete_effect = {
-			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision generic_increase_autonomy_of_subject (From [From.GetTag])"
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision generic_increase_autonomy_of_subject (From [From.GetName] [From.GetTag])"
 			if = {
 				limit = { has_government = fascism }
 				set_autonomy = {
@@ -183,7 +183,7 @@ generic_investment_in_subject_category = {
 		cost = 30
 		
 		complete_effect = {
-			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision generic_investment_in_subject (From [From.GetTag])"
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision generic_investment_in_subject (From [From.GetName] [From.GetTag])"
 			FROM = {
 				capital_scope = {
 					add_extra_state_shared_building_slots = 2
@@ -249,7 +249,7 @@ generic_project_of_union_constitution_category = {
 		cost = 25
 		
 		complete_effect = {
-			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision generic_project_of_union_constitution (From [From.GetTag])"
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision generic_project_of_union_constitution (From [From.GetName] [From.GetTag])"
 			every_owned_state = {
 				limit = {
 					is_core_of = FROM
@@ -308,7 +308,7 @@ generic_project_of_union_constitution_category = {
 		days_remove = 14
 		
 		remove_effect = {
-			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision generic_centralization_of_industry (From [From.GetTag])"
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision generic_centralization_of_industry (From [From.GetName] [From.GetTag])"
 			FROM = {
 				add_ideas = centralization_of_industry
 			}
@@ -372,7 +372,7 @@ generic_gem_among_colonies_category = {
 		cost = 0
 		
 		complete_effect = {
-			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision generic_gem_among_colonies (From [From.GetTag])"
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision generic_gem_among_colonies (From [From.GetName] [From.GetTag])"
 			hidden_effect = {
 				if = {
 					limit = {
@@ -487,7 +487,7 @@ generic_seek_support_category = {
 		cost = 0
 		
 		complete_effect = {
-			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision generic_call_to_fight_for_independence (From [From.GetTag])"
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision generic_call_to_fight_for_independence (From [From.GetName] [From.GetTag])"
 			FROM = { country_event = { id = NWgeneric.8 days = 1 } }
 		}
 		
@@ -517,7 +517,7 @@ generic_seek_support_category = {
 		days_remove = 5
 		
 		remove_effect = {
-			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision generic_ultimatum_of_metropolis (From [From.GetTag])"
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision generic_ultimatum_of_metropolis (From [From.GetName] [From.GetTag])"
 			FROM = { country_event = { id = NWgeneric.9 days = 1 } }
 			if = {
 				limit = {
@@ -549,6 +549,8 @@ generic_policy_interventions_category = {
 		icon = eng_propaganda_campaigns
 		
 		available = {
+			has_capitulated = no
+			is_subject = no
 			FROM = {
 				NOT = {
 					has_war_with = ROOT
@@ -557,10 +559,12 @@ generic_policy_interventions_category = {
 					has_government = ROOT
 				}
 				has_civil_war = no
+				has_capitulated = no
 			}
 		}
 		
 		visible = {
+			is_subject = no
 			OR = {
 				has_completed_focus = ideological_expansion
 				has_completed_focus = patriotism_zeal
@@ -579,6 +583,7 @@ generic_policy_interventions_category = {
 		
 		target_trigger = {
 			FROM = {
+				has_capitulated = no
 				NOT = {
 					has_war_with = ROOT
 					is_subject_of = ROOT
@@ -602,11 +607,12 @@ generic_policy_interventions_category = {
 		days_remove = 60
 		
 		modifier = {
-			political_power_gain = -0.05
+			political_power_cost = 0.1
 		}
 		
 		complete_effect = {
-			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision generic_policy_interventions (From [From.GetTag])"
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision generic_policy_interventions (From [From.GetName] [From.GetTag])"
+			hidden_effect = { set_country_flag = interventions_target_@FROM }
 			if = {
 				limit = { ROOT = { has_government = democratic } }
 				FROM = { add_timed_idea = { idea = generic_policy_interventions_idea_democratic days = 60 } }
@@ -633,15 +639,430 @@ generic_policy_interventions_category = {
 			}
 		}
 		
+		remove_effect = {
+			hidden_effect = { clr_country_flag = interventions_target_@FROM }
+		}
+		
 		ai_will_do = {
 			factor = 1
 			modifier = {
 				factor = 0
-				political_power_daily < 0.05
+				political_power_daily < 0.2
 			}
 			modifier = {
 				add = 10
 				has_political_power > 152
+			}
+			modifier = {
+				factor = 10
+				any_allied_country = {
+					has_country_flag = interventions_target_@FROM
+				}
+			}
+			modifier = {
+				factor = 2
+				if = {
+					limit = { ROOT = { has_government = democratic } }
+					FROM = {
+						democratic > 0.449
+						democratic < 0.500
+					}
+				}
+				if = {
+					limit = { ROOT = { has_government = communism } }
+					FROM = {
+						communism > 0.449
+						communism < 0.500
+					}
+				}
+				if = {
+					limit = { ROOT = { has_government = fascism } }
+					FROM = {
+						fascism > 0.449
+						fascism < 0.500
+					}
+				}
+				if = {
+					limit = { ROOT = { has_government = neutrality } }
+					FROM = {
+						neutrality > 0.449
+						neutrality < 0.500
+					}
+				}
+				if = {
+					limit = { ROOT = { has_government = trozkism } }
+					FROM = {
+						trozkism > 0.449
+						trozkism < 0.500
+					}
+				}
+				if = {
+					limit = { ROOT = { has_government = monarchy } }
+					FROM = {
+						monarchy > 0.449
+						monarchy < 0.500
+					}
+				}
+			}
+			modifier = {
+				factor = 2
+				if = {
+					limit = { ROOT = { has_government = democratic } }
+					FROM = {
+						democratic > 0.399
+						democratic < 0.500
+					}
+				}
+				if = {
+					limit = { ROOT = { has_government = communism } }
+					FROM = {
+						communism > 0.399
+						communism < 0.500
+					}
+				}
+				if = {
+					limit = { ROOT = { has_government = fascism } }
+					FROM = {
+						fascism > 0.399
+						fascism < 0.500
+					}
+				}
+				if = {
+					limit = { ROOT = { has_government = neutrality } }
+					FROM = {
+						neutrality > 0.399
+						neutrality < 0.500
+					}
+				}
+				if = {
+					limit = { ROOT = { has_government = trozkism } }
+					FROM = {
+						trozkism > 0.399
+						trozkism < 0.500
+					}
+				}
+				if = {
+					limit = { ROOT = { has_government = monarchy } }
+					FROM = {
+						monarchy > 0.399
+						monarchy < 0.500
+					}
+				}
+			}
+			modifier = {
+				factor = 2
+				if = {
+					limit = { ROOT = { has_government = democratic } }
+					FROM = {
+						democratic > 0.349
+						democratic < 0.500
+					}
+				}
+				if = {
+					limit = { ROOT = { has_government = communism } }
+					FROM = {
+						communism > 0.349
+						communism < 0.500
+					}
+				}
+				if = {
+					limit = { ROOT = { has_government = fascism } }
+					FROM = {
+						fascism > 0.349
+						fascism < 0.500
+					}
+				}
+				if = {
+					limit = { ROOT = { has_government = neutrality } }
+					FROM = {
+						neutrality > 0.349
+						neutrality < 0.500
+					}
+				}
+				if = {
+					limit = { ROOT = { has_government = trozkism } }
+					FROM = {
+						trozkism > 0.349
+						trozkism < 0.500
+					}
+				}
+				if = {
+					limit = { ROOT = { has_government = monarchy } }
+					FROM = {
+						monarchy > 0.349
+						monarchy < 0.500
+					}
+				}
+			}
+			modifier = {
+				factor = 2
+				if = {
+					limit = { ROOT = { has_government = democratic } }
+					FROM = {
+						democratic > 0.299
+						democratic < 0.500
+					}
+				}
+				if = {
+					limit = { ROOT = { has_government = communism } }
+					FROM = {
+						communism > 0.299
+						communism < 0.500
+					}
+				}
+				if = {
+					limit = { ROOT = { has_government = fascism } }
+					FROM = {
+						fascism > 0.299
+						fascism < 0.500
+					}
+				}
+				if = {
+					limit = { ROOT = { has_government = neutrality } }
+					FROM = {
+						neutrality > 0.299
+						neutrality < 0.500
+					}
+				}
+				if = {
+					limit = { ROOT = { has_government = trozkism } }
+					FROM = {
+						trozkism > 0.299
+						trozkism < 0.500
+					}
+				}
+				if = {
+					limit = { ROOT = { has_government = monarchy } }
+					FROM = {
+						monarchy > 0.299
+						monarchy < 0.500
+					}
+				}
+			}
+			modifier = {
+				factor = 2
+				if = {
+					limit = { ROOT = { has_government = democratic } }
+					FROM = {
+						democratic > 0.249
+						democratic < 0.500
+					}
+				}
+				if = {
+					limit = { ROOT = { has_government = communism } }
+					FROM = {
+						communism > 0.249
+						communism < 0.500
+					}
+				}
+				if = {
+					limit = { ROOT = { has_government = fascism } }
+					FROM = {
+						fascism > 0.249
+						fascism < 0.500
+					}
+				}
+				if = {
+					limit = { ROOT = { has_government = neutrality } }
+					FROM = {
+						neutrality > 0.249
+						neutrality < 0.500
+					}
+				}
+				if = {
+					limit = { ROOT = { has_government = trozkism } }
+					FROM = {
+						trozkism > 0.249
+						trozkism < 0.500
+					}
+				}
+				if = {
+					limit = { ROOT = { has_government = monarchy } }
+					FROM = {
+						monarchy > 0.249
+						monarchy < 0.500
+					}
+				}
+			}
+			modifier = {
+				factor = 2
+				if = {
+					limit = { ROOT = { has_government = democratic } }
+					FROM = {
+						democratic > 0.199
+						democratic < 0.500
+					}
+				}
+				if = {
+					limit = { ROOT = { has_government = communism } }
+					FROM = {
+						communism > 0.199
+						communism < 0.500
+					}
+				}
+				if = {
+					limit = { ROOT = { has_government = fascism } }
+					FROM = {
+						fascism > 0.199
+						fascism < 0.500
+					}
+				}
+				if = {
+					limit = { ROOT = { has_government = neutrality } }
+					FROM = {
+						neutrality > 0.199
+						neutrality < 0.500
+					}
+				}
+				if = {
+					limit = { ROOT = { has_government = trozkism } }
+					FROM = {
+						trozkism > 0.199
+						trozkism < 0.500
+					}
+				}
+				if = {
+					limit = { ROOT = { has_government = monarchy } }
+					FROM = {
+						monarchy > 0.199
+						monarchy < 0.500
+					}
+				}
+			}
+			modifier = {
+				factor = 2
+				if = {
+					limit = { ROOT = { has_government = democratic } }
+					FROM = {
+						democratic > 0.149
+						democratic < 0.500
+					}
+				}
+				if = {
+					limit = { ROOT = { has_government = communism } }
+					FROM = {
+						communism > 0.149
+						communism < 0.500
+					}
+				}
+				if = {
+					limit = { ROOT = { has_government = fascism } }
+					FROM = {
+						fascism > 0.149
+						fascism < 0.500
+					}
+				}
+				if = {
+					limit = { ROOT = { has_government = neutrality } }
+					FROM = {
+						neutrality > 0.149
+						neutrality < 0.500
+					}
+				}
+				if = {
+					limit = { ROOT = { has_government = trozkism } }
+					FROM = {
+						trozkism > 0.149
+						trozkism < 0.500
+					}
+				}
+				if = {
+					limit = { ROOT = { has_government = monarchy } }
+					FROM = {
+						monarchy > 0.149
+						monarchy < 0.500
+					}
+				}
+			}
+			modifier = {
+				factor = 2
+				if = {
+					limit = { ROOT = { has_government = democratic } }
+					FROM = {
+						democratic > 0.099
+						democratic < 0.500
+					}
+				}
+				if = {
+					limit = { ROOT = { has_government = communism } }
+					FROM = {
+						communism > 0.099
+						communism < 0.500
+					}
+				}
+				if = {
+					limit = { ROOT = { has_government = fascism } }
+					FROM = {
+						fascism > 0.099
+						fascism < 0.500
+					}
+				}
+				if = {
+					limit = { ROOT = { has_government = neutrality } }
+					FROM = {
+						neutrality > 0.099
+						neutrality < 0.500
+					}
+				}
+				if = {
+					limit = { ROOT = { has_government = trozkism } }
+					FROM = {
+						trozkism > 0.099
+						trozkism < 0.500
+					}
+				}
+				if = {
+					limit = { ROOT = { has_government = monarchy } }
+					FROM = {
+						monarchy > 0.099
+						monarchy < 0.500
+					}
+				}
+			}
+			modifier = {
+				factor = 2
+				if = {
+					limit = { ROOT = { has_government = democratic } }
+					FROM = {
+						democratic > 0.049
+						democratic < 0.500
+					}
+				}
+				if = {
+					limit = { ROOT = { has_government = communism } }
+					FROM = {
+						communism > 0.049
+						communism < 0.500
+					}
+				}
+				if = {
+					limit = { ROOT = { has_government = fascism } }
+					FROM = {
+						fascism > 0.049
+						fascism < 0.500
+					}
+				}
+				if = {
+					limit = { ROOT = { has_government = neutrality } }
+					FROM = {
+						neutrality > 0.049
+						neutrality < 0.500
+					}
+				}
+				if = {
+					limit = { ROOT = { has_government = trozkism } }
+					FROM = {
+						trozkism > 0.049
+						trozkism < 0.500
+					}
+				}
+				if = {
+					limit = { ROOT = { has_government = monarchy } }
+					FROM = {
+						monarchy > 0.049
+						monarchy < 0.500
+					}
+				}
 			}
 			modifier = {
 				factor = 0
@@ -681,6 +1102,8 @@ generic_interventions_start_civil_war_category = {
 		icon = generic_ignite_civil_war
 		
 		available = {
+			has_capitulated = no
+			is_subject = no
 			custom_trigger_tooltip = {
 				tooltip = generic_start_civil_war_trigger_tt
 				OR = {
@@ -709,6 +1132,7 @@ generic_interventions_start_civil_war_category = {
 					has_government = ROOT
 				}
 				has_civil_war = no
+				has_capitulated = no
 				if = {
 					limit = { ROOT = { has_government = democratic } }
 					democratic > 0.500
@@ -737,12 +1161,14 @@ generic_interventions_start_civil_war_category = {
 		}
 		
 		visible = {
+			is_subject = no
 			OR = {
 				has_completed_focus = ideological_expansion
 				has_completed_focus = patriotism_zeal
 			}
 			country_exists = FROM
 			FROM = {
+				has_capitulated = no
 				NOT = {
 					has_war_with = ROOT
 					is_subject_of = ROOT
@@ -776,7 +1202,7 @@ generic_interventions_start_civil_war_category = {
 		cost = 150
 		
 		complete_effect = {
-			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision generic_start_civil_war (From [From.GetTag])"
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision generic_start_civil_war (From [From.GetName] [From.GetTag])"
 			if = {
 				limit = { ROOT = { has_government = democratic } }
 				FROM = { start_civil_war = { ideology = democratic size = 0.5 } }
