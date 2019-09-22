@@ -1817,9 +1817,15 @@ country_event = {
 	
 	trigger = {
 		tag = event_target:NW_hhnbrg_scope
-		any_state = {
-			has_state_flag = has_peoples_congresses_flag
-			NOT = { is_owned_by = event_target:NW_hhnbrg_scope }
+		OR = {
+			AND = {
+				has_government = anarchism
+				any_state = {
+					has_state_flag = has_peoples_congresses_flag
+					NOT = { is_owned_by = event_target:NW_hhnbrg_scope }
+				}
+			}
+			NOT = { has_government = anarchism }
 		}
 	}
 	
@@ -1831,14 +1837,27 @@ country_event = {
 	
 	option = {
 		name = 901
-		every_state = {
-			limit = {
-				has_state_flag = has_peoples_congresses_flag
-				NOT = { is_owned_by = event_target:NW_hhnbrg_scope }
+		if = {
+			limit = { has_government = anarchism }
+			every_state = {
+				limit = {
+					has_state_flag = has_peoples_congresses_flag
+					NOT = { is_owned_by = event_target:NW_hhnbrg_scope }
+				}
+				clr_state_flag = has_peoples_congresses_flag
+				subtract_from_variable = { ROOT.num_of_congresses_var = 1 }
+				subtract_from_variable = { ROOT.custom_cost_minus = 10 }
 			}
-			clr_state_flag = has_peoples_congresses_flag
-			subtract_from_variable = { ROOT.num_of_congresses_var = 1 }
-			subtract_from_variable = { ROOT.custom_cost_minus = 10 }
+		}
+		else = {
+			every_state = {
+				limit = {
+					has_state_flag = has_peoples_congresses_flag
+				}
+				clr_state_flag = has_peoples_congresses_flag
+				subtract_from_variable = { ROOT.num_of_congresses_var = 1 }
+				subtract_from_variable = { ROOT.custom_cost_minus = 10 }
+			}
 		}
 		country_event = { id = NWhohenberg.899 }
 	}
