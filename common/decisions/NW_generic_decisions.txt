@@ -552,14 +552,28 @@ generic_policy_interventions_category = {
 			has_capitulated = no
 			is_subject = no
 			FROM = {
+				has_civil_war = no
+				has_capitulated = no
 				NOT = {
 					has_war_with = ROOT
 					is_subject_of = ROOT
 					is_in_faction_with = ROOT
 					has_government = ROOT
 				}
-				has_civil_war = no
-				has_capitulated = no
+				OR = {
+					gives_military_access_to = ROOT
+					any_owned_state = {
+						any_neighbor_state = {
+							owner = {
+								OR = {
+									tag = ROOT
+									is_subject_of = ROOT
+									is_in_faction_with = ROOT
+								}
+							}
+						}
+					}
+				}
 			}
 		}
 		
@@ -571,31 +585,51 @@ generic_policy_interventions_category = {
 			}
 			country_exists = FROM
 			FROM = {
+				has_civil_war = no
+				has_capitulated = no
 				NOT = {
 					has_war_with = ROOT
 					is_subject_of = ROOT
 					is_in_faction_with = ROOT
 					has_government = ROOT
 				}
-				has_civil_war = no
+				OR = {
+					gives_military_access_to = ROOT
+					any_owned_state = {
+						any_neighbor_state = {
+							owner = {
+								OR = {
+									tag = ROOT
+									is_subject_of = ROOT
+									is_in_faction_with = ROOT
+								}
+							}
+						}
+					}
+				}
 			}
 		}
 		
 		target_trigger = {
 			FROM = {
+				has_civil_war = no
 				has_capitulated = no
 				NOT = {
 					has_war_with = ROOT
 					is_subject_of = ROOT
 					is_in_faction_with = ROOT
+					has_government = ROOT
 				}
-				any_owned_state = {
-					any_neighbor_state = {
-						owner = {
-							OR = {
-								tag = ROOT
-								is_subject_of = ROOT
-								is_in_faction_with = ROOT
+				OR = {
+					gives_military_access_to = ROOT
+					any_owned_state = {
+						any_neighbor_state = {
+							owner = {
+								OR = {
+									tag = ROOT
+									is_subject_of = ROOT
+									is_in_faction_with = ROOT
+								}
 							}
 						}
 					}
@@ -1091,6 +1125,10 @@ generic_policy_interventions_category = {
 					FROM = { monarchy > 0.500 }
 				}
 			}
+			modifier = {
+				factor = 0
+				FROM = { num_of_controlled_states < 2 }
+			}
 		}
 	}
 }
@@ -1125,14 +1163,29 @@ generic_interventions_start_civil_war_category = {
 				}
 			}
 			FROM = {
+				num_of_controlled_states > 1
+				has_civil_war = no
+				has_capitulated = no
 				NOT = {
 					has_war_with = ROOT
 					is_subject_of = ROOT
 					is_in_faction_with = ROOT
 					has_government = ROOT
 				}
-				has_civil_war = no
-				has_capitulated = no
+				OR = {
+					gives_military_access_to = ROOT
+					any_owned_state = {
+						any_neighbor_state = {
+							owner = {
+								OR = {
+									tag = ROOT
+									is_subject_of = ROOT
+									is_in_faction_with = ROOT
+								}
+							}
+						}
+					}
+				}
 				if = {
 					limit = { ROOT = { has_government = democratic } }
 					democratic > 0.500
@@ -1168,6 +1221,7 @@ generic_interventions_start_civil_war_category = {
 			}
 			country_exists = FROM
 			FROM = {
+				has_civil_war = no
 				has_capitulated = no
 				NOT = {
 					has_war_with = ROOT
@@ -1175,23 +1229,43 @@ generic_interventions_start_civil_war_category = {
 					is_in_faction_with = ROOT
 					has_government = ROOT
 				}
+				OR = {
+					gives_military_access_to = ROOT
+					any_owned_state = {
+						any_neighbor_state = {
+							owner = {
+								OR = {
+									tag = ROOT
+									is_subject_of = ROOT
+									is_in_faction_with = ROOT
+								}
+							}
+						}
+					}
+				}
 			}
 		}
 		
 		target_trigger = {
 			FROM = {
+				has_civil_war = no
+				has_capitulated = no
 				NOT = {
 					has_war_with = ROOT
 					is_subject_of = ROOT
 					is_in_faction_with = ROOT
+					has_government = ROOT
 				}
-				any_owned_state = {
-					any_neighbor_state = {
-						owner = {
-							OR = {
-								tag = ROOT
-								is_subject_of = ROOT
-								is_in_faction_with = ROOT
+				OR = {
+					gives_military_access_to = ROOT
+					any_owned_state = {
+						any_neighbor_state = {
+							owner = {
+								OR = {
+									tag = ROOT
+									is_subject_of = ROOT
+									is_in_faction_with = ROOT
+								}
 							}
 						}
 					}
@@ -1226,6 +1300,70 @@ generic_interventions_start_civil_war_category = {
 			if = {
 				limit = { ROOT = { has_government = monarchy } }
 				FROM = { start_civil_war = { ideology = monarchy size = 0.5 } }
+			}
+			random_country = {
+				limit = {
+					original_tag = FROM
+					has_government = ROOT
+				}
+				add_ai_strategy = {
+					type = befriend
+					id = ROOT
+					value = 100
+				}
+				add_ai_strategy = {
+					type = alliance
+					id = ROOT		
+					value = 200
+				}
+				add_opinion_modifier = { target = ROOT modifier = generic_start_civil_war_op }
+				ROOT = {
+					add_opinion_modifier = { target = PREV modifier = generic_start_civil_war_op }
+					add_ai_strategy = {
+						type = alliance
+						id = PREV		
+						value = 200
+					}
+					add_ai_strategy = {
+						type = protect
+						id = PREV		
+						value = 100
+					}
+					add_ai_strategy = {
+						type = send_volunteers_desire
+						id = PREV		
+						value = 75
+					}
+				}
+			}
+			hidden_effect = {
+				FROM = {
+					add_ai_strategy = {
+						type = antagonize
+						id = ROOT
+						value = 300
+					}
+					add_ai_strategy = {
+						type = conquer
+						id = ROOT
+						value = 300
+					}
+					add_ai_strategy = {
+						type = contain
+						id = ROOT
+						value = 75
+					}
+				}
+				add_ai_strategy = {
+					type = antagonize
+					id = FROM
+					value = 100
+				}
+				add_ai_strategy = {
+					type = contain
+					id = FROM
+					value = 75
+				}
 			}
 			if = {
 				limit = {
