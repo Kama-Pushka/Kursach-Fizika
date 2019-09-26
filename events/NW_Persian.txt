@@ -20,7 +20,7 @@ country_event = {
 			factor = 50
 		}
 		if = {
-			limit = { threat > 0.4 }
+			limit = { threat > 0.45 }
 			create_wargoal = {
 				type = annex_everything
 				target = FROM
@@ -36,9 +36,9 @@ country_event = {
 				value = 200
 			}
 		}
+		add_opinion_modifier = { target = FROM modifier = PER_nationalize_oil_industry_op }
+		FROM = { add_opinion_modifier = { target = ENG modifier = PER_nationalize_oil_industry_op } }
 		effect_tooltip = {
-			add_opinion_modifier = { target = FROM modifier = PER_nationalize_oil_industry_op }
-			FROM = { add_opinion_modifier = { target = ENG modifier = PER_nationalize_oil_industry_op } }
 			remove_resource_rights = 411
 			remove_resource_rights = 412
 			remove_resource_rights = 413
@@ -561,7 +561,7 @@ country_event = {
 		}
 		start_civil_war = {
 			ideology = communism
-			size = 0.49
+			size = 0.5
 			states = { 419 963 421 420 416 418 }
 		}
 		hidden_effect = {
@@ -606,7 +606,7 @@ country_event = {
 		complete_national_focus = PER_coup_of_peoples_party_iran
 		start_civil_war = {
 			ideology = monarchy
-			size = 0.49
+			size = 0.5
 			states = { 410 414 412 411 413 }
 		}
 		hidden_effect = {
@@ -1502,6 +1502,7 @@ country_event = {
 				autonomy_state = autonomy_dominion
 			}
 		}
+		FROM = { load_focus_tree = persian_prosoviet_focus }
 		ENG = {
 			transfer_state = 411
 			transfer_state = 412
@@ -2010,6 +2011,234 @@ country_event = {
 			ideology = monarchy_ideology
 			traits = {
 				dont_know_persian
+			}
+		}
+	}
+}
+
+
+#### PROSOVIET TREE ####
+
+#Подготовка к выборам // PER
+country_event = {
+	id = NWpersian.44
+	title = NWpersian.44.t
+	desc = NWpersian.44.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWpersian.44" }
+
+	option = {
+		name = NWpersian.44.a
+		ai_chance = {
+			factor = 50
+		}
+		add_political_power = -50
+		add_popularity = {
+			ideology = communism
+			popularity = 0.05
+		}
+	}
+	
+	option = {
+		name = NWpersian.44.b
+		ai_chance = {
+			factor = 50
+		}
+		add_stability = -0.05
+	}
+}
+
+#Демократические выборы // PER
+country_event = {
+	id = NWpersian.45
+	title = NWpersian.45.t
+	desc = NWpersian.45.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWpersian.45" }
+
+	option = {
+		name = NWpersian.45.a
+		if = {
+			limit = { NOT = { has_government = communism } }
+			set_politics = {
+				ruling_party = communism
+				elections_allowed = no
+			}
+		}
+		add_popularity = {
+			ideology = communism
+			popularity = 0.1
+		}
+	}
+}
+
+#Иран требует вернуть контроль над оккупированными территориями // ENG
+country_event = {
+	id = NWpersian.46
+	title = NWpersian.46.t
+	desc = NWpersian.46.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWpersian.46" }
+
+	option = {
+		name = NWpersian.46.a
+		ai_chance = {
+			factor = 0
+		}
+		every_owned_state = {
+			limit = {
+				OR = {
+					state = 411
+					state = 412
+					state = 413
+				}
+			}
+			FROM = { transfer_state = PREV }
+		}
+	}
+	
+	option = {
+		name = NWpersian.46.b
+		ai_chance = {
+			factor = 50
+		}
+		FROM = { country_event = { id = NWpersian.47 days = 1 } }
+	}
+}
+
+#ENG отказывается возвращать наши земли // PER
+country_event = {
+	id = NWpersian.47
+	title = NWpersian.47.t
+	desc = NWpersian.47.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWpersian.47" }
+
+	option = {
+		name = NWpersian.47.a
+		ai_chance = {
+			factor = 50
+		}
+		if = {
+			limit = { FROM = { is_in_faction_with = SOV } }
+			FROM = { leave_faction = yes }
+		}
+		declare_war_on = {
+			target = FROM
+			type = take_state
+			generator = { 411 412 413 }
+		}
+		FROM = { country_event = { id = NWpersian.48 days = 1 } }
+	}
+	
+	option = {
+		name = NWpersian.47.b
+		ai_chance = {
+			factor = 50
+		}
+	}
+}
+
+#Судьба южного Ирана // ENG
+country_event = {
+	id = NWpersian.48
+	title = NWpersian.48.t
+	desc = NWpersian.48.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWpersian.48" }
+
+	option = {
+		name = NWpersian.48.a
+		ai_chance = {
+			factor = 50
+		}
+		add_stability = -0.1
+	}
+	
+	option = {
+		name = NWpersian.48.b
+		ai_chance = {
+			factor = 50
+		}
+		FROM = {
+			start_civil_war = {
+				ideology = democratic
+				size = 0.5
+				states = { 411 412 413 }
+			}
+		}
+		random_other_country = {
+			limit = {
+				original_tag = FROM
+				has_government = democratic
+			}
+			ROOT = {
+				set_autonomy = {
+					target = PREV
+					autonomy_state = autonomy_colony
+				}
+			}
+			hidden_effect = {
+				load_focus_tree = { tree = persian_focus keep_completed = yes }
+				complete_national_focus = PER_policy_westernization
+				complete_national_focus = PER_empowerment_women
+				complete_national_focus = PER_continued_reform
+				complete_national_focus = PER_prohibit_schools_attached_mosques
+				complete_national_focus = PER_translate_persian_into_latin
+				complete_national_focus = PER_prohibit_wearing_hijabs
+				complete_national_focus = PER_weakening_of_warlords
+				complete_national_focus = PER_weakening_influence_clergy
+				complete_national_focus = PER_weakening_influence_aristocracy
+				complete_national_focus = PER_last_blow_to_confessors
+				complete_national_focus = PER_right_free_nomination_delegate
+			}
+		}
+	}
+	
+	option = {
+		name = NWpersian.48.c
+		ai_chance = {
+			factor = 50
+		}
+		add_political_power = -75
+		FROM = {
+			start_civil_war = {
+				ideology = neutrality
+				size = 0.5
+				states = { 411 412 413 }
+			}
+		}
+		random_other_country = {
+			limit = {
+				original_tag = FROM
+				has_government = neutrality
+			}
+			ROOT = {
+				set_autonomy = {
+					target = PREV
+					autonomy_state = autonomy_colony
+				}
+			}
+			hidden_effect = {
+				load_focus_tree = { tree = persian_focus keep_completed = yes }
+				complete_national_focus = PER_policy_westernization
+				complete_national_focus = PER_empowerment_women
+				complete_national_focus = PER_continued_reform
+				complete_national_focus = PER_prohibit_schools_attached_mosques
+				complete_national_focus = PER_translate_persian_into_latin
+				complete_national_focus = PER_prohibit_wearing_hijabs
+				complete_national_focus = PER_primacy_of_army
+				complete_national_focus = PER_revolution_probritish_officers
 			}
 		}
 	}
