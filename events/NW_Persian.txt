@@ -1912,7 +1912,19 @@ country_event = {
 		ai_chance = {
 			factor = 70
 		}
-		FROM = { add_to_faction = ROOT }
+		FROM = {
+			add_to_faction = ROOT
+			add_ai_strategy = {
+				type = alliance
+				id = ROOT
+				value = 200
+			}
+		}
+		add_ai_strategy = {
+			type = alliance
+			id = FROM
+			value = 300
+		}
 	}
 	
 	option = {
@@ -2293,6 +2305,262 @@ country_event = {
 				complete_national_focus = PER_prohibit_wearing_hijabs
 				complete_national_focus = PER_primacy_of_army
 				complete_national_focus = PER_revolution_probritish_officers
+			}
+		}
+	}
+}
+
+#Иран требует вернуть контроль над оккупированными территориями // SOV
+country_event = {
+	id = NWpersian.49
+	title = NWpersian.49.t
+	desc = NWpersian.49.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWpersian.49" }
+
+	option = {
+		name = NWpersian.49.a
+		ai_chance = {
+			factor = 50
+		}
+		every_owned_state = {
+			limit = {
+				OR = {
+					state = 420
+					state = 419
+					state = 963
+				}
+				OR = {
+					is_owned_by = ROOT
+					is_owned_by = APG
+					is_owned_by = MHB
+				}
+			}
+			FROM = { transfer_state = PREV }
+		}
+		if = {
+			limit = { APG = { is_subject_of = ROOT } }
+			set_autonomy = {
+				target = APG
+				autonomy_state = autonomy_free
+			}
+			APG = { leave_faction = yes }
+		}
+		if = {
+			limit = { MHB = { is_subject_of = ROOT } }
+			set_autonomy = {
+				target = MHB
+				autonomy_state = autonomy_free
+			}
+			MHB = { leave_faction = yes }
+		}
+		FROM = { country_event = { id = NWpersian.50 days = 1 } }
+	}
+	
+	option = {
+		name = NWpersian.49.b
+		ai_chance = {
+			factor = 50
+			modifier = {
+				factor = 0
+				is_historical_focus_on = yes
+			}
+		}
+		FROM = { country_event = { id = NWpersian.51 days = 1 } }
+	}
+}
+
+#Судьба северных республик // PER
+country_event = {
+	id = NWpersian.50
+	title = NWpersian.50.t
+	desc = NWpersian.50.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWpersian.50" }
+
+	option = {
+		name = NWpersian.50.a
+		ai_chance = {
+			factor = 50
+		}
+		trigger = {
+			OR = {
+				country_exists = APG
+				country_exists = MHB
+			}
+		}
+		if = {
+			limit = { country_exists = APG }
+			declare_war_on = {
+				target = APG
+				type = annex_everything
+			}
+		}
+		if = {
+			limit = { country_exists = MHB }
+			declare_war_on = {
+				target = MHB
+				type = annex_everything
+			}
+		}
+	}
+	
+	option = {
+		name = NWpersian.50.b
+		ai_chance = {
+			factor = 50
+		}
+		if = {
+			limit = { country_exists = APG }
+			puppet = APG
+		}
+		else = { release_puppet = APG }
+			
+		if = {
+			limit = { country_exists = MHB }
+			puppet = MHB
+		}
+		else = { release_puppet = MHB }
+	}
+}
+
+#SOV отказывается возвращать наши земли // PER
+country_event = {
+	id = NWpersian.51
+	title = NWpersian.51.t
+	desc = NWpersian.51.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWpersian.51" }
+
+	option = {
+		name = NWpersian.51.a
+		ai_chance = {
+			factor = 50
+		}
+		if = {
+			limit = { FROM = { is_in_faction_with = ENG } }
+			FROM = { leave_faction = yes }
+		}
+		declare_war_on = {
+			target = FROM
+			type = take_state
+			generator = { 420 419 963 1099 }
+		}
+		FROM = { country_event = { id = NWpersian.52 days = 1 } }
+	}
+	
+	option = {
+		name = NWpersian.51.b
+		ai_chance = {
+			factor = 50
+		}
+	}
+}
+
+#Судьба северного  Ирана // SOV
+country_event = {
+	id = NWpersian.52
+	title = NWpersian.52.t
+	desc = NWpersian.52.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWpersian.52" }
+
+	option = {
+		name = NWpersian.52.a
+		ai_chance = {
+			factor = 50
+		}
+		unlock_decision_tooltip = PER_integrate_iran_into_our_structure
+		set_country_flag = PER_NWpersian_52_flag
+	}
+	
+	option = {
+		name = NWpersian.52.b
+		ai_chance = {
+			factor = 50
+		}
+		FROM = {
+			start_civil_war = {
+				ideology = communism
+				size = 0.5
+				states = { 420 419 963 }
+			}
+		}
+		random_other_country = {
+			limit = {
+				original_tag = FROM
+				has_government = communism
+			}
+			ROOT = {
+				set_autonomy = {
+					target = PREV
+					autonomy_state = autonomy_dominion
+				}
+			}
+			hidden_effect = {
+				load_focus_tree = { tree = persian_focus keep_completed = yes }
+				complete_national_focus = PER_policy_westernization
+				complete_national_focus = PER_empowerment_women
+				complete_national_focus = PER_continued_reform
+				complete_national_focus = PER_prohibit_schools_attached_mosques
+				complete_national_focus = PER_translate_persian_into_latin
+				complete_national_focus = PER_prohibit_wearing_hijabs
+				complete_national_focus = PER_weakening_of_warlords
+				complete_national_focus = PER_weakening_influence_clergy
+				complete_national_focus = PER_weakening_influence_aristocracy
+				complete_national_focus = PER_last_blow_to_confessors
+				complete_national_focus = PER_keep_personal_dictatorship
+				complete_national_focus = PER_coup_of_peoples_party_iran
+			}
+		}
+	}
+}
+
+
+###################  Интеграция Южного Азербайджана ###############
+
+#Обращение Багирова // SOV
+country_event = {
+	id = NWpersian.53
+	title = NWpersian.53.t
+	desc = NWpersian.53.desc
+	picture = GFX_report_event_generic_rally_3
+	fire_only_once = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWpersian.2" }
+	
+	mean_time_to_happen = { days = 7 }
+	
+	trigger = {
+		tag = SOV
+		owns_state = 419
+	}
+	
+	option = {
+		name = NWpersian.53.a
+		ai_chance = {
+			factor = 50
+		}
+		add_political_power -50
+		unlock_decision_category_tooltip = PER_integration_south_azerbaijan_category
+		set_country_flag = PER_integration_south_azerbaijan_flag
+	}
+	
+	option = {
+		name = NWpersian.53.b
+		ai_chance = {
+			factor = 50
+			modifier = {
+				factor = 0
+				is_historical_focus_on = yes
 			}
 		}
 	}
