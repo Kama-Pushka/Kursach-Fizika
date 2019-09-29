@@ -695,6 +695,213 @@ country_event = {
 }
 
 
+#### РЕШЕНИЯ ####
+
+#Правительство from организовало гражданскую войну
+country_event = {
+	id = NWgeneric.10
+	title = NWgeneric.10.t
+	desc = NWgeneric.10.desc
+	picture = GFX_report_event_crowd_in_prague
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWgeneric.10 from [From.GetName] ([From.GetTag])" }
+	
+	option = {
+		name = NWgeneric.10.a
+		add_opinion_modifier = { target = FROM modifier = generic_start_civil_war_op2 }
+		FROM = { add_opinion_modifier = { target = ROOT modifier = generic_start_civil_war_op2 } }
+	}
+}
+
+#Война кажется безнадёжной // осколок
+country_event = {
+	id = NWgeneric.11
+	title = NWgeneric.11.t
+	desc = NWgeneric.11.desc
+	picture = GFX_report_event_chinese_soldiers_city_ruin
+	
+	trigger = {
+		NOT = { has_country_flag = shard_call_to_help_flag }
+		has_civil_war = yes
+		any_other_country = {
+			has_country_flag = flag_is_revolter_of_shard_@ROOT
+			NOT = {
+				is_in_faction_with = ROOT
+				has_war_with = ROOT
+				has_war_together_with = ROOT
+			}
+		}
+	}
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWgeneric.11" }
+	immediate = {
+		hidden_effect = {
+			set_country_flag = shard_call_to_help_flag
+			random_other_country = {
+				limit = {
+					has_country_flag = flag_is_revolter_of_shard_@ROOT
+				}
+				save_event_target_as = is_revolter_of_shard_@ROOT
+			}
+		}
+	}
+	
+	#mean_time_to_happen = { months = 3 }
+	mean_time_to_happen = { days = 0 }
+	
+	option = {
+		name = NWgeneric.11.a
+		ai_chance = {
+			factor = 90
+		}
+		event_target:is_revolter_of_shard_@ROOT = {
+			country_event = { id = NWgeneric.12 days = 1 }
+		}
+	}
+	
+	option = {
+		name = NWgeneric.11.b
+		ai_chance = {
+			factor = 0
+		}
+	}
+}
+
+#From запрашивает помощь // инициатор
+country_event = {
+	id = NWgeneric.12
+	title = NWgeneric.12.t
+	desc = NWgeneric.12.desc
+	picture = GFX_report_event_chinese_soldiers_city_ruin
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWgeneric.12 from [From.GetName] ([From.GetTag])" }
+	immediate = {
+		hidden_effect = {
+			random_other_country = {
+				limit = {
+					has_country_flag = flag_revolter_of_base_is_@ROOT
+				}
+				save_event_target_as = revolter_of_base_is_@ROOT
+			}
+		}
+	}
+
+	option = {
+		name = NWgeneric.12.a
+		ai_chance = {
+			factor = 90
+		}
+		declare_war_on = {
+			target = event_target:revolter_of_base_is_@ROOT
+			type = annex_everything
+		}
+	}
+	
+	option = {
+		name = NWgeneric.12.b
+		ai_chance = {
+			factor = 10
+		}
+		add_ai_strategy = {
+			type = alliance
+			id = FROM		
+			value = -100
+		}
+		add_ai_strategy = {
+			type = protect
+			id = FROM		
+			value = -100
+		}
+		add_ai_strategy = {
+			type = send_volunteers_desire
+			id = FROM		
+			value = -75
+		}
+		remove_opinion_modifier = { target = FROM modifier = generic_start_civil_war_op }
+		FROM = {
+			remove_opinion_modifier = { target = ROOT modifier = generic_start_civil_war_op }
+			add_opinion_modifier = { target = ROOT modifier = generic_no_support_in_civil_war_op }
+			add_ai_strategy = {
+				type = befriend
+				id = ROOT
+				value = -150
+			}
+			add_ai_strategy = {
+				type = alliance
+				id = ROOT		
+				value = -300
+			}
+		}
+	}
+}
+
+#Государство должно заплатить за свои преступления // выжившая цель
+country_event = {
+	id = NWgeneric.13
+	title = NWgeneric.13.t
+	desc = NWgeneric.13.desc
+	picture = GFX_report_event_chinese_soldiers_city_ruin
+	
+	trigger = {
+		has_civil_war = no
+		any_other_country = {
+			has_country_flag = flag_is_revolter_of_base_@ROOT
+			NOT = {
+				is_in_faction_with = ROOT
+				has_war_with = ROOT
+			}
+			ROOT = { has_country_flag = flag_revolter_of_base_is_@PREV }
+		}
+		NOT = { has_country_flag = has_chance_revenge_flag }
+	}
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWgeneric.13" }
+	immediate = {
+		hidden_effect = {
+			set_country_flag = has_chance_revenge_flag
+			random_other_country = {
+				limit = {
+					has_country_flag = flag_is_revolter_of_base_@ROOT
+				}
+				save_event_target_as = target_to_revenge_from_@ROOT
+			}
+		}
+	}
+	
+	mean_time_to_happen = { days = 10 }
+	
+	option = {
+		name = NWgeneric.13.a
+		ai_chance = {
+			factor = 90
+		}
+		create_wargoal = {
+			type = annex_everything
+			target = event_target:target_to_revenge_from_@ROOT
+		}
+		add_ai_strategy = {
+			type = antagonize
+			id = event_target:target_to_revenge_from_@ROOT
+			value = 100
+		}
+		add_ai_strategy = {
+			type = conquer
+			id = event_target:target_to_revenge_from_@ROOT
+			value = 100
+		}
+	}
+	
+	option = {
+		name = NWgeneric.13.b
+		ai_chance = {
+			factor = 10
+		}
+	}
+}
+
+
 
 #TEST
 country_event = {
