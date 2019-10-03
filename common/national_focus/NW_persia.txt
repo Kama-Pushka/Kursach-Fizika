@@ -12,7 +12,7 @@ focus_tree = {
 	
 	default = no
 	
-	continuous_focus_position = { x = 50 y = 1750 }
+	continuous_focus_position = { x = 3000 y = 50 }
 	
 	##############################
 	#### SADABAT PACT SECTION ####
@@ -33,6 +33,14 @@ focus_tree = {
 
 		ai_will_do = {
 			factor = 10
+			modifier = {
+				factor = 0
+				is_historical_focus_on = yes
+			}
+			modifier = {
+				factor = 0
+				date < 1937.06.01
+			}
 		}
 		available = {
 			
@@ -117,10 +125,6 @@ focus_tree = {
 			factor = 10
 			modifier = {
 				factor = 0
-				is_historical_focus_on = yes
-			}
-			modifier = {
-				factor = 0
 				date < 1937.06.01
 			}
 		}
@@ -128,13 +132,6 @@ focus_tree = {
 			is_in_faction = no
 			is_subject = no
 			has_civil_war = no
-			has_country_flag = saadabad_accept_flag
-			TUR = {
-				focus_progress = {
-					focus = TUR_create_the_sadabat_pact
-					progress < 0
-				}
-			}
 			NOT = { has_country_flag = PER_islamic_revolution_block_flag }
 		}
 		bypass = {
@@ -143,34 +140,54 @@ focus_tree = {
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus PER_create_the_sadabat_pact"
 			set_rule = { can_create_factions = yes }
-			create_faction = sadabat_pact
-			add_political_power = 150
-			effect_tooltip = {
-				every_other_country = {
-					limit = {
-						has_country_flag = saadabad_accept_flag
+			if = {
+				limit = {
+					OR = {
+						AND = {
+							date > 1937.06.02
+							NOT = { has_country_flag = saadabad_accept_flag }
+						}
+						TUR = {
+							focus_progress = {
+								focus = TUR_create_the_sadabat_pact
+								progress > 0
+							}
+						}
 					}
-					ROOT = { add_to_faction = PREV }
+				}
+				create_faction = tehran_pact
+				set_country_flag = tehran_pact_flag
+			}
+			else = {
+				create_faction = sadabat_pact
+				effect_tooltip = {
+					every_other_country = {
+						limit = {
+							has_country_flag = saadabad_accept_flag
+						}
+						ROOT = { add_to_faction = PREV }
+					}
+				}
+				hidden_effect = {
+					if = {
+						limit = { TUR = { has_country_flag = saadabad_accept_flag } }
+						complete_national_focus = PER_expansion_turkey
+					}
+					if = {
+						limit = { IRQ = { has_country_flag = saadabad_accept_flag } }
+						complete_national_focus = PER_expansion_iraq
+					}
+					if = {
+						limit = { AFG = { has_country_flag = saadabad_accept_flag } }
+						complete_national_focus = PER_expansion_afgan
+					}
+					if = {
+						limit = { EGY = { has_country_flag = saadabad_accept_flag } }
+						complete_national_focus = PER_expansion_egypt
+					}
 				}
 			}
-			hidden_effect = {
-				if = {
-					limit = { TUR = { has_country_flag = saadabad_accept_flag } }
-					complete_national_focus = PER_expansion_turkey
-				}
-				if = {
-					limit = { IRQ = { has_country_flag = saadabad_accept_flag } }
-					complete_national_focus = PER_expansion_iraq
-				}
-				if = {
-					limit = { AFG = { has_country_flag = saadabad_accept_flag } }
-					complete_national_focus = PER_expansion_afgan
-				}
-				if = {
-					limit = { EGY = { has_country_flag = saadabad_accept_flag } }
-					complete_national_focus = PER_expansion_egypt
-				}
-			}
+			add_political_power = 150
 		}
 	}
 	
@@ -200,9 +217,14 @@ focus_tree = {
 		bypass = {
 			OR = {
 				NOT = { country_exists = IRQ }
-				IRQ = { is_subject_of = ROOT }
-				IRQ = { is_in_faction_with = ROOT }
 				has_war_with = IRQ
+				IRQ = {
+					OR = {
+						is_subject_of = ROOT
+						is_in_faction_with = ROOT
+						is_in_faction_with = TUR
+					}
+				}
 			}
 		}
 
@@ -261,9 +283,14 @@ focus_tree = {
 		bypass = {
 			OR = {
 				NOT = { country_exists = TUR }
-				TUR = { is_subject_of = ROOT }
-				TUR = { is_in_faction_with = ROOT }
 				has_war_with = TUR
+				TUR = {
+					OR = {
+						is_faction_leader = yes
+						is_subject_of = ROOT
+						is_in_faction_with = ROOT
+					}
+				}
 			}
 		}
 
@@ -322,9 +349,14 @@ focus_tree = {
 		bypass = {
 			OR = {
 				NOT = { country_exists = AFG }
-				AFG = { is_subject_of = ROOT }
-				AFG = { is_in_faction_with = ROOT }
 				has_war_with = AFG
+				AFG = {
+					OR = {
+						is_subject_of = ROOT
+						is_in_faction_with = ROOT
+						is_in_faction_with = TUR
+					}
+				}
 			}
 		}
 
@@ -383,9 +415,14 @@ focus_tree = {
 		bypass = {
 			OR = {
 				NOT = { country_exists = SAU }
-				SAU = { is_subject_of = ROOT }
-				SAU = { is_in_faction_with = ROOT }
 				has_war_with = SAU
+				SAU = {
+					OR = {
+						is_subject_of = ROOT
+						is_in_faction_with = ROOT
+						is_in_faction_with = TUR
+					}
+				}
 			}
 		}
 
@@ -444,10 +481,34 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus PER_support_allied_research"
-			ROOT = { add_to_tech_sharing_group = TUR_sadabat_group }
-			every_other_country = {
-				limit = { is_in_faction_with = ROOT }
+			if = {
+				limit = {
+					OR = {
+						has_country_flag = tehran_pact_flag
+						AND = {
+							date > 1937.06.02
+							NOT = { has_country_flag = saadabad_accept_flag }
+						}
+						TUR = {
+							focus_progress = {
+								focus = TUR_create_the_sadabat_pact
+								progress > 0
+							}
+						}
+					}
+				}
+				add_to_tech_sharing_group = PER_tehran_group
+				every_other_country = {
+					limit = { is_in_faction_with = ROOT }
+					add_to_tech_sharing_group = PER_tehran_group
+				}
+			}
+			else = {
 				add_to_tech_sharing_group = TUR_sadabat_group
+				every_other_country = {
+					limit = { is_in_faction_with = ROOT }
+					add_to_tech_sharing_group = TUR_sadabat_group
+				}
 			}
 		}
 	}
@@ -478,9 +539,14 @@ focus_tree = {
 		bypass = {
 			OR = {
 				NOT = { country_exists = OMA }
-				OMA = { is_subject_of = ROOT }
-				OMA = { is_in_faction_with = ROOT }
 				has_war_with = OMA
+				OMA = {
+					OR = {
+						is_subject_of = ROOT
+						is_in_faction_with = ROOT
+						is_in_faction_with = TUR
+					}
+				}
 			}
 		}
 
@@ -539,9 +605,14 @@ focus_tree = {
 		bypass = {
 			OR = {
 				NOT = { country_exists = YEM }
-				YEM = { is_subject_of = ROOT }
-				YEM = { is_in_faction_with = ROOT }
 				has_war_with = YEM
+				YEM = {
+					OR = {
+						is_subject_of = ROOT
+						is_in_faction_with = ROOT
+						is_in_faction_with = TUR
+					}
+				}
 			}
 		}
 
@@ -601,9 +672,14 @@ focus_tree = {
 		bypass = {
 			OR = {
 				NOT = { country_exists = EGY }
-				EGY = { is_subject_of = ROOT }
-				EGY = { is_in_faction_with = ROOT }
 				has_war_with = EGY
+				EGY = {
+					OR = {
+						is_subject_of = ROOT
+						is_in_faction_with = ROOT
+						is_in_faction_with = TUR
+					}
+				}
 			}
 		}
 
@@ -659,6 +735,11 @@ focus_tree = {
 
 		ai_will_do = {
 			factor = 10
+			modifier = {
+				factor = 0
+				date < 1937.06.01
+				is_historical_focus_on = no
+			}
 		}
 		available = {
 			OR = {
@@ -6851,6 +6932,356 @@ focus_tree = {
 	
 	
 	######################
+	#### NAVY SECTION ####
+	######################
+	
+	focus = {
+		id = PER_fleet_development
+		icon = GFX_focus_rom_royal_dictatorship
+		x = 18
+		y = 0
+		relative_position_id = PER_policy_westernization
+
+		cost = 5
+		
+		cancel_if_invalid = yes
+		continue_if_invalid = no
+		available_if_capitulated = yes
+
+		ai_will_do = {
+			factor = 6
+		}
+		available = {
+			
+		}
+		bypass = {
+		
+		}
+		
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus PER_fleet_development"
+			navy_experience = 10
+		}
+	}
+	
+	focus = {
+		id = PER_ports_of_khuzestan
+		icon = GFX_focus_rom_royal_dictatorship
+		prerequisite = { focus = PER_fleet_development }
+		x = 0
+		y = 1
+		relative_position_id = PER_fleet_development
+
+		cost = 7.15
+		
+		cancel_if_invalid = yes
+		continue_if_invalid = no
+		available_if_capitulated = yes
+
+		ai_will_do = {
+			factor = 6
+		}
+		available = {
+			
+		}
+		bypass = {
+			
+		}
+		
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus PER_ports_of_khuzestan"
+			navy_experience = 10
+			random_owned_controlled_state = {
+				limit = {
+					is_coastal = yes
+					free_building_slots = {
+						building = dockyard
+						size > 0
+						include_locked = yes
+					}
+				}
+				add_extra_state_shared_building_slots = 1
+				add_building_construction = {
+					type = dockyard
+					level = 1
+					instant_build = yes
+				}
+			}
+		}
+	}
+	
+	focus = {
+		id = PER_protection_of_strait_of_hormuz
+		icon = GFX_focus_rom_royal_dictatorship
+		prerequisite = { focus = PER_ports_of_khuzestan }
+		x = 0
+		y = 1
+		relative_position_id = PER_ports_of_khuzestan
+
+		cost = 7.15
+		
+		cancel_if_invalid = yes
+		continue_if_invalid = no
+		available_if_capitulated = yes
+
+		ai_will_do = {
+			factor = 6
+		}
+		available = {
+			
+		}
+		bypass = {
+			
+		}
+		
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus PER_protection_of_strait_of_hormuz"
+			navy_experience = 25
+			add_tech_bonus = {
+				name = dd_bonus
+				bonus = 1.0
+				ahead_reduction = 2
+				uses = 2
+				category = dd_tech
+			}
+		}
+	}
+	
+	focus = {
+		id = PER_preparation_for_sea_battles
+		icon = GFX_focus_rom_royal_dictatorship
+		prerequisite = { focus = PER_protection_of_strait_of_hormuz }
+		x = -1
+		y = 1
+		relative_position_id = PER_protection_of_strait_of_hormuz
+
+		cost = 7.15
+		
+		cancel_if_invalid = yes
+		continue_if_invalid = no
+		available_if_capitulated = yes
+
+		ai_will_do = {
+			factor = 6
+		}
+		available = {
+			
+		}
+		bypass = {
+			
+		}
+		
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus PER_preparation_for_sea_battles"
+			navy_experience = 25
+			add_tech_bonus = {
+				name = cl_bonus
+				bonus = 1.0
+				ahead_reduction = 2
+				uses = 2
+				category = cl_tech
+			}
+		}
+	}
+	
+	focus = {
+		id = PER_protection_from_landings_in_southern_iran
+		icon = GFX_focus_rom_royal_dictatorship
+		prerequisite = { focus = PER_protection_of_strait_of_hormuz }
+		x = 1
+		y = 1
+		relative_position_id = PER_protection_of_strait_of_hormuz
+
+		cost = 7.15
+		
+		cancel_if_invalid = yes
+		continue_if_invalid = no
+		available_if_capitulated = yes
+
+		ai_will_do = {
+			factor = 6
+		}
+		available = {
+			
+		}
+		bypass = {
+			
+		}
+		
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus PER_protection_from_landings_in_southern_iran"
+			navy_experience = 25
+			add_tech_bonus = {
+				name = ss_bonus
+				bonus = 1.0
+				ahead_reduction = 2
+				uses = 2
+				category = ss_tech
+			}
+		}
+	}
+	
+	######################
+	#### AVIA SECTION ####
+	######################
+	
+	focus = {
+		id = PER_create_air_fleet
+		icon = GFX_focus_rom_royal_dictatorship
+		x = 3
+		y = 0
+		relative_position_id = PER_fleet_development
+
+		cost = 5
+		
+		cancel_if_invalid = yes
+		continue_if_invalid = no
+		available_if_capitulated = yes
+
+		ai_will_do = {
+			factor = 7
+		}
+		available = {
+			
+		}
+		bypass = {
+			
+		}
+		
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus PER_create_air_fleet"
+			air_experience = 10
+		}
+	}
+	
+	focus = {
+		id = PER_teheran_airport
+		icon = GFX_focus_rom_royal_dictatorship
+		prerequisite = { focus = PER_create_air_fleet }
+		x = 0
+		y = 1
+		relative_position_id = PER_create_air_fleet
+
+		cost = 7.15
+		
+		cancel_if_invalid = yes
+		continue_if_invalid = no
+		available_if_capitulated = yes
+
+		ai_will_do = {
+			factor = 7
+		}
+		available = {
+			266 = {
+				owner = {
+					OR = {
+						tag = ROOT
+						is_subject_of = ROOT
+						is_in_faction_with = ROOT
+					}
+				}
+			}
+		}
+		bypass = {
+			
+		}
+		
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus PER_teheran_airport"
+			air_experience = 10
+			266 = {
+				add_building_construction = {
+					type = air_base
+					level = 1
+					instant_build = yes
+				}
+			}
+		}
+	}
+	
+	focus = {
+		id = PER_development_fighters
+		icon = GFX_focus_rom_royal_dictatorship
+		prerequisite = { focus = PER_teheran_airport }
+		x = 0
+		y = 1
+		relative_position_id = PER_teheran_airport
+
+		cost = 7.15
+		
+		cancel_if_invalid = yes
+		continue_if_invalid = no
+		available_if_capitulated = yes
+
+		ai_will_do = {
+			factor = 7
+		}
+		available = {
+			
+		}
+		bypass = {
+			
+		}
+		
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus PER_development_fighters"
+			air_experience = 25
+			add_tech_bonus = {
+				name = fighter_bonus
+				bonus = 1.0
+				uses = 2
+				technology = early_fighter
+				technology = fighter1
+				technology = fighter2
+				technology = fighter3
+				technology = heavy_fighter1
+				technology = heavy_fighter2
+				technology = heavy_fighter3
+			}
+		}
+	}
+	
+	focus = {
+		id = PER_development_bombers
+		icon = GFX_focus_rom_royal_dictatorship
+		prerequisite = { focus = PER_development_fighters }
+		x = 0
+		y = 1
+		relative_position_id = PER_development_fighters
+
+		cost = 7.15
+		
+		cancel_if_invalid = yes
+		continue_if_invalid = no
+		available_if_capitulated = yes
+
+		ai_will_do = {
+			factor = 7
+		}
+		available = {
+			
+		}
+		bypass = {
+			
+		}
+		
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus PER_development_bombers"
+			air_experience = 25
+			add_tech_bonus = {
+				name = bomber_bonus
+				bonus = 1.0
+				uses = 2
+				technology = strategic_bomber1
+				technology = strategic_bomber2
+				technology = strategic_bomber3
+				category = tactical_bomber
+			}
+		}
+	}
+	
+	
+	######################
 	#### ARMY SECTION ####
 	######################
 	
@@ -6858,9 +7289,9 @@ focus_tree = {
 		id = PER_primacy_of_army
 		icon = GFX_focus_rom_royal_dictatorship
 		mutually_exclusive = { focus = PER_weakening_of_warlords }
-		x = 28
+		x = 7
 		y = 0
-		relative_position_id = PER_policy_westernization
+		relative_position_id = PER_create_air_fleet
 
 		cost = 7.15
 		
@@ -9203,356 +9634,6 @@ focus_tree = {
 					level = 1
 					instant_build = yes
 				}
-			}
-		}
-	}
-	
-	
-	######################
-	#### NAVY SECTION ####
-	######################
-	
-	focus = {
-		id = PER_fleet_development
-		icon = GFX_focus_rom_royal_dictatorship
-		x = 7
-		y = 0
-		relative_position_id = PER_continue_construction_of_transiranian_road
-
-		cost = 5
-		
-		cancel_if_invalid = yes
-		continue_if_invalid = no
-		available_if_capitulated = yes
-
-		ai_will_do = {
-			factor = 6
-		}
-		available = {
-			
-		}
-		bypass = {
-		
-		}
-		
-		completion_reward = {
-			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus PER_fleet_development"
-			navy_experience = 10
-		}
-	}
-	
-	focus = {
-		id = PER_ports_of_khuzestan
-		icon = GFX_focus_rom_royal_dictatorship
-		prerequisite = { focus = PER_fleet_development }
-		x = 0
-		y = 1
-		relative_position_id = PER_fleet_development
-
-		cost = 7.15
-		
-		cancel_if_invalid = yes
-		continue_if_invalid = no
-		available_if_capitulated = yes
-
-		ai_will_do = {
-			factor = 6
-		}
-		available = {
-			
-		}
-		bypass = {
-			
-		}
-		
-		completion_reward = {
-			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus PER_ports_of_khuzestan"
-			navy_experience = 10
-			random_owned_controlled_state = {
-				limit = {
-					is_coastal = yes
-					free_building_slots = {
-						building = dockyard
-						size > 0
-						include_locked = yes
-					}
-				}
-				add_extra_state_shared_building_slots = 1
-				add_building_construction = {
-					type = dockyard
-					level = 1
-					instant_build = yes
-				}
-			}
-		}
-	}
-	
-	focus = {
-		id = PER_protection_of_strait_of_hormuz
-		icon = GFX_focus_rom_royal_dictatorship
-		prerequisite = { focus = PER_ports_of_khuzestan }
-		x = 0
-		y = 1
-		relative_position_id = PER_ports_of_khuzestan
-
-		cost = 7.15
-		
-		cancel_if_invalid = yes
-		continue_if_invalid = no
-		available_if_capitulated = yes
-
-		ai_will_do = {
-			factor = 6
-		}
-		available = {
-			
-		}
-		bypass = {
-			
-		}
-		
-		completion_reward = {
-			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus PER_protection_of_strait_of_hormuz"
-			navy_experience = 25
-			add_tech_bonus = {
-				name = dd_bonus
-				bonus = 1.0
-				ahead_reduction = 2
-				uses = 2
-				category = dd_tech
-			}
-		}
-	}
-	
-	focus = {
-		id = PER_preparation_for_sea_battles
-		icon = GFX_focus_rom_royal_dictatorship
-		prerequisite = { focus = PER_protection_of_strait_of_hormuz }
-		x = -1
-		y = 1
-		relative_position_id = PER_protection_of_strait_of_hormuz
-
-		cost = 7.15
-		
-		cancel_if_invalid = yes
-		continue_if_invalid = no
-		available_if_capitulated = yes
-
-		ai_will_do = {
-			factor = 6
-		}
-		available = {
-			
-		}
-		bypass = {
-			
-		}
-		
-		completion_reward = {
-			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus PER_preparation_for_sea_battles"
-			navy_experience = 25
-			add_tech_bonus = {
-				name = cl_bonus
-				bonus = 1.0
-				ahead_reduction = 2
-				uses = 2
-				category = cl_tech
-			}
-		}
-	}
-	
-	focus = {
-		id = PER_protection_from_landings_in_southern_iran
-		icon = GFX_focus_rom_royal_dictatorship
-		prerequisite = { focus = PER_protection_of_strait_of_hormuz }
-		x = 1
-		y = 1
-		relative_position_id = PER_protection_of_strait_of_hormuz
-
-		cost = 7.15
-		
-		cancel_if_invalid = yes
-		continue_if_invalid = no
-		available_if_capitulated = yes
-
-		ai_will_do = {
-			factor = 6
-		}
-		available = {
-			
-		}
-		bypass = {
-			
-		}
-		
-		completion_reward = {
-			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus PER_protection_from_landings_in_southern_iran"
-			navy_experience = 25
-			add_tech_bonus = {
-				name = ss_bonus
-				bonus = 1.0
-				ahead_reduction = 2
-				uses = 2
-				category = ss_tech
-			}
-		}
-	}
-	
-	######################
-	#### AVIA SECTION ####
-	######################
-	
-	focus = {
-		id = PER_create_air_fleet
-		icon = GFX_focus_rom_royal_dictatorship
-		x = 3
-		y = 0
-		relative_position_id = PER_fleet_development
-
-		cost = 5
-		
-		cancel_if_invalid = yes
-		continue_if_invalid = no
-		available_if_capitulated = yes
-
-		ai_will_do = {
-			factor = 7
-		}
-		available = {
-			
-		}
-		bypass = {
-			
-		}
-		
-		completion_reward = {
-			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus PER_create_air_fleet"
-			air_experience = 10
-		}
-	}
-	
-	focus = {
-		id = PER_teheran_airport
-		icon = GFX_focus_rom_royal_dictatorship
-		prerequisite = { focus = PER_create_air_fleet }
-		x = 0
-		y = 1
-		relative_position_id = PER_create_air_fleet
-
-		cost = 7.15
-		
-		cancel_if_invalid = yes
-		continue_if_invalid = no
-		available_if_capitulated = yes
-
-		ai_will_do = {
-			factor = 7
-		}
-		available = {
-			266 = {
-				owner = {
-					OR = {
-						tag = ROOT
-						is_subject_of = ROOT
-						is_in_faction_with = ROOT
-					}
-				}
-			}
-		}
-		bypass = {
-			
-		}
-		
-		completion_reward = {
-			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus PER_teheran_airport"
-			air_experience = 10
-			266 = {
-				add_building_construction = {
-					type = air_base
-					level = 1
-					instant_build = yes
-				}
-			}
-		}
-	}
-	
-	focus = {
-		id = PER_development_fighters
-		icon = GFX_focus_rom_royal_dictatorship
-		prerequisite = { focus = PER_teheran_airport }
-		x = 0
-		y = 1
-		relative_position_id = PER_teheran_airport
-
-		cost = 7.15
-		
-		cancel_if_invalid = yes
-		continue_if_invalid = no
-		available_if_capitulated = yes
-
-		ai_will_do = {
-			factor = 7
-		}
-		available = {
-			
-		}
-		bypass = {
-			
-		}
-		
-		completion_reward = {
-			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus PER_development_fighters"
-			air_experience = 25
-			add_tech_bonus = {
-				name = fighter_bonus
-				bonus = 1.0
-				uses = 2
-				technology = early_fighter
-				technology = fighter1
-				technology = fighter2
-				technology = fighter3
-				technology = heavy_fighter1
-				technology = heavy_fighter2
-				technology = heavy_fighter3
-			}
-		}
-	}
-	
-	focus = {
-		id = PER_development_bombers
-		icon = GFX_focus_rom_royal_dictatorship
-		prerequisite = { focus = PER_development_fighters }
-		x = 0
-		y = 1
-		relative_position_id = PER_development_fighters
-
-		cost = 7.15
-		
-		cancel_if_invalid = yes
-		continue_if_invalid = no
-		available_if_capitulated = yes
-
-		ai_will_do = {
-			factor = 7
-		}
-		available = {
-			
-		}
-		bypass = {
-			
-		}
-		
-		completion_reward = {
-			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus PER_development_bombers"
-			air_experience = 25
-			add_tech_bonus = {
-				name = bomber_bonus
-				bonus = 1.0
-				uses = 2
-				technology = strategic_bomber1
-				technology = strategic_bomber2
-				technology = strategic_bomber3
-				category = tactical_bomber
 			}
 		}
 	}
