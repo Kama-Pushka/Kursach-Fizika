@@ -572,7 +572,7 @@ focus_tree = {
 		available_if_capitulated = yes
 
 		ai_will_do = {
-			factor = 5
+			factor = 10
 			modifier = {
 				factor = 0
 				is_historical_focus_on = yes
@@ -589,12 +589,6 @@ focus_tree = {
 			has_country_flag = saadabad_accept_flag
 			#any_other_country = { is_guaranteed_by = ROOT }
 			NOT = { has_country_flag = troz_focus_block_flag }
-			PER = {
-				focus_progress = {
-					focus = PER_create_the_sadabat_pact
-					progress < 0
-				}
-			}
 			hidden_trigger = {
 				NOT = {
 					OR = {
@@ -623,34 +617,28 @@ focus_tree = {
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus TUR_create_the_sadabat_pact"
 			set_rule = { can_create_factions = yes }
-			create_faction = sadabat_pact
-			add_political_power = 150
-			effect_tooltip = {
-				every_other_country = {
-					limit = {
-						has_country_flag = saadabad_accept_flag
+			if = {
+				limit = {
+					OR = {
+						AND = {
+							date > 1937.06.01
+							PER = { NOT = { has_country_flag = saadabad_accept_flag } }
+						}
+						PER = {
+							focus_progress = {
+								focus = PER_create_the_sadabat_pact
+								progress > 0
+							}
+						}
 					}
-					ROOT = { add_to_faction = PREV }
 				}
+				create_faction = TUR_dem_sadabad
+				set_country_flag = TUR_dem_sadabad_flag
 			}
-			hidden_effect = {
-				if = {
-					limit = { PER = { has_country_flag = saadabad_accept_flag } }
-					complete_national_focus = TUR_expansion_iran
-				}
-				if = {
-					limit = { IRQ = { has_country_flag = saadabad_accept_flag } }
-					complete_national_focus = TUR_expansion_iraq
-				}
-				if = {
-					limit = { AFG = { has_country_flag = saadabad_accept_flag } }
-					complete_national_focus = TUR_expansion_afgan
-				}
-				if = {
-					limit = { EGY = { has_country_flag = saadabad_accept_flag } }
-					complete_national_focus = TUR_expansion_egypt
-				}
+			else = {
+				create_faction = sadabat_pact
 			}
+			add_political_power = 150
 		}
 	}
 	
@@ -669,7 +657,16 @@ focus_tree = {
 		available_if_capitulated = yes
 
 		ai_will_do = {
-			factor = 5
+			factor = 15
+			modifier = {
+				factor = 0.1
+				PER = {
+					focus_progress = {
+						focus = PER_expansion_iraq
+						progress > 0
+					}
+				}
+			}
 		}
 		available = {
 			#IRQ = { is_guaranteed_by = ROOT }
@@ -701,13 +698,13 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus TUR_expansion_iraq"
-			add_opinion_modifier = { target = IRQ modifier = TUR_create_the_sadabat_pact }
+			add_opinion_modifier = { target = IRQ modifier = emphasis_on_alliance }
 			IRQ = {
-				add_opinion_modifier = { target = ROOT modifier = TUR_create_the_sadabat_pact }
+				add_opinion_modifier = { target = ROOT modifier = emphasis_on_alliance }
 				add_ai_strategy = {
 					type = befriend
 					id = ROOT			
-					value = 1000
+					value = 100
 				}
 				add_ai_strategy = {
 					type = alliance
@@ -743,7 +740,7 @@ focus_tree = {
 		available_if_capitulated = yes
 
 		ai_will_do = {
-			factor = 5
+			factor = 10
 		}
 		available = {
 			#PER = { is_guaranteed_by = ROOT }
@@ -775,13 +772,13 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus TUR_expansion_iran"
-			add_opinion_modifier = { target = PER modifier = TUR_create_the_sadabat_pact }
+			add_opinion_modifier = { target = PER modifier = emphasis_on_alliance }
 			PER = {
-				add_opinion_modifier = { target = ROOT modifier = TUR_create_the_sadabat_pact }
+				add_opinion_modifier = { target = ROOT modifier = emphasis_on_alliance }
 				add_ai_strategy = {
 					type = befriend
 					id = ROOT			
-					value = 1000
+					value = 100
 				}
 				add_ai_strategy = {
 					type = alliance
@@ -817,7 +814,16 @@ focus_tree = {
 		available_if_capitulated = yes
 
 		ai_will_do = {
-			factor = 5
+			factor = 15
+			modifier = {
+				factor = 0.1
+				PER = {
+					focus_progress = {
+						focus = PER_expansion_afgan
+						progress > 0
+					}
+				}
+			}
 		}
 		available = {
 			#AFG = { is_guaranteed_by = ROOT }
@@ -849,13 +855,13 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus TUR_expansion_afgan"
-			add_opinion_modifier = { target = AFG modifier = TUR_create_the_sadabat_pact }
+			add_opinion_modifier = { target = AFG modifier = emphasis_on_alliance }
 			AFG = {
-				add_opinion_modifier = { target = ROOT modifier = TUR_create_the_sadabat_pact }
+				add_opinion_modifier = { target = ROOT modifier = emphasis_on_alliance }
 				add_ai_strategy = {
 					type = befriend
 					id = ROOT			
-					value = 1000
+					value = 100
 				}
 				add_ai_strategy = {
 					type = alliance
@@ -879,7 +885,11 @@ focus_tree = {
 	focus = {
 		id = TUR_expansion_arab_peninsula
 		icon = GFX_z_goal_expansion_arab_peninsula
-		prerequisite = { focus = TUR_expansion_iran }
+		prerequisite = {
+			focus = TUR_expansion_iraq
+			focus = TUR_expansion_iran
+			focus = TUR_expansion_afgan
+		}
 		x = -1
 		y = 1
 		relative_position_id = TUR_expansion_iran
@@ -891,7 +901,16 @@ focus_tree = {
 		available_if_capitulated = yes
 
 		ai_will_do = {
-			factor = 5
+			factor = 15
+			modifier = {
+				factor = 0.1
+				PER = {
+					focus_progress = {
+						focus = PER_expansion_arab_peninsula
+						progress > 0
+					}
+				}
+			}
 		}
 		available = {
 			#SAU = { is_guaranteed_by = ROOT }
@@ -923,13 +942,13 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus TUR_expansion_arab_peninsula"
-			add_opinion_modifier = { target = SAU modifier = TUR_create_the_sadabat_pact }
+			add_opinion_modifier = { target = SAU modifier = emphasis_on_alliance }
 			SAU = {
-				add_opinion_modifier = { target = ROOT modifier = TUR_create_the_sadabat_pact }
+				add_opinion_modifier = { target = ROOT modifier = emphasis_on_alliance }
 				add_ai_strategy = {
 					type = befriend
 					id = ROOT			
-					value = 1000
+					value = 100
 				}
 				add_ai_strategy = {
 					type = alliance
@@ -951,11 +970,101 @@ focus_tree = {
 	}
 	
 	focus = {
-		id = TUR_support_allied_research
-		icon = GFX_goal_tfv_generic_tech_sharing
-		prerequisite = { focus = TUR_expansion_arab_peninsula }
-		x = 0
+		id = TUR_expansion_egypt
+		icon = GFX_z_goal_expansion_egypt
+		prerequisite = {
+			focus = TUR_expansion_iraq
+			focus = TUR_expansion_iran
+			focus = TUR_expansion_afgan
+		}
+		x = 1
 		y = 1
+		relative_position_id = TUR_expansion_iran
+
+		cost = 10
+		
+		cancel_if_invalid = yes
+		continue_if_invalid = no
+		available_if_capitulated = yes
+
+		ai_will_do = {
+			factor = 15
+			modifier = {
+				factor = 0.1
+				PER = {
+					focus_progress = {
+						focus = PER_expansion_egypt
+						progress > 0
+					}
+				}
+			}
+		}
+		available = {
+			#EGY = { is_guaranteed_by = ROOT }
+			EGY = { is_subject = no }
+			NOT = { has_country_flag = troz_focus_block_flag }
+			is_faction_leader = yes
+			hidden_trigger = {
+				NOT = {
+					OR = {
+						TUR = { has_completed_focus = TUR_expansion_egypt }
+						tag = TRK
+					}
+				}
+			}
+		}
+		bypass = {
+			OR = {
+				NOT = { country_exists = EGY }
+				has_war_with = EGY
+				EGY = {
+					OR = {
+						is_subject_of = ROOT
+						is_in_faction_with = ROOT
+						is_in_faction_with = PER
+					}
+				}
+			}
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: Focus TUR_expansion_egypt"
+			add_opinion_modifier = { target = EGY modifier = emphasis_on_alliance }
+			EGY = {
+				add_opinion_modifier = { target = ROOT modifier = emphasis_on_alliance }
+				add_ai_strategy = {
+					type = befriend
+					id = ROOT			
+					value = 100
+				}
+				add_ai_strategy = {
+					type = alliance
+					id = ROOT			
+					value = 200
+				}	
+			}
+			if = {
+				limit = { EGY = { is_in_faction = no } }
+				EGY = { custom_effect_tooltip = TUR_invite_to_faction_tooltip }
+			}
+			hidden_effect = {
+				if = {
+					limit = { EGY = { is_in_faction = no } }
+					EGY = { country_event = { id = tr_turkey.4 days = 1 } }
+				}
+			}
+		}
+	}
+	
+	focus = {
+		id = TUR_expansion_oman
+		icon = GFX_z_goal_expansion_oman
+		prerequisite = {
+			focus = TUR_expansion_arab_peninsula
+			focus = TUR_expansion_egypt
+		}
+		x = -1
+		y = 2
 		relative_position_id = TUR_expansion_arab_peninsula
 
 		cost = 10
@@ -965,49 +1074,16 @@ focus_tree = {
 		available_if_capitulated = yes
 
 		ai_will_do = {
-			factor = 5
-		}
-		available = {
-			is_faction_leader = yes
-			NOT = { has_country_flag = troz_focus_block_flag }
-			hidden_trigger = {
-				NOT = {
-					OR = {
-						TUR = { has_completed_focus = TUR_support_allied_research }
-						tag = TRK
+			factor = 15
+			modifier = {
+				factor = 0.1
+				PER = {
+					focus_progress = {
+						focus = PER_expansion_oman
+						progress > 0
 					}
 				}
 			}
-		}
-		bypass = {
-		}
-
-		completion_reward = {
-			log = "[GetDateText]: [Root.GetName]: Focus TUR_support_allied_research"
-			ROOT = { add_to_tech_sharing_group = TUR_sadabat_group }
-			every_other_country = {
-				limit = { is_in_faction_with = ROOT }
-				add_to_tech_sharing_group = TUR_sadabat_group
-			}
-		}
-	}
-	
-	focus = {
-		id = TUR_expansion_oman
-		icon = GFX_z_goal_expansion_oman
-		prerequisite = { focus = TUR_support_allied_research }
-		x = -1
-		y = 1
-		relative_position_id = TUR_support_allied_research
-
-		cost = 10
-		
-		cancel_if_invalid = yes
-		continue_if_invalid = no
-		available_if_capitulated = yes
-
-		ai_will_do = {
-			factor = 5
 		}
 		available = {
 			#OMA = { is_guaranteed_by = ROOT }
@@ -1039,13 +1115,13 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus TUR_expansion_oman"
-			add_opinion_modifier = { target = OMA modifier = TUR_create_the_sadabat_pact }
+			add_opinion_modifier = { target = OMA modifier = emphasis_on_alliance }
 			OMA = {
-				add_opinion_modifier = { target = ROOT modifier = TUR_create_the_sadabat_pact }
+				add_opinion_modifier = { target = ROOT modifier = emphasis_on_alliance }
 				add_ai_strategy = {
 					type = befriend
 					id = ROOT			
-					value = 1000
+					value = 100
 				}
 				add_ai_strategy = {
 					type = alliance
@@ -1067,87 +1143,15 @@ focus_tree = {
 	}
 	
 	focus = {
-		id = TUR_expansion_yeman
-		icon = GFX_z_goal_expansion_yeman
-		prerequisite = { focus = TUR_support_allied_research }
-		x = 1
-		y = 1
-		relative_position_id = TUR_support_allied_research
-
-		cost = 10
-		
-		cancel_if_invalid = yes
-		continue_if_invalid = no
-		available_if_capitulated = yes
-
-		ai_will_do = {
-			factor = 5
-		}
-		available = {
-			#YEM = { is_guaranteed_by = ROOT }
-			YEM = { is_subject = no }
-			NOT = { has_country_flag = troz_focus_block_flag }
-			is_faction_leader = yes
-			hidden_trigger = {
-				NOT = {
-					OR = {
-						TUR = { has_completed_focus = TUR_expansion_yeman }
-						tag = TRK
-					}
-				}
-			}
-		}
-		bypass = {
-			OR = {
-				NOT = { country_exists = YEM }
-				has_war_with = YEM
-				YEM = {
-					OR = {
-						is_subject_of = ROOT
-						is_in_faction_with = ROOT
-						is_in_faction_with = PER
-					}
-				}
-			}
-		}
-
-		completion_reward = {
-			log = "[GetDateText]: [Root.GetName]: Focus TUR_expansion_yeman"
-			add_opinion_modifier = { target = YEM modifier = TUR_create_the_sadabat_pact }
-			YEM = {
-				add_opinion_modifier = { target = ROOT modifier = TUR_create_the_sadabat_pact }
-				add_ai_strategy = {
-					type = befriend
-					id = ROOT			
-					value = 1000
-				}
-				add_ai_strategy = {
-					type = alliance
-					id = ROOT			
-					value = 200
-				}	
-			}
-			if = {
-				limit = { YEM = { is_in_faction = no } }
-				YEM = { custom_effect_tooltip = TUR_invite_to_faction_tooltip }
-			}
-			hidden_effect = {
-				if = {
-					limit = { YEM = { is_in_faction = no } }
-					YEM = { country_event = { id = tr_turkey.4 days = 1 } }
-				}
-			}
-		}
-	}
-	
-	focus = {
 		id = TUR_expansion_asian
 		icon = GFX_z_goal_question_pakistan
-		prerequisite = { focus = TUR_expansion_oman }
-		prerequisite = { focus = TUR_expansion_yeman }
+		prerequisite = {
+			focus = TUR_expansion_arab_peninsula
+			focus = TUR_expansion_egypt
+		}
 		x = 1
 		y = 1
-		relative_position_id = TUR_expansion_oman
+		relative_position_id = TUR_expansion_arab_peninsula
 
 		cost = 10
 		
@@ -1211,10 +1215,96 @@ focus_tree = {
 	}
 	
 	focus = {
+		id = TUR_expansion_yeman
+		icon = GFX_z_goal_expansion_yeman
+		prerequisite = {
+			focus = TUR_expansion_arab_peninsula
+			focus = TUR_expansion_egypt
+		}
+		x = 1
+		y = 2
+		relative_position_id = TUR_expansion_egypt
+
+		cost = 10
+		
+		cancel_if_invalid = yes
+		continue_if_invalid = no
+		available_if_capitulated = yes
+
+		ai_will_do = {
+			factor = 15
+			modifier = {
+				factor = 0.1
+				PER = {
+					focus_progress = {
+						focus = PER_expansion_yeman
+						progress > 0
+					}
+				}
+			}
+		}
+		available = {
+			#YEM = { is_guaranteed_by = ROOT }
+			YEM = { is_subject = no }
+			NOT = { has_country_flag = troz_focus_block_flag }
+			is_faction_leader = yes
+			hidden_trigger = {
+				NOT = {
+					OR = {
+						TUR = { has_completed_focus = TUR_expansion_yeman }
+						tag = TRK
+					}
+				}
+			}
+		}
+		bypass = {
+			OR = {
+				NOT = { country_exists = YEM }
+				has_war_with = YEM
+				YEM = {
+					OR = {
+						is_subject_of = ROOT
+						is_in_faction_with = ROOT
+						is_in_faction_with = PER
+					}
+				}
+			}
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: Focus TUR_expansion_yeman"
+			add_opinion_modifier = { target = YEM modifier = emphasis_on_alliance }
+			YEM = {
+				add_opinion_modifier = { target = ROOT modifier = emphasis_on_alliance }
+				add_ai_strategy = {
+					type = befriend
+					id = ROOT			
+					value = 100
+				}
+				add_ai_strategy = {
+					type = alliance
+					id = ROOT			
+					value = 200
+				}	
+			}
+			if = {
+				limit = { YEM = { is_in_faction = no } }
+				YEM = { custom_effect_tooltip = TUR_invite_to_faction_tooltip }
+			}
+			hidden_effect = {
+				if = {
+					limit = { YEM = { is_in_faction = no } }
+					YEM = { country_event = { id = tr_turkey.4 days = 1 } }
+				}
+			}
+		}
+	}
+	
+	focus = {
 		id = TUR_expansion_tibet
 		icon = GFX_z_goal_expansion_tibet
 		prerequisite = { focus = TUR_expansion_asian }
-		x = -1
+		x = 0
 		y = 1
 		relative_position_id = TUR_expansion_asian
 
@@ -1252,13 +1342,13 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus TUR_expansion_tibet"
-			add_opinion_modifier = { target = TIB modifier = TUR_create_the_sadabat_pact }
+			add_opinion_modifier = { target = TIB modifier = emphasis_on_alliance }
 			TIB = {
-				add_opinion_modifier = { target = ROOT modifier = TUR_create_the_sadabat_pact }
+				add_opinion_modifier = { target = ROOT modifier = emphasis_on_alliance }
 				add_ai_strategy = {
 					type = befriend
 					id = ROOT			
-					value = 1000
+					value = 100
 				}
 				add_ai_strategy = {
 					type = alliance
@@ -1280,12 +1370,15 @@ focus_tree = {
 	}
 	
 	focus = {
-		id = TUR_expansion_egypt
-		icon = GFX_z_goal_expansion_egypt
-		prerequisite = { focus = TUR_expansion_asian }
-		x = 1
+		id = TUR_support_allied_research
+		icon = GFX_goal_tfv_generic_tech_sharing
+		prerequisite = {
+			focus = TUR_expansion_oman
+			focus = TUR_expansion_yeman
+		}
+		x = 0
 		y = 1
-		relative_position_id = TUR_expansion_asian
+		relative_position_id = TUR_expansion_tibet
 
 		cost = 10
 		
@@ -1294,60 +1387,53 @@ focus_tree = {
 		available_if_capitulated = yes
 
 		ai_will_do = {
-			factor = 5
+			factor = 10
 		}
 		available = {
-			#EGY = { is_guaranteed_by = ROOT }
-			EGY = { is_subject = no }
-			NOT = { has_country_flag = troz_focus_block_flag }
 			is_faction_leader = yes
+			num_faction_members > 0
+			NOT = { has_country_flag = troz_focus_block_flag }
 			hidden_trigger = {
 				NOT = {
 					OR = {
-						TUR = { has_completed_focus = TUR_expansion_egypt }
+						TUR = { has_completed_focus = TUR_support_allied_research }
 						tag = TRK
 					}
 				}
 			}
 		}
 		bypass = {
-			OR = {
-				NOT = { country_exists = EGY }
-				has_war_with = EGY
-				EGY = {
-					OR = {
-						is_subject_of = ROOT
-						is_in_faction_with = ROOT
-						is_in_faction_with = PER
-					}
-				}
-			}
 		}
 
 		completion_reward = {
-			log = "[GetDateText]: [Root.GetName]: Focus TUR_expansion_egypt"
-			add_opinion_modifier = { target = EGY modifier = TUR_create_the_sadabat_pact }
-			EGY = {
-				add_opinion_modifier = { target = ROOT modifier = TUR_create_the_sadabat_pact }
-				add_ai_strategy = {
-					type = befriend
-					id = ROOT			
-					value = 1000
-				}
-				add_ai_strategy = {
-					type = alliance
-					id = ROOT			
-					value = 200
-				}	
-			}
+			log = "[GetDateText]: [Root.GetName]: Focus TUR_support_allied_research"
 			if = {
-				limit = { EGY = { is_in_faction = no } }
-				EGY = { custom_effect_tooltip = TUR_invite_to_faction_tooltip }
+				limit = {
+					OR = {
+						has_country_flag = TUR_dem_sadabad_flag
+						AND = {
+							date > 1937.06.01
+							PER = { NOT = { has_country_flag = saadabad_accept_flag } }
+						}
+						PER = {
+							focus_progress = {
+								focus = PER_create_the_sadabat_pact
+								progress > 0
+							}
+						}
+					}
+				}
+				add_to_tech_sharing_group = TUR_pact_group
+				every_other_country = {
+					limit = { is_in_faction_with = ROOT }
+					add_to_tech_sharing_group = TUR_pact_group
+				}
 			}
-			hidden_effect = {
-				if = {
-					limit = { EGY = { is_in_faction = no } }
-					EGY = { country_event = { id = tr_turkey.4 days = 1 } }
+			else = {
+				add_to_tech_sharing_group = TUR_sadabat_group
+				every_other_country = {
+					limit = { is_in_faction_with = ROOT }
+					add_to_tech_sharing_group = TUR_sadabat_group
 				}
 			}
 		}
@@ -1369,11 +1455,15 @@ focus_tree = {
 		available_if_capitulated = yes
 
 		ai_will_do = {
-			factor = 5
+			factor = 10
 			modifier = {
 				factor = 0
 				is_historical_focus_on = yes
 				date < 1942.11.09
+			}
+			modifier = {
+				factor = 0
+				date < 1937.06.01
 			}
 		}
 		available = {
@@ -1427,7 +1517,11 @@ focus_tree = {
 				GER = { country_event = { id = NWturkey.6 days = 1 } }
 			}
 			if = {
-				limit = { PER = { NOT = { has_country_flag = saadabad_accept_flag } } }
+				limit = {
+					PER = { NOT = { has_country_flag = saadabad_accept_flag } }
+					NOT = { any_other_country = { has_country_flag = new_saadabad_creator_flag } }
+					any_other_country = { has_country_flag = saadabad_accept_flag }
+				}
 				random_country = {
 					limit = {
 						has_country_flag = saadabad_accept_flag
@@ -1494,8 +1588,8 @@ focus_tree = {
 		id = TUR_british_turkish_cooperation
 		icon = GFX_goal_generic_scientific_exchange
 		prerequisite = { focus = TUR_alliance_with_britain }
-		x = -1
-		y = 1
+		x = 0
+		y = 3
 		relative_position_id = TUR_alliance_with_britain
 
 		cost = 10
@@ -1526,7 +1620,7 @@ focus_tree = {
 		id = TUR_attracting_western_capital
 		icon = GFX_goal_generic_positive_trade_relations
 		prerequisite = { focus = TUR_alliance_with_britain }
-		x = 0
+		x = 1
 		y = 2
 		relative_position_id = TUR_alliance_with_britain
 
@@ -1555,7 +1649,7 @@ focus_tree = {
 		id = TUR_development_thracian_fields
 		icon = GFX_focus_generic_steel
 		prerequisite = { focus = TUR_attracting_western_capital }
-		x = 0
+		x = 1
 		y = 1
 		relative_position_id = TUR_attracting_western_capital
 
@@ -1672,7 +1766,7 @@ focus_tree = {
 		id = TUR_german_generals
 		icon = GFX_focus_generic_military_mission
 		prerequisite = { focus = TUR_german_advisers }
-		x = 0
+		x = 1
 		y = 1
 		relative_position_id = TUR_german_advisers
 
