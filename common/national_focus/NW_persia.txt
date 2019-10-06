@@ -40,7 +40,8 @@ focus_tree = {
 			}
 		}
 		available = {
-			
+			has_civil_war = no
+			NOT = { has_country_flag = PER_islamic_revolution_block_flag }
 		}
 		bypass = {
 			
@@ -69,7 +70,8 @@ focus_tree = {
 			factor = 20
 		}
 		available = {
-			
+			has_civil_war = no
+			NOT = { has_country_flag = PER_islamic_revolution_block_flag }
 		}
 		bypass = {
 			
@@ -86,6 +88,7 @@ focus_tree = {
 						tag = IRQ
 						tag = TUR
 						tag = EGY
+						tag = SYR
 					}
 				}
 				add_opinion_modifier = { target = ROOT modifier = PER_trade_with_middle_eastern_neighbors }
@@ -131,6 +134,8 @@ focus_tree = {
 				is_faction_leader = yes
 			}
 			num_faction_members > 0
+			has_civil_war = no
+			NOT = { has_country_flag = PER_islamic_revolution_block_flag }
 		}
 		bypass = {
 			
@@ -184,6 +189,8 @@ focus_tree = {
 				is_faction_leader = yes
 			}
 			num_faction_members > 0
+			has_civil_war = no
+			NOT = { has_country_flag = PER_islamic_revolution_block_flag }
 		}
 		bypass = {
 			
@@ -219,7 +226,7 @@ focus_tree = {
 		id = PER_expand_resource_exports_neighbouring_countries
 		icon = GFX_focus_rom_royal_dictatorship
 		prerequisite = { focus = PER_facilitate_movement_capital }
-		x = -1
+		x = 0
 		y = 1
 		relative_position_id = PER_facilitate_movement_capital
 		cost = 10
@@ -237,6 +244,8 @@ focus_tree = {
 				is_faction_leader = yes
 			}
 			num_faction_members > 0
+			has_civil_war = no
+			NOT = { has_country_flag = PER_islamic_revolution_block_flag }
 		}
 		bypass = {
 			
@@ -266,10 +275,10 @@ focus_tree = {
 	focus = {
 		id = PER_develop_economic_integration_processes
 		icon = GFX_focus_rom_royal_dictatorship
-		prerequisite = { focus = PER_facilitate_movement_capital }
-		x = 1
+		prerequisite = { focus = PER_expand_resource_exports_neighbouring_countries }
+		x = -1
 		y = 1
-		relative_position_id = PER_facilitate_movement_capital
+		relative_position_id = PER_expand_resource_exports_neighbouring_countries
 		cost = 10
 		
 		cancel_if_invalid = yes
@@ -285,6 +294,8 @@ focus_tree = {
 				is_faction_leader = yes
 			}
 			num_faction_members > 0
+			has_civil_war = no
+			NOT = { has_country_flag = PER_islamic_revolution_block_flag }
 		}
 		bypass = {
 			
@@ -588,6 +599,85 @@ focus_tree = {
 	}
 	
 	focus = {
+		id = PER_expansion_syria
+		icon = GFX_z_goal_expansion_syria
+		prerequisite = {
+			focus = PER_expansion_iraq
+			focus = PER_expansion_turkey
+			focus = PER_expansion_afgan
+		}
+		x = -2
+		y = 1
+		relative_position_id = PER_expansion_turkey
+
+		cost = 10
+		
+		cancel_if_invalid = yes
+		continue_if_invalid = no
+		available_if_capitulated = yes
+
+		ai_will_do = {
+			factor = 15
+			modifier = {
+				factor = 0.1
+				TUR = {
+					focus_progress = {
+						focus = TUR_expansion_syria
+						progress > 0
+					}
+				}
+			}
+		}
+		available = {
+			#SYR = { is_guaranteed_by = ROOT }
+			SYR = { is_subject = no }
+			is_faction_leader = yes
+			NOT = { has_country_flag = PER_islamic_revolution_block_flag }
+		}
+		bypass = {
+			OR = {
+				NOT = { country_exists = SYR }
+				has_war_with = SYR
+				SYR = {
+					OR = {
+						is_subject_of = ROOT
+						is_in_faction_with = ROOT
+						is_in_faction_with = TUR
+					}
+				}
+			}
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus PER_expansion_syria"
+			add_opinion_modifier = { target = SYR modifier = emphasis_on_alliance }
+			SYR = {
+				add_opinion_modifier = { target = ROOT modifier = emphasis_on_alliance }
+				add_ai_strategy = {
+					type = befriend
+					id = ROOT			
+					value = 100
+				}
+				add_ai_strategy = {
+					type = alliance
+					id = ROOT			
+					value = 200
+				}	
+			}
+			if = {
+				limit = { SYR = { is_in_faction = no } }
+				SYR = { custom_effect_tooltip = TUR_invite_to_faction_tooltip }
+			}
+			hidden_effect = {
+				if = {
+					limit = { SYR = { is_in_faction = no } }
+					SYR = { country_event = { id = tr_turkey.4 days = 1 } }
+				}
+			}
+		}
+	}
+	
+	focus = {
 		id = PER_expansion_arab_peninsula
 		icon = GFX_z_goal_expansion_arab_peninsula
 		prerequisite = {
@@ -595,7 +685,7 @@ focus_tree = {
 			focus = PER_expansion_turkey
 			focus = PER_expansion_afgan
 		}
-		x = -1
+		x = 0
 		y = 1
 		relative_position_id = PER_expansion_turkey
 
@@ -674,7 +764,7 @@ focus_tree = {
 			focus = PER_expansion_turkey
 			focus = PER_expansion_afgan
 		}
-		x = 1
+		x = 2
 		y = 1
 		relative_position_id = PER_expansion_turkey
 
@@ -749,10 +839,11 @@ focus_tree = {
 		id = PER_expansion_oman
 		icon = GFX_z_goal_expansion_oman
 		prerequisite = {
+			focus = PER_expansion_syria
 			focus = PER_expansion_arab_peninsula
 			focus = PER_expansion_egypt
 		}
-		x = 0
+		x = -1
 		y = 1
 		relative_position_id = PER_expansion_arab_peninsula
 
@@ -827,12 +918,13 @@ focus_tree = {
 		id = PER_expansion_yeman
 		icon = GFX_z_goal_expansion_yeman
 		prerequisite = {
+			focus = PER_expansion_syria
 			focus = PER_expansion_arab_peninsula
 			focus = PER_expansion_egypt
 		}
-		x = 0
+		x = 1
 		y = 1
-		relative_position_id = PER_expansion_egypt
+		relative_position_id = PER_expansion_arab_peninsula
 
 		cost = 10
 		
@@ -904,7 +996,7 @@ focus_tree = {
 	focus = {
 		id = PER_support_allied_research
 		icon = GFX_goal_tfv_generic_tech_sharing
-		prerequisite = { focus = PER_expansion_turkey }
+		prerequisite = { focus = PER_expansion_arab_peninsula }
 		prerequisite = { focus = PER_expansion_oman }
 		prerequisite = { focus = PER_expansion_yeman }
 		x = 1
@@ -1997,11 +2089,11 @@ focus_tree = {
 		id = PER_nationalize_oil_industry
 		icon = GFX_focus_rom_royal_dictatorship
 		prerequisite = {
-			focus = PER_trade_with_middle_eastern_neighbors
+			focus = PER_cut_ties_with_europe
 			focus = PER_treaty_with_soviet_union
 			focus = PER_treaty_with_germany
 		}
-		x = -4
+		x = -2
 		y = 1
 		relative_position_id = PER_treaty_with_soviet_union
 
@@ -3369,6 +3461,7 @@ focus_tree = {
 			set_party_name = { ideology = communism long_name = PER_communism_53_party name = PER_communism_53_party }
 			custom_effect_tooltip = PER_trial_communists_tt
 			set_country_flag = PER_trial_communists_flag
+			hidden_effect = { set_cosmetic_tag = PER_tudeh }
 		}
 	}
 	
