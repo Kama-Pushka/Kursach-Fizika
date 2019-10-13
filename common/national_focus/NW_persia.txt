@@ -5157,7 +5157,7 @@ focus_tree = {
 	
 	focus = {
 		id = PER_strike_in_advance
-		icon = GFX_z_goal_broken_red_star
+		icon = GFX_goal_generic_war_with_comintern
 		prerequisite = { focus = PER_mobilize_young_people }
 		x = 0
 		y = 1
@@ -6762,7 +6762,7 @@ focus_tree = {
 		available_if_capitulated = yes
 
 		ai_will_do = {
-			factor = 10
+			factor = 15
 		}
 		available = {
 			NOT = { has_country_flag = PER_form_prosoviet_government_flag has_country_flag = PER_concessions_for_germanophiles_flag }
@@ -6773,6 +6773,7 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus PER_implement_principles_technocracy"
+			add_ideas = technocratic_economic
 			swap_ideas = {
 				remove_idea = PER_implement_principles_technocracy_idea
 				add_idea = PER_government_engineers
@@ -6882,6 +6883,7 @@ focus_tree = {
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus PER_investing_in_education"
 			add_ideas = PER_investing_in_education
+			add_research_slot = 1
 		}
 	}
 	
@@ -7087,7 +7089,7 @@ focus_tree = {
 	
 	focus = {
 		id = PER_study_turkish_experience
-		icon = GFX_focus_rom_royal_dictatorship
+		icon = GFX_z_goal_expansion_turkey
 		prerequisite = { focus = PER_right_free_nomination_delegate }
 		x = 8
 		y = 1
@@ -7125,7 +7127,7 @@ focus_tree = {
 	
 	focus = {
 		id = PER_economic_integration_with_afghanistan
-		icon = GFX_focus_rom_royal_dictatorship
+		icon = GFX_z_goal_economic_integration_with_afghanistan
 		prerequisite = { focus = PER_study_turkish_experience }
 		x = -3
 		y = 1
@@ -7175,7 +7177,7 @@ focus_tree = {
 	
 	focus = {
 		id = PER_economic_integration_with_iraq
-		icon = GFX_focus_rom_royal_dictatorship
+		icon = GFX_z_goal_economic_integration_with_iraq
 		prerequisite = { focus = PER_study_turkish_experience }
 		x = -1
 		y = 1
@@ -7225,7 +7227,7 @@ focus_tree = {
 	
 	focus = {
 		id = PER_economic_integration_with_turkey
-		icon = GFX_focus_rom_royal_dictatorship
+		icon = GFX_z_goal_economic_integration_with_turkey
 		prerequisite = { focus = PER_study_turkish_experience }
 		x = 1
 		y = 1
@@ -7275,7 +7277,7 @@ focus_tree = {
 	
 	focus = {
 		id = PER_economic_integration_with_egypt
-		icon = GFX_focus_rom_royal_dictatorship
+		icon = GFX_z_goal_economic_integration_with_egypt
 		prerequisite = { focus = PER_study_turkish_experience }
 		x = 3
 		y = 1
@@ -7325,7 +7327,7 @@ focus_tree = {
 	
 	focus = {
 		id = PER_establishment_of_middle_east_economic_union
-		icon = GFX_focus_rom_royal_dictatorship
+		icon = GFX_z_goal_establishment_of_middle_east_economic_union
 		prerequisite = { focus = PER_economic_integration_with_afghanistan }
 		prerequisite = { focus = PER_economic_integration_with_iraq }
 		prerequisite = { focus = PER_economic_integration_with_turkey }
@@ -7355,31 +7357,18 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus PER_establishment_of_middle_east_economic_union"
-			subtract_from_variable = { economic_integration_var = 1 }
-			clamp_variable = {
-				var = economic_integration_var
-				min = 1
-				max = 999
-			}
 			add_to_tech_sharing_group = PER_middle_east_economic_union_group
-			random_owned_controlled_state = {
-				limit = {
-					free_building_slots = {
-						building = industrial_complex
-						size > 0
-						include_locked = yes
-					}
-				}
-				add_extra_state_shared_building_slots = economic_integration_var
-				add_building_construction = {
-					type = industrial_complex
-					level = economic_integration_var
-					instant_build = yes
-				}
+			if = {
+				limit = { focus_progress = { focus = PER_establishment_of_middle_east_economic_union progress < 0.01 } }
+				custom_effect_tooltip = PER_establishment_of_middle_east_economic_union_tt
 			}
-			every_other_country = {
-				limit = { has_country_flag = PER_economic_integration_flag }
-				add_to_tech_sharing_group = PER_middle_east_economic_union_group
+			else = {
+				subtract_from_variable = { economic_integration_var = 1 }
+				clamp_variable = {
+					var = economic_integration_var
+					min = 1
+					max = 999
+				}
 				random_owned_controlled_state = {
 					limit = {
 						free_building_slots = {
@@ -7395,14 +7384,33 @@ focus_tree = {
 						instant_build = yes
 					}
 				}
+				every_other_country = {
+					limit = { has_country_flag = PER_economic_integration_flag }
+					add_to_tech_sharing_group = PER_middle_east_economic_union_group
+					random_owned_controlled_state = {
+						limit = {
+							free_building_slots = {
+								building = industrial_complex
+								size > 0
+								include_locked = yes
+							}
+						}
+						add_extra_state_shared_building_slots = economic_integration_var
+						add_building_construction = {
+							type = industrial_complex
+							level = economic_integration_var
+							instant_build = yes
+						}
+					}
+				}
+				clear_variable = economic_integration_var
 			}
-			clear_variable = economic_integration_var
 		}
 	}
 	
 	focus = {
 		id = PER_full_confederation
-		icon = GFX_focus_rom_royal_dictatorship
+		icon = GFX_z_goal_full_confederation
 		prerequisite = { focus = PER_establishment_of_middle_east_economic_union }
 		x = 0
 		y = 1
@@ -7452,7 +7460,7 @@ focus_tree = {
 	
 	focus = {
 		id = PER_fleet_development
-		icon = GFX_focus_rom_royal_dictatorship
+		icon = GFX_goal_generic_navy_doctrines_tactics
 		x = 18
 		y = 0
 		relative_position_id = PER_policy_westernization
@@ -7481,7 +7489,7 @@ focus_tree = {
 	
 	focus = {
 		id = PER_ports_of_khuzestan
-		icon = GFX_focus_rom_royal_dictatorship
+		icon = GFX_goal_generic_construct_naval_dockyard
 		prerequisite = { focus = PER_fleet_development }
 		x = 0
 		y = 1
@@ -7527,7 +7535,7 @@ focus_tree = {
 	
 	focus = {
 		id = PER_protection_of_strait_of_hormuz
-		icon = GFX_focus_rom_royal_dictatorship
+		icon = GFX_z_goal_generic_coastal_navy
 		prerequisite = { focus = PER_ports_of_khuzestan }
 		x = 0
 		y = 1
@@ -7564,7 +7572,7 @@ focus_tree = {
 	
 	focus = {
 		id = PER_preparation_for_sea_battles
-		icon = GFX_focus_rom_royal_dictatorship
+		icon = GFX_goal_generic_navy_battleship
 		prerequisite = { focus = PER_protection_of_strait_of_hormuz }
 		x = -1
 		y = 1
@@ -7601,7 +7609,7 @@ focus_tree = {
 	
 	focus = {
 		id = PER_protection_from_landings_in_southern_iran
-		icon = GFX_focus_rom_royal_dictatorship
+		icon = GFX_goal_generic_navy_submarine
 		prerequisite = { focus = PER_protection_of_strait_of_hormuz }
 		x = 1
 		y = 1
@@ -7642,7 +7650,7 @@ focus_tree = {
 	
 	focus = {
 		id = PER_create_air_fleet
-		icon = GFX_focus_rom_royal_dictatorship
+		icon = GFX_goal_generic_air_doctrine
 		x = 3
 		y = 0
 		relative_position_id = PER_fleet_development
@@ -7671,7 +7679,7 @@ focus_tree = {
 	
 	focus = {
 		id = PER_teheran_airport
-		icon = GFX_focus_rom_royal_dictatorship
+		icon = GFX_goal_generic_build_airforce
 		prerequisite = { focus = PER_create_air_fleet }
 		x = 0
 		y = 1
@@ -7716,7 +7724,7 @@ focus_tree = {
 	
 	focus = {
 		id = PER_development_fighters
-		icon = GFX_focus_rom_royal_dictatorship
+		icon = GFX_goal_generic_air_fighter
 		prerequisite = { focus = PER_teheran_airport }
 		x = 0
 		y = 1
@@ -7758,7 +7766,7 @@ focus_tree = {
 	
 	focus = {
 		id = PER_development_bombers
-		icon = GFX_focus_rom_royal_dictatorship
+		icon = GFX_goal_generic_air_bomber
 		prerequisite = { focus = PER_development_fighters }
 		x = 0
 		y = 1
@@ -7802,7 +7810,7 @@ focus_tree = {
 	
 	focus = {
 		id = PER_primacy_of_army
-		icon = GFX_focus_rom_royal_dictatorship
+		icon = GFX_z_goal_war_department
 		mutually_exclusive = { focus = PER_weakening_of_warlords }
 		x = 7
 		y = 0
@@ -7837,7 +7845,7 @@ focus_tree = {
 	
 	focus = {
 		id = PER_weakening_of_warlords
-		icon = GFX_focus_rom_royal_dictatorship
+		icon = GFX_z_goal_weakening_of_warlords
 		mutually_exclusive = { focus = PER_primacy_of_army }
 		x = 4
 		y = 0
@@ -7871,7 +7879,7 @@ focus_tree = {
 	
 	focus = {
 		id = PER_flirting_with_military
-		icon = GFX_focus_rom_royal_dictatorship
+		icon = GFX_z_goal_generic_general_support
 		prerequisite = { focus = PER_primacy_of_army }
 		x = 0
 		y = 1
@@ -7915,7 +7923,7 @@ focus_tree = {
 	
 	focus = {
 		id = PER_stability_in_army
-		icon = GFX_focus_rom_royal_dictatorship
+		icon = GFX_z_goal_generic_organization_of_the_troops
 		prerequisite = { focus = PER_flirting_with_military }
 		x = 0
 		y = 1
@@ -7945,7 +7953,7 @@ focus_tree = {
 	
 	focus = {
 		id = PER_update_tactics
-		icon = GFX_focus_rom_royal_dictatorship
+		icon = GFX_z_goal_generic_offensive_strategy
 		prerequisite = { focus = PER_primacy_of_army focus = PER_weakening_of_warlords }
 		x = 2
 		y = 1
@@ -7980,7 +7988,7 @@ focus_tree = {
 	
 	focus = {
 		id = PER_production_new_equipment
-		icon = GFX_focus_rom_royal_dictatorship
+		icon = GFX_focus_secret_rearmament
 		prerequisite = { focus = PER_update_tactics }
 		x = 0
 		y = 1
@@ -8015,7 +8023,7 @@ focus_tree = {
 	
 	focus = {
 		id = PER_mountain_war
-		icon = GFX_focus_rom_royal_dictatorship
+		icon = GFX_z_goal_mountain_rifle_artillery
 		prerequisite = { focus = PER_production_new_equipment }
 		x = -2
 		y = 1
@@ -8050,7 +8058,7 @@ focus_tree = {
 	
 	focus = {
 		id = PER_support_of_army_artillery
-		icon = GFX_focus_rom_royal_dictatorship
+		icon = GFX_z_goal_rearmament_of_greek_artillery
 		prerequisite = { focus = PER_production_new_equipment }
 		x = 0
 		y = 1
@@ -8085,7 +8093,7 @@ focus_tree = {
 	
 	focus = {
 		id = PER_production_transport
-		icon = GFX_focus_rom_royal_dictatorship
+		icon = GFX_z_goal_mobile_war
 		prerequisite = { focus = PER_support_of_army_artillery }
 		x = -1
 		y = 1
@@ -8120,7 +8128,7 @@ focus_tree = {
 	
 	focus = {
 		id = PER_put_into_operation_iranian_tanks
-		icon = GFX_focus_rom_royal_dictatorship
+		icon = GFX_z_goal_military_mobilisation
 		prerequisite = { focus = PER_support_of_army_artillery }
 		x = 1
 		y = 1
@@ -8156,7 +8164,7 @@ focus_tree = {
 	
 	focus = {
 		id = PER_change_officers
-		icon = GFX_focus_rom_royal_dictatorship
+		icon = GFX_focus_generic_military_mission
 		prerequisite = { focus = PER_weakening_of_warlords }
 		x = 0
 		y = 1
@@ -8190,7 +8198,7 @@ focus_tree = {
 	
 	focus = {
 		id = PER_attract_young_people_to_army
-		icon = GFX_focus_rom_royal_dictatorship
+		icon = GFX_z_goal_new_army
 		prerequisite = { focus = PER_change_officers }
 		x = 0
 		y = 1
@@ -8226,7 +8234,7 @@ focus_tree = {
 	
 	focus = {
 		id = PER_coup_progerman_officers
-		icon = GFX_focus_rom_royal_dictatorship
+		icon = GFX_z_goal_coup_progerman_officers
 		mutually_exclusive = { focus = PER_islamic_revolution focus = PER_last_blow_to_confessors focus = PER_revolution_probritish_officers }
 		x = -4
 		y = 4
@@ -8287,7 +8295,7 @@ focus_tree = {
 	
 	focus = {
 		id = PER_strengthen_relations_with_germany
-		icon = GFX_focus_rom_royal_dictatorship
+		icon = GFX_focus_chi_mission_to_germany
 		prerequisite = { focus = PER_coup_progerman_officers }
 		x = -2
 		y = 1
@@ -8325,7 +8333,7 @@ focus_tree = {
 	
 	focus = {
 		id = PER_bring_germans_into_country
-		icon = GFX_focus_rom_royal_dictatorship
+		icon = GFX_z_goal_syndicates
 		prerequisite = { focus = PER_strengthen_relations_with_germany }
 		x = -1
 		y = 1
@@ -8399,7 +8407,7 @@ focus_tree = {
 	
 	focus = {
 		id = PER_strengthen_german_influence
-		icon = GFX_focus_rom_royal_dictatorship
+		icon = GFX_goal_generic_intelligence_exchange
 		prerequisite = { focus = PER_bring_germans_into_country }
 		x = 1
 		y = 1
@@ -8478,7 +8486,7 @@ focus_tree = {
 	
 	focus = {
 		id = PER_strengthen_nationalist_ideas
-		icon = GFX_focus_rom_royal_dictatorship
+		icon = GFX_z_goal_power_fascist_council
 		prerequisite = { focus = PER_coup_progerman_officers }
 		x = 0
 		y = 1
@@ -8508,7 +8516,7 @@ focus_tree = {
 	
 	focus = {
 		id = PER_send_troops_to_afghanistan
-		icon = GFX_focus_rom_royal_dictatorship
+		icon = GFX_goal_generic_political_pressure
 		prerequisite = { focus = PER_strengthen_nationalist_ideas }
 		x = -1
 		y = 1
@@ -8547,7 +8555,7 @@ focus_tree = {
 	
 	focus = {
 		id = PER_claims_to_kurdistan
-		icon = GFX_focus_rom_royal_dictatorship
+		icon = GFX_goal_generic_occupy_states_ongoing_war
 		prerequisite = { focus = PER_strengthen_nationalist_ideas }
 		x = 1
 		y = 1
@@ -8580,7 +8588,7 @@ focus_tree = {
 	
 	focus = {
 		id = PER_claims_on_soviet_territory
-		icon = GFX_focus_rom_royal_dictatorship
+		icon = GFX_goal_generic_war_with_comintern
 		prerequisite = { focus = PER_send_troops_to_afghanistan }
 		prerequisite = { focus = PER_claims_to_kurdistan }
 		x = 1
@@ -8628,7 +8636,7 @@ focus_tree = {
 	
 	focus = {
 		id = PER_revolution_probritish_officers
-		icon = GFX_focus_rom_royal_dictatorship
+		icon = GFX_z_goal_revolution_probritish_officers
 		prerequisite = { focus = PER_primacy_of_army }
 		mutually_exclusive = { focus = PER_islamic_revolution focus = PER_last_blow_to_confessors focus = PER_coup_progerman_officers }
 		x = -2
@@ -8680,7 +8688,7 @@ focus_tree = {
 	
 	focus = {
 		id = PER_strengthen_relations_with_britain
-		icon = GFX_focus_rom_royal_dictatorship
+		icon = GFX_focus_chi_british_cooperation
 		prerequisite = { focus = PER_revolution_probritish_officers }
 		x = 0
 		y = 1
@@ -8719,7 +8727,7 @@ focus_tree = {
 	
 	focus = {
 		id = PER_economic_integration_with_britain
-		icon = GFX_focus_rom_royal_dictatorship
+		icon = GFX_focus_generic_the_giant_wakes
 		prerequisite = { focus = PER_strengthen_relations_with_britain }
 		x = 1
 		y = 1
@@ -8764,7 +8772,7 @@ focus_tree = {
 	
 	focus = {
 		id = PER_bargain_for_part_of_oil
-		icon = GFX_focus_rom_royal_dictatorship
+		icon = GFX_z_goal_part_of_oil
 		prerequisite = { focus = PER_economic_integration_with_britain }
 		mutually_exclusive = { focus = PER_achieve_large_payments_for_sale_of_oil }
 		x = -1
@@ -8799,7 +8807,7 @@ focus_tree = {
 	
 	focus = {
 		id = PER_achieve_large_payments_for_sale_of_oil
-		icon = GFX_focus_rom_royal_dictatorship
+		icon = GFX_z_goal_achieve_payments
 		prerequisite = { focus = PER_economic_integration_with_britain }
 		mutually_exclusive = { focus = PER_bargain_for_part_of_oil }
 		x = 1
@@ -8831,7 +8839,7 @@ focus_tree = {
 	
 	focus = {
 		id = PER_strengthen_economy_through_cooperation_with_west
-		icon = GFX_focus_rom_royal_dictatorship
+		icon = GFX_z_goal_generic_keynesian_economics
 		prerequisite = { focus = PER_bargain_for_part_of_oil focus = PER_achieve_large_payments_for_sale_of_oil }
 		x = 1
 		y = 1
@@ -8875,7 +8883,7 @@ focus_tree = {
 	
 	focus = {
 		id = PER_improve_situation_for_investors
-		icon = GFX_focus_rom_royal_dictatorship
+		icon = GFX_z_goal_bank2
 		prerequisite = { focus = PER_strengthen_economy_through_cooperation_with_west }
 		x = 0
 		y = 1
@@ -8919,7 +8927,7 @@ focus_tree = {
 	
 	focus = {
 		id = PER_consolidate_british_influence_in_afghanistan
-		icon = GFX_focus_rom_royal_dictatorship
+		icon = GFX_focus_eng_the_sun_never_sets
 		prerequisite = { focus = PER_improve_situation_for_investors }
 		x = 0
 		y = 1
@@ -8967,7 +8975,7 @@ focus_tree = {
 	
 	focus = {
 		id = PER_introduce_relief_for_conservatives
-		icon = GFX_focus_rom_royal_dictatorship
+		icon = GFX_focus_generic_treaty
 		prerequisite = { focus = PER_coup_progerman_officers focus = PER_revolution_probritish_officers }
 		x = 2
 		y = 1
@@ -8998,7 +9006,7 @@ focus_tree = {
 	
 	focus = {
 		id = PER_maintain_dominant_position_of_army
-		icon = GFX_focus_rom_royal_dictatorship
+		icon = GFX_z_goal_focus_generic_oppression
 		prerequisite = { focus = PER_coup_progerman_officers focus = PER_revolution_probritish_officers }
 		x = 4
 		y = 1
@@ -9034,7 +9042,7 @@ focus_tree = {
 	
 	focus = {
 		id = PER_strengthen_iranian_army
-		icon = GFX_focus_rom_royal_dictatorship
+		icon = GFX_z_goal_generic_military_lobby
 		prerequisite = { focus = PER_introduce_relief_for_conservatives }
 		prerequisite = { focus = PER_maintain_dominant_position_of_army }
 		x = 1
@@ -9068,7 +9076,7 @@ focus_tree = {
 	
 	focus = {
 		id = PER_restoration_of_qajar
-		icon = GFX_focus_rom_royal_dictatorship
+		icon = GFX_z_goal_monarchism_14
 		prerequisite = { focus = PER_coup_progerman_officers focus = PER_revolution_probritish_officers }
 		mutually_exclusive = { focus = PER_proclaim_republic }
 		x = 6
@@ -9124,7 +9132,7 @@ focus_tree = {
 	
 	focus = {
 		id = PER_proclaim_republic
-		icon = GFX_focus_rom_royal_dictatorship
+		icon = GFX_z_goal_liberty
 		prerequisite = { focus = PER_coup_progerman_officers focus = PER_revolution_probritish_officers }
 		mutually_exclusive = { focus = PER_restoration_of_qajar }
 		x = 8
@@ -9159,7 +9167,7 @@ focus_tree = {
 	
 	focus = {
 		id = PER_weaken_british_grip
-		icon = GFX_focus_rom_royal_dictatorship
+		icon = GFX_z_goal_GB_ultimatum
 		prerequisite = { focus = PER_restoration_of_qajar focus = PER_proclaim_republic }
 		x = 1
 		y = 1
@@ -9195,7 +9203,7 @@ focus_tree = {
 	
 	focus = {
 		id = PER_continue_construction_of_transiranian_road
-		icon = GFX_focus_rom_royal_dictatorship
+		icon = GFX_goal_generic_construct_infrastructure
 		x = 6
 		y = 0
 		relative_position_id = PER_weakening_of_warlords
@@ -9255,7 +9263,7 @@ focus_tree = {
 	
 	focus = {
 		id = PER_anglo_iranian_oil_company
-		icon = GFX_focus_rom_royal_dictatorship
+		icon = GFX_z_goal_oil_refining
 		prerequisite = { focus = PER_continue_construction_of_transiranian_road }
 		x = -2
 		y = 1
@@ -9290,7 +9298,7 @@ focus_tree = {
 	
 	focus = {
 		id = PER_invest_in_southern_regions
-		icon = GFX_focus_rom_royal_dictatorship
+		icon = GFX_goal_generic_construct_civ_factory
 		prerequisite = { focus = PER_anglo_iranian_oil_company }
 		x = 0
 		y = 1
@@ -9366,7 +9374,7 @@ focus_tree = {
 	
 	focus = {
 		id = PER_develop_construction_of_transiranian_road
-		icon = GFX_focus_rom_royal_dictatorship
+		icon = GFX_goal_generic_construction
 		prerequisite = { focus = PER_continue_construction_of_transiranian_road }
 		x = 0
 		y = 1
@@ -9410,7 +9418,7 @@ focus_tree = {
 	
 	focus = {
 		id = PER_complete_construction_of_transiranian_road
-		icon = GFX_focus_rom_royal_dictatorship
+		icon = GFX_z_goal_jd_paravoz
 		prerequisite = { focus = PER_develop_construction_of_transiranian_road }
 		x = 0
 		y = 1
@@ -9470,7 +9478,7 @@ focus_tree = {
 	
 	focus = {
 		id = PER_new_faculties_of_tehran_university
-		icon = GFX_focus_rom_royal_dictatorship
+		icon = GFX_focus_research
 		prerequisite = { focus = PER_complete_construction_of_transiranian_road }
 		x = -2
 		y = 1
@@ -9500,7 +9508,7 @@ focus_tree = {
 	
 	focus = {
 		id = PER_cultivate_iranian_specialists
-		icon = GFX_focus_rom_royal_dictatorship
+		icon = GFX_focus_generic_military_academy
 		prerequisite = { focus = PER_new_faculties_of_tehran_university }
 		x = 0
 		y = 2
@@ -9530,7 +9538,7 @@ focus_tree = {
 	
 	focus = {
 		id = PER_attract_specialists_to_work
-		icon = GFX_focus_rom_royal_dictatorship
+		icon = GFX_z_goal_soviet_prom_city1
 		prerequisite = { focus = PER_cultivate_iranian_specialists }
 		x = 0
 		y = 1
@@ -9589,7 +9597,7 @@ focus_tree = {
 	
 	focus = {
 		id = PER_find_use_for_uranium_ores
-		icon = GFX_focus_rom_royal_dictatorship
+		icon = GFX_focus_wonderweapons
 		prerequisite = { focus = PER_attract_specialists_to_work }
 		mutually_exclusive = { focus = PER_develop_missile_technology }
 		x = 0
@@ -9626,7 +9634,7 @@ focus_tree = {
 	
 	focus = {
 		id = PER_develop_missile_technology
-		icon = GFX_focus_rom_royal_dictatorship
+		icon = GFX_focus_rocketry
 		prerequisite = { focus = PER_attract_specialists_to_work }
 		mutually_exclusive = { focus = PER_find_use_for_uranium_ores }
 		x = 2
@@ -9663,7 +9671,7 @@ focus_tree = {
 	
 	focus = {
 		id = PER_attract_people_business_activity
-		icon = GFX_focus_rom_royal_dictatorship
+		icon = GFX_z_goal_support_businessmen
 		prerequisite = { focus = PER_complete_construction_of_transiranian_road }
 		x = 0
 		y = 1
@@ -9693,7 +9701,7 @@ focus_tree = {
 	
 	focus = {
 		id = PER_attract_western_investors
-		icon = GFX_focus_rom_royal_dictatorship
+		icon = GFX_z_goal_gold_up
 		prerequisite = { focus = PER_attract_people_business_activity }
 		x = 0
 		y = 1
@@ -9737,7 +9745,7 @@ focus_tree = {
 	
 	focus = {
 		id = PER_new_civil_industry
-		icon = GFX_focus_rom_royal_dictatorship
+		icon = GFX_z_goal_prom_country
 		prerequisite = { focus = PER_attract_western_investors }
 		x = 0
 		y = 1
@@ -9781,7 +9789,7 @@ focus_tree = {
 	
 	focus = {
 		id = PER_economy_in_service_of_army
-		icon = GFX_focus_rom_royal_dictatorship
+		icon = GFX_z_goal_ammo_industry
 		prerequisite = { focus = PER_attract_people_business_activity }
 		x = 2
 		y = 1
@@ -9825,7 +9833,7 @@ focus_tree = {
 	
 	focus = {
 		id = PER_new_military_plants
-		icon = GFX_focus_rom_royal_dictatorship
+		icon = GFX_focus_generic_tank_production
 		prerequisite = { focus = PER_economy_in_service_of_army }
 		x = 0
 		y = 1
@@ -9869,7 +9877,7 @@ focus_tree = {
 	
 	focus = {
 		id = PER_overtake_europe
-		icon = GFX_focus_rom_royal_dictatorship
+		icon = GFX_z_goal_brain
 		prerequisite = { focus = PER_cultivate_iranian_specialists }
 		prerequisite = { focus = PER_new_civil_industry focus = PER_new_military_plants }
 		x = 0
@@ -9900,7 +9908,7 @@ focus_tree = {
 	
 	focus = {
 		id = PER_iranian_corridor
-		icon = GFX_focus_rom_royal_dictatorship
+		icon = GFX_z_goal_city_road_cei
 		prerequisite = { focus = PER_continue_construction_of_transiranian_road }
 		x = 2
 		y = 1
@@ -9960,7 +9968,7 @@ focus_tree = {
 	
 	focus = {
 		id = PER_overall_infrastructure_development
-		icon = GFX_focus_rom_royal_dictatorship
+		icon = GFX_z_goal_generic_construct_public_housing
 		prerequisite = { focus = PER_iranian_corridor }
 		x = 0
 		y = 1
@@ -10002,7 +10010,7 @@ focus_tree = {
 	
 	focus = {
 		id = PER_economic_development
-		icon = GFX_focus_rom_royal_dictatorship
+		icon = GFX_z_goal_generic_industrial_worker
 		prerequisite = { focus = PER_overall_infrastructure_development }
 		x = 0
 		y = 1
@@ -10052,7 +10060,7 @@ focus_tree = {
 	
 	focus = {
 		id = PER_creation_civil_industry
-		icon = GFX_focus_rom_royal_dictatorship
+		icon = GFX_z_goal_prom_fabric
 		prerequisite = { focus = PER_overall_infrastructure_development }
 		x = 2
 		y = 1
@@ -10097,7 +10105,7 @@ focus_tree = {
 	
 	focus = {
 		id = PER_updating_gate_to_europe
-		icon = GFX_focus_rom_royal_dictatorship
+		icon = GFX_z_goal_soviet_mil_city1
 		prerequisite = { focus = PER_creation_civil_industry }
 		x = 0
 		y = 1
