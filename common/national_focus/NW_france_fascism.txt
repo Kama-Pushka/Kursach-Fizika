@@ -41,7 +41,7 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus FRF_anticommunist_coup"
-			
+			add_political_power = 100
 		}
 	}
 	
@@ -49,7 +49,7 @@ focus_tree = {
 		id = FRF_approve_principles_of_antirepublicanism
 		icon = GFX_focus_hol_the_foundations_of_defense
 		prerequisite = { focus = FRF_anticommunist_coup }
-		x = -5
+		x = -6
 		y = 1
 		relative_position_id = FRF_anticommunist_coup
 		
@@ -69,7 +69,8 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus FRF_approve_principles_of_antirepublicanism"
-			
+			add_stability = 0.05
+			add_ideas = FRF_approve_principles_of_antirepublicanism_idea
 		}
 	}
 	
@@ -97,7 +98,37 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus FRF_spread_antibolshevik_propaganda"
-			
+			add_popularity = { ideology = communism popularity = -0.1 }
+			custom_effect_tooltip = FRF_spread_antibolshevik_propaganda_comm_tt
+			effect_tooltip = {
+				add_opinion_modifier = { target = ROOT modifier = FRF_spread_antibolshevik_propaganda_bad }
+			}
+			custom_effect_tooltip = FRF_spread_antibolshevik_propaganda_fash_tt
+			effect_tooltip = {
+				add_opinion_modifier = { target = ROOT modifier = FRF_spread_antibolshevik_propaganda_good }
+			}
+			hidden_effect = {
+				every_other_country = {
+					limit = {
+						OR = {
+							has_government = communism
+							has_government = trozkism
+						}
+					}
+					add_opinion_modifier = { target = ROOT modifier = FRF_spread_antibolshevik_propaganda_bad }
+					ROOT = { add_opinion_modifier = { target = PREV modifier = FRF_spread_antibolshevik_propaganda_bad } }
+				}
+				every_other_country = {
+					limit = {
+						OR = {
+							has_government = fascism
+							has_government = monarchy
+						}
+					}
+					add_opinion_modifier = { target = ROOT modifier = FRF_spread_antibolshevik_propaganda_good }
+					ROOT = { add_opinion_modifier = { target = PREV modifier = FRF_spread_antibolshevik_propaganda_good } }
+				}
+			}
 		}
 	}
 	
@@ -125,7 +156,41 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus FRF_create_elite_troops"
-			
+			hidden_effect = {
+				if = {
+					limit = { NOT = { has_template = "Elite troops" } }
+					division_template = {
+						name = "Elite troops"
+						is_locked = no
+						regiments = {
+							infantry = { x = 0 y = 0 }
+							infantry = { x = 0 y = 1 }
+							infantry = { x = 0 y = 2 }
+							infantry = { x = 1 y = 0 }
+							infantry = { x = 1 y = 1 }
+							infantry = { x = 1 y = 2 }
+							infantry = { x = 2 y = 0 }
+							infantry = { x = 2 y = 1 }
+							infantry = { x = 2 y = 2 }
+							infantry = { x = 3 y = 0 }
+						}
+					}
+				}
+			}
+			capital_scope = {
+				create_unit = {
+					division = "name = \"1. Elite troops\" division_template = \"Elite troops\" start_experience_factor = 0.4" 
+					owner = ROOT
+				}
+				create_unit = {
+					division = "name = \"2. Elite troops\" division_template = \"Elite troops\" start_experience_factor = 0.4" 
+					owner = ROOT
+				}
+				create_unit = {
+					division = "name = \"3. Elite troops\" division_template = \"Elite troops\" start_experience_factor = 0.4" 
+					owner = ROOT
+				}
+			}
 		}
 	}
 	
@@ -147,13 +212,15 @@ focus_tree = {
 			factor = 10
 		}
 		available = {
+			threat > 0.3
+			communism < 0.001
 		}
 		bypass = {
 		}
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus FRF_use_fear_of_communists"
-			
+			add_ideas = FRF_use_fear_of_communists_idea
 		}
 	}
 	
@@ -203,13 +270,46 @@ focus_tree = {
 			factor = 10
 		}
 		available = {
+			any_country = {
+				has_government = fascism
+				has_war = no
+				has_equipment = { infantry_equipment > 500 }
+				has_equipment = { artillery_equipment > 250 }
+				OR = {
+					tag = BEL
+					tag = GER
+					tag = ITA
+					tag = SPA
+					tag = SPR
+					tag = SWI
+				}
+			}
 		}
 		bypass = {
 		}
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus FRF_request_help_from_international_fascism"
-			
+			custom_effect_tooltip = FRF_request_help_from_international_fascism_tt
+			hidden_effect = {
+				every_other_country = {
+					limit = {
+						has_government = fascism
+						has_war = no
+						has_equipment = { infantry_equipment > 500 }
+						has_equipment = { artillery_equipment > 250 }
+						OR = {
+							tag = BEL
+							tag = GER
+							tag = ITA
+							tag = SPA
+							tag = SPR
+							tag = SWI
+						}
+					}
+					country_event = { id = NWfrance.401 days = 1 }
+				}
+			}
 		}
 	}
 	
@@ -222,6 +322,7 @@ focus_tree = {
 		id = FRF_revival_of_french_state
 		icon = GFX_focus_hol_the_foundations_of_defense
 		prerequisite = { focus = FRF_anticommunist_coup }
+		mutually_exclusive = { focus = FRF_cooperation_with_large_capital }
 		x = 0
 		y = 1
 		relative_position_id = FRF_anticommunist_coup
@@ -242,7 +343,8 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus FRF_revival_of_french_state"
-			
+			add_political_power = 50
+			add_timed_idea = { idea = FRF_revival_of_french_state days = 300 }
 		}
 	}
 	
@@ -270,7 +372,7 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus FRF_french_chauvinism"
-			
+			add_ideas = FRF_french_chauvinism
 		}
 	}
 	
@@ -671,7 +773,7 @@ focus_tree = {
 	focus = {
 		id = FRF_fascist_studies
 		icon = GFX_focus_hol_the_foundations_of_defense
-		prerequisite = { focus = FRF_alliance_with_germany }
+		prerequisite = { focus = FRF_alliance_with_germany focus = FRF_alliance_with_italy }
 		x = 1
 		y = 1
 		relative_position_id = FRF_alliance_with_germany
@@ -873,6 +975,7 @@ focus_tree = {
 		id = FRF_cooperation_with_large_capital
 		icon = GFX_focus_hol_the_foundations_of_defense
 		prerequisite = { focus = FRF_anticommunist_coup }
+		mutually_exclusive = { focus = FRF_revival_of_french_state }
 		x = 6
 		y = 1
 		relative_position_id = FRF_anticommunist_coup
@@ -1094,12 +1197,40 @@ focus_tree = {
 	}
 	
 	focus = {
-		id = FRF_economically_viable_france
+		id = FRF_blow_foreign_competitors
 		icon = GFX_focus_hol_the_foundations_of_defense
 		prerequisite = { focus = FRF_open_branches_of_state_owned_companies_abroad }
 		x = 0
 		y = 1
 		relative_position_id = FRF_open_branches_of_state_owned_companies_abroad
+		
+		cost = 10
+		
+		cancel_if_invalid = yes
+		continue_if_invalid = no
+		available_if_capitulated = yes
+
+		ai_will_do = {
+			factor = 10
+		}
+		available = {
+		}
+		bypass = {
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus FRF_blow_foreign_competitors"
+			
+		}
+	}
+	
+	focus = {
+		id = FRF_economically_viable_france
+		icon = GFX_focus_hol_the_foundations_of_defense
+		prerequisite = { focus = FRF_blow_foreign_competitors }
+		x = 0
+		y = 1
+		relative_position_id = FRF_blow_foreign_competitors
 		
 		cost = 10
 		
@@ -1287,7 +1418,6 @@ focus_tree = {
 	focus = {
 		id = FRF_revival_of_french_greatness
 		icon = GFX_focus_hol_the_foundations_of_defense
-		prerequisite = { focus = FRF_anticommunist_coup }
 		x = 11
 		y = 0
 		relative_position_id = FRF_anticommunist_coup
@@ -1455,10 +1585,10 @@ focus_tree = {
 	focus = {
 		id = FRF_remember_treaty_of_sevres
 		icon = GFX_focus_hol_the_foundations_of_defense
-		prerequisite = { focus = FRF_fate_of_belgium }
+		prerequisite = { focus = FRF_cover_all_lower_lands }
 		x = -4
 		y = 1
-		relative_position_id = FRF_fate_of_belgium
+		relative_position_id = FRF_cover_all_lower_lands
 		
 		cost = 10
 		
@@ -1504,6 +1634,333 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus FRF_passage_through_iran"
+			
+		}
+	}
+	
+	focus = {
+		id = FRF_blow_to_bolshevism
+		icon = GFX_focus_hol_the_foundations_of_defense
+		prerequisite = { focus = FRF_passage_through_iran }
+		x = 0
+		y = 2
+		relative_position_id = FRF_passage_through_iran
+		
+		cost = 10
+		
+		cancel_if_invalid = yes
+		continue_if_invalid = no
+		available_if_capitulated = yes
+
+		ai_will_do = {
+			factor = 10
+		}
+		available = {
+		}
+		bypass = {
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus FRF_blow_to_bolshevism"
+			
+		}
+	}
+	
+	focus = {
+		id = FRF_protection_of_french_speaking_population_of_quebec
+		icon = GFX_focus_hol_the_foundations_of_defense
+		prerequisite = { focus = FRF_cover_all_lower_lands }
+		x = -2
+		y = 1
+		relative_position_id = FRF_cover_all_lower_lands
+		
+		cost = 10
+		
+		cancel_if_invalid = yes
+		continue_if_invalid = no
+		available_if_capitulated = yes
+
+		ai_will_do = {
+			factor = 10
+		}
+		available = {
+		}
+		bypass = {
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus FRF_protection_of_french_speaking_population_of_quebec"
+			
+		}
+	}
+	
+	focus = {
+		id = FRF_expansion_of_french_india_at_expense_of_britain
+		icon = GFX_focus_hol_the_foundations_of_defense
+		prerequisite = { focus = FRF_passage_through_iran }
+		prerequisite = { focus = FRF_protection_of_french_speaking_population_of_quebec }
+		x = 0
+		y = 2
+		relative_position_id = FRF_protection_of_french_speaking_population_of_quebec
+		
+		cost = 10
+		
+		cancel_if_invalid = yes
+		continue_if_invalid = no
+		available_if_capitulated = yes
+
+		ai_will_do = {
+			factor = 10
+		}
+		available = {
+		}
+		bypass = {
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus FRF_expansion_of_french_india_at_expense_of_britain"
+			
+		}
+	}
+	
+	focus = {
+		id = FRF_return_of_sardinia
+		icon = GFX_focus_hol_the_foundations_of_defense
+		prerequisite = { focus = FRF_cover_all_lower_lands }
+		x = 0
+		y = 1
+		relative_position_id = FRF_cover_all_lower_lands
+		
+		cost = 10
+		
+		cancel_if_invalid = yes
+		continue_if_invalid = no
+		available_if_capitulated = yes
+
+		ai_will_do = {
+			factor = 10
+		}
+		available = {
+		}
+		bypass = {
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus FRF_return_of_sardinia"
+			
+		}
+	}
+	
+	focus = {
+		id = FRF_expansion_of_french_indochina_to_west
+		icon = GFX_focus_hol_the_foundations_of_defense
+		prerequisite = { focus = FRF_cover_all_lower_lands }
+		x = 2
+		y = 1
+		relative_position_id = FRF_cover_all_lower_lands
+		
+		cost = 10
+		
+		cancel_if_invalid = yes
+		continue_if_invalid = no
+		available_if_capitulated = yes
+
+		ai_will_do = {
+			factor = 10
+		}
+		available = {
+		}
+		bypass = {
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus FRF_expansion_of_french_indochina_to_west"
+			
+		}
+	}
+	
+	focus = {
+		id = FRF_help_with_guangxi_riots
+		icon = GFX_focus_hol_the_foundations_of_defense
+		prerequisite = { focus = FRF_expansion_of_french_indochina_to_west }
+		x = 0
+		y = 1
+		relative_position_id = FRF_expansion_of_french_indochina_to_west
+		
+		cost = 10
+		
+		cancel_if_invalid = yes
+		continue_if_invalid = no
+		available_if_capitulated = yes
+
+		ai_will_do = {
+			factor = 10
+		}
+		available = {
+		}
+		bypass = {
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus FRF_help_with_guangxi_riots"
+			
+		}
+	}
+	
+	focus = {
+		id = FRF_subjugate_southern_china_his_will
+		icon = GFX_focus_hol_the_foundations_of_defense
+		prerequisite = { focus = FRF_help_with_guangxi_riots }
+		x = 0
+		y = 1
+		relative_position_id = FRF_help_with_guangxi_riots
+		
+		cost = 10
+		
+		cancel_if_invalid = yes
+		continue_if_invalid = no
+		available_if_capitulated = yes
+
+		ai_will_do = {
+			factor = 10
+		}
+		available = {
+		}
+		bypass = {
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus FRF_subjugate_southern_china_his_will"
+			
+		}
+	}
+	
+	focus = {
+		id = FRF_natural_borders_of_france
+		icon = GFX_focus_hol_the_foundations_of_defense
+		prerequisite = { focus = FRF_cover_all_lower_lands }
+		x = 4
+		y = 1
+		relative_position_id = FRF_cover_all_lower_lands
+		
+		cost = 10
+		
+		cancel_if_invalid = yes
+		continue_if_invalid = no
+		available_if_capitulated = yes
+
+		ai_will_do = {
+			factor = 10
+		}
+		available = {
+		}
+		bypass = {
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus FRF_natural_borders_of_france"
+			
+		}
+	}
+	
+	focus = {
+		id = FRF_conquest_catalonia
+		icon = GFX_focus_hol_the_foundations_of_defense
+		prerequisite = { focus = FRF_revival_of_french_greatness }
+		mutually_exclusive = { focus = FRF_demand_balearic_islands }
+		x = 4
+		y = 1
+		relative_position_id = FRF_revival_of_french_greatness
+		
+		cost = 10
+		
+		cancel_if_invalid = yes
+		continue_if_invalid = no
+		available_if_capitulated = yes
+
+		ai_will_do = {
+			factor = 10
+		}
+		available = {
+		}
+		bypass = {
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus FRF_conquest_catalonia"
+			
+		}
+	}
+	
+	focus = {
+		id = FRF_intervention_in_spanish_war
+		icon = GFX_focus_prc_infiltration
+		x = 6
+		y = 0
+		relative_position_id = FRF_revival_of_french_greatness
+		
+		cost = 5
+		
+		cancel_if_invalid = yes
+		continue_if_invalid = no
+		available_if_capitulated = yes
+
+		ai_will_do = {
+			factor = 10
+			modifier = {
+				factor = 3
+				SPR = { has_government = ROOT }
+			}
+		}
+		available = {
+			custom_trigger_tooltip = {
+				tooltip = spanish_civil_war		
+				OR = {
+					has_global_flag = spanish_civil_war
+					has_global_flag = anarcho_spanish_civil_war
+					has_global_flag = expand_spanish_civil_war
+					has_global_flag = liberal_spanish_civil_war
+					has_global_flag = haos_liberal_spanish_civil_war
+				}
+			}
+			NOT = { has_global_flag = scw_over }
+		}
+		
+		select_effect = {
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus FRF_intervention_in_spanish_war"
+			set_rule = { can_send_volunteers = yes }
+			add_ideas = POR_intervention_in_spanish_war
+		}
+	}
+	
+	focus = {
+		id = FRF_demand_balearic_islands
+		icon = GFX_focus_hol_the_foundations_of_defense
+		prerequisite = { focus = FRF_intervention_in_spanish_war }
+		mutually_exclusive = { focus = FRF_conquest_catalonia }
+		x = 0
+		y = 1
+		relative_position_id = FRF_intervention_in_spanish_war
+		
+		cost = 10
+		
+		cancel_if_invalid = yes
+		continue_if_invalid = no
+		available_if_capitulated = yes
+
+		ai_will_do = {
+			factor = 10
+		}
+		available = {
+		}
+		bypass = {
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus FRF_demand_balearic_islands"
 			
 		}
 	}
