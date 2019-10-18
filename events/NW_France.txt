@@ -2408,24 +2408,18 @@ country_event = {
 		ai_chance = {
 			factor = 50
 		}
-		every_state = {
-			limit = {
-				state = 861
-			}
-			FROM = { transfer_state = PREV }
+		FROM = { transfer_state = 861 }
+		861 = {
 			add_core_of = FROM
 			remove_core_of = ROOT
 		}
 		if = {
 			limit = {
 				ITA = { is_in_faction_with = FROM }
-				ROOT = { has_full_control_of_state = 859 }
+				has_full_control_of_state = 859
 			}
-			every_state = {
-				limit = {
-					state = 859
-				}
-				ITA = { transfer_state = PREV }
+			ITA = { transfer_state = 859 }
+			859 = {
 				add_core_of = ITA
 				remove_core_of = ROOT
 			}
@@ -2437,16 +2431,22 @@ country_event = {
 			factor = 50
 		}
 		trigger = { NOT = { is_subject_of = FROM } }
-		every_state = {
-			limit = {
-				state = 861
+		861 = { add_claim_by = FROM }
+		if = {
+			limit = { FROM = { tag = FRF } }
+			FROM = {
+				add_named_threat = { 
+					threat = 2
+					name = FRF_demand_transfer_canton_vo
+				}
 			}
-			add_claim_by = FROM
 		}
-		FROM = {
-			add_named_threat = { 
-				threat = 2
-				name = FRA_question_romandy
+		else = {
+			FROM = {
+				add_named_threat = { 
+					threat = 2
+					name = FRA_question_romandy
+				}
 			}
 		}
 	}
@@ -5775,6 +5775,17 @@ country_event = {
 			id = FROM
 			value = -200
 		}
+		if = {
+			limit = { has_idea = FRF_duty_germany }
+			swap_ideas = {
+				remove_idea = FRF_duty_germany
+				add_idea = FRF_neglect_duty
+			}
+			modify_timed_idea = {
+				idea = FRF_neglect_duty
+				days = 300
+			}
+		}
 	}
 }
 
@@ -5876,6 +5887,17 @@ country_event = {
 			id = FROM
 			value = -200
 		}
+		if = {
+			limit = { has_idea = FRF_duty_italy }
+			swap_ideas = {
+				remove_idea = FRF_duty_italy
+				add_idea = FRF_neglect_duty
+			}
+			modify_timed_idea = {
+				idea = FRF_neglect_duty
+				days = 300
+			}
+		}
 	}
 }
 
@@ -5909,22 +5931,965 @@ country_event = {
 	}
 }
 
+#Франция предлагает заключить военный союз // не FRF
+country_event = {
+	id = NWfrance.411
+	title = NWfrance.411.t
+	desc = NWfrance.411.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWfrance.411" }
+	
+	option = {
+		name = NWfrance.411.a
+		ai_chance = {
+			factor = 90
+			modifier = {
+				factor = 0
+				OR = {
+					has_government = communism
+					has_government = trozkism
+					has_government = anarchism
+					AND = {
+						is_faction_leader = yes
+						any_other_country = {
+							is_in_faction_with = ROOT
+							NOT = { is_subject_of = ROOT }
+						}
+					}
+				}
+			}
+		}
+		FROM = { add_to_faction = ROOT }
+	}
+	
+	option = {
+		name = NWfrance.411.b
+		ai_chance = {
+			factor = 10
+		}
+		FROM = {
+			country_event = { id = NWfrance.412 days = 1 }
+			add_ai_strategy = {
+				type = alliance
+				id = ROOT
+				value = -200
+			}
+		}
+		add_ai_strategy = {
+			type = alliance
+			id = FROM
+			value = -200
+		}
+	}
+}
+
+#FROM отказ // FRF
+country_event = {
+	id = NWfrance.412
+	title = NWfrance.412.t
+	desc = NWfrance.412.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWfrance.412" }
+	
+	option = {
+		name = NWfrance.412.a
+	}
+}
+
+#Французские претензии на Люксембург // ENG
+country_event = {
+	id = NWfrance.413
+	title = NWfrance.413.t
+	desc = NWfrance.413.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWfrance.413" }
+	
+	option = {
+		name = NWfrance.413.a
+		ai_chance = {
+			factor = 50
+		}
+		if = {
+			limit = { LUX = { is_in_faction_with = ROOT } }
+			LUX = { leave_faction = yes }
+		}
+		if = {
+			limit = { has_guaranteed = LUX }
+			diplomatic_relation = {
+				country = LUX
+				relation = guarantee
+				active = no
+			}
+		}
+		FROM = { LUX = { country_event = { id = NWfrance.414 days = 1 } } }
+	}
+	
+	option = {
+		name = NWfrance.413.b
+		ai_chance = {
+			factor = 50
+		}
+		give_guarantee = LUX
+		FROM = { country_event = { id = NWfrance.416 days = 1 } }
+	}
+	
+	option = {
+		name = NWfrance.413.c
+		ai_chance = {
+			factor = 25
+		}
+		if = {
+			limit = { LUX = { is_in_faction_with = ROOT } }
+			LUX = { leave_faction = yes }
+		}
+		if = {
+			limit = { has_guaranteed = LUX }
+			diplomatic_relation = {
+				country = LUX
+				relation = guarantee
+				active = no
+			}
+		}
+		FROM = {
+			country_event = { id = NWfrance.418 days = 1 }
+			LUX = { country_event = { id = NWfrance.414 days = 1 } }
+		}
+	}
+}
+
+#Французский ультиматум // LUX
+country_event = {
+	id = NWfrance.414
+	title = NWfrance.414.t
+	desc = NWfrance.414.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWfrance.414" }
+	
+	option = {
+		name = NWfrance.414.a
+		ai_chance = {
+			factor = 99
+			modifier = {
+				factor = 0
+				NOT = { is_in_faction_with = FROM }
+				is_in_faction = yes
+			}
+		}
+		FROM = { puppet = ROOT }
+	}
+	
+	option = {
+		name = NWfrance.414.b
+		ai_chance = {
+			factor = 1
+		}
+		FROM = { country_event = { id = NWfrance.415 days = 1 } }
+	}
+}
+
+#LUX отказ // FRF
+country_event = {
+	id = NWfrance.415
+	title = NWfrance.415.t
+	desc = NWfrance.415.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWfrance.415" }
+	
+	option = {
+		name = NWfrance.415.a
+		create_wargoal = {
+			type = annex_everything
+			target = FROM
+		}
+	}
+}
+
+#Британия недовольна нашими претензиями на Люксембург // FRF
+country_event = {
+	id = NWfrance.416
+	title = NWfrance.416.t
+	desc = NWfrance.416.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWfrance.416" }
+	
+	option = {
+		name = NWfrance.416.a
+		ai_chance = {
+			factor = 70
+		}
+		declare_war_on = {
+			type = annex_everything
+			target = LUX
+		}
+	}
+	option = {
+		name = NWfrance.416.b
+		ai_chance = {
+			factor = 30
+		}
+		FROM = { country_event = { id = NWfrance.417 days = 1 } }
+	}
+}
+
+#Франция уступила // ENG
+country_event = {
+	id = NWfrance.417
+	title = NWfrance.417.t
+	desc = NWfrance.417.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWfrance.417" }
+	
+	option = {
+		name = NWfrance.417.a
+	}
+}
+
+#Британские уступки // FRF
+country_event = {
+	id = NWfrance.418
+	title = NWfrance.418.t
+	desc = NWfrance.418.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWfrance.418" }
+	
+	option = {
+		name = NWfrance.418.a
+		ai_chance = {
+			factor = 90
+		}
+		transfer_state = 1063
+		diplomatic_relation = {
+			country = FROM
+			relation = non_aggression_pact
+			active = yes
+		}
+		FROM = {
+			diplomatic_relation = {
+				country = ROOT
+				relation = non_aggression_pact
+				active = yes
+			}
+		}
+	}
+	
+	option = {
+		name = NWfrance.418.b
+		ai_chance = {
+			factor = 10
+		}
+	}
+}
+
+
+#Дюнкерская конференция // ENG
+country_event = {
+	id = NWfrance.419
+	title = NWfrance.419.t
+	desc = NWfrance.419.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWfrance.419" }
+	
+	option = {
+		name = NWfrance.419.a
+		ai_chance = {
+			factor = 50
+		}
+		if = {
+			limit = {
+				country_exists = GER
+				GER = { NOT = { is_in_faction_with = ROOT } }
+			}
+			GER = { country_event = { id = NWfrance.422 days = 1 } }
+		}
+		else = { FROM = { BEL = { country_event = { id = NWfrance.420 days = 1 } } } }
+	}
+	
+	option = {
+		name = NWfrance.419.b
+		ai_chance = {
+			factor = 50
+		}
+		give_guarantee = BEL
+		FROM = { country_event = { id = NWfrance.425 days = 1 } }
+	}
+}
+
+#Французский ультиматум // BEL
+country_event = {
+	id = NWfrance.420
+	title = NWfrance.420.t
+	desc = NWfrance.420.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWfrance.420" }
+	
+	option = {
+		name = NWfrance.420.a
+		ai_chance = {
+			factor = 99
+			modifier = {
+				factor = 0
+				OR = {
+					has_government = monarchy
+					is_faction_leader = yes
+				}
+			}
+		}
+		every_owned_state = {
+			limit = {
+				OR = {
+					state = 973
+					state = 34
+					state = 1061
+					state = 766
+				}
+			}
+			FROM = { transfer_state = PREV }
+		}
+	}
+	
+	option = {
+		name = NWfrance.420.b
+		ai_chance = {
+			factor = 1
+		}
+		FROM = { country_event = { id = NWfrance.421 days = 1 } }
+	}
+}
+
+#Бельгия отказалась передать Валлонию // FRF
+country_event = {
+	id = NWfrance.421
+	title = NWfrance.421.t
+	desc = NWfrance.421.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWfrance.421" }
+	
+	option = {
+		name = NWfrance.421.a
+		create_wargoal = {
+			type = annex_everything
+			target = FROM
+		}
+	}
+}
+
+#Франция готовится напасть на Бельгию // GER
+country_event = {
+	id = NWfrance.422
+	title = NWfrance.422.t
+	desc = NWfrance.422.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWfrance.422" }
+	
+	option = {
+		name = NWfrance.422.a
+		ai_chance = {
+			factor = 30
+		}
+		give_guarantee = BEL
+		FRF = { country_event = { id = NWfrance.423 days = 1 } }
+	}
+	
+	option = {
+		name = NWfrance.422.b
+		ai_chance = {
+			factor = 70
+		}
+		FRF = { BEL = { country_event = { id = NWfrance.420 days = 1 } } }
+	}
+}
+
+#Германия встала на защиту Бельгии // FRF
+country_event = {
+	id = NWfrance.423
+	title = NWfrance.423.t
+	desc = NWfrance.423.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWfrance.423" }
+	
+	option = {
+		name = NWfrance.423.a
+		ai_chance = {
+			factor = 70
+		}
+		declare_war_on = {
+			type = annex_everything
+			target = BEL
+		}
+	}
+	
+	option = {
+		name = NWfrance.423.b
+		ai_chance = {
+			factor = 30
+		}
+		FROM = { country_event = { id = NWfrance.424 days = 1 } }
+	}
+}
+
+#Франция отступила в бельгийском вопросе // GER / ENG
+country_event = {
+	id = NWfrance.424
+	title = NWfrance.424.t
+	desc = NWfrance.424.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWfrance.424" }
+	
+	option = {
+		name = NWfrance.424.a
+		declare_war_on = {
+			type = annex_everything
+			target = BEL
+		}
+	}
+}
+
+#Британия не признаёт возможность разделить Бельгию // FRF
+country_event = {
+	id = NWfrance.425
+	title = NWfrance.425.t
+	desc = NWfrance.425.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWfrance.425" }
+	
+	option = {
+		name = NWfrance.425.a
+		ai_chance = {
+			factor = 50
+		}
+		declare_war_on = {
+			type = annex_everything
+			target = BEL
+		}
+	}
+	
+	option = {
+		name = NWfrance.425.b
+		ai_chance = {
+			factor = 50
+		}
+		FROM = { country_event = { id = NWfrance.424 days = 1 } }
+	}
+}
+
+#Судьба Бельгии // BEL
+country_event = {
+	id = NWfrance.426
+	title = NWfrance.426.t
+	desc = NWfrance.426.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWfrance.426" }
+	
+	option = {
+		name = NWfrance.426.a
+		ai_chance = {
+			factor = 50
+		}
+		if = {
+			limit = { COG = { is_subject_of = ROOT } }
+			FROM = { puppet = COG }
+		}
+		if = {
+			limit = { NOT = { country_exists = FLA } }
+			release = FLA
+		}
+		if = {
+			limit = { is_ai = no }
+			FLA = { change_tag_from = ROOT }
+		}
+		FROM = {
+			puppet = FLA
+			annex_country = {
+				target = ROOT
+				transfer_troops = no
+			}
+		}
+	}
+	
+	option = {
+		name = NWfrance.426.b
+		ai_chance = {
+			factor = 50
+		}
+		FROM = { country_event = { id = NWfrance.427 days = 1 } }
+	}
+}
+
+#Бельгия отказалась пустить войска на её территорию // FRF
+country_event = {
+	id = NWfrance.427
+	title = NWfrance.427.t
+	desc = NWfrance.427.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWfrance.427" }
+	
+	option = {
+		name = NWfrance.427.a
+		create_wargoal = {
+			type = annex_everything
+			target = FROM
+		}
+	}
+}
+
+#Франция требует Лимбург // HOL
+country_event = {
+	id = NWfrance.428
+	title = NWfrance.428.t
+	desc = NWfrance.428.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWfrance.428" }
+	
+	option = {
+		name = NWfrance.428.a
+		ai_chance = {
+			factor = 50
+		}
+		FROM = { transfer_state = 974 }
+	}
+	option = {
+		name = NWfrance.428.b
+		ai_chance = {
+			factor = 50
+		}
+		FROM = { country_event = { id = NWfrance.429 days = 1 } }
+		effect_tooltip = {
+			FROM = {
+				create_wargoal = {
+					type = annex_everything
+					target = ROOT
+				}
+			}
+		}
+	}
+}
+
+#Голландский отказ // FRF
+country_event = {
+	id = NWfrance.429
+	title = NWfrance.429.t
+	desc = NWfrance.429.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWfrance.429" }
+	
+	option = {
+		name = NWfrance.429.a
+		create_wargoal = {
+			type = annex_everything
+			target = FROM
+		}
+	}
+}
+
+#Франция требует Лимбург // HOL
+country_event = {
+	id = NWfrance.430
+	title = NWfrance.430.t
+	desc = NWfrance.430.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWfrance.430" }
+	
+	option = {
+		name = NWfrance.430.a
+		ai_chance = {
+			factor = 50
+		}
+		FROM = {
+			transfer_state = 344
+			transfer_state = 350
+			transfer_state = 352
+		}
+	}
+	option = {
+		name = NWfrance.430.b
+		ai_chance = {
+			factor = 50
+		}
+		FROM = { country_event = { id = NWfrance.431 days = 1 } }
+	}
+}
+
+#Турция отказала нам в юго-западных территориях // FRF
+country_event = {
+	id = NWfrance.431
+	title = NWfrance.431.t
+	desc = NWfrance.431.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWfrance.431" }
+	
+	option = {
+		name = NWfrance.431.a
+		create_wargoal = {
+			type = annex_everything
+			target = FROM
+		}
+	}
+}
+
+#Франция требует вернуть Сардинию // ITA
+country_event = {
+	id = NWfrance.432
+	title = NWfrance.432.t
+	desc = NWfrance.432.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWfrance.432" }
+	
+	option = {
+		name = NWfrance.432.a
+		ai_chance = {
+			factor = 1
+		}
+		FROM = { transfer_state = 114 }
+	}
+	
+	option = {
+		name = NWfrance.432.b
+		ai_chance = {
+			factor = 99
+			modifier = {
+				factor = 0
+				OR = {
+					NOT = {
+						any_other_country = {
+							is_major = yes
+							is_in_faction_with = ROOT
+						}
+					}
+					strength_ratio = {
+						tag = FROM
+						ratio < 1
+					}
+				}
+			}
+		}
+		FROM = { country_event = { id = NWfrance.433 days = 1 } }
+	}
+}
+
+#Италия отказалась передать Сардинию // FRF
+country_event = {
+	id = NWfrance.433
+	title = NWfrance.433.t
+	desc = NWfrance.433.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWfrance.433" }
+	
+	option = {
+		name = NWfrance.433.a
+		create_wargoal = {
+			type = annex_everything
+			target = FROM
+		}
+	}
+}
+
+#Франция хочет «помочь» с беспорядками в южном Китае // GXC
+country_event = {
+	id = NWfrance.434
+	title = NWfrance.434.t
+	desc = NWfrance.434.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWfrance.434" }
+	
+	option = {
+		name = NWfrance.434.a
+		ai_chance = {
+			factor = 1
+		}
+		FROM = {
+			set_autonomy = {
+				target = ROOT
+				autonomy_state = autonomy_colony
+			}
+		}
+	}
+	
+	option = {
+		name = NWfrance.434.b
+		ai_chance = {
+			factor = 99
+			modifier = {
+				factor = 0
+				is_in_faction = no
+			}
+		}
+		FROM = { country_event = { id = NWfrance.435 days = 1 } }
+	}
+}
+
+#Отказ Гуанси // FRF
+country_event = {
+	id = NWfrance.435
+	title = NWfrance.435.t
+	desc = NWfrance.435.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWfrance.435" }
+	
+	option = {
+		name = NWfrance.435.a
+		create_wargoal = {
+			type = puppet_wargoal_focus
+			target = FROM
+		}
+	}
+}
+
+#Франция требует Балеарские острова // 177 овнер
+country_event = {
+	id = NWfrance.436
+	title = NWfrance.436.t
+	desc = NWfrance.436.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWfrance.436" }
+	
+	option = {
+		name = NWfrance.436.a
+		ai_chance = {
+			factor = 80
+		}
+		FROM = { transfer_state = 177 }
+	}
+	
+	option = {
+		name = NWfrance.436.b
+		ai_chance = {
+			factor = 20
+		}
+		FROM = {
+			add_state_claim = 177
+			create_wargoal = {
+				type = annex_everything
+				target = ROOT
+			}
+		}
+	}
+}
+
+#Французские территориальные претензии // 165 овнер
+country_event = {
+	id = NWfrance.437
+	title = NWfrance.437.t
+	desc = NWfrance.437.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWfrance.437" }
+	
+	option = {
+		name = NWfrance.437.a
+		ai_chance = {
+			factor = 50
+		}
+		FROM = { transfer_state = 165 }
+		if = {
+			limit = { POR = { is_in_faction_with = FROM } }
+			if = {
+				limit = { 171 = { owner = { is_subject_of = ROOT } } }
+				171 = { owner = { POR = { puppet = PREV } } }
+			}
+			else = { POR = { transfer_state = 171 } }
+			if = {
+				limit = { 1040 = { owner = { is_subject_of = ROOT } } }
+				1040 = { owner = { POR = { puppet = PREV } } }
+			}
+			else = { POR = { transfer_state = 1040 } }
+		}
+	}
+	
+	option = {
+		name = NWfrance.437.b
+		ai_chance = {
+			factor = 50
+		}
+		custom_effect_tooltip = NWfrance_437_b_tt
+		hidden_effect = { FROM = { country_event = { id = NWfrance.438 days = 1 } } }
+	}
+}
+
+#From отказ // FRF
+country_event = {
+	id = NWfrance.438
+	title = NWfrance.438.t
+	desc = NWfrance.438.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWfrance.438" }
+	
+	option = {
+		name = NWfrance.438.a
+		every_state = {
+			limit = {
+				OR = {
+					state = 165
+					state = 167
+					state = 177
+				}
+			}
+			add_claim_by = ROOT
+			owner = {
+				ROOT = {
+					add_ai_strategy = {
+						type = antagonize
+						id = PREV
+						value = 200
+					}
+					add_ai_strategy = {
+						type = conquer
+						id = PREV
+						value = 200
+					}
+					add_ai_strategy = {
+						type = declare_war
+						id = PREV
+						value = 100
+					}
+				}
+			}
+		}
+	}
+}
+
+#Франция требует передать Рейнскую область // GER
+country_event = {
+	id = NWfrance.439
+	title = NWfrance.439.t
+	desc = NWfrance.439.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWfrance.439" }
+	
+	option = {
+		name = NWfrance.439.a
+		ai_chance = {
+			factor = 1
+		}
+		every_state = {
+			limit = {
+				OR = {
+					state = 809
+					state = 835
+					state = 42
+					state = 51
+					state = 829
+				}
+			}
+			FROM = { transfer_state = PREV }
+		}
+	}
+	
+	option = {
+		name = NWfrance.439.b
+		ai_chance = {
+			factor = 99
+			modifier = {
+				factor = 0
+				OR = {
+					NOT = {
+						has_government = fascism
+						any_other_country = {
+							is_major = yes
+							is_in_faction_with = ROOT
+						}
+					}
+					strength_ratio = {
+						tag = FROM
+						ratio < 1
+					}
+				}
+			}
+		}
+		FROM = { country_event = { id = NWfrance.440 days = 1 } }
+	}
+}
+
+#Отказ Гуанси // FRF
+country_event = {
+	id = NWfrance.440
+	title = NWfrance.440.t
+	desc = NWfrance.440.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWfrance.440" }
+	
+	option = {
+		name = NWfrance.440.a
+		create_wargoal = {
+			type = puppet_wargoal_focus
+			target = FROM
+		}
+	}
+}
+
 
 
 
 #резерв сброса нацдуха ФраГВ
 country_event = {
 	id = NWfrance.900
-	title = NWfrance.900.t
-	desc = NWfrance.900.desc
-	picture = GFX_report_event_degaulle_inspect_troops
 	fire_only_once = yes
 	hidden = yes
 	
 	trigger = {
 		has_idea = FRA_civil_war
-		NOT = { has_war_with = FRC }
-		NOT = { has_war_with = FRA }
+		NOT = {
+			has_war_with = FRC
+			has_war_with = FRA
+		}
 	}
 	
 	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWfrance.900" }
@@ -6108,6 +7073,11 @@ country_event = {
 				value = 500
 			}
 		}
+	}
+	
+	option = {
+		name = KEK
+		ENG = { country_event = { id = NWfrance.413 days = 1 } }
 	}
 }
 
