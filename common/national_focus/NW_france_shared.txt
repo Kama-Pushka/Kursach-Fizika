@@ -214,7 +214,7 @@
 		id = FRA_direction_determination_courses
 		icon = GFX_focus_generic_military_academy
 		prerequisite = { focus = FRA_raising_compulsory_school_age }
-		x = 0
+		x = -1
 		y = 1
 		relative_position_id = FRA_raising_compulsory_school_age
 		
@@ -272,7 +272,7 @@
 		id = FRA_dissolution_fascist_leagues
 		icon = GFX_focus_generic_anti_fascist_diplomacy
 		prerequisite = { focus = FRA_reform_paris_police }
-		x = 0
+		x = 1
 		y = 1
 		relative_position_id = FRA_reform_paris_police
 		
@@ -330,7 +330,8 @@
 		id = FRA_french_antimilitarism
 		icon = GFX_z_goal_split_helmet
 		prerequisite = { focus = FRA_create_national_department }
-		x = 0
+		mutually_exclusive = { focus = FRA_intervention_in_spanish_war }
+		x = -1
 		y = 1
 		relative_position_id = FRA_create_national_department
 		
@@ -356,11 +357,57 @@
 	}
 	
 	shared_focus = {
+		id = FRA_intervention_in_spanish_war
+		icon = GFX_focus_prc_infiltration
+		prerequisite = { focus = FRA_create_national_department }
+		mutually_exclusive = { focus = FRA_french_antimilitarism }
+		x = 1
+		y = 1
+		relative_position_id = FRA_create_national_department
+		
+		cost = 5
+		
+		cancel_if_invalid = yes
+		continue_if_invalid = no
+		available_if_capitulated = yes
+
+		ai_will_do = {
+			factor = 10
+			modifier = {
+				factor = 3
+				SPR = { has_government = ROOT }
+			}
+		}
+		available = {
+			#custom_trigger_tooltip = {
+			#	tooltip = spanish_civil_war		
+			#	OR = {
+			#		has_global_flag = spanish_civil_war
+			#		has_global_flag = anarcho_spanish_civil_war
+			#		has_global_flag = expand_spanish_civil_war
+			#		has_global_flag = liberal_spanish_civil_war
+			#		has_global_flag = haos_liberal_spanish_civil_war
+			#	}
+			#}
+			#NOT = { has_global_flag = scw_over }
+		}
+		
+		select_effect = {
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus FRA_intervention_in_spanish_war"
+			set_rule = { can_send_volunteers = yes }
+			add_ideas = POR_intervention_in_spanish_war
+			add_ideas = FRA_tensions_among_fascists
+		}
+	}
+	
+	shared_focus = {
 		id = FRA_weakening_influence_communists
 		icon = GFX_goal_anti_comintern_pact
 		prerequisite = { focus = FRA_french_antimilitarism }
-		mutually_exclusive = { focus = FRA_strengthen_left_direction }
-		x = -1
+		x = 0
 		y = 1
 		relative_position_id = FRA_french_antimilitarism
 		
@@ -548,11 +595,10 @@
 	shared_focus = {
 		id = FRA_strengthen_left_direction
 		icon = GFX_goal_support_communism
-		prerequisite = { focus = FRA_french_antimilitarism }
-		mutually_exclusive = { focus = FRA_weakening_influence_communists }
-		x = 1
+		prerequisite = { focus = FRA_intervention_in_spanish_war }
+		x = 0
 		y = 1
-		relative_position_id = FRA_french_antimilitarism
+		relative_position_id = FRA_intervention_in_spanish_war
 		
 		cost = 10
 		
@@ -1064,52 +1110,6 @@
 				threat = 2
 				name = FRA_transforming_france_into_peoples_republic
 			}
-		}
-	}
-	
-	shared_focus = {
-		id = FRA_intervention_in_spanish_war
-		icon = GFX_focus_prc_infiltration
-		prerequisite = { focus = FRA_transforming_france_into_peoples_republic }
-		x = 1
-		y = 3
-		relative_position_id = FRA_transforming_france_into_peoples_republic
-		
-		cost = 5
-		
-		cancel_if_invalid = yes
-		continue_if_invalid = no
-		available_if_capitulated = yes
-
-		ai_will_do = {
-			factor = 10
-			modifier = {
-				factor = 3
-				SPR = { has_government = ROOT }
-			}
-		}
-		available = {
-			custom_trigger_tooltip = {
-				tooltip = spanish_civil_war		
-				OR = {
-					has_global_flag = spanish_civil_war
-					has_global_flag = anarcho_spanish_civil_war
-					has_global_flag = expand_spanish_civil_war
-					has_global_flag = liberal_spanish_civil_war
-					has_global_flag = haos_liberal_spanish_civil_war
-				}
-			}
-			NOT = { has_global_flag = scw_over }
-		}
-		
-		select_effect = {
-		}
-
-		completion_reward = {
-			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus FRA_intervention_in_spanish_war"
-			set_rule = { can_send_volunteers = yes }
-			add_ideas = POR_intervention_in_spanish_war
-			add_ideas = FRA_tensions_among_fascists
 		}
 	}
 	
