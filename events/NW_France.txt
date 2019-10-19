@@ -128,9 +128,11 @@ country_event = {
 			factor = 50
 			modifier = {
 				factor = 0
-				OR = {
-					has_country_flag = NW_FRA_AI_FASCIST
-					has_country_flag = NW_FRA_AI_MONARCHY
+				FROM = {
+					OR = {
+						has_country_flag = NW_FRA_AI_FASCIST
+						has_country_flag = NW_FRA_AI_MONARCHY
+					}
 				}
 			}
 		}
@@ -3539,6 +3541,7 @@ country_event = {
 				has_idea = FRA_tensions_among_fascists
 			}
 			country_event = { id = NWfrance.52 }
+			news_event = { id = trworldnews.87 hours = 6 }
 		}
 	}
 }
@@ -3587,9 +3590,11 @@ country_event = {
 			every_owned_state = {
 				add_claim_by = FRF
 			}
+			set_capital = 20
 		}
 		FRF = {
 			hidden_effect = {
+				add_ideas = FRF_dependence_on_large_capital
 				load_oob = "FRF_1936"
 				inherit_technology = ROOT
 			}
@@ -3641,9 +3646,11 @@ country_event = {
 			every_owned_state = {
 				add_claim_by = FRF
 			}
+			set_capital = 20
 		}
 		FRF = {
 			hidden_effect = {
+				add_ideas = FRF_dependence_on_large_capital
 				load_oob = "FRF_1936"
 				inherit_technology = ROOT
 			}
@@ -5735,6 +5742,11 @@ country_event = {
 		name = NWfrance.401.a
 		ai_chance = {
 			factor = 90
+			modifier = {
+				factor = 0
+				tag = GER
+				FROM = { has_completed_focus = FRF_keep_jews_in_business }
+			}
 		}
 		effect_tooltip = {
 			add_equipment_to_stockpile = {
@@ -7101,17 +7113,18 @@ country_event = {
 		NOT = {
 			has_war_with = FRC
 			has_war_with = FRA
+			has_war_with = FRF
 		}
 	}
 	
 	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWfrance.900" }
 	
-	mean_time_to_happen = { days = 2 }
+	mean_time_to_happen = { days = 5 }
 	
 	option = {
 		name = NWfrance.900.a
 		remove_ideas = FRA_civil_war
-		every_country = { clear_global_event_target = NW_france_scope }
+		clear_global_event_target = NW_france_scope
 		save_global_event_target_as = NW_france_scope
 		if = {
 			limit = { NOT = { country_exists = FRA } }
@@ -7134,7 +7147,17 @@ country_event = {
 				limit = { is_core_of = FRC }
 				remove_core_of = FRC
 			}
-			
+		}
+		if = {
+			limit = { NOT = { country_exists = FRF } }
+			every_state = {
+				limit = { is_claimed_by = FRF }
+				remove_claim_by = FRF
+			}
+			every_state = {
+				limit = { is_core_of = FRF }
+				remove_core_of = FRF
+			}
 		}
 		if = {
 			limit = {
@@ -7175,7 +7198,7 @@ country_event = {
 #	}
 #	
 #	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWfrance.901" }
-#	mean_time_to_happen = { days = 2 }
+#	mean_time_to_happen = { days = 10 }
 #	option = {
 #		name = NWfrance.901.a
 #		every_country = {
@@ -7289,7 +7312,22 @@ country_event = {
 	
 	option = {
 		name = KEK
-		FRA = { country_event = { id = NWfrance.52 days = 1 } }
+		if = {
+			limit = {
+				SYR = {
+					has_cosmetic_tag = SYR_FR
+					OVERLORD = {
+						NOT = {
+							original_tag = FRA
+							original_tag = FRC
+							original_tag = FRR
+							original_tag = FRF
+						}
+					}
+				}
+			}
+			SYR = { drop_cosmetic_tag = yes }
+		}
 	}
 }
 
