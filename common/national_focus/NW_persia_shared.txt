@@ -3761,7 +3761,7 @@
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus PER_holy_jihad"
 			add_ideas = PER_holy_jihad
 			add_named_threat = { 
-				threat = 1 
+				threat = 1
 				name = PER_holy_jihad
 			}
 		}
@@ -3946,7 +3946,7 @@
 		icon = GFX_z_goal_guillotine
 		prerequisite = { focus = PER_conquest_of_afghanistan }
 		x = -1
-		y = 1
+		y = 2
 		relative_position_id = PER_conquest_of_afghanistan
 
 		cost = 10
@@ -3994,7 +3994,8 @@
 		id = PER_conquest_iraq
 		icon = GFX_goal_generic_occupy_states_ongoing_war
 		prerequisite = { focus = PER_conquest_of_afghanistan }
-		x = 1
+		mutually_exclusive = { focus = PER_come_an_agreement_with_iraq }
+		x = 0
 		y = 1
 		relative_position_id = PER_conquest_of_afghanistan
 
@@ -4040,11 +4041,57 @@
 	}
 	
 	shared_focus = {
+		id = PER_come_an_agreement_with_iraq
+		icon = GFX_goal_tripartite_pact
+		prerequisite = { focus = PER_conquest_of_afghanistan }
+		mutually_exclusive = { focus = PER_conquest_iraq }
+		x = 2
+		y = 1
+		relative_position_id = PER_conquest_of_afghanistan
+
+		cost = 10
+		
+		cancel_if_invalid = yes
+		continue_if_invalid = no
+		available_if_capitulated = no
+
+		ai_will_do = {
+			factor = 15
+		}
+		available = {
+			is_subject = no
+			IRQ = {
+				is_subject = no
+				NOT = {
+					has_war_with = ROOT
+					has_government = communism
+					has_government = trozkism
+					has_government = anarchism
+					has_government = democratic
+				}
+			}
+			NOT = { has_country_flag = PER_form_prosoviet_government_flag has_country_flag = PER_concessions_for_germanophiles_flag }
+		}
+		bypass = {
+			OR = {
+				NOT = { country_exists = IRQ }
+				has_war_with = IRQ
+				is_in_faction_with = IRQ
+				IRQ = { is_subject_of = ROOT }
+			}
+		}
+		
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus PER_come_an_agreement_with_iraq"
+			IRQ = { country_event = { id = NWpersian.81 days = 1 } }
+		}
+	}
+	
+	shared_focus = {
 		id = PER_prophets_homeland
 		icon = GFX_z_goal_prophets_homeland_2
-		prerequisite = { focus = PER_behead_godless_turk }
-		prerequisite = { focus = PER_conquest_iraq }
-		x = -1
+		prerequisite = { focus = PER_conquest_iraq focus = PER_come_an_agreement_with_iraq }
+		x = 1
 		y = 1
 		relative_position_id = PER_conquest_iraq
 
@@ -4090,7 +4137,8 @@
 		id = PER_shia_islamic_state
 		icon = GFX_z_goal_shia_islamic_state
 		prerequisite = { focus = PER_prophets_homeland }
-		x = 0
+		prerequisite = { focus = PER_behead_godless_turk }
+		x = -1
 		y = 1
 		relative_position_id = PER_prophets_homeland
 
@@ -4266,6 +4314,136 @@
 				}
 			}
 			unlock_decision_tooltip = PER_desecrate_vatican
+		}
+	}
+	
+	shared_focus = {
+		id = PER_allahu_akbar
+		icon = GFX_z_goal_allahu_akbar
+		prerequisite = { focus = PER_shia_islamic_state }
+		x = 0
+		y = 1
+		relative_position_id = PER_shia_islamic_state
+
+		cost = 10
+		
+		cancel_if_invalid = yes
+		continue_if_invalid = no
+		available_if_capitulated = no
+
+		ai_will_do = {
+			factor = 10
+		}
+		available = {
+			NOT = { has_country_flag = PER_form_prosoviet_government_flag has_country_flag = PER_concessions_for_germanophiles_flag }
+			has_full_control_of_state = 1099
+			has_full_control_of_state = 266
+			has_full_control_of_state = 410
+			has_full_control_of_state = 411
+			has_full_control_of_state = 412
+			has_full_control_of_state = 413
+			has_full_control_of_state = 414
+			has_full_control_of_state = 416
+			has_full_control_of_state = 417
+			has_full_control_of_state = 418
+			has_full_control_of_state = 419
+			has_full_control_of_state = 420
+			has_full_control_of_state = 421
+			has_full_control_of_state = 963
+			has_full_control_of_state = 819
+		}
+		bypass = {
+			
+		}
+		
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus PER_allahu_akbar"
+			custom_effect_tooltip = PER_allahu_akbar_tt
+			hidden_effect = {
+				if = {
+					limit = { NOT = { has_template = "Divisions of Allah" } }
+					division_template = {
+						name = "Divisions of Allah"
+						is_locked = no
+						regiments = {
+							infantry = { x = 0 y = 0 }
+							infantry = { x = 0 y = 1 }
+							infantry = { x = 0 y = 2 }
+							infantry = { x = 1 y = 0 }
+							infantry = { x = 1 y = 1 }
+							infantry = { x = 1 y = 2 }
+							infantry = { x = 2 y = 0 }
+							infantry = { x = 2 y = 1 }
+							infantry = { x = 2 y = 2 }
+							infantry = { x = 3 y = 0 }
+						}
+						support = {
+							engineer = { x = 0 y = 0 }
+						}
+					}
+				}
+				capital_scope = {
+					create_unit = {
+						division = "name = \"Divisions of Allah\" division_template = \"Divisions of Allah\" start_experience_factor = 0.6" 
+						owner = ROOT
+					}
+					create_unit = {
+						division = "name = \"Divisions of Allah\" division_template = \"Divisions of Allah\" start_experience_factor = 0.6" 
+						owner = ROOT
+					}
+					create_unit = {
+						division = "name = \"Divisions of Allah\" division_template = \"Divisions of Allah\" start_experience_factor = 0.6" 
+						owner = ROOT
+					}
+					create_unit = {
+						division = "name = \"Divisions of Allah\" division_template = \"Divisions of Allah\" start_experience_factor = 0.6" 
+						owner = ROOT
+					}
+					create_unit = {
+						division = "name = \"Divisions of Allah\" division_template = \"Divisions of Allah\" start_experience_factor = 0.6" 
+						owner = ROOT
+					}
+					create_unit = {
+						division = "name = \"Divisions of Allah\" division_template = \"Divisions of Allah\" start_experience_factor = 0.6" 
+						owner = ROOT
+					}
+					create_unit = {
+						division = "name = \"Divisions of Allah\" division_template = \"Divisions of Allah\" start_experience_factor = 0.6" 
+						owner = ROOT
+					}
+					create_unit = {
+						division = "name = \"Divisions of Allah\" division_template = \"Divisions of Allah\" start_experience_factor = 0.6" 
+						owner = ROOT
+					}
+					create_unit = {
+						division = "name = \"Divisions of Allah\" division_template = \"Divisions of Allah\" start_experience_factor = 0.6" 
+						owner = ROOT
+					}
+					create_unit = {
+						division = "name = \"Divisions of Allah\" division_template = \"Divisions of Allah\" start_experience_factor = 0.6" 
+						owner = ROOT
+					}
+				}
+			}
+			add_ideas = PER_allahu_akbar
+			custom_effect_tooltip = PER_allahu_akbar_ttt
+			hidden_effect = {
+				every_other_country = {
+					limit = {
+						NOT = {
+							is_subject_of = ROOT
+							is_in_faction_with = ROOT
+							is_guaranteed_by = ROOT
+						}
+					}
+					ROOT = {
+						declare_war_on = {
+							target = PREV
+							type = annex_everything
+						}
+					}
+				}
+			}
 		}
 	}
 	
