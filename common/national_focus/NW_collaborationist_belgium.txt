@@ -354,6 +354,7 @@ focus_tree = {
 		}
 		available = {
 			NOT = { has_country_flag = BEL_block_negotiations_with_british_flag }
+			is_subject = yes
 			has_country_flag = BEL_ENG_enable_negotiations_with_british_flag
 			ENG = {
 				has_equipment = {
@@ -397,6 +398,17 @@ focus_tree = {
 		}
 		available = {
 			NOT = { has_country_flag = BEL_block_negotiations_with_british_flag }
+			is_subject = yes
+			any_state = {
+				is_core_of = ROOT
+				NOT = { is_owned_by = ROOT }
+				owner = {
+					OR = {
+						tag = OVERLORD
+						is_in_faction_with = OVERLORD
+					}
+				}
+			}
 		}
 		bypass = {
 		}
@@ -405,7 +417,7 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BEL_col_expansion_of_guerrilla_movement"
-			
+			custom_effect_tooltip = BEL_col_expansion_of_guerrilla_movement_tt
 		}
 	}
 	
@@ -427,6 +439,7 @@ focus_tree = {
 			factor = 10
 		}
 		available = {
+			is_subject = yes
 			NOT = { has_country_flag = BEL_block_negotiations_with_british_flag }
 		}
 		bypass = {
@@ -436,7 +449,56 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BEL_col_raise_an_armed_rebellion"
-			
+			if = {
+				limit = { has_completed_focus = BEL_col_expansion_of_guerrilla_movement }
+				every_state = {
+					limit = {
+						is_core_of = ROOT
+						NOT = { is_owned_by = ROOT }
+						owner = {
+							OR = {
+								tag = OVERLORD
+								is_in_faction_with = OVERLORD
+							}
+						}
+					}
+					ROOT = { transfer_state = PREV }
+				}
+				hidden_effect = {
+					if = {
+						limit = { NOT = { has_template = "Belgian rebels" } }
+						division_template = {
+							name = "Belgian rebels"
+							is_locked = no
+							regiments = {
+								infantry = { x = 0 y = 0 }
+								infantry = { x = 0 y = 1 }
+								infantry = { x = 0 y = 2 }
+								infantry = { x = 0 y = 3 }
+							}
+							support = {
+								engineer = { x = 0 y = 0 }
+							}
+						}
+					}
+				}
+				capital_scope = {
+					create_unit = {
+						division = "name = \"Belgian rebels\" division_template = \"Belgian rebels\" start_experience_factor = 0.5" 
+						owner = ROOT
+					}
+					create_unit = {
+						division = "name = \"Belgian rebels\" division_template = \"Belgian rebels\" start_experience_factor = 0.5" 
+						owner = ROOT
+					}
+				}
+			}
+			add_war_support = 0.25
+			add_timed_idea = { idea = BEL_col_armed_uprising days = 90 }
+			declare_war_on = {
+				target = OVERLORD
+				type = annex_everything
+			}
 		}
 	}
 	
@@ -466,7 +528,8 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BEL_col_extend_borders_east"
-			
+			add_state_claim = 51
+			unlock_decision_category_tooltip = BEL_col_nationalize_rhineland_category
 		}
 	}
 	
