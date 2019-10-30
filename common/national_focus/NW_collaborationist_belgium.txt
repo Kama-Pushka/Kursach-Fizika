@@ -553,6 +553,23 @@ focus_tree = {
 			factor = 10
 		}
 		available = {
+			OR = {
+				has_autonomy_state = autonomy_dominion
+				AND = {
+					has_autonomy_state = autonomy_colony
+					compare_autonomy_progress_ratio > 0.5
+				}
+			}
+			if = {
+				limit = { is_subject_of = GER }
+				GER = { is_faction_leader = yes }
+				NOT = { has_war_with = GER }
+			}
+			if = {
+				limit = { is_subject_of = event_target:NW_france_scope }
+				event_target:NW_france_scope = { is_faction_leader = yes }
+				NOT = { has_war_with = event_target:NW_france_scope }
+			}
 		}
 		bypass = {
 		}
@@ -561,7 +578,7 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BEL_col_full_member_of_axis"
-			
+			OVERLORD = { country_event = { id = NWbelgium.115 days = 1 } }
 		}
 	}
 	
@@ -591,7 +608,11 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BEL_col_joint_scientific_research"
-			
+			add_to_tech_sharing_group = BEL_col_joint_scientific_research_group
+			every_other_country = {
+				limit = { is_in_faction_with = ROOT }
+				add_to_tech_sharing_group = BEL_col_joint_scientific_research_group
+			}
 		}
 	}
 	
@@ -613,15 +634,23 @@ focus_tree = {
 			factor = 10
 		}
 		available = {
+			country_exists = GER
 		}
 		bypass = {
+			NOT = { country_exists = GER }
 		}
 		select_effect = {
 		}
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BEL_col_joint_exercises_with_wehrmacht"
-			
+			army_experience = 10
+			add_tech_bonus = {
+				name = land_doc_bonus
+				bonus = 1
+				uses = 1
+				category = land_doctrine
+			}
 		}
 	}
 	
@@ -643,6 +672,7 @@ focus_tree = {
 			factor = 10
 		}
 		available = {
+			owns_state = 975
 		}
 		bypass = {
 		}
@@ -651,7 +681,26 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BEL_col_return_limburg"
-			
+			add_state_claim = 974
+			if = {
+				limit = {
+					is_subject = yes
+					974 = {
+						controller = {
+							NOT = { tag = ROOT }
+							OR = {
+								tag = OVERLORD
+								is_subject_of = OVERLORD
+							}
+						}
+					}
+				}
+				OVERLORD = { country_event = { id = NWbelgium.117 days = 1 } }
+			}
+			else = {
+				set_country_flag = BEL_col_nationalize_limburg_flag
+				unlock_decision_category_tooltip = BEL_col_nationalize_limburg_category
+			}
 		}
 	}
 	
@@ -681,7 +730,10 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BEL_col_great_belgium"
-			
+			add_political_power = 50
+			add_stability = 0.1
+			add_ideas = BEL_col_great_belgium
+			set_cosmetic_tag = BEL_great
 		}
 	}
 	
@@ -715,7 +767,7 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus BEL_col_cooperation_with_right_wing_parties"
-			
+			add_timed_idea = { idea = BEL_col_cooperation_with_right_wing_parties_idea days = 180 }
 		}
 	}
 	
@@ -749,7 +801,18 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus BEL_col_bet_on_walloon_nationalists"
-			
+			add_popularity = {
+				ideology = fascism
+				popularity = 0.05
+			}
+			1061 = {
+				add_extra_state_shared_building_slots = 1
+				add_building_construction = {
+					type = arms_factory
+					level = 1
+					instant_build = yes
+				}
+			}
 		}
 	}
 	
@@ -770,6 +833,7 @@ focus_tree = {
 			factor = 10
 		}
 		available = {
+			owns_state = 1061
 		}
 		bypass = {
 		}
@@ -778,7 +842,41 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus BEL_col_walloon_ss_detachment"
-			
+			add_ideas = BEL_col_walloon_ss_detachment_idea
+			hidden_effect = {
+				if = {
+					limit = { NOT = { has_template = "Walloon SS Waffen-Grenadier-Division" } }
+					division_template = {
+						name = "Walloon SS Waffen-Grenadier-Division"
+						priority = 2
+						is_locked = yes
+						regiments = {
+							infantry = { x = 0 y = 0 }
+							infantry = { x = 0 y = 1 }
+							infantry = { x = 0 y = 2 }
+						
+							infantry = { x = 1 y = 0 }
+							infantry = { x = 1 y = 1 }
+							infantry = { x = 1 y = 2 }
+
+							artillery_brigade = { x = 2 y = 0 }
+							artillery_brigade = { x = 2 y = 1 }
+							infantry = { x = 2 y = 2 }
+						}
+						support = {
+							artillery = { x = 0 y = 0 }
+							engineer = { x = 0 y = 1 }
+							recon = { x = 0 y = 2 }
+						}
+					}
+				}
+			}
+			capital_scope = {
+				create_unit = {
+					division = "name = \"Walloon SS Waffen-Grenadier-Division\" division_template = \"Walloon SS Waffen-Grenadier-Division\" start_experience_factor = 0.5" 
+					owner = ROOT
+				}
+			}
 		}
 	}
 	
@@ -807,7 +905,8 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus BEL_col_spread_real_country"
-			
+			add_political_power = 100
+			add_timed_idea = { idea = BEL_col_spread_real_country_idea days = 180 }
 		}
 	}
 	
@@ -837,7 +936,23 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus BEL_restore_reputation_degree"
-			
+			add_political_power = 50
+			set_politics = {	
+				ruling_party = fascism
+				elections_allowed = no
+			}
+			custom_effect_tooltip = BEL_restore_reputation_degree_tt
+			hidden_effect = {
+				if = {
+					limit = {
+						has_country_leader = {
+							name = "Léon Degrelle"
+							ruling_only = yes
+						}
+					}
+					remove_country_leader_trait = populist
+				}
+			}
 		}
 	}
 	
@@ -866,7 +981,7 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus BEL_germanic_origins_of_walloons"
-			
+			add_ideas = BEL_germanic_origins_of_walloons_idea
 		}
 	}
 	
@@ -887,6 +1002,7 @@ focus_tree = {
 			factor = 10
 		}
 		available = {
+			is_subject = yes
 		}
 		bypass = {
 		}
@@ -895,7 +1011,7 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus BEL_from_greater_belgium_to_burgundy"
-			
+			OVERLORD = { country_event = { id = NWbelgium.118 } }
 		}
 	}
 	
