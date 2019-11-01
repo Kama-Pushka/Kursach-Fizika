@@ -1821,12 +1821,12 @@ country_event = {
 			if = {
 				limit = {
 					country_exists = HOL
-					HOL = { NOT = { is_in_faction_with = OVERLORD } }
+					HOL = { NOT = { is_in_faction_with = ROOT } }
 				}
 				every_state = {
 					limit = {
 						is_owned_by = HOL
-						NOT = { is_owned_by = OVERLORD }
+						NOT = { is_owned_by = ROOT }
 					}
 					add_claim_by = FROM
 				}
@@ -1834,12 +1834,162 @@ country_event = {
 			if = {
 				limit = {
 					country_exists = HOL
-					HOL = { is_in_faction_with = OVERLORD }
+					HOL = { is_in_faction_with = ROOT }
 				}
 				HOL = { country_event = { id = NWbelgium.119 } }
 			}
-						
-						
+			if = {
+				limit = { has_war_with = HOL }
+				every_state = {
+					limit = { is_core_of = HOL }
+					add_claim_by = FROM
+				}
+				every_state = {
+					limit = {
+						is_owned_by = HOL
+						is_fully_controlled_by = ROOT
+					}
+					FROM = { set_state_controller = PREV }
+				}
+			}
+			if = {
+				limit = {
+					any_state = {
+						is_core_of = HOL
+						is_owned_by = ROOT
+					}
+				}
+				every_owned_state = {
+					limit = {
+						is_core_of = HOL
+					}
+					FROM = { transfer_state = PREV }
+				}
+			}
+		}
+		if = {
+			limit = {
+				FROM = {
+					owns_state = 34
+					owns_state = 1061
+					owns_state = 973
+				}
+			}
+			if = {
+				limit = {
+					tag = GER
+					OR = {
+						controls_state = 1037
+						owns_state = 1037
+					}
+					OR = {
+						controls_state = 1038
+						owns_state = 1038
+					}
+					OR = {
+						controls_state = 29
+						owns_state = 29
+					}
+					OR = {
+						controls_state = 1016
+						owns_state = 1016
+					}
+					OR = {
+						controls_state = 18
+						owns_state = 18
+					}
+					OR = {
+						controls_state = 1062
+						owns_state = 1062
+					}
+					OR = {
+						controls_state = 27
+						owns_state = 27
+					}
+					OR = {
+						controls_state = 17
+						owns_state = 17
+					}
+				}
+				every_owned_state = {
+					limit = {
+						OR = {
+							state = 1037
+							state = 1038
+							state = 29
+							state = 1016
+							state = 18
+							state = 1062
+							state = 27
+							state = 17
+						}
+					}
+					FROM = { transfer_state = PREV }
+				}
+				every_state = {
+					limit = {
+						is_controlled_by = ROOT
+						OR = {
+							state = 1037
+							state = 1038
+							state = 29
+							state = 1016
+							state = 18
+							state = 1062
+							state = 27
+							state = 17
+						}
+					}
+					FROM = { set_state_controller = PREV }
+				}
+			}
+			if = {
+				limit = {
+					tag = event_target:NW_france_scope
+					OR = {
+						owns_state = 1037
+						owns_state = 1038
+						owns_state = 29
+					}
+				}
+				every_owned_state = {
+					limit = {
+						OR = {
+							state = 1037
+							state = 1038
+							state = 29
+						}
+					}
+					FROM = { set_state_controller = PREV }
+				}
+			}
+			if = {
+				limit = {
+					8 = {
+						owner = {
+							OR = {
+								NOT = { is_in_faction_with = ROOT }
+								has_war_with = ROOT
+							}
+						}
+					}
+				}
+				FROM = { add_state_claim = 8 }
+			}
+			if = {
+				limit = { owns_state = 8 }
+				FROM = { transfer_state = 8 }
+			}
+			if = {
+				limit = {
+					country_exists = LUX
+					LUX = {
+						is_subject = no
+						is_in_faction_with = ROOT
+					}
+				}
+				LUX = { country_event = { id = NWbelgium.119 } }
+			}
 		}
 	}
 	
@@ -1848,10 +1998,11 @@ country_event = {
 		ai_chance = {
 			factor = 10
 		}
+		FROM = { country_event = { id = NWbelgium.120 } }
 	}
 }
 
-#Становление субъектом Бургундии // HOL
+#Становление субъектом Бургундии // HOL / LUX
 country_event = {
 	id = NWbelgium.119
 	title = NWbelgium.119.t
@@ -1859,7 +2010,7 @@ country_event = {
 	picture = GFX_report_event_generic_rally_3
 	is_triggered_only = yes
 	
-	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWbelgium.117" }
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWbelgium.119" }
 	
 	option = {
 		name = NWbelgium.119.a
@@ -1872,6 +2023,7 @@ country_event = {
 				autonomy_state = autonomy_satellite
 			}
 		}
+		add_ideas = BEL_col_subject_burgundy
 	}
 	
 	option = {
@@ -1882,6 +2034,73 @@ country_event = {
 	}
 }
 
+#Отказ в создании Бургундии // BEL
+country_event = {
+	id = NWbelgium.120
+	title = NWbelgium.120.t
+	desc = NWbelgium.120.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWbelgium.120" }
+	
+	option = {
+		name = NWbelgium.120.a
+		every_state = {
+			limit = {
+				OR = {
+					is_core_of = HOL
+					state = 1037
+					state = 1038
+					state = 29
+					state = 1016
+					state = 18
+					state = 1062
+					state = 27
+					state = 7
+					state = 8
+				}
+			}
+			add_claim_by = ROOT
+		}
+	}
+}
+
+#Бельгия желает присоединить Нидерланды // BEL OVERLORD
+country_event = {
+	id = NWbelgium.121
+	title = NWbelgium.121.t
+	desc = NWbelgium.121.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWbelgium.121" }
+	
+	option = {
+		name = NWbelgium.121.a
+		ai_chance = {
+			factor = 90
+		}
+		every_owned_state = {
+			limit = { is_core_of = HOL }
+			FROM = { transfer_state = PREV }
+		}
+		every_state = {
+			limit = {
+				is_core_of = HOL
+				is_controlled_by = ROOT
+			}
+			FROM = { set_state_controller = PREV }
+		}
+	}
+	
+	option = {
+		name = NWbelgium.121.b
+		ai_chance = {
+			factor = 10
+		}
+	}
+}
 
 
 
