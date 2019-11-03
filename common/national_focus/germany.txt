@@ -4581,12 +4581,33 @@ focus_tree = {
 		icon = GFX_goal_generic_major_alliance
 		prerequisite = { focus = GER_italy_ally }
 		available = {
-			SPR = { has_civil_war = no }
-			any_other_country = {
-				original_tag = SPR
-				has_government = fascism
-				NOT = { has_war_with = GER }
-				NOT = { is_in_faction_with = GER }
+			if = {
+				limit = { country_exists = SPA }
+				SPA = {
+					OR = {
+						has_government = fascism
+						has_government = monarchy
+						has_government = neutrality
+					}
+					NOT = {
+						has_war_with = SPR
+						has_war_with = ROOT
+						is_in_faction_with = ROOT
+					}
+				}
+			}
+			else = {
+				SPR = {
+					OR = {
+						has_government = fascism
+						has_government = monarchy
+					}
+					NOT = {
+						has_war_with = SPA
+						has_war_with = ROOT
+						is_in_faction_with = ROOT
+					}
+				}
 			}
 			event_target:NW_france_scope = {
 				OR = {
@@ -4626,20 +4647,50 @@ focus_tree = {
 		completion_reward = {
 			if = {
 				limit = {
-					OR = { 
-						SPR = { NOT = { has_government = fascism } }
-						NOT = { country_exists = SPR }
+					OR = {
+						SPR = {
+							exists = yes
+							NOT = {
+								has_government = fascism
+								has_government = monarchy
+							}
+						}
+						SPA = {
+							exists = yes
+							NOT = {
+								has_government = fascism
+								has_government = monarchy
+								has_government = neutrality
+							}
+						}
+						NOT = {
+							country_exists = SPR
+							country_exists = SPA
+						}
 					}
 				}
 				custom_effect_tooltip = GER_nationalist_spain_ally_tt
 			}
-			random_other_country = {
-				limit = {
-					original_tag = SPR
-					has_government = fascism
+			if = {
+				limit = { country_exists = SPA }
+				SPA = {
+					remove_ideas = SPA_recovering_from_civil_war
+					add_opinion_modifier = { target = GER modifier = ger_spa_alliance_focus }
 				}
-				remove_ideas = SPA_recovering_from_civil_war
-				add_opinion_modifier = { target = GER modifier = ger_spa_alliance_focus }
+			}
+			else_if = {
+				limit = {
+					SPR = {
+						OR = {
+							has_government = fascism
+							has_government = monarchy
+						}
+					}
+				}
+				SPR = {
+					remove_ideas = SPA_recovering_from_civil_war
+					add_opinion_modifier = { target = GER modifier = ger_spa_alliance_focus }
+				}
 			}
 		}
 	}
