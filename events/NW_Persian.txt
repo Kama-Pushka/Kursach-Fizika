@@ -1310,6 +1310,7 @@ country_event = {
 				is_historical_focus_on = yes
 			}
 		}
+		set_country_flag = persian_intervention_abort_flag
 	}
 }
 
@@ -3904,6 +3905,80 @@ country_event = {
 			set_country_flag = PER_integration_south_azerbaijan_flag
 		}
 		custom_effect_tooltip = NWpersian_102_tt
+	}
+}
+
+#Германские/Британские/Вражеские советники в Иране // SOV
+country_event = {
+	id = NWpersian.103
+	title = {
+		text = NWpersian.103.t1
+		trigger = { PER = { has_completed_focus = PER_involvement_german_advisers } }
+	}
+	title = {
+		text = NWpersian.103.t2
+		trigger = { PER = { has_completed_focus = PER_involvement_british_advisers } }
+	}
+	title = {
+		text = NWpersian.103.t3
+		trigger = {
+			PER = {
+				NOT = {
+					has_completed_focus = PER_involvement_german_advisers
+					has_completed_focus = PER_involvement_british_advisers
+				}
+			}
+		}
+	}
+	desc = NWpersian.103.desc
+	picture = GFX_report_event_generic_rally_3
+	fire_only_once = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWpersian.103" }
+	
+	mean_time_to_happen = { days = 7 }
+	
+	trigger = {
+		tag = SOV
+		OR = {
+			has_war_with = GER
+			has_war_with = ENG
+		}
+		OR = {
+			PER = {
+				NOT = { has_war_with = SOV }
+				has_idea = PER_soviet_persian_treaty
+				OR = {
+					has_completed_focus = PER_involvement_german_advisers
+					has_completed_focus = PER_involvement_british_advisers
+					any_country = {
+						has_war_with = SOV
+						has_military_access_to = PREV
+					}
+				}
+			}
+		}
+		if = {
+			limit = { PER = { has_completed_focus = PER_involvement_german_advisers } }
+			has_war_with = GER
+			NOT = { has_war_with = ENG }
+		}
+		if = {
+			limit = { PER = { has_completed_focus = PER_involvement_british_advisers } }
+			OR = {
+				has_war_with = ENG
+				ENG = { has_country_flag = persian_intervention_abort_flag }
+			}
+			NOT = { has_war_with = GER }
+		}
+	}
+	
+	option = {
+		name = NWpersian.103.a
+		create_wargoal = {
+			type = puppet_wargoal_focus
+			target = PER
+		}
 	}
 }
 
