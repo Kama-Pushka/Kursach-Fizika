@@ -683,7 +683,7 @@ focus_tree = {
 		ai_will_do = {
 			factor = 5
 			modifier = {
-				factor = 0.1
+				factor = 0.01
 				is_historical_focus_on = yes
 			}
 		}
@@ -796,7 +796,7 @@ focus_tree = {
 		ai_will_do = {
 			factor = 5
 			modifier = {
-				factor = 0.1
+				factor = 0
 				is_historical_focus_on = yes
 			}
 		}
@@ -959,6 +959,8 @@ focus_tree = {
 		available = {
 			has_government = fascism
 			is_subject = no
+			country_exists = ROM
+			NOT = { is_in_faction_with = ROOT }
 		}
 		x = -1
 		y = 1
@@ -969,7 +971,7 @@ focus_tree = {
 		ai_will_do = {
 			factor = 5
 			modifier = {
-				factor = 0.1
+				factor = 0
 				is_historical_focus_on = yes
 			}
 			modifier = {
@@ -989,6 +991,10 @@ focus_tree = {
 					ROM = { has_war = yes }
 				}
 			}
+		}
+		
+		bypass = {
+			has_war_with = ROM
 		}
 
 		completion_reward = {
@@ -1895,14 +1901,26 @@ focus_tree = {
 		icon = GFX_goal_generic_major_war
 		prerequisite = { focus = BUL_triple_pact focus = BUL_ally_USSR }
 		available = {
-			OR = {
-				AND = {
-					GER = { has_war_with = ENG }
-					ROOT = { is_in_faction_with = GER }
-				}
-				AND = {
-					SOV = { has_war_with = ENG }
-					ROOT = { is_in_faction_with = SOV }
+			country_exists = ENG
+			NOT = { is_in_faction_with = ENG }
+			if = {
+				limit = { is_in_faction_with = GER }
+				GER = { has_war_with = ENG }
+			}
+			if = {
+				limit = { is_in_faction_with = SOV }
+				SOV = { has_war_with = ENG }
+				else = {
+					OR = {
+						AND = {
+							GER = { has_war_with = ENG }
+							ROOT = { is_in_faction_with = GER }
+						}
+						AND = {
+							SOV = { has_war_with = ENG }
+							ROOT = { is_in_faction_with = SOV }
+						}
+					}
 				}
 			}
 		}
@@ -1915,12 +1933,16 @@ focus_tree = {
 		ai_will_do = {
 			factor = 5
 		}
+		
+		bypass = {
+			has_war_with = ENG
+		}
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus BUL_attack_England"
 			create_wargoal = {
-			type = puppet_wargoal_focus
-			target = ENG
+				type = puppet_wargoal_focus
+				target = ENG
 			}
 		}
 	}
@@ -1930,6 +1952,7 @@ focus_tree = {
 		icon = GFX_focus_chi_british_cooperation
 		prerequisite = { focus = BUL_attack_England }
 		available = {
+			has_war_with = ENG
 			OR = {
 				AND = { 
 					GER = { surrender_progress > 0.2 }
