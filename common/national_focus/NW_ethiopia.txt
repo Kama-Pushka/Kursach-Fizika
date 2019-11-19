@@ -106,7 +106,7 @@ focus_tree = {
 			add_manpower = 50000
 			add_equipment_to_stockpile = {
 				type = infantry_equipment
-				amount = 1000
+				amount = 3000
 				producer = COG
 			}
 			hidden_effect = {
@@ -2862,6 +2862,20 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus ETH_liberation_of_liberian_tribes"
+			create_wargoal = {
+				type = annex_everything
+				target = LIB
+			}
+			add_ai_strategy = {
+				type = antagonize
+				id = "LIB"
+				value = 200
+			}
+			add_ai_strategy = {
+				type = conquer
+				id = "LIB"
+				value = 100
+			}
 			
 		}
 	}
@@ -2891,7 +2905,7 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus ETH_for_emperor"
-			
+			add_ideas = ETH_for_emperor_idea
 		}
 	}
 	
@@ -2920,7 +2934,7 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus ETH_ethiopian_militarism"
-			
+			add_ideas = ETH_ethiopian_militarism
 		}
 	}
 	
@@ -2942,13 +2956,39 @@ focus_tree = {
 			factor = 30
 		}
 		available = {
+			OR = {
+				event_target:NW_france_scope = { has_full_control_of_state = 543 }
+				MAD = {
+					has_full_control_of_state = 543
+					NOT = { has_war_with = ROOT }
+				}
+			}
+			NOT = { has_full_control_of_state = 945 }
 		}
 		bypass = {
+			OR = {
+				has_full_control_of_state = 543
+				543 = { owner = { has_war_with = ROOT } }
+			}
 		}
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus ETH_request_madagascar"
-			
+			if = {
+				limit = { country_exists = MAD }
+				annex_country = {
+					target = MAD
+					transfer_troops = yes
+				}
+				every_state = {
+					limit = { is_core_of = MAD }
+					add_core_of = ROOT
+				}
+			}
+			else = {
+				transfer_state = 543
+				add_state_core = 543
+			}
 		}
 	}
 	
@@ -2960,7 +3000,7 @@ focus_tree = {
 		y = 1
 		relative_position_id = ETH_new_world_tour
 		
-		cost = 10
+		cost = 7.2
 		
 		cancel_if_invalid = yes
 		continue_if_invalid = no
@@ -2976,7 +3016,7 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus ETH_solomons_wealth"
-			
+			add_timed_idea = { idea = ETH_solomons_wealth_idea days = 720 }
 		}
 	}
 	
@@ -2988,7 +3028,7 @@ focus_tree = {
 		y = 1
 		relative_position_id = ETH_solomons_wealth
 		
-		cost = 10
+		cost = 5
 		
 		cancel_if_invalid = yes
 		continue_if_invalid = no
@@ -3004,7 +3044,8 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus ETH_opening_of_educational_institutions"
-			
+			remove_ideas = ETH_destroyed_institute_of_education
+			add_timed_idea = { idea = ETH_building days = 60 }
 		}
 	}
 	
@@ -3016,7 +3057,7 @@ focus_tree = {
 		y = 1
 		relative_position_id = ETH_opening_of_educational_institutions
 		
-		cost = 10
+		cost = 7.2
 		
 		cancel_if_invalid = yes
 		continue_if_invalid = no
@@ -3032,7 +3073,15 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus ETH_expansion_of_institutions"
-			
+			if = {
+				limit = { has_idea = ETH_building }
+				modify_timed_idea = {
+					idea = ETH_building
+					days = 120
+				}
+			}
+			else = { add_timed_idea = { idea = ETH_building days = 120 } }
+			add_research_slot = 1
 		}
 	}
 	
@@ -3044,7 +3093,7 @@ focus_tree = {
 		y = 1
 		relative_position_id = ETH_expansion_of_institutions
 		
-		cost = 10
+		cost = 7.2
 		
 		cancel_if_invalid = yes
 		continue_if_invalid = no
@@ -3060,7 +3109,22 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus ETH_rebuilding_hospitals"
-			
+			if = {
+				limit = { has_idea = ETH_building }
+				modify_timed_idea = {
+					idea = ETH_building
+					days = 60
+				}
+			}
+			else = { add_timed_idea = { idea = ETH_building days = 60 } }
+			every_owned_state = {
+				limit = { is_core_of = ROOT }
+				add_building_construction = {
+					type = hospital
+					level = 1
+					instant_build = yes
+				}
+			}
 		}
 	}
 	
@@ -3072,7 +3136,7 @@ focus_tree = {
 		y = 1
 		relative_position_id = ETH_solomons_wealth
 		
-		cost = 10
+		cost = 5
 		
 		cancel_if_invalid = yes
 		continue_if_invalid = no
@@ -3082,13 +3146,17 @@ focus_tree = {
 			factor = 30
 		}
 		available = {
+			country_exists = RAJ
+			NOT = { has_war_with = RAJ }
 		}
 		bypass = {
 		}
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus ETH_indian_railway_workers"
-			
+			add_ideas = ETH_indian_railway_workers
+			effect_tooltip = { 271 = { add_manpower = 2000 } }
+			RAJ = { country_event = { id = NWethiopia.52 days = 2 } }
 		}
 	}
 	
@@ -3100,7 +3168,7 @@ focus_tree = {
 		y = 1
 		relative_position_id = ETH_indian_railway_workers
 		
-		cost = 10
+		cost = 7.2
 		
 		cancel_if_invalid = yes
 		continue_if_invalid = no
@@ -3116,7 +3184,22 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus ETH_construction_of_railways"
-			
+			if = {
+				limit = { has_idea = ETH_building }
+				modify_timed_idea = {
+					idea = ETH_building
+					days = 120
+				}
+			}
+			else = { add_timed_idea = { idea = ETH_building days = 120 } }
+			every_owned_state = {
+				limit = { is_core_of = ROOT }
+				add_building_construction = {
+					type = infrastructure
+					level = 1
+					instant_build = yes
+				}
+			}
 		}
 	}
 	
@@ -3128,7 +3211,7 @@ focus_tree = {
 		y = 1
 		relative_position_id = ETH_solomons_wealth
 		
-		cost = 10
+		cost = 5
 		
 		cancel_if_invalid = yes
 		continue_if_invalid = no
@@ -3144,7 +3227,18 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus ETH_land_clearing_for_plants"
-			
+			if = {
+				limit = { has_idea = ETH_building }
+				modify_timed_idea = {
+					idea = ETH_building
+					days = 60
+				}
+			}
+			else = { add_timed_idea = { idea = ETH_building days = 60 } }
+			every_owned_state = {
+				limit = { is_core_of = ROOT }
+				add_extra_state_shared_building_slots = 1
+			}
 		}
 	}
 	
@@ -3156,7 +3250,7 @@ focus_tree = {
 		y = 1
 		relative_position_id = ETH_land_clearing_for_plants
 		
-		cost = 10
+		cost = 7.2
 		
 		cancel_if_invalid = yes
 		continue_if_invalid = no
@@ -3172,7 +3266,27 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus ETH_branch_of_industrial_companies_england_and_switzerland"
-			
+			if = {
+				limit = { has_idea = ETH_building }
+				modify_timed_idea = {
+					idea = ETH_building
+					days = 180
+				}
+			}
+			else = { add_timed_idea = { idea = ETH_building days = 180 } }
+			every_owned_state = {
+				limit = {
+					OR = {
+						state = 271
+						state = 1051
+					}
+				}
+				add_building_construction = {
+					type = industrial_complex
+					level = 2
+					instant_build = yes
+				}
+			}
 		}
 	}
 	
@@ -3201,7 +3315,7 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus ETH_invitation_of_foreign_experts_to_posts_of_ministers"
-			
+			custom_effect_tooltip = ETH_invitation_of_foreign_experts_to_posts_of_ministers_tt
 		}
 	}
 	
