@@ -569,9 +569,7 @@ focus_tree = {
 		
 		select_effect = {
 			if = {
-				limit = {
-					NOT = { country_exists = event_target:NW_hhnbrg_scope }
-				}
+				limit = { NOT = { country_exists = event_target:NW_hhnbrg_scope } }
 				country_event = { id = NWhohenberg.1 days = 5 }
 			}
 		}
@@ -603,7 +601,7 @@ focus_tree = {
 		available_if_capitulated = no
 
 		ai_will_do = {
-			factor = 2
+			factor = 20
 			modifier = {
 				add = 500
 				has_global_flag = NW_HBBRG_AI_FASCIST
@@ -611,6 +609,14 @@ focus_tree = {
 			modifier = {
 				add = 500
 				has_country_flag = nobles_imposed_restrictions_on_otto
+			}
+			modifier = {
+				factor = 0.1
+				NOT = {
+					has_completed_focus = HBBRG_austrian
+					has_completed_focus = HBBRG_hungary
+					has_completed_focus = HBBRG_czechoslovakia
+				}
 			}
 			modifier = {
 				factor = 0
@@ -671,6 +677,20 @@ focus_tree = {
 				news_event = { hours = 6 id = trworldnews.43 }
 				load_all_traits = yes
 			}
+			add_ai_strategy = {
+				type = befriend
+				id = "GER"
+				value = -200
+			}
+			add_ai_strategy = {
+				type = alliance
+				id = "GER"
+				value = -500
+			}
+			if = {
+				limit = { is_in_faction_with = GER }
+				leave_faction = yes
+			}
 		}
 	}
 	
@@ -695,9 +715,12 @@ focus_tree = {
 		available = {
 			is_subject = no
 			is_in_faction = no
-			OR = {
-				NOT = { has_war_with = event_target:NW_hhnbrg_scope }
-				event_target:NW_hhnbrg_scope = { has_capitulated = yes }
+			if = {
+				limit = { country_exists = event_target:NW_hhnbrg_scope }
+				OR = {
+					NOT = { has_war_with = event_target:NW_hhnbrg_scope }
+					event_target:NW_hhnbrg_scope = { has_capitulated = yes }
+				}
 			}
 		}
 		bypass = {
@@ -761,9 +784,13 @@ focus_tree = {
 			is_subject = no
 			NOT = { has_war_with = ITA }
 			country_exists = ITA
-			OR = {
-				NOT = { has_war_with = event_target:NW_hhnbrg_scope }
-				event_target:NW_hhnbrg_scope = { has_capitulated = yes }
+			ITA = { is_subject = no }
+			if = {
+				limit = { country_exists = event_target:NW_hhnbrg_scope }
+				OR = {
+					NOT = { has_war_with = event_target:NW_hhnbrg_scope }
+					event_target:NW_hhnbrg_scope = { has_capitulated = yes }
+				}
 			}
 		}
 		bypass = {
@@ -1010,9 +1037,12 @@ focus_tree = {
 			factor = 5
 		}
 		available = {
-			OR = {
-				NOT = { has_war_with = event_target:NW_hhnbrg_scope }
-				event_target:NW_hhnbrg_scope = { has_capitulated = yes }
+			if = {
+				limit = { country_exists = event_target:NW_hhnbrg_scope }
+				OR = {
+					NOT = { has_war_with = event_target:NW_hhnbrg_scope }
+					event_target:NW_hhnbrg_scope = { has_capitulated = yes }
+				}
 			}
 		}
 		bypass = {
@@ -2001,10 +2031,18 @@ focus_tree = {
 		available_if_capitulated = no
 
 		ai_will_do = {
-			factor = 1
+			factor = 10
 			modifier = {
 				add = 500
 				has_global_flag = NW_HBBRG_AI_AUSTRIA_HUNGARY
+			}
+			modifier = {
+				factor = 0.1
+				NOT = {
+					has_completed_focus = HBBRG_austrian
+					has_completed_focus = HBBRG_hungary
+					has_completed_focus = HBBRG_czechoslovakia
+				}
 			}
 			modifier = {
 				factor = 0
@@ -2425,9 +2463,12 @@ focus_tree = {
 		}
 		available = {
 			is_subject = no
-			OR = {
-				NOT = { has_war_with = event_target:NW_hhnbrg_scope }
-				event_target:NW_hhnbrg_scope = { has_capitulated = yes }
+			if = {
+				limit = { country_exists = event_target:NW_hhnbrg_scope }
+				OR = {
+					NOT = { has_war_with = event_target:NW_hhnbrg_scope }
+					event_target:NW_hhnbrg_scope = { has_capitulated = yes }
+				}
 			}
 		}
 		bypass = {
@@ -2917,12 +2958,20 @@ focus_tree = {
 		available_if_capitulated = no
 
 		ai_will_do = {
-			factor = 1
+			factor = 10
 			modifier = {
 				add = 500
 				OR = {
 					has_global_flag = NW_HBBRG_AI_DEMOCRATIC
 					has_global_flag = NW_HBBRG_AI_DEMOCRATIC_ALTERNATE
+				}
+			}
+			modifier = {
+				factor = 0.1
+				NOT = {
+					has_completed_focus = HBBRG_austrian
+					has_completed_focus = HBBRG_hungary
+					has_completed_focus = HBBRG_czechoslovakia
 				}
 			}
 			modifier = {
@@ -2981,6 +3030,21 @@ focus_tree = {
 					}
 					remove_claim_by = ROOT
 				}
+			}
+			if = {
+				limit = {
+					is_in_faction = yes
+					any_country = {
+						is_in_faction_with = ROOT
+						is_faction_leader = yes
+						NOT = {
+							has_government = democratic
+							has_government = neutrality
+							has_government = technocracy
+						}
+					}
+				}
+				leave_faction = yes
 			}
 		}
 	}

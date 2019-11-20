@@ -1532,6 +1532,10 @@ focus_tree = {
 
 		ai_will_do = {
 			factor = 30
+			modifier = {
+				factor = 0.1
+				has_global_flag = ETH_destruction_of_palace
+			}
 		}
 		available = {
 			has_global_flag = italo_ethiopian_war_over
@@ -1827,6 +1831,10 @@ focus_tree = {
 
 		ai_will_do = {
 			factor = 30
+			modifier = {
+				factor = 0.6
+				NOT = { has_completed_focus = ETH_invitation_of_foreign_experts_to_posts_of_ministers }
+			}
 		}
 		available = {
 			has_idea = ETH_arrogance_of_aristocrats_2
@@ -1842,7 +1850,27 @@ focus_tree = {
 				remove_idea = ETH_single_tax_scheme_idea
 				add_idea = ETH_progressive_taxation_idea
 			}
-			custom_effect_tooltip = ETH_progressive_taxation_tt
+			if = {
+				limit = { NOT = { has_completed_focus = ETH_invitation_of_foreign_experts_to_posts_of_ministers } }
+				custom_effect_tooltip = ETH_progressive_taxation_tt
+				hidden_effect = {
+					if = {
+						limit = { NOT = { has_government = neutrality } }
+						start_civil_war = {
+							ideology = neutrality
+							size = 0.3
+							states = { 1081 }
+						}
+					}
+					else = {
+						start_civil_war = {
+							ideology = democratic
+							size = 0.3
+							states = { 1081 }
+						}
+					}
+				}
+			}
 		}
 	}
 	
@@ -2130,6 +2158,11 @@ focus_tree = {
 
 		ai_will_do = {
 			factor = 30
+			modifier = {
+				factor = 3
+				has_country_flag = ETH_relocation_approved_flag
+				has_country_flag = ETH_marriage_approved_flag
+			}
 		}
 		available = {
 			has_country_flag = ETH_relocation_approved_flag
@@ -2178,6 +2211,11 @@ focus_tree = {
 
 		ai_will_do = {
 			factor = 30
+			modifier = {
+				factor = 3
+				has_country_flag = ETH_relocation_approved_flag
+				has_country_flag = ETH_marriage_approved_flag
+			}
 		}
 		available = {
 		}
@@ -2206,6 +2244,11 @@ focus_tree = {
 
 		ai_will_do = {
 			factor = 30
+			modifier = {
+				factor = 3
+				has_country_flag = ETH_relocation_approved_flag
+				has_country_flag = ETH_marriage_approved_flag
+			}
 		}
 		available = {
 			has_country_flag = ETH_relocation_approved_flag
@@ -2253,7 +2296,7 @@ focus_tree = {
 		available_if_capitulated = yes
 
 		ai_will_do = {
-			factor = 30
+			factor = 100
 		}
 		available = {
 			country_exists = JAP
@@ -2296,7 +2339,7 @@ focus_tree = {
 		available_if_capitulated = yes
 
 		ai_will_do = {
-			factor = 30
+			factor = 100
 		}
 		available = {
 		}
@@ -2503,6 +2546,7 @@ focus_tree = {
 		}
 		available = {
 			has_country_flag = ETH_world_tour_over_flag
+			date < 1940.6.10
 		}
 		bypass = {
 		}
@@ -2510,6 +2554,7 @@ focus_tree = {
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus ETH_collaboration_with_black_activists"
 			add_political_power = 50
+			custom_effect_tooltip = ETH_collaboration_with_black_activists_tt
 		}
 	}
 	
@@ -2620,7 +2665,8 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus ETH_land_for_west_indies"
-			694 = { owner = { country_event = { id = NWethiopia.49 days = 300 } } }
+			effect_tooltip = { 694 = { owner = { country_event = { id = NWethiopia.50 } } } }
+			hidden_effect = { 694 = { owner = { country_event = { id = NWethiopia.49 } } } }
 		}
 	}
 	
@@ -3332,25 +3378,45 @@ focus_tree = {
 		y = 0
 		relative_position_id = ETH_greatness_of_solomon
 		
-		cost = 10
+		cost = 5
 		
 		cancel_if_invalid = yes
 		continue_if_invalid = no
 		available_if_capitulated = yes
 
 		ai_will_do = {
-			factor = 30
+			factor = 300
 		}
 		available = {
-			always = no
 			has_global_flag = italo_ethiopian_war_over
+			has_global_flag = ETH_destruction_of_palace
 		}
 		bypass = {
 		}
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus ETH_end_of_solomons_dictatorship"
-			
+			set_temp_variable = { ETH_civil_war_size_var = 0.1 }
+			every_owned_state = {
+				limit = { has_state_flag = support_ETH }
+				add_to_temp_variable = { ETH_civil_war_size_var = 0.1 }
+			}
+			start_civil_war = {
+				ruling_party = anarchism
+				ideology = ROOT
+				states = { 271 }
+				size = ETH_civil_war_size_var
+			}
+			random_country = {
+				limit = {
+					original_tag = ROOT
+					NOT = { has_government = anarchism }
+				}
+				every_owned_state = {
+					limit = { NOT = { has_state_flag = support_ETH } }
+					PREV = { transfer_state = PREV }
+				}
+			}
 		}
 	}
 	
@@ -3362,7 +3428,7 @@ focus_tree = {
 		y = 1
 		relative_position_id = ETH_end_of_solomons_dictatorship
 		
-		cost = 10
+		cost = 5
 		
 		cancel_if_invalid = yes
 		continue_if_invalid = no
@@ -3378,7 +3444,11 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus ETH_anarchy_in_princedoms"
-			
+			add_political_power = 50
+			swap_ideas = {
+				remove_idea = ETH_not_destroyed_aristocrats
+				add_idea = ETH_not_destroyed_aristocrats_2
+			}
 		}
 	}
 	
@@ -3390,7 +3460,7 @@ focus_tree = {
 		y = 1
 		relative_position_id = ETH_anarchy_in_princedoms
 		
-		cost = 10
+		cost = 5
 		
 		cancel_if_invalid = yes
 		continue_if_invalid = no
@@ -3406,7 +3476,7 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus ETH_abolition_of_power_of_emperor"
-			
+			add_political_power = 75
 		}
 	}
 	
@@ -3435,7 +3505,10 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus ETH_rejection_of_orthodoxy"
-			
+			swap_ideas = {
+				remove_idea = ETH_privileges_of_church
+				add_idea = ETH_privileges_of_church_2
+			}
 		}
 	}
 	
@@ -3463,7 +3536,8 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus ETH_looting_of_churches"
-			
+			remove_ideas = ETH_privileges_of_church_2
+			add_timed_idea = { idea = ETH_orthodox_treasures days = 120 }
 		}
 	}
 	
@@ -3475,7 +3549,7 @@ focus_tree = {
 		y = 1
 		relative_position_id = ETH_looting_of_churches
 		
-		cost = 10
+		cost = 5
 		
 		cancel_if_invalid = yes
 		continue_if_invalid = no
@@ -3491,7 +3565,7 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus ETH_islamic_alternative_to_iyas"
-			
+			add_ideas = ETH_islamic
 		}
 	}
 	
@@ -3503,7 +3577,7 @@ focus_tree = {
 		y = 1
 		relative_position_id = ETH_islamic_alternative_to_iyas
 		
-		cost = 10
+		cost = 5
 		
 		cancel_if_invalid = yes
 		continue_if_invalid = no
@@ -3519,7 +3593,8 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus ETH_prohibition_of_alcohol_and_gambling"
-			
+			add_stability = 0.1
+			add_political_power = 50
 		}
 	}
 	
@@ -3547,7 +3622,11 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus ETH_quran_in_every_home"
-			
+			add_timed_idea = { idea = ETH_printing_of_scriptures days = 120 }
+			swap_ideas = {
+				remove_idea = ETH_islamic
+				add_idea = ETH_islamic_2
+			}
 		}
 	}
 	
@@ -3576,7 +3655,7 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus ETH_muslim_school"
-			
+			add_research_slot = 1
 		}
 	}
 	
@@ -3599,13 +3678,14 @@ focus_tree = {
 			factor = 30
 		}
 		available = {
+			has_completed_focus = ETH_law_on_peoples_privatization
 		}
 		bypass = {
 		}
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus ETH_gold_to_people"
-			
+			add_ideas = ETH_gold
 		}
 	}
 	
@@ -3637,7 +3717,70 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus ETH_new_factory"
-			
+			swap_ideas = {
+				remove_idea = ETH_gold
+				add_idea = ETH_gold_2
+			}
+			random_owned_controlled_state = {
+				limit = {
+					free_building_slots = {
+						building = industrial_complex
+						size > 1
+						include_locked = yes
+					}
+				}
+				add_extra_state_shared_building_slots = 2
+				add_building_construction = {
+					type = industrial_complex
+					level = 2
+					instant_build = yes
+				}
+			}
+			random_owned_controlled_state = {
+				limit = {
+					free_building_slots = {
+						building = industrial_complex
+						size > 1
+						include_locked = yes
+					}
+				}
+				add_extra_state_shared_building_slots = 2
+				add_building_construction = {
+					type = industrial_complex
+					level = 2
+					instant_build = yes
+				}
+			}
+			random_owned_controlled_state = {
+				limit = {
+					free_building_slots = {
+						building = industrial_complex
+						size > 1
+						include_locked = yes
+					}
+				}
+				add_extra_state_shared_building_slots = 2
+				add_building_construction = {
+					type = industrial_complex
+					level = 2
+					instant_build = yes
+				}
+			}
+			random_owned_controlled_state = {
+				limit = {
+					free_building_slots = {
+						building = industrial_complex
+						size > 1
+						include_locked = yes
+					}
+				}
+				add_extra_state_shared_building_slots = 2
+				add_building_construction = {
+					type = industrial_complex
+					level = 2
+					instant_build = yes
+				}
+			}
 		}
 	}
 	
@@ -3669,7 +3812,11 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus ETH_new_construction_trade_unions"
-			
+			add_ideas = ETH_construction_trade_unions
+			swap_ideas = {
+				remove_idea = ETH_gold
+				add_idea = ETH_gold_2
+			}
 		}
 	}
 	
@@ -3685,7 +3832,7 @@ focus_tree = {
 		y = 1
 		relative_position_id = ETH_gold_to_people
 		
-		cost = 10
+		cost = 5
 		
 		cancel_if_invalid = yes
 		continue_if_invalid = no
@@ -3701,7 +3848,7 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus ETH_gold_to_construction_teams"
-			
+			add_political_power = 100
 		}
 	}
 	
@@ -3737,7 +3884,49 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus ETH_new_military_factories"
-			
+			if = {
+				limit = { has_idea = ETH_gold }
+				swap_ideas = {
+					remove_idea = ETH_gold
+					add_idea = ETH_gold_2
+				}
+			}
+			else = {
+				swap_ideas = {
+					remove_idea = ETH_gold_2
+					add_idea = ETH_gold_3
+				}
+			}
+			random_owned_controlled_state = {
+				limit = {
+					free_building_slots = {
+						building = arms_factory
+						size > 2
+						include_locked = yes
+					}
+				}
+				add_extra_state_shared_building_slots = 3
+				add_building_construction = {
+					type = arms_factory
+					level = 3
+					instant_build = yes
+				}
+			}
+			random_owned_controlled_state = {
+				limit = {
+					free_building_slots = {
+						building = arms_factory
+						size > 1
+						include_locked = yes
+					}
+				}
+				add_extra_state_shared_building_slots = 2
+				add_building_construction = {
+					type = arms_factory
+					level = 2
+					instant_build = yes
+				}
+			}
 		}
 	}
 	
@@ -3773,7 +3962,20 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus ETH_modernization_of_production"
-			
+			add_ideas = ETH_factory_union_of_engineers
+			if = {
+				limit = { has_idea = ETH_gold }
+				swap_ideas = {
+					remove_idea = ETH_gold
+					add_idea = ETH_gold_2
+				}
+			}
+			else = {
+				swap_ideas = {
+					remove_idea = ETH_gold_2
+					add_idea = ETH_gold_3
+				}
+			}
 		}
 	}
 	
@@ -3793,7 +3995,7 @@ focus_tree = {
 		y = 1
 		relative_position_id = ETH_gold_to_construction_teams
 		
-		cost = 10
+		cost = 5
 		
 		cancel_if_invalid = yes
 		continue_if_invalid = no
@@ -3809,7 +4011,7 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus ETH_gold_to_trade_unions"
-			
+			add_political_power = 100
 		}
 	}
 	
@@ -3845,7 +4047,24 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus ETH_new_military_academy"
-			
+			add_ideas = ETH_new_military_academy_idea
+			if = {
+				limit = { has_idea = ETH_gold }
+				swap_ideas = {
+					remove_idea = ETH_gold
+					add_idea = ETH_gold_2
+				}
+			}
+			else_if = {
+				limit = { has_idea = ETH_gold_3 }
+				remove_ideas = ETH_gold_3
+			}
+			else = {
+				swap_ideas = {
+					remove_idea = ETH_gold_2
+					add_idea = ETH_gold_3
+				}
+			}
 		}
 	}
 	
@@ -3881,7 +4100,24 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus ETH_foreign_instructors_for_army"
-			
+			add_ideas = ETH_foreign_instructors_for_army_idea
+			if = {
+				limit = { has_idea = ETH_gold }
+				swap_ideas = {
+					remove_idea = ETH_gold
+					add_idea = ETH_gold_2
+				}
+			}
+			else_if = {
+				limit = { has_idea = ETH_gold_3 }
+				remove_ideas = ETH_gold_3
+			}
+			else = {
+				swap_ideas = {
+					remove_idea = ETH_gold_2
+					add_idea = ETH_gold_3
+				}
+			}
 		}
 	}
 	
@@ -3901,7 +4137,7 @@ focus_tree = {
 		y = 1
 		relative_position_id = ETH_gold_to_trade_unions
 		
-		cost = 10
+		cost = 5
 		
 		cancel_if_invalid = yes
 		continue_if_invalid = no
@@ -3917,7 +4153,7 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus ETH_gold_to_army"
-			
+			add_political_power = 100
 		}
 	}
 	
@@ -3949,7 +4185,7 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus ETH_restarting_education_system"
-			
+			remove_ideas = ETH_destroyed_institute_of_education
 		}
 	}
 	
@@ -3977,7 +4213,7 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus ETH_institutions_for_all"
-			
+			add_research_slot = 1
 		}
 	}
 	
@@ -3999,13 +4235,26 @@ focus_tree = {
 			factor = 30
 		}
 		available = {
+			1051 = {
+				owner = {
+					OR = {
+						tag = ROOT
+						is_subject_of = ROOT
+					}
+				}
+			}
 		}
 		bypass = {
 		}
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus ETH_expansion_of_black_gold_mining"
-			
+			1051 = {
+				add_resource = {
+					type = oil
+					amount = 18
+				}
+			}
 		}
 	}
 	
@@ -4346,7 +4595,10 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus ETH_anarchy_is_mother_of_order"
-			
+			swap_ideas = {
+				remove_idea = ETH_anarchy
+				add_idea = ETH_anarchy_2
+			}
 		}
 	}
 	
@@ -4358,7 +4610,7 @@ focus_tree = {
 		y = 1
 		relative_position_id = ETH_anarchy_is_mother_of_order
 		
-		cost = 10
+		cost = 5
 		
 		cancel_if_invalid = yes
 		continue_if_invalid = no
@@ -4374,7 +4626,7 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus ETH_arrest_of_prince_families"
-			
+			remove_ideas = ETH_not_destroyed_aristocrats
 		}
 	}
 	
@@ -4402,7 +4654,23 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus ETH_formation_of_primary_peoples_congresses"
+			swap_ideas = {
+				remove_idea = ETH_anarchy_2
+				add_idea = ETH_anarchy_3
+			}
 			
+			add_ideas = HHNBRG_national_peoples_congresses_zero_idea
+			unlock_decision_category_tooltip = HHNBRG_national_peoples_congresses_category
+			set_variable = { num_of_congresses_var = 0 }			#Число конгрессов
+			set_variable = { num_of_congresses_no_check_var = 0 }	#Число неучитываемых в цене конгрессов
+			set_variable = { custom_cost_minus = 0 }				#Для вычитания из цены
+			capital_scope = {
+				set_state_flag = has_peoples_congresses_flag
+				custom_effect_tooltip = ETH_formation_of_primary_peoples_congresses_tt
+			}
+			add_to_variable = { num_of_congresses_var = 1 }
+			add_to_variable = { num_of_congresses_no_check_var = 1 }
+			hidden_effect = { country_event = { id = NWhohenberg.899 } }
 		}
 	}
 	
@@ -4414,7 +4682,7 @@ focus_tree = {
 		y = 1
 		relative_position_id = ETH_anarchy_is_mother_of_order
 		
-		cost = 10
+		cost = 5
 		
 		cancel_if_invalid = yes
 		continue_if_invalid = no
@@ -4430,7 +4698,7 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus ETH_down_with_chains"
-			
+			remove_ideas = ETH_partial_slavery
 		}
 	}
 	
@@ -4458,7 +4726,7 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus ETH_law_on_peoples_privatization"
-			
+			remove_ideas = ETH_lack_of_economic_market
 		}
 	}
 	
@@ -4471,7 +4739,7 @@ focus_tree = {
 		y = 1
 		relative_position_id = ETH_formation_of_primary_peoples_congresses
 		
-		cost = 10
+		cost = 5
 		
 		cancel_if_invalid = yes
 		continue_if_invalid = no
@@ -4481,13 +4749,14 @@ focus_tree = {
 			factor = 30
 		}
 		available = {
+			has_idea = HHNBRG_national_peoples_congresses_absolute_idea
 		}
 		bypass = {
 		}
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus ETH_general_national_congress"
-			
+			remove_ideas = ETH_anarchy_3
 		}
 	}
 	
