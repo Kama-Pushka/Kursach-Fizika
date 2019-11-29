@@ -256,6 +256,18 @@ on_actions = {
 				limit = { has_start_date < 1936.01.02 }
 				FRA = { country_event = { id = NWfrance.51 months = 22 days = 16 hours = 13 } }
 			}
+			#Liberian oil
+			if = {
+				limit = {
+					has_dlc = "Man the Guns"
+				}
+				LIB = {
+					give_resource_rights = { receiver = USA state = 298 }
+					give_resource_rights = { receiver = USA state = 1076 }
+					give_resource_rights = { receiver = USA state = 1075 }
+					give_resource_rights = { receiver = USA state = 1072 }
+				}
+			}
 		}
 	}
 	
@@ -1280,7 +1292,28 @@ on_actions = {
 					add_timed_idea = { idea = PER_soviet_persian_treaty_2 days = 180 }
 				}
 			}
-		}
+			#Отсчет Белого мира для Американо-либерийской
+			if = {
+				limit = {
+					FROM = {
+						OR = {
+							tag = LIB
+							tag = USA
+						}
+					}
+					ROOT = {
+						OR = {
+							tag = LIB
+							tag = USA
+						}
+					}
+					USA = { has_country_flag = nw_liberia_27a_flag }
+				}
+				LIB = {
+					set_country_flag = { flag = LIB_usa_white_peace_timed_flag days = 120 }
+				}
+			}
+		} #FROM is war target
 	}
 	
 	# ROOT is capitulated country, FROM is winner
@@ -2302,6 +2335,13 @@ on_actions = {
 				}
 				country_event = { id = NWethiopia.101 hours = 6 }
 			}
+			#Боеспособность армии // Либерия
+			if = {
+				limit = {
+					original_tag = LIB
+				}
+				country_event = { id = nw_liberia.21 hours = 3 }
+			}
 		}
 		#ROOT is winner #FROM gets annexed - This will also fire on_annex
 	}
@@ -2325,9 +2365,14 @@ on_actions = {
 				}
 				FRF = { set_country_flag = FRF_demand_balearic_islands_flag }
 			}
-			#Голод // Нацдух ETH
+			#Голод // Нацдух ETH / LIB
 			if = {
-				limit = { has_idea = ETH_hunger }
+				limit = {
+					OR = {
+						has_idea = ETH_hunger
+						has_idea = LIB_hunger
+					}
+				}
 				if = {
 					limit = { NOT = { check_variable = { counter_days = 7 } } }
 					add_to_variable = { counter_days = 1 }
