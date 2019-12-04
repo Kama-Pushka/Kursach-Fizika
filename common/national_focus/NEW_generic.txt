@@ -910,8 +910,11 @@ focus_tree = {
 		prerequisite = { focus = generic_promotion_science }
 		prerequisite = { focus = generic_union_country }
 		prerequisite = { focus = generic_political_dominant }
-		mutually_exclusive = { focus = ideological_expansion }
-		x = -1
+		mutually_exclusive = {
+			focus = ideological_enthusiasm
+			focus = ideological_expansion
+		}
+		x = -2
 		y = 1
 		relative_position_id = generic_union_country
 
@@ -929,6 +932,46 @@ focus_tree = {
 				set_rule = { can_use_kamikaze_pilots = yes }
 			}
 			custom_effect_tooltip = kamikaze_focus_tooltip
+			unlock_decision_category_tooltip = generic_ideological_fanaticism_category
+		}
+	}
+	
+	focus = {
+		id = ideological_enthusiasm
+		icon = GFX_z_goal_ideological_enthusiasm
+		prerequisite = { focus = generic_promotion_science }
+		prerequisite = { focus = generic_union_country }
+		prerequisite = { focus = generic_political_dominant }
+		mutually_exclusive = {
+			focus = ideological_fanaticism
+			focus = ideological_expansion
+		}
+		x = 0
+		y = 1
+		relative_position_id = generic_union_country
+
+		cost = 10
+
+		available_if_capitulated = yes
+		
+		ai_will_do = {
+			factor = 4
+			modifier = {
+				factor = 0
+				is_historical_focus_on = yes
+			}
+			modifier = {
+				factor = 2
+				OR = {
+					has_government = communism
+					has_completed_focus = internationalism_focus
+				}
+			}
+		}
+
+		completion_reward = {
+			add_ideas = ideological_enthusiasm
+			unlock_decision_category_tooltip = generic_ideological_enthusiasm_category
 		}
 	}
 	
@@ -938,8 +981,11 @@ focus_tree = {
 		prerequisite = { focus = generic_promotion_science }
 		prerequisite = { focus = generic_union_country }
 		prerequisite = { focus = generic_political_dominant }
-		mutually_exclusive = { focus = ideological_fanaticism }
-		x = 1
+		mutually_exclusive = {
+			focus = ideological_fanaticism
+			focus = ideological_enthusiasm
+		}
+		x = 2
 		y = 1
 		relative_position_id = generic_union_country
 
@@ -1746,7 +1792,6 @@ focus_tree = {
 
 		completion_reward = {
 			add_ideas = concept_of_technate
-			unlock_decision_category_tooltip = generic_technocracy_category
 		}
 	}
 	
@@ -2446,7 +2491,10 @@ focus_tree = {
 		id = patriotism_fury
 		icon = GFX_z_national_liber
 		prerequisite = { focus = generic_war_departament focus = concept_of_technate focus = why_we_fight focus = imperial_ambition }
-		mutually_exclusive = { focus = patriotism_zeal }
+		mutually_exclusive = {
+			focus = patriotic_inspiration
+			focus = patriotism_zeal
+		}
 		x = 1
 		y = 1
 		relative_position_id = concept_of_technate
@@ -2464,6 +2512,48 @@ focus_tree = {
 				set_rule = { can_use_kamikaze_pilots = yes }
 			}
 			custom_effect_tooltip = kamikaze_focus_tooltip
+			unlock_decision_category_tooltip = generic_ideological_fanaticism_category
+		}
+	}
+	
+	focus = {
+		id = patriotic_inspiration
+		icon = GFX_z_goal_brain
+		prerequisite = { focus = generic_war_departament focus = concept_of_technate focus = why_we_fight focus = imperial_ambition }
+		mutually_exclusive = {
+			focus = patriotism_fury
+			focus = patriotism_zeal
+		}
+		x = 2
+		y = 0
+		relative_position_id = patriotism_fury
+
+		cost = 10
+
+		available_if_capitulated = yes
+		
+		ai_will_do = {
+			factor = 4
+			modifier = {
+				factor = 0
+				is_historical_focus_on = yes
+			}
+			modifier = {
+				factor = 3
+				OR = {
+					has_government = technocracy
+					has_completed_focus = concept_of_technate
+				}
+			}
+		}
+
+		completion_reward = {
+			add_ideas = patriotic_inspiration
+			if = {
+				limit = { focus_progress = { focus = technocracy_focus progress < 0.0 } }
+				unlock_decision_category_tooltip = generic_ideological_enthusiasm_category
+			}
+			else = { unlock_decision_category_tooltip = generic_technocracy_category }
 		}
 	}
 	
@@ -2471,8 +2561,11 @@ focus_tree = {
 		id = patriotism_zeal
 		icon = GFX_z_goal_generic_communists_soldiers2
 		prerequisite = { focus = generic_war_departament focus = concept_of_technate focus = why_we_fight focus = imperial_ambition }
-		mutually_exclusive = { focus = patriotism_fury }
-		x = 2
+		mutually_exclusive = {
+			focus = patriotism_fury
+			focus = patriotic_inspiration
+		}
+		x = 4
 		y = 0
 		relative_position_id = patriotism_fury
 		cost = 10
@@ -2488,7 +2581,7 @@ focus_tree = {
 				has_government = democratic
 			}
 			modifier = {
-				factor = 6
+				factor = 2
 				has_government = technocracy
 			}
 		}
@@ -2503,7 +2596,7 @@ focus_tree = {
 	}
 	
 	
-	## CENTRAL TREE ##
+	## CENTRAL BLOCK ##
 	
 	focus = {
 		id = generic_state_focus
@@ -2664,7 +2757,15 @@ focus_tree = {
 	focus = {
 		id = technology_sharing
 		icon = GFX_goal_generic_scientific_exchange
-		prerequisite = { focus = ideological_fanaticism focus = ideological_expansion focus = extra_tech_slot focus = patriotism_fury focus = patriotism_zeal }
+		prerequisite = {
+			focus = ideological_fanaticism
+			focus = ideological_enthusiasm
+			focus = ideological_expansion
+			focus = extra_tech_slot
+			focus = patriotism_fury
+			focus = patriotic_inspiration
+			focus = patriotism_zeal
+		}
 		available = {
 			has_war = yes
 			is_in_faction = yes
