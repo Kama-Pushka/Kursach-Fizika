@@ -7,6 +7,8 @@ on_actions = {
 			#	set_global_flag = nw_configurator_open
 			#}
 			
+			set_variable = { counter_days = 0 }
+			
 			#Delete SAI
 			CHL = { transfer_state = 933 }
 			933 = { remove_core_of = SAI }
@@ -2392,6 +2394,46 @@ on_actions = {
 	
 	on_daily = {
 		effect = {
+			#Таймер недели
+			if = {
+				limit = { NOT = { check_variable = { counter_days = 7 } } }
+				add_to_variable = { counter_days = 1 }
+			}
+			if = {
+				limit = { check_variable = { counter_days = 7 } }
+				set_variable = { counter_days = 0 }
+				log = "[GetDateText]: [This.GetName] ([This.GetTag]): Новая неделя"
+				#Голод // Нацдух ETH / LIB
+				if = {
+					limit = {
+						OR = {
+							has_idea = ETH_hunger
+							has_idea = LIB_hunger
+						}
+					}
+					every_owned_state = {
+						limit = { is_core_of = ROOT }
+						add_manpower = -5000
+					}
+					log = "[GetDateText]: [This.GetName] ([This.GetTag]): минус 5000 менпавера"
+				}
+				#Нац.дух на слонов
+				if = {
+					limit = {
+						OR = {
+							has_idea = ETH_elephants
+							has_idea = ETH_elephants_5
+						}
+					}
+					set_temp_variable = { total_elephant_equipment = ETH_elephants_trait_var }
+					multiply_temp_variable = { total_elephant_equipment = num_owned_states }
+					add_equipment_to_stockpile = {
+						type = elephant_equipment
+						amount = total_elephant_equipment
+					}
+					log = "[GetDateText]: [This.GetName] ([This.GetTag]): плус [?total_elephant_equipment] слонов"
+				}
+			}
 			#Армянские спецслужбы // Решения PER
 			if = {
 				limit = { has_idea = PER_armenian_special_services }
@@ -2407,26 +2449,6 @@ on_actions = {
 					}
 				}
 				FRF = { set_country_flag = FRF_demand_balearic_islands_flag }
-			}
-			#Голод // Нацдух ETH / LIB
-			if = {
-				limit = {
-					OR = {
-						has_idea = ETH_hunger
-						has_idea = LIB_hunger
-					}
-				}
-				if = {
-					limit = { NOT = { check_variable = { counter_days = 7 } } }
-					add_to_variable = { counter_days = 1 }
-					else = {
-						set_variable = { counter_days = 0 }
-						every_owned_state = {
-							limit = { is_core_of = ROOT }
-							add_manpower = -5000
-						}
-					}
-				}
 			}
 		}
 	}
