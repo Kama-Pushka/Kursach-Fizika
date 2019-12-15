@@ -6,4 +6,4 @@ tags={
 	"Events"
 }
 picture="nw.jpg"
-name="New Ways alpha 0.2.1"
+name="New Ways alpha 0.2.X dev build"
