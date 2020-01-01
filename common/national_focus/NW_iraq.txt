@@ -37,7 +37,17 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus IRQ_suppress_shiite_uprising"
-			
+			remove_ideas = {
+				IRQ_shia_uprisings
+				IRQ_kurdish_uprisings
+			}
+			add_ideas = IRQ_gain_influence_of_bakr_sidqi
+			hidden_effect = {
+				if = {
+					limit = { has_country_flag = IRQ_bakr_sidqi_flag }
+					country_event = { id = NWiraq.4 months = 1 }
+				}
+			}
 		}
 	}
 	
@@ -65,7 +75,7 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus IRQ_patronage_of_sheikh"
-			
+			add_political_power = 100
 		}
 	}
 	
@@ -87,13 +97,25 @@ focus_tree = {
 			factor = 10
 		}
 		available = {
+			has_country_leader = {
+				name = "Bakr Sidqi"
+				ruling_only = yes
+			}
 		}
 		bypass = {
+		}
+		
+		select_effect = {
+			country_event = { id = NWiraq.5 days = 20 }
 		}
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus IRQ_dictatorship_of_bakr_sidqi"
-			
+			add_political_power = 100
+			if = {
+				limit = { has_country_flag = IRQ_armed_uprising_in_baghdad_flag }
+				country_event = { id = NWiraq.6 }
+			}
 		}
 	}
 	
@@ -124,13 +146,14 @@ focus_tree = {
 			factor = 10
 		}
 		available = {
+			has_country_flag = IRQ_start_democratization_flag
 		}
 		bypass = {
 		}
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus IRQ_start_democratization"
-			
+			add_timed_idea = { idea = IRQ_start_democratization_idea days = 365 }
 		}
 	}
 	
@@ -152,13 +175,40 @@ focus_tree = {
 			factor = 10
 		}
 		available = {
+			any_other_country = {
+				capital_scope = { is_on_continent = europe }
+				NOT = { has_war_with = ROOT }
+				OR = {
+					has_government = democratic
+					democratic > 0.25
+				}
+			}
 		}
 		bypass = {
 		}
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus IRQ_economic_cooperation_with_european_powers"
-			
+			every_other_country = {
+				limit = { has_government = democratic }
+				add_opinion_modifier = { target = ROOT modifier = IRQ_cooperation_with_democratic }
+				ROOT = { add_opinion_modifier = { target = PREV modifier = IRQ_cooperation_with_democratic } }
+			}
+			random_owned_controlled_state = {
+				limit = { 
+					free_building_slots = {
+						building = industrial_complex
+						size > 1
+						include_locked = yes
+					}
+				}
+				add_extra_state_shared_building_slots = 2
+				add_building_construction = {
+					type = industrial_complex
+					level = 2
+					instant_build = yes
+				}
+			}
 		}
 	}
 	
@@ -180,13 +230,35 @@ focus_tree = {
 			factor = 10
 		}
 		available = {
+			any_other_country = {
+				capital_scope = { is_on_continent = europe }
+				NOT = { has_war_with = ROOT }
+				OR = {
+					has_government = democratic
+					democratic > 0.5
+				}
+			}
 		}
 		bypass = {
 		}
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus IRQ_attract_european_capitalists"
-			
+			random_owned_controlled_state = {
+				limit = { 
+					free_building_slots = {
+						building = industrial_complex
+						size > 1
+						include_locked = yes
+					}
+				}
+				add_extra_state_shared_building_slots = 2
+				add_building_construction = {
+					type = industrial_complex
+					level = 2
+					instant_build = yes
+				}
+			}
 		}
 	}
 	
@@ -208,13 +280,35 @@ focus_tree = {
 			factor = 10
 		}
 		available = {
+			country_exists = USA
+			NOT = { has_war_with = USA }
 		}
 		bypass = {
 		}
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus IRQ_trade_agreement_with_usa"
-			
+			add_opinion_modifier = { target = USA modifier = IRQ_trade_agreement_with_usa_1 }
+			add_opinion_modifier = { target = USA modifier = IRQ_trade_agreement_with_usa_2 }
+			USA = {
+				add_opinion_modifier = { target = ROOT modifier = IRQ_trade_agreement_with_usa_1 }
+				add_opinion_modifier = { target = ROOT modifier = IRQ_trade_agreement_with_usa_2 }
+			}
+			random_owned_controlled_state = {
+				limit = { 
+					free_building_slots = {
+						building = arms_factory
+						size > 1
+						include_locked = yes
+					}
+				}
+				add_extra_state_shared_building_slots = 2
+				add_building_construction = {
+					type = arms_factory
+					level = 2
+					instant_build = yes
+				}
+			}
 		}
 	}
 	
@@ -242,7 +336,8 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus IRQ_agreement_with_shiites"
-			
+			add_stability = 0.1
+			add_ideas = IRQ_agreement_with_shiites
 		}
 	}
 	
@@ -270,7 +365,36 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus IRQ_liberalisation_of_national_brotherhood_party"
-			
+			add_popularity = {
+				ideology = democratic
+				popularity = 0.1
+			}
+			set_politics = {
+				ruling_party = democratic
+				elections_allowed = yes
+			}
+			create_country_leader = {
+				name = "Bakr Sidqi"
+				desc = "POLITICS_BAKR_SIDQI_DESC"
+				picture = "gfx/leaders/IRQ/Portrait_Bakr_Sidqi.dds"
+				expire = "1965.1.1"
+				ideology = conservatism
+				traits = {
+					influential_general
+					patron_of_minorities
+				}
+			}
+			set_party_name = { ideology = democratic long_name = IRQ_neutrality_party_long name = IRQ_neutrality_party }
+			create_country_leader = {
+				name = "Nuri al-Said"
+				desc = "POLITICS_NURI_AL_SAID_DESC"
+				picture = "gfx/leaders/SYR/Portrait_Arabia_Generic_2.dds"
+				expire = "1965.1.1"
+				ideology = despotism
+				traits = {
+				}
+			}
+			set_party_name = { ideology = neutrality long_name = IRQ_pro_british_puppets name = IRQ_pro_british_puppets }
 		}
 	}
 	
@@ -298,7 +422,8 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus IRQ_legalize_banned_party"
-			
+			add_political_power = 100
+			add_ideas = IRQ_legalize_banned_party_idea
 		}
 	}
 	
@@ -327,7 +452,8 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus IRQ_ulems_in_army"
-			
+			add_war_support = 0.15
+			add_ideas = IRQ_ulems_in_army
 		}
 	}
 	
@@ -346,16 +472,29 @@ focus_tree = {
 		available_if_capitulated = yes
 
 		ai_will_do = {
-			factor = 10
+			factor = 50
 		}
 		available = {
 		}
 		bypass = {
 		}
+		
+		select_effect = {
+			if = {
+				limit = { NOT = { has_idea = IRQ_anglo_iraqi_treaty } }
+				complete_national_focus = IRQ_weakening_of_british_grip
+			}
+		}
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus IRQ_weakening_of_british_grip"
-			
+			remove_ideas = IRQ_anglo_iraqi_treaty
+			custom_effect_tooltip = can_join_factions_tt
+			hidden_effect = { set_rule = { can_join_factions = yes } }
+			if = {
+				limit = { NOT = { has_idea = IRQ_anglo_iraqi_treaty } }
+				custom_effect_tooltip = IRQ_weakening_of_british_grip_tt
+			}
 		}
 	}
 	
@@ -384,7 +523,8 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus IRQ_arab_democracy"
-			
+			set_rule = { can_create_factions = yes }
+			create_faction = IRQ_arab_democracy
 		}
 	}
 	
@@ -408,11 +548,35 @@ focus_tree = {
 		available = {
 		}
 		bypass = {
+			OR = {
+				NOT = { country_exists = SAU }
+				has_war_with = SAU
+				is_in_faction_with = SAU
+				SAU = { is_subject_of = ROOT }
+			}
 		}
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus IRQ_protect_yourself_from_attacks"
-			
+			custom_effect_tooltip = ENG_no_further_appeasement_tt
+			hidden_effect = {
+				set_rule = { can_declare_war_on_same_ideology = yes }
+				set_rule = { can_puppet = yes }
+			}
+			create_wargoal = {
+				type = puppet_wargoal_focus
+				target = SAU
+			}
+			add_ai_strategy = {
+				type = antagonize
+				id = "SAU"
+				value = 200
+			}
+			add_ai_strategy = {
+				type = conquer
+				id = "SAU"
+				value = 200
+			}
 		}
 	}
 	
@@ -436,11 +600,55 @@ focus_tree = {
 		available = {
 		}
 		bypass = {
+			OR = {
+				has_war_with = PER
+				is_in_faction_with = PER
+				PER = { is_subject_of = ROOT }
+			}
 		}
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus IRQ_intervention_in_iran"
-			
+			if = {
+				limit = { country_exists = PER }
+				create_wargoal = {
+					type = puppet_wargoal_focus
+					target = PER
+				}
+				add_ai_strategy = {
+					type = antagonize
+					id = "PER"
+					value = 200
+				}
+				add_ai_strategy = {
+					type = conquer
+					id = "PER"
+					value = 200
+				}
+			}
+			random_other_country = {
+				limit = {
+					original_tag = PER
+					NOT = { tag = PER }
+					country_exists = THIS
+				}
+				ROOT = {
+					create_wargoal = {
+						type = puppet_wargoal_focus
+						target = PREV
+					}
+					add_ai_strategy = {
+						type = antagonize
+						id = PREV
+						value = 200
+					}
+					add_ai_strategy = {
+						type = conquer
+						id = PREV
+						value = 200
+					}
+				}
+			}
 		}
 	}
 	
@@ -463,13 +671,16 @@ focus_tree = {
 			factor = 10
 		}
 		available = {
+			country_exists = ENG
+			NOT = { has_war_with = ENG }
 		}
 		bypass = {
+			is_in_faction_with = ENG
 		}
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus IRQ_equal_union_with_britain"
-			
+			ENG = { country_event = { id = generic.2 } }
 		}
 	}
 	
@@ -497,7 +708,7 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus IRQ_joint_scientific_research"
-			
+			add_to_tech_sharing_group = commonwealth_research
 		}
 	}
 	
@@ -935,6 +1146,7 @@ focus_tree = {
 			factor = 10
 		}
 		available = {
+			has_country_flag = IRQ_repression_of_left_flag
 		}
 		bypass = {
 		}

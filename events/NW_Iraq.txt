@@ -1,0 +1,598 @@
+﻿###########################
+# Ветка Ирака
+###########################
+
+add_namespace = NWiraq
+
+#Последствия Англо-иракского договора // IRQ
+country_event = {
+	id = NWiraq.1
+	title = NWiraq.1.t
+	desc = NWiraq.1.desc
+	picture = GFX_report_event_generic_rally_3
+	fire_only_once = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWiraq.1" }
+	
+	mean_time_to_happen = { days = 5 }
+	
+	trigger = {
+		tag = IRQ
+		has_idea = IRQ_anglo_iraqi_treaty
+		NOT = { gives_military_access_to = ENG }
+	}
+	
+	option = {
+		name = NWiraq.1.a
+		ai_chance = {
+			factor = 0
+		}
+		ENG = { country_event = { id = NWiraq.2 days = 1 } }
+	}
+	
+	option = {
+		name = NWiraq.1.b
+		ai_chance = {
+			factor = 100
+		}
+		give_military_access = ENG
+	}
+}
+
+#Ирак рушит наши планы // ENG
+country_event = {
+	id = NWiraq.2
+	title = NWiraq.2.t
+	desc = NWiraq.2.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWiraq.2" }
+	
+	option = {
+		name = NWiraq.2.a
+		create_wargoal = {
+			type = puppet_wargoal_focus
+			target = FROM
+		}
+	}
+}
+
+#Бакр Сидки устраивает государственный переворот пульсар // IRQ
+country_event = {
+	id = NWiraq.3
+	is_triggered_only = yes
+	hidden = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWiraq.3" }
+	
+	option = {
+		name = NWiraq.3.a
+		if = {
+			limit = { has_completed_focus = IRQ_suppress_shiite_uprising }
+			country_event = { id = NWiraq.4 }
+		}
+		else = { set_country_flag = IRQ_bakr_sidqi_flag }
+	}
+}
+
+#Бакр Сидки устраивает государственный переворот // IRQ
+country_event = {
+	id = NWiraq.4
+	title = NWiraq.4.t
+	desc = NWiraq.4.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWiraq.4" }
+	
+	option = {
+		name = NWiraq.4.a
+		create_country_leader = {
+			name = "Bakr Sidqi"
+			desc = "POLITICS_BAKR_SIDQI_DESC"
+			picture = "gfx/leaders/IRQ/Portrait_Bakr_Sidqi.dds"
+			expire = "1965.1.1"
+			ideology = despotism
+			traits = {
+				influential_general
+				patron_of_minorities
+			}
+		}
+		remove_ideas = IRQ_gain_influence_of_bakr_sidqi
+		effect_tooltip = {
+			unlock_national_focus = IRQ_dictatorship_of_bakr_sidqi
+		}
+	}
+}
+
+#Левые митинги // IRQ
+country_event = {
+	id = NWiraq.5
+	title = NWiraq.5.t
+	desc = NWiraq.5.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWiraq.5" }
+	
+	option = {
+		name = NWiraq.5.a
+		ai_chance = {
+			factor = 50
+			modifier = {
+				factor = 0
+				is_historical_focus_on = yes
+			}
+		}
+		add_timed_idea = { idea = IRQ_concessions_to_left days = 365 }
+		effect_tooltip = { unlock_national_focus = IRQ_start_democratization }
+		set_country_flag = IRQ_start_democratization_flag
+	}
+	
+	option = {
+		name = NWiraq.5.b
+		ai_chance = {
+			factor = 50
+		}
+		add_political_power = -200
+		add_stability = -0.05
+		effect_tooltip = { unlock_national_focus = IRQ_repression_of_left }
+		set_country_flag = IRQ_repression_of_left_flag
+	}
+	
+	option = {
+		name = NWiraq.5.c
+		ai_chance = {
+			factor = 50
+			modifier = {
+				factor = 0
+				is_historical_focus_on = yes
+			}
+		}
+		add_timed_idea = { idea = IRQ_meeting_left days = 50 }
+		set_country_flag = IRQ_armed_uprising_in_baghdad_flag
+	}
+}
+
+#Вооружённое восстание в Багдаде // IRQ
+country_event = {
+	id = NWiraq.6
+	title = NWiraq.6.t
+	desc = NWiraq.6.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWiraq.6" }
+	
+	option = {
+		name = NWiraq.6.a
+		ai_chance = {
+			factor = 50
+		}
+		start_civil_war = {
+			ideology = communism
+			size = 0.5
+			states = { 291 }
+		}
+		hidden_effect = {
+			set_rule = { can_join_factions = no }
+			random_other_country = {
+				limit = {
+					original_tag = ROOT
+				}
+				set_rule = { can_join_factions = no }
+				load_focus_tree = { tree = nw_iraq_focus keep_completed = yes }
+				unlock_national_focus = IRQ_suppress_shiite_uprising
+				complete_national_focus = IRQ_patronage_of_sheikh
+				unlock_national_focus = IRQ_dictatorship_of_bakr_sidqi
+				complete_national_focus = IRQ_rebellion_of_communist_party
+			}
+		}
+		effect_tooltip = { unlock_national_focus = IRQ_repression_of_left }
+		set_country_flag = IRQ_repression_of_left_flag
+	}
+	
+	option = {
+		name = NWiraq.6.b
+		ai_chance = {
+			factor = 50
+		}
+		add_popularity = {
+			ideology = communism
+			popularity = 0.15
+		}
+		effect_tooltip = { unlock_national_focus = IRQ_rebellion_of_communist_party }
+		set_country_flag = IRQ_rebellion_of_communist_party_flag
+		if = {
+			limit = { is_subject = yes }
+			if = {
+				limit = { OVERLORD = { tag = ENG } }
+				country_event = { id = NWiraq.7 }
+			}
+			OVERLORD = {
+				set_autonomy = {
+					target = ROOT
+					autonomy_state = autonomy_free
+				}
+			}
+		}
+		start_civil_war = {
+			ruling_party = communism
+			ideology = neutrality
+			size = 0.5
+			states = { 676 962 675 }
+		}
+	}
+}
+
+#Вмешательство в иракскую гражданскую войну // ENG
+country_event = {
+	id = NWiraq.7
+	title = NWiraq.7.t
+	desc = NWiraq.7.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWiraq.7" }
+	
+	option = {
+		name = NWiraq.7.a
+		ai_chance = {
+			factor = 50
+			modifier = {
+				factor = 0
+				has_war = yes
+			}
+		}
+		random_other_country = {
+			limit = {
+				original_tag = IRQ
+				has_government = neutrality
+			}
+			ROOT = {
+				set_autonomy = {
+					target = PREV
+					autonomy_state = autonomy_dominion
+				}
+			}
+			add_to_war = {
+				targeted_alliance = ROOT
+				enemy = IRQ
+			}
+		}
+	}
+	
+	option = {
+		name = NWiraq.7.b
+		ai_chance = {
+			factor = 50
+		}
+		add_opinion_modifier = { target = FROM modifier = IRQ_not_interfere_in_cw }
+		FROM = { add_opinion_modifier = { target = ROOT modifier = IRQ_not_interfere_in_cw } }
+		add_opinion_modifier = { target = IRQ modifier = IRQ_not_interfere_in_cw_2 }
+		IRQ = { add_opinion_modifier = { target = ROOT modifier = IRQ_not_interfere_in_cw_2 } }
+	}
+}
+
+#Признать легитимность коммунистов // ENG
+country_event = {
+	id = NWiraq.8
+	title = NWiraq.8.t
+	desc = NWiraq.8.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWiraq.8" }
+	
+	option = {
+		name = NWiraq.8.a
+		ai_chance = {
+			factor = 90
+		}
+		IRQ = { country_event = { id = NWiraq.10 hours = 6 } }
+	}
+	
+	option = {
+		name = NWiraq.8.b
+		ai_chance = {
+			factor = 10
+		}
+		add_war_support = -0.05
+		if = {
+			limit = { has_government = fascism }
+			add_popularity = {
+				ideology = fascism
+				popularity = -0.02
+			}
+		}
+		if = {
+			limit = { has_government = communism }
+			add_popularity = {
+				ideology = communism
+				popularity = -0.02
+			}
+		}
+		if = {
+			limit = { has_government = democratic }
+			add_popularity = {
+				ideology = democratic
+				popularity = -0.02
+			}
+		}
+		if = {
+			limit = { has_government = neutrality }
+			add_popularity = {
+				ideology = neutrality
+				popularity = -0.02
+			}
+		}
+		if = {
+			limit = { has_government = monarchy }
+			add_popularity = {
+				ideology = monarchy
+				popularity = -0.02
+			}
+		}
+		if = {
+			limit = { has_government = trozkism }
+			add_popularity = {
+				ideology = trozkism
+				popularity = -0.02
+			}
+		}
+		if = {
+			limit = { has_government = anarchism }
+			add_popularity = {
+				ideology = anarchism
+				popularity = -0.02
+			}
+		}
+		if = {
+			limit = { has_government = technocracy }
+			add_popularity = {
+				ideology = technocracy
+				popularity = -0.02
+			}
+		}
+		hidden_effect = { country_event = { id = NWiraq.9 months = 2 } }
+	}
+}
+
+#Признать легитимность коммунистов пульсар // ENG
+country_event = {
+	id = NWiraq.9
+	is_triggered_only = yes
+	hidden = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWiraq.9" }
+	
+	option = {
+		name = NWiraq.9.a
+		if = {
+			limit = { has_war_with = IRQ }
+			country_event = { id = NWiraq.8 }
+		}
+	}
+}
+
+#Британия признаёт нашу легитимность // IRQ
+country_event = {
+	id = NWiraq.10
+	title = {
+		text = NWiraq.10.t1
+		trigger = { NOT = { has_country_flag = IRQ_NWiraq_12b_flag } }
+	}
+	title = {
+		text = NWiraq.10.t2
+		trigger = { has_country_flag = IRQ_NWiraq_12b_flag }
+	}
+	desc = {
+		text = NWiraq.10.desc1
+		trigger = { NOT = { has_country_flag = IRQ_NWiraq_12b_flag } }
+	}
+	desc = {
+		text = NWiraq.10.desc2
+		trigger = { has_country_flag = IRQ_NWiraq_12b_flag }
+	}
+	
+	desc = NWiraq.10.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWiraq.10" }
+	
+	option = {
+		name = NWiraq.10.a
+		ai_chance = {
+			factor = 75
+		}
+		random_other_country = {
+			limit = { original_tag = ROOT }
+			ROOT = {
+				annex_country = {
+					target = PREV
+					transfer_troops = no
+				}
+			}
+		}
+		FROM = { white_peace = ROOT }
+	}
+	
+	option = {
+		name = NWiraq.10.b
+		ai_chance = {
+			factor = 50
+		}
+		trigger = {
+			NOT = { has_country_flag = IRQ_NWiraq_12b_flag }
+			any_state = {
+				is_controlled_by = ROOT
+				OR = {
+					is_core_of = KUW
+					is_core_of = JOR
+					is_core_of = BPL
+				}
+			}
+		}
+		FROM = { country_event = { id = NWiraq.12 hours = 6 } }
+		custom_effect_tooltip = NWiraq_10b_tt
+	}
+	
+	option = {
+		name = NWiraq.10.c
+		ai_chance = {
+			factor = 10
+		}
+		add_war_support = -0.05
+		FROM = { country_event = { id = NWiraq.11 hours = 6 } }
+	}
+}
+
+#Иракские коммунисты отказались от мира // ENG
+country_event = {
+	id = NWiraq.11
+	title = NWiraq.11.t
+	desc = NWiraq.11.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWiraq.11" }
+	
+	option = {
+		name = NWiraq.1.a
+	}
+}
+
+#Иракские коммунисты требуют территориальные уступки // ENG
+country_event = {
+	id = NWiraq.12
+	title = NWiraq.12.t
+	desc = NWiraq.12.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWiraq.12" }
+	
+	option = {
+		name = NWiraq.12.a
+		ai_chance = {
+			factor = 90
+		}
+		if = {
+			limit = {
+				any_state = {
+					is_controlled_by = FROM
+					is_core_of = KUW
+				}
+			}
+			if = {
+				limit = {
+					country_exists = KUW
+					KUW = {
+						is_subject = yes
+						has_capitulated = yes
+					}
+				}
+				FROM = {
+					annex_country = {
+						target = KUW
+						transfer_troops = yes
+					}
+				}
+			}
+			else_if = {
+				limit = { NOT = { country_exists = KUW } }
+				every_state = {
+					limit = { is_core_of = KUW }
+					FROM = { transfer_state = PREV }
+				}
+			}
+		}
+		if = {
+			limit = {
+				any_state = {
+					is_controlled_by = FROM
+					is_core_of = JOR
+				}
+			}
+			if = {
+				limit = {
+					country_exists = JOR
+					JOR = {
+						is_subject = yes
+						has_capitulated = yes
+					}
+				}
+				FROM = {
+					annex_country = {
+						target = JOR
+						transfer_troops = yes
+					}
+				}
+			}
+			else_if = {
+				limit = { NOT = { country_exists = JOR } }
+				every_state = {
+					limit = { is_core_of = JOR }
+					FROM = { transfer_state = PREV }
+				}
+			}
+		}
+		if = {
+			limit = {
+				any_state = {
+					is_controlled_by = FROM
+					is_core_of = BPL
+				}
+			}
+			if = {
+				limit = {
+					country_exists = BPL
+					BPL = {
+						is_subject = yes
+						has_capitulated = yes
+					}
+				}
+				FROM = {
+					annex_country = {
+						target = BPL
+						transfer_troops = yes
+					}
+				}
+			}
+			else_if = {
+				limit = { NOT = { country_exists = BPL } }
+				every_state = {
+					limit = { is_core_of = BPL }
+					FROM = { transfer_state = PREV }
+				}
+			}
+		}
+		random_other_country = {
+			limit = {
+				original_tag = IRQ
+				NOT = { has_government = communism }
+			}
+			FROM = {
+				annex_country = {
+					target = PREV
+					transfer_troops = no
+				}
+			}
+		}
+		ROOT = { white_peace = FROM }
+	}
+	
+	option = {
+		name = NWiraq.12.b
+		ai_chance = {
+			factor = 10
+		}
+		add_war_support = -0.05
+		add_stability = -0.02
+		FROM = { country_event = { id = NWiraq.10 hours = 6 } }
+		set_country_flag = IRQ_NWiraq_12b_flag
+	}
+}
+
