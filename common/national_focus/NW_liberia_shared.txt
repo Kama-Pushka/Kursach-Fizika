@@ -1541,7 +1541,16 @@
 		continue_if_invalid = no
 		available_if_capitulated = yes
 		
-		available = { USA = { has_war_with = GER } }
+		available = {
+			USA = { has_war_with = GER }
+			OR = {
+				is_in_faction_with = USA
+				AND = {
+					is_in_faction_with = ENG
+					USA = { is_in_faction_with = ENG }
+				}
+			}
+		}
 
 		bypass = {
 			has_war_with = GER
@@ -1550,9 +1559,33 @@
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus LIB_to_war_with_germany"
 			remove_ideas = LIB_debts_to_firestone
-			declare_war_on = {
-				target = GER
-				type = annex_everything
+			if = {
+				limit = {
+					is_in_faction_with = ENG
+					USA = { is_in_faction_with = ENG }
+					ENG = { has_war_with = GER }
+				}
+				ENG = {
+					add_to_war = { 
+						targeted_alliance = PREV 
+						enemy = GER 
+						hostility_reason = asked_to_join
+					}
+				}
+			}
+			else_if = {
+				limit = {
+					NOT = { is_in_faction_with = ENG }
+					is_in_faction_with = USA
+					USA = { has_war_with = GER }
+				}
+				USA = {
+					add_to_war = { 
+						targeted_alliance = PREV 
+						enemy = GER 
+						hostility_reason = asked_to_join
+					}
+				}
 			}
 		}
 	}

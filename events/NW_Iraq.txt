@@ -18,7 +18,10 @@ country_event = {
 	
 	trigger = {
 		tag = IRQ
-		has_idea = IRQ_anglo_iraqi_treaty
+		OR = {
+			has_idea = IRQ_anglo_iraqi_treaty
+			has_idea = IRQ_anglo_iraqi_treaty_2
+		}
 		NOT = { gives_military_access_to = ENG }
 	}
 	
@@ -714,34 +717,12 @@ country_event = {
 #Организация прогерманских генералов «Золотой квадрат» захватывает власть // IRQ
 country_event = {
 	id = NWiraq.17
-	title = {
-		text = NWiraq.17.t1
-		trigger = { is_ai = no }
-	}
-	title = {
-		text = NWiraq.17.t2
-		trigger = { is_ai = yes }
-	}
-	desc = {
-		text = NWiraq.17.desc1
-		trigger = { is_ai = no }
-	}
-	desc = {
-		text = NWiraq.17.desc2
-		trigger = { is_ai = yes }
-	}
+	title = NWiraq.17.t
+	desc = NWiraq.17.desc
 	picture = GFX_report_event_generic_rally_3
 	fire_only_once = yes
 	
-	immediate = {
-		if = {
-			limit = { is_ai = no }
-			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWiraq.17 NO AI"
-		}
-		else = {
-			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWiraq.17 for AI"
-		}
-	}
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWiraq.17" }
 	
 	mean_time_to_happen = { days = 5 }
 	
@@ -754,7 +735,6 @@ country_event = {
 	
 	option = {
 		name = NWiraq.17.a
-		trigger = { is_ai = no }
 		add_popularity = {
 			ideology = fascism
 			popularity = 0.2
@@ -772,28 +752,6 @@ country_event = {
 			limit = { is_subject_of = ENG }
 			ENG = { country_event = { id = NWiraq.18 } }
 		}
-	}
-	
-	option = {
-		name = NWiraq.17.b
-		ai_chance = {
-			factor = 50
-		}
-		trigger = { is_ai = yes }
-		set_country_flag = IRQ_union_with_britain_not_focus_flag
-	}
-	
-	option = {
-		name = NWiraq.17.c
-		ai_chance = {
-			factor = 50
-			modifier = {
-				factor = 0
-				is_historical_focus_on = yes
-			}
-		}
-		trigger = { is_ai = yes }
-		set_country_flag = IRQ_union_with_britain_want_focus_flag
 	}
 }
 
@@ -877,6 +835,234 @@ country_event = {
 	}
 }
 
+#Фашисты или марионетки Британии // IRQ / ONLY AI
+country_event = {
+	id = NWiraq.20
+	title = NWiraq.20.t
+	desc = NWiraq.20.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWiraq.20" }
+
+	option = {
+		name = NWiraq.20.a
+		ai_chance = {
+			factor = 50
+		}
+		add_popularity = {
+			ideology = fascism
+			popularity = 0.2
+		}
+		set_politics = {
+			ruling_party = fascism
+			elections_allowed = no
+		}
+		set_country_flag = IRQ_rashid_ali_al_gailanis_cabinet_flag
+		set_country_flag = IRQ_union_with_britain_not_focus_flag
+		effect_tooltip = {
+			unlock_national_focus = IRQ_rashid_ali_al_gailanis_cabinet
+		}
+		remove_ideas = IRQ_nuri_al_saids_dictatorship_idea
+		if = {
+			limit = { is_subject_of = ENG }
+			ENG = { country_event = { id = NWiraq.18 } }
+		}
+	}
+	
+	option = {
+		name = NWiraq.20.b
+		ai_chance = {
+			factor = 50
+			modifier = {
+				factor = 0
+				is_historical_focus_on = yes
+			}
+		}
+		set_country_flag = IRQ_union_with_britain_want_focus_flag
+	}
+}
+
+#Ирак требует передать Кувейт // 656 owner
+country_event = {
+	id = NWiraq.21
+	title = NWiraq.21.t
+	desc = NWiraq.21.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWiraq.21" }
+
+	option = {
+		name = NWiraq.21.a
+		ai_chance = {
+			factor = 50
+		}
+		if = {
+			limit = {
+				656 = {
+					owner = {
+						original_tag = KUW
+						is_subject_of = ENG
+					}
+				}
+			}
+			KUW = { country_event = { id = NWiraq.23 days = 1 } }
+		}
+		else = {
+			remove_state_core = 656
+			FROM = {
+				transfer_state = 656
+				add_state_core = 656
+			}
+		}
+	}
+	
+	option = {
+		name = NWiraq.21.b
+		ai_chance = {
+			factor = 50
+		}
+		FROM = { country_event = { id = NWiraq.22 days = 1 } }
+	}
+}
+
+#Отказ Ираку // IRQ
+country_event = {
+	id = NWiraq.22
+	title = NWiraq.22.t
+	desc = NWiraq.22.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWiraq.22" }
+
+	option = {
+		name = NWiraq.22.a
+		add_state_claim = 656
+		add_ai_strategy = {
+			type = antagonize
+			id = FROM
+			value = 200
+		}
+		add_ai_strategy = {
+			type = conquer
+			id = FROM
+			value = 200
+		}
+		add_ai_strategy = {
+			type = declare_war
+			id = FROM
+			value = 100
+		}
+	}
+}
+
+#Британия отдала нас Ираку // KUW
+country_event = {
+	id = NWiraq.23
+	title = NWiraq.23.t
+	desc = NWiraq.23.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWiraq.23" }
+
+	option = {
+		name = NWiraq.23.a
+		ai_chance = {
+			factor = 50
+		}
+		hidden_effect = {
+			OVERLORD = {
+				set_autonomy = {
+					target = ROOT
+					autonomy_state = autonomy_free
+				}
+			}
+		}
+		IRQ = {
+			set_autonomy = {
+				target = ROOT
+				autonomy_state = autonomy_dominion
+			}
+		}
+	}
+	
+	option = {
+		name = NWiraq.23.b
+		ai_chance = {
+			factor = 50
+		}
+		hidden_effect = { set_rule = { can_join_factions = no } }
+		OVERLORD = {
+			set_autonomy = {
+				target = ROOT
+				autonomy_state = autonomy_free
+			}
+		}
+		add_ai_strategy = {
+			type = antagonize
+			id = FROM
+			value = 200
+		}
+		add_ai_strategy = {
+			type = befriend
+			id = FROM
+			value = -100
+		}
+		add_ai_strategy = {
+			type = alliance
+			id = FROM		
+			value = -1000
+		}
+		declare_war_on = {
+			target = IRQ
+			type = annex_everything
+		}
+	}
+}
+
+#Последствия Англо-иракского договора // IRQ
+country_event = {
+	id = NWiraq.24
+	title = NWiraq.24.t
+	desc = NWiraq.24.desc
+	picture = GFX_report_event_generic_rally_3
+	fire_only_once = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWiraq.24" }
+	
+	mean_time_to_happen = { days = 5 }
+	
+	trigger = {
+		tag = IRQ
+		has_government = monarchy
+		date > 1939.4.1
+		date < 1939.5.1
+		291 = { infrastructure < 10 }
+	}
+	
+	option = {
+		name = NWiraq.24.a
+		add_political_power = -50
+		create_country_leader = {
+			name = "Abd al-Ilah"
+			desc = "POLITICS_ABD_AL_ILAH_DESC"
+			picture = "gfx/leaders/IRQ/Portrait_Abd_al-Ilah.dds"
+			expire = "1965.1.1"
+			ideology = monarchy_ideology
+			traits = {
+			}
+		}
+		if = {
+			limit = { has_idea = IRQ_ghazi }
+			remove_ideas = IRQ_ghazi
+		}
+		add_ideas = IRQ_faisal
+	}
+}
+
 
 
 
@@ -886,9 +1072,7 @@ country_event = {
 	is_triggered_only = yes
 	hidden = yes
 	
-	immediate = { 
-		log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWiraq.999"
-	}
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWiraq.999" }
 	
 	option = {
 		load_focus_tree = { tree = nw_iraq_focus keep_completed = yes }
