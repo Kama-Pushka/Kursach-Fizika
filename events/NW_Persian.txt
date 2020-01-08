@@ -1343,7 +1343,29 @@ country_event = {
 		ai_chance = {
 			factor = 50
 		}
-		PER = { country_event = { id = NWpersian.32 days = 1 } }
+		PER = { country_event = { id = NWpersian.32 days = 2 } }
+		add_ai_strategy = {
+			type = antagonize
+			id = "PER"
+			value = 600
+		}
+		add_ai_strategy = {
+			type = conquer
+			id = "PER"
+			value = 600
+		}
+		ENG = {
+			add_ai_strategy = {
+				type = antagonize
+				id = "PER"
+				value = 600
+			}
+			add_ai_strategy = {
+				type = conquer
+				id = "PER"
+				value = 600
+			}
+		}
 	}
 	
 	option = {
@@ -1398,11 +1420,31 @@ country_event = {
 				target = ROOT
 				autonomy_state = autonomy_dominion
 			}
+			add_ai_strategy = {
+				type = antagonize
+				id = "PER"
+				value = -600
+			}
+			add_ai_strategy = {
+				type = conquer
+				id = "PER"
+				value = -600
+			}
 		}
 		SOV = {
 			transfer_state = 420
 			transfer_state = 419
 			transfer_state = 963
+			add_ai_strategy = {
+				type = antagonize
+				id = "PER"
+				value = -600
+			}
+			add_ai_strategy = {
+				type = conquer
+				id = "PER"
+				value = -600
+			}
 		}
 	}
 	
@@ -1520,7 +1562,7 @@ country_event = {
 			ENG = { country_event = { id = NWpersian.34 days = 1 } }
 		}
 		else = { SOV = { country_event = { id = NWpersian.34 days = 1 } } }
-		
+		set_country_flag = PER_peace_ENG_SOV
 	}
 	
 	option = {
@@ -1533,6 +1575,156 @@ country_event = {
 			}
 		}
 		add_war_support = -0.05
+	}
+}
+
+#Иранская мирная конференция // PER
+country_event = {
+	id = NWpersian.330
+	title = NWpersian.330.t
+	desc = NWpersian.330.desc
+	picture = GFX_report_event_generic_rally_3
+	fire_only_once = yes
+	
+	immediate = {
+		log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWpersian.330"
+		PER = {
+			clr_country_flag = PER_war_against_ENG_SOV
+			set_country_flag = PER_peace_ENG_SOV
+		}
+	}
+	
+	trigger = {
+		OR = {
+			tag = ENG
+			tag = SOV
+		}
+		PER = {
+			OR = {
+				is_subject_of = ENG
+				is_subject_of = SOV
+			}
+			has_country_flag = PER_war_against_ENG_SOV
+			NOT = { has_country_flag = PER_peace_ENG_SOV }
+		}
+	}
+	
+	mean_time_to_happen = { days = 15 }
+	
+	option = {
+		name = NWpersian.330.a
+		trigger = { tag = SOV }
+		PER = {
+			create_country_leader = {
+				name = "Mohammad Ali Foroughi"
+				desc = "POLITICS_MOHAMMAD_ALI_FOROUGHI_DESC"
+				picture = "gfx/leaders/PER/Portrait_Mohammad_Foroughi.dds"
+				expire = "1965.1.1"
+				ideology = monarchy_ideology
+				traits = {
+				}
+			}
+			hidden_effect = {
+				if = {
+					limit = { NOT = { owns_state = 413 } }
+					transfer_state = 413
+				}
+				if = {
+					limit = { NOT = { owns_state = 421 } }
+					transfer_state = 421
+				}
+			}
+		}
+		if = {
+			limit = { PER = { is_subject_of = ENG } }
+			PER = { 
+				load_focus_tree = persian_probritain_focus
+				give_resource_rights = { receiver = ENG state = 411 }
+				give_resource_rights = { receiver = ENG state = 412 }
+				give_resource_rights = { receiver = ENG state = 413 }
+			}
+			SOV = {
+				transfer_state = 419
+				transfer_state = 420
+				transfer_state = 963
+				transfer_state = 1099
+			}
+			hidden_effect = {
+				if = {
+					limit = { NOT = { has_country_flag = NWpersian_73_flag } }
+					country_event = { id = NWpersian.73 days = 14 }
+				}
+			}
+		}
+		if = {
+			limit = { PER = { is_subject_of = SOV } }
+			SOV = {
+				set_autonomy = {
+					target = PER
+					autonomy_state = autonomy_dominion
+				}
+			}
+			PER = { load_focus_tree = persian_prosoviet_focus }
+			ENG = {
+				transfer_state = 411
+				transfer_state = 412
+				transfer_state = 413
+			}
+		}
+	}
+	
+	option = {
+		name = NWpersian.330.a
+		trigger = { tag = ENG }
+		effect_tooltip = {
+			PER = {
+				create_country_leader = {
+					name = "Mohammad Ali Foroughi"
+					desc = "POLITICS_MOHAMMAD_ALI_FOROUGHI_DESC"
+					picture = "gfx/leaders/PER/Portrait_Mohammad_Foroughi.dds"
+					expire = "1965.1.1"
+					ideology = monarchy_ideology
+					traits = {
+					}
+				}
+			}
+			if = {
+				limit = { PER = { is_subject_of = ENG } }
+				PER = { 
+					load_focus_tree = persian_probritain_focus
+					give_resource_rights = { receiver = ENG state = 411 }
+					give_resource_rights = { receiver = ENG state = 412 }
+					give_resource_rights = { receiver = ENG state = 413 }
+				}
+				SOV = {
+					transfer_state = 419
+					transfer_state = 420
+					transfer_state = 963
+					transfer_state = 1099
+				}
+				hidden_effect = {
+					if = {
+						limit = { NOT = { has_country_flag = NWpersian_73_flag } }
+						country_event = { id = NWpersian.73 days = 14 }
+					}
+				}
+			}
+			if = {
+				limit = { PER = { is_subject_of = SOV } }
+				SOV = {
+					set_autonomy = {
+						target = PER
+						autonomy_state = autonomy_dominion
+					}
+				}
+				PER = { load_focus_tree = persian_prosoviet_focus }
+				ENG = {
+					transfer_state = 411
+					transfer_state = 412
+					transfer_state = 413
+				}
+			}
+		}
 	}
 }
 
