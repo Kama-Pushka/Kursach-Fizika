@@ -820,7 +820,7 @@ focus_tree = {
 			log = "[GetDateText]: [Root.GetName]: Focus IRQ_revolutionary_armed_forces"
 			hidden_effect = {
 				if = {
-					limit = { NOT = { has_template = "Revolutionary armed forces" } }
+					limit = { NOT = { has_template = "Alainqisam Althawriu" } }
 					division_template = {
 						name = "Revolutionary armed forces"
 						is_locked = no
@@ -844,11 +844,11 @@ focus_tree = {
 			}
 			capital_scope = {
 				create_unit = {
-					division = "name = \"Revolutionary armed forces\" division_template = \"Revolutionary armed forces\" start_experience_factor = 0.6" 
+					division = "name = \"Alainqisam Althawriu\" division_template = \"Alainqisam Althawriu\" start_experience_factor = 0.6" 
 					owner = ROOT
 				}
 				create_unit = {
-					division = "name = \"Revolutionary armed forces\" division_template = \"Revolutionary armed forces\" start_experience_factor = 0.6" 
+					division = "name = \"Alainqisam Althawriu\" division_template = \"Alainqisam Althawriu\" start_experience_factor = 0.6" 
 					owner = ROOT
 				}
 			}
@@ -931,6 +931,37 @@ focus_tree = {
 				release_puppet = KRD
 				add_manpower = 50000
 			}
+			KRD = {
+				hidden_effect = {
+					set_rule = {
+						can_create_factions = no
+						can_join_factions = no
+					}
+					if = {
+						limit = { NOT = { has_template = "Kurdish division" } }
+						division_template = {
+							name = "Kurdish division"
+							is_locked = no
+							regiments = {
+								infantry = { x = 0 y = 0 }
+								infantry = { x = 0 y = 1 }
+								infantry = { x = 1 y = 0 }
+								infantry = { x = 1 y = 1 }
+							}
+						}
+					}
+				}
+				random_owned_state = {
+					create_unit = {
+						division = "name = \"1. Kurdish division\" division_template = \"Kurdish division\" start_experience_factor = 0.2" 
+						owner = PREV
+					}
+					create_unit = {
+						division = "name = \"2. Kurdish division\" division_template = \"Kurdish division\" start_experience_factor = 0.2" 
+						owner = PREV
+					}
+				}
+			}
 		}
 	}
 	
@@ -987,7 +1018,14 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus IRQ_abolition_of_monarchy"
-			remove_ideas = IRQ_ghazi
+			if = {
+				limit = { has_idea = IRQ_ghazi }
+				remove_ideas = IRQ_ghazi
+			}
+			if = {
+				limit = { has_idea = IRQ_faisal }
+				remove_ideas = IRQ_faisal
+			}
 			add_ideas = IRQ_abolition_of_monarchy_idea
 			add_political_power = 100
 			add_popularity = {
@@ -1001,6 +1039,11 @@ focus_tree = {
 		id = IRQ_alliance_with_turkey
 		icon = GFX_z_goal_expansion_turkey
 		prerequisite = { focus = IRQ_abolition_of_monarchy }
+		mutually_exclusive = {
+			focus = IRQ_arab_socialist_union
+			focus = IRQ_join_comintern
+			focus = IRQ_alliance_with_iran
+		}
 		x = -3
 		y = 1
 		relative_position_id = IRQ_abolition_of_monarchy
@@ -1036,6 +1079,11 @@ focus_tree = {
 		id = IRQ_arab_socialist_union
 		icon = GFX_z_goal_socialist
 		prerequisite = { focus = IRQ_abolition_of_monarchy }
+		mutually_exclusive = {
+			focus = IRQ_alliance_with_turkey
+			focus = IRQ_join_comintern
+			focus = IRQ_alliance_with_iran
+		}
 		x = -1
 		y = 1
 		relative_position_id = IRQ_abolition_of_monarchy
@@ -1066,6 +1114,11 @@ focus_tree = {
 		id = IRQ_join_comintern
 		icon = GFX_focus_generic_join_comintern
 		prerequisite = { focus = IRQ_abolition_of_monarchy }
+		mutually_exclusive = {
+			focus = IRQ_alliance_with_turkey
+			focus = IRQ_arab_socialist_union
+			focus = IRQ_alliance_with_iran
+		}
 		x = 1
 		y = 1
 		relative_position_id = IRQ_abolition_of_monarchy
@@ -1101,6 +1154,11 @@ focus_tree = {
 		id = IRQ_alliance_with_iran
 		icon = GFX_z_goal_expansion_iran
 		prerequisite = { focus = IRQ_abolition_of_monarchy }
+		mutually_exclusive = {
+			focus = IRQ_alliance_with_turkey
+			focus = IRQ_arab_socialist_union
+			focus = IRQ_join_comintern
+		}
 		x = 3
 		y = 1
 		relative_position_id = IRQ_abolition_of_monarchy
@@ -2456,6 +2514,42 @@ focus_tree = {
 			}
 		}
 		available = {
+			if = {
+				limit = {
+					has_country_flag = saadabad_accept_flag
+					is_ai = yes
+				}
+				if = {
+					limit = {
+						country_exists = TUR
+						TUR = { has_country_flag = saadabad_accept_flag }
+					}
+					TUR = {
+						NOT = { has_completed_focus = TUR_create_the_sadabat_pact }
+						is_faction_leader = no
+					}
+				}
+				if = {
+					limit = {
+						country_exists = PER
+						PER = { has_country_flag = saadabad_accept_flag }
+					}
+					PER = {
+						NOT = { has_completed_focus = PER_create_the_sadabat_pact }
+						is_faction_leader = no
+					}
+				}
+				if = {
+					limit = {
+						country_exists = AFG
+						AFG = { has_country_flag = saadabad_accept_flag }
+					}
+					AFG = {
+						NOT = { has_completed_focus = AFG_create_the_sadabat_pact }
+						is_faction_leader = no
+					}
+				}
+			}
 			is_in_faction = no
 			is_subject = no
 			has_civil_war = no
@@ -3361,7 +3455,7 @@ focus_tree = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus IRQ_expand_resource_exports_neighbouring_countries"
 			add_ideas = PER_expand_resource_exports_neighbouring_countries_idea
 			random_owned_controlled_state = {
-				limit = { 
+				limit = {
 					free_building_slots = {
 						building = industrial_complex
 						size > 0
@@ -4630,6 +4724,16 @@ focus_tree = {
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus IRQ_solve_problem_with_land"
 			remove_ideas = IRQ_serfdom
+			every_owned_state = {
+				limit = {
+					OR = {
+						state = 291
+						state = 995
+						state = 676
+					}
+				}
+				add_extra_state_shared_building_slots = 2
+			}
 		}
 	}
 	
@@ -4660,7 +4764,7 @@ focus_tree = {
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus IRQ_independent_development_of_baghdad"
 			capital_scope = {
-				add_extra_state_shared_building_slots = 1
+				add_extra_state_shared_building_slots = 3
 				add_building_construction = {
 					type = industrial_complex
 					level = 1
@@ -4696,7 +4800,7 @@ focus_tree = {
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus IRQ_capital_industry"
 			capital_scope = {
-				add_extra_state_shared_building_slots = 1
+				add_extra_state_shared_building_slots = 3
 				add_building_construction = {
 					type = industrial_complex
 					level = 1
@@ -4734,10 +4838,10 @@ focus_tree = {
 			log = "[GetDateText]: [Root.GetName]: Focus IRQ_give_britain_oil_concessions_in_south"
 			give_resource_rights = { receiver = ENG state = 291 }
 			capital_scope = {
-				add_extra_state_shared_building_slots = 2
+				add_extra_state_shared_building_slots = 4
 				add_building_construction = {
 					type = industrial_complex
-					level = 2
+					level = 3
 					instant_build = yes
 				}
 			}
@@ -4770,7 +4874,7 @@ focus_tree = {
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus IRQ_inflow_of_british_investment"
 			capital_scope = {
-				add_extra_state_shared_building_slots = 3
+				add_extra_state_shared_building_slots = 4
 				add_building_construction = {
 					type = industrial_complex
 					level = 2
@@ -4814,7 +4918,7 @@ focus_tree = {
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus IRQ_capital_military_industry"
 			capital_scope = {
-				add_extra_state_shared_building_slots = 1
+				add_extra_state_shared_building_slots = 2
 				add_building_construction = {
 					type = arms_factory
 					level = 1
