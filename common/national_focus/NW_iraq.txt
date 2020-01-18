@@ -146,7 +146,7 @@ focus_tree = {
 			focus = IRQ_rebellion_of_communist_party
 			focus = IRQ_repression_of_left
 		}
-		x = -8
+		x = -10
 		y = 1
 		relative_position_id = IRQ_dictatorship_of_bakr_sidqi
 		
@@ -792,6 +792,9 @@ focus_tree = {
 			add_political_power = 50
 			add_ideas = IRQ_rebellion_of_communist_party
 			unlock_decision_category_tooltip = form_middle_east_union_category
+			hidden_effect = {
+				country_event = { id = NWiraq.27 days = 220 }
+			}
 		}
 	}
 	
@@ -999,6 +1002,7 @@ focus_tree = {
 		icon = GFX_focus_rom_abdicate
 		prerequisite = { focus = IRQ_grant_autonomy_to_kurds }
 		prerequisite = { focus = IRQ_establish_equality_of_sexes }
+		mutually_exclusive = { focus = IRQ_second_revolution }
 		x = 1
 		y = 1
 		relative_position_id = IRQ_grant_autonomy_to_kurds
@@ -1013,6 +1017,7 @@ focus_tree = {
 			factor = 10
 		}
 		available = {
+			NOT = { has_country_flag = IRQ_second_revolution_flag }
 		}
 		bypass = {
 		}
@@ -1022,6 +1027,10 @@ focus_tree = {
 			if = {
 				limit = { has_idea = IRQ_ghazi }
 				remove_ideas = IRQ_ghazi
+			}
+			if = {
+				limit = { has_idea = IRQ_ghazi_comm }
+				remove_ideas = IRQ_ghazi_comm
 			}
 			if = {
 				limit = { has_idea = IRQ_faisal }
@@ -1037,15 +1046,61 @@ focus_tree = {
 	}
 	
 	focus = {
+		id = IRQ_alliance_with_iran
+		icon = GFX_z_goal_expansion_iran
+		prerequisite = {
+			focus = IRQ_abolition_of_monarchy
+			focus = IRQ_second_revolution
+		}
+		mutually_exclusive = {
+			focus = IRQ_alliance_with_turkey
+			focus = IRQ_arab_socialist_union
+			focus = IRQ_join_comintern
+		}
+		x = -3
+		y = 1
+		relative_position_id = IRQ_abolition_of_monarchy
+		
+		cost = 10
+		
+		cancel_if_invalid = yes
+		continue_if_invalid = no
+		available_if_capitulated = yes
+
+		ai_will_do = {
+			factor = 10
+		}
+		available = {
+			country_exists = PER
+			NOT = { has_war_with = PER }
+			PER = {
+				is_faction_leader = yes
+				has_government = communism
+			}
+		}
+		bypass = {
+			is_in_faction_with = PER
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus IRQ_alliance_with_iran"
+			PER = { country_event = { id = generic.2 } }
+		}
+	}
+	
+	focus = {
 		id = IRQ_alliance_with_turkey
 		icon = GFX_z_goal_expansion_turkey
-		prerequisite = { focus = IRQ_abolition_of_monarchy }
+		prerequisite = {
+			focus = IRQ_abolition_of_monarchy
+			focus = IRQ_second_revolution
+		}
 		mutually_exclusive = {
 			focus = IRQ_arab_socialist_union
 			focus = IRQ_join_comintern
 			focus = IRQ_alliance_with_iran
 		}
-		x = -3
+		x = -1
 		y = 1
 		relative_position_id = IRQ_abolition_of_monarchy
 		
@@ -1079,13 +1134,16 @@ focus_tree = {
 	focus = {
 		id = IRQ_arab_socialist_union
 		icon = GFX_z_goal_socialist
-		prerequisite = { focus = IRQ_abolition_of_monarchy }
+		prerequisite = {
+			focus = IRQ_abolition_of_monarchy
+			focus = IRQ_second_revolution
+		}
 		mutually_exclusive = {
 			focus = IRQ_alliance_with_turkey
 			focus = IRQ_join_comintern
 			focus = IRQ_alliance_with_iran
 		}
-		x = -1
+		x = 1
 		y = 1
 		relative_position_id = IRQ_abolition_of_monarchy
 		
@@ -1120,7 +1178,7 @@ focus_tree = {
 			focus = IRQ_arab_socialist_union
 			focus = IRQ_alliance_with_iran
 		}
-		x = 1
+		x = 3
 		y = 1
 		relative_position_id = IRQ_abolition_of_monarchy
 		
@@ -1151,45 +1209,7 @@ focus_tree = {
 		}
 	}
 	
-	focus = {
-		id = IRQ_alliance_with_iran
-		icon = GFX_z_goal_expansion_iran
-		prerequisite = { focus = IRQ_abolition_of_monarchy }
-		mutually_exclusive = {
-			focus = IRQ_alliance_with_turkey
-			focus = IRQ_arab_socialist_union
-			focus = IRQ_join_comintern
-		}
-		x = 3
-		y = 1
-		relative_position_id = IRQ_abolition_of_monarchy
-		
-		cost = 10
-		
-		cancel_if_invalid = yes
-		continue_if_invalid = no
-		available_if_capitulated = yes
-
-		ai_will_do = {
-			factor = 10
-		}
-		available = {
-			country_exists = PER
-			NOT = { has_war_with = PER }
-			PER = {
-				is_faction_leader = yes
-				has_government = communism
-			}
-		}
-		bypass = {
-			is_in_faction_with = PER
-		}
-
-		completion_reward = {
-			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus IRQ_alliance_with_iran"
-			PER = { country_event = { id = generic.2 } }
-		}
-	}
+	
 	
 	focus = {
 		id = IRQ_overthrow_saudis
@@ -1202,7 +1222,7 @@ focus_tree = {
 		}
 		x = 1
 		y = 1
-		relative_position_id = IRQ_arab_socialist_union
+		relative_position_id = IRQ_alliance_with_turkey
 		
 		cost = 10
 		
@@ -1429,6 +1449,73 @@ focus_tree = {
 					}
 				}
 				add_claim_by = ROOT
+			}
+		}
+	}
+	
+	#######################
+	##### TRO SECTION #####
+	#######################
+	
+	focus = {
+		id = IRQ_second_revolution
+		icon = GFX_z_communism12
+		prerequisite = { focus = IRQ_rebellion_of_communist_party }
+		mutually_exclusive = { focus = IRQ_abolition_of_monarchy }
+		x = -5
+		y = 3
+		relative_position_id = IRQ_rebellion_of_communist_party
+		
+		cost = 10
+		
+		cancel_if_invalid = yes
+		continue_if_invalid = no
+		available_if_capitulated = yes
+
+		ai_will_do = {
+			factor = 10
+		}
+		available = {
+			has_country_flag = IRQ_second_revolution_flag
+		}
+		bypass = {
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus IRQ_second_revolution"
+			add_timed_idea = { idea = IRQ_second_revolution days = 365 }
+		}
+	}
+	
+	focus = {
+		id = IRQ_unity_of_islam_and_communism
+		icon = GFX_z_goal_unity_of_islam_and_communism
+		prerequisite = { focus = IRQ_second_revolution }
+		x = 0
+		y = 1
+		relative_position_id = IRQ_second_revolution
+		
+		cost = 10
+		
+		cancel_if_invalid = yes
+		continue_if_invalid = no
+		available_if_capitulated = yes
+
+		ai_will_do = {
+			factor = 10
+		}
+		available = {
+			
+		}
+		bypass = {
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus IRQ_unity_of_islam_and_communism"
+			add_ideas = IRQ_unity_of_islam_and_communism
+			if = {
+				limit = { NOT = { is_in_faction_with = PER } }
+				unlock_decision_category_tooltip = IRQ_unite_shiites_category
 			}
 		}
 	}
@@ -4035,7 +4122,8 @@ focus_tree = {
 				bonus = 1.0
 				uses = 1
 				category = motorized_equipment
-			} 
+			}
+			unlock_decision_category_tooltip = IRQ_middle_eastern_racing_competitions_category
 		}
 	}
 	
@@ -4351,8 +4439,93 @@ focus_tree = {
 	}
 	
 	focus = {
-		id = IRQ_demand_kuwait
-		icon = GFX_goal_demand_sudetenland
+		id = IRQ_invite_yemen
+		icon = GFX_goal_generic_improve_relations
+		prerequisite = { focus = IRQ_time_for_arabs_act_on_their_own }
+		x = 0
+		y = 1
+		relative_position_id = IRQ_time_for_arabs_act_on_their_own
+		cost = 10
+		
+		cancel_if_invalid = yes
+		continue_if_invalid = no
+		available_if_capitulated = yes
+
+		ai_will_do = {
+			factor = 10
+		}
+		available = {
+			YEM = { is_subject = no }
+			is_faction_leader = yes
+		}
+		bypass = {
+			OR = {
+				NOT = { country_exists = YEM }
+				has_war_with = YEM
+				YEM = {
+					OR = {
+						is_subject_of = ROOT
+						is_in_faction_with = ROOT
+					}
+				}
+			}
+		}
+		select_effect = {
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus IRQ_invite_yemen"
+			YEM = { country_event = { id = generic.5 } }
+		}
+	}
+	
+	focus = {
+		id = IRQ_invite_palestine
+		icon = GFX_goal_generic_dangerous_deal
+		prerequisite = { focus = IRQ_invite_yemen }
+		x = 0
+		y = 1
+		relative_position_id = IRQ_invite_yemen
+		cost = 10
+		
+		cancel_if_invalid = yes
+		continue_if_invalid = no
+		available_if_capitulated = yes
+
+		ai_will_do = {
+			factor = 10
+		}
+		available = {
+			BPL = {
+				is_subject = no
+				has_completed_focus = BPL_concessions_arab_leaders
+			}
+			is_faction_leader = yes
+		}
+		bypass = {
+			OR = {
+				NOT = { country_exists = BPL }
+				has_war_with = BPL
+				BPL = {
+					OR = {
+						is_subject_of = ROOT
+						is_in_faction_with = ROOT
+					}
+				}
+			}
+		}
+		select_effect = {
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus IRQ_invite_palestine"
+			BPL = { country_event = { id = generic.5 } }
+		}
+	}
+	
+	focus = {
+		id = IRQ_reclaim_throne_of_hijaz
+		icon = GFX_goal_generic_major_war
 		prerequisite = {
 			focus = IRQ_time_for_arabs_act_on_their_own
 			focus = IRQ_search_for_third_force
@@ -4361,6 +4534,138 @@ focus_tree = {
 		x = 0
 		y = 1
 		relative_position_id = IRQ_search_for_third_force
+		cost = 10
+		
+		cancel_if_invalid = yes
+		continue_if_invalid = no
+		available_if_capitulated = yes
+
+		ai_will_do = {
+			factor = 10
+		}
+		available = {
+		}
+		bypass = {
+		}
+		select_effect = {
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus IRQ_reclaim_throne_of_hijaz"
+			add_state_claim = 679
+			add_state_claim = 991
+			unlock_decision_tooltip = IRQ_legitimation_of_rule_in_hijaz
+			if = {
+				limit = {
+					679 = { owner = { original_tag = SAU } }
+					991 = { owner = { original_tag = SAU } }
+				}
+				679 = { owner = { country_event = { id = NWiraq.33 days = 1 } } }
+			}
+		}
+	}
+	
+	focus = {
+		id = IRQ_claim_najd
+		icon = GFX_goal_generic_major_war
+		prerequisite = { focus = IRQ_reclaim_throne_of_hijaz }
+		x = 2
+		y = 1
+		relative_position_id = IRQ_reclaim_throne_of_hijaz
+		cost = 10
+		
+		cancel_if_invalid = yes
+		continue_if_invalid = no
+		available_if_capitulated = yes
+
+		ai_will_do = {
+			factor = 10
+		}
+		available = {
+		}
+		bypass = {
+			OR = {
+				NOT = { country_exists = SAU }
+				has_war_with = SAU
+				is_in_faction_with = SAU
+				SAU = { is_subject_of = ROOT }
+			}
+		}
+		select_effect = {
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus IRQ_claim_najd"
+			create_wargoal = {
+				type = puppet_wargoal_focus
+				target = SAU
+			}
+		}
+	}
+	
+	focus = {
+		id = IRQ_save_iranian_arabs
+		icon = GFX_goal_generic_military_deal
+		prerequisite = { focus = IRQ_reclaim_throne_of_hijaz }
+		x = 0
+		y = 1
+		relative_position_id = IRQ_reclaim_throne_of_hijaz
+		cost = 10
+		
+		cancel_if_invalid = yes
+		continue_if_invalid = no
+		available_if_capitulated = yes
+
+		ai_will_do = {
+			factor = 10
+		}
+		available = {
+		}
+		bypass = {
+			owns_state = 413
+		}
+		select_effect = {
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus IRQ_save_iranian_arabs"
+			if = {
+				limit = { 413 = { owner = { NOT = { original_tag = PER } } } }
+				413 = {
+					owner = {
+						ROOT = {
+							create_wargoal = {
+								type = annex_everything
+								target = PREV
+							}
+							add_ai_strategy = {
+								type = antagonize
+								id = PREV
+								value = 200
+							}
+							add_ai_strategy = {
+								type = conquer
+								id = PREV
+								value = 200
+							}
+						}
+					}
+				}
+			}
+			else = {
+				413 = { owner = { country_event = { id = NWiraq.36 days = 1 } } }
+			}
+		}
+	}
+	
+	
+	focus = {
+		id = IRQ_demand_kuwait
+		icon = GFX_goal_demand_sudetenland
+		prerequisite = { focus = IRQ_save_iranian_arabs }
+		x = 0
+		y = 1
+		relative_position_id = IRQ_save_iranian_arabs
 		cost = 10
 		
 		cancel_if_invalid = yes
@@ -4448,6 +4753,36 @@ focus_tree = {
 					}
 				}
 			}
+			if = {
+				limit = {
+					country_exists = JOR
+					JOR = { is_subject = no }
+				}
+				create_wargoal = {
+					type = annex_everything
+					target = JOR
+				}
+			}
+			if = {
+				limit = {
+					any_state = {
+						is_core_of = JOR
+						owner = {
+							OR = {
+								tag = ENG
+								AND = {
+									is_subject_of = ENG
+									OR = {
+										has_autonomy_state = autonomy_puppet
+										has_autonomy_state = autonomy_integrated_puppet
+									}
+								}
+							}
+						}
+					}
+				}
+				ENG = { country_event = { id = NWiraq.38 days = 1 } }
+			}
 		}
 	}
 	
@@ -4480,9 +4815,9 @@ focus_tree = {
 				limit = {
 					OR = {
 						is_core_of = SYR
-						is_owned_by = SYR
+						is_core_of = JDS
+						is_core_of = ALW
 						is_core_of = LEB
-						is_owned_by = LEB
 					}
 				}
 				add_claim_by = ROOT
@@ -4506,91 +4841,15 @@ focus_tree = {
 					}
 				}
 			}
-		}
-	}
-	
-	focus = {
-		id = IRQ_reclaim_throne_of_hijaz
-		icon = GFX_goal_generic_major_war
-		prerequisite = { focus = IRQ_liberation_of_transjordan }
-		prerequisite = { focus = IRQ_liberation_of_syria }
-		x = 1
-		y = 1
-		relative_position_id = IRQ_liberation_of_transjordan
-		cost = 10
-		
-		cancel_if_invalid = yes
-		continue_if_invalid = no
-		available_if_capitulated = yes
-
-		ai_will_do = {
-			factor = 10
-		}
-		available = {
-		}
-		bypass = {
-		}
-		select_effect = {
-		}
-
-		completion_reward = {
-			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus IRQ_reclaim_throne_of_hijaz"
-			add_state_claim = 679
-			create_wargoal = {
-				type = puppet_wargoal_focus
-				target = SAU
-			}
-			add_ai_strategy = {
-				type = antagonize
-				id = "SAU"
-				value = 200
-			}
-			add_ai_strategy = {
-				type = conquer
-				id = "SAU"
-				value = 200
-			}
-		}
-	}
-	
-	focus = {
-		id = IRQ_save_iranian_arabs
-		icon = GFX_goal_generic_military_deal
-		prerequisite = { focus = IRQ_reclaim_throne_of_hijaz }
-		x = 0
-		y = 1
-		relative_position_id = IRQ_reclaim_throne_of_hijaz
-		cost = 10
-		
-		cancel_if_invalid = yes
-		continue_if_invalid = no
-		available_if_capitulated = yes
-
-		ai_will_do = {
-			factor = 10
-		}
-		available = {
-		}
-		bypass = {
-		}
-		select_effect = {
-		}
-
-		completion_reward = {
-			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus IRQ_save_iranian_arabs"
-			create_wargoal = {
-				type = annex_everything
-				target = PER
-			}
-			add_ai_strategy = {
-				type = antagonize
-				id = "PER"
-				value = 200
-			}
-			add_ai_strategy = {
-				type = conquer
-				id = "PER"
-				value = 200
+			if = {
+				limit = {
+					any_state = {
+						is_core_of = SYR
+						is_owned_by = event_target:NW_france_scope
+					}
+				}
+				event_target:NW_france_scope = { country_event = { id = NWiraq.42 days = 1 } }
+				custom_effect_tooltip = IRQ_liberation_of_syria_tt
 			}
 		}
 	}
@@ -4598,10 +4857,11 @@ focus_tree = {
 	focus = {
 		id = IRQ_hashemite_arabia
 		icon = GFX_z_goal_shia_islamic_state
-		prerequisite = { focus = IRQ_save_iranian_arabs }
-		x = 0
+		prerequisite = { focus = IRQ_liberation_of_transjordan }
+		prerequisite = { focus = IRQ_liberation_of_syria }
+		x = 1
 		y = 1
-		relative_position_id = IRQ_save_iranian_arabs
+		relative_position_id = IRQ_liberation_of_transjordan
 		cost = 10
 		
 		cancel_if_invalid = yes
