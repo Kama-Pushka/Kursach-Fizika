@@ -1,6 +1,10 @@
 on_actions = {
 	on_startup = {
 		effect = {
+			random_country = {
+				set_country_flag = timer_timer_flag
+				log = "[GetDateText]: [This.GetName] ([This.GetTag]): Избран крикуном"
+			}
 			#Configurator
 			#random_country = {
 			#	limit = { is_ai = no }
@@ -320,6 +324,22 @@ on_actions = {
 					give_resource_rights = { receiver = ENG state = 676 }
 					country_event = { id = NWiraq.3 days = 299 }
 					country_event = { id = NWiraq.13 days = 588 }
+				}
+			}
+			#Слоны стартовые стейты
+			if = {
+				every_state = {
+					limit = {
+						OR = {
+							is_on_continent = africa
+							is_core_of = RAJ
+							is_core_of = NEP
+							is_core_of = BHU
+							is_core_of = SIA
+							is_core_of = LKA
+						}
+					}
+					set_state_flag = elephant_spawn_state_flag
 				}
 			}
 		}
@@ -2515,7 +2535,25 @@ on_actions = {
 			if = {
 				limit = { check_variable = { counter_days = 7 } }
 				set_variable = { counter_days = 0 }
-				random_country = { log = "[GetDateText]: [This.GetName] ([This.GetTag]): Новая неделя" }
+				if = {
+					limit = {
+						has_country_flag = timer_timer_flag
+						country_exists = ROOT
+					}
+					log = "[GetDateText]: [This.GetName] ([This.GetTag]): Новая неделя"
+				}
+				else_if = {
+					limit = {
+						any_country = {
+							has_country_flag = timer_timer_flag
+							NOT = { country_exists = THIS }
+						}
+					}
+					every_country = { clr_country_flag = timer_timer_flag }
+					random_country = { set_country_flag = timer_timer_flag }
+					log = "[GetDateText]: [This.GetName] ([This.GetTag]): Теперь крикун"
+				}
+				
 				#Голод // Нацдух ETH / LIB
 				if = {
 					limit = {
@@ -2534,12 +2572,20 @@ on_actions = {
 				if = {
 					limit = {
 						OR = {
-							has_idea = ETH_elephants
-							has_idea = ETH_elephants_5
+							has_idea_with_trait = ETH_elephants_trait_1
+							has_idea_with_trait = ETH_elephants_trait_2
+							has_idea_with_trait = ETH_elephants_trait_3
+							has_idea_with_trait = ETH_elephants_trait_4
+							has_idea_with_trait = ETH_elephants_trait_5
 						}
 					}
 					set_temp_variable = { total_elephant_equipment = ETH_elephants_trait_var }
-					multiply_temp_variable = { total_elephant_equipment = num_owned_states }
+					set_temp_variable = { num_elephant_states = 0 }
+					every_owned_state = {
+						limit = { has_state_flag = elephant_spawn_state_flag }
+						add_to_temp_variable = { num_elephant_states = 1 }
+					}
+					multiply_temp_variable = { total_elephant_equipment = num_elephant_states }
 					add_equipment_to_stockpile = {
 						type = elephant_equipment
 						amount = total_elephant_equipment
