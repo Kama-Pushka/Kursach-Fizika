@@ -202,6 +202,18 @@ country_event = {
 			if = {
 				limit = { is_in_faction = yes }
 				leave_faction = yes
+				add_ai_strategy = {
+					type = alliance
+					id = FROM		
+					value = -1000
+				}
+				FROM = {
+					add_ai_strategy = {
+						type = alliance
+						id = ROOT		
+						value = -1000
+					}
+				}
 			}
 			if = {
 				limit = { has_war = yes }
@@ -1026,6 +1038,407 @@ country_event = {
 }
 
 
+#FROM – требование территорий // алли альянс
+country_event = {
+	id = NWgeneric.17
+	title = NWgeneric.17.t
+	desc = NWgeneric.17.desc
+	picture = GFX_report_event_military_planning
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWgeneric.17" }
+	
+	option = {
+		name = NWgeneric.17.a
+		ai_chance = {
+			factor = 75
+			modifier = {
+				factor = 0
+				has_government = communism
+				FROM = {
+					OR = {
+						has_government = fascism
+						has_government = monarchy
+						has_government = trozkism
+						has_government = anarchism
+					}
+				}
+			}
+			modifier = {
+				factor = 0
+				has_government = trozkism
+				FROM = {
+					OR = {
+						has_government = fascism
+						has_government = monarchy
+						has_government = communism
+						has_government = anarchism
+					}
+				}
+			}
+			modifier = {
+				factor = 0
+				has_government = fascism
+				FROM = {
+					NOT = {
+						has_government = fascism
+						has_government = monarchy
+						has_government = neutrality
+					}
+				}
+			}
+			modifier = {
+				factor = 0
+				has_government = anarchism
+				FROM = { NOT = { has_government = anarchism } }
+			}
+		}
+		every_state = {
+			limit = {
+				OR = {
+					is_core_of = FROM
+					is_claimed_by = FROM
+				}
+				owner = {
+					OR = {
+						tag = ROOT
+						is_subject_of = ROOT
+					}
+				}
+			}
+			remove_core_of = ROOT
+			remove_claim_by = ROOT
+			FROM = { transfer_state = PREV }
+		}
+	}
+	
+	option = {
+		name = NWgeneric.17.b
+		ai_chance = {
+			factor = 25
+			modifier = {
+				factor = 0
+				FROM = { has_government = ROOT }
+			}
+			modifier = {
+				factor = 0
+				FROM = { is_ai = no }
+			}
+		}
+		FROM = { country_event = { id = NWgeneric.18 hours = 6 } }
+	}
+}
+
+#FROM – отказ возвращать наши территории // требователь
+country_event = {
+	id = NWgeneric.18
+	title = NWgeneric.18.t
+	desc = NWgeneric.18.desc
+	picture = GFX_report_event_military_planning
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWgeneric.18" }
+	
+	option = {
+		name = NWgeneric.18.a
+		ai_chance = {
+			factor = 25
+			modifier = {
+				factor = 2
+				has_government = communism
+				FROM = {
+					OR = {
+						has_government = fascism
+						has_government = monarchy
+						has_government = trozkism
+						has_government = anarchism
+					}
+				}
+			}
+			modifier = {
+				factor = 2
+				has_government = trozkism
+				FROM = {
+					OR = {
+						has_government = fascism
+						has_government = monarchy
+						has_government = communism
+						has_government = anarchism
+					}
+				}
+			}
+			modifier = {
+				factor = 2
+				has_government = fascism
+				FROM = {
+					NOT = {
+						has_government = fascism
+						has_government = monarchy
+						has_government = neutrality
+					}
+				}
+			}
+			modifier = {
+				factor = 2
+				has_government = anarchism
+				FROM = { NOT = { has_government = anarchism } }
+			}
+		}
+		trigger = { is_faction_leader = yes }
+		add_ai_strategy = {
+			type = alliance
+			id = FROM		
+			value = -1000
+		}
+		FROM = {
+			leave_faction = yes
+			add_ai_strategy = {
+				type = alliance
+				id = ROOT		
+				value = -1000
+			}
+			set_country_flag = { flag = outcast_@ROOT days = 1 value = 1 }
+		}
+		custom_effect_tooltip = NWgeneric_18a_tt
+		hidden_effect = {
+			every_other_country = {
+				country_event = { id = NWgeneric.19 hours = 6 }
+			}
+		}
+	}
+	
+	option = {
+		name = NWgeneric.18.b
+		ai_chance = {
+			factor = 25
+		}
+		trigger = { is_faction_leader = no }
+		hidden_effect = {
+			FROM = {
+				set_country_flag = { flag = call_canceler_@ROOT days = 1 value = 1 }
+			}
+		}
+		random_other_country = {
+			limit = {
+				is_in_faction_with = ROOT
+				is_faction_leader = yes
+			}
+			country_event = { id = NWgeneric.20 hours = 6 }
+		}
+	}
+	
+	option = {
+		name = NWgeneric.18.c
+		ai_chance = {
+			factor = 50
+			modifier = {
+				factor = 10
+				FROM = { has_government = ROOT }
+			}
+		}
+	}
+}
+
+#FROM – исключение из альянса // Члены альянсов
+country_event = {
+	id = NWgeneric.19
+	title = NWgeneric.19.t
+	desc = NWgeneric.19.desc
+	picture = GFX_report_event_military_planning
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWgeneric.19" }
+	immediate = {
+		random_other_country = {
+			limit = {
+				has_country_flag = outcast_@FROM
+			}
+			save_event_target_as = is_outcast_by_@FROM	#Держава
+		}
+	}
+	
+	option = {
+		name = NWgeneric.19.a
+		ai_chance = {
+			factor = 90
+		}
+	}
+	
+	option = {
+		name = NWgeneric.19.b
+		ai_chance = {
+			factor = 10
+		}
+		leave_faction = yes
+		add_ai_strategy = {
+			type = alliance
+			id = FROM		
+			value = -1000
+		}
+		ROOT = {
+			add_ai_strategy = {
+				type = alliance
+				id = FROM		
+				value = -1000
+			}
+		}
+		add_opinion_modifier = { target = FROM modifier = diplomatic_protest_op }
+		FROM = { add_opinion_modifier = { target = ROOT modifier = diplomatic_protest_op } }
+		add_opinion_modifier = { target = event_target:is_outcast_by_@FROM modifier = diplomatic_protest_op2 }
+		event_target:is_outcast_by_@FROM = { add_opinion_modifier = { target = ROOT modifier = diplomatic_protest_op2 } }
+	}
+}
+
+#[Страна] и [Держава] – территориальный спор // лидер альянса
+country_event = {
+	id = NWgeneric.20
+	title = NWgeneric.20.t
+	desc = NWgeneric.20.desc
+	picture = GFX_report_event_military_planning
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWgeneric.20" }
+	immediate = {
+		random_other_country = {
+			limit = {
+				has_country_flag = call_canceler_@FROM
+			}
+			save_event_target_as = is_call_canceler_by_@FROM	#Держава
+		}
+	}
+	
+	option = {
+		name = NWgeneric.20.a
+		ai_chance = {
+			factor = 50
+		}
+		event_target:is_call_canceler_by_@FROM = { country_event = { id = NWgeneric.21 hours = 6 } }
+		FROM = { set_country_flag = { flag = demender_@ROOT days = 1 value = 1 } }
+	}
+	
+	option = {
+		name = NWgeneric.20.b
+		ai_chance = {
+			factor = 50
+		}
+		FROM = { country_event = { id = NWgeneric.22 hours = 6 } }
+	}
+}
+
+#[Лидер альянса] – требование вернуть [прилагательное Страны] территории // Держава
+country_event = {
+	id = NWgeneric.21
+	title = NWgeneric.21.t
+	desc = NWgeneric.21.desc
+	picture = GFX_report_event_military_planning
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWgeneric.21" }
+	immediate = {
+		random_other_country = {
+			limit = {
+				has_country_flag = demender_@FROM
+			}
+			save_event_target_as = is_demender_by_@FROM	#Страна
+		}
+	}
+	
+	option = {
+		name = NWgeneric.21.a
+		ai_chance = {
+			factor = 10
+		}
+		leave_faction = yes
+		add_ai_strategy = {
+			type = alliance
+			id = FROM		
+			value = -1000
+		}
+		ROOT = {
+			add_ai_strategy = {
+				type = alliance
+				id = FROM		
+				value = -1000
+			}
+		}
+		add_opinion_modifier = { target = FROM modifier = diplomatic_protest_op }
+		FROM = { add_opinion_modifier = { target = ROOT modifier = diplomatic_protest_op } }
+	}
+	
+	option = {
+		name = NWgeneric.21.b
+		ai_chance = {
+			factor = 90
+		}
+		every_state = {
+			limit = {
+				OR = {
+					is_core_of = event_target:is_demender_by_@FROM
+					is_claimed_by = event_target:is_demender_by_@FROM
+				}
+				owner = {
+					OR = {
+						tag = ROOT
+						is_subject_of = ROOT
+					}
+				}
+			}
+			remove_core_of = ROOT
+			remove_claim_by = ROOT
+			event_target:is_demender_by_@FROM = { transfer_state = PREV }
+		}
+	}
+}
+
+#[Лидер альянса] – отказ нас поддержать // Страна
+country_event = {
+	id = NWgeneric.22
+	title = NWgeneric.22.t
+	desc = NWgeneric.22.desc
+	picture = GFX_report_event_military_planning
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWgeneric.22" }
+	immediate = {
+		random_other_country = {
+			limit = {
+				has_country_flag = demender_@FROM
+			}
+			save_event_target_as = is_demender_by_@FROM	#Страна
+		}
+	}
+	
+	option = {
+		name = NWgeneric.22.a
+		ai_chance = {
+			factor = 10
+		}
+		leave_faction = yes
+		add_ai_strategy = {
+			type = alliance
+			id = FROM		
+			value = -1000
+		}
+		FROM = {
+			add_ai_strategy = {
+				type = alliance
+				id = FROM		
+				value = -1000
+			}
+		}
+		add_opinion_modifier = { target = FROM modifier = diplomatic_protest_op }
+		FROM = { add_opinion_modifier = { target = ROOT modifier = diplomatic_protest_op } }
+	}
+	
+	option = {
+		name = NWgeneric.22.b
+		ai_chance = {
+			factor = 90
+		}
+	}
+}
+
+
 ### АНАРХОГЕНЕРИК ###
 
 #Революция свершилась
@@ -1828,4 +2241,3 @@ country_event = {
 	}
 	
 }
-

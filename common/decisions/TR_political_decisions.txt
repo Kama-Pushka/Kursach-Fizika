@@ -4127,7 +4127,11 @@ nw_political_actions = {
 		#days_re_enable = 365
 
 		ai_will_do = {
-			factor = 1
+			factor = 2
+			modifier = {
+				add = 10
+				has_stability < 0.75
+			}
 		}
 		
 		modifier = {
@@ -4239,6 +4243,11 @@ nw_political_actions = {
 
 		ai_will_do = {
 			factor = 1
+			modifier = {
+				add = 10
+				has_stability < 0.5
+			}
+			
 		}
 		
 		modifier = {
@@ -4274,8 +4283,9 @@ nw_political_actions = {
 		ai_will_do = {
 			factor = 0
 			modifier = {
-				add = 1
-				has_stability > 0.5
+				add = 5
+				has_stability > 0.4
+				has_war_support < 1.0
 			}
 		}
 		
@@ -4349,7 +4359,10 @@ nw_political_actions = {
 			factor = 1
 			modifier = {
 				add = 10
-				has_stability < 0.25
+				OR = {
+					has_stability < 0.6
+					monarchy < 0.85
+				}
 			}
 		}
 		
@@ -4393,6 +4406,10 @@ nw_political_actions = {
 
 		ai_will_do = {
 			factor = 2
+			modifier = {
+				add = 10
+				has_stability > 0.5
+			}
 		}
 		
 		modifier = {
@@ -4419,6 +4436,7 @@ nw_political_actions = {
 				limit = { has_government = democratic }
 				threat > 0.3
 			}
+			has_idea = extensive_conscription
 		}
 		
 		visible = {
@@ -4431,7 +4449,7 @@ nw_political_actions = {
 			factor = 2
 			modifier = {
 				factor = 0
-				has_stability < 0.2
+				has_stability < 0.25
 			}
 		}
 		
@@ -4480,6 +4498,10 @@ nw_political_actions = {
 
 		ai_will_do = {
 			factor = 2.5
+			modifier = {
+				factor = 0
+				num_of_civilian_factories_available_for_projects < 1
+			}
 		}
 		
 		modifier = {
@@ -4490,7 +4512,288 @@ nw_political_actions = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision create_free_trade_zone"
 		}
 	}
-	
-
-
 }
+
+nw_interactions_with_allies_category = {
+	
+	demand_our_territories = {
+
+		icon = generic_civil_support
+		
+		available = {
+			has_capitulated = no
+			is_subject = no
+			FROM = {
+				has_civil_war = no
+				has_capitulated = no
+				is_in_faction_with = ROOT
+				OR = {
+					is_subject = no
+					has_autonomy_state = autonomy_dominion
+				}
+			}
+			any_state = {
+				OR = {
+					AND = {
+						NOT = { is_core_of = FROM }
+						is_core_of = ROOT
+					}
+					is_claimed_by = ROOT
+				}
+				owner = {
+					OR = {
+						tag = FROM
+						is_subject_of = FROM
+					}
+				}
+			}
+		}
+		
+		visible = {
+			country_exists = FROM
+			FROM = {
+				has_civil_war = no
+				has_capitulated = no
+				is_in_faction_with = ROOT
+				OR = {
+					is_subject = no
+					has_autonomy_state = autonomy_dominion
+				}
+			}
+			any_state = {
+				OR = {
+					AND = {
+						NOT = { is_core_of = FROM }
+						is_core_of = ROOT
+					}
+					is_claimed_by = ROOT
+				}
+				owner = {
+					OR = {
+						tag = FROM
+						is_subject_of = FROM
+					}
+				}
+			}
+		}
+		
+		target_root_trigger = {
+			is_subject = no
+			is_in_faction_with = FROM
+		}
+		
+		target_trigger = {
+			FROM = {
+				has_civil_war = no
+				has_capitulated = no
+				is_in_faction_with = ROOT
+				OR = {
+					is_subject = no
+					has_autonomy_state = autonomy_dominion
+				}
+			}
+			any_state = {
+				OR = {
+					AND = {
+						NOT = { is_core_of = FROM }
+						is_core_of = ROOT
+					}
+					is_claimed_by = ROOT
+				}
+				owner = {
+					OR = {
+						tag = FROM
+						is_subject_of = FROM
+					}
+				}
+			}
+		}
+		
+		cost = 10
+		fire_only_once = yes
+		
+		complete_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision demand_our_territories (From [From.GetName] [From.GetTag])"
+			FROM = { country_event = { id = NWgeneric.17 hours = 6 } }
+		}
+		
+		ai_will_do = {
+			factor = 100
+			modifier = {
+				factor = 0
+				is_historical_focus_on = yes
+				OR = {
+					tag = ROM
+					tag = HUN
+					tag = BUL
+				}
+			}
+		}
+	}
+	
+	transfer_to_subject_his_territory = {
+
+		icon = generic_operation
+		
+		available = {
+			has_capitulated = no
+			is_subject = no
+			FROM = {
+				has_civil_war = no
+				has_capitulated = no
+				is_subject_of = ROOT
+			}
+			any_owned_state = {
+				is_core_of = FROM
+				is_claimed_by = FROM
+			}
+		}
+		
+		visible = {
+			country_exists = FROM
+			FROM = {
+				has_civil_war = no
+				has_capitulated = no
+				is_subject_of = ROOT
+			}
+			any_owned_state = {
+				is_core_of = FROM
+				is_claimed_by = FROM
+			}
+		}
+		
+		target_root_trigger = {
+			is_subject = no
+			num_subjects > 0
+		}
+		
+		target_trigger = {
+			FROM = {
+				has_civil_war = no
+				has_capitulated = no
+				is_subject_of = ROOT
+			}
+			any_owned_state = {
+				is_core_of = FROM
+				is_claimed_by = FROM
+			}
+		}
+		
+		cost = 0
+
+		complete_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision transfer_to_subject_his_territory (From [From.GetName] [From.GetTag])"
+			every_owned_state = {
+				limit = {
+					is_core_of = FROM
+					is_claimed_by = FROM
+				}
+				remove_core_of = ROOT
+				remove_claim_by = ROOT
+				FROM = { transfer_state = PREV }
+			}
+		}
+		
+		ai_will_do = {
+			factor = 10
+			modifier = {
+				factor = 0
+				is_historical_focus_on = yes
+				OR = {
+					tag = ROM
+					tag = HUN
+					tag = BUL
+				}
+			}
+		}
+	}
+	
+	transfer_part_of_his_regions_to_subject = {
+
+		icon = eng_trade_unions_support
+		
+		available = {
+			has_capitulated = no
+			is_subject = no
+			FROM = {
+				has_civil_war = no
+				has_capitulated = no
+				is_subject_of = ROOT
+			}
+			any_owned_state = {
+				OR = {
+					is_core_of = FROM
+					is_claimed_by = FROM
+				}
+				NOT = { is_core_of = ROOT }
+			}
+		}
+		
+		visible = {
+			country_exists = FROM
+			FROM = {
+				has_civil_war = no
+				has_capitulated = no
+				is_subject_of = ROOT
+			}
+			any_owned_state = {
+				OR = {
+					is_core_of = FROM
+					is_claimed_by = FROM
+				}
+				NOT = { is_core_of = ROOT }
+			}
+		}
+		
+		target_root_trigger = {
+			is_subject = no
+			num_subjects > 0
+		}
+		
+		target_trigger = {
+			FROM = {
+				has_civil_war = no
+				has_capitulated = no
+				is_subject_of = ROOT
+			}
+			any_owned_state = {
+				OR = {
+					is_core_of = FROM
+					is_claimed_by = FROM
+				}
+				NOT = { is_core_of = ROOT }
+			}
+		}
+		
+		cost = 0
+
+		complete_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision transfer_part_of_his_regions_to_subject (From [From.GetName] [From.GetTag])"
+			every_owned_state = {
+				limit = {
+					OR = {
+						is_core_of = FROM
+						is_claimed_by = FROM
+					}
+				}
+				remove_core_of = ROOT
+				remove_claim_by = ROOT
+				FROM = { transfer_state = PREV }
+			}
+		}
+		
+		ai_will_do = {
+			factor = 10
+			modifier = {
+				factor = 0
+				is_historical_focus_on = yes
+				OR = {
+					tag = ROM
+					tag = HUN
+					tag = BUL
+				}
+			}
+		}
+	}
+}
+
