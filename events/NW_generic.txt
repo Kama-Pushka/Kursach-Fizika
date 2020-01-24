@@ -1051,7 +1051,7 @@ country_event = {
 	option = {
 		name = NWgeneric.17.a
 		ai_chance = {
-			factor = 75
+			factor = 0
 			modifier = {
 				factor = 0
 				has_government = communism
@@ -1110,6 +1110,16 @@ country_event = {
 			remove_claim_by = ROOT
 			FROM = { transfer_state = PREV }
 		}
+		every_state = {
+			limit = {
+				is_claimed_by = ROOT
+				OR = {
+					is_core_of = FROM
+					is_owned_by = FROM
+				}
+			}
+			remove_claim_by = ROOT
+		}
 	}
 	
 	option = {
@@ -1117,11 +1127,11 @@ country_event = {
 		ai_chance = {
 			factor = 25
 			modifier = {
-				factor = 0
+				factor = 1
 				FROM = { has_government = ROOT }
 			}
 			modifier = {
-				factor = 0
+				factor = 1
 				FROM = { is_ai = no }
 			}
 		}
@@ -1251,9 +1261,9 @@ country_event = {
 	immediate = {
 		random_other_country = {
 			limit = {
-				has_country_flag = outcast_@FROM
+				has_country_flag = { flag = outcast_@FROM value > 0 }
 			}
-			save_event_target_as = is_outcast_by_@FROM	#Держава
+			save_event_target_as = is_outcast	#Держава
 		}
 	}
 	
@@ -1301,9 +1311,9 @@ country_event = {
 	immediate = {
 		random_other_country = {
 			limit = {
-				has_country_flag = call_canceler_@FROM
+				has_country_flag = { flag = call_canceler_@FROM value > 0 }
 			}
-			save_event_target_as = is_call_canceler_by_@FROM	#Держава
+			save_event_target_as = is_call_canceler	#Держава
 		}
 	}
 	
@@ -1312,8 +1322,8 @@ country_event = {
 		ai_chance = {
 			factor = 50
 		}
-		event_target:is_call_canceler_by_@FROM = { country_event = { id = NWgeneric.21 hours = 6 } }
 		FROM = { set_country_flag = { flag = demender_@ROOT days = 1 value = 1 } }
+		FROM.FROM = { country_event = { id = NWgeneric.21 hours = 6 } }
 	}
 	
 	option = {
@@ -1337,9 +1347,9 @@ country_event = {
 	immediate = {
 		random_other_country = {
 			limit = {
-				has_country_flag = demender_@FROM
+				has_country_flag = { flag = demender_@FROM value > 0 }
 			}
-			save_event_target_as = is_demender_by_@FROM	#Страна
+			save_event_target_as = is_demender	#Страна
 		}
 	}
 	
@@ -1357,7 +1367,7 @@ country_event = {
 		ROOT = {
 			add_ai_strategy = {
 				type = alliance
-				id = FROM		
+				id = FROM
 				value = -1000
 			}
 		}
@@ -1373,8 +1383,8 @@ country_event = {
 		every_state = {
 			limit = {
 				OR = {
-					is_core_of = event_target:is_demender_by_@FROM
-					is_claimed_by = event_target:is_demender_by_@FROM
+					is_core_of = event_target:is_demender
+					is_claimed_by = event_target:is_demender
 				}
 				owner = {
 					OR = {
@@ -1385,7 +1395,17 @@ country_event = {
 			}
 			remove_core_of = ROOT
 			remove_claim_by = ROOT
-			event_target:is_demender_by_@FROM = { transfer_state = PREV }
+			event_target:is_demender = { transfer_state = PREV }
+		}
+		every_state = {
+			limit = {
+				is_claimed_by = ROOT
+				OR = {
+					is_core_of = event_target:is_demender
+					is_owned_by = event_target:is_demender
+				}
+			}
+			remove_claim_by = ROOT
 		}
 	}
 }
@@ -1399,14 +1419,6 @@ country_event = {
 	is_triggered_only = yes
 	
 	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWgeneric.22" }
-	immediate = {
-		random_other_country = {
-			limit = {
-				has_country_flag = demender_@FROM
-			}
-			save_event_target_as = is_demender_by_@FROM	#Страна
-		}
-	}
 	
 	option = {
 		name = NWgeneric.22.a
