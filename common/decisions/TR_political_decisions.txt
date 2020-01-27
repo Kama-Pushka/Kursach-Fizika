@@ -4437,7 +4437,11 @@ nw_political_actions = {
 				limit = { has_government = democratic }
 				threat > 0.3
 			}
-			has_idea = extensive_conscription
+			NOT = {
+				has_idea = disarmed_nation
+				has_idea = volunteer_only
+				has_idea = limited_conscription
+			}
 		}
 		
 		visible = {
@@ -4616,11 +4620,31 @@ nw_interactions_with_allies_category = {
 		}
 		
 		cost = 10
-		#fire_only_once = yes
+		fire_only_once = yes
 		
 		complete_effect = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision demand_our_territories (From [From.GetName] [From.GetTag])"
-			FROM = { country_event = { id = NWgeneric.17 hours = 6 } }
+			FROM = {
+				country_event = { id = NWgeneric.17 hours = 6 }
+				custom_effect_tooltip = needs_approval
+			}
+			effect_tooltip = {
+				every_state = {
+					limit = {
+						OR = {
+							is_core_of = ROOT
+							is_claimed_by = ROOT
+						}
+						owner = {
+							OR = {
+								tag = FROM
+								is_subject_of = FROM
+							}
+						}
+					}
+					ROOT = { transfer_state = PREV }
+				}
+			}
 		}
 		
 		ai_will_do = {
@@ -4743,6 +4767,11 @@ nw_interactions_with_allies_category = {
 				factor = 0
 				is_historical_focus_on = yes
 				has_government = fascism
+			}
+			modifier = {
+				factor = 0
+				tag = ENG
+				ENG = { has_government = democratic }
 			}
 			modifier = {
 				add = 25
@@ -4879,6 +4908,12 @@ nw_interactions_with_allies_category = {
 				}
 				remove_core_of = ROOT
 				remove_claim_by = ROOT
+				random_other_country = {
+					limit = {
+						PREV = { is_claimed_by = PREV }
+					}
+					remove_state_claim = PREV
+				}
 				FROM = { transfer_state = PREV }
 			}
 		}
@@ -4898,6 +4933,11 @@ nw_interactions_with_allies_category = {
 				factor = 0
 				is_historical_focus_on = yes
 				has_government = fascism
+			}
+			modifier = {
+				factor = 0
+				tag = ENG
+				ENG = { has_government = democratic }
 			}
 			modifier = {
 				add = 25

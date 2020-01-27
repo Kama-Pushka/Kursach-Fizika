@@ -766,6 +766,14 @@ country_event = {
 			relation = military_access
 			active = yes
 		}
+		if = {
+			limit = { FROM = { is_subject_of = ROOT } }
+			FROM = {
+				add_autonomy_score = {
+					value = -250
+				}
+			}
+		}
 	}
 	
 	option = {
@@ -782,39 +790,50 @@ country_event = {
 		ai_chance = {
 			factor = 75
 		}
-		419 = { add_claim_by = FROM }
-		963 = { add_claim_by = FROM }
 		if = {
-			limit = { has_guaranteed = FROM }
-			diplomatic_relation = {
-				country = FROM
-				relation = guarantee
-				active = no
-			}
-		}
-		if = {
-			limit = { is_guaranteed_by = FROM }
-			FROM = {
+			limit = { FROM = { NOT = { is_subject_of = ROOT } } }
+			419 = { add_claim_by = FROM }
+			963 = { add_claim_by = FROM }
+			if = {
+				limit = { has_guaranteed = FROM }
 				diplomatic_relation = {
-					country = ROOT
+					country = FROM
 					relation = guarantee
 					active = no
 				}
 			}
-		}
-		FROM = {
-			create_wargoal = {
-				type = take_state_focus
-				target = ROOT
-				generator = { 419 963 }
+			if = {
+				limit = { is_guaranteed_by = FROM }
+				FROM = {
+					diplomatic_relation = {
+						country = ROOT
+						relation = guarantee
+						active = no
+					}
+				}
+			}
+			FROM = {
+				create_wargoal = {
+					type = take_state_focus
+					target = ROOT
+					generator = { 419 963 }
+				}
+			}
+			if = {
+				limit = {
+					is_in_faction_with = FROM
+					FROM = { is_faction_leader = yes }
+				}
+				leave_faction = yes
 			}
 		}
 		if = {
-			limit = {
-				is_in_faction_with = FROM
-				FROM = { is_faction_leader = yes }
+			limit = { FROM = { is_subject_of = ROOT } }
+			FROM = {
+				add_autonomy_score = {
+					value = 250
+				}
 			}
-			leave_faction = yes
 		}
 	}
 }
