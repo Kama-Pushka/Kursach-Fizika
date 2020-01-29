@@ -734,6 +734,10 @@ country_event = {
 		name = NWpalestine.16.b
 		ai_chance = {
 			factor = 50
+			modifier = {
+				factor = 0
+				is_historical_focus_on = yes
+			}
 		}
 		add_political_power = -150
 		custom_effect_tooltip = NWpalestine_16_tt2
@@ -824,7 +828,7 @@ country_event = {
 	}
 }
 
-#Арабы высказывают своё мнение I // OR OVERLORD-BPL
+#Арабы высказывают своё мнение // OR OVERLORD-BPL
 country_event = {
 	id = NWpalestine.20
 	title = NWpalestine.20.t
@@ -853,6 +857,7 @@ country_event = {
 		if = {
 			limit = { check_variable = { BPL_arab_tensions_total > 49.999 } }
 			custom_effect_tooltip = NWpalestine_20_tt1
+			set_country_flag = NWpalestine_20_a_1
 		}
 		else_if = {
 			limit = {
@@ -860,6 +865,7 @@ country_event = {
 				check_variable = { BPL_arab_tensions_total > 9.999 }
 			}
 			custom_effect_tooltip = NWpalestine_20_tt2
+			set_country_flag = NWpalestine_20_a_2
 		}
 		else = { custom_effect_tooltip = NWpalestine_20_tt3 }
 		country_event = { id = NWpalestine.21 hours = 6 }
@@ -895,6 +901,7 @@ country_event = {
 		if = {
 			limit = { check_variable = { BPL_jews_tensions_total > 49.999 } }
 			custom_effect_tooltip = NWpalestine_21_tt1
+			set_country_flag = NWpalestine_21_a_1
 		}
 		else_if = {
 			limit = {
@@ -902,6 +909,7 @@ country_event = {
 				check_variable = { BPL_jews_tensions_total > 9.999 }
 			}
 			custom_effect_tooltip = NWpalestine_21_tt2
+			set_country_flag = NWpalestine_21_a_2
 		}
 		else = { custom_effect_tooltip = NWpalestine_21_tt3 }
 		country_event = { id = NWpalestine.22 hours = 6 }
@@ -911,8 +919,22 @@ country_event = {
 #Определение судьбы подмандатной Палестины // OR OVERLORD-BPL
 country_event = {
 	id = NWpalestine.22
-	title = NWpalestine.22.t
-	desc = NWpalestine.22.desc
+	title = {
+		text = NWpalestine.22.t1
+		trigger = { NOT = { has_country_flag = BPL_no_transfer_ownership_of_mandate } }
+	}
+	title = {
+		text = NWpalestine.22.t2
+		trigger = { has_country_flag = BPL_no_transfer_ownership_of_mandate }
+	}
+	desc = {
+		text = NWpalestine.22.desc1
+		trigger = { NOT = { has_country_flag = BPL_no_transfer_ownership_of_mandate } }
+	}
+	desc = {
+		text = NWpalestine.22.desc2
+		trigger = { has_country_flag = BPL_no_transfer_ownership_of_mandate }
+	}
 	picture = GFX_report_event_generic_rally_3
 	is_triggered_only = yes
 	
@@ -962,7 +984,7 @@ country_event = {
 			}
 		}
 		BPL = { country_event = { id = NWpalestine.23 hours = 6 } }
-		every_coutry = {
+		every_country = {
 			limit = {
 				OR = {
 					tag = IRQ
@@ -1048,11 +1070,225 @@ country_event = {
 				}
 			}
 			BPL = { NOT = { has_autonomy_state = autonomy_dominion } }
+			NOT = { has_country_flag = BPL_no_transfer_ownership_of_mandate }
 		}
 		event_target:NW_france_scope = {
 			country_event = { id = NWpalestine.26 hours = 6 }
 			custom_effect_tooltip = NWpalestine_22_e_tt
 		}
+	}
+	
+	option = {
+		name = NWpalestine.22.g
+		ai_chance = {
+			factor = 200
+		}
+		set_autonomy = {
+			target = BPL
+			autonomy_state = autonomy_free
+		}
+		BPL = { country_event = { id = NWpalestine.27 hours = 6 } }
+	}
+}
+
+#Создание еврейского государства // BPL
+country_event = {
+	id = NWpalestine.23
+	title = NWpalestine.23.t
+	desc = NWpalestine.23.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWpalestine.23" }
+	
+	option = {
+		name = NWpalestine.23.a
+		set_country_flag = BPL_creation_of_jewish_state_flag
+		effect_tooltip = { unlock_national_focus = BPL_concessions_jewish_leaders }
+		if = {
+			limit = { has_country_flag = NWpalestine_20_a_1 }
+			set_temp_variable = { BPL_arab_tensions = 90 }
+			add_to_variable = { BPL_arab_tensions_total = BPL_arab_tensions }
+			custom_effect_tooltip = BPL_arab_tensions_plus_tt
+			clamp_variable = { var = BPL_arab_tensions_total min = 0 max = 100 }
+			clamp_variable = { var = BPL_jews_tensions_total min = 0 max = 100 }
+			log = "[GetDateText]: [This.GetName] ([This.GetTag]): BPL_arab_tensions_total: [?BPL_arab_tensions_total]"
+			log = "[GetDateText]: [This.GetName] ([This.GetTag]): BPL_jews_tensions_total: [?BPL_jews_tensions_total]"
+		}
+		if = {
+			limit = { has_country_flag = NWpalestine_20_a_2 }
+			set_temp_variable = { BPL_arab_tensions = 40 }
+			add_to_variable = { BPL_arab_tensions_total = BPL_arab_tensions }
+			custom_effect_tooltip = BPL_arab_tensions_plus_tt
+			clamp_variable = { var = BPL_arab_tensions_total min = 0 max = 100 }
+			clamp_variable = { var = BPL_jews_tensions_total min = 0 max = 100 }
+			log = "[GetDateText]: [This.GetName] ([This.GetTag]): BPL_arab_tensions_total: [?BPL_arab_tensions_total]"
+			log = "[GetDateText]: [This.GetName] ([This.GetTag]): BPL_jews_tensions_total: [?BPL_jews_tensions_total]"
+		}
+	}
+}
+
+#Создание арабского государства // BPL
+country_event = {
+	id = NWpalestine.24
+	title = NWpalestine.24.t
+	desc = NWpalestine.24.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWpalestine.24" }
+	
+	option = {
+		name = NWpalestine.24.a
+		set_country_flag = BPL_creation_of_arab_state_flag
+		effect_tooltip = { unlock_national_focus = BPL_concessions_arab_leaders }
+		if = {
+			limit = { has_country_flag = NWpalestine_21_a_1 }
+			set_temp_variable = { BPL_jews_tensions = 90 }
+			add_to_variable = { BPL_jews_tensions_total = BPL_jews_tensions }
+			custom_effect_tooltip = BPL_jews_tensions_plus_tt
+			clamp_variable = { var = BPL_arab_tensions_total min = 0 max = 100 }
+			clamp_variable = { var = BPL_jews_tensions_total min = 0 max = 100 }
+			log = "[GetDateText]: [This.GetName] ([This.GetTag]): BPL_arab_tensions_total: [?BPL_arab_tensions_total]"
+			log = "[GetDateText]: [This.GetName] ([This.GetTag]): BPL_jews_tensions_total: [?BPL_jews_tensions_total]"
+		}
+		if = {
+			limit = { has_country_flag = NWpalestine_21_a_2 }
+			set_temp_variable = { BPL_jews_tensions = 40 }
+			add_to_variable = { BPL_jews_tensions_total = BPL_jews_tensions }
+			custom_effect_tooltip = BPL_jews_tensions_plus_tt
+			clamp_variable = { var = BPL_arab_tensions_total min = 0 max = 100 }
+			clamp_variable = { var = BPL_jews_tensions_total min = 0 max = 100 }
+			log = "[GetDateText]: [This.GetName] ([This.GetTag]): BPL_arab_tensions_total: [?BPL_arab_tensions_total]"
+			log = "[GetDateText]: [This.GetName] ([This.GetTag]): BPL_jews_tensions_total: [?BPL_jews_tensions_total]"
+		}
+	}
+}
+
+#Сохранение статуса-кво // BPL
+country_event = {
+	id = NWpalestine.25
+	title = NWpalestine.25.t
+	desc = NWpalestine.25.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWpalestine.25" }
+	
+	option = {
+		name = NWpalestine.25.a
+		set_country_flag = BPL_jewish_arab_compromise_flag
+		effect_tooltip = { unlock_national_focus = BPL_jewish_arab_compromise }
+	}
+}
+
+#Британия хочет передать нам мандат на Палестину // FRA
+country_event = {
+	id = NWpalestine.26
+	title = NWpalestine.26.t
+	desc = NWpalestine.26.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWpalestine.26" }
+	
+	option = {
+		name = NWpalestine.26.a
+		ai_chance = {
+			factor = 75
+		}
+		add_political_power = 50
+		add_opinion_modifier = { target = FROM modifier = BPL_transfer_ownership_of_mandate }
+		FROM = { add_opinion_modifier = { target = ROOT modifier = BPL_transfer_ownership_of_mandate } }
+		set_autonomy = {
+			target = BPL
+			autonomy_state = autonomy_colony
+		}
+		hidden_effect = {
+			BPL = { set_cosmetic_tag = BPL_FRA }
+			create_country_leader = {
+				name = "André Spire"
+				desc = "POLITICS_ANDRE_SPIRE_DESC"
+				picture = "gfx/leaders/BPL/Portrait_Andre_Spire.dds"
+				expire = "1965.1.1"
+				ideology = centrism
+				traits = {
+				}
+			}
+		}
+		country_event = { id = NWpalestine.22 hours = 6 }
+	}
+	
+	option = {
+		name = NWpalestine.26.b
+		ai_chance = {
+			factor = 25
+		}
+		add_opinion_modifier = { target = FROM modifier = BPL_no_transfer_ownership_of_mandate }
+		FROM = { add_opinion_modifier = { target = ROOT modifier = BPL_no_transfer_ownership_of_mandate } }
+		hidden_effect = {
+			FROM = {
+				set_country_flag = BPL_no_transfer_ownership_of_mandate
+				country_event = { id = NWpalestine.22 hours = 6 }
+			}
+		}
+	}
+}
+
+#Британия хочет передать нам мандат на Палестину // FRA
+country_event = {
+	id = NWpalestine.27
+	title = NWpalestine.27.t
+	desc = NWpalestine.27.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWpalestine.27" }
+	
+	option = {
+		name = NWpalestine.27.a
+		ai_chance = {
+			factor = 50
+		}
+		add_popularity = {
+			ideology = fascism
+			popularity = 0.5
+		}
+		set_politics = {
+			ruling_party = fascism
+			elections_allowed = no
+		}
+		complete_national_focus = BPL_concessions_arab_leaders
+		set_temp_variable = { BPL_jews_tensions = 90 }
+		add_to_variable = { BPL_jews_tensions_total = BPL_jews_tensions }
+		custom_effect_tooltip = BPL_jews_tensions_plus_tt
+		clamp_variable = { var = BPL_arab_tensions_total min = 0 max = 100 }
+		clamp_variable = { var = BPL_jews_tensions_total min = 0 max = 100 }
+		log = "[GetDateText]: [This.GetName] ([This.GetTag]): BPL_arab_tensions_total: [?BPL_arab_tensions_total]"
+		log = "[GetDateText]: [This.GetName] ([This.GetTag]): BPL_jews_tensions_total: [?BPL_jews_tensions_total]"
+	}
+	
+	option = {
+		name = NWpalestine.27.b
+		ai_chance = {
+			factor = 50
+		}
+		add_popularity = {
+			ideology = democratic
+			popularity = 0.5
+		}
+		set_politics = {
+			ruling_party = democratic
+			elections_allowed = no
+		}
+		complete_national_focus = BPL_concessions_jewish_leaders
+		set_temp_variable = { BPL_arab_tensions = 90 }
+		add_to_variable = { BPL_arab_tensions_total = BPL_arab_tensions }
+		custom_effect_tooltip = BPL_arab_tensions_plus_tt
+		clamp_variable = { var = BPL_arab_tensions_total min = 0 max = 100 }
+		clamp_variable = { var = BPL_jews_tensions_total min = 0 max = 100 }
+		log = "[GetDateText]: [This.GetName] ([This.GetTag]): BPL_arab_tensions_total: [?BPL_arab_tensions_total]"
+		log = "[GetDateText]: [This.GetName] ([This.GetTag]): BPL_jews_tensions_total: [?BPL_jews_tensions_total]"
 	}
 }
 
