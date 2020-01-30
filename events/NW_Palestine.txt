@@ -1179,6 +1179,26 @@ country_event = {
 		name = NWpalestine.25.a
 		set_country_flag = BPL_jewish_arab_compromise_flag
 		effect_tooltip = { unlock_national_focus = BPL_jewish_arab_compromise }
+		if = {
+			limit = { has_country_flag = NWpalestine_21_a_1 }
+			set_temp_variable = { BPL_jews_tensions = 20 }
+			add_to_variable = { BPL_jews_tensions_total = BPL_jews_tensions }
+			custom_effect_tooltip = BPL_jews_tensions_plus_tt
+			clamp_variable = { var = BPL_arab_tensions_total min = 0 max = 100 }
+			clamp_variable = { var = BPL_jews_tensions_total min = 0 max = 100 }
+			log = "[GetDateText]: [This.GetName] ([This.GetTag]): BPL_arab_tensions_total: [?BPL_arab_tensions_total]"
+			log = "[GetDateText]: [This.GetName] ([This.GetTag]): BPL_jews_tensions_total: [?BPL_jews_tensions_total]"
+		}
+		else_if = {
+			limit = { has_country_flag = NWpalestine_20_a_1 }
+			set_temp_variable = { BPL_arab_tensions = 20 }
+			add_to_variable = { BPL_arab_tensions_total = BPL_arab_tensions }
+			custom_effect_tooltip = BPL_arab_tensions_plus_tt
+			clamp_variable = { var = BPL_arab_tensions_total min = 0 max = 100 }
+			clamp_variable = { var = BPL_jews_tensions_total min = 0 max = 100 }
+			log = "[GetDateText]: [This.GetName] ([This.GetTag]): BPL_arab_tensions_total: [?BPL_arab_tensions_total]"
+			log = "[GetDateText]: [This.GetName] ([This.GetTag]): BPL_jews_tensions_total: [?BPL_jews_tensions_total]"
+		}
 	}
 }
 
@@ -1235,7 +1255,7 @@ country_event = {
 	}
 }
 
-#Британия хочет передать нам мандат на Палестину // FRA
+#Британия отказывается от мандата на Палестину // BPL
 country_event = {
 	id = NWpalestine.27
 	title = NWpalestine.27.t
@@ -1279,7 +1299,7 @@ country_event = {
 		}
 		set_politics = {
 			ruling_party = democratic
-			elections_allowed = no
+			elections_allowed = yes
 		}
 		complete_national_focus = BPL_concessions_jewish_leaders
 		set_temp_variable = { BPL_arab_tensions = 90 }
@@ -1289,6 +1309,255 @@ country_event = {
 		clamp_variable = { var = BPL_jews_tensions_total min = 0 max = 100 }
 		log = "[GetDateText]: [This.GetName] ([This.GetTag]): BPL_arab_tensions_total: [?BPL_arab_tensions_total]"
 		log = "[GetDateText]: [This.GetName] ([This.GetTag]): BPL_jews_tensions_total: [?BPL_jews_tensions_total]"
+	}
+}
+
+#Победа еврейства в Палестине // IRQ, SYR, PER, EGY, TUR (при фашизме), JOR, LEB, SAU, MOR, TUN, YEM, OMA, IOM, UAE, QAT, BHR и KUW 
+country_event = {
+	id = NWpalestine.28
+	title = NWpalestine.28.t
+	desc = NWpalestine.28.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWpalestine.28" }
+	
+	option = {
+		name = NWpalestine.28.a
+		ai_chance = {
+			factor = 99
+			modifier = {
+				factor = 0
+				OR = {
+					has_government = democratic
+					has_government = trozkism
+				}
+			}
+		}
+		add_stability = -0.03
+		add_threat = 1
+		add_opinion_modifier = { target = FROM modifier = BPL_concessions_jewish_leaders_2 }
+		FROM = {
+			add_opinion_modifier = { target = ROOT modifier = BPL_concessions_jewish_leaders_2 }
+			OVERLORD = { ROOT = { add_opinion_modifier = { target = PREV modifier = BPL_concessions_jewish_leaders_2 } } }
+		}
+	}
+	
+	option = {
+		name = NWpalestine.28.b
+		ai_chance = {
+			factor = 1
+		}
+		add_stability = -0.1
+		add_opinion_modifier = { target = FROM modifier = BPL_concessions_jewish_leaders_3 }
+		FROM = { add_opinion_modifier = { target = ROOT modifier = BPL_concessions_jewish_leaders_3 } }
+	}
+}
+
+#Общественный энтузиазм создания кибуцев // BPL
+country_event = {
+	id = NWpalestine.29
+	title = NWpalestine.29.t
+	desc = NWpalestine.29.desc
+	picture = GFX_report_event_generic_rally_3
+	fire_only_once = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWpalestine.29" }
+	
+	mean_time_to_happen = { days = 30 }
+	
+	trigger = {
+		tag = BPL
+		has_completed_focus = BPL_concessions_jewish_leaders
+		OR = {
+			has_completed_focus = BPL_bet_on_alum
+			has_completed_focus = BPL_support_ha_kibbutz_ha_meuhad
+		}
+		check_variable = { BPL_arab_tensions_total > 50 }
+	}
+	
+	option = {
+		name = NWpalestine.29.a
+		ai_chance = {
+			factor = 50
+		}
+		add_timed_idea = { idea = BPL_growth_of_kibbutz_movement days = 360 }
+	}
+	
+	option = {
+		name = NWpalestine.29.b
+		ai_chance = {
+			factor = 50
+		}
+		add_political_power = -10
+	}
+}
+
+#Представители Еврейского университета ставят на Эйнштейна // BPL
+country_event = {
+	id = NWpalestine.30
+	title = NWpalestine.30.t
+	desc = NWpalestine.30.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWpalestine.30" }
+	
+	option = {
+		name = NWpalestine.30.a
+		add_timed_idea = { idea = BPL_einsteins_growing_popularity_as_politician days = 360 }
+		add_popularity = {
+			ideology = technocracy
+			popularity = 0.05
+		}
+		add_tech_bonus = {
+			name = NWpalestine.30.t
+			bonus = 0.5
+			uses = 1
+			category = industry
+		}
+		add_tech_bonus = {
+			name = NWpalestine.30.t
+			bonus = 0.5
+			uses = 1
+			category = support_tech
+		
+		}
+		add_tech_bonus = {
+			name = NWpalestine.30.t
+			bonus = 0.5
+			uses = 1
+			category = artillery
+		
+		}
+		add_tech_bonus = {
+			name = NWpalestine.30.t
+			bonus = 0.5
+			uses = 1
+			category = motorized_equipment
+		}
+	}
+}
+
+#Представители Еврейского университета ставят на Эйнштейна // USA
+country_event = {
+	id = NWpalestine.31
+	title = NWpalestine.31.t
+	desc = NWpalestine.31.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWpalestine.31" }
+	
+	option = {
+		name = NWpalestine.31.a
+		ai_chance = {
+			factor = 75
+		}
+		random_owned_controlled_state = {
+			limit = { industrial_complex > 0 }
+			remove_building = {
+				type = industrial_complex
+				level = 1
+			}
+		}
+		FROM = {
+			random_owned_controlled_state = {
+				limit = { 
+					free_building_slots = {
+						building = industrial_complex
+						size > 0
+						include_locked = yes
+					}
+				}
+				add_extra_state_shared_building_slots = 1
+				add_building_construction = {
+					type = industrial_complex
+					level = 1
+					instant_build = yes
+				}
+			}
+		}
+		add_opinion_modifier = { target = FROM modifier = BPL_connections_with_jewish_bankers }
+		FROM = { add_opinion_modifier = { target = ROOT modifier = BPL_connections_with_jewish_bankers } }
+		add_ideas = BPL_connections_with_jewish_bankers
+	}
+	
+	option = {
+		name = NWpalestine.31.b
+		ai_chance = {
+			factor = 25
+		}
+	}
+}
+
+#Исчезновение дешёвой рабочей силы // BPL
+country_event = {
+	id = NWpalestine.32
+	title = NWpalestine.32.t
+	desc = NWpalestine.32.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWpalestine.32" }
+	
+	option = {
+		name = NWpalestine.32.a
+		add_timed_idea = { idea = BPL_negative_consequences_of_expulsion_arabs days = 280 }
+		set_country_flag = NWpalestine_32_flag
+	}
+}
+
+#Митинги левых // BPL
+country_event = {
+	id = NWpalestine.33
+	title = NWpalestine.33.t
+	desc = NWpalestine.33.desc
+	picture = GFX_report_event_generic_rally_3
+	fire_only_once = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWpalestine.33" }
+	
+	mean_time_to_happen = {
+		days = 140
+		modifier = {
+			factor = 0.01 # If true multiply 140 by 0.01 = 1.4
+			communism > 0.499
+		}
+	}
+	
+	trigger = {
+		tag = BPL
+		has_country_flag = NWpalestine_32_flag
+		NOT = { has_government = communism }
+		OR = {
+			has_idea = BPL_negative_consequences_of_expulsion_arabs
+			communism > 0.499
+		}
+	}
+	
+	option = {
+		name = NWpalestine.33.a
+		ai_chance = {
+			factor = 50
+		}
+		add_stability = -0.1
+		add_political_power = -50
+		add_popularity = {
+			ideology = communism
+			popularity = -0.1
+		}
+	}
+	
+	option = {
+		name = NWpalestine.33.b
+		ai_chance = {
+			factor = 50
+		}
+		set_politics = {
+			ruling_party = communism
+			elections_allowed = no
+		}
 	}
 }
 
