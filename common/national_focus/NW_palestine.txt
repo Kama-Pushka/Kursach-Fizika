@@ -925,7 +925,7 @@ focus_tree = {
 		y = 1
 		relative_position_id = BPL_announce_new_aliyah
 		
-		cost = 10
+		cost = 5
 		
 		cancel_if_invalid = yes
 		continue_if_invalid = no
@@ -940,11 +940,16 @@ focus_tree = {
 		}
 		
 		select_effect = {
+			if = {
+				limit = { NOT = { has_completed_focus = BPL_seventh_dominion } }
+				country_event = { id = NWpalestine.34 days = 20 }
+			}
 		}
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BPL_expanding_authority_of_jewish_agency"
-			
+			add_political_power = 100
+			add_autonomy_score = { value = 200 }
 		}
 	}
 	
@@ -977,6 +982,7 @@ focus_tree = {
 			factor = 10
 		}
 		available = {
+			has_government = communism
 		}
 		bypass = {
 		}
@@ -986,7 +992,33 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BPL_proclaim_israeli_federation"
-			
+			add_timed_idea = { idea = BPL_proclaim_israeli_federation_idea days = 180 }
+			add_ideas = BPL_uncontrolled_military_groups
+			set_cosmetic_tag = BPL_israel
+			if = {
+				limit = { is_subject = yes }
+				OVERLORD = {
+					set_autonomy = {
+						target = PREV
+						autonomy_state = autonomy_free
+					}
+				}
+			}
+			if = {
+				limit = { is_in_faction = yes }
+				leave_faction = yes
+			}
+			if = {
+				limit = { JOR = { is_subject = yes } }
+				JOR = {
+					OVERLORD = {
+						set_autonomy = {
+							target = PREV
+							autonomy_state = autonomy_free
+						}
+					}
+				}
+			}
 		}
 	}
 	
@@ -1017,7 +1049,53 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BPL_give_autonomy_to_arabs"
-			
+			PAL = {
+				add_state_core = 978
+				add_state_core = 454
+			}
+			release = PAL
+			set_autonomy = {
+				target = PAL
+				autonomy_state = autonomy_colony
+			}
+			PAL = {
+				add_timed_idea = { idea = BPL_influx_of_arab_population days = 360 }
+				hidden_effect = {
+					if = {
+						limit = { NOT = { has_template = "Arab battalions" } }
+						division_template = {
+							name = "Arab battalions"
+							is_locked = no
+							regiments = {
+								infantry = { x = 0 y = 0 }
+								infantry = { x = 0 y = 1 }
+								infantry = { x = 0 y = 2 }
+								infantry = { x = 1 y = 0 }
+								infantry = { x = 1 y = 1 }
+								infantry = { x = 1 y = 2 }
+							}
+						}
+					}
+				}
+				capital_scope = {
+					create_unit = {
+						division = "name = \"1. Arab battalions\" division_template = \"Arab battalions\" start_experience_factor = 0.2" 
+						owner = PREV
+					}
+					create_unit = {
+						division = "name = \"2. Arab battalions\" division_template = \"Arab battalions\" start_experience_factor = 0.2" 
+						owner = PREV
+					}
+				}
+			}
+			set_temp_variable = { BPL_arab_tensions = 100 }
+			subtract_from_variable = { BPL_arab_tensions_total = BPL_arab_tensions }
+			custom_effect_tooltip = BPL_arab_tensions_minus_tt
+			clamp_variable = { var = BPL_arab_tensions_total min = 0 max = 100 }
+			clamp_variable = { var = BPL_jews_tensions_total min = 0 max = 100 }
+			log = "[GetDateText]: [This.GetName] ([This.GetTag]): BPL_arab_tensions_total: [?BPL_arab_tensions_total]"
+			log = "[GetDateText]: [This.GetName] ([This.GetTag]): BPL_jews_tensions_total: [?BPL_jews_tensions_total]"
+			custom_effect_tooltip = BPL_give_autonomy_to_arabs_tt
 		}
 	}
 	
@@ -1039,6 +1117,7 @@ focus_tree = {
 			factor = 10
 		}
 		available = {
+			owns_state = 1055
 		}
 		bypass = {
 		}
@@ -1048,7 +1127,21 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BPL_development_of_desert_regions"
-			
+			1055 = {
+				set_state_category = rural
+				add_extra_state_shared_building_slots = 2
+				add_building_construction = {
+					type = industrial_complex
+					level = 1
+					instant_build = yes
+				}
+				add_building_construction = {
+					type = dockyard
+					level = 1
+					instant_build = yes
+				}
+			}
+			unlock_decision_category_tooltip = BPL_development_of_desert_regions_category
 		}
 	}
 	
@@ -1080,7 +1173,23 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BPL_collectivization_of_kibbutz"
-			
+			add_timed_idea = { idea = BPL_collectivization_of_kibbutz_idea days = 180 }
+			every_state = {
+				limit = {
+					owner = {
+						OR = {
+							original_tag = PAL
+							is_subject_of = PAL
+						}
+					}
+				}
+				add_extra_state_shared_building_slots = 1
+				add_building_construction = {
+					type = industrial_complex
+					level = 1
+					instant_build = yes
+				}
+			}
 		}
 	}
 	
@@ -1112,7 +1221,36 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BPL_create_council_for_each_kibbutz"
-			
+			add_ideas = BPL_transformation_of_kibbutzim_in_council
+			every_owned_state = {
+				add_extra_state_shared_building_slots = 1
+			}
+			hidden_effect = {
+				if = {
+					limit = { NOT = { has_template = "United kibbutz division" } }
+					division_template = {
+						name = "United kibbutz division"
+						is_locked = no
+						regiments = {
+							infantry = { x = 0 y = 0 }
+							infantry = { x = 0 y = 1 }
+							infantry = { x = 0 y = 2 }
+							infantry = { x = 1 y = 0 }
+							infantry = { x = 1 y = 1 }
+							infantry = { x = 1 y = 2 }
+							infantry = { x = 2 y = 0 }
+							infantry = { x = 2 y = 1 }
+							infantry = { x = 2 y = 2 }
+						}
+					}
+				}
+			}
+			capital_scope = {
+				create_unit = {
+					division = "name = \"United kibbutz division\" division_template = \"United kibbutz division\" start_experience_factor = 0.6" 
+					owner = ROOT
+				}
+			}
 		}
 	}
 	
@@ -1146,7 +1284,18 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BPL_accelerated_industrialization_of_israel"
-			
+			add_timed_idea = { idea = BPL_accelerated_industrialization_of_israel days = 180 }
+			every_owned_state = {
+				add_extra_state_shared_building_slots = 1
+			}
+			capital_scope = {
+				add_extra_state_shared_building_slots = 1
+				add_building_construction = {
+					type = industrial_complex
+					level = 1
+					instant_build = yes
+				}
+			}
 		}
 	}
 	
@@ -3569,7 +3718,10 @@ focus_tree = {
 			factor = 10
 		}
 		available = {
-			has_completed_focus = BPL_seventh_dominion
+			OR = {
+				has_completed_focus = BPL_seventh_dominion
+				has_country_flag = BPL_revision_zionism_flag
+			}
 		}
 		bypass = {
 		}
@@ -3932,6 +4084,7 @@ focus_tree = {
 		}
 		available = {
 			NOT = { has_completed_focus = BPL_seventh_dominion }
+			has_country_flag = BPL_radical_revisionism_flag
 		}
 		bypass = {
 		}
