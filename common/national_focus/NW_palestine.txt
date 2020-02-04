@@ -9,7 +9,7 @@ focus_tree = {
 			tag = BPL
 		}
 	}
-	continuous_focus_position = { x = 80 y = 2000 }
+	continuous_focus_position = { x = 300 y = 100 }
 	default = no
 	
 	
@@ -37,10 +37,9 @@ focus_tree = {
 			NOT = { has_completed_focus = BPL_jewish_arab_compromise }
 			custom_trigger_tooltip = {
 				tooltip = BPL_jewish_arab_tensions_trigger_tt
-				set_temp_variable = { tensions_temp1 = 30 }
 				OR = {
-					check_variable = { var = BPL_arab_tensions_total value = tensions_temp1 compare = greater_than_or_equals }
-					check_variable = { var = BPL_jews_tensions_total value = tensions_temp1 compare = greater_than_or_equals }
+					check_variable = { var = BPL_arab_tensions_total value = 30 compare = greater_than_or_equals }
+					check_variable = { var = BPL_jews_tensions_total value = 30 compare = greater_than_or_equals }
 				}
 			}
 		}
@@ -173,7 +172,7 @@ focus_tree = {
 				desc = "POLITICS_ZEEV_JABOTINSKY_DESC"
 				picture = "gfx/leaders/BPL/Portrait_Israel_Ze'ev_Jabotinsky.dds"
 				expire = "1965.1.1"
-				ideology = liberalism
+				ideology = national_liberals
 				traits = {
 					vladimir_gitlerovich
 					ardent_nationalist
@@ -1491,6 +1490,7 @@ focus_tree = {
 		available = {
 			is_subject = no
 			country_exists = SOV
+			NOT = { has_war_with = SOV }
 			SOV = {
 				has_government = communism
 				is_faction_leader = yes
@@ -1530,6 +1530,7 @@ focus_tree = {
 			factor = 10
 		}
 		available = {
+			is_in_faction_with = SOV
 		}
 		bypass = {
 		}
@@ -5171,7 +5172,26 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BPL_revision_zionism"
-			
+			set_party_name = { ideology = democratic long_name = BPL_union_of_zionist_revisionists name = BPL_union_of_zionist_revisionists }
+			add_popularity = {
+				ideology = democratic
+				popularity = 0.3
+			}
+			set_politics = {
+				ruling_party = democratic
+				elections_allowed = yes
+			}
+			create_country_leader = {
+				name = "Ze’ev Jabotinsky"
+				desc = "POLITICS_ZEEV_JABOTINSKY_DESC"
+				picture = "gfx/leaders/BPL/Portrait_Israel_Ze'ev_Jabotinsky.dds"
+				expire = "1965.1.1"
+				ideology = national_liberals
+				traits = {
+					vladimir_gitlerovich
+					ardent_nationalist
+				}
+			}
 		}
 	}
 	
@@ -5195,14 +5215,15 @@ focus_tree = {
 		available = {
 		}
 		bypass = {
+			has_completed_focus = BPL_seventh_dominion
 		}
 		
 		select_effect = {
 		}
 
 		completion_reward = {
-			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BPL_revision_zionism"
-			
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BPL_aggressive_rhetoric"
+			add_ideas = BPL_aggressive_rhetoric
 		}
 	}
 	
@@ -5238,7 +5259,16 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BPL_revision_zionism"
-			
+			create_country_leader = {
+				name = "David Ben-Gurion "
+				desc = "POLITICS_DAVID_BEN_GURION_DESC"
+				picture = "gfx/leaders/BPL/Portrait_Israel_David_Ben-Gurion.dds"
+				expire = "1965.1.1"
+				ideology = socialism
+				traits = {
+					father_of_israel
+				}
+			}
 		}
 	}
 	
@@ -5269,7 +5299,14 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BPL_approve_arabic_official_language"
-			
+			set_temp_variable = { BPL_arab_tensions = 20 }
+			subtract_from_variable = { BPL_arab_tensions_total = BPL_arab_tensions }
+			custom_effect_tooltip = BPL_arab_tensions_minus_tt
+			clamp_variable = { var = BPL_arab_tensions_total min = 0 max = 100 }
+			clamp_variable = { var = BPL_jews_tensions_total min = 0 max = 100 }
+			log = "[GetDateText]: [This.GetName] ([This.GetTag]): BPL_arab_tensions_total: [?BPL_arab_tensions_total]"
+			log = "[GetDateText]: [This.GetName] ([This.GetTag]): BPL_jews_tensions_total: [?BPL_jews_tensions_total]"
+			add_ideas = BPL_approve_arabic_official_language_idea
 		}
 	}
 	
@@ -5304,7 +5341,16 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BPL_cooperation_with_world"
-			
+			every_other_country = {
+				limit = {
+					OR = {
+						has_government = democratic
+						has_government = neutrality
+					}
+				}
+				add_opinion_modifier = { target = ROOT modifier = BPL_cooperation_with_world }
+				ROOT = { add_opinion_modifier = { target = PREV modifier = BPL_cooperation_with_world } }
+			}
 		}
 	}
 	
@@ -5330,8 +5376,13 @@ focus_tree = {
 			factor = 10
 		}
 		available = {
+			is_subject = no
+			country_exists = ENG
+			NOT = { has_war_with = ENG }
+			ENG = { is_faction_leader = yes }
 		}
 		bypass = {
+			is_in_faction_with = ENG
 		}
 		
 		select_effect = {
@@ -5339,7 +5390,7 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BPL_join_allies_israel"
-			
+			ENG = { country_event = { id = generic.2 } }
 		}
 	}
 	
@@ -5373,7 +5424,7 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BPL_arrangement_land_of_israel"
-			
+			add_ideas = BPL_arrangement_land_of_israel
 		}
 	}
 	
@@ -5404,7 +5455,21 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BPL_inflow_investments_from_europe"
-			
+			random_owned_controlled_state = {
+				limit = { 
+					free_building_slots = {
+						building = industrial_complex
+						size > 2
+						include_locked = yes
+					}
+				}
+				add_extra_state_shared_building_slots = 3
+				add_building_construction = {
+					type = industrial_complex
+					level = 3
+					instant_build = yes
+				}
+			}
 		}
 	}
 	
@@ -5435,7 +5500,8 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BPL_development_of_kibbutz"
-			
+			add_ideas = BPL_development_of_kibbutz
+			every_owned_state = { add_extra_state_shared_building_slots = 1 }
 		}
 	}
 	
@@ -5466,7 +5532,21 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BPL_defense_of_state"
-			
+			random_owned_controlled_state = {
+				limit = { 
+					free_building_slots = {
+						building = arms_factory
+						size > 2
+						include_locked = yes
+					}
+				}
+				add_extra_state_shared_building_slots = 3
+				add_building_construction = {
+					type = arms_factory
+					level = 3
+					instant_build = yes
+				}
+			}
 		}
 	}
 	
@@ -5497,7 +5577,8 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BPL_compulsory_military_service_for_women"
-			
+			set_rule = { can_generate_female_aces = yes }
+			add_ideas = BPL_compulsory_military_service_for_women
 		}
 	}
 	
@@ -5534,7 +5615,11 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BPL_radical_revisionism"
-			
+			add_popularity = {
+				ideology = fascism
+				popularity = 0.1
+			}
+			add_timed_idea = { idea = BPL_radical_revisionism days = 180 }
 		}
 	}
 	
@@ -5565,7 +5650,43 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BPL_revive_jewish_legion"
-			
+			add_ideas = BPL_revive_jewish_legion_idea
+			hidden_effect = {
+				if = {
+					limit = { NOT = { has_template = "Jewish legion" } }
+					division_template = {
+						name = "Jewish legion"
+						is_locked = no
+						regiments = {
+							infantry = { x = 0 y = 0 }
+							infantry = { x = 0 y = 1 }
+							infantry = { x = 0 y = 2 }
+							infantry = { x = 1 y = 0 }
+							infantry = { x = 1 y = 1 }
+							infantry = { x = 1 y = 2 }
+							infantry = { x = 2 y = 0 }
+							infantry = { x = 2 y = 1 }
+							infantry = { x = 2 y = 2 }
+							infantry = { x = 3 y = 0 }
+						}
+						priority = 2
+					}
+				}
+			}
+			capital_scope = {
+				create_unit = {
+					division = "name = \"1. Jewish legion\" division_template = \"Jewish legion\" start_experience_factor = 0.2" 
+					owner = ROOT
+				}
+				create_unit = {
+					division = "name = \"2. Jewish legion\" division_template = \"Jewish legion\" start_experience_factor = 0.2" 
+					owner = ROOT
+				}
+				create_unit = {
+					division = "name = \"3. Jewish legion\" division_template = \"Jewish legion\" start_experience_factor = 0.2" 
+					owner = ROOT
+				}
+			}
 		}
 	}
 	
@@ -5588,7 +5709,10 @@ focus_tree = {
 			factor = 10
 		}
 		available = {
+			is_subject = no
+			is_in_faction = no
 		}
+		
 		bypass = {
 		}
 		
@@ -5597,7 +5721,12 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BPL_zionist_way"
-			
+			set_rule = { can_create_factions = yes }
+			if = {
+				limit = { is_faction_leader = yes }
+				set_faction_name = BPL_legion
+			}
+			else = { create_faction = BPL_legion }
 		}
 	}
 	
@@ -5620,8 +5749,18 @@ focus_tree = {
 			factor = 10
 		}
 		available = {
+			is_subject = no
+			country_exists = SOV
+			NOT = { has_war_with = ITA }
+			ITA = {
+				is_subject = no
+				is_faction_leader = yes
+				is_in_faction = no
+				has_government = fascism
+			}
 		}
 		bypass = {
+			is_in_faction_with = ITA
 		}
 		
 		select_effect = {
@@ -5629,7 +5768,7 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BPL_help_mussolini_in_spread_of_fascism"
-			
+			ITA = { country_event = { id = NWpalestine.42 days = 1 } }
 		}
 	}
 	
@@ -5654,6 +5793,7 @@ focus_tree = {
 			factor = 10
 		}
 		available = {
+			is_in_faction_with = ITA
 		}
 		bypass = {
 		}
@@ -5663,7 +5803,8 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BPL_scientific_cooperation"
-			
+			add_to_tech_sharing_group = BPL_scientific_cooperation_group
+			SOV = { add_to_tech_sharing_group = BPL_scientific_cooperation_group }
 		}
 	}
 	
@@ -5685,8 +5826,15 @@ focus_tree = {
 			factor = 10
 		}
 		available = {
+			is_subject = no
 		}
 		bypass = {
+			OR = {
+				NOT = { country_exists = JOR }
+				has_war_with = JOR
+				is_in_faction_with = JOR
+				JOR = { is_subject_of = ROOT }
+			}
 		}
 		
 		select_effect = {
@@ -5694,7 +5842,20 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BPL_conquer_territory_of_transjordan"
-			
+			create_wargoal = {
+				type = annex_everything
+				target = JOR
+			}
+			add_ai_strategy = {
+				type = antagonize
+				id = "JOR"
+				value = 200
+			}
+			add_ai_strategy = {
+				type = conquer
+				id = "JOR"
+				value = 200
+			}
 		}
 	}
 	
@@ -5725,7 +5886,8 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BPL_settle_conquered_lands_of_jews"
-			
+			add_ideas = BPL_settle_conquered_lands_of_jews_idea
+			unlock_decision_category_tooltip = BPL_settlement_of_arab_territories_jews_category
 		}
 	}
 	
@@ -5747,8 +5909,15 @@ focus_tree = {
 			factor = 10
 		}
 		available = {
+			is_subject = no
 		}
 		bypass = {
+			OR = {
+				NOT = { country_exists = SAU }
+				has_war_with = SAU
+				is_in_faction_with = SAU
+				SAU = { is_subject_of = ROOT }
+			}
 		}
 		
 		select_effect = {
@@ -5756,7 +5925,20 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BPL_warning_of_threat_from_saudis"
-			
+			create_wargoal = {
+				type = annex_everything
+				target = SAU
+			}
+			add_ai_strategy = {
+				type = antagonize
+				id = "SAU"
+				value = 200
+			}
+			add_ai_strategy = {
+				type = conquer
+				id = "SAU"
+				value = 200
+			}
 		}
 	}
 	
@@ -5778,8 +5960,15 @@ focus_tree = {
 			factor = 10
 		}
 		available = {
+			is_subject = no
 		}
 		bypass = {
+			OR = {
+				NOT = { country_exists = IRQ }
+				has_war_with = IRQ
+				is_in_faction_with = IRQ
+				IRQ = { is_subject_of = ROOT }
+			}
 		}
 		
 		select_effect = {
@@ -5787,7 +5976,20 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BPL_attack_on_iraq"
-			
+			create_wargoal = {
+				type = annex_everything
+				target = IRQ
+			}
+			add_ai_strategy = {
+				type = antagonize
+				id = "IRQ"
+				value = 200
+			}
+			add_ai_strategy = {
+				type = conquer
+				id = "IRQ"
+				value = 200
+			}
 		}
 	}
 	
@@ -5809,8 +6011,15 @@ focus_tree = {
 			factor = 10
 		}
 		available = {
+			is_subject = no
 		}
 		bypass = {
+			OR = {
+				NOT = { country_exists = PER }
+				has_war_with = PER
+				is_in_faction_with = PER
+				PER = { is_subject_of = ROOT }
+			}
 		}
 		
 		select_effect = {
@@ -5818,7 +6027,20 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BPL_defeat_iranians"
-			
+			create_wargoal = {
+				type = annex_everything
+				target = PER
+			}
+			add_ai_strategy = {
+				type = antagonize
+				id = "PER"
+				value = 200
+			}
+			add_ai_strategy = {
+				type = conquer
+				id = "PER"
+				value = 200
+			}
 		}
 	}
 	
@@ -5849,7 +6071,11 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BPL_return_land_of_moses"
-			
+			add_state_claim = 453
+			if = {
+				limit = { 453 = { owner = { OR = { is_subject = no has_autonomy_state = autonomy_dominion } } } }
+				453 = { owner = { country_event = { id = NWpalestine.40 hours = 6 } } }
+			}
 		}
 	}
 	
@@ -5870,7 +6096,7 @@ focus_tree = {
 		available_if_capitulated = yes
 
 		ai_will_do = {
-			factor = 10
+			factor = 50
 		}
 		available = {
 		}
@@ -5882,7 +6108,7 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BPL_triumph_of_world_jewry"
-			
+			add_ideas = BPL_triumph_of_world_jewry
 		}
 	}
 	
@@ -10194,7 +10420,7 @@ focus_tree = {
 		available_if_capitulated = yes
 
 		ai_will_do = {
-			factor = 10
+			factor = 7.5
 		}
 		available = {
 		}
@@ -10205,7 +10431,13 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BPL_create_an_air_force"
-			
+			air_experience = 25
+			add_tech_bonus = {
+				bonus = 1
+				uses = 1
+				category = air_doctrine
+				name = BPL_create_an_air_force
+			}
 		}
 	}
 	
@@ -10227,9 +10459,10 @@ focus_tree = {
 		available_if_capitulated = yes
 
 		ai_will_do = {
-			factor = 10
+			factor = 7.5
 		}
 		available = {
+			owns_state = 979
 		}
 		bypass = {
 		}
@@ -10238,7 +10471,20 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BPL_air_base_in_haifa"
-			
+			979 = {
+				add_building_construction = {
+					type = air_base
+					level = 2
+					instant_build = yes
+				}
+			}
+			set_temp_variable = { BPL_arab_tensions = 10 }
+			add_to_variable = { BPL_arab_tensions_total = BPL_arab_tensions }
+			custom_effect_tooltip = BPL_arab_tensions_plus_tt
+			clamp_variable = { var = BPL_arab_tensions_total min = 0 max = 100 }
+			clamp_variable = { var = BPL_jews_tensions_total min = 0 max = 100 }
+			log = "[GetDateText]: [This.GetName] ([This.GetTag]): BPL_arab_tensions_total: [?BPL_arab_tensions_total]"
+			log = "[GetDateText]: [This.GetName] ([This.GetTag]): BPL_jews_tensions_total: [?BPL_jews_tensions_total]"
 		}
 	}
 	
@@ -10260,9 +10506,10 @@ focus_tree = {
 		available_if_capitulated = yes
 
 		ai_will_do = {
-			factor = 10
+			factor = 7.5
 		}
 		available = {
+			owns_state = 454
 		}
 		bypass = {
 		}
@@ -10271,7 +10518,20 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BPL_air_base_in_gaza"
-			
+			454 = {
+				add_building_construction = {
+					type = air_base
+					level = 2
+					instant_build = yes
+				}
+			}
+			set_temp_variable = { BPL_jews_tensions = 10 }
+			add_to_variable = { BPL_jews_tensions_total = BPL_jews_tensions }
+			custom_effect_tooltip = BPL_jews_tensions_plus_tt
+			clamp_variable = { var = BPL_arab_tensions_total min = 0 max = 100 }
+			clamp_variable = { var = BPL_jews_tensions_total min = 0 max = 100 }
+			log = "[GetDateText]: [This.GetName] ([This.GetTag]): BPL_arab_tensions_total: [?BPL_arab_tensions_total]"
+			log = "[GetDateText]: [This.GetName] ([This.GetTag]): BPL_jews_tensions_total: [?BPL_jews_tensions_total]"
 		}
 	}
 	
@@ -10293,9 +10553,10 @@ focus_tree = {
 		available_if_capitulated = yes
 
 		ai_will_do = {
-			factor = 10
+			factor = 7.5
 		}
 		available = {
+			owns_state = 980
 		}
 		bypass = {
 		}
@@ -10304,7 +10565,13 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BPL_air_base_in_jerusalem"
-			
+			980 = {
+				add_building_construction = {
+					type = air_base
+					level = 1
+					instant_build = yes
+				}
+			}
 		}
 	}
 	
@@ -10326,7 +10593,7 @@ focus_tree = {
 		available_if_capitulated = yes
 
 		ai_will_do = {
-			factor = 10
+			factor = 7.5
 		}
 		available = {
 		}
@@ -10337,7 +10604,12 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BPL_production_of_fighters"
-			
+			add_tech_bonus = {
+				bonus = 1
+				uses = 1
+				category = light_air
+				name = BPL_production_of_fighters
+			}
 		}
 	}
 	
@@ -10355,7 +10627,7 @@ focus_tree = {
 		available_if_capitulated = yes
 
 		ai_will_do = {
-			factor = 10
+			factor = 7.5
 		}
 		available = {
 		}
@@ -10366,7 +10638,12 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BPL_production_of_bombers"
-			
+			add_tech_bonus = {
+				bonus = 1
+				uses = 1
+				category = tactical_bomber
+				name = BPL_production_of_bombers
+			}
 		}
 	}
 	
@@ -10384,7 +10661,7 @@ focus_tree = {
 		available_if_capitulated = yes
 
 		ai_will_do = {
-			factor = 10
+			factor = 7.5
 		}
 		available = {
 		}
@@ -10395,7 +10672,12 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BPL_production_of_cas"
-			
+			add_tech_bonus = {
+				bonus = 1
+				uses = 1
+				category = cas_bomber
+				name = BPL_production_of_cas
+			}
 		}
 	}
 	
@@ -10418,7 +10700,7 @@ focus_tree = {
 		available_if_capitulated = yes
 
 		ai_will_do = {
-			factor = 10
+			factor = 7.5
 		}
 		available = {
 		}
@@ -10429,7 +10711,13 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BPL_create_an_navy_force"
-			
+			navy_experience = 25
+			add_tech_bonus = {
+				name = PER_primacy_of_army
+				bonus = 1.0
+				uses = 1
+				category = naval_doctrine
+			}
 		}
 	}
 	
@@ -10448,9 +10736,10 @@ focus_tree = {
 		available_if_capitulated = yes
 
 		ai_will_do = {
-			factor = 10
+			factor = 7.5
 		}
 		available = {
+			owns_state = 980
 		}
 		bypass = {
 		}
@@ -10459,7 +10748,24 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BPL_create_shipyard_in_telaviv"
-			
+			980 = {
+				add_extra_state_shared_building_slots = 1
+				add_building_construction = {
+					type = dockyard
+					level = 1
+					instant_build = yes
+				}
+			}
+			set_temp_variable = { BPL_arab_tensions = 10 }
+			set_temp_variable = { BPL_jews_tensions = 10 }
+			add_to_variable = { BPL_arab_tensions_total = BPL_arab_tensions }
+			subtract_from_variable = { BPL_jews_tensions_total = BPL_jews_tensions }
+			custom_effect_tooltip = BPL_arab_tensions_plus_tt
+			custom_effect_tooltip = BPL_jews_tensions_minus_tt
+			clamp_variable = { var = BPL_arab_tensions_total min = 0 max = 100 }
+			clamp_variable = { var = BPL_jews_tensions_total min = 0 max = 100 }
+			log = "[GetDateText]: [This.GetName] ([This.GetTag]): BPL_arab_tensions_total: [?BPL_arab_tensions_total]"
+			log = "[GetDateText]: [This.GetName] ([This.GetTag]): BPL_jews_tensions_total: [?BPL_jews_tensions_total]"
 		}
 	}
 	
@@ -10478,9 +10784,10 @@ focus_tree = {
 		available_if_capitulated = yes
 
 		ai_will_do = {
-			factor = 10
+			factor = 7.5
 		}
 		available = {
+			owns_state = 454
 		}
 		bypass = {
 		}
@@ -10489,7 +10796,24 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BPL_create_shipyard_in_jaffa"
-			
+			454 = {
+				add_extra_state_shared_building_slots = 1
+				add_building_construction = {
+					type = dockyard
+					level = 1
+					instant_build = yes
+				}
+			}
+			set_temp_variable = { BPL_arab_tensions = 10 }
+			set_temp_variable = { BPL_jews_tensions = 10 }
+			subtract_from_variable = { BPL_arab_tensions_total = BPL_arab_tensions }
+			add_to_variable = { BPL_jews_tensions_total = BPL_jews_tensions }
+			custom_effect_tooltip = BPL_arab_tensions_minus_tt
+			custom_effect_tooltip = BPL_jews_tensions_plus_tt
+			clamp_variable = { var = BPL_arab_tensions_total min = 0 max = 100 }
+			clamp_variable = { var = BPL_jews_tensions_total min = 0 max = 100 }
+			log = "[GetDateText]: [This.GetName] ([This.GetTag]): BPL_arab_tensions_total: [?BPL_arab_tensions_total]"
+			log = "[GetDateText]: [This.GetName] ([This.GetTag]): BPL_jews_tensions_total: [?BPL_jews_tensions_total]"
 		}
 	}
 	
@@ -10510,7 +10834,7 @@ focus_tree = {
 		available_if_capitulated = yes
 
 		ai_will_do = {
-			factor = 10
+			factor = 7.5
 		}
 		available = {
 		}
@@ -10521,7 +10845,12 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BPL_construction_of_destroyers"
-			
+			add_tech_bonus = {
+				name = dd_bonus
+				bonus = 1.0
+				uses = 1
+				category = dd_tech
+			}
 		}
 	}
 	
@@ -10539,7 +10868,7 @@ focus_tree = {
 		available_if_capitulated = yes
 
 		ai_will_do = {
-			factor = 10
+			factor = 7.5
 		}
 		available = {
 		}
@@ -10550,7 +10879,12 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BPL_construction_of_submarines"
-			
+			add_tech_bonus = {
+				name = BPL_construction_of_submarines
+				bonus = 1.0
+				uses = 1
+				category = ss_tech
+			}
 		}
 	}
 	
@@ -10568,7 +10902,7 @@ focus_tree = {
 		available_if_capitulated = yes
 
 		ai_will_do = {
-			factor = 10
+			factor = 7.5
 		}
 		available = {
 		}
@@ -10579,14 +10913,19 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BPL_protecting_shores_of_palestine"
-			
+			add_tech_bonus = {
+				name = BPL_protecting_shores_of_palestine
+				bonus = 1.0
+				uses = 2
+				category = naval_mines
+			}
 		}
 	}
 	
 	
-	############################
-	##### INDUSTRY SECTION #####
-	############################
+	########################
+	##### LAND SECTION #####
+	########################
 	
 	focus = {
 		id = BPL_strengthening_of_palestinian_police
@@ -10602,7 +10941,7 @@ focus_tree = {
 		available_if_capitulated = yes
 
 		ai_will_do = {
-			factor = 10
+			factor = 7.5
 		}
 		available = {
 		}
@@ -10613,7 +10952,40 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BPL_strengthening_of_palestinian_police"
-			
+			army_experience = 25
+			add_ideas = BPL_strengthening_of_palestinian_police
+			add_tech_bonus = {
+				name = BPL_strengthening_of_palestinian_police
+				bonus = 1.0
+				uses = 1
+				category = land_doctrine
+			}
+			hidden_effect = {
+				if = {
+					limit = { NOT = { has_template = "Palestinian police battalions" } }
+					division_template = {
+						name = "Palestinian police battalions"
+						is_locked = no
+						regiments = {
+							infantry = { x = 0 y = 0 }
+							infantry = { x = 0 y = 1 }
+							infantry = { x = 0 y = 2 }
+							infantry = { x = 1 y = 0 }
+							infantry = { x = 1 y = 1 }
+							infantry = { x = 1 y = 2 }
+						}
+						support = {
+							recon = { x = 0 y = 0 }
+						}
+					}
+				}
+			}
+			capital_scope = {
+				create_unit = {
+					division = "name = \"Palestinian police battalions\" division_template = \"Palestinian police battalions\" start_experience_factor = 0.4" 
+					owner = ROOT
+				}
+			}
 		}
 	}
 	
@@ -10631,7 +11003,7 @@ focus_tree = {
 		available_if_capitulated = yes
 
 		ai_will_do = {
-			factor = 10
+			factor = 7.5
 		}
 		available = {
 		}
@@ -10642,7 +11014,15 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BPL_construction_of_forts"
-			
+			add_ideas = BPL_construction_of_forts
+			980 = {
+				add_building_construction = {
+					type = bunker
+					level = 1
+					instant_build = yes
+					province = 13308
+				}
+			}
 		}
 	}
 	
@@ -10660,7 +11040,7 @@ focus_tree = {
 		available_if_capitulated = yes
 
 		ai_will_do = {
-			factor = 10
+			factor = 7.5
 		}
 		available = {
 		}
@@ -10671,7 +11051,75 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BPL_teggarts_wall"
-			
+			979 = {
+				add_building_construction = {
+					type = bunker
+					level = 2
+					instant_build = yes
+					province = 1065
+				}
+				add_building_construction = {
+					type = bunker
+					level = 2
+					instant_build = yes
+					province = 13320
+				}
+			}
+			978 = {
+				add_building_construction = {
+					type = bunker
+					level = 2
+					instant_build = yes
+					province = 7107
+				}
+				add_building_construction = {
+					type = bunker
+					level = 2
+					instant_build = yes
+					province = 1086
+				}
+				add_building_construction = {
+					type = bunker
+					level = 2
+					instant_build = yes
+					province = 13318
+				}
+			}
+			1055 = {
+				add_building_construction = {
+					type = bunker
+					level = 2
+					instant_build = yes
+					province = 7176
+				}
+				add_building_construction = {
+					type = bunker
+					level = 2
+					instant_build = yes
+					province = 1015
+				}
+				add_building_construction = {
+					type = bunker
+					level = 2
+					instant_build = yes
+					province = 11970
+				}
+			}
+			454 = {
+				add_building_construction = {
+					type = bunker
+					level = 2
+					instant_build = yes
+					province = 4088 
+				}
+			}
+			set_temp_variable = { BPL_arab_tensions = 5 }
+			subtract_from_variable = { BPL_arab_tensions_total = BPL_arab_tensions }
+			custom_effect_tooltip = BPL_arab_tensions_minus_tt
+			clamp_variable = { var = BPL_arab_tensions_total min = 0 max = 100 }
+			clamp_variable = { var = BPL_jews_tensions_total min = 0 max = 100 }
+			log = "[GetDateText]: [This.GetName] ([This.GetTag]): BPL_arab_tensions_total: [?BPL_arab_tensions_total]"
+			log = "[GetDateText]: [This.GetName] ([This.GetTag]): BPL_jews_tensions_total: [?BPL_jews_tensions_total]"
 		}
 	}
 	
@@ -10690,7 +11138,7 @@ focus_tree = {
 		available_if_capitulated = yes
 
 		ai_will_do = {
-			factor = 10
+			factor = 7.5
 		}
 		available = {
 		}
@@ -10701,7 +11149,41 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BPL_assistance_to_arab_militias"
-			
+			add_ideas = BPL_assistance_to_arab_militias_idea
+			hidden_effect = {
+				if = {
+					limit = { NOT = { has_template = "Arab militias" } }
+					division_template = {
+						name = "Arab militias"
+						is_locked = no
+						regiments = {
+							infantry = { x = 0 y = 0 }
+							infantry = { x = 0 y = 1 }
+							infantry = { x = 0 y = 2 }
+							infantry = { x = 1 y = 0 }
+							infantry = { x = 1 y = 1 }
+							infantry = { x = 1 y = 2 }
+						}
+					}
+				}
+			}
+			capital_scope = {
+				create_unit = {
+					division = "name = \"Arab militias\" division_template = \"Arab militias\" start_experience_factor = 0.4" 
+					owner = ROOT
+				}
+			}
+			set_temp_variable = { BPL_arab_tensions = 10 }
+			set_temp_variable = { BPL_jews_tensions = 10 }
+			subtract_from_variable = { BPL_arab_tensions_total = BPL_arab_tensions }
+			add_to_variable = { BPL_jews_tensions_total = BPL_jews_tensions }
+			custom_effect_tooltip = BPL_arab_tensions_minus_tt
+			custom_effect_tooltip = BPL_jews_tensions_plus_tt
+			clamp_variable = { var = BPL_arab_tensions_total min = 0 max = 100 }
+			clamp_variable = { var = BPL_jews_tensions_total min = 0 max = 100 }
+			log = "[GetDateText]: [This.GetName] ([This.GetTag]): BPL_arab_tensions_total: [?BPL_arab_tensions_total]"
+			log = "[GetDateText]: [This.GetName] ([This.GetTag]): BPL_jews_tensions_total: [?BPL_jews_tensions_total]"
+			unlock_decision_category_tooltip = BPL_assistance_to_arab_militias_category
 		}
 	}
 	
@@ -10720,7 +11202,7 @@ focus_tree = {
 		available_if_capitulated = yes
 
 		ai_will_do = {
-			factor = 10
+			factor = 7.5
 		}
 		available = {
 		}
@@ -10731,7 +11213,18 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BPL_collaboration_with_haganah"
-			
+			add_ideas = BPL_collaboration_with_haganah
+			set_temp_variable = { BPL_arab_tensions = 10 }
+			set_temp_variable = { BPL_jews_tensions = 10 }
+			add_to_variable = { BPL_arab_tensions_total = BPL_arab_tensions }
+			subtract_from_variable = { BPL_jews_tensions_total = BPL_jews_tensions }
+			custom_effect_tooltip = BPL_jews_tensions_minus_tt
+			custom_effect_tooltip = BPL_arab_tensions_plus_tt
+			clamp_variable = { var = BPL_arab_tensions_total min = 0 max = 100 }
+			clamp_variable = { var = BPL_jews_tensions_total min = 0 max = 100 }
+			log = "[GetDateText]: [This.GetName] ([This.GetTag]): BPL_arab_tensions_total: [?BPL_arab_tensions_total]"
+			log = "[GetDateText]: [This.GetName] ([This.GetTag]): BPL_jews_tensions_total: [?BPL_jews_tensions_total]"
+			unlock_decision_category_tooltip = BPL_collaboration_with_haganah_category
 		}
 	}
 	
@@ -10752,7 +11245,7 @@ focus_tree = {
 		available_if_capitulated = yes
 
 		ai_will_do = {
-			factor = 10
+			factor = 7.5
 		}
 		available = {
 		}
@@ -10763,7 +11256,12 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BPL_production_of_equipment"
-			
+			add_tech_bonus = {
+				name = BPL_production_of_equipment
+				bonus = 1.0
+				uses = 1
+				category = infantry_weapons
+			}
 		}
 	}
 	
@@ -10781,9 +11279,13 @@ focus_tree = {
 		available_if_capitulated = yes
 
 		ai_will_do = {
-			factor = 10
+			factor = 7.5
 		}
 		available = {
+			NOT = {
+				has_government = neutrality
+				has_government = democratic
+			}
 		}
 		bypass = {
 		}
@@ -10792,7 +11294,8 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BPL_experience_of_terrorism"
-			
+			set_country_flag = state_coup_flag
+			custom_effect_tooltip = state_coup_tt
 		}
 	}
 	
@@ -10810,7 +11313,7 @@ focus_tree = {
 		available_if_capitulated = yes
 
 		ai_will_do = {
-			factor = 10
+			factor = 7.5
 		}
 		available = {
 		}
@@ -10821,7 +11324,12 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BPL_production_of_artillery"
-			
+			add_tech_bonus = {
+				name = BPL_production_of_artillery
+				bonus = 1.0
+				uses = 1
+				category = artillery
+			}
 		}
 	}
 	
@@ -10839,7 +11347,7 @@ focus_tree = {
 		available_if_capitulated = yes
 
 		ai_will_do = {
-			factor = 10
+			factor = 7.5
 		}
 		available = {
 		}
@@ -10850,7 +11358,12 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BPL_production_of_transport"
-			
+			add_tech_bonus = {
+				name = BPL_production_of_transport
+				bonus = 1.0
+				uses = 1
+				category = motorized_equipment
+			}
 		}
 	}
 	
@@ -10868,7 +11381,7 @@ focus_tree = {
 		available_if_capitulated = yes
 
 		ai_will_do = {
-			factor = 10
+			factor = 7.5
 		}
 		available = {
 		}
@@ -10879,7 +11392,13 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BPL_production_of_tanks"
-			
+			add_tech_bonus = {
+				name = BPL_production_of_tanks
+				bonus = 1.0
+				uses = 1
+				category = armor
+				technology = gwtank
+			}
 		}
 	}
 	
@@ -10898,7 +11417,7 @@ focus_tree = {
 		available_if_capitulated = yes
 
 		ai_will_do = {
-			factor = 10
+			factor = 7.5
 		}
 		available = {
 		}
@@ -10909,7 +11428,7 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BPL_blind_fanaticism"
-			
+			add_ideas = BPL_blind_fanaticism
 		}
 	}
 	
@@ -10928,7 +11447,7 @@ focus_tree = {
 		available_if_capitulated = yes
 
 		ai_will_do = {
-			factor = 10
+			factor = 7.5
 		}
 		available = {
 		}
@@ -10957,7 +11476,7 @@ focus_tree = {
 		available_if_capitulated = yes
 
 		ai_will_do = {
-			factor = 10
+			factor = 7.5
 		}
 		available = {
 		}
@@ -10988,7 +11507,7 @@ focus_tree = {
 		available_if_capitulated = yes
 
 		ai_will_do = {
-			factor = 10
+			factor = 7.5
 		}
 		available = {
 		}
@@ -11021,7 +11540,7 @@ focus_tree = {
 		available_if_capitulated = yes
 
 		ai_will_do = {
-			factor = 10
+			factor = 7.5
 		}
 		available = {
 		}
@@ -11054,7 +11573,7 @@ focus_tree = {
 		available_if_capitulated = yes
 
 		ai_will_do = {
-			factor = 10
+			factor = 7.5
 		}
 		available = {
 		}
@@ -11087,7 +11606,7 @@ focus_tree = {
 		available_if_capitulated = yes
 
 		ai_will_do = {
-			factor = 10
+			factor = 7.5
 		}
 		available = {
 		}
@@ -11120,7 +11639,7 @@ focus_tree = {
 		available_if_capitulated = yes
 
 		ai_will_do = {
-			factor = 10
+			factor = 7.5
 		}
 		available = {
 		}
@@ -11150,7 +11669,7 @@ focus_tree = {
 		available_if_capitulated = yes
 
 		ai_will_do = {
-			factor = 10
+			factor = 7.5
 		}
 		available = {
 		}
@@ -11180,7 +11699,7 @@ focus_tree = {
 		available_if_capitulated = yes
 
 		ai_will_do = {
-			factor = 10
+			factor = 7.5
 		}
 		available = {
 		}
@@ -11212,7 +11731,7 @@ focus_tree = {
 		available_if_capitulated = yes
 
 		ai_will_do = {
-			factor = 10
+			factor = 7.5
 		}
 		available = {
 		}
@@ -11242,7 +11761,7 @@ focus_tree = {
 		available_if_capitulated = yes
 
 		ai_will_do = {
-			factor = 10
+			factor = 7.5
 		}
 		available = {
 		}
@@ -11272,7 +11791,7 @@ focus_tree = {
 		available_if_capitulated = yes
 
 		ai_will_do = {
-			factor = 10
+			factor = 7.5
 		}
 		available = {
 		}
@@ -11302,7 +11821,7 @@ focus_tree = {
 		available_if_capitulated = yes
 
 		ai_will_do = {
-			factor = 10
+			factor = 7.5
 		}
 		available = {
 		}
@@ -11333,7 +11852,7 @@ focus_tree = {
 		available_if_capitulated = yes
 
 		ai_will_do = {
-			factor = 10
+			factor = 7.5
 		}
 		available = {
 		}
@@ -11363,7 +11882,7 @@ focus_tree = {
 		available_if_capitulated = yes
 
 		ai_will_do = {
-			factor = 10
+			factor = 7.5
 		}
 		available = {
 		}
@@ -11395,7 +11914,7 @@ focus_tree = {
 		available_if_capitulated = yes
 
 		ai_will_do = {
-			factor = 10
+			factor = 7.5
 		}
 		available = {
 		}
@@ -11425,7 +11944,7 @@ focus_tree = {
 		available_if_capitulated = yes
 
 		ai_will_do = {
-			factor = 10
+			factor = 7.5
 		}
 		available = {
 		}
@@ -11455,7 +11974,7 @@ focus_tree = {
 		available_if_capitulated = yes
 
 		ai_will_do = {
-			factor = 10
+			factor = 7.5
 		}
 		available = {
 		}
@@ -11487,7 +12006,7 @@ focus_tree = {
 		available_if_capitulated = yes
 
 		ai_will_do = {
-			factor = 10
+			factor = 7.5
 		}
 		available = {
 		}
@@ -11518,7 +12037,7 @@ focus_tree = {
 		available_if_capitulated = yes
 
 		ai_will_do = {
-			factor = 10
+			factor = 7.5
 		}
 		available = {
 		}
@@ -11547,7 +12066,7 @@ focus_tree = {
 		available_if_capitulated = yes
 
 		ai_will_do = {
-			factor = 10
+			factor = 7.5
 		}
 		available = {
 		}
@@ -11576,7 +12095,7 @@ focus_tree = {
 		available_if_capitulated = yes
 
 		ai_will_do = {
-			factor = 10
+			factor = 7.5
 		}
 		available = {
 		}
@@ -11605,7 +12124,7 @@ focus_tree = {
 		available_if_capitulated = yes
 
 		ai_will_do = {
-			factor = 10
+			factor = 7.5
 		}
 		available = {
 		}
@@ -11634,7 +12153,7 @@ focus_tree = {
 		available_if_capitulated = yes
 
 		ai_will_do = {
-			factor = 10
+			factor = 7.5
 		}
 		available = {
 		}
@@ -11663,7 +12182,7 @@ focus_tree = {
 		available_if_capitulated = yes
 
 		ai_will_do = {
-			factor = 10
+			factor = 7.5
 		}
 		available = {
 		}
@@ -11692,7 +12211,7 @@ focus_tree = {
 		available_if_capitulated = yes
 
 		ai_will_do = {
-			factor = 10
+			factor = 7.5
 		}
 		available = {
 		}
@@ -11721,7 +12240,7 @@ focus_tree = {
 		available_if_capitulated = yes
 
 		ai_will_do = {
-			factor = 10
+			factor = 7.5
 		}
 		available = {
 		}
@@ -11750,7 +12269,7 @@ focus_tree = {
 		available_if_capitulated = yes
 
 		ai_will_do = {
-			factor = 10
+			factor = 7.5
 		}
 		available = {
 		}
@@ -11779,7 +12298,7 @@ focus_tree = {
 		available_if_capitulated = yes
 
 		ai_will_do = {
-			factor = 10
+			factor = 7.5
 		}
 		available = {
 		}
@@ -11808,7 +12327,7 @@ focus_tree = {
 		available_if_capitulated = yes
 
 		ai_will_do = {
-			factor = 10
+			factor = 7.5
 		}
 		available = {
 		}
@@ -11837,7 +12356,7 @@ focus_tree = {
 		available_if_capitulated = yes
 
 		ai_will_do = {
-			factor = 10
+			factor = 7.5
 		}
 		available = {
 		}
@@ -11866,7 +12385,7 @@ focus_tree = {
 		available_if_capitulated = yes
 
 		ai_will_do = {
-			factor = 10
+			factor = 7.5
 		}
 		available = {
 		}
@@ -11895,7 +12414,7 @@ focus_tree = {
 		available_if_capitulated = yes
 
 		ai_will_do = {
-			factor = 10
+			factor = 7.5
 		}
 		available = {
 		}
@@ -11924,7 +12443,7 @@ focus_tree = {
 		available_if_capitulated = yes
 
 		ai_will_do = {
-			factor = 10
+			factor = 7.5
 		}
 		available = {
 		}
