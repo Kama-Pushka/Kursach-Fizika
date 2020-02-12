@@ -632,6 +632,7 @@ focus_tree = {
 		}
 	}
 	
+	##### JEWS SECTION ######
 	focus = {
 		id = BPL_concessions_jewish_leaders
 		icon = GFX_goal_generic_demand_territory
@@ -695,6 +696,7 @@ focus_tree = {
 						}
 						tag = JOR
 						tag = LEB
+						tag = ALW
 						tag = SAU
 						tag = MOR
 						tag = TUN
@@ -1695,6 +1697,7 @@ focus_tree = {
 					OR = {
 						is_owned_by = SYR
 						is_owned_by = LEB
+						is_owned_by = ALW
 					}
 				}
 				add_claim_by = PAL
@@ -1725,6 +1728,20 @@ focus_tree = {
 			add_ai_strategy = {
 				type = conquer
 				id = "LEB"
+				value = 200
+			}
+			create_wargoal = {
+				type = annex_everything
+				target = ALW
+			}
+			add_ai_strategy = {
+				type = antagonize
+				id = "ALW"
+				value = 200
+			}
+			add_ai_strategy = {
+				type = conquer
+				id = "ALW"
 				value = 200
 			}
 		}
@@ -2559,7 +2576,13 @@ focus_tree = {
 			}
 			else = {
 				every_state = {
-					limit = { is_core_of = SYR }
+					limit = {
+						OR = {
+							is_core_of = SYR
+							is_core_of = LEB
+							is_core_of = ALW
+						}
+					}
 					add_claim_by = ROOT
 					owner = {
 						ROOT = {
@@ -3559,6 +3582,34 @@ focus_tree = {
 			add_ai_strategy = {
 				type = conquer
 				id = "SYR"
+				value = 200
+			}
+			create_wargoal = {
+				type = annex_everything
+				target = LEB
+			}
+			add_ai_strategy = {
+				type = antagonize
+				id = "LEB"
+				value = 200
+			}
+			add_ai_strategy = {
+				type = conquer
+				id = "LEB"
+				value = 200
+			}
+			create_wargoal = {
+				type = annex_everything
+				target = ALW
+			}
+			add_ai_strategy = {
+				type = antagonize
+				id = "ALW"
+				value = 200
+			}
+			add_ai_strategy = {
+				type = conquer
+				id = "ALW"
 				value = 200
 			}
 			create_wargoal = {
@@ -6503,7 +6554,8 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BPL_maintaining_stability"
-			
+			add_political_power = 100
+			add_stability = 0.1
 		}
 	}
 	
@@ -6534,7 +6586,11 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BPL_banning_opposition_organizations"
-			
+			add_political_power = 100
+			add_popularity = {
+				ideology = neutrality
+				popularity = 0.2
+			}
 		}
 	}
 	
@@ -6565,12 +6621,22 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BPL_health_development"
-			
+			add_ideas = BPL_health_development
+			every_owned_state = {
+				limit = {
+					hospital < 5
+				}
+				add_building_construction = {
+					type = hospital
+					level = 1
+					instant_build = yes
+				}
+			}
 		}
 	}
 	
 	focus = {
-		id = BPL_accept_new_white_paper
+		id = BPL_accept_new_white_book
 		icon = GFX_goal_generic_demand_territory
 		prerequisite = { focus = BPL_maintaining_stability }
 		prerequisite = { focus = BPL_banning_opposition_organizations }
@@ -6596,18 +6662,18 @@ focus_tree = {
 		}
 
 		completion_reward = {
-			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BPL_accept_new_white_paper"
-			
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BPL_accept_new_white_book"
+			add_ideas = BPL_accept_new_white_book_idea
 		}
 	}
 	
 	focus = {
 		id = BPL_normalization_of_situation
 		icon = GFX_goal_generic_demand_territory
-		prerequisite = { focus = BPL_accept_new_white_paper }
+		prerequisite = { focus = BPL_accept_new_white_book }
 		x = 0
 		y = 1
-		relative_position_id = BPL_accept_new_white_paper
+		relative_position_id = BPL_accept_new_white_book
 		
 		cost = 10
 		
@@ -6628,7 +6694,7 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BPL_normalization_of_situation"
-			
+			add_ideas = BPL_normalization_of_situation
 		}
 	}
 	
@@ -6659,11 +6725,77 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BPL_support_for_britain"
-			
+			if = {
+				limit = { is_subject = yes }
+				add_to_tech_sharing_group = BPL_support_group
+				OVERLORD = { add_to_tech_sharing_group = BPL_support_group }
+			}
+			else = {
+				random_owned_controlled_state = {
+					limit = { 
+						free_building_slots = {
+							building = industrial_complex
+							size > 1
+							include_locked = yes
+						}
+					}
+					add_extra_state_shared_building_slots = 2
+					add_building_construction = {
+						type = industrial_complex
+						level = 2
+						instant_build = yes
+					}
+				}
+				random_owned_controlled_state = {
+					limit = { 
+						free_building_slots = {
+							building = arms_factory
+							size > 1
+							include_locked = yes
+						}
+					}
+					add_extra_state_shared_building_slots = 2
+					add_building_construction = {
+						type = arms_factory
+						level = 2
+						instant_build = yes
+					}
+				}
+			}
+			hidden_effect = {
+				if = {
+					limit = { NOT = { has_template = "Police battalions" } }
+					division_template = {
+						name = "Police battalions"
+						is_locked = no
+						regiments = {
+							infantry = { x = 0 y = 0 }
+							infantry = { x = 0 y = 1 }
+							infantry = { x = 0 y = 2 }
+							infantry = { x = 1 y = 0 }
+							infantry = { x = 1 y = 1 }
+							infantry = { x = 1 y = 2 }
+						}
+						support = {
+							recon = { x = 0 y = 0 }
+						}
+					}
+				}
+			}
+			capital_scope = {
+				create_unit = {
+					division = "name = \"23. Police battalions\" division_template = \"Police battalions\" start_experience_factor = 0.6" 
+					owner = ROOT
+				}
+				create_unit = {
+					division = "name = \"31. Police battalions\" division_template = \"Police battalions\" start_experience_factor = 0.6" 
+					owner = ROOT
+				}
+			}
 		}
 	}
 	
-	
+	##### ARAB SECTION ######
 	focus = {
 		id = BPL_concessions_arab_leaders
 		icon = GFX_goal_generic_demand_territory
@@ -6676,7 +6808,7 @@ focus_tree = {
 		y = 1
 		relative_position_id = BPL_woodhead_commission
 		
-		cost = 10
+		cost = 5
 		
 		cancel_if_invalid = yes
 		continue_if_invalid = no
@@ -6697,7 +6829,13 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BPL_concessions_arab_leaders"
-			
+			add_ideas = BPL_concessions_arab_leaders
+			add_ideas = BPL_arab_state
+			add_state_core = 454
+			add_state_core = 1055
+			add_state_core = 978
+			add_state_core = 980
+			unlock_decision_category_tooltip = BPL_proclaim_great_syria_category
 		}
 	}
 	
@@ -6709,7 +6847,7 @@ focus_tree = {
 		y = 1
 		relative_position_id = BPL_concessions_arab_leaders
 		
-		cost = 10
+		cost = 5
 		
 		cancel_if_invalid = yes
 		continue_if_invalid = no
@@ -6728,7 +6866,8 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BPL_stop_jewish_immigration"
-			
+			add_stability = 0.05
+			custom_effect_tooltip = BPL_stop_jewish_immigration_tt
 		}
 	}
 	
@@ -6755,11 +6894,35 @@ focus_tree = {
 		}
 		
 		select_effect = {
+			country_event = { id = NWpalestine.46 days = 35 }
 		}
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BPL_expel_jews_from_their_homes"
-			
+			set_party_name = { ideology = democratic long_name = BPL_party_of_national_defense name = BPL_party_of_national_defense }
+			create_country_leader = {
+				name = "Raghib al-Nashashibi"
+				desc = "POLITICS_RAGHIB_AL_NASHASHIBI_DESC"
+				picture = "gfx/leaders/BPL/Portrait_Palestine_Raghib_al-Nashashibi.dds"
+				expire = "1965.1.1"
+				ideology = liberalism
+				traits = {
+				}
+			}
+			create_country_leader = {
+				name = "Fawzi al-Qawuqji"
+				desc = "POLITICS_FAWZI_AL_QAWUQJI_DESC"
+				picture = "gfx/leaders/BPL/Portrait_Palestine_Fawzi_al-Qawuqji.dds"
+				expire = "1965.1.1"
+				ideology = monarchy_ideology
+				traits = {
+					fascist_sympathies
+				}
+			}
+			979 = {
+				add_manpower = -200000
+				add_core_of = ROOT
+			}
 		}
 	}
 	
@@ -6791,7 +6954,53 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BPL_transfer_jewish_infrastructure_to_arabs"
-			
+			every_owned_state = {
+				limit = {
+					infrastructure < 10
+				}
+				add_building_construction = {
+					type = infrastructure
+					level = 2
+					instant_build = yes
+				}
+			}
+			random_owned_controlled_state = {
+				limit = { 
+					free_building_slots = {
+						building = industrial_complex
+						size > 0
+						include_locked = yes
+					}
+				}
+				add_extra_state_shared_building_slots = 1
+				add_building_construction = {
+					type = industrial_complex
+					level = 1
+					instant_build = yes
+				}
+			}
+			random_owned_controlled_state = {
+				limit = { 
+					free_building_slots = {
+						building = arms_factory
+						size > 0
+						include_locked = yes
+					}
+				}
+				add_extra_state_shared_building_slots = 1
+				add_building_construction = {
+					type = arms_factory
+					level = 1
+					instant_build = yes
+				}
+			}
+			effect_tooltip = { remove_ideas = BPL_negative_consequences_of_expulsion_jews }
+			hidden_effect = {
+				remove_ideas = {
+					BPL_negative_consequences_of_expulsion_jews
+					BPL_negative_consequences_of_expulsion_jews_2
+				}
+			}
 		}
 	}
 	
@@ -6822,7 +7031,25 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BPL_disarm_jews"
-			
+			add_equipment_to_stockpile = {
+				type = infantry_equipment
+				amount = 1000
+			}
+			random_owned_controlled_state = {
+				limit = { 
+					free_building_slots = {
+						building = arms_factory
+						size > 0
+						include_locked = yes
+					}
+				}
+				add_extra_state_shared_building_slots = 1
+				add_building_construction = {
+					type = arms_factory
+					level = 1
+					instant_build = yes
+				}
+			}
 		}
 	}
 	
@@ -6835,7 +7062,7 @@ focus_tree = {
 		y = 1
 		relative_position_id = BPL_disarm_jews
 		
-		cost = 10
+		cost = 5
 		
 		cancel_if_invalid = yes
 		continue_if_invalid = no
@@ -6854,7 +7081,9 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BPL_create_an_arab_agency"
-			
+			add_political_power = 100
+			add_autonomy_score = { value = 200 localization = BPL_create_an_arab_agency_idea }
+			add_ideas = BPL_create_an_arab_agency_idea
 		}
 	}
 	
@@ -6886,7 +7115,35 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BPL_proclaim_state_of_palestine"
-			
+			set_cosmetic_tag = BPL_palestina
+			if = {
+				limit = { is_subject = yes }
+				OVERLORD = {
+					set_autonomy = {
+						target = PREV
+						autonomy_state = autonomy_free
+					}
+				}
+			}
+			if = {
+				limit = { NOT = { country_exists = JOR } }
+				release = JOR
+			}
+			if = {
+				limit = { JOR = { is_subject = yes } }
+				JOR = {
+					OVERLORD = {
+						set_autonomy = {
+							target = PREV
+							autonomy_state = autonomy_free
+						}
+					}
+				}
+			}
+			if = {
+				limit = { NOT = { has_government = communism } }
+				country_event = { id = NWpalestine.49 }
+			}
 		}
 	}
 	
@@ -6917,6 +7174,7 @@ focus_tree = {
 			factor = 10
 		}
 		available = {
+			has_government = communism
 		}
 		bypass = {
 		}
@@ -6926,7 +7184,7 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BPL_concessions_for_trade_unions"
-			
+			add_timed_idea = { idea = BPL_concessions_for_trade_unions days = 180 }
 		}
 	}
 	
@@ -6957,7 +7215,37 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BPL_create_peoples_militia"
-			
+			hidden_effect = {
+				if = {
+					limit = { NOT = { has_template = "People Militia" } }
+					division_template = {
+						name = "People Militia"
+						is_locked = no
+						regiments = {
+							infantry = { x = 0 y = 0 }
+							infantry = { x = 0 y = 1 }
+							infantry = { x = 0 y = 2 }
+							infantry = { x = 1 y = 0 }
+							infantry = { x = 1 y = 1 }
+							infantry = { x = 1 y = 2 }
+						}
+					}
+				}
+			}
+			capital_scope = {
+				create_unit = {
+					division = "name = \"1. People Militia\" division_template = \"People Militia\" start_experience_factor = 0.2" 
+					owner = ROOT
+				}
+				create_unit = {
+					division = "name = \"2. People Militia\" division_template = \"People Militia\" start_experience_factor = 0.2" 
+					owner = ROOT
+				}
+				create_unit = {
+					division = "name = \"3. People Militia\" division_template = \"People Militia\" start_experience_factor = 0.2" 
+					owner = ROOT
+				}
+			}
 		}
 	}
 	
@@ -6988,7 +7276,38 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BPL_revolutionary_army"
-			
+			add_ideas = BPL_revolutionary_army
+			hidden_effect = {
+				if = {
+					limit = { NOT = { has_template = "People Militia" } }
+					division_template = {
+						name = "People Militia"
+						is_locked = no
+						regiments = {
+							infantry = { x = 0 y = 0 }
+							infantry = { x = 0 y = 1 }
+							infantry = { x = 0 y = 2 }
+							infantry = { x = 1 y = 0 }
+							infantry = { x = 1 y = 1 }
+							infantry = { x = 1 y = 2 }
+						}
+					}
+				}
+			}
+			capital_scope = {
+				create_unit = {
+					division = "name = \"4. People Militia\" division_template = \"People Militia\" start_experience_factor = 0.2" 
+					owner = ROOT
+				}
+				create_unit = {
+					division = "name = \"5. People Militia\" division_template = \"People Militia\" start_experience_factor = 0.2" 
+					owner = ROOT
+				}
+				create_unit = {
+					division = "name = \"6. People Militia\" division_template = \"People Militia\" start_experience_factor = 0.2" 
+					owner = ROOT
+				}
+			}
 		}
 	}
 	
@@ -7019,7 +7338,14 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BPL_restore_status_of_jews"
-			
+			capital_scope = {
+				add_extra_state_shared_building_slots = 1
+				add_building_construction = {
+					type = industrial_complex
+					level = 1
+					instant_build = yes
+				}
+			}
 		}
 	}
 	
@@ -7046,11 +7372,20 @@ focus_tree = {
 		}
 		
 		select_effect = {
+			if = {
+				limit = { has_completed_focus = BPL_restore_status_of_jews }
+				country_event = { id = NWpalestine.50 days = 5 }
+			}
+			country_event = { id = NWpalestine.51 days = 25 }
 		}
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BPL_attract_arabs_to_communist_party"
-			
+			add_political_power = 100
+			if = {
+				limit = { has_idea = BPL_trotskyist_propaganda }
+				country_event = { id = NWpalestine.52 }
+			}
 		}
 	}
 	
@@ -7078,6 +7413,7 @@ focus_tree = {
 			factor = 10
 		}
 		available = {
+			has_government = trozkism
 		}
 		bypass = {
 		}
@@ -7087,7 +7423,11 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BPL_reconcile_arabs_and_jews"
-			
+			add_stability = 0.05
+			add_popularity = {
+				ideology = trozkism
+				popularity = 0.1
+			}
 		}
 	}
 	
@@ -7118,7 +7458,30 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BPL_palestinian_revolution"
-			
+			add_ideas = BPL_palestinian_revolution
+			hidden_effect = {
+				if = {
+					limit = { NOT = { has_template = "People Militia" } }
+					division_template = {
+						name = "People Militia"
+						is_locked = no
+						regiments = {
+							infantry = { x = 0 y = 0 }
+							infantry = { x = 0 y = 1 }
+							infantry = { x = 0 y = 2 }
+							infantry = { x = 1 y = 0 }
+							infantry = { x = 1 y = 1 }
+							infantry = { x = 1 y = 2 }
+						}
+					}
+				}
+			}
+			capital_scope = {
+				create_unit = {
+					division = "name = \"7. People Militia\" division_template = \"People Militia\" start_experience_factor = 0.2" 
+					owner = ROOT
+				}
+			}
 		}
 	}
 	
@@ -7149,7 +7512,7 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BPL_we_are_all_semites"
-			
+			add_ideas = BPL_we_are_all_semites
 		}
 	}
 	
@@ -7180,7 +7543,8 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BPL_appeal_to_muslims"
-			
+			add_stability = 0.1
+			add_ideas = BPL_appeal_to_muslims
 		}
 	}
 	
@@ -7211,7 +7575,7 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BPL_community_of_religions"
-			
+			add_ideas = BPL_community_of_religions
 		}
 	}
 	
@@ -7237,8 +7601,16 @@ focus_tree = {
 			factor = 10
 		}
 		available = {
+			is_subject = no
+			country_exists = TUR
+			NOT = { has_war_with = TUR }
+			TUR = {
+				has_government = trozkism
+				is_faction_leader = yes
+			}
 		}
 		bypass = {
+			is_in_faction_with = TUR
 		}
 		
 		select_effect = {
@@ -7246,7 +7618,7 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BPL_union_with_turkey_troz"
-			
+			TUR = { country_event = { id = generic.2 } }
 		}
 	}
 	
@@ -7275,8 +7647,16 @@ focus_tree = {
 			factor = 10
 		}
 		available = {
+			is_subject = no
+			country_exists = KMX
+			NOT = { has_war_with = KMX }
+			KMX = {
+				has_government = trozkism
+				is_faction_leader = yes
+			}
 		}
 		bypass = {
+			is_in_faction_with = KMX
 		}
 		
 		select_effect = {
@@ -7284,7 +7664,7 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BPL_four_international"
-			
+			KMX = { country_event = { id = generic.2 } }
 		}
 	}
 	
@@ -7307,9 +7687,10 @@ focus_tree = {
 		available_if_capitulated = yes
 
 		ai_will_do = {
-			factor = 10
+			factor = 20
 		}
 		available = {
+			is_subject = no
 		}
 		bypass = {
 		}
@@ -7319,7 +7700,12 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BPL_semitic_socialism"
-			
+			set_rule = { can_create_factions = yes }
+			if = {
+				limit = { is_faction_leader = yes }
+				set_faction_name = BPL_semitic_socialism
+			}
+			else = { create_faction = BPL_semitic_socialism }
 		}
 	}
 	
@@ -7345,8 +7731,21 @@ focus_tree = {
 			factor = 10
 		}
 		available = {
+			is_subject = no
 		}
 		bypass = {
+			OR = {
+				NOT = { country_exists = JOR }
+				has_war_with = JOR
+				is_in_faction_with = JOR
+				JOR = { is_subject_of = ROOT }
+			}
+			OR = {
+				NOT = { country_exists = IRQ }
+				has_war_with = IRQ
+				is_in_faction_with = IRQ
+				IRQ = { is_subject_of = ROOT }
+			}
 		}
 		
 		select_effect = {
@@ -7354,7 +7753,34 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BPL_spread_revolution_to_east"
-			
+			create_wargoal = {
+				type = annex_everything
+				target = JOR
+			}
+			add_ai_strategy = {
+				type = antagonize
+				id = "JOR"
+				value = 200
+			}
+			add_ai_strategy = {
+				type = conquer
+				id = "JOR"
+				value = 200
+			}
+			create_wargoal = {
+				type = annex_everything
+				target = IRQ
+			}
+			add_ai_strategy = {
+				type = antagonize
+				id = "IRQ"
+				value = 200
+			}
+			add_ai_strategy = {
+				type = conquer
+				id = "IRQ"
+				value = 200
+			}
 		}
 	}
 	
@@ -7376,8 +7802,33 @@ focus_tree = {
 			factor = 10
 		}
 		available = {
+			is_subject = no
 		}
 		bypass = {
+			OR = {
+				NOT = { country_exists = SAU }
+				has_war_with = SAU
+				is_in_faction_with = SAU
+				SAU = { is_subject_of = ROOT }
+			}
+			OR = {
+				NOT = { country_exists = YEM }
+				has_war_with = YEM
+				is_in_faction_with = YEM
+				YEM = { is_subject_of = ROOT }
+			}
+			OR = {
+				NOT = { country_exists = OMA }
+				has_war_with = OMA
+				is_in_faction_with = OMA
+				OMA = { is_subject_of = ROOT }
+			}
+			OR = {
+				NOT = { country_exists = IOM }
+				has_war_with = IOM
+				is_in_faction_with = IOM
+				IOM = { is_subject_of = ROOT }
+			}
 		}
 		
 		select_effect = {
@@ -7385,7 +7836,62 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BPL_spread_revolution_to_south"
-			
+			create_wargoal = {
+				type = annex_everything
+				target = SAU
+			}
+			add_ai_strategy = {
+				type = antagonize
+				id = "SAU"
+				value = 200
+			}
+			add_ai_strategy = {
+				type = conquer
+				id = "SAU"
+				value = 200
+			}
+			create_wargoal = {
+				type = annex_everything
+				target = YEM
+			}
+			add_ai_strategy = {
+				type = antagonize
+				id = "YEM"
+				value = 200
+			}
+			add_ai_strategy = {
+				type = conquer
+				id = "YEM"
+				value = 200
+			}
+			create_wargoal = {
+				type = annex_everything
+				target = OMA
+			}
+			add_ai_strategy = {
+				type = antagonize
+				id = "OMA"
+				value = 200
+			}
+			add_ai_strategy = {
+				type = conquer
+				id = "OMA"
+				value = 200
+			}
+			create_wargoal = {
+				type = annex_everything
+				target = IOM
+			}
+			add_ai_strategy = {
+				type = antagonize
+				id = "IOM"
+				value = 200
+			}
+			add_ai_strategy = {
+				type = conquer
+				id = "IOM"
+				value = 200
+			}
 		}
 	}
 	
@@ -7407,6 +7913,8 @@ focus_tree = {
 			factor = 10
 		}
 		available = {
+			has_full_control_of_state = 679
+			has_full_control_of_state = 291
 		}
 		bypass = {
 		}
@@ -7416,7 +7924,22 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BPL_soviet_semitic_union"
-			
+			every_state = {
+				limit = {
+					OR = {
+						is_core_of = SAU
+						is_core_of = IRQ
+						is_core_of = SYR
+						is_core_of = LEB
+						is_core_of = ALW
+						is_core_of = YEM
+						is_core_of = OMA
+						is_core_of = IOM
+					}
+				}
+				add_core_of = ROOT
+			}
+			set_cosmetic_tag = BPL_soviet_union
 		}
 	}
 	
@@ -7501,6 +8024,7 @@ focus_tree = {
 			factor = 10
 		}
 		available = {
+			has_government = communism
 		}
 		bypass = {
 		}
@@ -7510,7 +8034,18 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BPL_refer_to_camp_of_zionist_bourgeoisie"
-			
+			add_political_power = 100
+			add_popularity = {
+				ideology = communism
+				popularity = 0.1
+			}
+			set_temp_variable = { BPL_jews_tensions = 10 }
+			add_to_variable = { BPL_jews_tensions_total = BPL_jews_tensions }
+			custom_effect_tooltip = BPL_jews_tensions_plus_tt
+			clamp_variable = { var = BPL_arab_tensions_total min = 0 max = 100 }
+			clamp_variable = { var = BPL_jews_tensions_total min = 0 max = 100 }
+			log = "[GetDateText]: [This.GetName] ([This.GetTag]): BPL_arab_tensions_total: [?BPL_arab_tensions_total]"
+			log = "[GetDateText]: [This.GetName] ([This.GetTag]): BPL_jews_tensions_total: [?BPL_jews_tensions_total]"
 		}
 	}
 	
@@ -7541,7 +8076,51 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BPL_abolish_kibbutzim"
-			
+			random_owned_controlled_state = {
+				limit = { 
+					free_building_slots = {
+						building = industrial_complex
+						size > 0
+						include_locked = yes
+					}
+				}
+				add_extra_state_shared_building_slots = 1
+				add_building_construction = {
+					type = industrial_complex
+					level = 1
+					instant_build = yes
+				}
+			}
+			random_owned_controlled_state = {
+				limit = { 
+					free_building_slots = {
+						building = industrial_complex
+						size > 0
+						include_locked = yes
+					}
+				}
+				add_extra_state_shared_building_slots = 1
+				add_building_construction = {
+					type = industrial_complex
+					level = 1
+					instant_build = yes
+				}
+			}
+			random_owned_controlled_state = {
+				limit = { 
+					free_building_slots = {
+						building = industrial_complex
+						size > 0
+						include_locked = yes
+					}
+				}
+				add_extra_state_shared_building_slots = 1
+				add_building_construction = {
+					type = industrial_complex
+					level = 1
+					instant_build = yes
+				}
+			}
 		}
 	}
 	
@@ -7572,12 +8151,12 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BPL_get_rid_of_jewish_shrines"
-			
+			add_war_support = 0.15
 		}
 	}
 	
 	focus = {
-		id = BPL_arab_jewish_agreement
+		id = BPL_middle_east_workers_congress
 		icon = GFX_goal_generic_demand_territory
 		prerequisite = { focus = BPL_refer_to_camp_of_zionist_bourgeoisie }
 		mutually_exclusive = { focus = BPL_join_comintern_arab }
@@ -7603,8 +8182,13 @@ focus_tree = {
 		}
 
 		completion_reward = {
-			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BPL_arab_jewish_agreement"
-			
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BPL_middle_east_workers_congress"
+			set_rule = { can_create_factions = yes }
+			if = {
+				limit = { is_faction_leader = yes }
+				set_faction_name = BPL_middle_east_workers_congress
+			}
+			else = { create_faction = BPL_middle_east_workers_congress }
 		}
 	}
 	
@@ -7612,7 +8196,7 @@ focus_tree = {
 		id = BPL_join_comintern_arab
 		icon = GFX_goal_generic_demand_territory
 		prerequisite = { focus = BPL_refer_to_camp_of_zionist_bourgeoisie }
-		mutually_exclusive = { focus = BPL_arab_jewish_agreement }
+		mutually_exclusive = { focus = BPL_middle_east_workers_congress }
 		x = 3
 		y = 1
 		relative_position_id = BPL_refer_to_camp_of_zionist_bourgeoisie
@@ -7627,8 +8211,16 @@ focus_tree = {
 			factor = 10
 		}
 		available = {
+			is_subject = no
+			country_exists = SOV
+			NOT = { has_war_with = SOV }
+			SOV = {
+				has_government = communism
+				is_faction_leader = yes
+			}
 		}
 		bypass = {
+			is_in_faction_with = SOV
 		}
 		
 		select_effect = {
@@ -7636,7 +8228,7 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BPL_join_comintern_arab"
-			
+			SOV = { country_event = { id = generic.2 } }
 		}
 	}
 	
@@ -7676,7 +8268,7 @@ focus_tree = {
 		icon = GFX_goal_generic_demand_territory
 		prerequisite = { focus = BPL_get_rid_of_jewish_shrines }
 		prerequisite = {
-			focus = BPL_arab_jewish_agreement
+			focus = BPL_middle_east_workers_congress
 			focus = BPL_join_comintern_arab
 		}
 		x = 0
