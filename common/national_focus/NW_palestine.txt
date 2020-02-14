@@ -2340,6 +2340,7 @@ focus_tree = {
 		}
 		available = {
 			is_subject = no
+			is_faction_leader = yes
 			TUR = {
 				NOT = {
 					has_government = fascism
@@ -2387,6 +2388,7 @@ focus_tree = {
 		}
 		available = {
 			is_subject = no
+			is_faction_leader = yes
 			IRQ = {
 				NOT = {
 					has_government = fascism
@@ -11130,7 +11132,7 @@ focus_tree = {
 		y = 1
 		relative_position_id = BPL_proclaim_kingdom_of_palestine
 		
-		cost = 10
+		cost = 5
 		
 		cancel_if_invalid = yes
 		continue_if_invalid = no
@@ -11140,6 +11142,9 @@ focus_tree = {
 			factor = 10
 		}
 		available = {
+			hidden_trigger = {
+				always = no
+			}
 		}
 		bypass = {
 		}
@@ -11149,7 +11154,17 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BPL_invite_abdullah_to_throne"
-			
+			add_political_power = 100
+			create_country_leader = {
+				name = "Abdullah bin al-Hussein"
+				desc = "POLITICS_ABDULLAH_BIN_AL_HUSSEIN_DESC"
+				picture = "gfx/leaders/JOR/Portrait_Abdullah_I.dds"
+				expire = "1965.1.1"
+				ideology = monarchy_ideology
+				traits = {
+				}
+			}
+			custom_effect_tooltip = TUR_focus_autocomplete_tt
 		}
 	}
 	
@@ -11180,7 +11195,19 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BPL_union_with_transjordan"
-			
+			every_state = {
+				limit = { is_core_of = JOR }
+				add_core_of = ROOT
+			}
+			JOR = {
+				every_unit_leader = {
+					set_nationality = ROOT
+				}
+			}
+			annex_country = {
+				target = JOR
+				transfer_troops = yes
+			}
 		}
 	}
 	
@@ -11212,7 +11239,12 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BPL_palestine_will_become_new_arab_leader"
-			
+			set_rule = { can_create_factions = yes }
+			if = {
+				limit = { is_faction_leader = yes }
+				set_faction_name = BPL_palestinian_sphere
+			}
+			else = { create_faction = BPL_palestinian_sphere }
 		}
 	}
 	
@@ -11244,7 +11276,20 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BPL_bet_on_west"
-			
+			every_other_country = {
+				limit = {
+					NOT = { has_war_with = ROOT }
+					OR = {
+						tag = GER
+						tag = ENG
+						tag = ITA
+						tag = event_target:NW_france_scope
+					}
+				}
+				add_opinion_modifier = { target = ROOT modifier = focus_on_alliance }
+				ROOT = { add_opinion_modifier = { target = PREV modifier = focus_on_alliance } }
+			}
+			add_ideas = BPL_bet_on_west_idea
 		}
 	}
 	
@@ -11279,7 +11324,16 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BPL_force_iraq_to_unite"
-			
+			if = {
+				limit = { IRQ = { is_subject = no } }
+				IRQ = { country_event = { id = NWpalestine.56 hours = 8 } }
+			}
+			else = {
+				every_state = {
+					limit = { is_core_of = IRQ }
+					add_claim_by = ROOT
+				}
+			}
 		}
 	}
 	
@@ -11305,8 +11359,15 @@ focus_tree = {
 			factor = 10
 		}
 		available = {
+			is_faction_leader = yes
+			NOT = { has_war_with = IRQ }
+			IRQ = {
+				is_in_faction = no
+				is_subject = no
+			}
 		}
 		bypass = {
+			IRQ = { is_in_faction_with = ROOT }
 		}
 		
 		select_effect = {
@@ -11314,7 +11375,7 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BPL_alliance_with_iraq"
-			
+			IRQ = { country_event = { id = generic.5 } }
 		}
 	}
 	
@@ -11341,6 +11402,7 @@ focus_tree = {
 		available = {
 		}
 		bypass = {
+			owns_state = 656
 		}
 		
 		select_effect = {
@@ -11348,7 +11410,20 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BPL_demand_kuwait"
-			
+			if = {
+				limit = {
+					656 = {
+						owner = {
+							OR = {
+								tag = ENG
+								is_subject_of = ENG
+								OVERLORD = { is_subject_of = ENG }
+							}
+						}
+					}
+				}
+				ENG = { country_event = { id = NWpalestine.58 hours = 8 } }
+			}
 		}
 	}
 	
@@ -11379,7 +11454,29 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BPL_liberation_of_syria"
-			
+			every_state = {
+				limit = {
+					OR = {
+						is_core_of = SYR
+						is_core_of = JDS
+						is_core_of = ALW
+						is_core_of = LEB
+					}
+				}
+				add_core_of = ROOT
+			}
+			if = {
+				limit = {
+					any_state = {
+						is_core_of = SYR
+						is_owned_by = event_target:NW_france_scope
+					}
+				}
+				event_target:NW_france_scope = {
+					country_event = { id = NWpalestine.61 hours = 8 }
+					custom_effect_tooltip = BPL_liberation_of_syria_tt
+				}
+			}
 		}
 	}
 	
@@ -11401,8 +11498,15 @@ focus_tree = {
 			factor = 10
 		}
 		available = {
+			is_subject = no
 		}
 		bypass = {
+			OR = {
+				NOT = { country_exists = SAU }
+				has_war_with = SAU
+				is_in_faction_with = SAU
+				SAU = { is_subject_of = ROOT }
+			}
 		}
 		
 		select_effect = {
@@ -11410,7 +11514,21 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BPL_reclaim_throne_of_hijaz"
-			
+			add_state_claim = 679
+			create_wargoal = {
+				type = annex_everything
+				target = SAU
+			}
+			add_ai_strategy = {
+				type = antagonize
+				id = "SAU"
+				value = 200
+			}
+			add_ai_strategy = {
+				type = conquer
+				id = "SAU"
+				value = 200
+			}
 		}
 	}
 	
@@ -11432,8 +11550,15 @@ focus_tree = {
 			factor = 10
 		}
 		available = {
+			is_subject = no
 		}
 		bypass = {
+			OR = {
+				NOT = { country_exists = PER }
+				has_war_with = PER
+				is_in_faction_with = PER
+				PER = { is_subject_of = ROOT }
+			}
 		}
 		
 		select_effect = {
@@ -11441,7 +11566,20 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BPL_save_iranian_arabs"
-			
+			create_wargoal = {
+				type = annex_everything
+				target = PER
+			}
+			add_ai_strategy = {
+				type = antagonize
+				id = "PER"
+				value = 200
+			}
+			add_ai_strategy = {
+				type = conquer
+				id = "PER"
+				value = 200
+			}
 		}
 	}
 	
@@ -11472,7 +11610,22 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BPL_hashemite_arabia"
-			
+			every_state = {
+				limit = {
+					OR = {
+						state = 679
+						is_core_of = IRQ
+						is_core_of = SYR
+						is_core_of = JDS
+						is_core_of = ALW
+						is_core_of = LEB
+					}
+				}
+				add_core_of = ROOT
+			}
+			add_stability = 0.1
+			add_war_support = 0.1
+			set_cosmetic_tag = IRQ_hash
 		}
 	}
 	
@@ -11491,7 +11644,7 @@ focus_tree = {
 		available_if_capitulated = yes
 
 		ai_will_do = {
-			factor = 10
+			factor = 15
 		}
 		available = {
 		}
@@ -11503,7 +11656,7 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BPL_reformism_of_new_king"
-			
+			add_ideas = BPL_reformism_of_new_king
 		}
 	}
 	
@@ -11525,6 +11678,7 @@ focus_tree = {
 			factor = 10
 		}
 		available = {
+			owns_state = 979
 		}
 		bypass = {
 		}
@@ -11534,7 +11688,20 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BPL_give_autonomy_to_jews"
-			
+			ISR = {
+				transfer_state = 979
+				add_state_core = 979
+			}
+			puppet = ISR
+			979 = {
+				add_manpower = 50000
+				add_extra_state_shared_building_slots = 3
+				add_building_construction = {
+					type = industrial_complex
+					level = 3
+					instant_build = yes
+				}
+			}
 		}
 	}
 	
@@ -11565,7 +11732,14 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BPL_updating_arab_army"
-			
+			army_experience = 15
+			add_ideas = BPL_updating_arab_army
+			add_tech_bonus = {
+				name = BPL_updating_arab_army
+				bonus = 1.0
+				uses = 1
+				category = land_doctrine
+			}
 		}
 	}
 	
@@ -11581,7 +11755,7 @@ focus_tree = {
 		y = 1
 		relative_position_id = BPL_proclaim_kingdom_of_palestine
 		
-		cost = 10
+		cost = 5
 		
 		cancel_if_invalid = yes
 		continue_if_invalid = no
@@ -11591,6 +11765,13 @@ focus_tree = {
 			factor = 10
 		}
 		available = {
+			IRQ = {
+				has_government = monarchy
+				NOT = { has_war_with = ROOT }
+			}
+			hidden_trigger = {
+				always = no
+			}
 		}
 		bypass = {
 		}
@@ -11600,7 +11781,13 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BPL_union_with_iraq"
-			
+			IRQ = {
+				set_autonomy = {
+					target = ROOT
+					autonomy_state = autonomy_colony
+				}
+			}
+			custom_effect_tooltip = TUR_focus_autocomplete_tt
 		}
 	}
 	

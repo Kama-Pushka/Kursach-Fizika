@@ -2289,20 +2289,382 @@ country_event = {
 	option = {
 		name = NWpalestine.54.a
 		ai_chance = {
-			factor = 99
+			factor = 90
 		}
-		
+		FROM = { complete_national_focus = BPL_union_with_iraq }
+		custom_effect_tooltip = NWpalestine_54a_tt
 	}
 	
 	option = {
 		name = NWpalestine.54.b
 		ai_chance = {
-			factor = 1
+			factor = 10
 		}
-		
+		FROM = { country_event = { id = NWpalestine.55 hours = 8 } }
 	}
 }
 
+#Иракский отказ // BPL
+country_event = {
+	id = NWpalestine.55
+	title = NWpalestine.55.t
+	desc = NWpalestine.55.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWpalestine.55" }
+	
+	option = {
+		name = NWpalestine.55.a
+		complete_national_focus = BPL_invite_abdullah_to_throne
+	}
+}
+
+#Королевство Палестина принуждает нас к объединению // IRQ
+country_event = {
+	id = NWpalestine.56
+	title = NWpalestine.56.t
+	desc = NWpalestine.56.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWpalestine.56" }
+	
+	option = {
+		name = NWpalestine.56.a
+		ai_chance = {
+			factor = 75
+			modifier = {
+				factor = 0
+				OR = {
+					has_government = trozkism
+					has_government = communism
+					has_government = democratic
+				}
+			}
+		}
+		FROM = { puppet = ROOT }
+		create_country_leader = {
+			name = "Abdullah bin al-Hussein"
+			desc = "POLITICS_ABDULLAH_BIN_AL_HUSSEIN_DESC"
+			picture = "gfx/leaders/JOR/Portrait_Abdullah_I.dds"
+			expire = "1965.1.1"
+			ideology = monarchy_ideology
+			traits = {
+			}
+		}
+	}
+	
+	option = {
+		name = NWpalestine.56.b
+		ai_chance = {
+			factor = 25
+		}
+		FROM = { country_event = { id = NWpalestine.57 hours = 8 } }
+	}
+}
+
+#Ирак отказал в объединении // BPL
+country_event = {
+	id = NWpalestine.57
+	title = NWpalestine.57.t
+	desc = NWpalestine.57.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWpalestine.57" }
+	
+	option = {
+		name = NWpalestine.57.a
+		create_wargoal = {
+			type = puppet_wargoal_focus
+			target = FROM
+		}
+		add_ai_strategy = {
+			type = antagonize
+			id = FROM
+			value = 200
+		}
+		add_ai_strategy = {
+			type = conquer
+			id = FROM
+			value = 200
+		}
+	}
+}
+
+#Палестины требует передать Кувейт // ENG
+country_event = {
+	id = NWpalestine.58
+	title = NWpalestine.58.t
+	desc = NWpalestine.58.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWpalestine.58" }
+	
+	option = {
+		name = NWpalestine.58.a
+		ai_chance = {
+			factor = 90
+		}
+		if = {
+			limit = {
+				656 = {
+					owner = {
+						OR = {
+							tag = ROOT
+							is_puppet_of = ROOT
+						}
+					}
+				}
+				IRQ = {
+					OR = {
+						is_subject = no
+						is_subject_of = FROM
+					}
+					is_in_faction_with = FROM
+				}
+			}
+			IRQ = {
+				transfer_state = 656
+				add_state_core = 656
+			}
+		}
+		else_if = {
+			limit = {
+				656 = {
+					owner = {
+						OR = {
+							tag = ROOT
+							is_puppet_of = ROOT
+						}
+					}
+				}
+				IRQ = {
+					is_subject = yes
+					NOT = { is_subject_of = FROM }
+				}
+			}
+			FROM = {
+				transfer_state = 656
+				add_state_core = 656
+			}
+		}
+		else_if = {
+			limit = {
+				KUW = {
+					owns_state = 656
+					has_autonomy_state = autonomy_dominion
+				}
+			}
+			KUW = { country_event = { id = NWpalestine.60 hours = 8 } }
+		}
+	}
+	
+	option = {
+		name = NWpalestine.58.b
+		ai_chance = {
+			factor = 10
+		}
+		FROM = { country_event = { id = NWpalestine.59 hours = 8 } }
+	}
+}
+
+#Британский отказ // BPL
+country_event = {
+	id = NWpalestine.59
+	title = NWpalestine.59.t
+	desc = NWpalestine.59.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWpalestine.59" }
+	
+	option = {
+		name = NWpalestine.59.a
+		add_state_claim = 656
+		hidden_effect = {
+			656 = {
+				owner = {
+					ROOT = {
+						add_ai_strategy = {
+							type = antagonize
+							id = PREV
+							value = 200
+						}
+						add_ai_strategy = {
+							type = conquer
+							id = PREV
+							value = 200
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+#Британия отдала нас Палестине // KUW
+country_event = {
+	id = NWpalestine.60
+	title = NWpalestine.60.t
+	desc = NWpalestine.60.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWpalestine.60" }
+	
+	option = {
+		name = NWpalestine.60.a
+		ai_chance = {
+			factor = 40
+		}
+		BPL = {
+			set_autonomy = {
+				target = ROOT
+				autonomy_state = autonomy_dominion
+			}
+		}
+	}
+	
+	option = {
+		name = NWpalestine.60.b
+		ai_chance = {
+			factor = 60
+		}
+		hidden_effect = {
+			if = {
+				limit = { is_ai = yes }
+				set_rule = { can_join_factions = no }
+			}
+		}
+		if = {
+			limit = { is_subject = yes }
+			OVERLORD = {
+				set_autonomy = {
+					target = ROOT
+					autonomy_state = autonomy_free
+				}
+			}
+		}
+		if = {
+			limit = { is_in_faction = yes }
+			leave_faction = yes
+		}
+		declare_war_on = {
+			target = BPL
+			type = annex_everything
+		}
+	}
+}
+
+#Палестина требует возродить монархию в Сирии // event_target:NW_france_scope
+country_event = {
+	id = NWpalestine.61
+	title = NWpalestine.61.t
+	desc = NWpalestine.61.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWpalestine.61" }
+	
+	option = {
+		name = NWpalestine.61.a
+		ai_chance = {
+			factor = 50
+		}
+		FROM = { country_event = { id = NWpalestine.62 hours = 8 } }
+	}
+	
+	option = {
+		name = NWpalestine.61.b
+		ai_chance = {
+			factor = 50
+			modifier = {
+				factor = 0
+				OR = {
+					has_government = monarchy
+					has_government = fascism
+				}
+			}
+		}
+		every_owned_state = {
+			limit = {
+				OR = {
+					is_core_of = SYR
+					is_core_of = JDS
+				}
+			}
+			FROM = { transfer_state = PREV }
+		}
+	}
+	
+	option = {
+		name = NWpalestine.61.c
+		ai_chance = {
+			factor = 35
+			modifier = {
+				factor = 0
+				OR = {
+					has_government = monarchy
+					has_government = fascism
+				}
+			}
+		}
+		every_state = {
+			limit = {
+				owner = {
+					OR = {
+						tag = ROOT
+						is_subject_of = ROOT
+					}
+				}
+				OR = {
+					is_core_of = SYR
+					is_core_of = JDS
+					is_core_of = ALW
+					is_core_of = LEB
+				}
+			}
+			FROM = { transfer_state = PREV }
+		}
+	}
+}
+
+#Франция отказалась возрождать монархию в Сирии // BPL
+country_event = {
+	id = NWpalestine.62
+	title = NWpalestine.62.t
+	desc = NWpalestine.62.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWpalestine.62" }
+	
+	option = {
+		name = NWpalestine.62.a
+		create_wargoal = {
+			type = annex_everything
+			target = FROM
+		}
+		add_ai_strategy = {
+			type = antagonize
+			id = FROM
+			value = 200
+		}
+		add_ai_strategy = {
+			type = antagonize
+			id = "SYR"
+			value = 200
+		}
+		add_ai_strategy = {
+			type = conquer
+			id = "SYR"
+			value = 200
+		}
+	}
+}
 
 
 #TEST
