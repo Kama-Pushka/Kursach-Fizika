@@ -739,6 +739,7 @@ focus_tree = {
 			factor = 10
 		}
 		available = {
+			NOT = { has_government = anarchism }
 			country_exists = USA
 			USA = { has_government = democratic }
 		}
@@ -1585,7 +1586,7 @@ focus_tree = {
 			factor = 10
 		}
 		available = {
-			is_in_faction_with = SOV
+			is_in_faction = yes
 		}
 		bypass = {
 		}
@@ -1596,7 +1597,10 @@ focus_tree = {
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BPL_joint_development_com"
 			add_to_tech_sharing_group = BPL_joint_development_com_group
-			SOV = { add_to_tech_sharing_group = BPL_joint_development_com_group }
+			every_other_country = {
+				limit = { is_in_faction_with = ROOT }
+				add_to_tech_sharing_group = BPL_joint_development_com_group
+			}
 		}
 	}
 	
@@ -3881,15 +3885,17 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BPL_proclaim_kibbutz_community"
-			add_timed_idea = { idea = BPL_proclaim_kibbutz_community_idea days = 180 }
-			add_popularity = {
-				ideology = anarchism
-				popularity = 0.2
-			}
+			set_country_flag = block_set_anarchism_unity_var_flag
+			set_country_flag = anarchism_left_flag
 			set_politics = {
 				ruling_party = anarchism
 				elections_allowed = no
 			}
+			add_popularity = {
+				ideology = anarchism
+				popularity = 0.2
+			}
+			add_timed_idea = { idea = BPL_proclaim_kibbutz_community_idea days = 180 }
 			set_cosmetic_tag = BPL_israel
 			if = {
 				limit = { is_subject = yes }
@@ -3919,6 +3925,10 @@ focus_tree = {
 					}
 				}
 			}
+			set_country_leader_ideology = anarcho_collectivism
+			set_temp_variable = { anarchism_unity_add_var = 10 }
+			add_to_variable = { anarchism_unity_var = anarchism_unity_add_var }
+			custom_effect_tooltip = anarchism_unity_add_effect
 		}
 	}
 	
@@ -3950,14 +3960,17 @@ focus_tree = {
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BPL_proclaim_kibbutz_community"
 			add_political_power = 200
+			set_temp_variable = { anarchism_unity_add_var = 10 }
+			add_to_variable = { anarchism_unity_var = anarchism_unity_add_var }
+			custom_effect_tooltip = anarchism_unity_add_effect
 		}
 	}
 	
 	focus = {
-		id = BPL_expand_autonomy_of_kibbutz
+		id = BPL_autonomy_of_workplace
 		icon = GFX_goal_generic_demand_territory
 		prerequisite = { focus = BPL_weaken_state_institutions }
-		x = 0
+		x = -2
 		y = 1
 		relative_position_id = BPL_weaken_state_institutions
 		
@@ -3971,6 +3984,92 @@ focus_tree = {
 			factor = 10
 		}
 		available = {
+			set_temp_variable = { anarchism_unity_trigger_var = 5 }
+			custom_trigger_tooltip = {
+				check_variable = { anarchism_unity_var > anarchism_unity_trigger_var }
+				tooltip = anarchism_unity_trigger_more
+			}
+		}
+		bypass = {
+		}
+		
+		select_effect = {
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BPL_autonomy_of_workplace"
+			add_political_power = 25
+			set_temp_variable = { anarchism_unity_add_var = 15.5 }
+			add_to_variable = { anarchism_unity_var = anarchism_unity_add_var }
+			custom_effect_tooltip = anarchism_unity_add_effect
+			add_ideas = BPL_autonomy_of_workplace
+		}
+	}
+	
+	focus = {
+		id = BPL_kibbutz_basis_of_trade_unions
+		icon = GFX_goal_generic_demand_territory
+		prerequisite = { focus = BPL_autonomy_of_workplace }
+		prerequisite = { focus = BPL_expand_autonomy_of_kibbutz }
+		x = 0
+		y = 1
+		relative_position_id = BPL_autonomy_of_workplace
+		
+		cost = 10
+		
+		cancel_if_invalid = yes
+		continue_if_invalid = no
+		available_if_capitulated = yes
+
+		ai_will_do = {
+			factor = 10
+		}
+		available = {
+			set_temp_variable = { anarchism_unity_trigger_var = 20 }
+			custom_trigger_tooltip = {
+				check_variable = { anarchism_unity_var > anarchism_unity_trigger_var }
+				tooltip = anarchism_unity_trigger_more
+			}
+		}
+		bypass = {
+		}
+		
+		select_effect = {
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BPL_kibbutz_basis_of_trade_unions"
+			add_political_power = 15
+			set_temp_variable = { anarchism_unity_add_var = 10 }
+			add_to_variable = { anarchism_unity_var = anarchism_unity_add_var }
+			custom_effect_tooltip = anarchism_unity_add_effect
+			add_ideas = BPL_kibbutz_basis_of_trade_unions_idea
+		}
+	}
+	
+	focus = {
+		id = BPL_expand_autonomy_of_kibbutz
+		icon = GFX_goal_generic_demand_territory
+		prerequisite = { focus = BPL_weaken_state_institutions }
+		x = 0
+		y = 1
+		relative_position_id = BPL_weaken_state_institutions
+		
+		cost = 10
+		
+		cancel_if_invalid = no
+		continue_if_invalid = yes
+		available_if_capitulated = yes
+
+		ai_will_do = {
+			factor = 10
+		}
+		available = {
+			set_temp_variable = { anarchism_unity_trigger_var = 5 }
+			custom_trigger_tooltip = {
+				check_variable = { anarchism_unity_var > anarchism_unity_trigger_var }
+				tooltip = anarchism_unity_trigger_more
+			}
 		}
 		bypass = {
 		}
@@ -3980,6 +4079,10 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BPL_expand_autonomy_of_kibbutz"
+			add_political_power = 50
+			set_temp_variable = { anarchism_unity_add_var = 15 }
+			add_to_variable = { anarchism_unity_var = anarchism_unity_add_var }
+			custom_effect_tooltip = anarchism_unity_add_effect
 			unlock_decision_category_tooltip = BPL_selfgovernment_of_kibbutz_category
 			unlock_decision_category_tooltip = BPL_create_new_kibbutzim_category
 			unlock_decision_category_tooltip = BPL_expand_autonomy_of_kibbutzim_category
@@ -3996,14 +4099,19 @@ focus_tree = {
 		
 		cost = 10
 		
-		cancel_if_invalid = yes
-		continue_if_invalid = no
+		cancel_if_invalid = no
+		continue_if_invalid = yes
 		available_if_capitulated = yes
 
 		ai_will_do = {
 			factor = 10
 		}
 		available = {
+			set_temp_variable = { anarchism_unity_trigger_var = 5 }
+			custom_trigger_tooltip = {
+				check_variable = { anarchism_unity_var > anarchism_unity_trigger_var }
+				tooltip = anarchism_unity_trigger_more
+			}
 		}
 		bypass = {
 		}
@@ -4013,6 +4121,10 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BPL_collectivization_of_property_of_jewish_bankers"
+			add_political_power = -25
+			set_temp_variable = { anarchism_unity_add_var = -5 }
+			add_to_variable = { anarchism_unity_var = anarchism_unity_add_var }
+			custom_effect_tooltip = anarchism_unity_add_effect
 			random_owned_controlled_state = {
 				limit = { 
 					free_building_slots = {
@@ -4071,14 +4183,19 @@ focus_tree = {
 		
 		cost = 10
 		
-		cancel_if_invalid = yes
-		continue_if_invalid = no
+		cancel_if_invalid = no
+		continue_if_invalid = yes
 		available_if_capitulated = yes
 
 		ai_will_do = {
 			factor = 10
 		}
 		available = {
+			set_temp_variable = { anarchism_unity_trigger_var = 3 }
+			custom_trigger_tooltip = {
+				check_variable = { anarchism_unity_var > anarchism_unity_trigger_var }
+				tooltip = anarchism_unity_trigger_more
+			}
 		}
 		bypass = {
 		}
@@ -4088,6 +4205,10 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BPL_create_jewish_selfdefense"
+			add_political_power = -10
+			set_temp_variable = { anarchism_unity_add_var = -3 }
+			add_to_variable = { anarchism_unity_var = anarchism_unity_add_var }
+			custom_effect_tooltip = anarchism_unity_add_effect
 			hidden_effect = {
 				if = {
 					limit = { NOT = { has_template = "Jewish selfdefense division" } }
@@ -4133,14 +4254,19 @@ focus_tree = {
 		
 		cost = 10
 		
-		cancel_if_invalid = yes
-		continue_if_invalid = no
+		cancel_if_invalid = no
+		continue_if_invalid = yes
 		available_if_capitulated = yes
 
 		ai_will_do = {
 			factor = 10
 		}
 		available = {
+			set_temp_variable = { anarchism_unity_trigger_var = 10 }
+			custom_trigger_tooltip = {
+				check_variable = { anarchism_unity_var > anarchism_unity_trigger_var }
+				tooltip = anarchism_unity_trigger_more
+			}
 		}
 		bypass = {
 		}
@@ -4150,6 +4276,10 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BPL_legalize_arms_supplies_from_europe"
+			add_political_power = -20
+			set_temp_variable = { anarchism_unity_add_var = -10 }
+			add_to_variable = { anarchism_unity_var = anarchism_unity_add_var }
+			custom_effect_tooltip = anarchism_unity_add_effect
 			add_ideas = BPL_legalize_arms_supplies_from_europe_idea
 			add_tech_bonus = {
 				name = BPL_legalize_arms_supplies_from_europe
@@ -4171,14 +4301,19 @@ focus_tree = {
 		
 		cost = 10
 		
-		cancel_if_invalid = yes
-		continue_if_invalid = no
+		cancel_if_invalid = no
+		continue_if_invalid = yes
 		available_if_capitulated = yes
 
 		ai_will_do = {
 			factor = 10
 		}
 		available = {
+			set_temp_variable = { anarchism_unity_trigger_var = 10 }
+			custom_trigger_tooltip = {
+				check_variable = { anarchism_unity_var > anarchism_unity_trigger_var }
+				tooltip = anarchism_unity_trigger_more
+			}
 		}
 		bypass = {
 		}
@@ -4188,6 +4323,10 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BPL_establish_cottage_industry_of_weapons"
+			add_political_power = -25
+			set_temp_variable = { anarchism_unity_add_var = -10 }
+			add_to_variable = { anarchism_unity_var = anarchism_unity_add_var }
+			custom_effect_tooltip = anarchism_unity_add_effect
 			add_ideas = BPL_establish_cottage_industry_of_weapons_idea
 			random_owned_controlled_state = {
 				limit = { 
@@ -4248,14 +4387,19 @@ focus_tree = {
 		
 		cost = 10
 		
-		cancel_if_invalid = yes
-		continue_if_invalid = no
+		cancel_if_invalid = no
+		continue_if_invalid = yes
 		available_if_capitulated = yes
 
 		ai_will_do = {
 			factor = 30
 		}
 		available = {
+			set_temp_variable = { anarchism_unity_trigger_var = 25 }
+			custom_trigger_tooltip = {
+				check_variable = { anarchism_unity_var > anarchism_unity_trigger_var }
+				tooltip = anarchism_unity_trigger_more
+			}
 			is_subject = no
 			event_target:NW_france_scope = {
 				is_faction_leader = yes
@@ -4275,6 +4419,10 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BPL_common_path_with_french_workers"
+			add_political_power = -10
+			set_temp_variable = { anarchism_unity_add_var = -5 }
+			add_to_variable = { anarchism_unity_var = anarchism_unity_add_var }
+			custom_effect_tooltip = anarchism_unity_add_effect
 			event_target:NW_france_scope = { country_event = { id = generic.2 } }
 		}
 	}
@@ -4290,14 +4438,19 @@ focus_tree = {
 		
 		cost = 10
 		
-		cancel_if_invalid = yes
-		continue_if_invalid = no
+		cancel_if_invalid = no
+		continue_if_invalid = yes
 		available_if_capitulated = yes
 
 		ai_will_do = {
 			factor = 10
 		}
 		available = {
+			set_temp_variable = { anarchism_unity_trigger_var = 25 }
+			custom_trigger_tooltip = {
+				check_variable = { anarchism_unity_var > anarchism_unity_trigger_var }
+				tooltip = anarchism_unity_trigger_more
+			}
 		}
 		bypass = {
 		}
@@ -4307,6 +4460,10 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BPL_light_communarianism_in_middle_east"
+			add_political_power = -12
+			set_temp_variable = { anarchism_unity_add_var = -7.5 }
+			add_to_variable = { anarchism_unity_var = anarchism_unity_add_var }
+			custom_effect_tooltip = anarchism_unity_add_effect
 			set_rule = { can_create_factions = yes }
 			create_faction = BPL_collectivist_union
 		}
@@ -4325,14 +4482,19 @@ focus_tree = {
 		
 		cost = 10
 		
-		cancel_if_invalid = yes
-		continue_if_invalid = no
+		cancel_if_invalid = no
+		continue_if_invalid = yes
 		available_if_capitulated = yes
 
 		ai_will_do = {
 			factor = 10
 		}
 		available = {
+			set_temp_variable = { anarchism_unity_trigger_var = 25 }
+			custom_trigger_tooltip = {
+				check_variable = { anarchism_unity_var > anarchism_unity_trigger_var }
+				tooltip = anarchism_unity_trigger_more
+			}
 			is_subject = no
 		}
 		bypass = {
@@ -4349,6 +4511,10 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BPL_release_arab_brothers_transjordan"
+			add_political_power = -15
+			set_temp_variable = { anarchism_unity_add_var = -5 }
+			add_to_variable = { anarchism_unity_var = anarchism_unity_add_var }
+			custom_effect_tooltip = anarchism_unity_add_effect
 			create_wargoal = {
 				type = annex_everything
 				target = JOR
@@ -4376,8 +4542,8 @@ focus_tree = {
 		
 		cost = 10
 		
-		cancel_if_invalid = yes
-		continue_if_invalid = no
+		cancel_if_invalid = no
+		continue_if_invalid = yes
 		available_if_capitulated = yes
 
 		ai_will_do = {
@@ -4388,6 +4554,11 @@ focus_tree = {
 			}
 		}
 		available = {
+			set_temp_variable = { anarchism_unity_trigger_var = 25 }
+			custom_trigger_tooltip = {
+				check_variable = { anarchism_unity_var > anarchism_unity_trigger_var }
+				tooltip = anarchism_unity_trigger_more
+			}
 			is_subject = no
 		}
 		bypass = {
@@ -4404,6 +4575,10 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BPL_arab_nomads_is_prerequisite_of_anarchism"
+			add_political_power = -15
+			set_temp_variable = { anarchism_unity_add_var = -5 }
+			add_to_variable = { anarchism_unity_var = anarchism_unity_add_var }
+			custom_effect_tooltip = anarchism_unity_add_effect
 			create_wargoal = {
 				type = annex_everything
 				target = SAU
@@ -4431,8 +4606,8 @@ focus_tree = {
 		
 		cost = 10
 		
-		cancel_if_invalid = yes
-		continue_if_invalid = no
+		cancel_if_invalid = no
+		continue_if_invalid = yes
 		available_if_capitulated = yes
 
 		ai_will_do = {
@@ -4443,6 +4618,11 @@ focus_tree = {
 			}
 		}
 		available = {
+			set_temp_variable = { anarchism_unity_trigger_var = 25 }
+			custom_trigger_tooltip = {
+				check_variable = { anarchism_unity_var > anarchism_unity_trigger_var }
+				tooltip = anarchism_unity_trigger_more
+			}
 			is_subject = no
 		}
 		bypass = {
@@ -4459,6 +4639,10 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BPL_liberation_of_iraq"
+			add_political_power = -15
+			set_temp_variable = { anarchism_unity_add_var = -5 }
+			add_to_variable = { anarchism_unity_var = anarchism_unity_add_var }
+			custom_effect_tooltip = anarchism_unity_add_effect
 			create_wargoal = {
 				type = annex_everything
 				target = IRQ
@@ -4487,8 +4671,8 @@ focus_tree = {
 		
 		cost = 10
 		
-		cancel_if_invalid = yes
-		continue_if_invalid = no
+		cancel_if_invalid = no
+		continue_if_invalid = yes
 		available_if_capitulated = yes
 
 		ai_will_do = {
@@ -4499,6 +4683,11 @@ focus_tree = {
 			}
 		}
 		available = {
+			set_temp_variable = { anarchism_unity_trigger_var = 40 }
+			custom_trigger_tooltip = {
+				check_variable = { anarchism_unity_var > anarchism_unity_trigger_var }
+				tooltip = anarchism_unity_trigger_more
+			}
 			is_subject = no
 		}
 		bypass = {
@@ -4521,6 +4710,10 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BPL_enter_in_tehran"
+			add_political_power = -25
+			set_temp_variable = { anarchism_unity_add_var = -8 }
+			add_to_variable = { anarchism_unity_var = anarchism_unity_add_var }
+			custom_effect_tooltip = anarchism_unity_add_effect
 			create_wargoal = {
 				type = annex_everything
 				target = PER
@@ -4563,14 +4756,19 @@ focus_tree = {
 		
 		cost = 10
 		
-		cancel_if_invalid = yes
-		continue_if_invalid = no
+		cancel_if_invalid = no
+		continue_if_invalid = yes
 		available_if_capitulated = yes
 
 		ai_will_do = {
 			factor = 10
 		}
 		available = {
+			set_temp_variable = { anarchism_unity_trigger_var = 50 }
+			custom_trigger_tooltip = {
+				check_variable = { anarchism_unity_var > anarchism_unity_trigger_var }
+				tooltip = anarchism_unity_trigger_more
+			}
 			is_subject = no
 		}
 		bypass = {
@@ -4581,6 +4779,10 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BPL_crescent_fertility_is_successful_future_kibbutzim"
+			add_political_power = -15
+			set_temp_variable = { anarchism_unity_add_var = -5 }
+			add_to_variable = { anarchism_unity_var = anarchism_unity_add_var }
+			custom_effect_tooltip = anarchism_unity_add_effect
 			every_other_country = {
 				limit = { NOT = { has_government = anarchism } }
 				add_opinion_modifier = { target = ROOT modifier = BPL_crescent_fertility_is_successful_future_kibbutzim }
@@ -4624,18 +4826,23 @@ focus_tree = {
 		
 		cost = 10
 		
-		cancel_if_invalid = yes
-		continue_if_invalid = no
+		cancel_if_invalid = no
+		continue_if_invalid = yes
 		available_if_capitulated = yes
 
 		ai_will_do = {
-			factor = 10
+			factor = 30
 			modifier = {
 				factor = 0
 				num_divisions < 100
 			}
 		}
 		available = {
+			set_temp_variable = { anarchism_unity_trigger_var = 50 }
+			custom_trigger_tooltip = {
+				check_variable = { anarchism_unity_var > anarchism_unity_trigger_var }
+				tooltip = anarchism_unity_trigger_more
+			}
 			is_subject = no
 		}
 		bypass = {
@@ -4676,6 +4883,10 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BPL_way_to_europe"
+			add_political_power = -45
+			set_temp_variable = { anarchism_unity_add_var = -15 }
+			add_to_variable = { anarchism_unity_var = anarchism_unity_add_var }
+			custom_effect_tooltip = anarchism_unity_add_effect
 			if = {
 				limit = {
 					country_exists = BUL
@@ -4809,18 +5020,23 @@ focus_tree = {
 		
 		cost = 10
 		
-		cancel_if_invalid = yes
-		continue_if_invalid = no
+		cancel_if_invalid = no
+		continue_if_invalid = yes
 		available_if_capitulated = yes
 
 		ai_will_do = {
-			factor = 10
+			factor = 20
 			modifier = {
 				factor = 0
 				num_divisions < 125
 			}
 		}
 		available = {
+			set_temp_variable = { anarchism_unity_trigger_var = 70 }
+			custom_trigger_tooltip = {
+				check_variable = { anarchism_unity_var > anarchism_unity_trigger_var }
+				tooltip = anarchism_unity_trigger_more
+			}
 			is_subject = no
 		}
 		bypass = {
@@ -4855,6 +5071,10 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BPL_freedom_for_workers"
+			add_political_power = -45
+			set_temp_variable = { anarchism_unity_add_var = -15 }
+			add_to_variable = { anarchism_unity_var = anarchism_unity_add_var }
+			custom_effect_tooltip = anarchism_unity_add_effect
 			if = {
 				limit = {
 					country_exists = ITA
@@ -4964,18 +5184,23 @@ focus_tree = {
 		
 		cost = 10
 		
-		cancel_if_invalid = yes
-		continue_if_invalid = no
+		cancel_if_invalid = no
+		continue_if_invalid = yes
 		available_if_capitulated = yes
 
 		ai_will_do = {
-			factor = 20
+			factor = 40
 			modifier = {
 				factor = 0
 				num_divisions < 50
 			}
 		}
 		available = {
+			set_temp_variable = { anarchism_unity_trigger_var = 30 }
+			custom_trigger_tooltip = {
+				check_variable = { anarchism_unity_var > anarchism_unity_trigger_var }
+				tooltip = anarchism_unity_trigger_more
+			}
 			is_subject = no
 		}
 		bypass = {
@@ -4992,6 +5217,10 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BPL_way_to_asia"
+			add_political_power = -15
+			set_temp_variable = { anarchism_unity_add_var = -5 }
+			add_to_variable = { anarchism_unity_var = anarchism_unity_add_var }
+			custom_effect_tooltip = anarchism_unity_add_effect
 			create_wargoal = {
 				type = annex_everything
 				target = RAJ
@@ -5019,14 +5248,19 @@ focus_tree = {
 		
 		cost = 10
 		
-		cancel_if_invalid = yes
-		continue_if_invalid = no
+		cancel_if_invalid = no
+		continue_if_invalid = yes
 		available_if_capitulated = yes
 
 		ai_will_do = {
-			factor = 10
+			factor = 25
 		}
 		available = {
+			set_temp_variable = { anarchism_unity_trigger_var = 75 }
+			custom_trigger_tooltip = {
+				check_variable = { anarchism_unity_var > anarchism_unity_trigger_var }
+				tooltip = anarchism_unity_trigger_more
+			}
 			is_subject = no
 		}
 		bypass = {
@@ -5037,6 +5271,10 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BPL_capture_of_china"
+			add_political_power = -45
+			set_temp_variable = { anarchism_unity_add_var = -20 }
+			add_to_variable = { anarchism_unity_var = anarchism_unity_add_var }
+			custom_effect_tooltip = anarchism_unity_add_effect
 			every_other_country = {
 				limit = { is_literally_china = yes }
 				ROOT = {
@@ -5070,8 +5308,8 @@ focus_tree = {
 		
 		cost = 10
 		
-		cancel_if_invalid = yes
-		continue_if_invalid = no
+		cancel_if_invalid = no
+		continue_if_invalid = yes
 		available_if_capitulated = yes
 
 		ai_will_do = {
@@ -5089,6 +5327,11 @@ focus_tree = {
 			}
 		}
 		available = {
+			set_temp_variable = { anarchism_unity_trigger_var = 90 }
+			custom_trigger_tooltip = {
+				check_variable = { anarchism_unity_var > anarchism_unity_trigger_var }
+				tooltip = anarchism_unity_trigger_more
+			}
 			is_subject = no
 		}
 		bypass = {
@@ -5105,6 +5348,10 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BPL_anarchic_nature_of_ussr"
+			add_political_power = -45
+			set_temp_variable = { anarchism_unity_add_var = -25 }
+			add_to_variable = { anarchism_unity_var = anarchism_unity_add_var }
+			custom_effect_tooltip = anarchism_unity_add_effect
 			create_wargoal = {
 				type = annex_everything
 				target = SOV
@@ -5133,14 +5380,19 @@ focus_tree = {
 		
 		cost = 10
 		
-		cancel_if_invalid = yes
-		continue_if_invalid = no
+		cancel_if_invalid = no
+		continue_if_invalid = yes
 		available_if_capitulated = yes
 
 		ai_will_do = {
 			factor = 5
 		}
 		available = {
+			set_temp_variable = { anarchism_unity_trigger_var = 50 }
+			custom_trigger_tooltip = {
+				check_variable = { anarchism_unity_var > anarchism_unity_trigger_var }
+				tooltip = anarchism_unity_trigger_more
+			}
 		}
 		bypass = {
 		}
@@ -5150,6 +5402,7 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BPL_crescent_fertility_is_successful_future_kibbutzim"
+			add_political_power = -75
 			every_other_country = {
 				limit = { has_government = democratic }
 				add_opinion_modifier = { target = ROOT modifier = BPL_subject_of_international_law }
@@ -5168,14 +5421,19 @@ focus_tree = {
 		
 		cost = 10
 		
-		cancel_if_invalid = yes
-		continue_if_invalid = no
+		cancel_if_invalid = no
+		continue_if_invalid = yes
 		available_if_capitulated = yes
 
 		ai_will_do = {
 			factor = 10
 		}
 		available = {
+			set_temp_variable = { anarchism_unity_trigger_var = 25 }
+			custom_trigger_tooltip = {
+				check_variable = { anarchism_unity_var > anarchism_unity_trigger_var }
+				tooltip = anarchism_unity_trigger_more
+			}
 		}
 		bypass = {
 		}
@@ -5185,8 +5443,13 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BPL_integration_of_arab_territories"
+			add_political_power = -25
+			set_temp_variable = { anarchism_unity_add_var = -10 }
+			add_to_variable = { anarchism_unity_var = anarchism_unity_add_var }
+			custom_effect_tooltip = anarchism_unity_add_effect
+			set_variable = { BPL_collectivize_property_in_region_custom_cost_minus = 3 }
+			set_temp_variable = { temp1 = 3 }
 			custom_effect_tooltip = BPL_integration_of_arab_territories_tt
-			set_variable = { BPL_collectivize_property_in_region_custom_cost_minus = 0.4 }
 		}
 	}
 	
@@ -12155,14 +12418,22 @@ focus_tree = {
 		relative_position_id = BPL_save_iran_from_despotic_shah
 		cost = 7.2
 		
-		cancel_if_invalid = yes
-		continue_if_invalid = no
+		cancel_if_invalid = no
+		continue_if_invalid = yes
 		available_if_capitulated = yes
 
 		ai_will_do = {
 			factor = 7.5
 		}
 		available = {
+			if = {
+				limit = { has_government = anarchism }
+				set_temp_variable = { anarchism_unity_trigger_var = 25 }
+				custom_trigger_tooltip = {
+					check_variable = { anarchism_unity_var > anarchism_unity_trigger_var }
+					tooltip = anarchism_unity_trigger_more
+				}
+			}
 		}
 		bypass = {
 		}
@@ -12177,6 +12448,12 @@ focus_tree = {
 				uses = 1
 				category = air_doctrine
 				name = BPL_create_an_air_force
+			}
+			if = {
+				limit = { has_government = anarchism }
+				set_temp_variable = { anarchism_unity_add_var = -2 }
+				add_to_variable = { anarchism_unity_var = anarchism_unity_add_var }
+				custom_effect_tooltip = anarchism_unity_add_effect
 			}
 		}
 	}
@@ -12194,14 +12471,22 @@ focus_tree = {
 		relative_position_id = BPL_create_an_air_force
 		cost = 7.2
 		
-		cancel_if_invalid = yes
-		continue_if_invalid = no
+		cancel_if_invalid = no
+		continue_if_invalid = yes
 		available_if_capitulated = yes
 
 		ai_will_do = {
 			factor = 7.5
 		}
 		available = {
+			if = {
+				limit = { has_government = anarchism }
+				set_temp_variable = { anarchism_unity_trigger_var = 25 }
+				custom_trigger_tooltip = {
+					check_variable = { anarchism_unity_var > anarchism_unity_trigger_var }
+					tooltip = anarchism_unity_trigger_more
+				}
+			}
 			owns_state = 979
 		}
 		bypass = {
@@ -12225,6 +12510,12 @@ focus_tree = {
 			clamp_variable = { var = BPL_jews_tensions_total min = 0 max = 100 }
 			log = "[GetDateText]: [This.GetName] ([This.GetTag]): BPL_arab_tensions_total: [?BPL_arab_tensions_total]"
 			log = "[GetDateText]: [This.GetName] ([This.GetTag]): BPL_jews_tensions_total: [?BPL_jews_tensions_total]"
+			if = {
+				limit = { has_government = anarchism }
+				set_temp_variable = { anarchism_unity_add_var = -2 }
+				add_to_variable = { anarchism_unity_var = anarchism_unity_add_var }
+				custom_effect_tooltip = anarchism_unity_add_effect
+			}
 		}
 	}
 	
@@ -12241,14 +12532,22 @@ focus_tree = {
 		relative_position_id = BPL_create_an_air_force
 		cost = 7.2
 		
-		cancel_if_invalid = yes
-		continue_if_invalid = no
+		cancel_if_invalid = no
+		continue_if_invalid = yes
 		available_if_capitulated = yes
 
 		ai_will_do = {
 			factor = 7.5
 		}
 		available = {
+			if = {
+				limit = { has_government = anarchism }
+				set_temp_variable = { anarchism_unity_trigger_var = 25 }
+				custom_trigger_tooltip = {
+					check_variable = { anarchism_unity_var > anarchism_unity_trigger_var }
+					tooltip = anarchism_unity_trigger_more
+				}
+			}
 			owns_state = 454
 		}
 		bypass = {
@@ -12272,6 +12571,12 @@ focus_tree = {
 			clamp_variable = { var = BPL_jews_tensions_total min = 0 max = 100 }
 			log = "[GetDateText]: [This.GetName] ([This.GetTag]): BPL_arab_tensions_total: [?BPL_arab_tensions_total]"
 			log = "[GetDateText]: [This.GetName] ([This.GetTag]): BPL_jews_tensions_total: [?BPL_jews_tensions_total]"
+			if = {
+				limit = { has_government = anarchism }
+				set_temp_variable = { anarchism_unity_add_var = -2 }
+				add_to_variable = { anarchism_unity_var = anarchism_unity_add_var }
+				custom_effect_tooltip = anarchism_unity_add_effect
+			}
 		}
 	}
 	
@@ -12288,14 +12593,22 @@ focus_tree = {
 		relative_position_id = BPL_create_an_air_force
 		cost = 7.2
 		
-		cancel_if_invalid = yes
-		continue_if_invalid = no
+		cancel_if_invalid = no
+		continue_if_invalid = yes
 		available_if_capitulated = yes
 
 		ai_will_do = {
 			factor = 7.5
 		}
 		available = {
+			if = {
+				limit = { has_government = anarchism }
+				set_temp_variable = { anarchism_unity_trigger_var = 25 }
+				custom_trigger_tooltip = {
+					check_variable = { anarchism_unity_var > anarchism_unity_trigger_var }
+					tooltip = anarchism_unity_trigger_more
+				}
+			}
 			owns_state = 980
 		}
 		bypass = {
@@ -12311,6 +12624,12 @@ focus_tree = {
 					level = 1
 					instant_build = yes
 				}
+			}
+			if = {
+				limit = { has_government = anarchism }
+				set_temp_variable = { anarchism_unity_add_var = -1 }
+				add_to_variable = { anarchism_unity_var = anarchism_unity_add_var }
+				custom_effect_tooltip = anarchism_unity_add_effect
 			}
 		}
 	}
@@ -12328,14 +12647,22 @@ focus_tree = {
 		relative_position_id = BPL_air_base_in_jerusalem
 		cost = 7.2
 		
-		cancel_if_invalid = yes
-		continue_if_invalid = no
+		cancel_if_invalid = no
+		continue_if_invalid = yes
 		available_if_capitulated = yes
 
 		ai_will_do = {
 			factor = 7.5
 		}
 		available = {
+			if = {
+				limit = { has_government = anarchism }
+				set_temp_variable = { anarchism_unity_trigger_var = 20 }
+				custom_trigger_tooltip = {
+					check_variable = { anarchism_unity_var > anarchism_unity_trigger_var }
+					tooltip = anarchism_unity_trigger_more
+				}
+			}
 		}
 		bypass = {
 		}
@@ -12344,6 +12671,12 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BPL_production_of_fighters"
+			if = {
+				limit = { has_government = anarchism }
+				set_temp_variable = { anarchism_unity_add_var = -3 }
+				add_to_variable = { anarchism_unity_var = anarchism_unity_add_var }
+				custom_effect_tooltip = anarchism_unity_add_effect
+			}
 			add_tech_bonus = {
 				bonus = 1
 				uses = 1
@@ -12362,14 +12695,22 @@ focus_tree = {
 		relative_position_id = BPL_production_of_fighters
 		cost = 7.2
 		
-		cancel_if_invalid = yes
-		continue_if_invalid = no
+		cancel_if_invalid = no
+		continue_if_invalid = yes
 		available_if_capitulated = yes
 
 		ai_will_do = {
 			factor = 7.5
 		}
 		available = {
+			if = {
+				limit = { has_government = anarchism }
+				set_temp_variable = { anarchism_unity_trigger_var = 20 }
+				custom_trigger_tooltip = {
+					check_variable = { anarchism_unity_var > anarchism_unity_trigger_var }
+					tooltip = anarchism_unity_trigger_more
+				}
+			}
 		}
 		bypass = {
 		}
@@ -12378,6 +12719,12 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BPL_production_of_bombers"
+			if = {
+				limit = { has_government = anarchism }
+				set_temp_variable = { anarchism_unity_add_var = -3 }
+				add_to_variable = { anarchism_unity_var = anarchism_unity_add_var }
+				custom_effect_tooltip = anarchism_unity_add_effect
+			}
 			add_tech_bonus = {
 				bonus = 1
 				uses = 1
@@ -12396,14 +12743,22 @@ focus_tree = {
 		relative_position_id = BPL_production_of_fighters
 		cost = 7.2
 		
-		cancel_if_invalid = yes
-		continue_if_invalid = no
+		cancel_if_invalid = no
+		continue_if_invalid = yes
 		available_if_capitulated = yes
 
 		ai_will_do = {
 			factor = 7.5
 		}
 		available = {
+			if = {
+				limit = { has_government = anarchism }
+				set_temp_variable = { anarchism_unity_trigger_var = 20 }
+				custom_trigger_tooltip = {
+					check_variable = { anarchism_unity_var > anarchism_unity_trigger_var }
+					tooltip = anarchism_unity_trigger_more
+				}
+			}
 		}
 		bypass = {
 		}
@@ -12412,6 +12767,12 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BPL_production_of_cas"
+			if = {
+				limit = { has_government = anarchism }
+				set_temp_variable = { anarchism_unity_add_var = -3 }
+				add_to_variable = { anarchism_unity_var = anarchism_unity_add_var }
+				custom_effect_tooltip = anarchism_unity_add_effect
+			}
 			add_tech_bonus = {
 				bonus = 1
 				uses = 1
@@ -12435,14 +12796,22 @@ focus_tree = {
 		relative_position_id = BPL_create_an_air_force
 		cost = 7.2
 		
-		cancel_if_invalid = yes
-		continue_if_invalid = no
+		cancel_if_invalid = no
+		continue_if_invalid = yes
 		available_if_capitulated = yes
 
 		ai_will_do = {
 			factor = 7.5
 		}
 		available = {
+			if = {
+				limit = { has_government = anarchism }
+				set_temp_variable = { anarchism_unity_trigger_var = 33 }
+				custom_trigger_tooltip = {
+					check_variable = { anarchism_unity_var > anarchism_unity_trigger_var }
+					tooltip = anarchism_unity_trigger_more
+				}
+			}
 		}
 		bypass = {
 		}
@@ -12458,6 +12827,12 @@ focus_tree = {
 				uses = 1
 				category = naval_doctrine
 			}
+			if = {
+				limit = { has_government = anarchism }
+				set_temp_variable = { anarchism_unity_add_var = -2.5 }
+				add_to_variable = { anarchism_unity_var = anarchism_unity_add_var }
+				custom_effect_tooltip = anarchism_unity_add_effect
+			}
 		}
 	}
 	
@@ -12471,14 +12846,22 @@ focus_tree = {
 		relative_position_id = BPL_create_an_navy_force
 		cost = 7.2
 		
-		cancel_if_invalid = yes
-		continue_if_invalid = no
+		cancel_if_invalid = no
+		continue_if_invalid = yes
 		available_if_capitulated = yes
 
 		ai_will_do = {
 			factor = 7.5
 		}
 		available = {
+			if = {
+				limit = { has_government = anarchism }
+				set_temp_variable = { anarchism_unity_trigger_var = 33 }
+				custom_trigger_tooltip = {
+					check_variable = { anarchism_unity_var > anarchism_unity_trigger_var }
+					tooltip = anarchism_unity_trigger_more
+				}
+			}
 			owns_state = 980
 		}
 		bypass = {
@@ -12506,6 +12889,12 @@ focus_tree = {
 			clamp_variable = { var = BPL_jews_tensions_total min = 0 max = 100 }
 			log = "[GetDateText]: [This.GetName] ([This.GetTag]): BPL_arab_tensions_total: [?BPL_arab_tensions_total]"
 			log = "[GetDateText]: [This.GetName] ([This.GetTag]): BPL_jews_tensions_total: [?BPL_jews_tensions_total]"
+			if = {
+				limit = { has_government = anarchism }
+				set_temp_variable = { anarchism_unity_add_var = -2.5 }
+				add_to_variable = { anarchism_unity_var = anarchism_unity_add_var }
+				custom_effect_tooltip = anarchism_unity_add_effect
+			}
 		}
 	}
 	
@@ -12519,14 +12908,22 @@ focus_tree = {
 		relative_position_id = BPL_create_an_navy_force
 		cost = 7.2
 		
-		cancel_if_invalid = yes
-		continue_if_invalid = no
+		cancel_if_invalid = no
+		continue_if_invalid = yes
 		available_if_capitulated = yes
 
 		ai_will_do = {
 			factor = 7.5
 		}
 		available = {
+			if = {
+				limit = { has_government = anarchism }
+				set_temp_variable = { anarchism_unity_trigger_var = 33 }
+				custom_trigger_tooltip = {
+					check_variable = { anarchism_unity_var > anarchism_unity_trigger_var }
+					tooltip = anarchism_unity_trigger_more
+				}
+			}
 			owns_state = 454
 		}
 		bypass = {
@@ -12554,6 +12951,12 @@ focus_tree = {
 			clamp_variable = { var = BPL_jews_tensions_total min = 0 max = 100 }
 			log = "[GetDateText]: [This.GetName] ([This.GetTag]): BPL_arab_tensions_total: [?BPL_arab_tensions_total]"
 			log = "[GetDateText]: [This.GetName] ([This.GetTag]): BPL_jews_tensions_total: [?BPL_jews_tensions_total]"
+			if = {
+				limit = { has_government = anarchism }
+				set_temp_variable = { anarchism_unity_add_var = -2.5 }
+				add_to_variable = { anarchism_unity_var = anarchism_unity_add_var }
+				custom_effect_tooltip = anarchism_unity_add_effect
+			}
 		}
 	}
 	
@@ -12569,14 +12972,22 @@ focus_tree = {
 		relative_position_id = BPL_create_shipyard_in_telaviv
 		cost = 7.2
 		
-		cancel_if_invalid = yes
-		continue_if_invalid = no
+		cancel_if_invalid = no
+		continue_if_invalid = yes
 		available_if_capitulated = yes
 
 		ai_will_do = {
 			factor = 7.5
 		}
 		available = {
+			if = {
+				limit = { has_government = anarchism }
+				set_temp_variable = { anarchism_unity_trigger_var = 20 }
+				custom_trigger_tooltip = {
+					check_variable = { anarchism_unity_var > anarchism_unity_trigger_var }
+					tooltip = anarchism_unity_trigger_more
+				}
+			}
 		}
 		bypass = {
 		}
@@ -12585,6 +12996,12 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BPL_construction_of_destroyers"
+			if = {
+				limit = { has_government = anarchism }
+				set_temp_variable = { anarchism_unity_add_var = -2.5 }
+				add_to_variable = { anarchism_unity_var = anarchism_unity_add_var }
+				custom_effect_tooltip = anarchism_unity_add_effect
+			}
 			add_tech_bonus = {
 				name = dd_bonus
 				bonus = 1.0
@@ -12603,14 +13020,22 @@ focus_tree = {
 		relative_position_id = BPL_construction_of_destroyers
 		cost = 7.2
 		
-		cancel_if_invalid = yes
-		continue_if_invalid = no
+		cancel_if_invalid = no
+		continue_if_invalid = yes
 		available_if_capitulated = yes
 
 		ai_will_do = {
 			factor = 7.5
 		}
 		available = {
+			if = {
+				limit = { has_government = anarchism }
+				set_temp_variable = { anarchism_unity_trigger_var = 20 }
+				custom_trigger_tooltip = {
+					check_variable = { anarchism_unity_var > anarchism_unity_trigger_var }
+					tooltip = anarchism_unity_trigger_more
+				}
+			}
 		}
 		bypass = {
 		}
@@ -12619,6 +13044,12 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BPL_construction_of_submarines"
+			if = {
+				limit = { has_government = anarchism }
+				set_temp_variable = { anarchism_unity_add_var = -2.5 }
+				add_to_variable = { anarchism_unity_var = anarchism_unity_add_var }
+				custom_effect_tooltip = anarchism_unity_add_effect
+			}
 			add_tech_bonus = {
 				name = BPL_construction_of_submarines
 				bonus = 1.0
@@ -12637,14 +13068,22 @@ focus_tree = {
 		relative_position_id = BPL_construction_of_submarines
 		cost = 7.2
 		
-		cancel_if_invalid = yes
-		continue_if_invalid = no
+		cancel_if_invalid = no
+		continue_if_invalid = yes
 		available_if_capitulated = yes
 
 		ai_will_do = {
 			factor = 7.5
 		}
 		available = {
+			if = {
+				limit = { has_government = anarchism }
+				set_temp_variable = { anarchism_unity_trigger_var = 20 }
+				custom_trigger_tooltip = {
+					check_variable = { anarchism_unity_var > anarchism_unity_trigger_var }
+					tooltip = anarchism_unity_trigger_more
+				}
+			}
 		}
 		bypass = {
 		}
@@ -12653,6 +13092,12 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BPL_protecting_shores_of_palestine"
+			if = {
+				limit = { has_government = anarchism }
+				set_temp_variable = { anarchism_unity_add_var = -2.5 }
+				add_to_variable = { anarchism_unity_var = anarchism_unity_add_var }
+				custom_effect_tooltip = anarchism_unity_add_effect
+			}
 			add_tech_bonus = {
 				name = BPL_protecting_shores_of_palestine
 				bonus = 1.0
@@ -12676,14 +13121,22 @@ focus_tree = {
 		relative_position_id = BPL_create_an_navy_force
 		cost = 7.2
 		
-		cancel_if_invalid = yes
-		continue_if_invalid = no
+		cancel_if_invalid = no
+		continue_if_invalid = yes
 		available_if_capitulated = yes
 
 		ai_will_do = {
 			factor = 7.5
 		}
 		available = {
+			if = {
+				limit = { has_government = anarchism }
+				set_temp_variable = { anarchism_unity_trigger_var = 40 }
+				custom_trigger_tooltip = {
+					check_variable = { anarchism_unity_var > anarchism_unity_trigger_var }
+					tooltip = anarchism_unity_trigger_more
+				}
+			}
 		}
 		bypass = {
 		}
@@ -12726,6 +13179,12 @@ focus_tree = {
 					owner = ROOT
 				}
 			}
+			if = {
+				limit = { has_government = anarchism }
+				set_temp_variable = { anarchism_unity_add_var = -3 }
+				add_to_variable = { anarchism_unity_var = anarchism_unity_add_var }
+				custom_effect_tooltip = anarchism_unity_add_effect
+			}
 		}
 	}
 	
@@ -12738,14 +13197,22 @@ focus_tree = {
 		relative_position_id = BPL_strengthening_of_palestinian_police
 		cost = 7.2
 		
-		cancel_if_invalid = yes
-		continue_if_invalid = no
+		cancel_if_invalid = no
+		continue_if_invalid = yes
 		available_if_capitulated = yes
 
 		ai_will_do = {
 			factor = 7.5
 		}
 		available = {
+			if = {
+				limit = { has_government = anarchism }
+				set_temp_variable = { anarchism_unity_trigger_var = 20 }
+				custom_trigger_tooltip = {
+					check_variable = { anarchism_unity_var > anarchism_unity_trigger_var }
+					tooltip = anarchism_unity_trigger_more
+				}
+			}
 		}
 		bypass = {
 		}
@@ -12763,6 +13230,12 @@ focus_tree = {
 					province = 13308
 				}
 			}
+			if = {
+				limit = { has_government = anarchism }
+				set_temp_variable = { anarchism_unity_add_var = -1 }
+				add_to_variable = { anarchism_unity_var = anarchism_unity_add_var }
+				custom_effect_tooltip = anarchism_unity_add_effect
+			}
 		}
 	}
 	
@@ -12775,14 +13248,22 @@ focus_tree = {
 		relative_position_id = BPL_construction_of_forts
 		cost = 7.2
 		
-		cancel_if_invalid = yes
-		continue_if_invalid = no
+		cancel_if_invalid = no
+		continue_if_invalid = yes
 		available_if_capitulated = yes
 
 		ai_will_do = {
 			factor = 7.5
 		}
 		available = {
+			if = {
+				limit = { has_government = anarchism }
+				set_temp_variable = { anarchism_unity_trigger_var = 40 }
+				custom_trigger_tooltip = {
+					check_variable = { anarchism_unity_var > anarchism_unity_trigger_var }
+					tooltip = anarchism_unity_trigger_more
+				}
+			}
 		}
 		bypass = {
 		}
@@ -12860,6 +13341,12 @@ focus_tree = {
 			clamp_variable = { var = BPL_jews_tensions_total min = 0 max = 100 }
 			log = "[GetDateText]: [This.GetName] ([This.GetTag]): BPL_arab_tensions_total: [?BPL_arab_tensions_total]"
 			log = "[GetDateText]: [This.GetName] ([This.GetTag]): BPL_jews_tensions_total: [?BPL_jews_tensions_total]"
+			if = {
+				limit = { has_government = anarchism }
+				set_temp_variable = { anarchism_unity_add_var = -3.5 }
+				add_to_variable = { anarchism_unity_var = anarchism_unity_add_var }
+				custom_effect_tooltip = anarchism_unity_add_effect
+			}
 		}
 	}
 	
@@ -12873,8 +13360,8 @@ focus_tree = {
 		relative_position_id = BPL_construction_of_forts
 		cost = 7.2
 		
-		cancel_if_invalid = yes
-		continue_if_invalid = no
+		cancel_if_invalid = no
+		continue_if_invalid = yes
 		available_if_capitulated = yes
 
 		ai_will_do = {
@@ -12885,6 +13372,14 @@ focus_tree = {
 			}
 		}
 		available = {
+			if = {
+				limit = { has_government = anarchism }
+				set_temp_variable = { anarchism_unity_trigger_var = 40 }
+				custom_trigger_tooltip = {
+					check_variable = { anarchism_unity_var > anarchism_unity_trigger_var }
+					tooltip = anarchism_unity_trigger_more
+				}
+			}
 		}
 		bypass = {
 		}
@@ -12927,6 +13422,12 @@ focus_tree = {
 			clamp_variable = { var = BPL_jews_tensions_total min = 0 max = 100 }
 			log = "[GetDateText]: [This.GetName] ([This.GetTag]): BPL_arab_tensions_total: [?BPL_arab_tensions_total]"
 			log = "[GetDateText]: [This.GetName] ([This.GetTag]): BPL_jews_tensions_total: [?BPL_jews_tensions_total]"
+			if = {
+				limit = { has_government = anarchism }
+				set_temp_variable = { anarchism_unity_add_var = -3 }
+				add_to_variable = { anarchism_unity_var = anarchism_unity_add_var }
+				custom_effect_tooltip = anarchism_unity_add_effect
+			}
 			unlock_decision_category_tooltip = BPL_assistance_to_arab_militias_category
 		}
 	}
@@ -12941,8 +13442,8 @@ focus_tree = {
 		relative_position_id = BPL_construction_of_forts
 		cost = 7.2
 		
-		cancel_if_invalid = yes
-		continue_if_invalid = no
+		cancel_if_invalid = no
+		continue_if_invalid = yes
 		available_if_capitulated = yes
 
 		ai_will_do = {
@@ -12953,6 +13454,14 @@ focus_tree = {
 			}
 		}
 		available = {
+			if = {
+				limit = { has_government = anarchism }
+				set_temp_variable = { anarchism_unity_trigger_var = 40 }
+				custom_trigger_tooltip = {
+					check_variable = { anarchism_unity_var > anarchism_unity_trigger_var }
+					tooltip = anarchism_unity_trigger_more
+				}
+			}
 		}
 		bypass = {
 		}
@@ -12972,6 +13481,12 @@ focus_tree = {
 			clamp_variable = { var = BPL_jews_tensions_total min = 0 max = 100 }
 			log = "[GetDateText]: [This.GetName] ([This.GetTag]): BPL_arab_tensions_total: [?BPL_arab_tensions_total]"
 			log = "[GetDateText]: [This.GetName] ([This.GetTag]): BPL_jews_tensions_total: [?BPL_jews_tensions_total]"
+			if = {
+				limit = { has_government = anarchism }
+				set_temp_variable = { anarchism_unity_add_var = -3 }
+				add_to_variable = { anarchism_unity_var = anarchism_unity_add_var }
+				custom_effect_tooltip = anarchism_unity_add_effect
+			}
 			unlock_decision_category_tooltip = BPL_collaboration_with_haganah_category
 		}
 	}
@@ -12988,14 +13503,22 @@ focus_tree = {
 		relative_position_id = BPL_assistance_to_arab_militias
 		cost = 7.2
 		
-		cancel_if_invalid = yes
-		continue_if_invalid = no
+		cancel_if_invalid = no
+		continue_if_invalid = yes
 		available_if_capitulated = yes
 
 		ai_will_do = {
 			factor = 7.5
 		}
 		available = {
+			if = {
+				limit = { has_government = anarchism }
+				set_temp_variable = { anarchism_unity_trigger_var = 40 }
+				custom_trigger_tooltip = {
+					check_variable = { anarchism_unity_var > anarchism_unity_trigger_var }
+					tooltip = anarchism_unity_trigger_more
+				}
+			}
 		}
 		bypass = {
 		}
@@ -13004,6 +13527,12 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BPL_production_of_equipment"
+			if = {
+				limit = { has_government = anarchism }
+				set_temp_variable = { anarchism_unity_add_var = -3 }
+				add_to_variable = { anarchism_unity_var = anarchism_unity_add_var }
+				custom_effect_tooltip = anarchism_unity_add_effect
+			}
 			add_tech_bonus = {
 				name = BPL_production_of_equipment
 				bonus = 1.0
@@ -13022,14 +13551,22 @@ focus_tree = {
 		relative_position_id = BPL_production_of_equipment
 		cost = 7.2
 		
-		cancel_if_invalid = yes
-		continue_if_invalid = no
+		cancel_if_invalid = no
+		continue_if_invalid = yes
 		available_if_capitulated = yes
 
 		ai_will_do = {
 			factor = 7.5
 		}
 		available = {
+			if = {
+				limit = { has_government = anarchism }
+				set_temp_variable = { anarchism_unity_trigger_var = 50 }
+				custom_trigger_tooltip = {
+					check_variable = { anarchism_unity_var > anarchism_unity_trigger_var }
+					tooltip = anarchism_unity_trigger_more
+				}
+			}
 			NOT = {
 				has_government = neutrality
 				has_government = democratic
@@ -13042,6 +13579,12 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BPL_experience_of_terrorism"
+			if = {
+				limit = { has_government = anarchism }
+				set_temp_variable = { anarchism_unity_add_var = 7.5 }
+				add_to_variable = { anarchism_unity_var = anarchism_unity_add_var }
+				custom_effect_tooltip = anarchism_unity_add_effect
+			}
 			set_country_flag = state_coup_flag
 			custom_effect_tooltip = state_coup_tt
 		}
@@ -13056,14 +13599,22 @@ focus_tree = {
 		relative_position_id = BPL_production_of_equipment
 		cost = 7.2
 		
-		cancel_if_invalid = yes
-		continue_if_invalid = no
+		cancel_if_invalid = no
+		continue_if_invalid = yes
 		available_if_capitulated = yes
 
 		ai_will_do = {
 			factor = 7.5
 		}
 		available = {
+			if = {
+				limit = { has_government = anarchism }
+				set_temp_variable = { anarchism_unity_trigger_var = 40 }
+				custom_trigger_tooltip = {
+					check_variable = { anarchism_unity_var > anarchism_unity_trigger_var }
+					tooltip = anarchism_unity_trigger_more
+				}
+			}
 		}
 		bypass = {
 		}
@@ -13072,6 +13623,12 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BPL_production_of_artillery"
+			if = {
+				limit = { has_government = anarchism }
+				set_temp_variable = { anarchism_unity_add_var = -3 }
+				add_to_variable = { anarchism_unity_var = anarchism_unity_add_var }
+				custom_effect_tooltip = anarchism_unity_add_effect
+			}
 			add_tech_bonus = {
 				name = BPL_production_of_artillery
 				bonus = 1.0
@@ -13090,14 +13647,22 @@ focus_tree = {
 		relative_position_id = BPL_production_of_artillery
 		cost = 7.2
 		
-		cancel_if_invalid = yes
-		continue_if_invalid = no
+		cancel_if_invalid = no
+		continue_if_invalid = yes
 		available_if_capitulated = yes
 
 		ai_will_do = {
 			factor = 7.5
 		}
 		available = {
+			if = {
+				limit = { has_government = anarchism }
+				set_temp_variable = { anarchism_unity_trigger_var = 40 }
+				custom_trigger_tooltip = {
+					check_variable = { anarchism_unity_var > anarchism_unity_trigger_var }
+					tooltip = anarchism_unity_trigger_more
+				}
+			}
 		}
 		bypass = {
 		}
@@ -13106,6 +13671,12 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BPL_production_of_transport"
+			if = {
+				limit = { has_government = anarchism }
+				set_temp_variable = { anarchism_unity_add_var = -3 }
+				add_to_variable = { anarchism_unity_var = anarchism_unity_add_var }
+				custom_effect_tooltip = anarchism_unity_add_effect
+			}
 			add_tech_bonus = {
 				name = BPL_production_of_transport
 				bonus = 1.0
@@ -13124,14 +13695,22 @@ focus_tree = {
 		relative_position_id = BPL_production_of_transport
 		cost = 7.2
 		
-		cancel_if_invalid = yes
-		continue_if_invalid = no
+		cancel_if_invalid = no
+		continue_if_invalid = yes
 		available_if_capitulated = yes
 
 		ai_will_do = {
 			factor = 7.5
 		}
 		available = {
+			if = {
+				limit = { has_government = anarchism }
+				set_temp_variable = { anarchism_unity_trigger_var = 40 }
+				custom_trigger_tooltip = {
+					check_variable = { anarchism_unity_var > anarchism_unity_trigger_var }
+					tooltip = anarchism_unity_trigger_more
+				}
+			}
 		}
 		bypass = {
 		}
@@ -13140,6 +13719,12 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BPL_production_of_tanks"
+			if = {
+				limit = { has_government = anarchism }
+				set_temp_variable = { anarchism_unity_add_var = -3 }
+				add_to_variable = { anarchism_unity_var = anarchism_unity_add_var }
+				custom_effect_tooltip = anarchism_unity_add_effect
+			}
 			add_tech_bonus = {
 				name = BPL_production_of_tanks
 				bonus = 1.0
@@ -13160,14 +13745,22 @@ focus_tree = {
 		relative_position_id = BPL_assistance_to_arab_militias
 		cost = 7.2
 		
-		cancel_if_invalid = yes
-		continue_if_invalid = no
+		cancel_if_invalid = no
+		continue_if_invalid = yes
 		available_if_capitulated = yes
 
 		ai_will_do = {
 			factor = 7.5
 		}
 		available = {
+			if = {
+				limit = { has_government = anarchism }
+				set_temp_variable = { anarchism_unity_trigger_var = 50 }
+				custom_trigger_tooltip = {
+					check_variable = { anarchism_unity_var > anarchism_unity_trigger_var }
+					tooltip = anarchism_unity_trigger_more
+				}
+			}
 		}
 		bypass = {
 		}
@@ -13176,6 +13769,12 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BPL_blind_fanaticism"
+			if = {
+				limit = { has_government = anarchism }
+				set_temp_variable = { anarchism_unity_add_var = -5 }
+				add_to_variable = { anarchism_unity_var = anarchism_unity_add_var }
+				custom_effect_tooltip = anarchism_unity_add_effect
+			}
 			add_ideas = BPL_blind_fanaticism
 		}
 	}
@@ -13190,14 +13789,22 @@ focus_tree = {
 		relative_position_id = BPL_collaboration_with_haganah
 		cost = 7.2
 		
-		cancel_if_invalid = yes
-		continue_if_invalid = no
+		cancel_if_invalid = no
+		continue_if_invalid = yes
 		available_if_capitulated = yes
 
 		ai_will_do = {
 			factor = 7.5
 		}
 		available = {
+			if = {
+				limit = { has_government = anarchism }
+				set_temp_variable = { anarchism_unity_trigger_var = 50 }
+				custom_trigger_tooltip = {
+					check_variable = { anarchism_unity_var > anarchism_unity_trigger_var }
+					tooltip = anarchism_unity_trigger_more
+				}
+			}
 		}
 		bypass = {
 		}
@@ -13206,6 +13813,12 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BPL_careful_preparation"
+			if = {
+				limit = { has_government = anarchism }
+				set_temp_variable = { anarchism_unity_add_var = 5 }
+				add_to_variable = { anarchism_unity_var = anarchism_unity_add_var }
+				custom_effect_tooltip = anarchism_unity_add_effect
+			}
 			add_ideas = BPL_careful_preparation
 		}
 	}
@@ -13219,14 +13832,22 @@ focus_tree = {
 		relative_position_id = BPL_production_of_equipment
 		cost = 7.2
 		
-		cancel_if_invalid = yes
-		continue_if_invalid = no
+		cancel_if_invalid = no
+		continue_if_invalid = yes
 		available_if_capitulated = yes
 
 		ai_will_do = {
 			factor = 7.5
 		}
 		available = {
+			if = {
+				limit = { has_government = anarchism }
+				set_temp_variable = { anarchism_unity_trigger_var = 40 }
+				custom_trigger_tooltip = {
+					check_variable = { anarchism_unity_var > anarchism_unity_trigger_var }
+					tooltip = anarchism_unity_trigger_more
+				}
+			}
 		}
 		bypass = {
 		}
@@ -13235,12 +13856,19 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BPL_expansion_of_production"
+			if = {
+				limit = { has_government = anarchism }
+				set_temp_variable = { anarchism_unity_add_var = -3 }
+				add_to_variable = { anarchism_unity_var = anarchism_unity_add_var }
+				custom_effect_tooltip = anarchism_unity_add_effect
+			}
 			add_tech_bonus = {
 				name = BPL_expansion_of_production
 				bonus = 1.0
 				uses = 1
 				category = infantry_weapons
 			}
+			add_ideas = BPL_expansion_of_production
 		}
 	}
 	
@@ -13257,14 +13885,22 @@ focus_tree = {
 		relative_position_id = BPL_strengthening_of_palestinian_police
 		cost = 7.2
 		
-		cancel_if_invalid = yes
-		continue_if_invalid = no
+		cancel_if_invalid = no
+		continue_if_invalid = yes
 		available_if_capitulated = yes
 
 		ai_will_do = {
 			factor = 7.5
 		}
 		available = {
+			if = {
+				limit = { has_government = anarchism }
+				set_temp_variable = { anarchism_unity_trigger_var = 50 }
+				custom_trigger_tooltip = {
+					check_variable = { anarchism_unity_var > anarchism_unity_trigger_var }
+					tooltip = anarchism_unity_trigger_more
+				}
+			}
 		}
 		bypass = {
 		}
@@ -13273,6 +13909,12 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BPL_economic_development_of_palestine"
+			if = {
+				limit = { has_government = anarchism }
+				set_temp_variable = { anarchism_unity_add_var = -3.5 }
+				add_to_variable = { anarchism_unity_var = anarchism_unity_add_var }
+				custom_effect_tooltip = anarchism_unity_add_effect
+			}
 			add_tech_bonus = {
 				name = industrial_bonus
 				bonus = 1.0
@@ -13325,14 +13967,22 @@ focus_tree = {
 		relative_position_id = BPL_economic_development_of_palestine
 		cost = 7.2
 		
-		cancel_if_invalid = yes
-		continue_if_invalid = no
+		cancel_if_invalid = no
+		continue_if_invalid = yes
 		available_if_capitulated = yes
 
 		ai_will_do = {
 			factor = 7.5
 		}
 		available = {
+			if = {
+				limit = { has_government = anarchism }
+				set_temp_variable = { anarchism_unity_trigger_var = 50 }
+				custom_trigger_tooltip = {
+					check_variable = { anarchism_unity_var > anarchism_unity_trigger_var }
+					tooltip = anarchism_unity_trigger_more
+				}
+			}
 		}
 		bypass = {
 		}
@@ -13376,6 +14026,12 @@ focus_tree = {
 			clamp_variable = { var = BPL_jews_tensions_total min = 0 max = 100 }
 			log = "[GetDateText]: [This.GetName] ([This.GetTag]): BPL_arab_tensions_total: [?BPL_arab_tensions_total]"
 			log = "[GetDateText]: [This.GetName] ([This.GetTag]): BPL_jews_tensions_total: [?BPL_jews_tensions_total]"
+			if = {
+				limit = { has_government = anarchism }
+				set_temp_variable = { anarchism_unity_add_var = -3.5 }
+				add_to_variable = { anarchism_unity_var = anarchism_unity_add_var }
+				custom_effect_tooltip = anarchism_unity_add_effect
+			}
 		}
 	}
 	
@@ -13392,14 +14048,22 @@ focus_tree = {
 		relative_position_id = BPL_economic_development_of_palestine
 		cost = 7.2
 		
-		cancel_if_invalid = yes
-		continue_if_invalid = no
+		cancel_if_invalid = no
+		continue_if_invalid = yes
 		available_if_capitulated = yes
 
 		ai_will_do = {
 			factor = 7.5
 		}
 		available = {
+			if = {
+				limit = { has_government = anarchism }
+				set_temp_variable = { anarchism_unity_trigger_var = 50 }
+				custom_trigger_tooltip = {
+					check_variable = { anarchism_unity_var > anarchism_unity_trigger_var }
+					tooltip = anarchism_unity_trigger_more
+				}
+			}
 		}
 		bypass = {
 		}
@@ -13408,6 +14072,12 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BPL_bet_on_alum"
+			if = {
+				limit = { has_government = anarchism }
+				set_temp_variable = { anarchism_unity_add_var = -3.5 }
+				add_to_variable = { anarchism_unity_var = anarchism_unity_add_var }
+				custom_effect_tooltip = anarchism_unity_add_effect
+			}
 			random_owned_controlled_state = {
 				limit = { 
 					free_building_slots = {
@@ -13449,14 +14119,22 @@ focus_tree = {
 		relative_position_id = BPL_economic_development_of_palestine
 		cost = 7.2
 		
-		cancel_if_invalid = yes
-		continue_if_invalid = no
+		cancel_if_invalid = no
+		continue_if_invalid = yes
 		available_if_capitulated = yes
 
 		ai_will_do = {
 			factor = 7.5
 		}
 		available = {
+			if = {
+				limit = { has_government = anarchism }
+				set_temp_variable = { anarchism_unity_trigger_var = 50 }
+				custom_trigger_tooltip = {
+					check_variable = { anarchism_unity_var > anarchism_unity_trigger_var }
+					tooltip = anarchism_unity_trigger_more
+				}
+			}
 		}
 		bypass = {
 		}
@@ -13501,6 +14179,12 @@ focus_tree = {
 			clamp_variable = { var = BPL_jews_tensions_total min = 0 max = 100 }
 			log = "[GetDateText]: [This.GetName] ([This.GetTag]): BPL_arab_tensions_total: [?BPL_arab_tensions_total]"
 			log = "[GetDateText]: [This.GetName] ([This.GetTag]): BPL_jews_tensions_total: [?BPL_jews_tensions_total]"
+			if = {
+				limit = { has_government = anarchism }
+				set_temp_variable = { anarchism_unity_add_var = -3.5 }
+				add_to_variable = { anarchism_unity_var = anarchism_unity_add_var }
+				custom_effect_tooltip = anarchism_unity_add_effect
+			}
 		}
 	}
 	
@@ -13517,14 +14201,22 @@ focus_tree = {
 		relative_position_id = BPL_bet_on_alum
 		cost = 7.2
 		
-		cancel_if_invalid = yes
-		continue_if_invalid = no
+		cancel_if_invalid = no
+		continue_if_invalid = yes
 		available_if_capitulated = yes
 
 		ai_will_do = {
 			factor = 7.5
 		}
 		available = {
+			if = {
+				limit = { has_government = anarchism }
+				set_temp_variable = { anarchism_unity_trigger_var = 50 }
+				custom_trigger_tooltip = {
+					check_variable = { anarchism_unity_var > anarchism_unity_trigger_var }
+					tooltip = anarchism_unity_trigger_more
+				}
+			}
 		}
 		bypass = {
 		}
@@ -13533,6 +14225,12 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BPL_revival_of_palestinian_economy"
+			if = {
+				limit = { has_government = anarchism }
+				set_temp_variable = { anarchism_unity_add_var = -3.5 }
+				add_to_variable = { anarchism_unity_var = anarchism_unity_add_var }
+				custom_effect_tooltip = anarchism_unity_add_effect
+			}
 			random_owned_controlled_state = {
 				limit = { 
 					free_building_slots = {
@@ -13561,14 +14259,22 @@ focus_tree = {
 		relative_position_id = BPL_revival_of_palestinian_economy
 		cost = 7.2
 		
-		cancel_if_invalid = yes
-		continue_if_invalid = no
+		cancel_if_invalid = no
+		continue_if_invalid = yes
 		available_if_capitulated = yes
 
 		ai_will_do = {
 			factor = 7.5
 		}
 		available = {
+			if = {
+				limit = { has_government = anarchism }
+				set_temp_variable = { anarchism_unity_trigger_var = 50 }
+				custom_trigger_tooltip = {
+					check_variable = { anarchism_unity_var > anarchism_unity_trigger_var }
+					tooltip = anarchism_unity_trigger_more
+				}
+			}
 			owns_state = 454
 		}
 		bypass = {
@@ -13598,6 +14304,12 @@ focus_tree = {
 			clamp_variable = { var = BPL_jews_tensions_total min = 0 max = 100 }
 			log = "[GetDateText]: [This.GetName] ([This.GetTag]): BPL_arab_tensions_total: [?BPL_arab_tensions_total]"
 			log = "[GetDateText]: [This.GetName] ([This.GetTag]): BPL_jews_tensions_total: [?BPL_jews_tensions_total]"
+			if = {
+				limit = { has_government = anarchism }
+				set_temp_variable = { anarchism_unity_add_var = -3.5 }
+				add_to_variable = { anarchism_unity_var = anarchism_unity_add_var }
+				custom_effect_tooltip = anarchism_unity_add_effect
+			}
 		}
 	}
 	
@@ -13611,14 +14323,22 @@ focus_tree = {
 		relative_position_id = BPL_revival_of_palestinian_economy
 		cost = 7.2
 		
-		cancel_if_invalid = yes
-		continue_if_invalid = no
+		cancel_if_invalid = no
+		continue_if_invalid = yes
 		available_if_capitulated = yes
 
 		ai_will_do = {
 			factor = 7.5
 		}
 		available = {
+			if = {
+				limit = { has_government = anarchism }
+				set_temp_variable = { anarchism_unity_trigger_var = 50 }
+				custom_trigger_tooltip = {
+					check_variable = { anarchism_unity_var > anarchism_unity_trigger_var }
+					tooltip = anarchism_unity_trigger_more
+				}
+			}
 			owns_state = 980
 		}
 		bypass = {
@@ -13628,6 +14348,12 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BPL_build_port_in_telaviv"
+			if = {
+				limit = { has_government = anarchism }
+				set_temp_variable = { anarchism_unity_add_var = -3.5 }
+				add_to_variable = { anarchism_unity_var = anarchism_unity_add_var }
+				custom_effect_tooltip = anarchism_unity_add_effect
+			}
 			454 = {
 				add_extra_state_shared_building_slots = 2
 				add_building_construction = {
@@ -13651,14 +14377,22 @@ focus_tree = {
 		relative_position_id = BPL_save_port_of_jaffa_from_fall
 		cost = 7.2
 		
-		cancel_if_invalid = yes
-		continue_if_invalid = no
+		cancel_if_invalid = no
+		continue_if_invalid = yes
 		available_if_capitulated = yes
 
 		ai_will_do = {
 			factor = 7.5
 		}
 		available = {
+			if = {
+				limit = { has_government = anarchism }
+				set_temp_variable = { anarchism_unity_trigger_var = 50 }
+				custom_trigger_tooltip = {
+					check_variable = { anarchism_unity_var > anarchism_unity_trigger_var }
+					tooltip = anarchism_unity_trigger_more
+				}
+			}
 		}
 		bypass = {
 		}
@@ -13667,6 +14401,12 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BPL_investments_in_military_economy"
+			if = {
+				limit = { has_government = anarchism }
+				set_temp_variable = { anarchism_unity_add_var = -3.5 }
+				add_to_variable = { anarchism_unity_var = anarchism_unity_add_var }
+				custom_effect_tooltip = anarchism_unity_add_effect
+			}
 			random_owned_controlled_state = {
 				limit = { 
 					free_building_slots = {
@@ -13695,14 +14435,15 @@ focus_tree = {
 		relative_position_id = BPL_investments_in_military_economy
 		cost = 7.2
 		
-		cancel_if_invalid = yes
-		continue_if_invalid = no
+		cancel_if_invalid = no
+		continue_if_invalid = yes
 		available_if_capitulated = yes
 
 		ai_will_do = {
 			factor = 7.5
 		}
 		available = {
+			NOT = { has_government = anarchism }
 			country_exists = ENG
 			NOT = { has_war_with = ENG }
 		}
@@ -13741,14 +14482,22 @@ focus_tree = {
 		relative_position_id = BPL_investments_in_military_economy
 		cost = 7.2
 		
-		cancel_if_invalid = yes
-		continue_if_invalid = no
+		cancel_if_invalid = no
+		continue_if_invalid = yes
 		available_if_capitulated = yes
 
 		ai_will_do = {
 			factor = 7.5
 		}
 		available = {
+			if = {
+				limit = { has_government = anarchism }
+				set_temp_variable = { anarchism_unity_trigger_var = 50 }
+				custom_trigger_tooltip = {
+					check_variable = { anarchism_unity_var > anarchism_unity_trigger_var }
+					tooltip = anarchism_unity_trigger_more
+				}
+			}
 		}
 		bypass = {
 		}
@@ -13779,6 +14528,12 @@ focus_tree = {
 			clamp_variable = { var = BPL_jews_tensions_total min = 0 max = 100 }
 			log = "[GetDateText]: [This.GetName] ([This.GetTag]): BPL_arab_tensions_total: [?BPL_arab_tensions_total]"
 			log = "[GetDateText]: [This.GetName] ([This.GetTag]): BPL_jews_tensions_total: [?BPL_jews_tensions_total]"
+			if = {
+				limit = { has_government = anarchism }
+				set_temp_variable = { anarchism_unity_add_var = -3.5 }
+				add_to_variable = { anarchism_unity_var = anarchism_unity_add_var }
+				custom_effect_tooltip = anarchism_unity_add_effect
+			}
 		}
 	}
 	
@@ -13792,14 +14547,22 @@ focus_tree = {
 		relative_position_id = BPL_revival_of_palestinian_economy
 		cost = 7.2
 		
-		cancel_if_invalid = yes
-		continue_if_invalid = no
+		cancel_if_invalid = no
+		continue_if_invalid = yes
 		available_if_capitulated = yes
 
 		ai_will_do = {
 			factor = 7.5
 		}
 		available = {
+			if = {
+				limit = { has_government = anarchism }
+				set_temp_variable = { anarchism_unity_trigger_var = 50 }
+				custom_trigger_tooltip = {
+					check_variable = { anarchism_unity_var > anarchism_unity_trigger_var }
+					tooltip = anarchism_unity_trigger_more
+				}
+			}
 		}
 		bypass = {
 		}
@@ -13808,6 +14571,12 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BPL_build_railways"
+			if = {
+				limit = { has_government = anarchism }
+				set_temp_variable = { anarchism_unity_add_var = -3.5 }
+				add_to_variable = { anarchism_unity_var = anarchism_unity_add_var }
+				custom_effect_tooltip = anarchism_unity_add_effect
+			}
 			every_owned_state = {
 				limit = {
 					infrastructure < 9
@@ -13832,14 +14601,22 @@ focus_tree = {
 		relative_position_id = BPL_build_port_in_telaviv
 		cost = 7.2
 		
-		cancel_if_invalid = yes
-		continue_if_invalid = no
+		cancel_if_invalid = no
+		continue_if_invalid = yes
 		available_if_capitulated = yes
 
 		ai_will_do = {
 			factor = 15
 		}
 		available = {
+			if = {
+				limit = { has_government = anarchism }
+				set_temp_variable = { anarchism_unity_trigger_var = 50 }
+				custom_trigger_tooltip = {
+					check_variable = { anarchism_unity_var > anarchism_unity_trigger_var }
+					tooltip = anarchism_unity_trigger_more
+				}
+			}
 		}
 		bypass = {
 		}
@@ -13857,6 +14634,12 @@ focus_tree = {
 			clamp_variable = { var = BPL_jews_tensions_total min = 0 max = 100 }
 			log = "[GetDateText]: [This.GetName] ([This.GetTag]): BPL_arab_tensions_total: [?BPL_arab_tensions_total]"
 			log = "[GetDateText]: [This.GetName] ([This.GetTag]): BPL_jews_tensions_total: [?BPL_jews_tensions_total]"
+			if = {
+				limit = { has_government = anarchism }
+				set_temp_variable = { anarchism_unity_add_var = 5 }
+				add_to_variable = { anarchism_unity_var = anarchism_unity_add_var }
+				custom_effect_tooltip = anarchism_unity_add_effect
+			}
 		}
 	}
 	
@@ -13870,14 +14653,22 @@ focus_tree = {
 		relative_position_id = BPL_build_railways
 		cost = 7.2
 		
-		cancel_if_invalid = yes
-		continue_if_invalid = no
+		cancel_if_invalid = no
+		continue_if_invalid = yes
 		available_if_capitulated = yes
 
 		ai_will_do = {
 			factor = 7.5
 		}
 		available = {
+			if = {
+				limit = { has_government = anarchism }
+				set_temp_variable = { anarchism_unity_trigger_var = 50 }
+				custom_trigger_tooltip = {
+					check_variable = { anarchism_unity_var > anarchism_unity_trigger_var }
+					tooltip = anarchism_unity_trigger_more
+				}
+			}
 		}
 		bypass = {
 		}
@@ -13887,6 +14678,12 @@ focus_tree = {
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BPL_expansion_of_polytechnic_institute"
 			add_research_slot = 1
+			if = {
+				limit = { has_government = anarchism }
+				set_temp_variable = { anarchism_unity_add_var = 5 }
+				add_to_variable = { anarchism_unity_var = anarchism_unity_add_var }
+				custom_effect_tooltip = anarchism_unity_add_effect
+			}
 		}
 	}
 	
@@ -13902,14 +14699,22 @@ focus_tree = {
 		relative_position_id = BPL_expansion_of_jewish_university
 		cost = 7.2
 		
-		cancel_if_invalid = yes
-		continue_if_invalid = no
+		cancel_if_invalid = no
+		continue_if_invalid = yes
 		available_if_capitulated = yes
 
 		ai_will_do = {
 			factor = 7.5
 		}
 		available = {
+			if = {
+				limit = { has_government = anarchism }
+				set_temp_variable = { anarchism_unity_trigger_var = 50 }
+				custom_trigger_tooltip = {
+					check_variable = { anarchism_unity_var > anarchism_unity_trigger_var }
+					tooltip = anarchism_unity_trigger_more
+				}
+			}
 			num_of_factories > 24
 		}
 		bypass = {
@@ -13920,6 +14725,12 @@ focus_tree = {
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BPL_expanding_educational_network"
 			add_research_slot = 1
+			if = {
+				limit = { has_government = anarchism }
+				set_temp_variable = { anarchism_unity_add_var = 5 }
+				add_to_variable = { anarchism_unity_var = anarchism_unity_add_var }
+				custom_effect_tooltip = anarchism_unity_add_effect
+			}
 		}
 	}
 	
@@ -13933,14 +14744,22 @@ focus_tree = {
 		relative_position_id = BPL_expanding_educational_network
 		cost = 7.2
 		
-		cancel_if_invalid = yes
-		continue_if_invalid = no
+		cancel_if_invalid = no
+		continue_if_invalid = yes
 		available_if_capitulated = yes
 
 		ai_will_do = {
 			factor = 7.5
 		}
 		available = {
+			if = {
+				limit = { has_government = anarchism }
+				set_temp_variable = { anarchism_unity_trigger_var = 50 }
+				custom_trigger_tooltip = {
+					check_variable = { anarchism_unity_var > anarchism_unity_trigger_var }
+					tooltip = anarchism_unity_trigger_more
+				}
+			}
 		}
 		bypass = {
 		}
@@ -13949,6 +14768,12 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BPL_missile_technology"
+			if = {
+				limit = { has_government = anarchism }
+				set_temp_variable = { anarchism_unity_add_var = -3.5 }
+				add_to_variable = { anarchism_unity_var = anarchism_unity_add_var }
+				custom_effect_tooltip = anarchism_unity_add_effect
+			}
 			add_tech_bonus = {
 				name = BPL_missile_technology
 				bonus = 1.0
@@ -13967,14 +14792,22 @@ focus_tree = {
 		relative_position_id = BPL_expanding_educational_network
 		cost = 7.2
 		
-		cancel_if_invalid = yes
-		continue_if_invalid = no
+		cancel_if_invalid = no
+		continue_if_invalid = yes
 		available_if_capitulated = yes
 
 		ai_will_do = {
 			factor = 7.5
 		}
 		available = {
+			if = {
+				limit = { has_government = anarchism }
+				set_temp_variable = { anarchism_unity_trigger_var = 50 }
+				custom_trigger_tooltip = {
+					check_variable = { anarchism_unity_var > anarchism_unity_trigger_var }
+					tooltip = anarchism_unity_trigger_more
+				}
+			}
 		}
 		bypass = {
 		}
@@ -13983,6 +14816,12 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BPL_sacred_fire_of_east"
+			if = {
+				limit = { has_government = anarchism }
+				set_temp_variable = { anarchism_unity_add_var = -3.5 }
+				add_to_variable = { anarchism_unity_var = anarchism_unity_add_var }
+				custom_effect_tooltip = anarchism_unity_add_effect
+			}
 			add_tech_bonus = {
 				name = BPL_sacred_fire_of_east
 				bonus = 1.0
@@ -14003,14 +14842,22 @@ focus_tree = {
 		relative_position_id = BPL_missile_technology
 		cost = 7.2
 		
-		cancel_if_invalid = yes
-		continue_if_invalid = no
+		cancel_if_invalid = no
+		continue_if_invalid = yes
 		available_if_capitulated = yes
 
 		ai_will_do = {
 			factor = 7.5
 		}
 		available = {
+			if = {
+				limit = { has_government = anarchism }
+				set_temp_variable = { anarchism_unity_trigger_var = 50 }
+				custom_trigger_tooltip = {
+					check_variable = { anarchism_unity_var > anarchism_unity_trigger_var }
+					tooltip = anarchism_unity_trigger_more
+				}
+			}
 			num_of_factories > 74
 		}
 		bypass = {
@@ -14021,6 +14868,12 @@ focus_tree = {
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BPL_overcoming_technical_backlog"
 			add_research_slot = 1
+			if = {
+				limit = { has_government = anarchism }
+				set_temp_variable = { anarchism_unity_add_var = 10 }
+				add_to_variable = { anarchism_unity_var = anarchism_unity_add_var }
+				custom_effect_tooltip = anarchism_unity_add_effect
+			}
 		}
 	}
 	
@@ -14035,14 +14888,22 @@ focus_tree = {
 		relative_position_id = BPL_economic_development_of_palestine
 		cost = 7.2
 		
-		cancel_if_invalid = yes
-		continue_if_invalid = no
+		cancel_if_invalid = no
+		continue_if_invalid = yes
 		available_if_capitulated = yes
 
 		ai_will_do = {
 			factor = 7.5
 		}
 		available = {
+			if = {
+				limit = { has_government = anarchism }
+				set_temp_variable = { anarchism_unity_trigger_var = 20 }
+				custom_trigger_tooltip = {
+					check_variable = { anarchism_unity_var > anarchism_unity_trigger_var }
+					tooltip = anarchism_unity_trigger_more
+				}
+			}
 			owns_state = 979
 		}
 		bypass = {
@@ -14052,6 +14913,12 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BPL_land_cultivation_near_jordan_river"
+			if = {
+				limit = { has_government = anarchism }
+				set_temp_variable = { anarchism_unity_add_var = -1.5 }
+				add_to_variable = { anarchism_unity_var = anarchism_unity_add_var }
+				custom_effect_tooltip = anarchism_unity_add_effect
+			}
 			add_ideas = BPL_land_cultivation_near_jordan_river
 			979 = {
 				add_extra_state_shared_building_slots = 2
@@ -14073,14 +14940,22 @@ focus_tree = {
 		relative_position_id = BPL_land_cultivation_near_jordan_river
 		cost = 7.2
 		
-		cancel_if_invalid = yes
-		continue_if_invalid = no
+		cancel_if_invalid = no
+		continue_if_invalid = yes
 		available_if_capitulated = yes
 
 		ai_will_do = {
 			factor = 7.5
 		}
 		available = {
+			if = {
+				limit = { has_government = anarchism }
+				set_temp_variable = { anarchism_unity_trigger_var = 20 }
+				custom_trigger_tooltip = {
+					check_variable = { anarchism_unity_var > anarchism_unity_trigger_var }
+					tooltip = anarchism_unity_trigger_more
+				}
+			}
 		}
 		bypass = {
 		}
@@ -14089,6 +14964,12 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BPL_development_of_agriculture"
+			if = {
+				limit = { has_government = anarchism }
+				set_temp_variable = { anarchism_unity_add_var = -1.5 }
+				add_to_variable = { anarchism_unity_var = anarchism_unity_add_var }
+				custom_effect_tooltip = anarchism_unity_add_effect
+			}
 			every_owned_state = { add_extra_state_shared_building_slots = 2 }
 		}
 	}
@@ -14102,14 +14983,22 @@ focus_tree = {
 		relative_position_id = BPL_land_cultivation_near_jordan_river
 		cost = 5
 		
-		cancel_if_invalid = yes
-		continue_if_invalid = no
+		cancel_if_invalid = no
+		continue_if_invalid = yes
 		available_if_capitulated = yes
 
 		ai_will_do = {
 			factor = 7.5
 		}
 		available = {
+			if = {
+				limit = { has_government = anarchism }
+				set_temp_variable = { anarchism_unity_trigger_var = 10 }
+				custom_trigger_tooltip = {
+					check_variable = { anarchism_unity_var > anarchism_unity_trigger_var }
+					tooltip = anarchism_unity_trigger_more
+				}
+			}
 			custom_trigger_tooltip = {
 				tooltip = spanish_civil_war		
 				OR = {
@@ -14129,6 +15018,12 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BPL_remove_spain_from_position_of_leader_of_citrus_market"
+			if = {
+				limit = { has_government = anarchism }
+				set_temp_variable = { anarchism_unity_add_var = 8.5 }
+				add_to_variable = { anarchism_unity_var = anarchism_unity_add_var }
+				custom_effect_tooltip = anarchism_unity_add_effect
+			}
 			add_ideas = BPL_remove_spain_from_position_of_leader_of_citrus_market_idea
 			SPR = { country_event = { id = NWpalestine.44 days = 1 } }
 		}
@@ -14143,14 +15038,22 @@ focus_tree = {
 		relative_position_id = BPL_land_cultivation_near_jordan_river
 		cost = 7.2
 		
-		cancel_if_invalid = yes
-		continue_if_invalid = no
+		cancel_if_invalid = no
+		continue_if_invalid = yes
 		available_if_capitulated = yes
 
 		ai_will_do = {
 			factor = 7.5
 		}
 		available = {
+			if = {
+				limit = { has_government = anarchism }
+				set_temp_variable = { anarchism_unity_trigger_var = 20 }
+				custom_trigger_tooltip = {
+					check_variable = { anarchism_unity_var > anarchism_unity_trigger_var }
+					tooltip = anarchism_unity_trigger_more
+				}
+			}
 			has_full_control_of_state = 455
 		}
 		bypass = {
@@ -14160,6 +15063,12 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BPL_economic_development_of_right_coast_of_jordan"
+			if = {
+				limit = { has_government = anarchism }
+				set_temp_variable = { anarchism_unity_add_var = -1.5 }
+				add_to_variable = { anarchism_unity_var = anarchism_unity_add_var }
+				custom_effect_tooltip = anarchism_unity_add_effect
+			}
 			455 = {
 				add_extra_state_shared_building_slots = 5
 				add_building_construction = {
@@ -14185,14 +15094,22 @@ focus_tree = {
 		relative_position_id = BPL_economic_development_of_right_coast_of_jordan
 		cost = 7.2
 		
-		cancel_if_invalid = yes
-		continue_if_invalid = no
+		cancel_if_invalid = no
+		continue_if_invalid = yes
 		available_if_capitulated = yes
 
 		ai_will_do = {
 			factor = 7.5
 		}
 		available = {
+			if = {
+				limit = { has_government = anarchism }
+				set_temp_variable = { anarchism_unity_trigger_var = 10 }
+				custom_trigger_tooltip = {
+					check_variable = { anarchism_unity_var > anarchism_unity_trigger_var }
+					tooltip = anarchism_unity_trigger_more
+				}
+			}
 			has_full_control_of_state = 1053
 		}
 		bypass = {
@@ -14202,6 +15119,12 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BPL_port_in_aqaba"
+			if = {
+				limit = { has_government = anarchism }
+				set_temp_variable = { anarchism_unity_add_var = -1.5 }
+				add_to_variable = { anarchism_unity_var = anarchism_unity_add_var }
+				custom_effect_tooltip = anarchism_unity_add_effect
+			}
 			1053 = {
 				add_extra_state_shared_building_slots = 2
 				add_building_construction = {
@@ -14222,14 +15145,22 @@ focus_tree = {
 		relative_position_id = BPL_economic_development_of_right_coast_of_jordan
 		cost = 7.2
 		
-		cancel_if_invalid = yes
-		continue_if_invalid = no
+		cancel_if_invalid = no
+		continue_if_invalid = yes
 		available_if_capitulated = yes
 
 		ai_will_do = {
 			factor = 7.5
 		}
 		available = {
+			if = {
+				limit = { has_government = anarchism }
+				set_temp_variable = { anarchism_unity_trigger_var = 20 }
+				custom_trigger_tooltip = {
+					check_variable = { anarchism_unity_var > anarchism_unity_trigger_var }
+					tooltip = anarchism_unity_trigger_more
+				}
+			}
 			has_full_control_of_state = 455
 		}
 		bypass = {
@@ -14239,6 +15170,12 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BPL_military_factory_in_amman"
+			if = {
+				limit = { has_government = anarchism }
+				set_temp_variable = { anarchism_unity_add_var = -1.5 }
+				add_to_variable = { anarchism_unity_var = anarchism_unity_add_var }
+				custom_effect_tooltip = anarchism_unity_add_effect
+			}
 			455 = {
 				add_extra_state_shared_building_slots = 2
 				add_building_construction = {
@@ -14259,14 +15196,22 @@ focus_tree = {
 		relative_position_id = BPL_land_cultivation_near_jordan_river
 		cost = 7.2
 		
-		cancel_if_invalid = yes
-		continue_if_invalid = no
+		cancel_if_invalid = no
+		continue_if_invalid = yes
 		available_if_capitulated = yes
 
 		ai_will_do = {
 			factor = 7.5
 		}
 		available = {
+			if = {
+				limit = { has_government = anarchism }
+				set_temp_variable = { anarchism_unity_trigger_var = 20 }
+				custom_trigger_tooltip = {
+					check_variable = { anarchism_unity_var > anarchism_unity_trigger_var }
+					tooltip = anarchism_unity_trigger_more
+				}
+			}
 			has_full_control_of_state = 991
 		}
 		bypass = {
@@ -14276,6 +15221,12 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BPL_investments_in_city_of_tabuk"
+			if = {
+				limit = { has_government = anarchism }
+				set_temp_variable = { anarchism_unity_add_var = -1.5 }
+				add_to_variable = { anarchism_unity_var = anarchism_unity_add_var }
+				custom_effect_tooltip = anarchism_unity_add_effect
+			}
 			991 = {
 				add_extra_state_shared_building_slots = 5
 				add_building_construction = {
@@ -14301,14 +15252,22 @@ focus_tree = {
 		relative_position_id = BPL_investments_in_city_of_tabuk
 		cost = 7.2
 		
-		cancel_if_invalid = yes
-		continue_if_invalid = no
+		cancel_if_invalid = no
+		continue_if_invalid = yes
 		available_if_capitulated = yes
 
 		ai_will_do = {
 			factor = 7.5
 		}
 		available = {
+			if = {
+				limit = { has_government = anarchism }
+				set_temp_variable = { anarchism_unity_trigger_var = 10 }
+				custom_trigger_tooltip = {
+					check_variable = { anarchism_unity_var > anarchism_unity_trigger_var }
+					tooltip = anarchism_unity_trigger_more
+				}
+			}
 			has_full_control_of_state = 991
 		}
 		bypass = {
@@ -14318,6 +15277,12 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BPL_build_port"
+			if = {
+				limit = { has_government = anarchism }
+				set_temp_variable = { anarchism_unity_add_var = -1.5 }
+				add_to_variable = { anarchism_unity_var = anarchism_unity_add_var }
+				custom_effect_tooltip = anarchism_unity_add_effect
+			}
 			991 = {
 				add_extra_state_shared_building_slots = 2
 				add_building_construction = {
@@ -14338,14 +15303,22 @@ focus_tree = {
 		relative_position_id = BPL_land_cultivation_near_jordan_river
 		cost = 7.2
 		
-		cancel_if_invalid = yes
-		continue_if_invalid = no
+		cancel_if_invalid = no
+		continue_if_invalid = yes
 		available_if_capitulated = yes
 
 		ai_will_do = {
 			factor = 7.5
 		}
 		available = {
+			if = {
+				limit = { has_government = anarchism }
+				set_temp_variable = { anarchism_unity_trigger_var = 20 }
+				custom_trigger_tooltip = {
+					check_variable = { anarchism_unity_var > anarchism_unity_trigger_var }
+					tooltip = anarchism_unity_trigger_more
+				}
+			}
 			has_full_control_of_state = 453
 		}
 		bypass = {
@@ -14355,6 +15328,12 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BPL_breathe_life_into_sinai_land"
+			if = {
+				limit = { has_government = anarchism }
+				set_temp_variable = { anarchism_unity_add_var = -1.5 }
+				add_to_variable = { anarchism_unity_var = anarchism_unity_add_var }
+				custom_effect_tooltip = anarchism_unity_add_effect
+			}
 			453 = {
 				add_extra_state_shared_building_slots = 2
 				add_building_construction = {
@@ -14375,14 +15354,22 @@ focus_tree = {
 		relative_position_id = BPL_breathe_life_into_sinai_land
 		cost = 7.2
 		
-		cancel_if_invalid = yes
-		continue_if_invalid = no
+		cancel_if_invalid = no
+		continue_if_invalid = yes
 		available_if_capitulated = yes
 
 		ai_will_do = {
 			factor = 7.5
 		}
 		available = {
+			if = {
+				limit = { has_government = anarchism }
+				set_temp_variable = { anarchism_unity_trigger_var = 20 }
+				custom_trigger_tooltip = {
+					check_variable = { anarchism_unity_var > anarchism_unity_trigger_var }
+					tooltip = anarchism_unity_trigger_more
+				}
+			}
 			has_full_control_of_state = 453
 		}
 		bypass = {
@@ -14392,6 +15379,12 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BPL_create_production_facility_in_sinai"
+			if = {
+				limit = { has_government = anarchism }
+				set_temp_variable = { anarchism_unity_add_var = -1.5 }
+				add_to_variable = { anarchism_unity_var = anarchism_unity_add_var }
+				custom_effect_tooltip = anarchism_unity_add_effect
+			}
 			453 = {
 				add_extra_state_shared_building_slots = 2
 				add_building_construction = {
@@ -14412,14 +15405,22 @@ focus_tree = {
 		relative_position_id = BPL_breathe_life_into_sinai_land
 		cost = 7.2
 		
-		cancel_if_invalid = yes
-		continue_if_invalid = no
+		cancel_if_invalid = no
+		continue_if_invalid = yes
 		available_if_capitulated = yes
 
 		ai_will_do = {
 			factor = 7.5
 		}
 		available = {
+			if = {
+				limit = { has_government = anarchism }
+				set_temp_variable = { anarchism_unity_trigger_var = 10 }
+				custom_trigger_tooltip = {
+					check_variable = { anarchism_unity_var > anarchism_unity_trigger_var }
+					tooltip = anarchism_unity_trigger_more
+				}
+			}
 			has_full_control_of_state = 453
 			1064 = {
 				controller = {
@@ -14438,6 +15439,12 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BPL_build_fortifications_in_sinai"
+			if = {
+				limit = { has_government = anarchism }
+				set_temp_variable = { anarchism_unity_add_var = -1 }
+				add_to_variable = { anarchism_unity_var = anarchism_unity_add_var }
+				custom_effect_tooltip = anarchism_unity_add_effect
+			}
 			453 = {
 				add_building_construction = {
 					type = bunker
@@ -14476,14 +15483,22 @@ focus_tree = {
 		relative_position_id = BPL_land_cultivation_near_jordan_river
 		cost = 7.2
 		
-		cancel_if_invalid = yes
-		continue_if_invalid = no
+		cancel_if_invalid = no
+		continue_if_invalid = yes
 		available_if_capitulated = yes
 
 		ai_will_do = {
 			factor = 7.5
 		}
 		available = {
+			if = {
+				limit = { has_government = anarchism }
+				set_temp_variable = { anarchism_unity_trigger_var = 20 }
+				custom_trigger_tooltip = {
+					check_variable = { anarchism_unity_var > anarchism_unity_trigger_var }
+					tooltip = anarchism_unity_trigger_more
+				}
+			}
 			has_full_control_of_state = 554
 		}
 		bypass = {
@@ -14493,6 +15508,12 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BPL_invest_in_southern_syria"
+			if = {
+				limit = { has_government = anarchism }
+				set_temp_variable = { anarchism_unity_add_var = -1.5 }
+				add_to_variable = { anarchism_unity_var = anarchism_unity_add_var }
+				custom_effect_tooltip = anarchism_unity_add_effect
+			}
 			554 = {
 				add_extra_state_shared_building_slots = 4
 				add_building_construction = {
@@ -14518,14 +15539,22 @@ focus_tree = {
 		relative_position_id = BPL_invest_in_southern_syria
 		cost = 7.2
 		
-		cancel_if_invalid = yes
-		continue_if_invalid = no
+		cancel_if_invalid = no
+		continue_if_invalid = yes
 		available_if_capitulated = yes
 
 		ai_will_do = {
 			factor = 7.5
 		}
 		available = {
+			if = {
+				limit = { has_government = anarchism }
+				set_temp_variable = { anarchism_unity_trigger_var = 20 }
+				custom_trigger_tooltip = {
+					check_variable = { anarchism_unity_var > anarchism_unity_trigger_var }
+					tooltip = anarchism_unity_trigger_more
+				}
+			}
 			has_full_control_of_state = 554
 		}
 		bypass = {
@@ -14535,6 +15564,12 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BPL_build_military_facility_in_damascus"
+			if = {
+				limit = { has_government = anarchism }
+				set_temp_variable = { anarchism_unity_add_var = -1.5 }
+				add_to_variable = { anarchism_unity_var = anarchism_unity_add_var }
+				custom_effect_tooltip = anarchism_unity_add_effect
+			}
 			554 = {
 				add_extra_state_shared_building_slots = 4
 				add_building_construction = {
@@ -14555,14 +15590,22 @@ focus_tree = {
 		relative_position_id = BPL_land_cultivation_near_jordan_river
 		cost = 7.2
 		
-		cancel_if_invalid = yes
-		continue_if_invalid = no
+		cancel_if_invalid = no
+		continue_if_invalid = yes
 		available_if_capitulated = yes
 
 		ai_will_do = {
 			factor = 7.5
 		}
 		available = {
+			if = {
+				limit = { has_government = anarchism }
+				set_temp_variable = { anarchism_unity_trigger_var = 20 }
+				custom_trigger_tooltip = {
+					check_variable = { anarchism_unity_var > anarchism_unity_trigger_var }
+					tooltip = anarchism_unity_trigger_more
+				}
+			}
 			has_full_control_of_state = 553
 		}
 		bypass = {
@@ -14572,6 +15615,12 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BPL_invest_in_lebanon"
+			if = {
+				limit = { has_government = anarchism }
+				set_temp_variable = { anarchism_unity_add_var = -1.5 }
+				add_to_variable = { anarchism_unity_var = anarchism_unity_add_var }
+				custom_effect_tooltip = anarchism_unity_add_effect
+			}
 			553 = {
 				add_extra_state_shared_building_slots = 4
 				add_building_construction = {
@@ -14597,14 +15646,22 @@ focus_tree = {
 		relative_position_id = BPL_invest_in_lebanon
 		cost = 7.2
 		
-		cancel_if_invalid = yes
-		continue_if_invalid = no
+		cancel_if_invalid = no
+		continue_if_invalid = yes
 		available_if_capitulated = yes
 
 		ai_will_do = {
 			factor = 7.5
 		}
 		available = {
+			if = {
+				limit = { has_government = anarchism }
+				set_temp_variable = { anarchism_unity_trigger_var = 20 }
+				custom_trigger_tooltip = {
+					check_variable = { anarchism_unity_var > anarchism_unity_trigger_var }
+					tooltip = anarchism_unity_trigger_more
+				}
+			}
 			has_full_control_of_state = 553
 		}
 		bypass = {
@@ -14614,6 +15671,12 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BPL_port_in_beirut"
+			if = {
+				limit = { has_government = anarchism }
+				set_temp_variable = { anarchism_unity_add_var = -1 }
+				add_to_variable = { anarchism_unity_var = anarchism_unity_add_var }
+				custom_effect_tooltip = anarchism_unity_add_effect
+			}
 			553 = {
 				add_extra_state_shared_building_slots = 2
 				add_building_construction = {
