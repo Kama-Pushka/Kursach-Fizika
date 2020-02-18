@@ -845,7 +845,7 @@ PER_agents_in_iran_category = {
 				}
 			}
 			hidden_effect = {
-				PER = { country_event = NWpersian.63 }
+				PER = { country_event = { id = NWpersian.63 } }
 			}
 		}
 	}
@@ -1690,5 +1690,586 @@ PER_integration_south_azerbaijan_category = {
 			}
 		}
 	}
+}
+
+PER_army_reform_category = {
+
+	PER_purge_old_officers = {
+
+		icon = generic_army_support
+		
+		available = {
+			if = {
+				limit = { has_idea = PER_incompetent_officers }
+				has_idea = PER_incompetent_officers
+			}
+			if = {
+				limit = { has_idea = PER_incompetent_officers_3 }
+				has_idea = PER_incompetent_officers_3
+			}
+		}
+		
+		visible = {
+			OR = {
+				has_idea = PER_incompetent_officers
+				has_idea = PER_incompetent_officers_3
+			}
+		}
+		
+		cost = 75
+		days_remove = 60
 	
+		remove_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): remove decision PER_purge_old_officers"
+			if = {
+				limit = { has_idea = PER_growth_of_suspicion_among_officers }
+				remove_ideas = PER_growth_of_suspicion_among_officers
+			}
+			if = {
+				limit = { has_idea = PER_incompetent_officers }
+				if = {
+					limit = { NOT = { has_country_flag = PER_purge_general_staff_flag } }
+					swap_ideas = {
+						remove_idea = PER_incompetent_officers
+						add_idea = PER_incompetent_officers_2
+					}
+				}
+				else = { remove_ideas = PER_incompetent_officers }
+			}
+			if = {
+				limit = { has_idea = PER_incompetent_officers_3 }
+				remove_ideas = PER_incompetent_officers_3
+			}
+			if = {
+				limit = { NOT = { has_country_flag = PER_purge_old_officers_complete_flag } }
+				set_country_flag = PER_purge_old_officers_complete_flag
+			}
+			set_temp_variable = { PER_army_reform_var_temp = 5 }
+			add_to_variable = { PER_army_reform_var = PER_army_reform_var_temp }
+			custom_effect_tooltip = PER_army_reform_var_plus_tt
+			clamp_variable = { var = PER_army_reform_var min = 0 max = 100 }
+			up_level_catastrophic_disintegration_of_army = yes
+			log = "[GetDateText]: [This.GetName] ([This.GetTag]): PER_army_reform_var: [?PER_army_reform_var]"
+			hidden_effect = {
+				if = {
+					limit = {
+						NOT = {
+							has_country_flag = PER_purge_general_staff_flag
+							has_country_flag = PER_hire_new_officers_flag
+						}
+					}
+					country_event = { id = NWpersian.88 days = 40 }
+				}
+			}
+		}
+
+		ai_will_do = {
+			factor = 5
+			modifier = {
+				factor = 0
+				is_historical_focus_on = yes
+				date < 1942.01.01
+			}
+		}
+	}
+	
+	PER_hire_new_officers = {
+
+		icon = eng_trade_unions_support
+		
+		cost = 25
+		days_remove = 30
+	
+		remove_effect = {
+			if = {
+				limit = { NOT = { has_country_flag = PER_hire_new_officers_flag } }
+				set_country_flag = PER_hire_new_officers_flag
+			}
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): remove decision PER_hire_new_officers"
+			set_temp_variable = { PER_army_reform_var_temp = 10 }
+			add_to_variable = { PER_army_reform_var = PER_army_reform_var_temp }
+			custom_effect_tooltip = PER_army_reform_var_plus_tt
+			clamp_variable = { var = PER_army_reform_var min = 0 max = 100 }
+			up_level_catastrophic_disintegration_of_army = yes
+			log = "[GetDateText]: [This.GetName] ([This.GetTag]): PER_army_reform_var: [?PER_army_reform_var]"
+			
+			set_temp_variable = { PER_army_tension_var_temp = 10 }
+			subtract_from_variable = { PER_army_tension_var = PER_army_tension_var_temp }
+			custom_effect_tooltip = PER_army_tension_var_minus_tt
+			clamp_variable = { var = PER_army_tension_var min = 0 max = 100 }
+			log = "[GetDateText]: [This.GetName] ([This.GetTag]): PER_army_tension_var: [?PER_army_tension_var]"
+		}
+
+		ai_will_do = {
+			factor = 0
+			modifier = {
+				add = 5
+				OR = {
+					check_variable = { PER_army_reform_var < 100 }
+					check_variable = { PER_army_tension_var > 10 }
+				}
+			}
+		}
+	}
+	
+	PER_purge_general_staff = {
+
+		icon = generic_political_discourse
+		
+		available = {
+			if = {
+				limit = { has_idea = PER_incompetent_officers }
+				has_idea = PER_incompetent_officers
+			}
+			if = {
+				limit = { has_idea = PER_incompetent_officers_2 }
+				has_idea = PER_incompetent_officers_2
+			}
+		}
+		
+		visible = {
+			OR = {
+				has_idea = PER_incompetent_officers
+				has_idea = PER_incompetent_officers_2
+			}
+		}
+		
+		cost = 200
+		days_remove = 100
+		fire_only_once = yes
+		
+		complete_effect = {
+			hidden_effect = {
+				if = {
+					limit = { NOT = { has_completed_focus = PER_set_totalitarian_regime } }
+					country_event = { id = NWpersian.85 days = 20 }
+				}
+				if = {
+					limit = { NOT = { has_completed_focus = PER_third_force_of_hitlerism } }
+					country_event = { id = NWpersian.86 days = 40 }
+				}
+				country_event = { id = NWpersian.87 days = 60 }
+			}
+		}
+	
+		remove_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): remove decision PER_purge_general_staff"
+			set_country_flag = PER_purge_general_staff_flag
+			set_temp_variable = { PER_army_reform_var_temp = 15 }
+			add_to_variable = { PER_army_reform_var = PER_army_reform_var_temp }
+			custom_effect_tooltip = PER_army_reform_var_plus_tt
+			clamp_variable = { var = PER_army_reform_var min = 0 max = 100 }
+			up_level_catastrophic_disintegration_of_army = yes
+			log = "[GetDateText]: [This.GetName] ([This.GetTag]): PER_army_reform_var: [?PER_army_reform_var]"
+			if = {
+				limit = { has_idea = PER_incompetent_officers }
+				swap_ideas = {
+					remove_idea = PER_incompetent_officers
+					add_idea = PER_incompetent_officers_3
+				}
+			}
+			if = {
+				limit = { has_idea = PER_incompetent_officers_2 }
+				remove_ideas = PER_incompetent_officers_2
+			}
+			custom_effect_tooltip = PER_purge_general_staff_tt
+		}
+
+		ai_will_do = {
+			factor = 20
+			modifier = {
+				factor = 0
+				is_historical_focus_on = yes
+				date < 1942.01.01
+			}
+		}
+	}
+	
+	PER_reduce_salaries_of_personnel_officers = {
+
+		icon = hol_attract_foreign_investors
+		
+		available = {
+			hidden_trigger = {
+				set_temp_variable = { stability_cost = 0.03 }
+				has_stability > stability_cost
+			}
+		}
+		
+		custom_cost_trigger = {
+			set_temp_variable = { stability_cost = 0.03 }
+			set_temp_variable = { stability_total = stability }
+			subtract_from_temp_variable = { stability_total = modifier@stability_factor }
+			check_variable = { stability_total > stability_cost }
+			#for text
+			set_temp_variable = { text_stability = stability }
+			subtract_from_temp_variable = { text_stability = modifier@stability_factor }
+		}
+		custom_cost_text = stability_cost_tt
+	
+		complete_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): remove decision PER_reduce_salaries_of_personnel_officers"
+			if = {
+				limit = { has_idea = PER_exorbitant_expenses_for_army }
+				remove_ideas = PER_exorbitant_expenses_for_army
+			}
+			set_temp_variable = { PER_army_reform_var_temp = 5 }
+			add_to_variable = { PER_army_reform_var = PER_army_reform_var_temp }
+			custom_effect_tooltip = PER_army_reform_var_plus_tt
+			clamp_variable = { var = PER_army_reform_var min = 0 max = 100 }
+			up_level_catastrophic_disintegration_of_army = yes
+			log = "[GetDateText]: [This.GetName] ([This.GetTag]): PER_army_reform_var: [?PER_army_reform_var]"
+			hidden_effect = {
+				if = {
+					limit = {
+						NOT = {
+							has_country_flag = PER_purge_old_officers_complete_flag
+							has_country_flag = PER_incompetent_officers_return_flag
+							has_country_flag = PER_hire_new_officers_flag
+						}
+					}
+					country_event = { id = NWpersian.89 days = 7 }
+				}
+			}
+		}
+
+		ai_will_do = {
+			factor = 5
+			modifier = {
+				factor = 0
+				has_stability < 0.1
+			}
+		}
+	}
+	
+	PER_conduct_joint_military_exercises_with_turkey = {
+
+		icon = generic_prepare_civil_war
+		
+		available = {
+			OR = {
+				is_in_faction_with = TUR
+				TUR = { has_opinion = { target = ROOT value > 29 } }
+			}
+			NOT = { has_war_with = TUR }
+		}
+		
+		visible = {
+			NOT = { has_war_with = TUR }
+		}
+		
+		days_remove = 30
+		fire_only_once = yes
+	
+		remove_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): remove decision PER_conduct_joint_military_exercises_with_turkey"
+			army_experience = 10
+			set_temp_variable = { PER_army_reform_var_temp = 5 }
+			add_to_variable = { PER_army_reform_var = PER_army_reform_var_temp }
+			custom_effect_tooltip = PER_army_reform_var_plus_tt
+			clamp_variable = { var = PER_army_reform_var min = 0 max = 100 }
+			up_level_catastrophic_disintegration_of_army = yes
+			log = "[GetDateText]: [This.GetName] ([This.GetTag]): PER_army_reform_var: [?PER_army_reform_var]"
+		}
+
+		ai_will_do = {
+			factor = 5
+		}
+	}
+	
+	PER_invite_military_advisers_from_germany = {
+
+		icon = hol_exchange_intelligence_data
+		
+		available = {
+			OR = {
+				is_in_faction_with = GER
+				GER = { has_opinion = { target = ROOT value > 39 } }
+			}
+			NOT = { has_war_with = GER }
+		}
+		
+		visible = {
+			NOT = {
+				has_war_with = GER
+				has_country_flag = PER_invite_military_advisers_from_britain_flag
+				has_country_flag = PER_invite_military_advisers_from_soviet_flag
+			}
+		}
+		
+		days_remove = 30
+		fire_only_once = yes
+		
+		complete_effect = {
+			set_country_flag = PER_invite_military_advisers_from_germany_flag
+		}
+	
+		remove_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): remove decision PER_invite_military_advisers_from_germany"
+			army_experience = 5
+			set_temp_variable = { PER_army_reform_var_temp = 10 }
+			add_to_variable = { PER_army_reform_var = PER_army_reform_var_temp }
+			custom_effect_tooltip = PER_army_reform_var_plus_tt
+			clamp_variable = { var = PER_army_reform_var min = 0 max = 100 }
+			up_level_catastrophic_disintegration_of_army = yes
+			log = "[GetDateText]: [This.GetName] ([This.GetTag]): PER_army_reform_var: [?PER_army_reform_var]"
+			if = {
+				limit = { GER = { has_government = fascism } }
+				add_popularity = { ideology = fascism popularity = 0.03 }
+			}
+			if = {
+				limit = { GER = { has_government = communism } }
+				add_popularity = { ideology = communism popularity = 0.03 }
+			}
+			if = {
+				limit = { GER = { has_government = democratic } }
+				add_popularity = { ideology = democratic popularity = 0.03 }
+			}
+			if = {
+				limit = { GER = { has_government = neutrality } }
+				add_popularity = { ideology = neutrality popularity = 0.03 }
+			}
+			if = {
+				limit = { GER = { has_government = monarchy } }
+				add_popularity = { ideology = monarchy popularity = 0.03 }
+			}
+			if = {
+				limit = { GER = { has_government = trozkism } }
+				add_popularity = { ideology = trozkism popularity = 0.03 }
+			}
+			if = {
+				limit = { GER = { has_government = anarchism } }
+				add_popularity = { ideology = anarchism popularity = 0.03 }
+			}
+			if = {
+				limit = { GER = { has_government = technocracy } }
+				add_popularity = { ideology = technocracy popularity = 0.03 }
+			}
+			add_tech_bonus = {
+				name = PER_invite_military_advisers_from_germany
+				bonus = 1.0
+				uses = 1
+				category = cat_mobile_warfare
+			}
+		}
+
+		ai_will_do = {
+			factor = 5
+		}
+	}
+	
+	PER_invite_military_advisers_from_britain = {
+
+		icon = hol_exchange_intelligence_data
+		
+		available = {
+			OR = {
+				is_in_faction_with = ENG
+				ENG = { has_opinion = { target = ROOT value > 39 } }
+			}
+			NOT = { has_war_with = ENG }
+		}
+		
+		visible = {
+			NOT = {
+				has_war_with = ENG
+				has_country_flag = PER_invite_military_advisers_from_germany_flag
+				has_country_flag = PER_invite_military_advisers_from_soviet_flag
+			}
+		}
+		
+		days_remove = 30
+		fire_only_once = yes
+		
+		complete_effect = {
+			set_country_flag = PER_invite_military_advisers_from_britain_flag
+		}
+	
+		remove_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): remove decision PER_invite_military_advisers_from_britain"
+			army_experience = 5
+			set_temp_variable = { PER_army_reform_var_temp = 10 }
+			add_to_variable = { PER_army_reform_var = PER_army_reform_var_temp }
+			custom_effect_tooltip = PER_army_reform_var_plus_tt
+			clamp_variable = { var = PER_army_reform_var min = 0 max = 100 }
+			up_level_catastrophic_disintegration_of_army = yes
+			log = "[GetDateText]: [This.GetName] ([This.GetTag]): PER_army_reform_var: [?PER_army_reform_var]"
+			if = {
+				limit = { ENG = { has_government = fascism } }
+				add_popularity = { ideology = fascism popularity = 0.03 }
+			}
+			if = {
+				limit = { ENG = { has_government = communism } }
+				add_popularity = { ideology = communism popularity = 0.03 }
+			}
+			if = {
+				limit = { ENG = { has_government = democratic } }
+				add_popularity = { ideology = democratic popularity = 0.03 }
+			}
+			if = {
+				limit = { ENG = { has_government = neutrality } }
+				add_popularity = { ideology = neutrality popularity = 0.03 }
+			}
+			if = {
+				limit = { ENG = { has_government = monarchy } }
+				add_popularity = { ideology = monarchy popularity = 0.03 }
+			}
+			if = {
+				limit = { ENG = { has_government = trozkism } }
+				add_popularity = { ideology = trozkism popularity = 0.03 }
+			}
+			if = {
+				limit = { ENG = { has_government = anarchism } }
+				add_popularity = { ideology = anarchism popularity = 0.03 }
+			}
+			if = {
+				limit = { ENG = { has_government = technocracy } }
+				add_popularity = { ideology = technocracy popularity = 0.03 }
+			}
+			add_tech_bonus = {
+				name = PER_invite_military_advisers_from_britain
+				bonus = 1.0
+				uses = 1
+				category = cat_grand_battle_plan
+			}
+		}
+
+		ai_will_do = {
+			factor = 5
+		}
+	}
+	
+	PER_invite_military_advisers_from_soviet = {
+
+		icon = hol_exchange_intelligence_data
+		
+		available = {
+			OR = {
+				is_in_faction_with = SOV
+				SOV = { has_opinion = { target = ROOT value > 39 } }
+			}
+			NOT = { has_war_with = SOV }
+		}
+		
+		visible = {
+			NOT = {
+				has_war_with = SOV
+				has_country_flag = PER_invite_military_advisers_from_germany_flag
+				has_country_flag = PER_invite_military_advisers_from_britain_flag
+			}
+		}
+		
+		days_remove = 30
+		fire_only_once = yes
+		
+		complete_effect = {
+			set_country_flag = PER_invite_military_advisers_from_soviet_flag
+		}
+	
+		remove_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): remove decision PER_invite_military_advisers_from_soviet"
+			army_experience = 5
+			set_temp_variable = { PER_army_reform_var_temp = 10 }
+			add_to_variable = { PER_army_reform_var = PER_army_reform_var_temp }
+			custom_effect_tooltip = PER_army_reform_var_plus_tt
+			clamp_variable = { var = PER_army_reform_var min = 0 max = 100 }
+			up_level_catastrophic_disintegration_of_army = yes
+			log = "[GetDateText]: [This.GetName] ([This.GetTag]): PER_army_reform_var: [?PER_army_reform_var]"
+			if = {
+				limit = { SOV = { has_government = fascism } }
+				add_popularity = { ideology = fascism popularity = 0.03 }
+			}
+			if = {
+				limit = { SOV = { has_government = communism } }
+				add_popularity = { ideology = communism popularity = 0.03 }
+			}
+			if = {
+				limit = { SOV = { has_government = democratic } }
+				add_popularity = { ideology = democratic popularity = 0.03 }
+			}
+			if = {
+				limit = { SOV = { has_government = neutrality } }
+				add_popularity = { ideology = neutrality popularity = 0.03 }
+			}
+			if = {
+				limit = { SOV = { has_government = monarchy } }
+				add_popularity = { ideology = monarchy popularity = 0.03 }
+			}
+			if = {
+				limit = { SOV = { has_government = trozkism } }
+				add_popularity = { ideology = trozkism popularity = 0.03 }
+			}
+			if = {
+				limit = { SOV = { has_government = anarchism } }
+				add_popularity = { ideology = anarchism popularity = 0.03 }
+			}
+			if = {
+				limit = { SOV = { has_government = technocracy } }
+				add_popularity = { ideology = technocracy popularity = 0.03 }
+			}
+			add_tech_bonus = {
+				name = PER_invite_military_advisers_from_soviet
+				bonus = 1.0
+				uses = 1
+				category = cat_mass_assault
+			}
+		}
+
+		ai_will_do = {
+			factor = 5
+		}
+	}
+	
+	PER_expand_network_of_military_academies = {
+
+		icon = generic_operation
+		
+		cost = 75
+		days_remove = 50
+		
+		remove_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): remove decision PER_expand_network_of_military_academies"
+			set_temp_variable = { PER_army_reform_var_temp = 5 }
+			add_to_variable = { PER_army_reform_var = PER_army_reform_var_temp }
+			custom_effect_tooltip = PER_army_reform_var_plus_tt
+			clamp_variable = { var = PER_army_reform_var min = 0 max = 100 }
+			up_level_catastrophic_disintegration_of_army = yes
+			log = "[GetDateText]: [This.GetName] ([This.GetTag]): PER_army_reform_var: [?PER_army_reform_var]"
+		}
+
+		ai_will_do = {
+			factor = 5
+		}
+	}
+	
+	PER_publicly_humiliate_guilty_officers = {
+
+		icon = oppression
+		
+		cost = 20
+		
+		complete_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision PER_publicly_humiliate_guilty_officers"
+			set_temp_variable = { PER_army_reform_var_temp = 5 }
+			add_to_variable = { PER_army_reform_var = PER_army_reform_var_temp }
+			custom_effect_tooltip = PER_army_reform_var_plus_tt
+			clamp_variable = { var = PER_army_reform_var min = 0 max = 100 }
+			up_level_catastrophic_disintegration_of_army = yes
+			log = "[GetDateText]: [This.GetName] ([This.GetTag]): PER_army_reform_var: [?PER_army_reform_var]"
+			
+			set_temp_variable = { PER_army_tension_var_temp = 10 }
+			add_to_variable = { PER_army_tension_var = PER_army_tension_var_temp }
+			custom_effect_tooltip = PER_army_tension_var_plus_tt
+			clamp_variable = { var = PER_army_tension_var min = 0 max = 100 }
+			log = "[GetDateText]: [This.GetName] ([This.GetTag]): PER_army_tension_var: [?PER_army_tension_var]"
+		}
+
+		ai_will_do = {
+			factor = 2
+			modifier = {
+				factor = 0
+				is_historical_focus_on = yes
+			}
+		}
+	}
 }
