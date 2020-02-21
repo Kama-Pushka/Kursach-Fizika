@@ -1,0 +1,730 @@
+﻿###########################
+# Xian Incident
+###########################
+
+add_namespace = NW_xian_incident
+
+#Xian incident - should Chiang go?
+country_event = {
+	id = NW_xian_incident.1
+	title = NW_xian_incident.1.t
+	desc = NW_xian_incident.1.desc
+	picture = GFX_report_event_china_chiang_kai_shek
+
+	trigger = {
+		tag = CHI
+		country_exists = PRC
+		country_exists = NEA
+		date > 1936.12.1
+		date < 1936.12.3
+		NOT = { has_war_with = JAP }
+		NOT = { has_war_with = NEA }
+		NEA = { has_completed_focus = CHI_cooperation_with_the_communists }
+	}
+	
+	immediate = {
+	    log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_xian_incident.1" 
+		hidden_effect = {
+			set_global_flag = CHI_xian_fired
+		}
+	}
+
+	
+	option = {
+		name = NW_xian_incident.1.a
+		ai_chance = {
+			factor = 100
+		}
+		
+		hidden_effect = {
+			NEA = {
+				country_event = {
+					id = NW_xian_incident.2 days = 1
+				}
+			}
+		}
+	}
+}
+
+#Xian incident - Chiang comes to Xian
+country_event = {
+	id = NW_xian_incident.2
+	title = NW_xian_incident.2.t
+	desc = NW_xian_incident.2.desc
+	picture = GFX_report_event_chinese_japanese_handshake
+
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_xian_incident.2" }
+	
+	option = {
+		name = NW_xian_incident.2.a #ask him to ally with the communists
+		CHI = {
+		    country_event = {
+				id = NW_xian_incident.4 days = 1
+			}
+	    }
+    }
+}
+
+#Xian incident - Chiang demands that we must arrrive in Nanjing
+country_event = {
+	id = NW_xian_incident.3
+	title = NW_xian_incident.3.t
+	desc = NW_xian_incident.3.desc
+	picture = GFX_report_event_china_chiang_kai_shek
+
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_xian_incident.3" }
+	
+	option = {
+		name = NW_xian_incident.3.a
+		ai_chance = {
+			base = 50
+			modifier = {
+				CHI_is_on_historical_plan_trigger = yes
+				factor = 2
+			}
+		}
+		hidden_effect = { country_event = { id = NW_xian_incident.12 days = 1 }}
+	}
+	
+	option = {
+		name = NW_xian_incident.3.b
+		ai_chance = {
+			base = 50
+			modifier = {
+				CHI_is_on_historical_plan_trigger = yes
+				factor = 0
+			}
+		}
+		add_opinion_modifier = { target = FROM modifier = CHI_disobeyed_order }
+	}
+}
+
+#Xian incident - Chiang asked to ally with commies
+country_event = {
+	id = NW_xian_incident.4
+	title = NW_xian_incident.4.t
+	desc = NW_xian_incident.4.desc
+	picture = GFX_report_event_china_politicians_captured
+
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_xian_incident.4" }
+	
+	option = {
+		name = NW_xian_incident.4.a #agree
+		ai_chance = {
+			base = 25
+			modifier = {
+				factor = 4
+				has_war_with = JAP
+			}
+			modifier = {
+				PRC = {
+					has_completed_focus = PRC_social_democracy
+				}
+				factor = 2 #Commies being nice to us
+			}
+			modifier = {
+				CHI_is_on_historical_plan_trigger = yes
+				factor = 0
+			}
+		}
+		PRC = { country_event = { id = NW_xian_incident.5 }}
+	}
+
+	option = {
+		name = NW_xian_incident.4.b #disgree
+		ai_chance = {
+			base = 75
+			modifier = {
+				PRC = {
+					has_completed_focus = PRC_focus_on_china #commies being mean to us!
+				}
+				factor = 2
+			}
+			modifier = {
+				JAP = {
+					NOT = {
+						has_government = fascism #Japan doesn't seem interested in China
+					}
+				}
+				factor = 2
+			}
+		}
+		NEA = { country_event = { id = NW_xian_incident.6 days = 1 } }
+	}
+
+}
+
+#Xian incident - Chiang agrees to ally with commies, event for PRC
+country_event = {
+	id = NW_xian_incident.5
+	title = NW_xian_incident.5.t
+	desc = NW_xian_incident.5.desc
+	picture = GFX_report_event_generic_read_write
+
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_xian_incident.5" }
+	
+	option = {
+		name = NW_xian_incident.5.a #accept the proposal
+		ai_chance = {
+			base = 80
+		}
+		hidden_effect = {
+			news_event = { id = news.288 days = 1 }
+		}
+		if = {
+			limit = {
+				NOT = { is_in_faction_with = CHI }
+				CHI = { is_in_faction = no }
+			}
+			CHI = {
+				set_rule = { can_create_factions = yes }
+				create_faction = chinese_united_front
+			}
+		}
+		if = {
+			limit = {
+				CHI = { is_faction_leader = yes }
+			}
+			CHI = { add_to_faction = PRC }
+			CHI = { add_to_faction = NEA }
+			PRC = { 
+				add_ai_strategy = {
+					type = alliance
+					id = "CHI"
+					value = 200
+				}
+			}
+			every_country = {
+				limit = {
+					is_subject_of = CHI
+				}
+				CHI = { add_to_faction = PREV }
+			}
+		}
+	}
+
+	option = {
+		name = NW_xian_incident.5.b #no deal
+		ai_chance = {
+			base = 20
+			modifier = {
+				has_country_flag = SOV_xian_refuse
+				factor = 0
+			}
+		}
+		hidden_effect = {
+			news_event = { id = wtt_news.33 days = 1 }
+		}
+	}
+
+}
+
+#Xian incident - Chiang refuses to ally with commies
+country_event = {
+	id = NW_xian_incident.6
+	title = NW_xian_incident.6.t
+	desc = NW_xian_incident.6.desc
+	picture = GFX_report_event_china_chiang_kai_shek
+
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_xian_incident.6" }
+	
+	option = {
+		name = NW_xian_incident.6.a #arrest him
+		ai_chance = {
+			base = 70
+		}		
+		CHI = { 
+		    country_event = { id = NW_xian_incident.8 days = 1 }
+		}
+	}
+
+	option = {
+		name = NW_xian_incident.6.b #nothing to be done
+		ai_chance = {
+			base = 30
+			modifier = {
+				CHI_is_on_historical_plan_trigger = yes
+				factor = 0
+			}
+		}
+		#TODO_WTT_CD: News event: Chiang refuses proposal to ally with commies
+	}
+
+}
+
+#Xian incident - PRC - How should we respond?
+country_event = {
+	id = NW_xian_incident.7
+	title = NW_xian_incident.7.t
+	desc = { text = NW_xian_incident.7.desc_a trigger = { NOT = { OR = { has_country_flag = SOV_xian_refuse  has_country_flag = SOV_xian_agree } } } }
+	desc = { text = NW_xian_incident.7.desc_b trigger = { has_country_flag = SOV_xian_refuse } }
+	desc = { text = NW_xian_incident.7.desc_c trigger = { has_country_flag = SOV_xian_agree } }
+	picture = GFX_report_event_china_politicians_captured
+
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWpersian.1" }
+	
+	option = {
+		trigger = {
+			NOT = {
+				has_war_with = SOV
+			}
+			NOT = {
+				OR = {
+				    has_country_flag = SOV_xian_refuse
+				    has_country_flag = SOV_xian_agree
+		  	    }
+			}
+		}
+		name = NW_xian_incident.7.a #ask Soviets
+		ai_chance = {
+			base = 70
+		}
+
+		SOV = { country_event = { id = NW_xian_incident.9 days = 1 } }
+	}
+
+	option = {
+		name = NW_xian_incident.7.b #just do it
+		ai_chance = {
+			base = 30
+			modifier = {
+				CHI_is_on_historical_plan_trigger = yes
+				factor = 0
+			}
+			modifier = {
+				CHI = { 
+				    has_completed_focus = CHI_prioritize_the_interior
+				}	
+				factor = 2
+			}
+		}
+		NEA = {
+			set_country_flag = PRC_xian_execute
+			country_event = NW_xian_incident.11
+		}
+	}
+	option = {
+		name = NW_xian_incident.7.c #don't do it, offer to ally instead
+		ai_chance = {
+			base = 30
+		}
+		NEA = {
+			set_country_flag = PRC_xian_united_front
+			country_event = NW_xian_incident.11
+		}
+		
+	}
+
+}
+#Xian incident - Chiang arrested, intervene?
+country_event = {
+	id = NW_xian_incident.8
+	title = NW_xian_incident.8.t
+	desc = NW_xian_incident.8.desc
+	picture = GFX_report_event_chinese_officers
+
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_xian_incident.8" }
+	
+	option = {
+		name = NW_xian_incident.8.a #military option
+		ai_chance = {
+			base = 30
+			modifier = {
+				has_war = no
+				factor = 1.5
+			}
+			modifier = {
+				CHI_is_on_historical_plan_trigger = yes
+				factor = 0
+			}
+		}
+		if = {
+			limit = {
+				is_in_faction_with = FROM
+			}
+			remove_from_faction = FROM
+		}
+		create_wargoal = {
+			type = annex_everything
+			target = NEA
+		}
+		add_ai_strategy = {
+			type = antagonize
+			id = "NEA"
+			value = 500
+		}
+		add_ai_strategy = {
+			type = conquer
+			id = "NEA" 
+			value = 500
+		}
+		add_ai_strategy = {
+			type = declare_war
+			id = "NEA" 
+			value = 500
+		}
+		kill_country_leader = yes
+		hidden_effect = {
+			set_politics = {
+				ruling_party = fascism
+				elections_allowed = no
+			}
+			set_popularities = {
+	       		neutrality = 20
+				fascism = 80
+            }
+			create_country_leader = {
+				name = "He Yingqin"
+				desc = "POLITICS_HE_YINGQIN_DESC"
+				picture = "GFX_portrait_chi_he_yingqin"
+				expire = "1965.1.1"
+				ideology = despotism
+				traits = {
+					military_genius
+					projapanese
+					anti_communist
+			   	}
+			}
+			create_country_leader = {
+				name = "He Yingqin"
+				desc = "POLITICS_HE_YINGQIN_DESC"
+				picture = "GFX_portrait_chi_he_yingqin"
+				expire = "1965.1.1"
+				ideology = fascism_ideology
+				traits = {
+					military_genius
+					projapanese
+					anti_communist
+			   	}
+			}
+		}
+    }
+
+	option = {
+		name = NW_xian_incident.8.b #don't do anything
+		ai_chance = {
+			base = 70
+		}
+		NEA = { country_event = NW_xian_incident.7 }
+	}
+}
+
+#Xian incident - Chiang arrested, commies want to execute, allow? (SOV)
+country_event = {
+	id = NW_xian_incident.9
+	title = NW_xian_incident.9.t
+	desc = NW_xian_incident.9.desc
+	picture = GFX_report_event_stalin_meeting
+
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_xian_incident.9" }
+	
+	option = {
+	    name = NW_xian_incident.9.a #approve
+		ai_chance = {
+			base = 50
+			modifier = {
+				CHI_is_on_historical_plan_trigger = yes
+				factor = 0
+			}
+		}
+		
+		FROM = {
+			set_country_flag = SOV_xian_agree
+			country_event = NW_xian_incident.7
+		}
+	}
+
+	option = {
+		name = NW_xian_incident.9.b #disapprove
+		ai_chance = {
+			base = 50
+			modifier = {
+				has_war_with = JAP
+				factor = 3
+			}
+		}
+		FROM = {
+			set_country_flag = SOV_xian_refuse
+			country_event = NW_xian_incident.7
+		}
+	}
+}
+
+#Xian incident - NEA opts for the United Front, event for CHI
+country_event = {
+	id = NW_xian_incident.10
+	title = NW_xian_incident.10.t
+	desc = NW_xian_incident.10.desc
+	picture = GFX_report_event_china_chiang_mao
+
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_xian_incident.10" }
+	
+	option = {
+		name = NW_xian_incident.10.a #approve
+		ai_chance = {
+			base = 50
+		}
+		hidden_effect = {
+			news_event = { id = news.288 days = 1 } # United Front forms
+			NEA = { country_event = { id = NW_xian_incident.3 days = 1 }}
+		}
+		if = {
+			limit = {
+				NOT = { is_in_faction_with = CHI }
+				CHI = { is_in_faction = no }
+			}
+			CHI = {
+				set_rule = { can_create_factions = yes }
+				create_faction = chinese_united_front
+			}
+		}
+		if = {
+			limit = {
+				CHI = { is_faction_leader = yes }
+			}
+			CHI = { add_to_faction = PRC }
+			CHI = { add_to_faction = NEA }
+			PRC = { 
+				add_ai_strategy = {
+					type = alliance
+					id = "CHI"
+					value = 200
+				}
+			}
+			every_country = {
+				limit = {
+					is_subject_of = CHI
+				}
+				CHI = { add_to_faction = PREV }
+			}
+		}
+	}
+
+	option = {
+		name = NW_xian_incident.10.b #disapprove
+		ai_chance = {
+			base = 10
+			modifier = {
+				CHI_is_on_historical_plan_trigger = yes
+				factor = 0
+			}
+		}
+		reverse_add_opinion_modifier = { target = FROM modifier = CHI_xian_refused }
+		hidden_effect = {
+			news_event = { id = wtt_news.32 days = 1 }
+		}
+	}
+}
+
+country_event = {
+	id = NW_xian_incident.11
+	title = NW_xian_incident.11.t
+	desc = { text = NW_xian_incident.11.desc_a trigger = { has_country_flag = PRC_xian_execute } }
+	desc = { text = NW_xian_incident.11.desc_b trigger = { has_country_flag = PRC_xian_united_front } }
+	picture = GFX_report_event_china_politicians_captured
+
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_xian_incident.11" }
+	
+	option = {
+		name = NW_xian_incident.11.a #just do it
+		ai_chance = {
+			base = 30
+			modifier = {
+				has_country_flag = PRC_xian_execute
+				factor = 2.5
+			}
+			modifier = {
+				CHI_is_on_historical_plan_trigger = yes
+				factor = 0
+			}
+		}
+		if = {
+		    limit = {
+				has_country_flag = PRC_xian_united_front
+			}
+		    add_opinion_modifier = { target = FROM modifier = PRC_ignored_our_opinion }
+		}	
+		CHI = {
+			create_wargoal = {
+				target = NEA
+				type = annex_everything
+			}
+			create_wargoal = {
+				target = PRC
+				type = annex_everything
+			}
+			add_ai_strategy = {
+				type = antagonize
+				id = "NEA"
+				value = 500
+			}
+			add_ai_strategy = {
+				type = conquer
+				id = "NEA" 
+				value = 500
+			}
+			add_ai_strategy = {
+				type = declare_war
+				id = "NEA" 
+				value = 500
+			}
+			add_ai_strategy = {
+				type = antagonize
+				id = "PRC"
+				value = 500
+			}
+			add_ai_strategy = {
+				type = conquer
+				id = "PRC" 
+				value = 500
+			}
+			add_ai_strategy = {
+				type = declare_war
+				id = "PRC" 
+				value = 500
+			}
+		}
+		hidden_effect = {
+		    CHI = {
+				kill_country_leader = yes
+				set_politics = {
+					ruling_party = fascism
+					elections_allowed = no
+				}
+				set_popularities = {
+	           		neutrality = 20
+					fascism = 80
+            	}
+				create_country_leader = {
+					name = "He Yingqin"
+					desc = "POLITICS_HE_YINGQIN_DESC"
+					picture = "GFX_portrait_chi_he_yingqin"
+					expire = "1965.1.1"
+					ideology = despotism
+					traits = {
+						military_genius
+						projapanese
+						anti_communist
+				   	}
+				}
+				create_country_leader = {
+					name = "He Yingqin"
+					desc = "POLITICS_HE_YINGQIN_DESC"
+					picture = "GFX_portrait_chi_he_yingqin"
+					expire = "1965.1.1"
+					ideology = fascism_ideology
+					traits = {
+						military_genius
+						projapanese
+						anti_communist
+				   	}
+				}
+			}	
+			news_event = { id = wtt_news.30 days = 1 }
+		}
+	}
+	option = {
+		name = NW_xian_incident.11.b #don't do it, offer to ally instead
+		ai_chance = {
+			base = 30
+		    modifier = {
+			    has_country_flag = PRC_xian_united_front
+			    factor = 2.5
+		    }
+		}	
+		if = {
+		    limit = {
+				has_country_flag = PRC_xian_execute
+			}
+		    add_opinion_modifier = { target = FROM modifier = PRC_ignored_our_opinion }
+		}	
+		CHI = {
+			country_event = NW_xian_incident.10
+		}
+		
+	}
+	option = {
+		name = NW_xian_incident.11.c #no deals with anyone
+		ai_chance = {
+			base = 0
+		}
+		hidden_effect = {
+			news_event = { id = wtt_news.33 days = 1 random = 36 }
+		}
+		
+	}
+}
+
+country_event = {
+	id = NW_xian_incident.12
+	title = NW_xian_incident.12.t
+	desc = NW_xian_incident.12.desc
+	picture = GFX_report_event_china_chiang_kai_shek
+
+    immediate = { 
+	    log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_xian_incident.12" 
+		create_country_leader = {
+			name = "Yang Hucheng"
+			desc = "POLITICS_YANG_HUCHENG_DESC"
+			picture = "gfx/leaders/Asia/Portrait_Asia_Generic_land_2.dds"
+			expire = "1965.1.1"
+			ideology = despotism
+			traits = {
+			
+		   	}
+		}	 
+	}
+	is_triggered_only = yes
+	
+	option = {
+		name = NW_xian_incident.12.a
+		ai_chance = {
+			base = 30
+			modifier = {
+				CHI_is_on_historical_plan_trigger = yes
+				factor = 2.5
+			}
+		}
+		CHI = {
+			annex_country = {
+				target = NEA
+				transfer_troops = yes
+			}
+		}
+	}
+	
+	option = {
+		name = NW_xian_incident.12.b
+		ai_chance = {
+			base = 70
+			modifier = {
+				CHI_is_on_historical_plan_trigger = yes
+				factor = 0
+			}
+		}
+		create_wargoal = {
+			target = CHI
+			type = annex_everything
+		}
+	}
+}
