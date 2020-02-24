@@ -1608,7 +1608,7 @@ country_event = {
 			desc = "POLITICS_MOHAMMAD_ALI_FOROUGHI_DESC"
 			picture = "gfx/leaders/PER/Portrait_Mohammad_Foroughi.dds"
 			expire = "1965.1.1"
-			ideology = monarchy_ideology
+			ideology = liberalism
 			traits = {
 			}
 		}
@@ -1813,7 +1813,15 @@ country_event = {
 				autonomy_state = autonomy_dominion
 			}
 		}
-		FROM = { 
+		FROM = {
+			add_popularity = {
+				ideology = democratic
+				popularity = 0.25
+			}
+			set_politics = {
+				ruling_party = democratic
+				elections_allowed = yes
+			}
 			load_focus_tree = persian_probritain_focus
 			give_resource_rights = { receiver = ENG state = 411 }
 			give_resource_rights = { receiver = ENG state = 412 }
@@ -1845,7 +1853,17 @@ country_event = {
 				autonomy_state = autonomy_dominion
 			}
 		}
-		FROM = { load_focus_tree = persian_prosoviet_focus }
+		FROM = {
+			add_popularity = {
+				ideology = democratic
+				popularity = 0.25
+			}
+			set_politics = {
+				ruling_party = democratic
+				elections_allowed = yes
+			}
+			load_focus_tree = persian_prosoviet_focus
+		}
 		ENG = {
 			transfer_state = 411
 			transfer_state = 412
@@ -2922,7 +2940,11 @@ country_event = {
 		}
 		FROM = { puppet = ROOT }
 		add_stability = -0.05
-		add_ideas = PER_reza_shah_pahlavi_idea
+		if = {
+			limit = { NOT = { has_country_flag = PER_tadj_ol_molouk_flag } }
+			add_ideas = PER_reza_shah_pahlavi_idea
+		}
+		else = { add_ideas = PER_tadj_ol_molouk_idea }
 		effect_tooltip = { unlock_national_focus = PER_form_prosoviet_government }
 		set_country_flag = PER_form_prosoviet_government_flag
 		hidden_effect = {
@@ -3101,7 +3123,11 @@ country_event = {
 			elections_allowed = no
 		}
 		add_stability = -0.05
-		add_ideas = PER_reza_shah_pahlavi_idea
+		if = {
+			limit = { NOT = { has_country_flag = PER_tadj_ol_molouk_flag } }
+			add_ideas = PER_reza_shah_pahlavi_idea
+		}
+		else = { add_ideas = PER_tadj_ol_molouk_idea }
 		effect_tooltip = { unlock_national_focus = PER_concessions_for_germanophiles }
 		hidden_effect = {
 			set_cosmetic_tag = PER_nazi
@@ -4379,7 +4405,7 @@ country_event = {
 	
 	immediate = {
 		log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWpersian.91"
-		set_country_flag = NWpersian_91_flag
+		set_global_flag = NWpersian_91_flag
 	}
 	
 	option = {
@@ -4605,7 +4631,7 @@ country_event = {
 			create_country_leader = {
 				name = "Mohammad Mosaddegh"
 				desc = "POLITICS_MOHAMMAD_MOSADDEGH_DESC"
-				picture = "gfx/leaders/PER/Portrait_Mohammad_Mosaddegh.dds"
+				picture = "gfx/leaders/QAS/Portrait_Mohammad_Mosaddegh.dds"
 				expire = "1965.1.1"
 				ideology = national_liberals
 				traits = {
@@ -4620,7 +4646,7 @@ country_event = {
 
 
 
-###################  Интеграция Южного Азербайджана ###############
+###############  ИНТЕГРАЦИЯ ЮЖНОГО АЗЕРБАЙДЖАНА  ###############
 
 #Обращение Багирова // SOV
 country_event = {
@@ -4829,6 +4855,750 @@ country_event = {
 
 
 
+##########  ДЕЛО ЭРНЕСТА ПЕРРОНА  ##########
+
+#Тайная связь Эрнеста Перрона и Мохаммеда Резы // PER
+country_event = {
+	id = NWpersian.200
+	title = NWpersian.200.t
+	desc = NWpersian.200.desc
+	picture = GFX_report_event_generic_rally_3
+	fire_only_once = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWpersian.200" }
+	
+	mean_time_to_happen = { days = 14 }
+	
+	trigger = {
+		tag = PER
+		has_country_leader = { name = "Reza Shah Pahlavi" ruling_only = yes }
+		has_idea = PER_ernest_perron
+	}
+	
+	option = {
+		name = NWpersian.200.a
+		ai_chance = {
+			factor = 50
+		}
+		add_timed_idea = { idea = PER_reza_shahs_doubts days = 90 }
+		custom_effect_tooltip = NWpersian_200_a_tt
+	}
+	
+	option = {
+		name = NWpersian.200.b
+		ai_chance = {
+			factor = 50
+			modifier = {
+				factor = 0
+				is_historical_focus_on = yes
+			}
+		}
+		hidden_effect = { country_event = { id = NWpersian.201 days = 2 } }
+		custom_effect_tooltip = NWpersian_200_b_tt
+	}
+	
+	option = {
+		name = NWpersian.200.c
+		ai_chance = {
+			factor = 50
+			modifier = {
+				factor = 0
+				is_historical_focus_on = yes
+			}
+		}
+		hidden_effect = { country_event = { id = NWpersian.202 days = 7 } }
+		custom_effect_tooltip = NWpersian_200_c_tt
+	}
+}
+
+#Мохаммед Реза не признаёт обвинения // PER
+country_event = {
+	id = NWpersian.201
+	title = NWpersian.201.t
+	desc = NWpersian.201.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWpersian.201" }
+	
+	option = {
+		name = NWpersian.201.a
+		ai_chance = {
+			factor = 50
+		}
+		add_political_power = -10
+		add_timed_idea = { idea = PER_reza_shahs_doubts days = 90 }
+		custom_effect_tooltip = NWpersian_201_a_tt
+		custom_effect_tooltip = NWpersian_200_a_tt
+	}
+	
+	option = {
+		name = NWpersian.201.b
+		ai_chance = {
+			factor = 50
+		}
+		add_political_power = -15
+		hidden_effect = { country_event = { id = NWpersian.202 days = 7 } }
+		custom_effect_tooltip = NWpersian_201_a_tt
+		custom_effect_tooltip = NWpersian_200_c_tt
+		add_to_variable = { level_tension_of_heir = 1 }
+		clamp_variable = { var = level_tension_of_heir min = 0 max = 3 }
+	}
+}
+
+#Никаких признаков связи Эрнеста и сына // пульсар
+country_event = {
+	id = NWpersian.202
+	is_triggered_only = yes
+	hidden = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWpersian.202" }
+	immediate = {
+		if = {
+			limit = { has_country_leader = { name = "Reza Shah Pahlavi" ruling_only = yes } }
+			country_event = { id = NWpersian.203 }
+		}
+	}
+}
+
+#Никаких признаков связи Эрнеста и сына // PER
+country_event = {
+	id = NWpersian.203
+	title = NWpersian.203.t
+	desc = NWpersian.203.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWpersian.203" }
+	
+	option = {
+		name = NWpersian.203.a
+		ai_chance = {
+			factor = 50
+		}
+		add_political_power = -20
+		unlock_decision_category_tooltip = PER_surveillance_of_mohammed_category
+		set_country_flag = PER_surveillance_of_mohammed_flag
+		custom_effect_tooltip = NWpersian_202_a_tt
+	}
+	
+	option = {
+		name = NWpersian.203.b
+		ai_chance = {
+			factor = 50
+		}
+		add_timed_idea = { idea = PER_reza_shahs_doubts days = 90 }
+		custom_effect_tooltip = NWpersian_200_a_tt
+	}
+	
+	option = {
+		name = NWpersian.203.c
+		ai_chance = {
+			factor = 50
+		}
+		hidden_effect = { country_event = { id = NWpersian.204 days = 2 } }
+		custom_effect_tooltip = NWpersian_200_b_tt
+	}
+}
+
+#Мохаммед Реза недоволен сомнениями // PER
+country_event = {
+	id = NWpersian.204
+	title = NWpersian.204.t
+	desc = NWpersian.204.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWpersian.204" }
+	
+	option = {
+		name = NWpersian.204.a
+		ai_chance = {
+			factor = 50
+		}
+		add_political_power = -50
+		unlock_decision_category_tooltip = PER_surveillance_of_mohammed_category
+		set_country_flag = PER_surveillance_of_mohammed_flag
+		custom_effect_tooltip = NWpersian_201_a_tt
+		custom_effect_tooltip = NWpersian_202_a_tt
+		add_to_variable = { level_tension_of_heir = 2 }
+		clamp_variable = { var = level_tension_of_heir min = 0 max = 3 }
+	}
+	
+	option = {
+		name = NWpersian.204.b
+		ai_chance = {
+			factor = 50
+		}
+		add_political_power = -30
+		add_timed_idea = { idea = PER_reza_shahs_doubts days = 90 }
+		custom_effect_tooltip = NWpersian_201_a_tt
+		custom_effect_tooltip = NWpersian_200_a_tt
+	}
+}
+
+#Служанка рассказала о ночи с наследником // PER
+country_event = {
+	id = NWpersian.205
+	title = NWpersian.205.t
+	desc = NWpersian.205.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWpersian.205" }
+	
+	option = {
+		name = NWpersian.205.a
+		custom_effect_tooltip = NWpersian_205_a_tt
+		add_to_variable = { level_confidence_of_father = 1 }
+		check_end_events_of_ernest_perron = yes
+	}
+}
+
+#Слуга рассказал нам о реакции наследника // PER
+country_event = {
+	id = NWpersian.206
+	title = NWpersian.206.t
+	desc = NWpersian.206.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWpersian.206" }
+	
+	option = {
+		name = NWpersian.206.a
+		custom_effect_tooltip = NWpersian_205_a_tt
+		add_to_variable = { level_confidence_of_father = 1 }
+		check_end_events_of_ernest_perron = yes
+	}
+}
+
+#Мохаммед Реза разоблачил нашу хитрость // PER
+country_event = {
+	id = NWpersian.207
+	title = NWpersian.207.t
+	desc = NWpersian.207.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWpersian.207" }
+	
+	option = {
+		name = NWpersian.207.a
+		custom_effect_tooltip = NWpersian_207_a_tt
+		add_to_variable = { level_tension_of_heir = 1 }
+		check_end_events_of_ernest_perron = yes
+	}
+}
+
+#Факты из жизни Мохаммеда в Швейцарии I // PER
+country_event = {
+	id = NWpersian.208
+	title = NWpersian.208.t
+	desc = NWpersian.208.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWpersian.208" }
+	
+	option = {
+		name = NWpersian.208.a
+		custom_effect_tooltip = NWpersian_205_a_tt
+		add_to_variable = { level_confidence_of_father = 1 }
+		check_end_events_of_ernest_perron = yes
+	}
+}
+
+#Факты из жизни Мохаммеда в Швейцарии II // PER
+country_event = {
+	id = NWpersian.209
+	title = NWpersian.209.t
+	desc = NWpersian.209.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWpersian.209" }
+	
+	option = {
+		name = NWpersian.209.a
+		custom_effect_tooltip = NWpersian_209_a_tt
+		add_to_variable = { level_confidence_of_father = -2 }
+		check_end_events_of_ernest_perron = yes
+	}
+}
+
+#Факты из жизни Мохаммеда в Швейцарии III // PER
+country_event = {
+	id = NWpersian.210
+	title = NWpersian.210.t
+	desc = NWpersian.210.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWpersian.210" }
+	
+	option = {
+		name = NWpersian.210.a
+	}
+}
+
+#Тадж ол-Молук рассказала всё, что знает // PER
+country_event = {
+	id = NWpersian.211
+	title = NWpersian.211.t
+	desc = NWpersian.211.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWpersian.211" }
+	
+	option = {
+		name = NWpersian.211.a
+		custom_effect_tooltip = NWpersian_205_a_tt
+		add_to_variable = { level_confidence_of_father = 1 }
+		check_end_events_of_ernest_perron = yes
+	}
+}
+
+#Тадж ол-Молук ничего не знает // PER
+country_event = {
+	id = NWpersian.212
+	title = NWpersian.212.t
+	desc = NWpersian.212.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWpersian.212" }
+	
+	option = {
+		name = NWpersian.212.a
+		custom_effect_tooltip = NWpersian_205_a_tt
+		add_to_variable = { level_confidence_of_father = 1 }
+		check_end_events_of_ernest_perron = yes
+	}
+}
+
+#Тадж ол-Молук устроила сцену // PER
+country_event = {
+	id = NWpersian.213
+	title = NWpersian.213.t
+	desc = NWpersian.213.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWpersian.213" }
+	
+	option = {
+		name = NWpersian.213.a
+		custom_effect_tooltip = NWpersian_213_a_tt
+		add_to_variable = { level_confidence_of_father = -1 }
+		add_to_variable = { level_tension_of_heir = 1 }
+		check_end_events_of_ernest_perron = yes
+	}
+}
+
+#Ответ Мохаммеда на фальшивое письмо I // PER
+country_event = {
+	id = NWpersian.214
+	title = NWpersian.214.t
+	desc = NWpersian.214.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWpersian.214" }
+	
+	option = {
+		name = NWpersian.214.a
+		custom_effect_tooltip = NWpersian_214_a_tt
+		add_to_variable = { level_confidence_of_father = -5 }
+		check_end_events_of_ernest_perron = yes
+	}
+}
+
+#Ответ Мохаммеда на фальшивое письмо II // PER
+country_event = {
+	id = NWpersian.215
+	title = NWpersian.214.t
+	desc = NWpersian.215.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWpersian.215" }
+	
+	option = {
+		name = NWpersian.215.a
+		custom_effect_tooltip = NWpersian_205_a_tt
+		add_to_variable = { level_confidence_of_father = 5 }
+		add_to_variable = { level_tension_of_heir = 2 }
+		check_end_events_of_ernest_perron = yes
+	}
+}
+
+#До Мохаммеда дошли слухи о слежке за ним // PER
+country_event = {
+	id = NWpersian.216
+	title = NWpersian.216.t
+	desc = NWpersian.216.desc
+	picture = GFX_report_event_generic_rally_3
+	fire_only_once = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWpersian.216" }
+	
+	mean_time_to_happen = { days = 5 }
+	
+	trigger = {
+		tag = PER
+		has_country_flag = PER_surveillance_of_mohammed_flag
+		count_triggers = {
+			amount = 4
+			has_country_flag = { flag = PER_send_maid_make_love_mohammed_tracking_flag value > 0 }
+			has_country_flag = { flag = PER_send_servant_make_love_mohammed_tracking_flag value > 0 }
+			has_country_flag = { flag = PER_find_out_about_mohammed_switzerland_1_tracking_flag value > 0 }
+			has_country_flag = { flag = PER_find_out_about_mohammed_switzerland_2_tracking_flag value > 0 }
+			has_country_flag = { flag = PER_find_out_about_mohammed_switzerland_3_tracking_flag value > 0 }
+			has_country_flag = { flag = PER_ask_taj_ol_moluk_tracking_flag value > 0 }
+		}
+	}
+	
+	option = {
+		name = NWpersian.216.a
+		custom_effect_tooltip = NWpersian_216_a_tt
+		add_to_variable = { level_tension_of_heir = 2 }
+		check_end_events_of_ernest_perron = yes
+	}
+}
+
+#Не стоит волноваться о Мохаммеде // PER
+country_event = {
+	id = NWpersian.217
+	title = NWpersian.217.t
+	desc = NWpersian.217.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWpersian.217" }
+	
+	option = {
+		name = NWpersian.217.a
+		add_political_power = 100
+	}
+}
+
+#Мохаммед вызывает слишком много подозрений // PER
+country_event = {
+	id = NWpersian.218
+	title = NWpersian.218.t
+	desc = NWpersian.218.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWpersian.218" }
+	
+	option = {
+		name = NWpersian.218.a
+		custom_effect_tooltip = NWpersian_218_a_tt
+		hidden_effect = { 
+			country_event = { id = NWpersian.219 days = 2 }
+		}
+	}
+}
+
+#Серьёзный разговор Реза-шаха и Мохаммада // PER
+country_event = {
+	id = NWpersian.219
+	title = NWpersian.219.t
+	desc = NWpersian.219.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWpersian.219" }
+	
+	option = {
+		name = NWpersian.219.a
+		ai_chance = {
+			factor = 50
+		}
+		add_political_power = 50
+		custom_effect_tooltip = NWpersian_219_a_tt
+	}
+	
+	option = {
+		name = NWpersian.219.b
+		ai_chance = {
+			factor = 50
+		}
+		add_political_power = 150
+		add_stability = 0.05
+		set_temp_variable = { PER_influence_of_clergy_temp = -1 }
+		add_to_variable = { influence_of_clergy_var = PER_influence_of_clergy_temp }
+		custom_effect_tooltip = PER_influence_of_clergy_minus_tt
+		set_opinion_with_clergy_var = yes
+		set_influence_clergy_Value = yes
+		custom_effect_tooltip = NWpersian_219_b_tt
+	}
+}
+
+#Мохаммед Реза устраивает конфликт // PER
+country_event = {
+	id = NWpersian.220
+	title = NWpersian.220.t
+	desc = NWpersian.220.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWpersian.220" }
+	
+	option = {
+		name = NWpersian.220.a
+		custom_effect_tooltip = NWpersian_220_a_tt
+		hidden_effect = {
+			if = {
+				limit = {
+					OR = {
+						has_completed_focus = PER_second_clearing_agreement_with_germany
+						has_completed_focus = PER_attract_german_investors
+						has_completed_focus = PER_involvement_german_advisers
+						has_completed_focus = PER_treaty_with_germany
+					}
+				}
+				country_event = { id = NWpersian.221 days = 10 }
+			}
+			else_if = {
+				limit = {
+					OR = {
+						has_completed_focus = PER_expand_export_of_cotton_in_russia
+						has_completed_focus = PER_invest_in_iranian_corridor
+						has_completed_focus = PER_attract_kremlin_advisers
+						has_completed_focus = PER_treaty_with_soviet_union
+					}
+					NOT = {
+						has_completed_focus = PER_trial_communists
+						has_completed_focus = PER_second_clearing_agreement_with_germany
+						has_completed_focus = PER_attract_german_investors
+						has_completed_focus = PER_involvement_german_advisers
+						has_completed_focus = PER_treaty_with_germany
+					}
+				}
+				country_event = { id = NWpersian.222 days = 10 }
+			}
+			else = { country_event = { id = NWpersian.223 days = 10 } }
+		}
+	}
+}
+
+#Нацисты оказывают влияние на Мохаммеда // PER
+country_event = {
+	id = NWpersian.221
+	title = NWpersian.221.t
+	desc = NWpersian.221.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWpersian.221" }
+	
+	option = {
+		name = NWpersian.221.a
+		add_popularity = {
+			ideology = fascism
+			popularity = 0.05
+		}
+		set_country_flag = NWpersian_221_flag
+	}
+}
+
+#Коммунисты оказывают влияние на Мохаммеда // PER
+country_event = {
+	id = NWpersian.222
+	title = NWpersian.222.t
+	desc = NWpersian.222.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWpersian.222" }
+	
+	option = {
+		name = NWpersian.222.a
+		add_popularity = {
+			ideology = communism
+			popularity = 0.05
+		}
+		set_country_flag = NWpersian_222_flag
+	}
+}
+
+#Мохаммед Реза совершает самоубийство // PER
+country_event = {
+	id = NWpersian.223
+	title = NWpersian.223.t
+	desc = NWpersian.223.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWpersian.223" }
+	
+	option = {
+		name = NWpersian.223.a
+		set_country_flag = NWpersian_223_flag
+		set_country_flag = { flag = NWpersian_223_week_flag days = 7 value = 1 }
+		set_country_flag = { flag = NWpersian_223_half_year_flag days = 180 value = 1 }
+		add_ideas = PER_mourning_for_death_of_mohammad_reza
+		custom_effect_tooltip = NWpersian_223_a_tt
+	}
+}
+
+#Реза-шах Пехлеви совершает самоубийство // PER
+country_event = {
+	id = NWpersian.224
+	title = NWpersian.224.t
+	desc = NWpersian.224.desc
+	picture = GFX_report_event_generic_rally_3
+	fire_only_once = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWpersian.224" }
+	
+	mean_time_to_happen = { days = 5 }
+	
+	trigger = {
+		tag = PER
+		has_country_leader = { name = "Reza Shah Pahlavi" ruling_only = yes }
+		has_country_flag = NWpersian_223_flag
+		NOT = { has_country_flag = { flag = NWpersian_223_week_flag value > 0 } }
+		has_country_flag = { flag = NWpersian_223_half_year_flag value > 0 }
+		OR = {
+			capital_scope = { NOT = { is_controlled_by = ROOT } }
+			has_stability < 0.300
+			monarchy < 0.300
+			has_civil_war = yes
+			any_country = {
+				is_major = yes
+				has_war_with = ROOT
+			}
+		}
+	}
+	
+	option = {
+		name = NWpersian.224.a
+		set_country_flag = PER_tadj_ol_molouk_flag
+		add_stability = 0.05
+		create_country_leader = {
+			name = "Tadj ol-Molouk"
+			desc = "POLITICS_TADJ_OL_MOLOUK_DESC"
+			picture = "gfx/leaders/PER/Portrait_Tadj_ol_Molouk.dds"
+			expire = "1965.1.1"
+			ideology = monarchy_ideology
+			traits = {
+				crown_of_kings
+			}
+		}
+		if = {
+			limit = { has_idea = PER_reza_shah_pahlavi_idea }
+			swap_ideas = {
+				remove_idea = PER_reza_shah_pahlavi_idea
+				add_idea = PER_tadj_ol_molouk_idea
+			}
+		}
+		set_temp_variable = { PER_opinion_with_clergy_temp = -3 }
+		add_to_variable = { opinion_with_clergy_var = PER_opinion_with_clergy_temp }
+		custom_effect_tooltip = PER_opinion_with_clergy_minus_tt
+		custom_effect_tooltip = NWpersian_224_a_tt
+		hidden_effect = {
+			news_event = { hours = 6 id = trworldnews.131 }
+		}
+	}
+}
+
+#Вопрос монархии фаши // PER
+country_event = {
+	id = NWpersian.225
+	title = NWpersian.225.t
+	desc = NWpersian.225.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWpersian.225" }
+	
+	option = {
+		name = NWpersian.225.a
+		ai_chance = {
+			factor = 50
+		}
+		remove_ideas = PER_reza_shah_pahlavi_idea
+	}
+	
+	option = {
+		name = NWpersian.225.b
+		ai_chance = {
+			factor = 50
+		}
+		remove_ideas = PER_reza_shah_pahlavi_idea
+		add_ideas = PER_mohammad_reza_pahlavi_idea
+	}
+}
+
+#Вопрос монархии комми // PER
+country_event = {
+	id = NWpersian.226
+	title = NWpersian.225.t
+	desc = NWpersian.226.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWpersian.226" }
+	
+	option = {
+		name = NWpersian.226.a
+		ai_chance = {
+			factor = 50
+		}
+		remove_ideas = PER_reza_shah_pahlavi_idea
+	}
+	
+	option = {
+		name = NWpersian.226.b
+		ai_chance = {
+			factor = 50
+		}
+		remove_ideas = PER_reza_shah_pahlavi_idea
+		add_ideas = PER_mohammad_reza_pahlavi_idea
+		set_country_flag = PER_red_sugiharto_flag
+		effect_tooltip = { unlock_national_focus = PER_red_sugiharto }
+		set_cosmetic_tag = PER_red_monarchy
+	}
+}
+
+#Иран призывает к построению красного монархизма // Все монархические государства в мире 
+country_event = {
+	id = NWpersian.227
+	title = NWpersian.227.t
+	desc = NWpersian.227.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWpersian.227" }
+	
+	option = {
+		name = NWpersian.227.a
+		ai_chance = {
+			factor = 50
+			modifier = {
+				factor = 0
+				is_in_faction = yes
+			}
+		}
+		FROM = { add_to_faction = ROOT }
+		set_party_name = { ideology = communism long_name = red_monarchy_party name = red_monarchy_party }
+	}
+	
+	option = {
+		name = NWpersian.227.b
+		ai_chance = {
+			factor = 50
+		}
+	}
+}
+
+
+
 country_event = {
 	id = NWpersian.999
 	title = NWpersian.999.t
@@ -4870,5 +5640,3 @@ country_event = {
 		add_to_tech_sharing_group = PER_middle_east_technate_group
 	}
 }
-
-

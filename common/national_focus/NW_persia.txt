@@ -2975,7 +2975,7 @@ focus_tree = {
 	focus = {
 		id = PER_all_union_developments
 		icon = GFX_z_goal_socialist_industry
-		prerequisite = { focus = PER_follow_to_north_for_stalin focus = PER_new_republic_of_union }
+		prerequisite = { focus = PER_new_republic_of_union }
 		x = 0
 		y = 1
 		relative_position_id = PER_new_republic_of_union
@@ -3155,7 +3155,42 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus PER_unnecessary_to_abolish_monarchy"
-			remove_ideas = PER_reza_shah_pahlavi_idea
+			if = {
+				limit = {
+					NOT = {
+						has_country_flag = PER_tadj_ol_molouk_flag
+						has_country_flag = NWpersian_221_flag
+						has_country_flag = NWpersian_222_flag
+					}
+				}
+				remove_ideas = PER_reza_shah_pahlavi_idea
+			}
+			else_if = {
+				limit = {
+					has_country_flag = PER_tadj_ol_molouk_flag
+					NOT = {
+						has_country_flag = NWpersian_221_flag
+						has_country_flag = NWpersian_222_flag
+					}
+				}
+				remove_ideas = PER_tadj_ol_molouk_idea
+			}
+			else_if = {
+				limit = {
+					has_completed_focus = PER_treaty_with_germany
+					has_country_flag = NWpersian_221_flag
+					NOT = { has_country_flag = NWpersian_223_flag }
+				}
+				country_event = { id = NWpersian.225 }
+			}
+			else_if = {
+				limit = {
+					has_completed_focus = PER_treaty_with_soviet_union
+					has_country_flag = NWpersian_222_flag
+					NOT = { has_country_flag = NWpersian_223_flag }
+				}
+				country_event = { id = NWpersian.226 }
+			}
 		}
 	}
 	
@@ -3178,18 +3213,33 @@ focus_tree = {
 		available_if_capitulated = yes
 
 		ai_will_do = {
-			factor = 10
+			factor = 20
 		}
 		available = {
-			
+			has_country_flag = PER_red_sugiharto_flag
 		}
-		bypass = {
-			
-		}
-		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus PER_red_sugiharto"
-			
+			remove_ideas = PER_mohammad_reza_pahlavi_idea
+			add_autonomy_score = {
+				value = 200
+				localization = PER_red_sugiharto
+			}
+			add_ideas = PER_red_sugiharto
+			create_country_leader = {
+				name = "Mohammed Reza Pahlavi"
+				desc = "POLITICS_MOHAMMED_REZA_PAHLAVI_DESC"
+				picture = "gfx/leaders/PER/Portrait_Mohammad_Reza_Pahlavi.dds"
+				expire = "1965.1.1"
+				ideology = marxism
+				traits = {
+					modernization
+					reformator
+					timidity
+					light_of_aryans
+				}
+			}
+			set_party_name = { ideology = communism long_name = PER_red_sugiharto_party_long name = PER_red_sugiharto_party }
 		}
 	}
 	
@@ -3219,7 +3269,11 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus PER_attract_nationalist_and_conservative_elements"
-			
+			add_autonomy_score = {
+				value = 200
+				localization = PER_attract_nationalist_and_conservative_elements
+			}
+			add_ideas = PER_attract_nationalist_and_conservative_elements_idea
 		}
 	}
 	
@@ -3241,7 +3295,7 @@ focus_tree = {
 			factor = 10
 		}
 		available = {
-			
+			is_subject = no
 		}
 		bypass = {
 			
@@ -3249,7 +3303,12 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus PER_path_of_red_monarchy"
-			
+			set_rule = { can_create_factions = yes }
+			create_faction = PER_red_monarchists
+			every_other_country = {
+				limit = { has_government = monarchy }
+				country_event = { id = NWpersian.227 }
+			}
 		}
 	}
 	
@@ -4218,12 +4277,21 @@ focus_tree = {
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus PER_prohibit_wearing_hijabs"
 			if = {
-				limit = { NOT = { has_country_flag = NWpersian_91_flag } }
+				limit = { NOT = { has_global_flag = NWpersian_91_flag } }
 				country_event = { id = NWpersian.91 }
 			}
 			else = {
 				add_political_power = 100
-				add_ideas = PER_prohibit_wearing_hijabs_idea
+				if = {
+					limit = {
+						OR = {
+							has_government = fascism
+							has_government = monarchy
+						}
+					}
+					add_ideas = PER_hijabs_idea
+				}
+				else = { add_ideas = PER_prohibit_wearing_hijabs_idea }
 			}
 		}
 	}
@@ -5229,7 +5297,6 @@ focus_tree = {
 			NOT = { has_country_flag = PER_form_prosoviet_government_flag has_country_flag = PER_concessions_for_germanophiles_flag }
 		}
 		bypass = {
-			
 		}
 		
 		completion_reward = {
