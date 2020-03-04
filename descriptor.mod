@@ -1,4 +1,4 @@
-version="1.8.*"
+version="1.9.*"
 replace_path="localisation/adjacency_rules_l_russian.yml"
 replace_path="localisation/core_l_russian.yml"
 replace_path="localisation/countries_cosmetic_l_russian.yml"
@@ -49,6 +49,6 @@ tags={
 	"Historical"
 	"Events"
 }
-supported_version="1.8.1"
+supported_version="1.9.*"
 picture="nw.jpg"
 name="New Ways alpha 0.2.X dev build"
