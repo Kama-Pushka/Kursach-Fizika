@@ -4476,13 +4476,20 @@
 	shared_focus = {
 		id = FRA_program_daladier
 		icon = GFX_goal_generic_position_armies
-		x = 33
+		x = 40
 		y = 0
 		offset = {
-			x = -21
+			x = -22
 			y = 0
 			trigger = {
 				original_tag = FRR
+			}
+		}
+		offset = {
+			x = -3
+			y = 0
+			trigger = {
+				original_tag = FRF
 			}
 		}
 		
@@ -4526,8 +4533,6 @@
 					NOT = { tag = FRA }
 				}
 			}
-		}
-		bypass = {
 		}
 		
 		search_filters = { FOCUS_FILTER_INDUSTRY }
@@ -4606,12 +4611,7 @@
 				}
 			}
 		}
-		available = {
-			
-		}
-		bypass = {
-		}
-
+		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus FRA_defensive_focus"
 			custom_effect_tooltip = available_chief_of_army
@@ -4620,12 +4620,445 @@
 	}
 	
 	shared_focus = {
-		id = FRA_fortification_focus
-		icon = GFX_goal_generic_construction2
+		id = FRA_firepower_kills
+		icon = GFX_goal_generic_army_artillery
 		prerequisite = { focus = FRA_defensive_focus }
+		mutually_exclusive = { focus = FRA_methodical_battle }
+		x = -4
+		y = 1
+		relative_position_id = FRA_defensive_focus
+		cost = 7.2
+
+		ai_will_do = {
+			factor = 3
+			modifier = {
+				factor = 2
+				OR = {
+					has_war = yes
+					any_country = {
+						OR = {
+							has_wargoal_against = ROOT
+							is_justifying_wargoal_against = ROOT
+						}
+					}
+					AND = {
+						date > 1939.01.01
+						any_neighbor_country = {
+							has_offensive_war = yes
+						}
+					}
+				}
+			}
+		}
+
+		cancel_if_invalid = yes
+		continue_if_invalid = no
+		available_if_capitulated = no
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus FRA_firepower_kills"
+			add_ideas = { FRA_firepower }
+		}
+	}
+	
+	shared_focus = {
+		id = FRA_infantry_focus
+		icon = GFX_goal_generic_allies_build_infantry
+		prerequisite = { focus = FRA_firepower_kills }
+		x = 0
+		y = 1
+		relative_position_id = FRA_firepower_kills
+		cost = 7.2
+
+		cancel_if_invalid = yes
+		continue_if_invalid = no
+		available_if_capitulated = yes
+		
+		ai_will_do = {
+			factor = 3
+			modifier = {
+				factor = 2
+				OR = {
+					has_war = yes
+					any_country = {
+						OR = {
+							has_wargoal_against = ROOT
+							is_justifying_wargoal_against = ROOT
+						}
+					}
+					AND = {
+						date > 1939.01.01
+						any_neighbor_country = {
+							has_offensive_war = yes
+						}
+					}
+				}
+			}
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus FRA_infantry_focus"
+			army_experience = 5
+			add_ideas = FRA_infantry_focus
+		}
+	}
+	
+	shared_focus = {
+		id = FRA_artillery_focus
+		icon = GFX_goal_generic_army_artillery2
+		prerequisite = { focus = FRA_infantry_focus }
+		x = 0
+		y = 1
+		relative_position_id = FRA_infantry_focus
+		
+		cost = 7.2
+		
+		cancel_if_invalid = yes
+		continue_if_invalid = no
+		available_if_capitulated = yes
+
+		ai_will_do = {
+			factor = 3
+			modifier = {
+				factor = 2
+				OR = {
+					has_war = yes
+					any_country = {
+						OR = {
+							has_wargoal_against = ROOT
+							is_justifying_wargoal_against = ROOT
+						}
+					}
+					AND = {
+						date > 1939.01.01
+						any_neighbor_country = {
+							has_offensive_war = yes
+						}
+					}
+				}
+			}
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus FRA_artillery_focus"
+			army_experience = 5
+			add_tech_bonus = {
+				name = FRA_artillery_focus
+				bonus = 1.0
+				uses = 1
+				category = artillery
+			}
+		}
+	}
+	
+	shared_focus = {
+		id = FRA_heavy_armor_focus
+		icon = GFX_goal_generic_army_tanks
+		prerequisite = { focus = FRA_artillery_focus }
+		x = 0
+		y = 1
+		relative_position_id = FRA_artillery_focus
+		cost = 7.2
+		
+		cancel_if_invalid = yes
+		continue_if_invalid = no
+		available_if_capitulated = yes
+
+		ai_will_do = {
+			factor = 3
+			modifier = {
+				factor = 2
+				OR = {
+					has_war = yes
+					any_country = {
+						OR = {
+							has_wargoal_against = ROOT
+							is_justifying_wargoal_against = ROOT
+						}
+					}
+					AND = {
+						date > 1939.01.01
+						any_neighbor_country = {
+							has_offensive_war = yes
+						}
+					}
+				}
+			}
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus FRA_heavy_armor_focus"
+			army_experience = 5
+			add_tech_bonus = {
+				name = FRA_heavy_armor_focus
+				bonus = 1.0
+				uses = 1
+				category = cat_heavy_armor
+			}
+		}
+	}
+	
+	shared_focus = {
+		id = FRA_division_cuirassee
+		icon = GFX_focus_generic_army_tanks2
+		prerequisite = { focus = FRA_heavy_armor_focus }
+		x = 0
+		y = 1
+		relative_position_id = FRA_heavy_armor_focus
+		cost = 7.2
+
+		available = {
+			has_tech = basic_heavy_tank
+			has_tech = basic_medium_tank
+		}
+	
+		cancel_if_invalid = yes
+		continue_if_invalid = no
+		available_if_capitulated = yes
+
+		ai_will_do = {
+			factor = 3
+			modifier = {
+				factor = 2
+				OR = {
+					has_war = yes
+					any_country = {
+						OR = {
+							has_wargoal_against = ROOT
+							is_justifying_wargoal_against = ROOT
+						}
+					}
+					AND = {
+						date > 1939.01.01
+						any_neighbor_country = {
+							has_offensive_war = yes
+						}
+					}
+				}
+			}
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus FRA_heavy_armor_focus"
+			division_template = {
+				name = "Division Cuirassée" 	
+				division_names_group = FRA_ARM_01
+
+				regiments = {
+					medium_armor = { x = 0 y = 0 }		
+					heavy_armor = { x = 0 y = 1 }		
+					medium_armor = { x = 1 y = 0 }		
+					medium_armor = { x = 1 y = 1 }		
+					motorized = { x = 2 y = 0 }			
+					motorized = { x = 2 y = 1 }
+					motorized = { x = 2 y = 2 }
+				}
+				support = {
+					recon = { x = 0 y = 0 }      		
+					artillery = { x = 0 y = 1 }
+					engineer = { x = 0 y = 2 }
+				}
+			}
+			capital_scope = {
+				create_unit = {
+					division = "name = \"1re Division Cuirassée\" division_template = \"Division Cuirassée\" start_experience_factor = 0.7"  
+					owner = ROOT
+				}
+				create_unit = {
+					division = "name = \"2me Division Cuirassée\" division_template = \"Division Cuirassée\" start_experience_factor = 0.7"  
+					owner = ROOT
+				}
+			}
+		}
+	}
+	
+	shared_focus = {
+		id = FRA_infantry_tanks
+		icon = GFX_focus_generic_combined_arms
+		prerequisite = { focus = FRA_firepower_kills focus = FRA_methodical_battle }
+		x = 2
+		y = 1
+		relative_position_id = FRA_firepower_kills
+		
+		cost = 7.2
+		
+		cancel_if_invalid = yes
+		continue_if_invalid = no
+		available_if_capitulated = yes
+		
+		ai_will_do = {
+			factor = 3
+			modifier = {
+				factor = 2
+				OR = {
+					has_war = yes
+					any_country = {
+						OR = {
+							has_wargoal_against = ROOT
+							is_justifying_wargoal_against = ROOT
+						}
+					}
+					AND = {
+						date > 1939.01.01
+						any_neighbor_country = {
+							has_offensive_war = yes
+						}
+					}
+				}
+			}
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus FRA_defensive_focus"
+			custom_effect_tooltip = available_designer
+			show_ideas_tooltip = FRA_hotchkiss
+		}
+	}
+	
+	shared_focus = {
+		id = FRA_special_forces
+		icon = GFX_goal_generic_special_forces
+		prerequisite = { focus = FRA_infantry_tanks }
+		x = 0
+		y = 1
+		relative_position_id = FRA_infantry_tanks
+		cost = 7.2
+
+		ai_will_do = {
+			factor = 3
+			modifier = {
+				factor = 2
+				OR = {
+					has_war = yes
+					any_country = {
+						OR = {
+							has_wargoal_against = ROOT
+							is_justifying_wargoal_against = ROOT
+						}
+					}
+					AND = {
+						date > 1939.01.01
+						any_neighbor_country = {
+							has_offensive_war = yes
+						}
+					}
+				}
+			}
+		}
+
+		cancel_if_invalid = yes
+		continue_if_invalid = no
+		available_if_capitulated = no
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus FRA_special_forces"
+			add_ideas = { special_forces }
+		}
+	}
+	
+	shared_focus = {
+		id = FRA_fusiliers_marine
+		icon = GFX_goal_generic_amphibious_assault
+		prerequisite = { focus = FRA_special_forces }
+		x = 0
+		y = 1
+		relative_position_id = FRA_special_forces
+		
+		cost = 7.2
+		
+		cancel_if_invalid = yes
+		continue_if_invalid = no
+		available_if_capitulated = yes
+
+		ai_will_do = {
+			factor = 3
+			modifier = {
+				factor = 2
+				OR = {
+					has_war = yes
+					any_country = {
+						OR = {
+							has_wargoal_against = ROOT
+							is_justifying_wargoal_against = ROOT
+						}
+					}
+					AND = {
+						date > 1939.01.01
+						any_neighbor_country = {
+							has_offensive_war = yes
+						}
+					}
+				}
+			}
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus FRA_fusiliers_marine"
+			add_tech_bonus = {
+				name = FRA_fusiliers_marine
+				category = tp_tech
+				category = marine_tech
+				uses = 2
+				bonus = 1
+			}
+		}
+	}
+
+	shared_focus = {
+		id = FRA_methodical_battle
+		icon = GFX_goal_generic_cavalry
+		prerequisite = { focus = FRA_defensive_focus }
+		mutually_exclusive = { focus = FRA_firepower_kills }
 		x = 0
 		y = 1
 		relative_position_id = FRA_defensive_focus
+		cost = 7.2
+
+		ai_will_do = {
+			factor = 3
+			modifier = {
+				factor = 2
+				OR = {
+					has_war = yes
+					any_country = {
+						OR = {
+							has_wargoal_against = ROOT
+							is_justifying_wargoal_against = ROOT
+						}
+					}
+					AND = {
+						date > 1939.01.01
+						any_neighbor_country = {
+							has_offensive_war = yes
+						}
+					}
+				}
+			}
+		}
+
+		cancel_if_invalid = yes
+		continue_if_invalid = no
+		available_if_capitulated = no
+		search_filters = { FOCUS_FILTER_RESEARCH }
+		
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus FRA_methodical_battle"
+			add_tech_bonus = {
+				name = FRA_methodical_battle
+				category = land_doctrine
+				uses = 2
+				bonus = 2
+			}
+		}
+	}
+	
+	shared_focus = {
+		id = FRA_fortification_focus
+		icon = GFX_goal_generic_construction2
+		prerequisite = { focus = FRA_methodical_battle }
+		x = 0
+		y = 1
+		relative_position_id = FRA_methodical_battle
 		cost = 7.2
 
 		cancel_if_invalid = yes
@@ -4653,12 +5086,7 @@
 				}
 			}
 		}
-		available = {
-			
-		}
-		bypass = {
-		}
-
+		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus FRA_fortification_focus"
 			add_ideas = FRA_fortification_focus
@@ -4669,7 +5097,7 @@
 		id = FRA_alpine_forts
 		icon = GFX_goal_generic_construct_military
 		prerequisite = { focus = FRA_fortification_focus }
-		x = 0
+		x = 1
 		y = 1
 		relative_position_id = FRA_fortification_focus
 		cost = 7.2
@@ -4702,9 +5130,7 @@
 		available = {
 			735 = { is_controlled_by = ROOT }
 		}
-		bypass = {
-		}
-
+		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus FRA_alpine_forts"
 			ROOT = { country_event = { id = france.3 } }
@@ -4722,7 +5148,7 @@
 		icon = GFX_focus_generic_coastal_fort
 		prerequisite = { focus = FRA_alpine_forts }
 		mutually_exclusive = { focus = FRA_extend_the_maginot_line }
-		x = -2
+		x = -1
 		y = 1
 		relative_position_id = FRA_alpine_forts
 		cost = 7.2
@@ -4757,9 +5183,7 @@
 			29 = { is_controlled_by = ROOT }
 			1037 = { is_controlled_by = ROOT }
 		}
-		bypass = {
-		}
-
+		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus FRA_protection_from_britain"
 			15 = {
@@ -4832,7 +5256,7 @@
 		icon = GFX_goal_generic_fortify_city
 		prerequisite = { focus = FRA_alpine_forts }
 		mutually_exclusive = { focus = FRA_protection_from_britain }
-		x = 0
+		x = 1
 		y = 1
 		relative_position_id = FRA_alpine_forts
 		cost = 7.2
@@ -4888,7 +5312,7 @@
 	
 	shared_focus = {
 		id = FRA_budget_allocation_infantry_equipment
-		icon = GFX_goal_generic_allies_build_infantry
+		icon = GFX_goal_generic_small_arms
 		prerequisite = { focus = FRA_program_daladier }
 		x = -1
 		y = 2
@@ -4989,53 +5413,6 @@
 				uses = 1
 				category = infantry_weapons
 			}
-		}
-	}
-	
-	shared_focus = {
-		id = FRA_introduction_of_mas_rifle
-		icon = GFX_goal_generic_small_arms
-		prerequisite = { focus = FRA_introduction_of_new_equipment }
-		x = 0
-		y = 1
-		relative_position_id = FRA_introduction_of_new_equipment
-		
-		cost = 7.2
-		
-		cancel_if_invalid = yes
-		continue_if_invalid = no
-		available_if_capitulated = yes
-
-		ai_will_do = {
-			factor = 3
-			modifier = {
-				factor = 2
-				OR = {
-					has_war = yes
-					any_country = {
-						OR = {
-							has_wargoal_against = ROOT
-							is_justifying_wargoal_against = ROOT
-						}
-					}
-					AND = {
-						date > 1939.01.01
-						any_neighbor_country = {
-							has_offensive_war = yes
-						}
-					}
-				}
-			}
-		}
-		available = {
-			
-		}
-		bypass = {
-		}
-
-		completion_reward = {
-			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus FRA_introduction_of_mas_rifle"
-			add_ideas = FRA_infantry_focus
 		}
 	}
 	
@@ -5143,10 +5520,11 @@
 	shared_focus = {
 		id = FRA_providing_army_with_tanks
 		icon = GFX_focus_generic_tank_production
+		prerequisite = { focus = FRA_introduction_of_new_equipment }
 		prerequisite = { focus = FRA_transport_development }
-		x = 0
+		x = 1
 		y = 1
-		relative_position_id = FRA_transport_development
+		relative_position_id = FRA_introduction_of_new_equipment
 		cost = 7.2
 
 		cancel_if_invalid = yes
@@ -5257,7 +5635,7 @@
 		x = 0
 		y = 1
 		relative_position_id = FRA_aggressive_focus
-		cost = 10
+		cost = 7.2
 
 		ai_will_do = {
 			factor = 3
@@ -5340,7 +5718,7 @@
 		id = FRA_allocation_additional_budget_for_armoured_vehicles
 		icon = GFX_goal_generic_build_tank
 		prerequisite = { focus = FRA_study_german_experience }
-		x = 0
+		x = -1
 		y = 1
 		relative_position_id = FRA_study_german_experience
 		cost = 7.2
@@ -5370,10 +5748,7 @@
 				}
 			}
 		}
-		available = {
-		}
-		bypass = {
-		}
+	
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus FRA_allocation_additional_budget_for_armoured_vehicles"
 			army_experience = 5
@@ -5391,7 +5766,7 @@
 		icon = GFX_focus_generic_army_tanks2
 		prerequisite = { focus = FRA_allocation_additional_budget_for_armoured_vehicles }
 		mutually_exclusive = { focus = FRA_allocation_of_additional_budget_for_light_tanks }
-		x = 0
+		x = -1
 		y = 1
 		relative_position_id = FRA_allocation_additional_budget_for_armoured_vehicles
 		cost = 7.2
@@ -5440,7 +5815,7 @@
 		icon = GFX_goal_generic_army_tanks
 		prerequisite = { focus = FRA_allocation_additional_budget_for_armoured_vehicles }
 		mutually_exclusive = { focus = FRA_allocation_of_additional_budget_for_heavy_tanks }
-		x = 2
+		x = 1
 		y = 1
 		relative_position_id = FRA_allocation_additional_budget_for_armoured_vehicles
 		cost = 7.2
@@ -5660,14 +6035,16 @@
 		id = FRA_army_reform
 		icon = GFX_goal_generic_army_doctrines
 		prerequisite = {
-			focus = FRA_allocation_of_additional_budget_for_heavy_tanks 
-			focus = FRA_allocation_of_additional_budget_for_light_tanks
+			focus = FRA_heavy_armor_focus 
 			focus = FRA_extend_the_maginot_line
 			focus = FRA_protection_from_britain
+			focus = FRA_allocation_of_additional_budget_for_heavy_tanks 
+			focus = FRA_allocation_of_additional_budget_for_light_tanks
+			focus = FRA_flying_artillery
 		}
-		x = 1
-		y = 1
-		relative_position_id = FRA_introduction_of_mas_rifle
+		x = 0
+		y = 2
+		relative_position_id = FRA_providing_army_with_tanks
 		cost = 7.2
 
 		cancel_if_invalid = yes
@@ -5734,10 +6111,10 @@
 	shared_focus = {
 		id = FRA_navy_focus
 		icon = GFX_goal_generic_build_navy
-		x = 8
+		x = 10
 		y = 0
 		offset = {
-			x = 8
+			x = -1
 			y = 0
 			trigger = {
 				original_tag = FRC
@@ -5977,10 +6354,10 @@
 	shared_focus = {
 		id = FRA_naval_doctrine
 		icon = GFX_goal_generic_navy_doctrines_tactics
-	 	prerequisite = { 
+	 	prerequisite = { focus = FRA_improved_screen_ships }
+	 	prerequisite = {
 	 		focus = FRA_carrier_focus
 	 		focus = FRA_capital_ship_focus
-	 		focus = FRA_improved_screen_ships
 	 	}
 		x = -1
 		y = 1
@@ -6022,59 +6399,13 @@
 		}
 	}
 
-	shared_focus = {
-		id = FRA_cas_focus
-		icon = GFX_goal_generic_CAS
-	 	prerequisite = { 
-	 		focus = FRA_carrier_focus
-	 		focus = FRA_fighter_focus
-	 	}
-		x = 1
-		y = 1
-		relative_position_id = FRA_carrier_focus
-		cost = 7.2
-
-		available_if_capitulated = yes
-		
-		ai_will_do = {
-			factor = 3
-			modifier = {
-				factor = 2
-				OR = {
-					has_war = yes
-					any_country = {
-						OR = {
-							has_wargoal_against = ROOT
-							is_justifying_wargoal_against = ROOT
-						}
-					}
-					AND = {
-						date > 1939.01.01
-						any_neighbor_country = {
-							has_offensive_war = yes
-						}
-					}
-				}
-			}
-		}
-
-		completion_reward = {
-			add_tech_bonus = {
-				name = FRA_cas_focus
-				bonus = 1.0
-				uses = 2
-				category = cas_bomber
-			}
-		}
-	}
-	
 	
 	### AVIA SECTION ###
 	
 	shared_focus = {
 		id = FRA_air_focus
 		icon = GFX_goal_generic_build_airforce
-		x = 6
+		x = 5
 		y = 0
 		relative_position_id = FRA_navy_focus
 		cost = 7.2
