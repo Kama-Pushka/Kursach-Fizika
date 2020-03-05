@@ -9,6 +9,10 @@ focus_tree = {
 		}
 	}
 	
+	initial_show_position = {
+		x = 12
+	}
+	
 	default = yes
 	reset_on_civilwar = yes
 	
@@ -2272,7 +2276,7 @@ focus_tree = {
 			focus = technocracy_focus
 			focus = neutrality_focus
 		}
-		x = 22
+		x = 24
 		y = 1
 		relative_position_id = individual_ethos
 		cost = 10
@@ -2344,36 +2348,38 @@ focus_tree = {
 	}
 	
 	focus = {
-		id = dinasty_union
-		icon = GFX_goal_tfv_strengthen_commonwealth_ties
+		id = principles_of_dualism
+		icon = GFX_z_goal_monarchism_principles_of_dualism
 		prerequisite = { focus = monarchism_focus }
-		x = 1
+		mutually_exclusive = { focus = generic_power_monarch }
+		x = -1
 		y = 1
 		relative_position_id = monarchism_focus
 		cost = 10
 
 		available_if_capitulated = yes
+		
+		available = {
+			monarchy < 0.8
+		}
 
 		ai_will_do = {
 			factor = 5
 		}
 
 		completion_reward = {
-			if = {
-				limit = { has_idea = neutrality_idea }
-				remove_ideas = neutrality_idea
-			}	
-			add_ideas = dinasty_union
+			add_ideas = principles_of_dualism
 		}
 	}
 	
 	focus = {
-		id = holy_trone
-		icon = GFX_z_goal_monarchism_9
-		prerequisite = { focus = dinasty_union }
+		id = popular_representation
+		icon = GFX_z_goal_popular_representation
+		prerequisite = { focus = principles_of_dualism }
+		mutually_exclusive = { focus = bet_on_aristocracy }
 		x = -1
 		y = 1
-		relative_position_id = dinasty_union
+		relative_position_id = principles_of_dualism
 		cost = 10
 
 		available_if_capitulated = yes
@@ -2383,17 +2389,85 @@ focus_tree = {
 		}
 
 		completion_reward = {
-			add_ideas = holy_trone
+			add_ideas = popular_representation
+			custom_effect_tooltip = popular_representation_tt
 		}
 	}
 	
 	focus = {
-		id = generic_power_monarch
-		icon = GFX_z_goal_national_council
-		prerequisite = { focus = dinasty_union }
+		id = patriotic_organizations
+		icon = GFX_focus_generic_monarchy_2
+		prerequisite = { focus = popular_representation }
+		x = 0
+		y = 1
+		relative_position_id = popular_representation
+		cost = 10
+
+		available_if_capitulated = yes
+
+		ai_will_do = {
+			factor = 5
+		}
+
+		completion_reward = {
+			add_ideas = patriotic_organizations
+		}
+	}
+	
+	focus = {
+		id = bet_on_aristocracy
+		icon = GFX_z_goal_monarchism_14
+		prerequisite = { focus = principles_of_dualism }
+		mutually_exclusive = { focus = popular_representation }
 		x = 1
 		y = 1
-		relative_position_id = dinasty_union
+		relative_position_id = principles_of_dualism
+		cost = 10
+
+		available_if_capitulated = yes
+
+		ai_will_do = {
+			factor = 5
+		}
+
+		completion_reward = {
+			add_ideas = bet_on_aristocracy
+			custom_effect_tooltip = bet_on_aristocracy_tt
+		}
+	}
+	
+	focus = {
+		id = influential_landowners
+		icon = GFX_z_goal_monarchism_13
+		prerequisite = { focus = bet_on_aristocracy }
+		x = 0
+		y = 1
+		relative_position_id = bet_on_aristocracy
+		cost = 10
+
+		available_if_capitulated = yes
+
+		ai_will_do = {
+			factor = 5
+		}
+
+		completion_reward = {
+			add_ideas = influential_landowners
+			every_owned_state = {
+				add_extra_state_shared_building_slots = 2
+			}
+		}
+	}
+	
+	
+	focus = {
+		id = generic_power_monarch
+		icon = GFX_z_goal_generic_king_power
+		prerequisite = { focus = monarchism_focus }
+		mutually_exclusive = { focus = principles_of_dualism }
+		x = 2
+		y = 1
+		relative_position_id = monarchism_focus
 		cost = 10
 
 		available_if_capitulated = yes
@@ -2408,13 +2482,32 @@ focus_tree = {
 	}
 	
 	focus = {
-		id = generic_educated_priesthood
-		icon = GFX_z_goal_monarchism_12
-		prerequisite = { focus = holy_trone }
+		id = royal_assent
+		icon = GFX_z_goal_generic_royal_assent
 		prerequisite = { focus = generic_power_monarch }
-		x = 1
+		x = 0
 		y = 1
-		relative_position_id = holy_trone
+		relative_position_id = generic_power_monarch
+		cost = 10
+
+		available_if_capitulated = yes
+
+		ai_will_do = {
+			factor = 5
+		}
+
+		completion_reward = {
+			add_ideas = royal_assent
+		}
+	}
+	
+	focus = {
+		id = generic_educated_priesthood
+		icon = GFX_z_goal_generic_priesthood
+		prerequisite = { focus = royal_assent }
+		x = 0
+		y = 1
+		relative_position_id = royal_assent
 		cost = 10
 
 		available_if_capitulated = yes
@@ -2431,11 +2524,15 @@ focus_tree = {
 	focus = {
 		id = generic_imperial_agro
 		icon = GFX_z_goal_agrarian_reform
-		prerequisite = { focus = generic_educated_priesthood }
+		prerequisite = {
+			focus = patriotic_organizations
+			focus = influential_landowners
+			focus = generic_educated_priesthood
+		}
 		mutually_exclusive = { focus = generic_imperial_factory }
 		x = -1
 		y = 1
-		relative_position_id = generic_educated_priesthood
+		relative_position_id = influential_landowners
 		cost = 10
 
 		available_if_capitulated = yes
@@ -2451,12 +2548,16 @@ focus_tree = {
 	
 	focus = {
 		id = generic_imperial_factory
-		icon = GFX_z_goal_monarchists_factories
-		prerequisite = { focus = generic_educated_priesthood }
+		icon = GFX_z_goal_generic_king_factory
+		prerequisite = {
+			focus = patriotic_organizations
+			focus = influential_landowners
+			focus = generic_educated_priesthood
+		}
 		mutually_exclusive = { focus = generic_imperial_agro }
 		x = 1
 		y = 1
-		relative_position_id = generic_educated_priesthood
+		relative_position_id = influential_landowners
 		cost = 10
 
 		available_if_capitulated = yes
@@ -2469,7 +2570,7 @@ focus_tree = {
 			add_ideas = generic_imperial_factory
 		}
 	}
-	
+
 	focus = {
 		id = imperial_ambition
 		icon = GFX_z_goal_authority
