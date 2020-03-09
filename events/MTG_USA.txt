@@ -678,7 +678,7 @@ country_event = {
 				every_other_country = {
 					limit = {
 						has_government = democratic
-						not = {
+						NOT = {
 							OR = {
 								has_completed_focus = ENG_organize_the_blackshirts
 								has_completed_focus = FRA_cooperation_with_right
@@ -689,11 +689,16 @@ country_event = {
 					add_ai_strategy = {
 						type = alliance 
 						id = CSA
-						value =-200
+						value = -400
 					}
 					if = {
 						limit = {
-							USA = { not = { has_government = communism } }
+							USA = {
+								NOT = {
+									has_government = communism
+									has_government = trozkism
+								}
+							}
 						}
 						add_ai_strategy = {
 							type = support
@@ -702,21 +707,44 @@ country_event = {
 						}
 					}
 				}
-				every_other_country = {
-					limit = {
-						has_government = communism
-						is_major = yes
-						has_war = no
+				if = {
+					limit = { USA = { has_government = trozkism } }
+					every_other_country = {
+						limit = {
+							has_government = trozkism
+							is_major = yes
+							has_war = no
+						}
+						add_ai_strategy = {
+							type = support
+							id = USA
+							value = 400
+						}
+						add_ai_strategy = {
+							type = send_volunteers_desire
+							id = USA
+							value = 400
+						}
 					}
-					add_ai_strategy = {
-						type = support
-						id = USA
-						value = 400
-					}
-					add_ai_strategy = {
-						type = send_volunteers_desire
-						id = USA
-						value = 400
+				}
+				else_if = {
+					limit = { USA = { has_government = communism } }
+					every_other_country = {
+						limit = {
+							has_government = communism
+							is_major = yes
+							has_war = no
+						}
+						add_ai_strategy = {
+							type = support
+							id = USA
+							value = 400
+						}
+						add_ai_strategy = {
+							type = send_volunteers_desire
+							id = USA
+							value = 400
+						}
 					}
 				}
 			}
@@ -876,9 +904,12 @@ country_event = {
 	hidden = yes
 	trigger = {
 		original_tag = USA
-		communism > 0.3
+		OR = {
+			communism > 0.3
+			trozkism > 0.3
+		}
 		has_country_flag = mtg_usa_civil_war_fascists_1
-		not = { has_country_flag = mtg_usa_civil_war_fascists_2 }
+		NOT = { has_country_flag = mtg_usa_civil_war_fascists_2 }
 	}
 	mean_time_to_happen = { days = 20 }
 	fire_only_once = yes
@@ -1788,7 +1819,10 @@ country_event = {
 			}
 			every_other_country = {
 				limit = {
-					has_government = communism
+					OR = {
+						has_government = communism
+						has_government = trozkism
+					}
 				}
 				add_ai_strategy = {
 					type = support
