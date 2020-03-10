@@ -18,7 +18,7 @@
 #example_strategy = {
 #
 #	enable = {
-#		original_tag = FRA
+#		tag = FRA
 #	}
 #
 #	ai_strategy = {
@@ -166,7 +166,7 @@ default_unit_production = {
 	ai_strategy = {
 		type = role_ratio
 		id = armor
-		value = 2
+		value = 0
 	}
 
 	ai_strategy = {
@@ -177,14 +177,20 @@ default_unit_production = {
 
 	ai_strategy = {
 		type = role_ratio
+		id = bicycle
+		value = 0
+	}
+
+	ai_strategy = {
+		type = role_ratio
 		id = garrison
-		value = 5
+		value = 0
 	}
 
 	ai_strategy = {
 		type = role_ratio
 		id = militia
-		value = 5
+		value = 10
 	}
 
 	ai_strategy = {
@@ -221,39 +227,13 @@ default_unit_production = {
 	ai_strategy = {
 		type = unit_ratio
 		id = strategic_bomber
-		value = 5
+		value = 0
 	}
 
 	ai_strategy = {
 		type = unit_ratio
 		id = naval_bomber
 		value = 5
-	}
-
-
-	# Naval unit factors
-	ai_strategy = {
-		type = unit_ratio
-		id = capital_ship
-		value = 20
-	}
-
-	ai_strategy = {
-		type = unit_ratio
-		id = submarine
-		value = 10
-	}
-
-	ai_strategy = {
-		type = unit_ratio
-		id = screen_ship
-		value = 40
-	}
-
-	ai_strategy = {
-		type = unit_ratio
-		id = convoy
-		value = 15
 	}
 
 	ai_strategy = {
@@ -264,6 +244,28 @@ default_unit_production = {
 
 	ai_strategy = {
 		type = equipment_production_factor
+		id = infantry
+		value = 40
+	}
+
+	ai_strategy = {
+		type = equipment_production_factor
+		id = artillery
+		value = 25
+	}
+}
+
+FRA_infantry_role = {
+	enable = {
+		OR = {
+			tag = FRA
+			tag = FRC
+			tag = FRF
+		}
+	}
+	
+	ai_strategy = {
+		type = role_ratio
 		id = infantry
 		value = 40
 	}
@@ -311,13 +313,13 @@ we_need_civ_factories_2 = {
 we_need_civ_factories_3 = {
 	enable = {
 		NOT = {
-			original_tag = FRA
-			original_tag = FRC
-			original_tag = FRF
-			original_tag = GER
-			original_tag = SOV
-			original_tag = MEX
-			original_tag = KMX
+			tag = FRA
+			tag = FRC
+			tag = FRF
+			tag = GER
+			tag = SOV
+			tag = MEX
+			tag = KMX
 			has_country_flag = hbbrg_flag
 		}
 		date > 1938.1.1
@@ -333,23 +335,42 @@ we_need_civ_factories_3 = {
 	}
 }
 
+we_dont_need_dockyards = {
+	enable = {
+		OR = {
+			tag = FRA
+			tag = FRC
+			tag = FRF
+			has_country_flag = hbbrg_flag
+		}
+		num_of_military_factories < 30
+	}
+
+	abort_when_not_enabled = yes
+
+	ai_strategy = {
+		type = dockyard_to_military_factory_ratio
+		value = -1000
+	}
+}
+
 we_need_dockyards_1 = {
 	enable = {
 		OR = {
-			original_tag = ENG
-			original_tag = GER
-			original_tag = JAP
-			original_tag = ITA
-			original_tag = SOV
+			tag = ENG
+			tag = GER
+			tag = JAP
+			tag = ITA
+			tag = SOV
 			has_country_flag = hbbrg_flag
 		}
 		num_of_military_factories > 9
 		surrender_progress < 0.05
 		set_temp_variable = { mil_fact = num_of_naval_factories }
-		multiply_temp_variable = { mil_fact = 0.75 }
+		divide_temp_variable = { mil_fact = num_of_military_factories }
 		check_variable = {
 			var = mil_fact
-			value = num_of_military_factories
+			value = 0.75
 			compare = less_than
 		}
 	}
@@ -365,11 +386,11 @@ we_need_dockyards_1 = {
 we_need_dockyards_2 = {
 	enable = {
 		NOT = {
-			original_tag = ENG
-			original_tag = GER
-			original_tag = JAP
-			original_tag = ITA
-			original_tag = SOV
+			tag = ENG
+			tag = GER
+			tag = JAP
+			tag = ITA
+			tag = SOV
 			has_country_flag = hbbrg_flag
 		}
 		is_major = yes
@@ -397,12 +418,12 @@ we_need_dockyards_2 = {
 		}
 		num_of_military_factories > 9
 		surrender_progress < 0.05
-		set_temp_variable = { mil_fact = num_of_military_factories }
-		multiply_temp_variable = { mil_fact = 0.75 }
+		set_temp_variable = { mil_fact = num_of_naval_factories }
+		divide_temp_variable = { mil_fact = num_of_military_factories }
 		check_variable = {
 			var = mil_fact
-			value = num_of_naval_factories
-			compare = greater_than
+			value = 0.50
+			compare = less_than
 		}
 	}
 
@@ -417,11 +438,11 @@ we_need_dockyards_2 = {
 we_need_dockyards_3 = {
 	enable = {
 		NOT = {
-			original_tag = ENG
-			original_tag = GER
-			original_tag = JAP
-			original_tag = ITA
-			original_tag = SOV
+			tag = ENG
+			tag = GER
+			tag = JAP
+			tag = ITA
+			tag = SOV
 			has_country_flag = hbbrg_flag
 		}
 		is_major = yes
@@ -449,12 +470,12 @@ we_need_dockyards_3 = {
 		}
 		num_of_military_factories > 9
 		surrender_progress < 0.05
-		set_temp_variable = { mil_fact = num_of_military_factories }
-		multiply_temp_variable = { mil_fact = 0.10 }
+		set_temp_variable = { mil_fact = num_of_naval_factories }
+		divide_temp_variable = { mil_fact = num_of_military_factories }
 		check_variable = {
 			var = mil_fact
-			value = num_of_naval_factories
-			compare = greater_than
+			value = 0.10
+			compare = less_than
 		}
 	}
 
@@ -470,16 +491,16 @@ we_need_fuel_1 = {
 		date > 1938.1.1
 		OR = {
 			is_major = yes
-			original_tag = FRA
-			original_tag = FRC
-			original_tag = FRF
-			original_tag = GER
-			original_tag = SOV
-			original_tag = MEX
-			original_tag = KMX
-			original_tag = USA
-			original_tag = JAP
-			original_tag = ITA
+			tag = FRA
+			tag = FRC
+			tag = FRF
+			tag = GER
+			tag = SOV
+			tag = MEX
+			tag = KMX
+			tag = USA
+			tag = JAP
+			tag = ITA
 			has_country_flag = hbbrg_flag
 		}
 		fuel_silo < 3
@@ -645,53 +666,49 @@ less_garrison_production = {
 default_marine_production = {
 	enable = {
 		has_tech = marines
-		AND = {
+		OR = {
 			is_major = yes
 			OR = {
 				num_of_factories > 49
-				original_tag = GER
-				original_tag = FRA
-				original_tag = FRC
-				original_tag = FRF
-				original_tag = ENG
-				original_tag = RUS
-				original_tag = SOV
-				original_tag = JAP
-				original_tag = USA
-				original_tag = MEX
-				original_tag = KMX
-				original_tag = TUR
-				original_tag = ARA
-				original_tag = SPR
-				original_tag = SPA
+				tag = GER
+				tag = FRA
+				tag = FRC
+				tag = FRF
+				tag = ENG
+				tag = RUS
+				tag = SOV
+				tag = JAP
+				tag = USA
+				tag = MEX
+				tag = KMX
+				tag = TUR
+				tag = ARA
+				tag = SPR
+				tag = SPA
 				has_country_flag = hbbrg_flag
 			}
 		}
 	}
 	abort = {
 		NOT = {
-			AND = {
-				is_major = yes
-				OR = {
-					num_of_factories > 49
-					original_tag = GER
-					original_tag = FRA
-					original_tag = FRC
-					original_tag = FRF
-					original_tag = ENG
-					original_tag = RUS
-					original_tag = SOV
-					original_tag = JAP
-					original_tag = USA
-					original_tag = MEX
-					original_tag = KMX
-					original_tag = TUR
-					original_tag = ARA
-					original_tag = SPR
-					original_tag = SPA
-					has_country_flag = hbbrg_flag
-				}
-			}
+			is_major = yes
+			num_of_factories > 49
+			tag = GER
+			tag = FRA
+			tag = FRC
+			tag = FRF
+			tag = ENG
+			tag = RUS
+			tag = SOV
+			tag = JAP
+			tag = USA
+			tag = MEX
+			tag = KMX
+			tag = TUR
+			tag = ARA
+			tag = SPR
+			tag = SPA
+			has_country_flag = hbbrg_flag
 		}
 	}
 
@@ -711,16 +728,16 @@ extra_marine_production = {
 	enable = {
 		has_tech = marines
 		OR = {
-			original_tag = CAN
-			original_tag = USA
-			original_tag = ENG
-			original_tag = JAP
-			original_tag = MEX
-			original_tag = KMX
-			original_tag = TUR
-			original_tag = ARA
-			original_tag = SPR
-			original_tag = SPA
+			tag = CAN
+			tag = USA
+			tag = ENG
+			tag = JAP
+			tag = MEX
+			tag = KMX
+			tag = TUR
+			tag = ARA
+			tag = SPR
+			tag = SPA
 			has_country_flag = hbbrg_flag
 			AND = {
 				has_war = yes
@@ -735,16 +752,16 @@ extra_marine_production = {
 	}
 	abort = {
 		NOT = {
-			original_tag = CAN
-			original_tag = USA
-			original_tag = ENG
-			original_tag = JAP
-			original_tag = MEX
-			original_tag = KMX
-			original_tag = TUR
-			original_tag = ARA
-			original_tag = SPR
-			original_tag = SPA
+			tag = CAN
+			tag = USA
+			tag = ENG
+			tag = JAP
+			tag = MEX
+			tag = KMX
+			tag = TUR
+			tag = ARA
+			tag = SPR
+			tag = SPA
 			has_country_flag = hbbrg_flag
 			AND = {
 				has_war = yes
@@ -794,20 +811,20 @@ more_mountaineer_focused_nation = {
 	enable = {
 		has_tech = tech_mountaineers
 		OR = {
-			original_tag = SWI
-			original_tag = FIN
-			original_tag = NOR
-			original_tag = TIB
-			original_tag = NEP
-			original_tag = MON
-			original_tag = CHL
-			original_tag = MEX
-			original_tag = KMX
-			original_tag = TUR
-			original_tag = PER
-			original_tag = CHI
-			original_tag = PRC
-			original_tag = RAJ
+			tag = SWI
+			tag = FIN
+			tag = NOR
+			tag = TIB
+			tag = NEP
+			tag = MON
+			tag = CHL
+			tag = MEX
+			tag = KMX
+			tag = TUR
+			tag = PER
+			tag = CHI
+			tag = PRC
+			tag = RAJ
 			has_country_flag = hbbrg_flag
 		}
 	}
@@ -876,13 +893,13 @@ make_less_cavalry_and_militia = {
 more_cavalry_focused_nation = {
 	enable = {
 		OR = {
-			original_tag = MON
-			original_tag = TUR
-			original_tag = SAU
-			original_tag = PER
-			original_tag = RAJ
+			tag = MON
+			tag = TUR
+			tag = SAU
+			tag = PER
+			tag = RAJ
 			AND = { # Mobile Warfare Egypt has horses
-				original_tag = EGY
+				tag = EGY
 				has_tech = mobile_warfare
 			}
 		}
@@ -914,11 +931,11 @@ default_mobile_production = {
 		has_tech = motorised_infantry
 		num_of_military_factories > 10
 		NOT = {
-			original_tag = MON
-			original_tag = TUR
-			original_tag = SAU
-			original_tag = PER
-			original_tag = RAJ
+			tag = MON
+			tag = TUR
+			tag = SAU
+			tag = PER
+			tag = RAJ
 		}
 	}
 	abort = {
@@ -948,11 +965,11 @@ late_mobile_production = {
 		}
 		OR = {
 			num_of_military_factories < 11
-			original_tag = MON
-			original_tag = TUR
-			original_tag = SAU
-			original_tag = PER
-			original_tag = RAJ
+			tag = MON
+			tag = TUR
+			tag = SAU
+			tag = PER
+			tag = RAJ
 		}
 	}
 	abort = {
@@ -968,6 +985,51 @@ late_mobile_production = {
 		type = role_ratio
 		id = mobile
 		value = 10
+	}
+}
+
+limit_mobile_production = {
+	enable = {
+		has_tech = motorised_infantry
+		num_of_military_factories > 10
+		OR = {
+			num_of_military_factories < 30
+			oil < 20
+		}
+	}
+
+	abort_when_not_enabled = yes
+
+	ai_strategy = {
+		type = role_ratio
+		id = mobile
+		value = -6
+	}
+	ai_strategy = {
+		type = role_ratio
+		id = infantry
+		value = 6
+	}
+}
+
+more_mobile_production = {
+	enable = {
+		has_tech = motorised_infantry
+		num_of_military_factories > 30
+		oil > 30
+	}
+
+	abort_when_not_enabled = yes
+
+	ai_strategy = {
+		type = role_ratio
+		id = mobile
+		value = 6
+	}
+	ai_strategy = {
+		type = role_ratio
+		id = infantry
+		value = -6
 	}
 }
 
@@ -992,28 +1054,6 @@ default_armored_production = {
 	}
 }
 
-default_heavy_armor_production = {
-	enable = {
-		has_tech = basic_light_tank
-		has_tech = basic_heavy_tank
-		num_of_military_factories > 24
-	}
-	abort = {
-		num_of_military_factories < 25
-	}
-
-	ai_strategy = {
-		type = role_ratio
-		id = armor
-		value = -2
-	}
-	ai_strategy = {
-		type = role_ratio
-		id = heavy_armor
-		value = 2
-	}
-}
-
 higher_armored_production = {
 	enable = {
 		has_tech = basic_light_tank
@@ -1035,44 +1075,22 @@ higher_armored_production = {
 	}
 }
 
-higher_heavy_armor_production = {
-	enable = {
-		has_tech = basic_light_tank
-		has_tech = basic_heavy_tank
-		num_of_military_factories > 35
-	}
-	abort = {
-		num_of_military_factories < 36
-	}
-
-	ai_strategy = {
-		type = role_ratio
-		id = armor
-		value = -2
-	}
-	ai_strategy = {
-		type = role_ratio
-		id = heavy_armor
-		value = 2
-	}
-}
-
 more_armor_focused_nation = {
 	enable = {
 		num_of_military_factories > 20
 		OR = {
-			original_tag = GER
-			original_tag = SOV
-			original_tag = FRA
-			original_tag = FRC
-			original_tag = FRF
-			original_tag = ENG
-			original_tag = USA
-			original_tag = KMX
-			original_tag = MEX
-			original_tag = SPR
-			original_tag = SPA
-			original_tag = ARA
+			tag = GER
+			tag = SOV
+			tag = FRA
+			tag = FRC
+			tag = FRF
+			tag = ENG
+			tag = USA
+			tag = KMX
+			tag = MEX
+			tag = SPR
+			tag = SPA
+			tag = ARA
 			has_country_flag = hbbrg_flag
 		}
 	}
@@ -1083,17 +1101,12 @@ more_armor_focused_nation = {
 	ai_strategy = {
 		type = role_ratio
 		id = infantry
-		value = -7
+		value = -10
 	}
 	ai_strategy = {
 		type = role_ratio
 		id = armor
-		value = 5
-	}
-	ai_strategy = {
-		type = role_ratio
-		id = heavy_armor
-		value = 2
+		value = 10
 	}
 	ai_strategy = {
 		type = template_prio
@@ -1102,13 +1115,8 @@ more_armor_focused_nation = {
 	}
 	ai_strategy = {
 		type = template_prio
-		id = heavy_armor
-		value = 100
-	}
-	ai_strategy = {
-		type = template_prio
 		id = medium_armor
-		value = 50
+		value = 100
 	}
 }
 
@@ -1314,97 +1322,6 @@ default_antitank_production = {
 	}
 }
 
-slightly_naval_focused_nation = {
-	enable = {
-		OR = {
-			original_tag = JAP
-			original_tag = USA
-			original_tag = ENG
-			original_tag = FRA
-			original_tag = FRC
-			original_tag = FRF
-			original_tag = ITA
-			original_tag = GER
-			original_tag = CAN
-			original_tag = HUN
-			original_tag = TUR
-			original_tag = MEX
-			original_tag = KMX
-			has_country_flag = hbbrg_flag
-		}
-	}
-
-	ai_strategy = {
-		type = unit_ratio
-		id = capital_ship
-		value = 1
-	}
-
-	ai_strategy = {
-		type = unit_ratio
-		id = submarine
-		value = 1
-	}
-
-	ai_strategy = {
-		type = unit_ratio
-		id = screen_ship
-		value = 1
-	}
-
-	ai_strategy = {
-		type = unit_ratio
-		id = convoy
-		value = 1
-	}
-}
-
-more_naval_focused_nation = {
-	enable = {
-		OR = {
-			original_tag = JAP
-			original_tag = USA
-			original_tag = ENG
-			original_tag = FRA
-			original_tag = FRC
-			original_tag = FRF
-			original_tag = ITA
-			original_tag = GER
-			original_tag = CAN
-			original_tag = HUN
-			original_tag = TUR
-			original_tag = MEX
-			original_tag = KMX
-			has_country_flag = hbbrg_flag
-		}
-		date > "1941.1.1" #Delaying it by a couple of years
-	}
-
-	ai_strategy = {
-		type = unit_ratio
-		id = capital_ship
-		value = 2		#1 to 2
-	}
-
-	ai_strategy = {
-		type = unit_ratio
-		id = submarine
-		value = 1
-	}
-
-	ai_strategy = {
-		type = unit_ratio
-		id = screen_ship
-		value = 1
-	}
-
-	ai_strategy = {
-		type = unit_ratio
-		id = convoy
-		value = 1
-	}
-}
-
 default_stockpile_management = {
 	enable = {
 		num_divisions > 150
@@ -1487,45 +1404,11 @@ excess_motorized_production_2 = {
 	ai_strategy = { type = equipment_production_factor id = fighter value = 15 }
 }
 
-dont_build_capitals_if_on_treaty = {
-	enable = {
-		has_naval_treaty_trigger = yes
-		not = {
-			OR = {
-				original_tag = JAP
-				original_tag = ITA
-			}
-		}
-	}
-
-	abort = {
-		not = { has_naval_treaty_trigger = yes }
-	}
-
-	ai_strategy = {
-		type = unit_ratio
-		id = capital_ship
-		value = -2		 #1 to 2
-	}
-	ai_strategy = {
-		type = role_ratio
-		id = naval_capital_bb
-		value = -100
-	}
-
-	ai_strategy = {
-		type = role_ratio
-		id = naval_capital_bc
-		value = -100
-	}
-}
-
 DEFAULT_template_design = {
 	enable = {
-		NOT = { original_tag = GER original_tag = ENG original_tag = SOV original_tag = ITA original_tag = JAP original_tag = USA original_tag = POL }
-		date < 1940.1.1				
+		date < 1940.1.1
 	}
-	abort = { 
+	abort = {
 		date > 1940.1.1
 	}
 
@@ -1550,13 +1433,7 @@ DEFAULT_template_design = {
 	ai_strategy = {
 		type = template_prio
 		id = medium_armor
-		value = -10
-	}
-
-	ai_strategy = {
-		type = template_prio
-		id = heavy_armor
-		value = -50
+		value = 10
 	}
 
 	ai_strategy = {
@@ -1573,12 +1450,6 @@ DEFAULT_template_design = {
 
 	ai_strategy = {
 		type = template_prio
-		id = garrison
-		value = 10
-	}
-
-	ai_strategy = {
-		type = template_prio
 		id = infantry
 		value = 60
 	}
@@ -1586,7 +1457,6 @@ DEFAULT_template_design = {
 
 LATE_template_design = {
 	enable = {
-		NOT = { original_tag = GER original_tag = ENG original_tag = SOV original_tag = ITA original_tag = JAP original_tag = USA original_tag = POL }
 		date > 1940.1.1
 	}
 	abort = {
@@ -1621,12 +1491,6 @@ LATE_template_design = {
 		type = template_prio
 		id = modern_armor
 		value = 50
-	}
-
-	ai_strategy = {
-		type = template_prio
-		id = heavy_armor
-		value = 10
 	}
 
 	ai_strategy = {
@@ -1732,11 +1596,11 @@ naval_bombers_strategy = {
 we_need_synth_oil_1 = {
 	enable = {
 		OR = {
-			original_tag = GER
-			original_tag = FRA
-			original_tag = FRC
-			original_tag = FRF
-			original_tag = ITA
+			tag = GER
+			tag = FRA
+			tag = FRC
+			tag = FRF
+			tag = ITA
 		}
 		has_tech = synth_oil_experiments
 		synthetic_refinery < 3
@@ -1753,8 +1617,8 @@ we_need_synth_oil_1 = {
 we_need_synth_oil_2 = {
 	enable = {
 		OR = {
-			original_tag = ENG
-			original_tag = USA
+			tag = ENG
+			tag = USA
 		}
 		has_tech = synth_oil_experiments
 		synthetic_refinery < 2
@@ -1768,112 +1632,9 @@ we_need_synth_oil_2 = {
 	}
 }
 
-convoy_production_emergency = {
-	enable = {
-		num_of_naval_factories > 0
-		has_equipment = { convoy < 20 }
-	}
-	abort = {
-		has_equipment = { convoy > 40 }
-	}
-
-	ai_strategy = { type = equipment_production_factor id = carrier value = -50 }
-	ai_strategy = { type = equipment_production_factor id = capital_ship value = -50 }
-	ai_strategy = { type = equipment_production_factor id = screen_ship value = -50 }
-	ai_strategy = { type = equipment_production_factor id = convoy value = 200 }
-}
-
-extra_convoy_production = {
-	enable = {
-		has_war = yes
-		has_equipment = { convoy < 60 }
-		OR = {
-			original_tag = CAN
-			original_tag = GER
-			original_tag = ENG
-			original_tag = JAP
-			original_tag = FRA
-			original_tag = FRC
-			original_tag = FRF
-			original_tag = MEX
-			original_tag = KMX
-			original_tag = TUR
-			has_country_flag = hbbrg_flag
-			AND = {
-				num_of_naval_factories > 10
-				NOT = {
-					any_enemy_country = {
-						is_neighbor_of = ROOT
-					}
-				}
-			}
-		}
-	}
-	abort = {
-		OR = {
-			has_war = no
-			has_equipment = { convoy > 80 }
-			NOT = {
-				original_tag = CAN
-				original_tag = GER
-				original_tag = ENG
-				original_tag = JAP
-				original_tag = FRA
-				original_tag = FRC
-				original_tag = FRF
-				original_tag = MEX
-				original_tag = KMX
-				original_tag = TUR
-				has_country_flag = hbbrg_flag
-				AND = {
-					num_of_naval_factories > 10
-					NOT = {
-						any_enemy_country = {
-							is_neighbor_of = ROOT
-						}
-					}
-				}
-			}
-		}
-	}
-
-	ai_strategy = {
-		type = equipment_production_factor
-		id = convoy
-		value = 50
-	}
-}
-
-convoy_factory_assignment = {
-	enable = { num_of_naval_factories > 1 }
-	abort_when_not_enabled = yes
-
-	ai_strategy = {
-		type = equipment_production_min_factories
-		id = convoy
-		value = 5
-	}
-}
-
-highered_armored_production = {
-	enable = {
-		NOT = { original_tag = GER }
-		num_of_military_factories > 69
-	}
-	abort = {
-		num_of_military_factories < 70
-	}
-
-	ai_strategy = {
-		type = role_ratio
-		id = armor
-		value = 5
-	}
-}
-
 default_area_priority = {
 	enable = {
-		NOT = { original_tag = GER } NOT = { original_tag = FRA } NOT = { original_tag = FRC } NOT = { original_tag = FRF }
+		NOT = { tag = GER tag = FRA tag = FRC tag = FRF }
 	}
 
 	ai_strategy = {
@@ -2017,8 +1778,8 @@ production_line_upgrades = {
 NW_armor_production_SOV_GER = {
 	enable = {
 		OR = {
-			original_tag = SOV
-			original_tag = GER
+			tag = SOV
+			tag = GER
 		}
 		has_army_manpower = { type = infantry size > 3000000 }
 	}
@@ -2052,9 +1813,9 @@ NW_armor_production_SOV_GER = {
 NW_armor_production_FRA = {
 	enable = {
 		OR = {
-			original_tag = FRA
-			original_tag = FRC
-			original_tag = FRF
+			tag = FRA
+			tag = FRC
+			tag = FRF
 		}
 		has_army_manpower = { type = infantry size > 2600000 }
 	}
@@ -2086,7 +1847,7 @@ NW_armor_production_FRA = {
 
 NW_armor_production_ENG = {
 	enable = {
-		original_tag = ENG
+		tag = ENG
 		has_army_manpower = { type = infantry size > 1500000 }
 	}
 	abort = {
@@ -2118,7 +1879,7 @@ NW_armor_production_ENG = {
 NW_armor_production_USA = {
 	enable = {
 		num_of_military_factories > 85
-		original_tag = USA
+		tag = USA
 		has_army_manpower = { type = infantry size > 1500000 }
 	}
 	abort = {
@@ -2360,13 +2121,13 @@ minors_dont_spy = {
 default_garrison_production = {
 	enable = {
 		NOT = { 
-			original_tag = GER 
-			original_tag = SOV
-			original_tag = USA
-			original_tag = CHI
-			original_tag = FRA
-			original_tag = JAP
-			original_tag = ENG
+			tag = GER 
+			tag = SOV
+			tag = USA
+			tag = CHI
+			tag = FRA
+			tag = JAP
+			tag = ENG
 		}
 		ai_wants_divisions >  12 #Massively decreasing the amount of garrison and suppression the AI wants
 		is_major = yes
