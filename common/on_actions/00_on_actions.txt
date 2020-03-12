@@ -216,7 +216,7 @@ on_actions = {
 						NOT = { has_dlc = "Together for Victory" }
 					}
 				}
-				drop_cosmetic_tag = yes
+				abandon_colony_tag = yes
 			}
 			FROM = {
 				add_opinion_modifier = {
@@ -387,6 +387,69 @@ on_actions = {
 	#FROM is war target
 	on_declare_war = {
 		effect = {
+			#make sure Germany doesn't force ideology on France for the achievement
+			if = {
+				limit = {
+					FROM = { original_tag = FRA }
+					tag = GER
+				}
+				set_country_flag = invalid_for_danzig_achievement
+			}
+			#make sure warlords don't use the same guy
+			if = {
+				limit = {
+					OR = {
+						original_tag = YUN
+						original_tag = SIK
+						original_tag = GXC
+						original_tag = SHX
+						original_tag = XSM
+						original_tag = SIK
+						original_tag = SIH
+						original_tag = XIK
+						original_tag = SHA
+						original_tag = TNG
+						original_tag = NEA
+					}
+				}
+				if = {
+					limit = {
+						ROOT = {
+							original_tag = FROM
+							NOT = { has_country_flag = warlord_replaced }
+						}
+					}
+					ROOT = {
+						retire_country_leader = yes
+						set_country_flag = warlord_replaced
+					}
+					FROM = {
+						warlord_rule_all_parties = yes
+					}
+				}
+			}
+			#make sure Dominions lose the dominion tag
+			if = {
+				limit = {
+					OR = {
+						original_tag = CAN
+						original_tag = RAJ
+						original_tag = MAL
+						original_tag = INS
+					}
+				}
+				if = {
+					limit = {
+						ROOT = {
+							original_tag = FROM
+						}
+					}
+					abandon_colony_tag = yes
+					FROM = {
+						abandon_colony_tag = yes
+					}
+				}
+			}
 			if = {
 				limit = {
 					FROM = {
@@ -586,8 +649,12 @@ on_actions = {
 
 			if = {
 				limit = {
-					FROM = { tag = SPR }
-					tag = SPA
+					FROM = {
+						has_civil_war = yes
+						original_tag = SPR
+					}
+					has_civil_war = yes
+					original_tag = SPR
 
 				}
 				random_country = {
@@ -616,9 +683,38 @@ on_actions = {
 					NOT = { original_tag = GER }
 					NOT = { has_government = fascism }
 					NOT = { has_civil_war = yes }
+					NOT = {
+						AND = {
+							FROM = {
+								original_tag = SPR
+							}
+							original_tag = SPR
+						}
+					}
 				}
+				news_event = { id = country_capitulated.0 days = 0 }
 			}
-			news_event = { id = country_capitulated.0 days = 0 }
+			
+			if = {
+				limit = { tag = FRA }
+				set_global_flag = FRA_already_surrendered
+				set_variable = { global.FRA_capitulation_days = global.num_days }
+			}
+			if = {
+				limit = {
+					FROM = { tag = JAP }
+					ROOT = { tag = CHI }
+				}
+				JAP = { JAP_intervene_in_china_remove = yes }
+			}
+			
+			if = {
+				limit = { 
+					original_tag = POL
+					has_government = neutrality
+				}
+				retire_country_leader = yes
+			}
 			if = {
 				limit = {
 					original_tag = YUG
@@ -629,14 +725,18 @@ on_actions = {
 				limit = {
 					original_tag = DEN
 				}
-				if = {
-					limit = { DEN = { is_ai = yes } }
-					country_event = { id = wtt_denmark.1 days = 1 }
-					country_event = { id = wtt_denmark.2 days = 1 }
-					else = {
-						country_event = { id = wtt_denmark.3 }
-					}
+				country_event = { id = wtt_denmark.1 days = 1 }
+			}
+			if = {
+				limit = {
+					original_tag = FRA
+					has_government = democratic
+					NOT = { has_global_flag = achievement_france_surrender } #might as well use the achievement flag to check if france.10 fired
+					is_subject = no
+					is_in_faction_with = ENG
+					has_war_with = GER
 				}
+				country_event = france.10
 			}
 		}
 	}
@@ -782,6 +882,37 @@ on_actions = {
 	#ROOT is winner #FROM gets annexed - This will also fire on_annex
 	on_civil_war_end = {
 		effect = {
+			#End of SCW
+			if = {
+				limit = {
+					NOT = { has_dlc = "La Resistance" }
+					FROM = {
+						original_tag = SPR
+					}
+					ROOT = {
+						original_tag = SPR
+						has_government = fascism
+					}
+				}
+				if = {
+					limit = {
+						OR = {
+							is_historical_focus_on = no
+							#has_completed_focus = SPA_supremacy_of_the_communion
+						}
+					}
+					add_timed_idea = { idea = SPA_recovering_from_civil_war days = 1825 }
+				}
+				if = {
+					limit = {
+						is_historical_focus_on = yes
+						#NOT = {
+						#	has_completed_focus = SPA_supremacy_of_the_communion
+						#}
+					}
+					add_ideas = SPA_recovering_from_civil_war #keep the spirit on historical mode, keeping them out of the war
+				}
+			}
 			#End of SCW
 			if = {
 				limit = {
@@ -2299,6 +2430,7 @@ on_actions = {
 						TAG = SAF
 					}
 					FROM = { original_tag = GER }
+					FROM = { has_war_with = ROOT }
 					FROM.FROM = { state = 16 }
 				}
 				news_event = news.134
@@ -2310,6 +2442,7 @@ on_actions = {
 						TAG = USA
 					}
 					FROM = { original_tag = GER }
+					FROM = { has_war_with = ROOT }
 					FROM.FROM = { state = 126 }
 				}
 				news_event = news.137
@@ -2322,6 +2455,7 @@ on_actions = {
 					}
 					NOT = { SOV = { has_war_with = POL } }
 					FROM = { original_tag = GER }
+					FROM = { has_war_with = ROOT }
 					FROM.FROM = { state = 10 }
 				}
 				news_event = news.139
@@ -2536,7 +2670,39 @@ on_actions = {
 		}
 	}
 	
-	# Scope is the country owner of the PotF, FROM is the country of the killer
-	on_pride_of_the_fleet_sunk = {
+	# root country that invades
+	# scope state that is invaded
+	# from scope state that the invasion started
+	# on_naval_invasion = {
+	# 	effect = {
+	# 	}
+	# }
+	
+	
+	# root country that paradrops
+	# scope state that is paradroped into
+	# from scope state that the paradrop started
+	on_paradrop = {
+	    effect = {
+		    set_country_flag = has_paradropped_flag
+		}
+	}
+	on_ruling_party_change = { 
+		effect = {
+			every_owned_state = {
+				limit = {
+					is_controlled_by = ROOT
+					NOT = {
+						is_core_of = ROOT
+					}
+				}
+
+				set_temp_variable = { comp_change = random }
+				multiply_temp_variable = { comp_change = -15 }
+				add_to_temp_variable = { comp_change = -10 }
+
+				add_compliance = comp_change
+			}
+		}
 	}
 }

@@ -51,6 +51,15 @@ on_actions = {
 					}
 					set_stability = 0.5
 					set_war_support = 0.5
+					set_research_slots = 4
+					
+					#Приколюхи, ага
+					#set_technology = {
+					#	atomic_research = 1
+					#	nuclear_reactor = 1
+					#	nukes = 1
+					#}
+					#add_nuclear_bombs = 100
 				}
 				TUR = {
 					remove_ideas = {
@@ -2815,17 +2824,6 @@ on_actions = {
 				set_variable = { opinion_with_clergy_var = 10 }
 				set_variable = { influence_of_clergy_var = 10 }
 			}
-			#Чек FRF добровольцев в Испании
-			if = {
-				limit = {
-					FRF = { NOT = { has_country_flag = FRF_demand_balearic_islands_flag } }
-					OR = {
-						SPA = { has_volunteers_amount_from = { tag = FRF count > 0 } }
-						SPR = { has_volunteers_amount_from = { tag = FRF count > 0 } }
-					}
-				}
-				FRF = { set_country_flag = FRF_demand_balearic_islands_flag }
-			}
 			#СБРОС ПРИРОСТА НАПРЯГИ
 			if = {
 				limit = { original_tag = BPL }
@@ -3090,6 +3088,38 @@ on_actions = {
 				}
 				drop_cosmetic_tag = yes
 			}
+		}
+	}
+	
+	# called when a country send volunteers to another
+	# ROOT is sender, FROM is receiver
+	on_send_volunteers = {
+		effect = {
+			#Чек FRF добровольцев в Испании
+			if = {
+				limit = {
+					SPR_scw_in_progress = yes
+					ROOT = {
+						tag = FRF
+						NOT = { has_country_flag = FRF_demand_balearic_islands_flag }
+					}
+					FROM = {
+						OR = {
+							tag = SPA
+							tag = SPR
+						}
+					}
+				}
+				set_country_flag = FRF_demand_balearic_islands_flag
+			}
+		}
+	}
+	
+	#FROM is the nuked state. 
+	on_nuke_drop = {
+		#аннигиляция войск
+		effect = {
+			every_country = { delete_unit = { state = FROM } }
 		}
 	}
 	
