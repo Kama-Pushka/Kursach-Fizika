@@ -778,7 +778,184 @@ HHNBRG_intervention_of_trade_unions_category = {
 			factor = 5
 		}
 	}
-	
 }
 
+HHNBRG_creation_primary_peoples_congress_category = {
 
+	HHNBRG_creation_primary_peoples_congress = {
+
+		icon = eng_trade_unions_support
+		
+		available = {
+		}
+
+		visible = {
+		}
+		
+		cost = 15
+		days_remove = 30
+		fire_only_once = yes
+		
+		remove_effect = {
+			set_country_flag = primary_peoples_congress_is_created
+			custom_effect_tooltip = HHNBRG_creation_primary_peoples_congress_tt
+		}
+		
+		ai_will_do = {
+			factor = 30
+		}
+	}
+}
+
+HHNBRG_national_peoples_congresses_category = {
+	
+	HHNBRG_expansion_power_congress = {
+
+		icon = generic_civil_support
+		
+		available = {
+			custom_trigger_tooltip = {
+				tooltip = HHNBRG_expansion_power_congress_trigger_tt		
+				set_temp_variable = { custom_cost = 10 }
+				subtract_from_temp_variable = { custom_cost = custom_cost_minus }
+				set_temp_variable = { cost_multiply = 5 }
+				set_temp_variable = { total_num_of_congresses_var = num_of_congresses_var }
+				add_to_temp_variable = { total_num_of_congresses_var = compensatory_value }
+				subtract_from_temp_variable = { total_num_of_congresses_var = num_of_congresses_no_check_var }
+				multiply_temp_variable = { cost_multiply = total_num_of_congresses_var }
+				add_to_temp_variable = { custom_cost = cost_multiply }
+				check_variable = { custom_cost > 39 }
+			}
+		}
+
+		visible = {
+		}
+		
+		custom_cost_trigger = {
+			set_temp_variable = { stability_cost = 0.05 }
+			set_temp_variable = { stability_total = stability }
+			subtract_from_temp_variable = { stability_total = modifier@stability_factor }
+			check_variable = { stability_total > stability_cost }
+			#for text
+			set_temp_variable = { text_stability = stability }
+			subtract_from_temp_variable = { text_stability = modifier@stability_factor }
+		}
+		custom_cost_text = stability_cost_tt
+		
+		days_remove = 10
+		
+		remove_effect = {
+			add_to_variable = { custom_cost_minus = 30 }
+			custom_effect_tooltip = HHNBRG_expansion_power_congress_effect_tt
+		}
+		
+		complete_effect = {
+			hidden_effect = {
+				add_stability = -0.05
+				hidden_effect = { country_event = { id = NWhohenberg.902 } }
+			}
+		}
+		
+		ai_will_do = {
+			factor = 10
+			modifier = {
+				factor = 0
+				has_stability < 0.1
+			}
+			modifier = {
+				factor = 0.5
+				has_stability < 0.2
+			}
+		}
+	}
+	
+	#### РЕШЕНИЯ НА СТЕЙТЫ ####
+	
+	HHNBRG_creation_peoples_congress = {
+		icon = eng_trade_unions_support
+		on_map_mode = map_only
+		state_target = yes
+		available = {
+			has_full_control_of_state = FROM
+		}
+		visible = {
+			FROM = {
+				NOT = { has_state_flag = has_peoples_congresses_flag }
+				is_owned_by = ROOT
+			}
+		}
+		target_trigger = {
+			FROM = {
+				NOT = { has_state_flag = has_peoples_congresses_flag }
+				is_owned_by = ROOT
+			}
+		}
+		target_array = owned_controlled_states
+		custom_cost_trigger = {
+			HHNBRG_custom_cost_trigger = yes
+		}
+		custom_cost_text = creation_peoples_congress_cost
+		days_remove = 30
+		
+		remove_effect = {
+			subtract_from_variable = { compensatory_value = 1 }
+			add_to_variable = { num_of_congresses_var = 1 }
+			custom_effect_tooltip = HHNBRG_creation_peoples_congress_tt
+			FROM = {
+				set_state_flag = has_peoples_congresses_flag
+				add_core_of = ROOT
+			}
+			hidden_effect = { country_event = { id = NWhohenberg.899 } }
+		}
+		
+		complete_effect = {
+			HHNBRG_creation_peoples_congress_effect = yes
+		}
+		
+		ai_will_do = {
+			factor = 1
+			modifier = {
+				add = 30
+				set_temp_variable = { congress_influence = num_of_congresses_var }
+				divide_temp_variable = { congress_influence = num_owned_states }
+				check_variable = { congress_influence < 0.250 }
+			}
+			modifier = {
+				add = 20
+				set_temp_variable = { congress_influence = num_of_congresses_var }
+				divide_temp_variable = { congress_influence = num_owned_states }
+				check_variable = { congress_influence > 0.249 }
+				check_variable = { congress_influence < 0.50 }
+			}
+			modifier = {
+				add = 15
+				set_temp_variable = { congress_influence = num_of_congresses_var }
+				divide_temp_variable = { congress_influence = num_owned_states }
+				check_variable = { congress_influence > 0.499 }
+				check_variable = { congress_influence < 0.750 }
+			}
+			modifier = {
+				add = 10
+				set_temp_variable = { congress_influence = num_of_congresses_var }
+				divide_temp_variable = { congress_influence = num_owned_states }
+				check_variable = { congress_influence > 0.749 }
+				check_variable = { congress_influence < 1 }
+			}
+			modifier = {
+				factor = 1
+				set_temp_variable = { congress_influence = num_of_congresses_var }
+				divide_temp_variable = { congress_influence = num_owned_states }
+				check_variable = { congress_influence > 0.999 }
+			}
+			modifier = { factor = 0.2 FROM = { distance_to = { value < 900 target = capital } } }
+			modifier = { factor = 0.3 FROM = { distance_to = { value < 800 target = capital } } }
+			modifier = { factor = 0.4 FROM = { distance_to = { value < 700 target = capital } } }
+			modifier = { factor = 0.5 FROM = { distance_to = { value < 600 target = capital } } }
+			modifier = { factor = 0.6 FROM = { distance_to = { value < 500 target = capital } } }
+			modifier = { factor = 0.7 FROM = { distance_to = { value < 400 target = capital } } }
+			modifier = { factor = 0.8 FROM = { distance_to = { value < 300 target = capital } } }
+			modifier = { factor = 0.9 FROM = { distance_to = { value < 200 target = capital } } }
+			modifier = { factor = 1 FROM = { distance_to = { value < 100 target = capital } } }
+		}
+	}
+}
