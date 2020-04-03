@@ -379,7 +379,6 @@ country_event = {
 				owns_state = 844
 				owns_state = 908
 				owns_state = 939
-				
 				owns_state = 997
 				owns_state = 1023
 				owns_state = 1029
@@ -400,7 +399,6 @@ country_event = {
 					controls_state = 844
 					controls_state = 908
 					controls_state = 939
-					
 					controls_state = 997
 					controls_state = 1023
 					controls_state = 1029
@@ -426,7 +424,6 @@ country_event = {
 						owns_state = 844
 						owns_state = 908
 						owns_state = 939
-						
 						owns_state = 997
 						owns_state = 1023
 						owns_state = 1029
@@ -516,7 +513,6 @@ country_event = {
 					state = 844
 					state = 908
 					state = 939
-					
 					state = 997
 					state = 1023
 					state = 1029
@@ -528,13 +524,11 @@ country_event = {
 		every_state = {
 			limit = {
 				owner = { has_war_with = SOV }
-				OR = {
-					controller = {
-						OR = {
-							tag = GER
-							is_subject_of = GER
-							is_in_faction_with = GER
-						}
+				controller = {
+					OR = {
+						tag = GER
+						is_subject_of = GER
+						is_in_faction_with = GER
 					}
 				}
 				OR = {
@@ -550,7 +544,6 @@ country_event = {
 					state = 844
 					state = 908
 					state = 939
-					
 					state = 997
 					state = 1023
 					state = 1029
@@ -558,6 +551,35 @@ country_event = {
 				}
 			}
 			SOV = { set_state_controller = PREV }
+		}
+		every_state = {
+			limit = {
+				owner = { has_war_with = GER }
+				controller = {
+					OR = {
+						tag = SOV
+						is_subject_of = SOV
+						is_in_faction_with = SOV
+					}
+				}
+				OR = {
+					state = 98
+					state = 10
+					state = 899
+					state = 92
+					state = 88
+					state = 988
+					state = 90
+					state = 937
+					state = 768
+					state = 72
+					state = 1073
+					state = 86
+					state = 85
+					state = 798
+				}
+			}
+			GER = { set_state_controller = PREV }
 		}
 		SOV = { country_event = germany.15 }
 	}
@@ -600,7 +622,6 @@ country_event = {
 			add_state_claim = 844
 			add_state_claim = 908			
 			add_state_claim = 939
-			
 			add_state_claim = 997
 			add_state_claim = 1023
 			add_state_claim = 1029
@@ -768,6 +789,7 @@ country_event = {
 		name = germany.22.a
 		GER = { 
 			transfer_state = 188
+			add_state_core = 188
 		}
 		hidden_effect = {
 			country_event = { days = 1 id = news.19 }
@@ -1790,9 +1812,17 @@ country_event = {
 				is_faction_leader = yes
 			}
 			modifier = {
-				factor = 0.05 #if you are in a faction, maybe fight
+				factor = 0.5 #if you are in a faction, maybe fight
 				is_faction_leader = no
 				is_in_faction = yes
+			}
+			modifier = {
+				factor = 0.05 #if you are in a faction with a major, probably fight
+				is_faction_leader = no
+				is_in_faction = yes
+				any_allied_country = {
+					is_major = yes
+				}
 			}
 			modifier = {
 				factor = 0
@@ -7366,13 +7396,11 @@ country_event = {
 	title = germany.1000.t
 	desc = germany.1000.desc
 	picture = GFX_report_event_german_reichstag_gathering
-	immediate = {log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event germany.1000"}
-	
+
 	hidden = yes
 
 	trigger = {
 		SOV = {
-			NOT = { OR = { is_subject_of = GER is_subject_of = ROM } }
 			has_government = communism
 			owns_state = 217 
 			owns_state = 195 
@@ -7390,36 +7418,41 @@ country_event = {
 		ai_chance = {
 			base = 100
 		}
-		trigger = {
-			has_government = communism
-		}
 		reset_province_name = 3529
 		reset_province_name = 3151
 		clr_global_flag = GER_cities_renamed
 		clr_global_flag = ROM_king_is_silly
-		
-		hidden_effect = { 
-			217 = { reset_state_name = yes }
-			195 = { reset_state_name = yes }
+	}
+}
+
+#remove MEFO bills
+country_event = {
+	id = germany.1001
+	title = germany.1001.t
+	desc = germany.1001.desc
+	picture = GFX_report_event_german_reichstag_gathering
+
+	hidden = yes
+
+	trigger = {
+		original_tag = GER
+		GER_has_mefo_bills = yes
+		any_other_country = {
+			has_war_with = GER
+			NOT = { original_tag = GER }
 		}
 	}
-	
-	option = { #a great idea!
-		name = germany.1000.a
+
+	mean_time_to_happen = { days = 2 }
+
+	option = { #remove MEFO
+		name = germany.1001.a
 		ai_chance = {
 			base = 100
 		}
-		trigger = {
-			NOT = { has_government = communism }
-		}
-		set_province_name = { id = 3529 name = CITY_3529_RUS}
-		set_province_name = { id = 3151 name = CITY_3151_RUS}
-		clr_global_flag = GER_cities_renamed
-		clr_global_flag = ROM_king_is_silly
-		
-		hidden_effect = { 
-			217 = { set_state_name = REGION_217_RUS }
-			195 = { set_state_name = REGION_195_RUS }
+		ROOT = {
+			GER_remove_mefo_bills = yes
+			set_country_flag = mefo_bills_removed_through_war
 		}
 	}
 }
