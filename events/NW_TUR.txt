@@ -24,18 +24,10 @@ country_event = {
 				is_historical_focus_on = yes
 			}
 		}
-		ROOT = {
-			add_opinion_modifier = {
-				target = FROM
-				modifier = diplomatic_affront
-			}
-			add_named_threat = { threat = 3 name = TUR_claims_hatay_threat1_tt }
-		}
+		add_named_threat = { threat = 3 name = TUR_claims_hatay_threat1_tt }
+		add_opinion_modifier = { target = FROM modifier = diplomatic_affront }
 		FROM = {
-			add_opinion_modifier = {
-				target = ROOT
-				modifier = diplomatic_affront
-			}
+			add_opinion_modifier = { target = ROOT modifier = diplomatic_affront }
 		}
 	}
 	#Предоставить автономию Хатаю
@@ -5664,5 +5656,671 @@ country_event = {
 	option = {
 		name = NW_new_turkey.4.a
 		add_stability = -0.05
+	}
+}
+
+#Турция претендует на Мосул \\ owner 676 и 962
+country_event = {
+	id = NW_new_turkey.5
+	title = NW_new_turkey.5.t
+	desc = NW_new_turkey.5.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_new_turkey.5" }
+	
+	option = {
+		name = NW_new_turkey.5.a
+		ai_chance = {
+			factor = 50
+			modifier = {
+				factor = 0
+				is_in_faction = yes
+				FROM = { is_in_faction = no }
+			}
+		}
+		FROM = { country_event = { id = NW_new_turkey.6 days = 1 } }
+		if = {
+			limit = {
+				country_exists = PER
+				NOT = {
+					original_tag = PER
+					has_war_with = PER
+				}
+			}
+			PER = { country_event = { id = NW_new_turkey.9 days = 1 } }
+		}
+	}
+	
+	option = {
+		name = NW_new_turkey.5.b
+		ai_chance = {
+			factor = 75
+			modifier = {
+				factor = 0
+				OR = {
+					threat > 0.30
+					FROM = { NOT = { has_government = neutrality } }
+				}
+				FROM = { alliance_strength_ratio > 1 }
+			}
+			modifier = {
+				factor = 0
+				is_in_faction = yes
+				FROM = { is_in_faction = no }
+			}
+		}
+		FROM = { country_event = { id = NW_new_turkey.10 days = 1 } }
+	}
+	
+	option = {
+		name = NW_new_turkey.5.c
+		ai_chance = {
+			factor = 50
+			modifier = {
+				factor = 0
+				OR = {
+					threat > 0.30
+					FROM = { NOT = { has_government = neutrality } }
+				}
+				FROM = { alliance_strength_ratio > 1 }
+			}
+		}
+		add_opinion_modifier = { target = FROM modifier = diplomatic_affront }
+		FROM = {
+			add_opinion_modifier = { target = ROOT modifier = diplomatic_affront }
+			add_ai_strategy = {
+				type = contain
+				id = ROOT
+				value = 200
+			}
+		}
+		add_ai_strategy = {
+			type = contain
+			id = FROM
+			value = 200
+		}
+	}
+}
+
+#From согласен на передачу Мосула \\ TUR
+country_event = {
+	id = NW_new_turkey.6
+	title = NW_new_turkey.6.t
+	desc = NW_new_turkey.6.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_new_turkey.6" }
+	
+	option = {
+		name = NW_new_turkey.6.a
+		every_state = {
+			limit = {
+				is_owned_by = FROM
+				OR = {
+					state = 676
+					state = 962
+				}
+			}
+			remove_core_of = FROM
+			ROOT = { transfer_state = PREV }
+		}
+		if = {
+			limit = {
+				FROM = {
+					original_tag = IRQ
+					has_focus_tree = nw_iraq_focus
+					NOT = { has_completed_focus = IRQ_nationalization_of_oil_fields }
+				}
+			}
+			country_event = { id = NW_new_turkey.7 days = 1 }
+		}
+	}
+}
+
+#Судьба британских компаний в Мосуле \\ TUR
+country_event = {
+	id = NW_new_turkey.7
+	title = NW_new_turkey.7.t
+	desc = NW_new_turkey.7.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_new_turkey.7" }
+	
+	option = {
+		name = NW_new_turkey.7.a
+		ai_chance = {
+			factor = 50
+			modifier = {
+				factor = 0
+				OR = {
+					NOT = {
+						has_government = democratic
+						has_government = neutrality
+						has_government = monarchy
+					}
+					AND = {
+						threat < 0.45
+						ENG = {
+							NOT = {
+								has_government = fascism
+								has_government = monarchy
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+	
+	option = {
+		name = NW_new_turkey.7.b
+		ai_chance = {
+			factor = 50
+		}
+		if = {
+			limit = {
+				OR = {
+					threat > 0.44
+					ENG = {
+						OR = {
+							has_government = fascism
+							has_government = monarchy
+						}
+					}
+				}
+			}
+			ENG = { country_event = { id = NW_new_turkey.8 days = 1 } }
+			custom_effect_tooltip = NW_new_turkey_7b_tt
+		}
+	}
+}
+
+#Турция национализирует мосульскую нефть \\ ENG
+country_event = {
+	id = NW_new_turkey.8
+	title = NW_new_turkey.8.t
+	desc = NW_new_turkey.8.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_new_turkey.8" }
+	
+	option = {
+		name = NW_new_turkey.8.a
+		ai_chance = {
+			factor = 50
+			modifier = {
+				factor = 0
+				has_civil_war = no
+				has_government = fascism
+			}
+		}
+	}
+	
+	option = {
+		name = NW_new_turkey.8.b
+		ai_chance = {
+			factor = 75
+		}
+		add_state_claim = 676
+		add_opinion_modifier = { target = FROM modifier = diplomatic_affront }
+		FROM = {
+			add_opinion_modifier = { target = ROOT modifier = diplomatic_affront }
+		}
+		custom_effect_tooltip = NW_new_turkey_8b_tt
+	}
+	
+	option = {
+		name = NW_new_turkey.8.c
+		trigger = {
+			OR = {
+				threat > 0.44
+				ENG = {
+					OR = {
+						has_government = fascism
+						has_government = monarchy
+					}
+				}
+			}
+		}
+		ai_chance = {
+			factor = 25
+			modifier = {
+				factor = 5
+				NOT = {
+					any_other_country = {
+						is_major = yes
+						has_war_with = ROOT
+					}
+				}
+			}
+			modifier = {
+				factor = 0
+				has_civil_war = yes
+			}
+		}
+		add_state_claim = 676
+		create_wargoal = {
+			type = take_state_focus
+			target = FROM
+			generator = { 676 }
+		}
+		
+	}
+}
+
+#Турция угрожает малым нациям \\ PER
+country_event = {
+	id = NW_new_turkey.9
+	title = NW_new_turkey.9.t
+	desc = NW_new_turkey.9.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_new_turkey.9" }
+	
+	option = {
+		name = NW_new_turkey.9.a
+		ai_chance = {
+			factor = 50
+		}
+	}
+	
+	option = {
+		name = NW_new_turkey.9.b
+		ai_chance = {
+			factor = 75
+			modifier = {
+				factor = 0
+				has_civil_war = yes
+			}
+		}
+		add_opinion_modifier = { target = TUR modifier = TUR_threatens_small_nations }
+		TUR = {
+			add_opinion_modifier = { target = ROOT modifier = TUR_threatens_small_nations }
+		}
+		add_opinion_modifier = { target = FROM modifier = TUR_condemning_turkey_actions_over_mosul }
+		FROM = {
+			add_opinion_modifier = { target = ROOT modifier = TUR_condemning_turkey_actions_over_mosul }
+		}
+	}
+	
+	option = {
+		name = NW_new_turkey.9.с
+		ai_chance = {
+			factor = 25
+			modifier = {
+				factor = 0
+				has_civil_war = yes
+			}
+		}
+		give_guarantee = FROM
+	}
+}
+
+#From хочет заключить договор \\ TUR
+country_event = {
+	id = NW_new_turkey.10
+	title = NW_new_turkey.10.t
+	desc = NW_new_turkey.10.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_new_turkey.10" }
+	
+	option = {
+		name = NW_new_turkey.10.a
+		ai_chance = {
+			factor = 50
+		}
+		if = {
+			limit = { FROM = { owns_state = 676 } }
+			676 = { set_demilitarized_zone = yes }
+		}
+		every_state = {
+			limit = {
+				is_owned_by = FROM
+				OR = {
+					state = 676
+					state = 962
+				}
+			}
+			remove_core_of = FROM
+			ROOT = { transfer_state = PREV }
+		}
+		give_guarantee = FROM
+		diplomatic_relation = {
+			country = FROM
+			relation = non_aggression_pact
+			active = yes
+		}
+		if = {
+			limit = {
+				FROM = {
+					original_tag = IRQ
+					has_focus_tree = nw_iraq_focus
+					NOT = { has_completed_focus = IRQ_nationalization_of_oil_fields }
+				}
+			}
+			country_event = { id = NW_new_turkey.7 days = 1 }
+		}
+	}
+	
+	option = {
+		name = NW_new_turkey.10.b
+		ai_chance = {
+			factor = 50
+		}
+		FROM = { country_event = { id = NW_new_turkey.11 days = 1 } }
+	}
+}
+
+#Турция отказывается от договора \\ 676 962 owner
+country_event = {
+	id = NW_new_turkey.11
+	title = NW_new_turkey.11.t
+	desc = NW_new_turkey.11.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_new_turkey.11" }
+	
+	option = {
+		name = NW_new_turkey.11.a
+		add_opinion_modifier = { target = FROM modifier = diplomatic_affront }
+		FROM = {
+			add_opinion_modifier = { target = ROOT modifier = diplomatic_affront }
+			add_ai_strategy = {
+				type = contain
+				id = ROOT
+				value = 200
+			}
+		}
+		add_ai_strategy = {
+			type = contain
+			id = FROM
+			value = 200
+		}
+	}
+}
+
+#Турция претендует на Додеканес \\ ITA
+country_event = {
+	id = NW_new_turkey.12
+	title = NW_new_turkey.12.t
+	desc = NW_new_turkey.12.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_new_turkey.12" }
+	
+	option = {
+		name = NW_new_turkey.12.a
+		ai_chance = {
+			factor = 30
+		}
+		custom_effect_tooltip = NW_new_turkey_12a_tt
+	}
+	
+	option = {
+		name = NW_new_turkey.12.b
+		ai_chance = {
+			factor = 70
+		}
+		add_opinion_modifier = { target = FROM modifier = TUR_the_turkish_colossus }
+		FROM = {
+			add_opinion_modifier = { target = ROOT modifier = TUR_the_turkish_colossus }
+			transfer_state = 164
+		}
+	}
+}
+
+#Турция предлагает вступить в Балканскую/Турецкую Антанту \\ GRE \ ROM \ YUG
+country_event = {
+	id = NW_new_turkey.13
+	title = NW_new_turkey.13.t
+	desc = NW_new_turkey.13.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_new_turkey.13" }
+	
+	option = {
+		name = NW_new_turkey.13.a
+		ai_chance = {
+			factor = 90
+		}
+		add_ai_strategy = {
+			type = alliance
+			id = FROM
+			value = 200
+		}
+		FROM = {
+			add_to_faction = ROOT
+			country_event = { id = tr_turkey.5 days = 1 }
+		}
+	}
+	
+	option = {
+		name = NW_new_turkey.13.b
+		ai_chance = {
+			factor = 10
+		}
+		
+	}
+}
+
+#Турецкий ультиматум // ITA
+country_event = {
+	id = NW_new_turkey.14
+	title = NW_new_turkey.14.t
+	desc = NW_new_turkey.14.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_new_turkey.14" }
+	
+	option = {
+		name = NW_new_turkey.14.a
+		ai_chance = {
+			factor = 10
+			modifier = {
+				factor = 0
+				is_historical_focus_on = yes
+			}
+		}
+		every_other_country = {
+			limit = {
+				OR = {
+					tag = FROM
+					is_in_faction_with = FROM
+				}
+			}
+			ROOT = {
+				diplomatic_relation = {
+					country = PREV
+					relation = non_aggression_pact
+					active = yes
+				}
+			}
+		}
+		if = {
+			limit = { YUG = { is_in_faction_with = FROM } }
+			every_state = {
+				limit = {
+					is_owned_by = ROOT
+					OR = {
+						state = 163
+						state = 736
+						state = 823
+						state = 824
+					}
+				}
+				add_core_of = YUG
+				YUG = { transfer_state = PREV }
+			}
+		}
+		if = {
+			limit = { 164 = { is_owned_by = ROOT } }
+			164 = {
+				add_core_of = FROM
+				FROM = { transfer_state = PREV }
+			}
+		}
+		if = {
+			limit = { ALB = { is_subject_of = ROOT } }
+			set_autonomy = {
+				target = ALB
+				autonomy_state = autonomy_free
+			}
+		}
+	}
+	
+	option = {
+		name = NW_new_turkey.14.b
+		ai_chance = {
+			factor = 90
+			modifier = {
+				factor = 0
+				FROM = { alliance_strength_ratio > 1 }
+			}
+		}
+		FROM = { country_event = { id = nw_greece.68 days = 1 } }
+	}
+}
+
+#Ультиматум балканских стран \\ BUL
+country_event = {
+	id = NW_new_turkey.15
+	title = NW_new_turkey.15.t
+	desc = NW_new_turkey.15.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_new_turkey.15" }
+	
+	option = {
+		name = NW_new_turkey.15.a
+		ai_chance = {
+			factor = 50
+		}
+		add_ideas = TUR_turkish_bulgarian_agreement
+		if = {
+			limit = {
+				is_in_faction = yes
+				is_faction_leader = yes
+			}
+			every_other_country = {
+				limit = { is_in_faction_with = ROOT }
+				ROOT = {
+					add_ai_strategy = {
+						type = alliance
+						id = PREV
+						value = -600
+					}
+				}
+			}
+			leave_faction = yes
+		}
+		else_if = {
+			limit = {
+				is_in_faction = yes
+			}
+			random_other_country = {
+				limit = {
+					is_in_faction_with = ROOT
+					is_faction_leader = yes
+				}
+				ROOT = {
+					add_ai_strategy = {
+						type = alliance
+						id = PREV
+						value = -600
+					}
+				}
+			}
+			leave_faction = yes
+		}
+		every_state = {
+			limit = {
+				owner = {
+					OR = {
+						tag = FROM
+						is_in_faction_with = FROM
+					}
+				}
+				OR = {
+					is_claimed_by = ROOT
+					is_core_of = ROOT
+				}
+			}
+			remove_claim_by = ROOT
+			remove_core_of = ROOT
+		}
+		every_other_country = {
+			limit = {
+				OR = {
+					tag = FROM
+					is_in_faction_with = FROM
+				}
+			}
+			every_state = {
+				limit = {
+					is_owned_by = ROOT
+					is_claimed_by = PREV
+					NOT = { is_owned_by = PREV }
+				}
+				PREV = { transfer_state = PREV }
+			}
+			every_state = {
+				limit = {
+					is_owned_by = ROOT
+					is_core_of = PREV
+					NOT = { is_owned_by = PREV }
+				}
+				PREV = { transfer_state = PREV }
+			}
+		}
+		48 = { owner = { give_resource_rights = { receiver = FROM state = 48 } } }
+	}
+	
+	option = {
+		name = NW_new_turkey.15.b
+		ai_chance = {
+			factor = 50
+		}
+		FROM = { country_event = { id = NW_new_turkey.16 days = 1 } }
+	}
+}
+
+#Болгария отвергает ультиматум \\ TUR
+country_event = {
+	id = NW_new_turkey.16
+	title = NW_new_turkey.16.t
+	desc = NW_new_turkey.16.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_new_turkey.16" }
+	
+	option = {
+		name = NW_new_turkey.16.a
+		create_wargoal = {
+			type = puppet_wargoal_focus
+			target = FROM
+		}
+		add_ai_strategy = {
+			type = conquer
+			id = FROM
+			value = 200
+		}
+		add_ai_strategy = {
+			type = antagonize
+			id = FROM
+			value = 200
+		}
 	}
 }

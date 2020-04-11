@@ -178,7 +178,7 @@ focus_tree = {
 	}
 	
 	focus = {
-		id = TUR_raise_mosul_issue
+		id = TUR_raise_mosul_question
 		icon = GFX_goal_generic_demand_territory
 		prerequisite = { focus = TUR_claims_on_hatay }
 		x = 1
@@ -199,13 +199,27 @@ focus_tree = {
 		bypass = {
 			hidden_trigger = {
 				has_idea = focus_synchronization
-				TUR = { has_completed_focus = TUR_raise_mosul_issue }
+				TUR = { has_completed_focus = TUR_raise_mosul_question }
 			}
 		}
 		
 		completion_reward = {
-			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus TUR_raise_mosul_issue"
-			
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus TUR_raise_mosul_question"
+			add_state_claim = 676
+			add_state_claim = 962
+			if = {
+				limit = {
+					any_other_country = {
+						owns_state = 676
+						owns_state = 962
+					}
+				}
+				676 = { owner = { country_event = { id = NW_new_turkey.5 days = 1 } } }
+			}
+			else = {
+				676 = { owner = { country_event = { id = NW_new_turkey.5 days = 1 } } }
+				962 = { owner = { country_event = { id = NW_new_turkey.5 days = 1 } } }
+			}
 		}
 	}
 	
@@ -237,7 +251,11 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus TUR_the_turkish_colossus"
-			
+			add_state_claim = 164
+			if = {
+				limit = { 164 = { owner = { tag = ITA } } }
+				ITA = { country_event = { id = NW_new_turkey.12 days = 1 } }
+			}
 		}
 	}
 	
@@ -316,6 +334,21 @@ focus_tree = {
 			factor = 10
 		}
 		available = {
+			OR = {
+				AND = {
+					is_in_faction = no
+					OR = {
+						GRE = { is_in_faction = no }
+						ROM = { is_in_faction = no }
+						YUG = { is_in_faction = no }
+					}
+				}
+				AND = {
+					is_in_faction_with = GRE
+					GRE = { has_completed_focus = GRE_strengthening_the_balkan_entente }
+				}
+			}
+			NOT = { has_country_leader = { name = "Mustafa Kemal Atatürk" ruling_only = yes } }
 		}
 		bypass = {
 			hidden_trigger = {
@@ -326,7 +359,27 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus TUR_strengthening_of_balkan_entente"
-			
+			set_rule = { can_create_factions = yes }
+			if ={
+				limit = { NOT = { is_in_faction_with = GRE } }
+				if = {
+					limit = { GRE = { has_completed_focus = GRE_strengthening_the_balkan_entente } }
+					create_faction = turkey_entente
+				}
+				else = { create_faction = BALKAN_ENTENTE }
+				every_other_country = {
+					limit = {
+						is_in_faction = no
+						OR = {
+							tag = GRE
+							tag = ROM
+							tag = YUG
+						}
+					}
+					country_event = { id = NW_new_turkey.13 days = 1 }
+				}
+			}
+			else = { add_political_power = 100 }
 		}
 	}
 	
@@ -348,6 +401,8 @@ focus_tree = {
 			factor = 10
 		}
 		available = {
+			is_faction_leader = yes
+			ALB = { is_subject = no }
 		}
 		bypass = {
 			hidden_trigger = {
@@ -358,7 +413,7 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus TUR_invite_albania"
-			
+			ALB = { country_event = { id = generic.5 days = 1 } }
 		}
 	}
 	
@@ -380,17 +435,29 @@ focus_tree = {
 			factor = 10
 		}
 		available = {
+			is_faction_leader = yes
+			HUN = { is_subject = no }
 		}
 		bypass = {
-			hidden_trigger = {
-				has_idea = focus_synchronization
-				TUR = { has_completed_focus = TUR_invite_hungary }
+			OR = {
+				NOT = { country_exists = HUN }
+				has_war_with = HUN
+				HUN = {
+					OR = {
+						is_subject_of = ROOT
+						is_in_faction = yes
+					}
+				}
+				hidden_trigger = {
+					has_idea = focus_synchronization
+					TUR = { has_completed_focus = TUR_invite_hungary }
+				}
 			}
 		}
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus TUR_invite_hungary"
-			
+			HUN = { country_event = { id = generic.5 days = 1 } }
 		}
 	}
 	
@@ -413,17 +480,29 @@ focus_tree = {
 			factor = 10
 		}
 		available = {
+			is_faction_leader = yes
+			BUL = { is_subject = no }
 		}
 		bypass = {
-			hidden_trigger = {
-				has_idea = focus_synchronization
-				TUR = { has_completed_focus = TUR_invite_bulgaria }
+			OR = {
+				NOT = { country_exists = BUL }
+				has_war_with = BUL
+				BUL = {
+					OR = {
+						is_subject_of = ROOT
+						is_in_faction = yes
+					}
+				}
+				hidden_trigger = {
+					has_idea = focus_synchronization
+					TUR = { has_completed_focus = TUR_invite_bulgaria }
+				}
 			}
 		}
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus TUR_invite_bulgaria"
-			
+			BUL = { country_event = { id = generic.5 days = 1 } }
 		}
 	}
 	
@@ -446,6 +525,14 @@ focus_tree = {
 			factor = 10
 		}
 		available = {
+			is_faction_leader = yes
+			BUL = {
+				OR = {
+					has_completed_focus = BUL_great_bulgaria
+					has_government = fascism
+					has_government = communism
+				}
+			}
 		}
 		bypass = {
 			hidden_trigger = {
@@ -456,13 +543,13 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus TUR_warn_bulgarian_threat"
-			
+			BUL = { country_event = { id = NW_new_turkey.15 days = 1 } }
 		}
 	}
 	
 	focus = {
 		id = TUR_protecting_peninsula_from_italy
-		icon = GFX_goal_generic_demand_territory
+		icon = GFX_goal_generic_defence
 		prerequisite = { focus = TUR_invite_hungary }
 		prerequisite = {
 			focus = TUR_invite_bulgaria
@@ -482,6 +569,8 @@ focus_tree = {
 			factor = 10
 		}
 		available = {
+			is_faction_leader = yes
+			country_exists = ITA
 		}
 		bypass = {
 			hidden_trigger = {
@@ -492,7 +581,7 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus TUR_protecting_peninsula_from_italy"
-			
+			ITA = { country_event = { id = NW_new_turkey.14 } }
 		}
 	}
 	
@@ -5308,7 +5397,7 @@ focus_tree = {
 	
 	focus = {
 		id = TUR_establish_sumerbank
-		icon = GFX_goal_generic_demand_territory
+		icon = GFX_z_goal_bank2
 		x = 25
 		y = 0
 		relative_position_id = TUR_correction_constitution
@@ -5534,7 +5623,7 @@ focus_tree = {
 	
 	focus = {
 		id = TUR_support_sauce_ve_kopruler_reisligi
-		icon = GFX_goal_generic_demand_territory
+		icon = GFX_goal_generic_construction
 		prerequisite = { focus = TUR_establish_sumerbank }
 		x = 0
 		y = 1
@@ -5571,7 +5660,7 @@ focus_tree = {
 	
 	focus = {
 		id = TUR_establish_offices_of_petrol
-		icon = GFX_goal_generic_demand_territory
+		icon = GFX_z_goal_oil_refining
 		prerequisite = { focus = TUR_support_sauce_ve_kopruler_reisligi }
 		x = 1
 		y = 4
@@ -5625,7 +5714,7 @@ focus_tree = {
 	
 	focus = {
 		id = TUR_expand_exports_to_west
-		icon = GFX_goal_generic_demand_territory
+		icon = GFX_goal_generic_positive_trade_relations
 		prerequisite = { focus = TUR_support_sauce_ve_kopruler_reisligi }
 		x = 0
 		y = 1
@@ -5672,7 +5761,7 @@ focus_tree = {
 	
 	focus = {
 		id = TUR_pay_off_your_debts
-		icon = GFX_goal_generic_demand_territory
+		icon = GFX_focus_generic_treaty
 		prerequisite = { focus = TUR_expand_exports_to_west }
 		x = 0
 		y = 1
@@ -5704,7 +5793,7 @@ focus_tree = {
 	
 	focus = {
 		id = TUR_take_credit_from_britain
-		icon = GFX_goal_generic_demand_territory
+		icon = GFX_focus_mex_privatisation
 		prerequisite = { focus = TUR_pay_off_your_debts }
 		x = -5
 		y = 1
@@ -5741,7 +5830,7 @@ focus_tree = {
 	
 	focus = {
 		id = TUR_take_credit_from_ussr
-		icon = GFX_goal_generic_demand_territory
+		icon = GFX_z_goal_bank_ref
 		prerequisite = { focus = TUR_pay_off_your_debts }
 		x = -3
 		y = 1
@@ -5778,7 +5867,7 @@ focus_tree = {
 	
 	focus = {
 		id = TUR_take_credit_from_germany
-		icon = GFX_goal_generic_demand_territory
+		icon = GFX_z_goal_ekonomik_ref
 		prerequisite = { focus = TUR_pay_off_your_debts }
 		x = -1
 		y = 1
@@ -5815,7 +5904,7 @@ focus_tree = {
 	
 	focus = {
 		id = TUR_transfer_control_of_industry_to_banks
-		icon = GFX_goal_generic_demand_territory
+		icon = GFX_z_goal_support_businessmen
 		prerequisite = { focus = TUR_establish_sumerbank }
 		mutually_exclusive = { focus = TUR_support_private_initiatives }
 		x = 2
@@ -5848,7 +5937,7 @@ focus_tree = {
 	
 	focus = {
 		id = TUR_continue_first_five_year_plan
-		icon = GFX_goal_generic_demand_territory
+		icon = GFX_z_goal_Woodhead_comission
 		x = 7
 		y = 0
 		relative_position_id = TUR_establish_sumerbank
@@ -5884,7 +5973,7 @@ focus_tree = {
 	
 	focus = {
 		id = TUR_support_private_initiatives
-		icon = GFX_goal_generic_demand_territory
+		icon = GFX_focus_eng_concessions_to_the_trade_unions
 		prerequisite = { focus = TUR_continue_first_five_year_plan }
 		mutually_exclusive = { focus = TUR_transfer_control_of_industry_to_banks }
 		x = -3
@@ -5918,7 +6007,7 @@ focus_tree = {
 	
 	focus = {
 		id = TUR_law_on_rural_institutions
-		icon = GFX_goal_generic_demand_territory
+		icon = GFX_z_goal_generic_technology_sharing_tmo
 		prerequisite = {
 			focus = TUR_transfer_control_of_industry_to_banks
 			focus = TUR_support_private_initiatives
@@ -5953,7 +6042,7 @@ focus_tree = {
 	
 	focus = {
 		id = TUR_ankara_university
-		icon = GFX_goal_generic_demand_territory
+		icon = GFX_z_goal_vienna_circle
 		prerequisite = { focus = TUR_law_on_rural_institutions }
 		x = 0
 		y = 1
@@ -5986,7 +6075,7 @@ focus_tree = {
 	
 	focus = {
 		id = TUR_development_of_missiles
-		icon = GFX_goal_generic_demand_territory
+		icon = GFX_focus_rocketry
 		prerequisite = { focus = TUR_ankara_university }
 		mutually_exclusive = { focus = TUR_study_of_nuclear_technologies }
 		x = -1
@@ -6025,7 +6114,7 @@ focus_tree = {
 	
 	focus = {
 		id = TUR_study_of_nuclear_technologies
-		icon = GFX_goal_generic_demand_territory
+		icon = GFX_focus_wonderweapons
 		prerequisite = { focus = TUR_ankara_university }
 		mutually_exclusive = { focus = TUR_development_of_missiles }
 		x = 1
@@ -6064,7 +6153,7 @@ focus_tree = {
 	
 	focus = {
 		id = TUR_beacon_of_science_in_middle_east
-		icon = GFX_goal_generic_demand_territory
+		icon = GFX_z_goal_great_science
 		prerequisite = {
 			focus = TUR_development_of_missiles
 			focus = TUR_study_of_nuclear_technologies
@@ -6100,7 +6189,7 @@ focus_tree = {
 	
 	focus = {
 		id = TUR_investment_in_textile_industry
-		icon = GFX_goal_generic_demand_territory
+		icon = GFX_goal_generic_consumer_goods
 		prerequisite = { focus = TUR_continue_first_five_year_plan }
 		x = -1
 		y = 1
@@ -6146,7 +6235,7 @@ focus_tree = {
 	
 	focus = {
 		id = TUR_investment_in_food_industry
-		icon = GFX_goal_generic_demand_territory
+		icon = GFX_z_goal_agrarian_reform
 		prerequisite = { focus = TUR_continue_first_five_year_plan }
 		x = 1
 		y = 1
@@ -6192,7 +6281,7 @@ focus_tree = {
 	
 	focus = {
 		id = TUR_development_of_western_anatolia
-		icon = GFX_goal_generic_demand_territory
+		icon = GFX_goal_generic_construction
 		prerequisite = { focus = TUR_investment_in_textile_industry }
 		prerequisite = { focus = TUR_investment_in_food_industry }
 		x = 0
@@ -6235,7 +6324,7 @@ focus_tree = {
 	
 	focus = {
 		id = TUR_development_of_eastern_anatolia
-		icon = GFX_goal_generic_demand_territory
+		icon = GFX_goal_generic_construct_civilian
 		prerequisite = { focus = TUR_investment_in_textile_industry }
 		prerequisite = { focus = TUR_investment_in_food_industry }
 		x = 0
@@ -6278,7 +6367,7 @@ focus_tree = {
 	
 	focus = {
 		id = TUR_carry_out_plan_for_construction_of_factories
-		icon = GFX_goal_generic_demand_territory
+		icon = GFX_z_goal_production
 		prerequisite = {
 			focus = TUR_development_of_western_anatolia
 			focus = TUR_development_of_eastern_anatolia
@@ -6390,7 +6479,7 @@ focus_tree = {
 	
 	focus = {
 		id = TUR_second_five_year_industrial_plan
-		icon = GFX_goal_generic_demand_territory
+		icon = GFX_z_goal_new_industry_standard
 		prerequisite = { focus = TUR_carry_out_plan_for_construction_of_factories }
 		mutually_exclusive = { focus = TUR_defense_plan }
 		x = -1
@@ -6424,7 +6513,7 @@ focus_tree = {
 	
 	focus = {
 		id = TUR_development_of_capitals_industry
-		icon = GFX_goal_generic_demand_territory
+		icon = GFX_goal_generic_construct_civ_factory
 		prerequisite = { focus = TUR_second_five_year_industrial_plan }
 		x = 0
 		y = 1
@@ -6464,7 +6553,7 @@ focus_tree = {
 	
 	focus = {
 		id = TUR_defense_plan
-		icon = GFX_goal_generic_demand_territory
+		icon = GFX_goal_generic_defence
 		prerequisite = { focus = TUR_carry_out_plan_for_construction_of_factories }
 		mutually_exclusive = { focus = TUR_second_five_year_industrial_plan }
 		x = 1
@@ -6498,7 +6587,7 @@ focus_tree = {
 	
 	focus = {
 		id = TUR_development_of_military_industry
-		icon = GFX_goal_generic_demand_territory
+		icon = GFX_goal_generic_construct_mil_factory
 		prerequisite = { focus = TUR_defense_plan }
 		x = 0
 		y = 1
@@ -6544,7 +6633,7 @@ focus_tree = {
 	
 	focus = {
 		id = TUR_carry_out_land_reform
-		icon = GFX_goal_generic_demand_territory
+		icon = GFX_z_goal_SH_ref
 		prerequisite = {
 			focus = TUR_development_of_capitals_industry
 			focus = TUR_development_of_military_industry
@@ -6590,7 +6679,7 @@ focus_tree = {
 	
 	focus = {
 		id = TUR_exceed_plan_to_build_factories
-		icon = GFX_goal_generic_demand_territory
+		icon = GFX_z_goal_generic_industrial_production2
 		prerequisite = { focus = TUR_carry_out_plan_for_construction_of_factories }
 		x = -2
 		y = 3
@@ -6808,7 +6897,7 @@ focus_tree = {
 	
 	focus = {
 		id = TUR_defense_of_straits_from_landings
-		icon = GFX_goal_generic_demand_territory
+		icon = GFX_goal_generic_amphibious_assault
 		prerequisite = { focus = TUR_start_modernization_of_army }
 		x = -2
 		y = 2
