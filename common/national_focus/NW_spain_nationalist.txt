@@ -1706,16 +1706,39 @@ focus_tree = {
 			factor = 5
 		}
 		available = {
-			
+			if = {
+				limit = {
+					any_other_country = {
+						has_country_flag = hbbrg_flag
+						exists = yes
+					}
+				}
+				any_other_country = {
+					has_country_flag = hbbrg_flag
+					NOT = { has_war_with = ROOT }
+				}
+			}
 		}
-		bypass = {
-		}
-
+		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus SPA_invite_otto_von_habsburg"
 			add_ideas = SPA_otto_von_habsburg
 			if = {
 				limit = { any_other_country = { has_country_flag = hbbrg_flag } }
+				every_enemy_country = {
+					limit = {
+						NOT = { tag = SPR }
+						has_offensive_war_with = ROOT
+					}
+					set_country_flag = has_offensive_war_with_ROOT
+				}
+				every_enemy_country = {
+					limit = {
+						NOT = { tag = SPR }
+						has_defensive_war_with = ROOT
+					}
+					set_country_flag = has_defensive_war_with_ROOT
+				}
 				random_other_country = {
 					limit = { has_country_flag = hbbrg_flag }
 					if = {
@@ -1732,15 +1755,38 @@ focus_tree = {
 							autonomy_state = autonomy_dominion
 						}
 					}
+					set_country_flag = kingSPA_flag
+					add_country_leader_trait = kingSPA
 				}
 			}
 			hidden_effect = {
-				SPR = {
+				if = {
+					limit = { country_exists = SPR }
+					SPR = {
+						declare_war_on = {
+							target = ROOT
+							type = civil_war
+						}
+						add_civil_war_target = ROOT
+					}
+				}
+				every_other_country = {
+					limit = { has_country_flag = has_offensive_war_with_ROOT }
+					clr_country_flag = has_offensive_war_with_ROOT
 					declare_war_on = {
 						target = ROOT
-						type = civil_war
+						type = annex_everything
 					}
-					add_civil_war_target = ROOT
+				}
+				every_other_country = {
+					limit = { has_country_flag = has_defensive_war_with_ROOT }
+					clr_country_flag = has_defensive_war_with_ROOT
+					ROOT = {
+						declare_war_on = {
+							target = PREV
+							type = annex_everything
+						}
+					}
 				}
 			}
 			set_cosmetic_tag = SPA_spanish_empire
