@@ -642,6 +642,48 @@ on_actions = {
 	
 	on_government_change = {
 		effect = {
+			######### TROZKISM BLOCK #########
+			if = {
+				limit = { has_country_flag = is_trozkist_country_flag }
+				clr_country_flag = is_trozkist_country_flag
+				add_to_variable = { global.troz_threat_var = -1.5 }
+			}
+			set_variable = { global.total_trozkist = 0 }
+			every_country = {
+				limit = { has_government = trozkism }
+				add_to_variable = { global.total_trozkist = 1 }
+				if = {
+					limit = {
+						NOT = { has_dynamic_modifier = { modifier = troz_threat_dyn } }
+					}
+					add_dynamic_modifier = { modifier = troz_threat_dyn }
+				}
+			}
+			if = {
+				limit = {
+					has_government = trozkism
+				}
+				if = {
+					limit = { NOT = { has_country_flag = is_trozkist_country_flag } }
+					set_country_flag = is_trozkist_country_flag
+				}
+				if = {
+					limit = { num_of_factories > 49 }
+					add_to_variable = { global.troz_threat_var = 3 }
+					log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): добавил 3 тронапряги как мажор"
+				}
+				else_if = {
+					limit = { num_of_factories > 24 }
+					add_to_variable = { global.troz_threat_var = 2 }
+					log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): добавил 2 тронапряги как миддл"
+				}
+				else = {
+					add_to_variable = { global.troz_threat_var = 1 }
+					log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): добавил 1 тронапряги как минор)0"
+				}
+				set_var_for_troz_threat_dyn = yes
+			}
+			######### END TROZKISM BLOCK #########
 			country_event = { id = TRpolitical.106 }
 			#Габсы
 			if = {
@@ -1068,6 +1110,48 @@ on_actions = {
 	#ROOT = nation being puppeted, FROM = overlord
 	on_puppet = {
 		effect = {
+			######### TROZKISM BLOCK #########
+			if = {
+				limit = { has_country_flag = is_trozkist_country_flag }
+				clr_country_flag = is_trozkist_country_flag
+				add_to_variable = { global.troz_threat_var = -1.5 }
+			}
+			set_variable = { global.total_trozkist = 0 }
+			every_country = {
+				limit = { has_government = trozkism }
+				add_to_variable = { global.total_trozkist = 1 }
+				if = {
+					limit = {
+						NOT = { has_dynamic_modifier = { modifier = troz_threat_dyn } }
+					}
+					add_dynamic_modifier = { modifier = troz_threat_dyn }
+				}
+			}
+			if = {
+				limit = {
+					ROOT = { has_government = trozkism }
+				}
+				if = {
+					limit = { NOT = { has_country_flag = is_trozkist_country_flag } }
+					set_country_flag = is_trozkist_country_flag
+				}
+				if = {
+					limit = { num_of_factories > 49 }
+					add_to_variable = { global.troz_threat_var = 3 }
+					log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): добавил 3 тронапряги как марионетка"
+				}
+				else_if = {
+					limit = { num_of_factories > 24 }
+					add_to_variable = { global.troz_threat_var = 2 }
+					log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): добавил 2 тронапряги как марионетка"
+				}
+				else = {
+					add_to_variable = { global.troz_threat_var = 1 }
+					log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): добавил 1 тронапряги как марионетка"
+				}
+				set_var_for_troz_threat_dyn = yes
+			}
+			######### END TROZKISM BLOCK #########
 			ROOT = { country_event = { id = TRpolitical.106 } }
 			#Смена подидеологии в случае ошибочной генерации
 			if = {
@@ -1756,6 +1840,35 @@ on_actions = {
 					}
 				}
 			}
+			### TRO THREAT ###
+			if = {
+				limit = {
+					OR = {
+						AND = {
+							ROOT = { has_government = trozkism }
+							FROM = { NOT = { has_government = trozkism } }
+						}
+						AND = {
+							FROM = { has_government = trozkism }
+							ROOT = { NOT = { has_government = trozkism } }
+						}
+					}
+				}
+				add_to_variable = { global.troz_threat_var = 1 }
+				custom_effect_tooltip = troz_threat_tt1
+				set_var_for_troz_threat_dyn = yes
+				log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): добавил 1 тронапряги из-за нападения на [From.GetName] ([From.GetTag]"
+			}
+			if = {
+				limit = {
+					ROOT = { has_government = trozkism }
+					FROM = { has_government = trozkism }
+				}
+				add_to_variable = { global.troz_threat_var = -5 }
+				custom_effect_tooltip = troz_threat_tt2
+				set_var_for_troz_threat_dyn = yes
+				log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): добавил -5 тронапряги из-за нападения на [From.GetName] ([From.GetTag]"
+			}
 		} #FROM is war target
 	}
 	
@@ -2115,6 +2228,13 @@ on_actions = {
 					add_core_of = BPL
 					remove_core_of = ROOT
 				}
+			}
+			### TRO THREAT ###
+			if = {
+				limit = { ROOT = { has_government = trozkism } }
+				add_to_variable = { global.troz_threat_var = -1 }
+				set_var_for_troz_threat_dyn = yes
+				log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): добавил -1 тронапряги капитуляцией"
 			}
 			# ROOT is capitulated country, FROM is winner
 		}

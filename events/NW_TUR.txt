@@ -7955,6 +7955,7 @@ country_event = {
 				country_event = { id = NW_new_turkey.71 days = 40 }
 			}
 			country_event = { id = NW_new_turkey.73 days = 50 }
+			country_event = { id = NW_new_turkey.77 days = 65 }
 		}
 	}
 
@@ -8105,9 +8106,6 @@ country_event = {
 
 	option = {
 		name = NW_new_turkey.63.a
-		ai_chance = {
-			factor = 50
-		}
 		start_civil_war = {
 			ideology = trozkism
 			size = 0.5
@@ -8163,10 +8161,59 @@ country_event = {
 	
 	option = {
 		name = NW_new_turkey.63.b
-		ai_chance = {
-			factor = 50
+		trigger = { is_ai = no }
+		start_civil_war = {
+			ideology = trozkism
+			size = 0.5
+			states = { 352 350 1049 354 355 356 347 }
+			states_filter = {
+				owner = {
+					OR = {
+						original_tag = ROOT
+						is_subject_of = ROOT
+					}
+				}
+				if = {
+					limit = {
+						TUR = { has_completed_focus = TUR_evicting_circassians_in_eastern_anatolia }
+					}
+					OR = {
+						state = 352
+						state = 350
+						state = 1049
+						state = 354
+					}
+				}
+				else = {
+					OR = {
+						state = 352
+						state = 350
+						state = 355
+						state = 356
+						state = 347
+					}
+				}
+				
+			}
 		}
-		add_political_power = -100
+		random_other_country = {
+			limit = {
+				original_tag = ROOT
+				has_government = trozkism
+			}
+			change_tag_from = ROOT
+			hidden_effect = {
+				load_focus_tree = { tree = nw_turkish_focus keep_completed = no }
+				add_timed_idea = { idea = focus_synchronization days = 7 }
+				unlock_national_focus = TUR_correction_constitution
+				unlock_national_focus = TUR_call_for_creation_of_opposition_parties
+				unlock_national_focus = TUR_spend_change_of_government
+				unlock_national_focus = TUR_support_movement_of_personnel
+				complete_national_focus = TUR_revive_the_green_army
+				complete_national_focus = TUR_political_transformation
+				complete_national_focus = TUR_proclaim_islamic_socialist_revolution
+			}
+		}
 	}
 }
 
@@ -8970,12 +9017,296 @@ country_event = {
 		ai_chance = {
 			factor = 50
 		}
+		add_stability = 0.1
+		set_party_name = { ideology = fascism name = TUR_fascism2_party long_name = TUR_fascism2_party }
+		set_politics = {
+			ruling_party = fascism
+			elections_allowed = no
+		}
+		add_popularity = {
+			ideology = fascism
+			popularity = 0.3
+		}
+		create_country_leader = {
+			name = "Fevzi Çakmak"
+			desc = "POLITICS_FEVZI_CAKMAK_DESC"
+			picture = "gfx/leaders/TUR/Portrait_Fevzi_Cakmak.dds"
+			expire = "1965.1.1"
+			ideology = fascism_ideology
+			traits = { maresal }
+		}
+		hidden_effect = {
+			if = {
+				limit = {
+					has_civil_war = no
+					NOT = { country_exists = KRD }
+					any_owned_state = { is_core_of = KRD }
+				}
+				country_event = { id = NW_new_turkey.76 days = 5 }
+			}
+		}
+		
 	}
 	
 	option = {
 		name = NW_new_turkey.75.b
 		ai_chance = {
 			factor = 50
+		}
+		remove_unit_leader = 1800
+		custom_effect_tooltip = TUR_civwar_tt
+		hidden_effect = {
+			add_ideas = generic_civil_war
+			every_state = {
+				limit = {
+					is_core_of = TUR
+				}
+				add_core_of = TRK
+			}
+			every_owned_state = {
+				limit = {
+					OR = {
+						state = 49
+						state = 343
+						state = 349
+						state = 348
+						state = 345
+					}
+				}
+				TRK = { transfer_state = PREV }
+			}
+			TRK = {
+				set_popularities = {
+					neutrality = 5
+					fascism = 95
+				}
+				set_politics = {
+					ruling_party = fascism
+					elections_allowed = no
+				}
+				add_ideas = generic_civil_war
+				set_cosmetic_tag = TUR_dictatorship_tag
+				create_country_leader = {
+					name = "Fevzi Çakmak"
+					desc = "POLITICS_FEVZI_CAKMAK_DESC"
+					picture = "gfx/leaders/TUR/Portrait_Fevzi_Cakmak.dds"
+					expire = "1965.1.1"
+					ideology = fascism_ideology
+					traits = { maresal }
+				}
+				inherit_technology = TUR
+				spawn_tur_civil_war_cakmak = yes
+				load_focus_tree = { tree = nw_turkish_focus keep_completed = no }
+				add_timed_idea = { idea = focus_synchronization days = 7 }
+				unlock_national_focus = TUR_correction_constitution
+				unlock_national_focus = TUR_call_for_creation_of_opposition_parties
+				unlock_national_focus = TUR_spend_change_of_government
+				complete_national_focus = TUR_bet_on_nationalism
+				complete_national_focus = TUR_carry_out_militarization_of_society
+				complete_national_focus = TUR_political_transformation
+				complete_national_focus = TUR_establish_totalitarianism
+				declare_war_on = {
+					target = ROOT
+					type = civil_war
+				}
+				add_civil_war_target = ROOT
+			}
+			news_event = { id = trworldnews.56 hours = 6 }
+			if = {
+				limit = {
+					has_civil_war = no
+					NOT = { country_exists = KRD }
+					any_owned_state = { is_core_of = KRD }
+				}
+				country_event = { id = NW_new_turkey.76 days = 5 }
+			}
+		}
+	}
+}
+
+#Курдистан требует предоставить ему независимость \\ TUR
+country_event = {
+	id = NW_new_turkey.76
+	title = NW_new_turkey.76.t
+	desc = NW_new_turkey.76.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_new_turkey.76" }
+
+	option = {
+		name = NW_new_turkey.76.a
+		ai_chance = {
+			factor = 50
+		}
+		release = KRD
+		hidden_effect = {
+			KRD = {
+				load_oob = "TUR_civil_war_krd"
+				set_rule = {
+					can_create_factions = no
+					can_join_factions = no
+				}
+			}
+		}
+	}
+	
+	option = {
+		name = NW_new_turkey.76.b
+		ai_chance = {
+			factor = 50
+		}
+		add_stability = -0.1
+		release = KRD
+		hidden_effect = {
+			KRD = {
+				load_oob = "TUR_civil_war_krd"
+				set_rule = {
+					can_create_factions = no
+					can_join_factions = no
+				}
+			}
+		}
+		KRD = {
+			declare_war_on = {
+				target = ROOT
+				type = civil_war
+			}
+			add_civil_war_target = ROOT
+		}
+	}
+}
+
+#Пульсар. Черкесы требуют предоставить им независимость // TUR
+country_event = {
+	id = NW_new_turkey.77
+	is_triggered_only = yes
+	hidden = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_new_turkey.77" }
+	
+	option = {
+		name = NW_new_turkey.77.a
+		if = {
+			limit = {
+				OR = {
+					has_civil_war = yes
+					has_war_with = TRK
+				}
+				any_other_country = {
+					original_tag = ROOT
+					NOT = { has_government = trozkism }
+				}
+				any_owned_state = {
+					is_core_of = CER
+				}
+			}
+			country_event = { id = NW_new_turkey.78 }
+		}
+	}
+}
+
+#Черкесы требуют предоставить им независимость \\ TUR
+country_event = {
+	id = NW_new_turkey.78
+	title = NW_new_turkey.78.t
+	desc = NW_new_turkey.78.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_new_turkey.78" }
+
+	option = {
+		name = NW_new_turkey.78.a
+		ai_chance = {
+			factor = 50
+		}
+		release = CER
+		hidden_effect = {
+			CER = {
+				division_template = {
+					name = "Rebels"
+					regiments = {
+						infantry = { x = 0 y = 0 }
+						infantry = { x = 0 y = 1 }
+						infantry = { x = 1 y = 0 }
+						infantry = { x = 1 y = 1 }
+					}
+				}
+				random_owned_controlled_state = {
+					create_unit = {
+						division = "name = \"1. Rebels\" division_template = \"Rebels\" start_experience_factor = 0.2"
+						owner = PREV
+					}
+					create_unit = {
+						division = "name = \"1. Rebels\" division_template = \"Rebels\" start_experience_factor = 0.2"
+						owner = PREV
+					}
+					create_unit = {
+						division = "name = \"1. Rebels\" division_template = \"Rebels\" start_experience_factor = 0.2"
+						owner = PREV
+					}
+					create_unit = {
+						division = "name = \"1. Rebels\" division_template = \"Rebels\" start_experience_factor = 0.2"
+						owner = PREV
+					}
+				}
+				set_rule = {
+					can_create_factions = no
+					can_join_factions = no
+				}
+			}
+		}
+	}
+	
+	option = {
+		name = NW_new_turkey.76.b
+		ai_chance = {
+			factor = 50
+		}
+		add_stability = -0.1
+		release = CER
+		hidden_effect = {
+			CER = {
+				division_template = {
+					name = "Rebels"
+					regiments = {
+						infantry = { x = 0 y = 0 }
+						infantry = { x = 0 y = 1 }
+						infantry = { x = 1 y = 0 }
+						infantry = { x = 1 y = 1 }
+					}
+				}
+				random_owned_controlled_state = {
+					create_unit = {
+						division = "name = \"1. Rebels\" division_template = \"Rebels\" start_experience_factor = 0.2"
+						owner = PREV
+					}
+					create_unit = {
+						division = "name = \"1. Rebels\" division_template = \"Rebels\" start_experience_factor = 0.2"
+						owner = PREV
+					}
+					create_unit = {
+						division = "name = \"1. Rebels\" division_template = \"Rebels\" start_experience_factor = 0.2"
+						owner = PREV
+					}
+					create_unit = {
+						division = "name = \"1. Rebels\" division_template = \"Rebels\" start_experience_factor = 0.2"
+						owner = PREV
+					}
+				}
+				set_rule = {
+					can_create_factions = no
+					can_join_factions = no
+				}
+			}
+		}
+		CER = {
+			declare_war_on = {
+				target = ROOT
+				type = civil_war
+			}
+			add_civil_war_target = ROOT
 		}
 	}
 }
