@@ -49,6 +49,11 @@ on_actions = {
 						}
 						priority = 1
 					}
+					add_ideas = {
+						volunteer_only
+						civilian_economy
+					}
+					set_political_power = 0
 					set_stability = 0.5
 					set_war_support = 0.5
 					set_research_slots = 4
@@ -75,6 +80,36 @@ on_actions = {
 					log = "[GetDateText]: [This.GetName] ([This.GetTag]): IS ADJUSTER"
 					country_event = { id = NWgeneric.9999 }
 				}
+				set_variable = { global.total_trozkist = 0 }
+				every_country = {
+					limit = { has_government = trozkism }
+					add_to_variable = { global.total_trozkist = 1 }
+					if = {
+						limit = {
+							NOT = { has_dynamic_modifier = { modifier = troz_threat_dyn } }
+						}
+						add_dynamic_modifier = { modifier = troz_threat_dyn }
+					}
+					if = {
+						limit = { NOT = { has_country_flag = is_trozkist_country_flag } }
+						set_country_flag = is_trozkist_country_flag
+					}
+					if = {
+						limit = { num_of_factories > 49 }
+						add_to_variable = { global.troz_threat_var = 3 }
+						log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): добавил 3 тронапряги как мажор"
+					}
+					else_if = {
+						limit = { num_of_factories > 24 }
+						add_to_variable = { global.troz_threat_var = 2 }
+						log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): добавил 2 тронапряги как миддл"
+					}
+					else = {
+						add_to_variable = { global.troz_threat_var = 1 }
+						log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): добавил 1 тронапряги как минор)0"
+					}
+				}
+				set_var_for_troz_threat_dyn = yes
 			}
 			random_country = {
 				set_country_flag = timer_timer_flag
