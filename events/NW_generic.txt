@@ -3931,18 +3931,28 @@ country_event = {
 	trigger = {
 		check_variable = { global.troz_threat_var > 24.999 }
 		has_government = trozkism
+		NOT = { has_global_flag = four_international_flag }
 	}
 	
 	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWgeneric.200" }
+	immediate = {
+		country_event = NWgeneric.20001
+	}
 	
-	fire_only_once = yes
 	mean_time_to_happen = { days = 14 }
+}
+
+#определятор лидера
+country_event = {
+	id = NWgeneric.20001
+	hidden = yes
+	is_triggered_only = yes
 	
-	option = {
-		get_best_alliance_leader_trozkism_international_effect = yes
-		var:best_leader = {
-			country_event = NWgeneric.201
-		}
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWgeneric.20001" }
+	immediate = {
+		set_variable = { global.current_leader = num_of_factories }
+		add_to_variable = { global.current_leader = num_battalions }
+		get_best_alliance_match_trozkism_international_effect = yes
 	}
 }
 
@@ -3955,21 +3965,28 @@ country_event = {
 	is_triggered_only = yes
 	
 	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWgeneric.201" }
+	immediate = {
+		hidden_effect = {
+			every_country = {
+				limit = { has_country_flag = looser_flag }
+				clr_country_flag = looser_flag
+			}
+			clear_variable = global.current_leader
+		}
+	}
 	
 	option = {
 		name = NWgeneric.201.a
 		ai_chance = {
 			factor = 99
 		}
+		set_global_flag = four_international_flag
 		set_rule = { can_create_factions = yes }
 		if = {
-			limit = { is_in_faction = no }
-			create_faction = MEX_international4
-		}
-		else_if = {
 			limit = { is_faction_leader = yes }
 			set_faction_name = MEX_international4
 		}
+		else = { create_faction = MEX_international4 }
 		every_other_country = {
 			limit = {
 				is_subject = no
@@ -4006,7 +4023,6 @@ country_event = {
 			threat = 10
 			name = MEX_international4
 		}
-		set_global_flag = four_international_flag
 		hidden_effect = {
 			news_event = { id = trworldnews.132 hours = 3 }
 		}
@@ -4311,7 +4327,6 @@ country_event = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): chosen NWgeneric.9997b"
 			set_global_flag = AI_AGGRESSION_ULTRA_FLAG
 			every_country = {
-				add_ideas = ai_aggression_ultra_idea
 				set_rule = {
 					can_declare_war_on_same_ideology = yes
 					can_only_justify_war_on_threat_country = no
@@ -4440,7 +4455,6 @@ country_event = {
 	immediate = {
 		set_global_flag = AI_AGGRESSION_ULTRA_FLAG
 		every_country = {
-			add_ideas = ai_aggression_ultra_idea
 			set_rule = {
 				can_declare_war_on_same_ideology = yes
 				can_only_justify_war_on_threat_country = no

@@ -871,34 +871,6 @@ set_var_for_troz_threat_dyn = {
 get_best_alliance_leader_trozkism_international_effect = { #ONLY FOR 4 inter
 	if = {
 		limit = {
-			any_country = {
-				has_government = trozkism
-				set_temp_variable = { ROOT.best_leader = this }
-				set_temp_variable = { ROOT.best_leader_score = 0 }
-			}
-		}
-	}
-	if = {
-		limit = {
-			all_other_country = {
-				has_government = trozkism
-				set_temp_variable = { this.leader_score = num_of_factories }
-				add_to_temp_variable = { this.leader_score = num_battalions }
-				if = {
-					limit = {
-						check_variable = { ROOT.best_leader_score < leader_score }
-						set_temp_variable = { ROOT.best_leader = this }
-						set_temp_variable = { ROOT.best_leader_score = leader_score }
-					}
-				}
-			}
-		}
-	}
-}
-
-get_best_alliance_match_trozkism_international_effect = { #ONLY FOR 4 inter
-	if = {
-		limit = {
 			any_other_country = {
 				has_government = trozkism
 				set_temp_variable = { ROOT.best_leader = this }
@@ -923,3 +895,56 @@ get_best_alliance_match_trozkism_international_effect = { #ONLY FOR 4 inter
 		}
 	}
 }
+
+get_best_alliance_leader_trozkism_international_effect_1 = { #ONLY FOR 4 inter
+	hidden_effect = {
+		random_other_country = {
+			limit = { has_government = fascism }
+			set_temp_variable = { global.best_leader = this }
+			set_temp_variable = { global.best_leader_score = 0 }
+		}
+		every_other_country = {
+			limit = { has_government = fascism }
+			set_temp_variable = { this.leader_score = num_of_factories }
+			add_to_temp_variable = { this.leader_score = num_battalions }
+			if = {
+				limit = {
+					check_variable = { global.best_leader_score < this.leader_score }
+					set_temp_variable = { global.best_leader = this }
+					set_temp_variable = { global.best_leader_score = leader_score }
+				}
+			}
+		}
+	}
+}
+
+get_best_alliance_match_trozkism_international_effect = { #ONLY FOR 4 inter
+	if = {
+		limit = {
+			any_other_country = {
+				has_government = trozkism
+				NOT = { has_country_flag = looser_flag }
+			}
+		}
+		random_other_country = {
+			limit = {
+				has_government = trozkism
+				NOT = { has_country_flag = looser_flag }
+			}
+			set_temp_variable = { current_tag = num_of_factories }
+			add_to_temp_variable = { current_tag = num_battalions }
+			if = {
+				limit = {
+					check_variable = { global.current_leader < current_tag }
+				}
+				country_event = NWgeneric.20001
+			}
+			else = {
+				set_country_flag = looser_flag
+				ROOT = { country_event = NWgeneric.20001 }
+			}
+		}
+	}
+	else = { country_event = NWgeneric.201 }
+}
+
