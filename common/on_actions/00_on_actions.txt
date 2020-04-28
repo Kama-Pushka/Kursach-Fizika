@@ -730,16 +730,67 @@ on_actions = {
 				}
 				country_event = { id = wtt_denmark.1 days = 1 }
 			}
+			#if = {
+			#	limit = {
+			#		original_tag = FRA
+			#		has_government = democratic
+			#		NOT = { has_global_flag = achievement_france_surrender } #might as well use the achievement flag to check if france.10 fired
+			#		is_subject = no
+			#		is_in_faction_with = ENG
+			#		has_war_with = GER
+			#	}
+			#	country_event = france.10
+			#}
 			if = {
 				limit = {
-					original_tag = FRA
-					has_government = democratic
-					NOT = { has_global_flag = achievement_france_surrender } #might as well use the achievement flag to check if france.10 fired
+					tag = FRA
 					is_subject = no
-					is_in_faction_with = ENG
-					has_war_with = GER
+					OR = {
+						has_government = democratic
+						has_government = neutrality
+					}
+					NOT = { has_war_with = FRC }
+					OR = {
+						AND = {
+							has_war_with = GER
+							GER = { has_government = fascism }
+							NOT = { has_war_with = ITA }
+						}
+						AND = {
+							has_war_with = ITA
+							ITA = { has_government = fascism }
+							NOT = { has_war_with = GER }
+						}
+						AND = {
+							GER = {
+								has_war_with = FRA
+								has_government = fascism
+							}
+							ITA = {
+								has_war_with = FRA
+								is_in_faction_with = GER
+								has_government = fascism
+							}
+						}
+					}
+					NOT = {
+						any_state = {
+							NOT = { state = 114 }
+							is_controlled_by = FRA
+							OR = {
+								is_core_of = GER
+								is_core_of = ITA
+							}
+						}
+					}
+					16 = {
+						OR = {
+							is_controlled_by = GER
+							is_controlled_by = ITA
+						}
+					}
 				}
-				country_event = france.10
+				country_event = NWfrance.101
 			}
 		}
 	}
