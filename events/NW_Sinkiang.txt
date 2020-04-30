@@ -36,35 +36,77 @@ country_event = {
 	fire_only_once = yes
 	
 	trigger = {
-		has_country_flag = SIK_mahmud_muhiti_escaped
-	}
+	    if = {
+		    limit = {
+		     	AND = {
+    				has_country_flag = SIK_muhiti_increased_influence_1
+			        has_country_flag = SIK_muhiti_bought_rifles
+                }		    
+			}
+		    date > 1936.10.05
+		}
+        else_if = {
+            limit = {
+                OR = {
+				    has_country_flag = SIK_muhiti_increased_influence_1
+			        has_country_flag = SIK_muhiti_bought_rifles
+	            }
+	        }
+			date > 1937.01.05
+		}
+        else = {
+ 		    date > 1937.04.05
+		}
+    }		
 	
 	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWsinkiang.2 " }
-	
-	option = {
-		name = NWsinkiang.2.a
-		every_unit_leader = {
+	immediate = {
+	    UYG = {
+			transfer_state = 619
+		    inherit_technology = SIK
+		    load_oob = "UYG_1936"
+		}
+	    every_unit_leader = {
 		    limit = {
 			    OR = {
+				    has_id = 15555
 			        has_id = 15556
 					has_id = 15557
 		        }
 			}
 		    set_nationality = UYG
 	    }
-		UYG = {
-			transfer_state = 619
-		    create_country_leader = {
-				name = "Abdullah Niyaz"
-				desc = ""
-				picture = "gfx/leaders/Asia/Portrait_Asia_Generic_land_4.dds"
-				expire = "1965.1.1"
-				ideology = militarism
-				traits = {
-				}
+		if = {
+		    limit = {
+		     	AND = {
+    				has_country_flag = SIK_muhiti_increased_influence_1
+			        has_country_flag = SIK_muhiti_bought_rifles
+                }		    
 			}
-			inherit_technology = SIK
-			load_oob = "UYG_revolt"
+		    capital_scope = {
+			    create_unit = {
+			    	division = "name = \"Uyghur Militia\" division_template = \"Juntuán\" start_experience_factor = 0.4 start_equipment_factor = 0.8"
+			        owner = UYG
+			    }
+				create_unit = {
+			    	division = "name = \"Uyghur Militia\" division_template = \"Juntuán\" start_experience_factor = 0.4 start_equipment_factor = 0.8"
+			        owner = UYG
+			    }
+			}	
+		}
+        else_if = {
+            limit = {
+                OR = {
+				    has_country_flag = SIK_muhiti_increased_influence_1
+			        has_country_flag = SIK_muhiti_bought_rifles
+	            }
+	        }
+			capital_scope = {
+			    create_unit = {
+			    	division = "name = \"Uyghur Militia\" division_template = \"Juntuán\" start_experience_factor = 0.4 start_equipment_factor = 0.8"
+			        owner = UYG
+			    }
+			}	
 		}
 		declare_war_on = {
 			target = UYG
@@ -87,58 +129,13 @@ country_event = {
 				}
 			}
 		}
+	}
+	option = {
+		name = NWsinkiang.2.a
 	}	
 	option = {
 		name = NWsinkiang.2.b
 		trigger = { is_ai = no }
-		every_state = {
-			limit = { is_core_of = SIK }
-			add_core_of = UYG
-		}
-		every_unit_leader = {
-		    limit = {
-			    OR = {
-			        has_id = 15556
-					has_id = 15557
-		        }
-			}
-		    set_nationality = UYG
-	    }
-		UYG = {
-			transfer_state = 619
-		    create_country_leader = {
-				name = "Abdullah Niyaz"
-				desc = ""
-				picture = "gfx/leaders/Asia/Portrait_Asia_Generic_land_4.dds"
-				expire = "1965.1.1"
-				ideology = militarism
-				traits = {
-				}
-			}
-			inherit_technology = SIK
-			load_oob = "UYG_revolt"
-		}
-		declare_war_on = {
-			target = UYG
-			type = civil_war
-		}
-		add_civil_war_target = UYG
-		hidden_effect = {
-			617 = {
-				create_unit = {
-					division = "name = \"Kirgiz Brigade\" division_template = \"Juntuán\" start_experience_factor = 0.45" 
-					owner = ROOT
-				}
-				create_unit = {
-					division = "name = \"Kirgiz Brigade\" division_template = \"Juntuán\" start_experience_factor = 0.45" 
-					owner = ROOT
-				}
-				create_unit = {
-					division = "name = \"Kirgiz Brigade\" division_template = \"Juntuán\" start_experience_factor = 0.45" 
-					owner = ROOT
-				}
-			}
-		}
         UYG = { change_tag_from = ROOT }		
     }
 }
@@ -199,7 +196,22 @@ country_event = {
 		custom_effect_tooltip = UYG_volunteers_will_spawn
 		add_opinion_modifier = { target = AFG modifier = UYG_AFG_agreed }
 		hidden_effect = {
-			load_oob = "UYG_AFG_volunteers"
+			division_template = {
+				name = "Afghan Volunteers"
+				regiments = {
+					infantry = { x = 0 y = 0 }
+					infantry = { x = 0 y = 1 }
+					infantry = { x = 0 y = 2 }
+					infantry = { x = 1 y = 0 }
+					infantry = { x = 1 y = 1 }
+				}
+			}
+            capital_scope = {
+				create_unit = {
+			    	division = "name = \"Afghan Volunteers\" division_template = \"Afghan Volunteers\" start_experience_factor = 0.4 start_equipment_factor = 1.0"
+			        owner = ROOT
+			    }
+			}
 		}
 	}
 }
@@ -247,7 +259,7 @@ country_event = {
 			type = infantry_equipment
 			amount = 600
 		}
-		set_country_flag = SIK_muhiti_increased_influence
+		set_country_flag = SIK_muhiti_bought_rifles
 	}
 	
 	option = {
@@ -291,106 +303,4 @@ country_event = {
 		add_stability = -0.05
 	    add_political_power = -50
 	}
-}
-
-country_event = {
-	id = NWsinkiang.6
-	title = NWsinkiang.6.t
-	desc = NWsinkiang.6.desc
-	picture = GFX_report_event_chinese_soldiers
-	fire_only_once = yes
-	
-	trigger = {
-		has_country_flag = SIK_muhiti_increased_influence_1
-		date > 1936.10.05
-	}
-	
-	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWsinkiang.6" }
-	
-	option = {
-		name = NWsinkiang.6.a
-		every_unit_leader = {
-		    limit = {
-			    OR = {
-				    has_id = 15555
-			        has_id = 15556
-					has_id = 15557
-		        }
-			}
-		    set_nationality = UYG
-	    }
-		UYG = {
-			transfer_state = 619
-			load_oob = "UYG_revolt_1"
-			inherit_technology = SIK
-		}
-		declare_war_on = {
-			target = UYG
-			type = civil_war
-		}
-		add_civil_war_target = UYG
-		set_global_flag = SIK_burhan_shahidi_escaped
-		hidden_effect = {
-			617 = {
-				create_unit = {
-					division = "name = \"Kirgiz Brigade\" division_template = \"Juntuán\" start_experience_factor = 0.45" 
-					owner = ROOT
-				}
-				create_unit = {
-					division = "name = \"Kirgiz Brigade\" division_template = \"Juntuán\" start_experience_factor = 0.45" 
-					owner = ROOT
-				}
-				create_unit = {
-					division = "name = \"Kirgiz Brigade\" division_template = \"Juntuán\" start_experience_factor = 0.45" 
-					owner = ROOT
-				}
-			}
-		}
-	}	
-	option = {
-		name = NWsinkiang.6.b
-		trigger = { is_ai = no }
-		every_state = {
-			limit = { is_core_of = SIK }
-			add_core_of = UYG
-		}
-		every_unit_leader = {
-		    limit = {
-			    OR = {
-				    has_id = 15555
-			        has_id = 15556
-					has_id = 15557
-		        }
-			}
-		    set_nationality = UYG
-	    }
-		UYG = {
-			transfer_state = 619
-			load_oob = "UYG_revolt_1"
-			inherit_technology = SIK
-		}
-		set_country_flag = SIK_burhan_shahidi_escaped
-		declare_war_on = {
-			target = UYG
-			type = civil_war
-		}
-		add_civil_war_target = UYG
-		hidden_effect = {
-			617 = {
-				create_unit = {
-					division = "name = \"Kirgiz Brigade\" division_template = \"Juntuán\" start_experience_factor = 0.45" 
-					owner = ROOT
-				}
-				create_unit = {
-					division = "name = \"Kirgiz Brigade\" division_template = \"Juntuán\" start_experience_factor = 0.45" 
-					owner = ROOT
-				}
-				create_unit = {
-					division = "name = \"Kirgiz Brigade\" division_template = \"Juntuán\" start_experience_factor = 0.45" 
-					owner = ROOT
-				}
-			}
-		}
-        UYG = { change_tag_from = ROOT }		
-    }
 }
