@@ -1422,6 +1422,11 @@ country_event = {
 			id = "PER"
 			value = 600
 		}
+		add_ai_strategy = {
+			type = prepare_for_war
+			id = "PER"
+			value = 100
+		}
 		ENG = {
 			add_ai_strategy = {
 				type = antagonize
@@ -1432,6 +1437,11 @@ country_event = {
 				type = conquer
 				id = "PER"
 				value = 600
+			}
+			add_ai_strategy = {
+				type = prepare_for_war
+				id = "PER"
+				value = 100
 			}
 		}
 	}
@@ -1652,15 +1662,9 @@ country_event = {
 	title = NWpersian.330.t
 	desc = NWpersian.330.desc
 	picture = GFX_report_event_generic_rally_3
-	fire_only_once = yes
+	#fire_only_once = yes
 	
-	immediate = {
-		log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWpersian.330"
-		PER = {
-			clr_country_flag = PER_war_against_ENG_SOV
-			set_country_flag = PER_peace_ENG_SOV
-		}
-	}
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWpersian.330" }
 	
 	trigger = {
 		OR = {
@@ -1677,7 +1681,7 @@ country_event = {
 		}
 	}
 	
-	mean_time_to_happen = { days = 15 }
+	mean_time_to_happen = { days = 7 }
 	
 	option = {
 		name = NWpersian.330.a
@@ -1693,6 +1697,8 @@ country_event = {
 				}
 			}
 			hidden_effect = {
+				clr_country_flag = PER_war_against_ENG_SOV
+				set_country_flag = PER_peace_ENG_SOV
 				if = {
 					limit = { NOT = { owns_state = 413 } }
 					transfer_state = 413
@@ -1719,8 +1725,8 @@ country_event = {
 			}
 			hidden_effect = {
 				if = {
-					limit = { NOT = { has_country_flag = NWpersian_73_flag } }
-					country_event = { id = NWpersian.73 days = 14 }
+					limit = { PER = { NOT = { has_country_flag = NWpersian_73_flag } } }
+					PER = { country_event = { id = NWpersian.73 days = 14 } }
 				}
 			}
 		}
@@ -1769,12 +1775,6 @@ country_event = {
 					transfer_state = 420
 					transfer_state = 963
 					transfer_state = 1099
-				}
-				hidden_effect = {
-					if = {
-						limit = { NOT = { has_country_flag = NWpersian_73_flag } }
-						country_event = { id = NWpersian.73 days = 14 }
-					}
 				}
 			}
 			if = {
@@ -3283,17 +3283,27 @@ country_event = {
 				}
 				add_core_of = PEN
 			}
-			set_autonomy = {
-				target = PEN
-				autonomy_state = autonomy_satellite
-			}
 			every_state = {
 				limit = {
 					is_owned_by = PER
 				}
 				add_claim_by = PEN
 			}
-			PEN = { load_oob = "PEN_1936" }
+			FROM = {
+				set_autonomy = {
+					target = PEN
+					autonomy_state = autonomy_satellite
+				}
+			}
+			PEN = {
+				load_oob = "PEN_1936"
+				declare_war_on = {
+					target = ROOT
+					type = civil_war
+				}
+				add_civil_war_target = ROOT
+			}
+			ROOT = { add_civil_war_target = PEN }
 		}
 	}
 	
@@ -3319,17 +3329,27 @@ country_event = {
 				}
 				add_core_of = PEN
 			}
-			set_autonomy = {
-				target = PEN
-				autonomy_state = autonomy_satellite
-			}
 			every_state = {
 				limit = {
 					is_owned_by = PER
 				}
 				add_claim_by = PEN
 			}
-			PEN = { load_oob = "PEN_1936" }
+			FROM = {
+				set_autonomy = {
+					target = PEN
+					autonomy_state = autonomy_satellite
+				}
+			}
+			PEN = {
+				load_oob = "PEN_1936"
+				declare_war_on = {
+					target = ROOT
+					type = civil_war
+				}
+				add_civil_war_target = ROOT
+			}
+			ROOT = { add_civil_war_target = PEN }
 		}
 		PEN = { change_tag_from = ROOT }
 	}
@@ -3635,7 +3655,14 @@ country_event = {
 				set_rule = { can_join_factions = no }
 			}
 			random_other_country = {
-				limit = { has_country_flag = owner_412_flag }
+				limit = {
+					has_country_flag = owner_412_flag
+					NOT = {
+						is_subject_of = SOV
+						is_subject_of = ENG
+						tag = ENG
+					}
+				}
 				clr_country_flag = owner_412_flag
 				declare_war_on = {
 					target = QAS
@@ -3903,11 +3930,11 @@ country_event = {
 			threat = 3 
 			name = PER_government_engineers
 		}
-		custom_effect_tooltip = NWpersian_78_tt
+		#custom_effect_tooltip = NWpersian_78_tt
 		hidden_effect = {
 			#set_country_flag = persian_technocratic_focus_flag
 			#load_focus_tree = persian_technocratic_focus
-			complete_national_focus = PER_government_engineers
+			#complete_national_focus = PER_government_engineers
 			news_event = { hours = 6 id = trworldnews.103 }
 		}
 	}

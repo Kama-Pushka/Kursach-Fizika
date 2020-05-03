@@ -1996,7 +1996,7 @@
 	shared_focus = {
 		id = colonial_department
 		icon = GFX_z_goal_government
-		x = 10
+		x = 12
 		y = 0
 		relative_position_id = industrial_innovations
 		cost = 7.15
@@ -2008,7 +2008,9 @@
 		available = {
 			num_subjects > 0
 		}
-
+		
+		search_filters = { FOCUS_FILTER_POLITICAL }
+		search_filters = { FOCUS_FILTER_STABILITY }
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus colonial_department"
 			add_stability = 0.015
@@ -2025,7 +2027,7 @@
 		icon = GFX_z_goal_two_great_empires
 		prerequisite = { focus = colonial_department }
 		mutually_exclusive = { focus = colonial_policy }
-		x = -2
+		x = -4
 		y = 1
 		relative_position_id = colonial_department
 		cost = 7.15
@@ -2049,13 +2051,20 @@
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus policy_of_protectorates"
 			add_political_power = 50
-			every_country = {
+			unlock_decision_category_tooltip = generic_protectorate_policy_category
+			if = {
+				limit = { num_subjects < 1 }
+				custom_effect_tooltip = every_our_subject_tt
+				effect_tooltip = {
+					add_political_power = 50
+				}
+			}
+			every_other_country = {
 				limit = {
 					is_subject_of = ROOT
 				}
 				add_political_power = 50
 			}
-			unlock_decision_category_tooltip = generic_protectorate_policy_category
 			custom_effect_tooltip = policy_of_protectorates_tt
 		}
 
@@ -2065,79 +2074,6 @@
 				add = 1.5
 				has_government = democratic
 			}
-		}
-	}
-	
-	shared_focus = {
-		id = colonial_policy
-		icon = GFX_z_guarantee_autonomy_minorities
-		prerequisite = { focus = colonial_department }
-		mutually_exclusive = { focus = policy_of_protectorates }
-		x = 2
-		y = 1
-		relative_position_id = colonial_department
-		cost = 7.15
-
-		available_if_capitulated = no
-		continue_if_invalid = no
-		cancel_if_invalid = yes
-		
-		available = {
-			num_subjects > 0
-			OR = {
-				has_government = monarchy
-				has_government = democratic
-				has_government = neutrality
-				has_government = fascism
-			}
-		}
-
-		completion_reward = {
-			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus colonial_policy"
-			every_country = {
-				limit = {
-					is_puppet_of = ROOT
-				}
-				add_timed_idea = {
-					idea = colonial_policy
-					days = 500
-				}
-			}
-			custom_effect_tooltip = colonial_policy_tt
-		}
-
-		ai_will_do = {
-			factor = 3
-			modifier = {
-				add = 3
-				has_government = fascism
-			}
-		}
-	}
-	
-	shared_focus = {
-		id = investment_in_subject
-		icon = GFX_z_goal_generic_increased_intervention_in_economy
-		prerequisite = { focus = policy_of_protectorates focus = colonial_policy }
-		x = 0
-		y = 2
-		relative_position_id = colonial_department
-		cost = 7.15
-
-		available_if_capitulated = no
-		continue_if_invalid = no
-		cancel_if_invalid = yes
-		
-		available = {
-			num_subjects > 0
-		}
-
-		completion_reward = {
-			unlock_decision_category_tooltip = generic_investment_in_subject_category
-		}
-
-		ai_will_do = {
-			factor = 10
 		}
 	}
 	
@@ -2159,7 +2095,26 @@
 		}
 
 		completion_reward = {
-			every_country = {
+			if = {
+				limit = { num_subjects < 1 }
+				custom_effect_tooltip = every_our_dominion_tt
+				effect_tooltip = {
+					add_ideas = coordination_committee_dominion
+				}
+				custom_effect_tooltip = every_our_colony_tt
+				effect_tooltip = {
+					add_ideas = coordination_committee_colony
+				}
+				custom_effect_tooltip = every_our_puppet_tt
+				effect_tooltip = {
+					add_ideas = coordination_committee_puppet
+				}
+				custom_effect_tooltip = every_our_integrated_puppet_tt
+				effect_tooltip = {
+					add_ideas = coordination_committee_integrated_puppet
+				}
+			}
+			every_other_country = {
 				limit = {
 					is_subject_of = ROOT
 					OR = {
@@ -2170,7 +2125,7 @@
 				}
 				add_ideas = coordination_committee_dominion
 			}
-			every_country = {
+			every_other_country = {
 				limit = {
 					is_subject_of = ROOT
 					OR = {
@@ -2180,7 +2135,7 @@
 				}
 				add_ideas = coordination_committee_colony
 			}
-			every_country = {
+			every_other_country = {
 				limit = {
 					is_subject_of = ROOT
 					OR = {
@@ -2191,7 +2146,7 @@
 				}
 				add_ideas = coordination_committee_puppet
 			}
-			every_country = {
+			every_other_country = {
 				limit = {
 					is_subject_of = ROOT
 					OR = {
@@ -2210,11 +2165,10 @@
 	}
 	
 	shared_focus = {
-		id = military_cooperation
-		icon = GFX_z_goal_new_army
+		id = new_housing_program
+		icon = GFX_z_goal_soviet_affordable_housing4
 		prerequisite = { focus = coordination_committee }
-		prerequisite = { focus = investment_in_subject }
-		x = 1
+		x = 0
 		y = 1
 		relative_position_id = coordination_committee
 		cost = 7.15
@@ -2225,207 +2179,77 @@
 		
 		available = {
 			num_subjects > 0
-		}
-
-		completion_reward = {
-			set_temp_variable = { total_manpower = 0 }
-			every_country = {
-				limit = {
-					is_subject_of = ROOT
-					OR = {
-						has_autonomy_state = autonomy_dominion
-						has_autonomy_state = autonomy_satellite
-						has_autonomy_state = autonomy_condominium
-						
-					}
-				}
-				add_ideas = military_cooperation_dominion
-				add_to_temp_variable = { ROOT.total_manpower = 40000 }
-			}
-			every_country = {
-				limit = {
-					is_subject_of = ROOT
-					OR = {
-						has_autonomy_state = autonomy_colony
-						has_autonomy_state = autonomy_broresp
-					}
-				}
-				add_ideas = military_cooperation_colony
-				add_to_temp_variable = { ROOT.total_manpower = 20000 }
-			}
-			custom_effect_tooltip = military_cooperation_tt
-			hidden_effect = { add_manpower = total_manpower }
-		}
-
-		ai_will_do = {
-			factor = 3
-			modifier = {
-				factor = 0
-				any_country = {
-					is_subject_of = ROOT
-					NOT = {
-						has_autonomy_state = autonomy_dominion
-						has_autonomy_state = autonomy_satellite
-						has_autonomy_state = autonomy_condominium
-						has_autonomy_state = autonomy_colony
-						has_autonomy_state = autonomy_broresp
-					}
+			any_other_country = {
+				is_subject_of = ROOT
+				OR = {
+					has_autonomy_state = autonomy_dominion
+					has_autonomy_state = autonomy_satellite
+					has_autonomy_state = autonomy_condominium
+					has_autonomy_state = autonomy_colony
+					has_autonomy_state = autonomy_broresp
 				}
 			}
-		}
-	}
-	
-	shared_focus = {
-		id = joint_military_exercise
-		icon = GFX_z_goal_generic_allies_build_infantry_up
-		prerequisite = { focus = military_cooperation }
-		x = 0
-		y = 1
-		relative_position_id = military_cooperation
-		cost = 7.15
-
-		available_if_capitulated = no
-		continue_if_invalid = no
-		cancel_if_invalid = yes
-		
-		available = {
-			num_subjects > 0
-		}
-
-		completion_reward = {
-			add_tech_bonus = {
-				name = land_doc_bonus
-				bonus = 1
-				uses = 1
-				category = land_doctrine
-			}
-			every_country = {
-				limit = {
-					is_subject_of = ROOT
-					OR = {
-						has_autonomy_state = autonomy_dominion
-						has_autonomy_state = autonomy_satellite
-						has_autonomy_state = autonomy_condominium
-						has_autonomy_state = autonomy_colony
-						has_autonomy_state = autonomy_broresp
-					}
-				}
-				add_tech_bonus = {
-					name = land_doc_bonus
-					bonus = 1
-					uses = 1
-					category = land_doctrine
-				}
-			}
-			hidden_effect = {
-				set_temp_variable = { total_army_exp = 0 }
-				every_country = {
-					limit = {
-						is_subject_of = ROOT
-						OR = {
-							has_autonomy_state = autonomy_dominion
-							has_autonomy_state = autonomy_satellite
-							has_autonomy_state = autonomy_condominium
-						}
-					}
-					add_to_temp_variable = { ROOT.total_army_exp = 4 }
-				}
-				every_country = {
-					limit = {
-						is_subject_of = ROOT
-						OR = {
-						has_autonomy_state = autonomy_colony
-						has_autonomy_state = autonomy_broresp
-					}
-					}
-					add_to_temp_variable = { ROOT.total_army_exp = 3 }
-				}
-				every_country = {
-					limit = {
-						is_subject_of = ROOT
-						OR = {
-							has_autonomy_state = autonomy_puppet
-							has_autonomy_state = autonomy_reichsprotectorate
-							has_autonomy_state = autonomy_socprotect
-						}
-					}
-					add_to_temp_variable = { ROOT.total_army_exp = 2 }
-				}
-				every_country = {
-					limit = {
-						is_subject_of = ROOT
-						OR = {
-							has_autonomy_state = autonomy_integrated_puppet
-							has_autonomy_state = autonomy_reichskommissariat
-							has_autonomy_state = autonomy_marionet
-						}
-					}
-					add_to_temp_variable = { ROOT.total_army_exp = 1 }
-				}
-				army_experience = total_army_exp
-			}
-			custom_effect_tooltip = joint_military_exercise_tt
-		}
-
-		ai_will_do = {
-			factor = 3
-		}
-	}
-	
-	shared_focus = {
-		id = analysis_of_results
-		icon = GFX_goal_generic_production2
-		prerequisite = { focus = joint_military_exercise }
-		prerequisite = { focus = total_rearm }
-		x = 0
-		y = 2
-		relative_position_id = joint_military_exercise
-		cost = 7.15
-
-		available_if_capitulated = no
-		continue_if_invalid = no
-		cancel_if_invalid = yes
-		
-		available = {
-			num_subjects > 0
 		}
 
 		completion_reward = {
 			if = {
-				limit = {
-					OR = {
-						num_subjects < 1
-						any_country = {
-							is_subject_of = ROOT
-							NOT = {
-								has_country_flag = generic_investment_in_subject_flag_1
-								has_country_flag = generic_investment_in_subject_flag_2
-							}
-						}
+				limit = { num_subjects < 1 }
+				custom_effect_tooltip = every_our_dominion_tt
+				effect_tooltip = {
+					add_timed_idea = { idea = new_housing_program_dominion days = 600 }
+					add_building_construction = {
+						type = hospital
+						level = 1
+						instant_build = yes
 					}
 				}
-				custom_effect_tooltip = analysis_of_results_tt
+				custom_effect_tooltip = every_our_colony_tt
+				effect_tooltip = {
+					add_timed_idea = { idea = new_housing_program_colony days = 300 }
+					add_building_construction = {
+						type = hospital
+						level = 1
+						instant_build = yes
+					}
+				}
 			}
-			every_country = {
+			every_other_country = {
 				limit = {
 					is_subject_of = ROOT
 					OR = {
-						has_country_flag = generic_investment_in_subject_flag_1
-						has_country_flag = generic_investment_in_subject_flag_2
+						has_autonomy_state = autonomy_dominion
+						has_autonomy_state = autonomy_satellite
+						has_autonomy_state = autonomy_condominium
 					}
 				}
+				add_timed_idea = { idea = new_housing_program_dominion days = 600 }
 				random_owned_controlled_state = {
-					limit = { 
-						free_building_slots = {
-							building = industrial_complex
-							size > 1
-							include_locked = yes
-						}
+					limit = {
+						hospital < 5
 					}
-					add_extra_state_shared_building_slots = 2
 					add_building_construction = {
-						type = industrial_complex
-						level = 2
+						type = hospital
+						level = 1
+						instant_build = yes
+					}
+				}
+			}
+			every_other_country = {
+				limit = {
+					is_subject_of = ROOT
+					OR = {
+						has_autonomy_state = autonomy_colony
+						has_autonomy_state = autonomy_broresp
+					}
+				}
+				add_timed_idea = { idea = new_housing_program_colony days = 300 }
+				random_owned_controlled_state = {
+					limit = {
+						hospital < 5
+					}
+					add_building_construction = {
+						type = hospital
+						level = 1
 						instant_build = yes
 					}
 				}
@@ -2433,31 +2257,15 @@
 		}
 
 		ai_will_do = {
-			factor = 2
+			factor = 3
 			modifier = {
-				factor = 0.1
-				any_country = {
-					is_subject_of = ROOT
-					NOT = {
-						has_country_flag = generic_investment_in_subject_flag_1
-						has_country_flag = generic_investment_in_subject_flag_2
-					}
-				}
-			}
-			modifier = {
-				factor = 5
-				any_country = {
-					is_subject_of = ROOT
-					NOT = {
-						NOT = {
-							has_country_flag = generic_investment_in_subject_flag_1
-							has_country_flag = generic_investment_in_subject_flag_2
-						}
-					}
-				}
+				factor = 0.5
+				num_subjects < 2
 			}
 		}
 	}
+	
+	
 	
 	shared_focus = {
 		id = involvement_in_civil_sphere
@@ -2474,14 +2282,32 @@
 		
 		available = {
 			num_subjects > 0
+			any_other_country = {
+				is_subject_of = ROOT
+				OR = {
+					has_autonomy_state = autonomy_dominion
+					has_autonomy_state = autonomy_satellite
+					has_autonomy_state = autonomy_condominium
+					has_autonomy_state = autonomy_colony
+					has_autonomy_state = autonomy_broresp
+				}
+			}
 		}
 
 		completion_reward = {
+			custom_effect_tooltip = every_our_dominion_tt
+			effect_tooltip = {
+				add_extra_state_shared_building_slots = 2
+			}
+			custom_effect_tooltip = every_our_colony_tt
+			effect_tooltip = {
+				add_extra_state_shared_building_slots = 1
+			}
 			custom_effect_tooltip = involvement_in_civil_sphere_tt
 			hidden_effect = {
 				set_temp_variable = { total_factory = 0 }
 				set_temp_variable = { total_colony = 0 }
-				every_country = {
+				every_other_country = {
 					limit = {
 						is_subject_of = ROOT
 						OR = {
@@ -2495,7 +2321,7 @@
 					}
 					add_to_temp_variable = { ROOT.total_factory = 1 }
 				}
-				every_country = {
+				every_other_country = {
 					limit = {
 						is_subject_of = ROOT
 						OR = {
@@ -2524,24 +2350,15 @@
 		ai_will_do = {
 			factor = 3
 			modifier = {
-				factor = 0
-				any_country = {
-					is_subject_of = ROOT
-					NOT = {
-						has_autonomy_state = autonomy_dominion
-						has_autonomy_state = autonomy_satellite
-						has_autonomy_state = autonomy_condominium
-						has_autonomy_state = autonomy_colony
-						has_autonomy_state = autonomy_broresp
-					}
-				}
+				factor = 0.5
+				num_subjects < 2
 			}
 		}
 	}
 	
 	shared_focus = {
-		id = unification_of_railway
-		icon = GFX_goal_generic_construct_infrastructure
+		id = city_forming_enterprises
+		icon = GFX_z_goal_soviet_mil_city1
 		prerequisite = { focus = involvement_in_civil_sphere }
 		x = -1
 		y = 1
@@ -2554,75 +2371,83 @@
 		
 		available = {
 			num_subjects > 0
+			any_other_country = {
+				is_subject_of = ROOT
+				OR = {
+					has_autonomy_state = autonomy_dominion
+					has_autonomy_state = autonomy_satellite
+					has_autonomy_state = autonomy_condominium
+					has_autonomy_state = autonomy_colony
+					has_autonomy_state = autonomy_broresp
+				}
+			}
 		}
 
 		completion_reward = {
-			custom_effect_tooltip = unification_of_railway_tt
-			hidden_effect = {
-				every_country = {
-					limit = {
-						is_subject_of = ROOT
-						OR = {
-							has_autonomy_state = autonomy_dominion
-							has_autonomy_state = autonomy_satellite
-							has_autonomy_state = autonomy_condominium
-						}
-					}
-					capital_scope = {
-						add_building_construction = {
-							type = infrastructure
-							level = 2
-							instant_build = yes
-						}
-						every_neighbor_state = {
-							add_building_construction = {
-								type = infrastructure
-								level = 2
-								instant_build = yes
-							}
-						} 
+			if = {
+				limit = { num_subjects < 1 }
+				custom_effect_tooltip = every_our_dominion_tt
+				effect_tooltip = {
+					add_extra_state_shared_building_slots = 2
+					add_building_construction = {
+						type = industrial_complex
+						level = 2
+						instant_build = yes
 					}
 				}
-				every_country = {
-					limit = {
-						is_subject_of = ROOT
-						OR = {
-							has_autonomy_state = autonomy_colony
-							has_autonomy_state = autonomy_broresp
-						}
-					}
-					capital_scope = {
-						add_building_construction = {
-							type = infrastructure
-							level = 1
-							instant_build = yes
-						}
-						every_neighbor_state = {
-							add_building_construction = {
-								type = infrastructure
-								level = 1
-								instant_build = yes
-							}
-						} 
+				custom_effect_tooltip = every_our_colony_tt
+				effect_tooltip = {
+					add_extra_state_shared_building_slots = 1
+					add_building_construction = {
+						type = industrial_complex
+						level = 1
+						instant_build = yes
 					}
 				}
 			}
+			every_other_country = {
+				limit = {
+					is_subject_of = ROOT
+					OR = {
+						has_autonomy_state = autonomy_dominion
+						has_autonomy_state = autonomy_satellite
+						has_autonomy_state = autonomy_condominium
+					}
+				}
+				capital_scope = {
+					add_extra_state_shared_building_slots = 2
+					add_building_construction = {
+						type = industrial_complex
+						level = 2
+						instant_build = yes
+					}
+				}
+			}
+			every_other_country = {
+				limit = {
+					is_subject_of = ROOT
+					OR = {
+						has_autonomy_state = autonomy_colony
+						has_autonomy_state = autonomy_broresp
+					}
+				}
+				capital_scope = {
+					add_extra_state_shared_building_slots = 1
+					add_building_construction = {
+						type = industrial_complex
+						level = 1
+						instant_build = yes
+					}
+				}
+			}
+			
 		}
 
 		ai_will_do = {
 			factor = 3
 			modifier = {
-				factor = 0
-				any_country = {
-					is_subject_of = ROOT
-					NOT = {
-						has_autonomy_state = autonomy_dominion
-						has_autonomy_state = autonomy_satellite
-						has_autonomy_state = autonomy_condominium
-						has_autonomy_state = autonomy_colony
-						has_autonomy_state = autonomy_broresp
-					}
-				}
+				factor = 0.5
+				num_subjects < 2
 			}
 		}
 	}
@@ -2630,11 +2455,10 @@
 	shared_focus = {
 		id = network_of_cities_mills
 		icon = GFX_focus_generic_industry_2
-		prerequisite = { focus = unification_of_railway }
-		prerequisite = { focus = new_housing_program }
-		x = 0
-		y = 2
-		relative_position_id = unification_of_railway
+		prerequisite = { focus = city_forming_enterprises }
+		x = -1
+		y = 1
+		relative_position_id = city_forming_enterprises
 		cost = 7.15
 
 		available_if_capitulated = no
@@ -2643,14 +2467,35 @@
 		
 		available = {
 			num_subjects > 0
+			any_other_country = {
+				is_subject_of = ROOT
+				OR = {
+					has_autonomy_state = autonomy_dominion
+					has_autonomy_state = autonomy_satellite
+					has_autonomy_state = autonomy_condominium
+					has_autonomy_state = autonomy_colony
+					has_autonomy_state = autonomy_broresp
+				}
+			}
 		}
 
 		completion_reward = {
 			if = {
 				limit = { num_subjects < 1 }
+				custom_effect_tooltip = every_our_dominion_tt
+				custom_effect_tooltip = network_of_cities_mills_tt
+				effect_tooltip = {
+					add_extra_state_shared_building_slots = 1
+					add_building_construction = {
+						type = industrial_complex
+						level = 1
+						instant_build = yes
+					}
+				}
+				custom_effect_tooltip = every_our_colony_tt
 				custom_effect_tooltip = network_of_cities_mills_tt
 			}
-			every_country = {
+			every_other_country = {
 				limit = {
 					is_subject_of = ROOT
 					OR = {
@@ -2669,7 +2514,7 @@
 					up_state_category = yes
 				}
 			}
-			every_country = {
+			every_other_country = {
 				limit = {
 					is_subject_of = ROOT
 					OR = {
@@ -2686,24 +2531,97 @@
 		ai_will_do = {
 			factor = 3
 			modifier = {
-				factor = 0
-				any_country = {
-					is_subject_of = ROOT
-					NOT = {
-						has_autonomy_state = autonomy_dominion
-						has_autonomy_state = autonomy_satellite
-						has_autonomy_state = autonomy_condominium
-						has_autonomy_state = autonomy_colony
-						has_autonomy_state = autonomy_broresp
-					}
-				}
+				factor = 0.5
+				num_subjects < 2
 			}
 		}
 	}
 	
 	shared_focus = {
-		id = city_forming_enterprises
-		icon = GFX_z_goal_soviet_mil_city1
+		id = analysis_of_results
+		icon = GFX_goal_generic_production2
+		prerequisite = { focus = city_forming_enterprises }
+		x = 0
+		y = 2
+		relative_position_id = city_forming_enterprises
+		cost = 7.15
+
+		available_if_capitulated = no
+		continue_if_invalid = no
+		cancel_if_invalid = yes
+		
+		available = {
+			num_subjects > 0
+			custom_trigger_tooltip = {
+				tooltip = has_investment_in_subject_tt
+				any_other_country = {
+					is_subject_of = ROOT
+					OR = {
+						has_country_flag = generic_investment_in_subject_flag_1
+						has_country_flag = generic_investment_in_subject_flag_2
+					}
+				}
+			}
+		}
+
+		completion_reward = {
+			if = {
+				limit = {
+					OR = {
+						num_subjects < 1
+						any_other_country = {
+							is_subject_of = ROOT
+							NOT = {
+								has_country_flag = generic_investment_in_subject_flag_1
+								has_country_flag = generic_investment_in_subject_flag_2
+							}
+						}
+					}
+				}
+				custom_effect_tooltip = every_our_subject_with_investment_tt
+				effect_tooltip = {
+					add_extra_state_shared_building_slots = 2
+					add_building_construction = {
+						type = industrial_complex
+						level = 2
+						instant_build = yes
+					}
+				}
+			}
+			every_other_country = {
+				limit = {
+					is_subject_of = ROOT
+					OR = {
+						has_country_flag = generic_investment_in_subject_flag_1
+						has_country_flag = generic_investment_in_subject_flag_2
+					}
+				}
+				random_owned_controlled_state = {
+					limit = { 
+						free_building_slots = {
+							building = industrial_complex
+							size > 1
+							include_locked = yes
+						}
+					}
+					add_extra_state_shared_building_slots = 2
+					add_building_construction = {
+						type = industrial_complex
+						level = 2
+						instant_build = yes
+					}
+				}
+			}
+		}
+
+		ai_will_do = {
+			factor = 5
+		}
+	}
+	
+	shared_focus = {
+		id = unification_of_railway
+		icon = GFX_goal_generic_construct_infrastructure
 		prerequisite = { focus = involvement_in_civil_sphere }
 		x = 1
 		y = 1
@@ -2716,233 +2634,7 @@
 		
 		available = {
 			num_subjects > 0
-		}
-
-		completion_reward = {
-			custom_effect_tooltip = city_forming_enterprises_tt
-			hidden_effect = {
-				every_country = {
-					limit = {
-						is_subject_of = ROOT
-						OR = {
-							has_autonomy_state = autonomy_dominion
-							has_autonomy_state = autonomy_satellite
-							has_autonomy_state = autonomy_condominium
-						}
-					}
-					capital_scope = {
-						add_building_construction = {
-							type = industrial_complex
-							level = 2
-							instant_build = yes
-						}
-					}
-				}
-				every_country = {
-					limit = {
-						is_subject_of = ROOT
-						OR = {
-							has_autonomy_state = autonomy_colony
-							has_autonomy_state = autonomy_broresp
-						}
-					}
-					capital_scope = {
-						add_building_construction = {
-							type = industrial_complex
-							level = 1
-							instant_build = yes
-						}
-					}
-				}
-			}
-		}
-
-		ai_will_do = {
-			factor = 3
-			modifier = {
-				factor = 0
-				any_country = {
-					is_subject_of = ROOT
-					NOT = {
-						has_autonomy_state = autonomy_dominion
-						has_autonomy_state = autonomy_satellite
-						has_autonomy_state = autonomy_condominium
-						has_autonomy_state = autonomy_colony
-						has_autonomy_state = autonomy_broresp
-					}
-				}
-			}
-		}
-	}
-	
-	shared_focus = {
-		id = new_housing_program
-		icon = GFX_z_goal_soviet_affordable_housing4
-		prerequisite = { focus = city_forming_enterprises }
-		x = -1
-		y = 1
-		relative_position_id = city_forming_enterprises
-		cost = 7.15
-
-		available_if_capitulated = no
-		continue_if_invalid = no
-		cancel_if_invalid = yes
-		
-		available = {
-			num_subjects > 0
-		}
-
-		completion_reward = {
-			every_country = {
-				limit = {
-					is_subject_of = ROOT
-					OR = {
-						has_autonomy_state = autonomy_dominion
-						has_autonomy_state = autonomy_satellite
-						has_autonomy_state = autonomy_condominium
-					}
-				}
-				add_timed_idea = {
-					idea = new_housing_program_dominion
-					days = 602
-				}
-				random_owned_controlled_state = {
-					limit = {
-						hospital < 5
-					}
-					add_building_construction = {
-						type = hospital
-						level = 1
-						instant_build = yes
-					}
-				}
-			}
-			every_country = {
-				limit = {
-					is_subject_of = ROOT
-					OR = {
-						has_autonomy_state = autonomy_colony
-						has_autonomy_state = autonomy_broresp
-					}
-				}
-				add_timed_idea = {
-					idea = new_housing_program_colony
-					days = 301
-				}
-				random_owned_controlled_state = {
-					limit = {
-						hospital < 5
-					}
-					add_building_construction = {
-						type = hospital
-						level = 1
-						instant_build = yes
-					}
-				}
-			}
-		}
-
-		ai_will_do = {
-			factor = 3
-			modifier = {
-				factor = 0
-				any_country = {
-					is_subject_of = ROOT
-					NOT = {
-						has_autonomy_state = autonomy_dominion
-						has_autonomy_state = autonomy_satellite
-						has_autonomy_state = autonomy_condominium
-						has_autonomy_state = autonomy_colony
-						has_autonomy_state = autonomy_broresp
-					}
-				}
-			}
-		}
-	}
-	
-	shared_focus = {
-		id = military_city
-		icon = GFX_focus_generic_little_entente
-		prerequisite = { focus = city_forming_enterprises }
-		prerequisite = { focus = joint_military_exercise }
-		x = 1
-		y = 1
-		relative_position_id = city_forming_enterprises
-		cost = 7.15
-
-		available_if_capitulated = no
-		continue_if_invalid = no
-		cancel_if_invalid = yes
-		
-		available = {
-			num_subjects > 0
-		}
-
-		completion_reward = {
-			custom_effect_tooltip = military_city_tt
-			hidden_effect = {
-				set_temp_variable = { military_city = 0 }
-				every_country = {
-					limit = {
-						is_subject_of = ROOT
-						OR = {
-							has_autonomy_state = autonomy_dominion
-							has_autonomy_state = autonomy_satellite
-							has_autonomy_state = autonomy_condominium
-						}
-					}
-					add_ideas = military_city
-					add_to_temp_variable = { ROOT.military_city = 50000 }
-				}
-				every_country = {
-					limit = {
-						is_subject_of = ROOT
-						OR = {
-							has_autonomy_state = autonomy_colony
-							has_autonomy_state = autonomy_broresp
-						}
-					}
-					add_to_temp_variable = { ROOT.military_city = 35000 }
-				}
-				add_manpower = military_city
-			}
-		}
-
-		ai_will_do = {
-			factor = 3
-			modifier = {
-				factor = 0
-				any_country = {
-					is_subject_of = ROOT
-					NOT = {
-						has_autonomy_state = autonomy_dominion
-						has_autonomy_state = autonomy_satellite
-						has_autonomy_state = autonomy_condominium
-						has_autonomy_state = autonomy_colony
-						has_autonomy_state = autonomy_broresp
-					}
-				}
-			}
-		}
-	}
-	
-	shared_focus = {
-		id = cooperative_defense_production
-		icon = GFX_z_goal_military_mobilisation
-		prerequisite = { focus = new_housing_program }
-		prerequisite = { focus = military_city }
-		x = 1
-		y = 1
-		relative_position_id = new_housing_program
-		cost = 7.15
-
-		available_if_capitulated = no
-		continue_if_invalid = no
-		cancel_if_invalid = yes
-		
-		available = {
-			num_subjects > 0
-			any_country = {
+			any_other_country = {
 				is_subject_of = ROOT
 				OR = {
 					has_autonomy_state = autonomy_dominion
@@ -2955,75 +2647,163 @@
 		}
 
 		completion_reward = {
-			custom_effect_tooltip = cooperative_defense_production_tt
-			hidden_effect = {
-				every_country = {
-					limit = {
-						is_subject_of = ROOT
-						OR = {
-							has_autonomy_state = autonomy_dominion
-							has_autonomy_state = autonomy_satellite
-							has_autonomy_state = autonomy_condominium
-						}
+			if = {
+				limit = { num_subjects < 1 }
+				custom_effect_tooltip = every_our_dominion_tt
+				effect_tooltip = {
+					add_building_construction = {
+						type = infrastructure
+						level = 2
+						instant_build = yes
 					}
-					random_owned_controlled_state = {
-						limit = { 
-							free_building_slots = {
-								building = arms_factory
-								size > 1
-								include_locked = yes
-							}
-						}
-						add_extra_state_shared_building_slots = 2
+					custom_effect_tooltip = every_neighbor_state_tt
+					add_building_construction = {
+						type = infrastructure
+						level = 2
+						instant_build = yes
+					}
+				}
+				custom_effect_tooltip = every_our_colony_tt
+				effect_tooltip = {
+					add_building_construction = {
+						type = infrastructure
+						level = 1
+						instant_build = yes
+					}
+					custom_effect_tooltip = every_neighbor_state_tt
+					add_building_construction = {
+						type = infrastructure
+						level = 1
+						instant_build = yes
+					}
+				}
+			}
+			every_other_country = {
+				limit = {
+					is_subject_of = ROOT
+					OR = {
+						has_autonomy_state = autonomy_dominion
+						has_autonomy_state = autonomy_satellite
+						has_autonomy_state = autonomy_condominium
+					}
+				}
+				capital_scope = {
+					add_building_construction = {
+						type = infrastructure
+						level = 2
+						instant_build = yes
+					}
+					every_neighbor_state = {
 						add_building_construction = {
-							type = arms_factory
+							type = infrastructure
 							level = 2
 							instant_build = yes
 						}
 					}
 				}
-				every_country = {
-					limit = {
-						is_subject_of = ROOT
-						OR = {
-							has_autonomy_state = autonomy_colony
-							has_autonomy_state = autonomy_broresp
-						}
+			}
+			every_other_country = {
+				limit = {
+					is_subject_of = ROOT
+					OR = {
+						has_autonomy_state = autonomy_colony
+						has_autonomy_state = autonomy_broresp
 					}
-					random_owned_controlled_state = {
-						limit = {
-							free_building_slots = {
-								building = arms_factory
-								size > 0
-								include_locked = yes
-							}
-						}
-						add_extra_state_shared_building_slots = 1
+				}
+				capital_scope = {
+					add_building_construction = {
+						type = infrastructure
+						level = 1
+						instant_build = yes
+					}
+					every_neighbor_state = {
 						add_building_construction = {
-							type = arms_factory
+							type = infrastructure
 							level = 1
 							instant_build = yes
 						}
 					}
 				}
 			}
-			every_country = {
-				limit = {
-					OR = {
-						tag = ROOT
-						AND = {
-							is_subject_of = ROOT
-							OR = {
-								has_autonomy_state = autonomy_dominion
-								has_autonomy_state = autonomy_satellite
-								has_autonomy_state = autonomy_condominium
-								has_autonomy_state = autonomy_colony
-								has_autonomy_state = autonomy_broresp
-							}
-						}
-					}
+		}
+
+		ai_will_do = {
+			factor = 3
+			modifier = {
+				factor = 0.5
+				num_subjects < 2
+			}
+		}
+	}
+	
+	shared_focus = {
+		id = total_passportization
+		icon = GFX_z_goal_generic_papers
+		prerequisite = { focus = unification_of_railway }
+		mutually_exclusive = { focus = passportization_of_colonists }
+		x = -1
+		y = 1
+		relative_position_id = unification_of_railway
+		cost = 7.15
+
+		available_if_capitulated = no
+		continue_if_invalid = no
+		cancel_if_invalid = yes
+		
+		available = {
+			num_subjects > 0
+		}
+
+		completion_reward = {
+			if = {
+				limit = { num_subjects < 1 }
+				custom_effect_tooltip = every_our_subject_tt
+				effect_tooltip = {
+					add_ideas = total_passportization
 				}
-				add_ideas = cooperative_defense_production
+			}
+			every_other_country = {
+				limit = {
+					is_subject_of = ROOT
+				}
+				add_ideas = total_passportization
+			}
+		}
+
+		ai_will_do = {
+			factor = 3
+		}
+	}
+	
+	shared_focus = {
+		id = passportization_of_colonists
+		icon = GFX_z_goal_generic_laws
+		prerequisite = { focus = unification_of_railway }
+		mutually_exclusive = { focus = total_passportization }
+		x = 1
+		y = 1
+		relative_position_id = unification_of_railway
+		cost = 7.15
+
+		available_if_capitulated = no
+		continue_if_invalid = no
+		cancel_if_invalid = yes
+		
+		available = {
+			num_subjects > 0
+		}
+
+		completion_reward = {
+			custom_effect_tooltip = passportization_of_colonists_tt
+			hidden_effect = {
+				set_temp_variable = { passportization_of_colonists = 0 }
+				every_other_country = {
+					limit = {
+						is_subject_of = ROOT
+					}
+					add_to_temp_variable = { ROOT.passportization_of_colonists = 10000 }
+				}
+				add_manpower = var:passportization_of_colonists
 			}
 		}
 
@@ -3035,12 +2815,11 @@
 	shared_focus = {
 		id = project_of_union_constitution
 		icon = GFX_goal_generic_forceful_treaty
-		prerequisite = { focus = network_of_cities_mills }
-		prerequisite = { focus = cooperative_defense_production }
-		prerequisite = { focus = analysis_of_results }
-		x = 0
+		prerequisite = { focus = total_passportization }
+		prerequisite = { focus = passportization_of_colonists }
+		x = 1
 		y = 1
-		relative_position_id = cooperative_defense_production
+		relative_position_id = total_passportization
 		cost = 7.15
 
 		available_if_capitulated = no
@@ -3049,7 +2828,7 @@
 		
 		available = {
 			num_subjects > 0
-			any_country = {
+			any_other_country = {
 				is_subject_of = ROOT
 				OR = {
 					has_autonomy_state = autonomy_dominion
@@ -3063,8 +2842,20 @@
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus project_of_union_constitution"
+			unlock_decision_category_tooltip = generic_project_of_union_constitution_category
 			add_political_power = 200
-			every_country = {
+			if = {
+				limit = { num_subjects < 1 }
+				custom_effect_tooltip = every_our_dominion_tt
+				effect_tooltip = {
+					add_political_power = 100
+				}
+				custom_effect_tooltip = every_our_colony_tt
+				effect_tooltip = {
+					add_political_power = 50
+				}
+			}
+			every_other_country = {
 				limit = {
 					is_subject_of = ROOT
 					OR = {
@@ -3075,7 +2866,7 @@
 				}
 				add_political_power = 100
 			}
-			every_country = {
+			every_other_country = {
 				limit = {
 					is_subject_of = ROOT
 					OR = {
@@ -3085,7 +2876,6 @@
 				}
 				add_political_power = 50
 			}
-			unlock_decision_category_tooltip = generic_project_of_union_constitution_category
 		}
 
 		ai_will_do = {
@@ -3094,11 +2884,704 @@
 	}
 	
 	
+	shared_focus = {
+		id = military_cooperation
+		icon = GFX_z_goal_new_army
+		prerequisite = { focus = coordination_committee }
+		x = 2
+		y = 1
+		relative_position_id = coordination_committee
+		cost = 7.15
+
+		available_if_capitulated = no
+		continue_if_invalid = no
+		cancel_if_invalid = yes
+		
+		available = {
+			num_subjects > 0
+			any_other_country = {
+				is_subject_of = ROOT
+				OR = {
+					has_autonomy_state = autonomy_dominion
+					has_autonomy_state = autonomy_satellite
+					has_autonomy_state = autonomy_condominium
+					has_autonomy_state = autonomy_colony
+					has_autonomy_state = autonomy_broresp
+				}
+			}
+		}
+
+		completion_reward = {
+			custom_effect_tooltip = military_cooperation_tt
+			hidden_effect = {
+				set_temp_variable = { total_manpower = 0 }
+				every_other_country = {
+					limit = {
+						is_subject_of = ROOT
+						OR = {
+							has_autonomy_state = autonomy_dominion
+							has_autonomy_state = autonomy_satellite
+							has_autonomy_state = autonomy_condominium
+							
+						}
+					}
+					add_ideas = military_cooperation_dominion
+					add_to_temp_variable = { ROOT.total_manpower = 40000 }
+				}
+				every_other_country = {
+					limit = {
+						is_subject_of = ROOT
+						OR = {
+							has_autonomy_state = autonomy_colony
+							has_autonomy_state = autonomy_broresp
+						}
+					}
+					add_ideas = military_cooperation_colony
+					add_to_temp_variable = { ROOT.total_manpower = 20000 }
+				}
+				add_manpower = var:total_manpower
+			}
+		}
+
+		ai_will_do = {
+			factor = 3
+			modifier = {
+				factor = 0.5
+				num_subjects < 2
+			}
+		}
+	}
+	
+	shared_focus = {
+		id = total_rearm
+		icon = GFX_z_goal_ammo_industry
+		prerequisite = { focus = military_cooperation focus = infrastructure_improvement }
+		x = 2
+		y = 1
+		relative_position_id = military_cooperation
+		cost = 7.15
+
+		available_if_capitulated = no
+		continue_if_invalid = no
+		cancel_if_invalid = yes
+		
+		available = {
+			num_subjects > 0
+		}
+
+		completion_reward = {
+			add_tech_bonus = {
+				name = infantry_bonus
+				bonus = 1
+				uses = 1
+				category = infantry_weapons
+			}
+			if = {
+				limit = { num_subjects < 1 }
+				custom_effect_tooltip = every_our_subject_tt
+				effect_tooltip = {
+					add_tech_bonus = {
+						name = infantry_bonus
+						bonus = 1
+						uses = 1
+						category = infantry_weapons
+					}
+				}
+			}
+			every_other_country = {
+				limit = {
+					is_subject_of = ROOT
+				}
+				add_tech_bonus = {
+					name = infantry_bonus
+					bonus = 1
+					uses = 1
+					category = infantry_weapons
+				}
+			}
+		}
+
+		ai_will_do = {
+			factor = 5
+		}
+	}
+	
+	shared_focus = {
+		id = joint_military_exercise
+		icon = GFX_z_goal_generic_allies_build_infantry_up
+		prerequisite = { focus = military_cooperation }
+		x = -1
+		y = 1
+		relative_position_id = military_cooperation
+		cost = 7.15
+
+		available_if_capitulated = no
+		continue_if_invalid = no
+		cancel_if_invalid = yes
+		
+		available = {
+			num_subjects > 0
+		}
+
+		completion_reward = {
+			add_tech_bonus = {
+				name = land_doc_bonus
+				bonus = 1
+				uses = 1
+				category = land_doctrine
+			}
+			if = {
+				limit = { num_subjects < 1 }
+				custom_effect_tooltip = every_our_subject_tt
+				effect_tooltip = {
+					add_tech_bonus = {
+						name = land_doc_bonus
+						bonus = 1
+						uses = 1
+						category = land_doctrine
+					}
+				}
+				
+			}
+			every_other_country = {
+				limit = {
+					is_subject_of = ROOT
+					OR = {
+						has_autonomy_state = autonomy_dominion
+						has_autonomy_state = autonomy_satellite
+						has_autonomy_state = autonomy_condominium
+						has_autonomy_state = autonomy_colony
+						has_autonomy_state = autonomy_broresp
+					}
+				}
+				add_tech_bonus = {
+					name = land_doc_bonus
+					bonus = 1
+					uses = 1
+					category = land_doctrine
+				}
+			}
+			hidden_effect = {
+				set_temp_variable = { total_army_exp = 0 }
+				every_other_country = {
+					limit = {
+						is_subject_of = ROOT
+						OR = {
+							has_autonomy_state = autonomy_dominion
+							has_autonomy_state = autonomy_satellite
+							has_autonomy_state = autonomy_condominium
+						}
+					}
+					add_to_temp_variable = { ROOT.total_army_exp = 4 }
+				}
+				every_other_country = {
+					limit = {
+						is_subject_of = ROOT
+						OR = {
+						has_autonomy_state = autonomy_colony
+						has_autonomy_state = autonomy_broresp
+					}
+					}
+					add_to_temp_variable = { ROOT.total_army_exp = 3 }
+				}
+				every_other_country = {
+					limit = {
+						is_subject_of = ROOT
+						OR = {
+							has_autonomy_state = autonomy_puppet
+							has_autonomy_state = autonomy_reichsprotectorate
+							has_autonomy_state = autonomy_socprotect
+						}
+					}
+					add_to_temp_variable = { ROOT.total_army_exp = 2 }
+				}
+				every_other_country = {
+					limit = {
+						is_subject_of = ROOT
+						OR = {
+							has_autonomy_state = autonomy_integrated_puppet
+							has_autonomy_state = autonomy_reichskommissariat
+							has_autonomy_state = autonomy_marionet
+						}
+					}
+					add_to_temp_variable = { ROOT.total_army_exp = 1 }
+				}
+				army_experience = var:total_army_exp
+			}
+			custom_effect_tooltip = joint_military_exercise_tt
+		}
+
+		ai_will_do = {
+			factor = 3
+		}
+	}
+	
+	shared_focus = {
+		id = military_city
+		icon = GFX_z_goal_factory_complex
+		prerequisite = { focus = joint_military_exercise }
+		x = 2
+		y = 2
+		relative_position_id = joint_military_exercise
+		cost = 7.15
+
+		available_if_capitulated = no
+		continue_if_invalid = no
+		cancel_if_invalid = yes
+		
+		available = {
+			num_subjects > 0
+			any_other_country = {
+				is_subject_of = ROOT
+				OR = {
+					has_autonomy_state = autonomy_dominion
+					has_autonomy_state = autonomy_satellite
+					has_autonomy_state = autonomy_condominium
+					has_autonomy_state = autonomy_colony
+					has_autonomy_state = autonomy_broresp
+				}
+			}
+		}
+
+		completion_reward = {
+			if = {
+				limit = { num_subjects < 1 }
+				custom_effect_tooltip = every_our_dominion_tt
+				effect_tooltip = {
+					add_ideas = military_city
+					create_unit = {
+						division = "name = \"Military Legion\" division_template = \"Military Legion\" start_experience_factor = 0.4" 
+						owner = PREV
+					}
+					create_unit = {
+						division = "name = \"Military Legion\" division_template = \"Military Legion\" start_experience_factor = 0.4" 
+						owner = PREV
+					}
+				}
+				custom_effect_tooltip = every_our_colony_tt
+				effect_tooltip = {
+					add_ideas = military_city
+					create_unit = {
+						division = "name = \"Military Legion\" division_template = \"Military Legion\" start_experience_factor = 0.4" 
+						owner = PREV
+					}
+				}
+			}
+			hidden_effect = {
+				every_other_country = {
+					limit = {
+						is_subject_of = ROOT
+						OR = {
+							has_autonomy_state = autonomy_dominion
+							has_autonomy_state = autonomy_satellite
+							has_autonomy_state = autonomy_condominium
+							has_autonomy_state = autonomy_colony
+							has_autonomy_state = autonomy_broresp
+						}
+					}
+					if = {
+						limit = { NOT = { has_template = "Military Legion" } }
+						division_template = {
+							name = "Military Legion"
+							is_locked = no
+							regiments = {
+								infantry = { x = 0 y = 0 }
+								infantry = { x = 0 y = 1 }
+								infantry = { x = 0 y = 2 }
+								infantry = { x = 1 y = 0 }
+								infantry = { x = 1 y = 1 }
+								infantry = { x = 1 y = 2 }
+								infantry = { x = 2 y = 0 }
+								artillery_brigade = { x = 2 y = 1 }
+								artillery_brigade = { x = 2 y = 2 }
+							}
+							support = {
+								recon = { x = 0 y = 0 }
+								engineer = { x = 0 y = 1 }
+								artillery = { x = 0 y = 2 }
+							}
+						}
+					}
+				}
+			}
+			every_other_country = {
+				limit = {
+					is_subject_of = ROOT
+					OR = {
+						has_autonomy_state = autonomy_dominion
+						has_autonomy_state = autonomy_satellite
+						has_autonomy_state = autonomy_condominium
+					}
+				}
+				add_ideas = military_city
+				capital_scope = {
+					create_unit = {
+						division = "name = \"Military Legion\" division_template = \"Military Legion\" start_experience_factor = 0.4" 
+						owner = PREV
+					}
+					create_unit = {
+						division = "name = \"Military Legion\" division_template = \"Military Legion\" start_experience_factor = 0.4" 
+						owner = PREV
+					}
+				}
+			}
+			every_other_country = {
+				limit = {
+					is_subject_of = ROOT
+					OR = {
+						has_autonomy_state = autonomy_colony
+						has_autonomy_state = autonomy_broresp
+					}
+				}
+				add_ideas = military_city
+				capital_scope = {
+					create_unit = {
+						division = "name = \"Military Legion\" division_template = \"Military Legion\" start_experience_factor = 0.4" 
+						owner = PREV
+					}
+				}
+			}
+		}
+
+		ai_will_do = {
+			factor = 3
+			modifier = {
+				factor = 0.5
+				num_subjects < 2
+			}
+		}
+	}
+	
+	shared_focus = {
+		id = cooperative_defense_production
+		icon = GFX_z_goal_military_mobilisation
+		prerequisite = { focus = joint_military_exercise }
+		x = 0
+		y = 2
+		relative_position_id = joint_military_exercise
+		cost = 7.15
+
+		available_if_capitulated = no
+		continue_if_invalid = no
+		cancel_if_invalid = yes
+		
+		available = {
+			num_subjects > 0
+			any_other_country = {
+				is_subject_of = ROOT
+				OR = {
+					has_autonomy_state = autonomy_dominion
+					has_autonomy_state = autonomy_satellite
+					has_autonomy_state = autonomy_condominium
+					has_autonomy_state = autonomy_colony
+					has_autonomy_state = autonomy_broresp
+				}
+			}
+		}
+
+		completion_reward = {
+			add_ideas = cooperative_defense_production
+			if = {
+				limit = { num_subjects < 1 }
+				custom_effect_tooltip = every_our_dominion_tt
+				effect_tooltip = {
+					add_ideas = cooperative_defense_production
+					add_extra_state_shared_building_slots = 2
+					add_building_construction = {
+						type = arms_factory
+						level = 2
+						instant_build = yes
+					}
+				}
+				custom_effect_tooltip = every_our_colony_tt
+				effect_tooltip = {
+					add_ideas = cooperative_defense_production
+					add_extra_state_shared_building_slots = 1
+					add_building_construction = {
+						type = arms_factory
+						level = 1
+						instant_build = yes
+					}
+				}
+			}
+			every_other_country = {
+				limit = {
+					is_subject_of = ROOT
+					OR = {
+						has_autonomy_state = autonomy_dominion
+						has_autonomy_state = autonomy_satellite
+						has_autonomy_state = autonomy_condominium
+					}
+				}
+				random_owned_controlled_state = {
+					limit = { 
+						free_building_slots = {
+							building = arms_factory
+							size > 1
+							include_locked = yes
+						}
+					}
+					add_ideas = cooperative_defense_production
+					add_extra_state_shared_building_slots = 2
+					add_building_construction = {
+						type = arms_factory
+						level = 2
+						instant_build = yes
+					}
+				}
+			}
+			every_other_country = {
+				limit = {
+					is_subject_of = ROOT
+					OR = {
+						has_autonomy_state = autonomy_colony
+						has_autonomy_state = autonomy_broresp
+					}
+				}
+				random_owned_controlled_state = {
+					limit = {
+						free_building_slots = {
+							building = arms_factory
+							size > 0
+							include_locked = yes
+						}
+					}
+					add_ideas = cooperative_defense_production
+					add_extra_state_shared_building_slots = 1
+					add_building_construction = {
+						type = arms_factory
+						level = 1
+						instant_build = yes
+					}
+				}
+			}
+		}
+
+		ai_will_do = {
+			factor = 3
+		}
+	}
+	
+	shared_focus = {
+		id = call_for_volunteers
+		icon = GFX_focus_generic_little_entente
+		prerequisite = { focus = joint_military_exercise }
+		prerequisite = { focus = total_rearm }
+		x = 1
+		y = 1
+		relative_position_id = joint_military_exercise
+		cost = 7.15
+
+		available_if_capitulated = no
+		continue_if_invalid = no
+		cancel_if_invalid = yes
+		
+		available = {
+			num_subjects > 0
+			any_other_country = {
+				is_subject_of = ROOT
+				OR = {
+					has_autonomy_state = autonomy_dominion
+					has_autonomy_state = autonomy_satellite
+					has_autonomy_state = autonomy_condominium
+				}
+			}
+		}
+
+		completion_reward = {
+			if = {
+				limit = { num_subjects < 1 }
+				custom_effect_tooltip = every_our_dominion_tt
+				effect_tooltip = {
+					add_ideas = call_for_volunteers
+				}
+				
+			}
+			every_other_country = {
+				limit = {
+					is_subject_of = ROOT
+					OR = {
+						has_autonomy_state = autonomy_dominion
+						has_autonomy_state = autonomy_satellite
+						has_autonomy_state = autonomy_condominium
+					}
+				}
+				add_ideas = call_for_volunteers
+			}
+		}
+
+		ai_will_do = {
+			factor = 3
+		}
+	}
+	
+	
+	
+	
 	###
 	shared_focus = {
-		id = overseas_service
-		icon = GFX_z_goal_generic_armed_forces
+		id = colonial_policy
+		icon = GFX_z_guarantee_autonomy_minorities
+		prerequisite = { focus = colonial_department }
+		mutually_exclusive = { focus = policy_of_protectorates }
+		x = 4
+		y = 1
+		relative_position_id = colonial_department
+		cost = 7.15
+
+		available_if_capitulated = no
+		continue_if_invalid = no
+		cancel_if_invalid = yes
+		
+		available = {
+			num_subjects > 0
+			OR = {
+				has_government = monarchy
+				has_government = democratic
+				has_government = neutrality
+				has_government = fascism
+			}
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus colonial_policy"
+			if = {
+				limit = { num_subjects < 1 }
+				custom_effect_tooltip = every_our_subject_tt
+				effect_tooltip = {
+					add_timed_idea = { idea = colonial_policy days = 500 }
+				}
+			}
+			every_other_country = {
+				limit = {
+					is_subject_of = ROOT
+				}
+				add_timed_idea = { idea = colonial_policy days = 500 }
+			}
+			custom_effect_tooltip = colonial_policy_tt
+		}
+
+		ai_will_do = {
+			factor = 3
+			modifier = {
+				add = 3
+				has_government = fascism
+			}
+		}
+	}
+	
+	shared_focus = {
+		id = investment_in_subject
+		icon = GFX_z_goal_ekonomik_ref
+		prerequisite = { focus = policy_of_protectorates focus = colonial_policy }
+		x = 0
+		y = 2
+		relative_position_id = colonial_department
+		cost = 7.15
+
+		available_if_capitulated = no
+		continue_if_invalid = no
+		cancel_if_invalid = yes
+		
+		available = {
+			num_subjects > 0
+		}
+
+		completion_reward = {
+			unlock_decision_category_tooltip = generic_investment_in_subject_category
+		}
+
+		ai_will_do = {
+			factor = 10
+		}
+	}
+	
+	shared_focus = {
+		id = colonial_elite
+		icon = GFX_z_goal_london_disagreement
 		prerequisite = { focus = colonial_policy }
+		mutually_exclusive = { focus = indirect_rule_policy }
+		x = -1
+		y = 1
+		relative_position_id = colonial_policy
+		cost = 7.15
+
+		available_if_capitulated = no
+		continue_if_invalid = no
+		cancel_if_invalid = yes
+		
+		available = {
+			num_subjects > 0
+			any_other_country = {
+				is_subject_of = ROOT
+				OR = {
+					has_autonomy_state = autonomy_puppet
+					has_autonomy_state = autonomy_reichsprotectorate
+					has_autonomy_state = autonomy_integrated_puppet
+					has_autonomy_state = autonomy_reichskommissariat
+					has_autonomy_state = autonomy_socprotect
+					has_autonomy_state = autonomy_marionet
+				}
+			}
+		}
+
+		completion_reward = {
+			set_temp_variable = { colonial_elite = 0 }
+			add_ideas = colonial_elite_idea
+			if = {
+				limit = { num_subjects < 1 }
+				custom_effect_tooltip = our_gem_tt
+				effect_tooltip = {
+					add_ideas = colonial_elite_gem
+				}
+				
+			}
+			every_other_country = {
+				limit = {
+					is_subject_of = ROOT
+					OR = {
+						has_autonomy_state = autonomy_puppet
+						has_autonomy_state = autonomy_reichsprotectorate
+						has_autonomy_state = autonomy_integrated_puppet
+						has_autonomy_state = autonomy_reichskommissariat
+						has_autonomy_state = autonomy_socprotect
+						has_autonomy_state = autonomy_marionet
+					}
+					NOT = { has_country_flag = is_gem_among_colonies_flag_@ROOT }
+				}
+				add_to_temp_variable = { ROOT.colonial_elite = 20 }
+			}
+			every_other_country = {
+				limit = {
+					is_subject_of = ROOT
+					has_country_flag = is_gem_among_colonies_flag_@ROOT
+				}
+				add_to_temp_variable = { ROOT.colonial_elite = 20 }
+				add_ideas = colonial_elite_gem
+			}
+			custom_effect_tooltip = colonial_elite_tt
+			hidden_effect = { add_political_power = var:colonial_elite }
+		}
+
+		ai_will_do = {
+			factor = 3
+			modifier = {
+				factor = 0.5
+				NOT = {
+					any_other_country = {
+						is_subject_of = ROOT
+						has_country_flag = is_gem_among_colonies_flag_@ROOT
+					}
+				}
+			}
+		}
+	}
+	
+	shared_focus = {
+		id = indirect_rule_policy
+		icon = GFX_z_goal_Woodhead_comission
+		prerequisite = { focus = colonial_policy }
+		mutually_exclusive = { focus = colonial_elite }
 		x = 1
 		y = 1
 		relative_position_id = colonial_policy
@@ -3113,10 +3596,22 @@
 		}
 
 		completion_reward = {
-			custom_effect_tooltip = overseas_service_tt
+			add_stability = 0.1
+			add_political_power = 100
+			custom_effect_tooltip = every_our_subject_tt
+			effect_tooltip = {
+				add_stability = 0.05
+				add_political_power = 50
+				add_extra_state_shared_building_slots = 1
+			}
+			custom_effect_tooltip = our_gem_tt
+			effect_tooltip = {
+				add_stability = 0.075
+				add_political_power = 75
+				add_extra_state_shared_building_slots = 2
+			}
 			hidden_effect = {
-				set_temp_variable = { overseas_service = 0 }
-				every_country = {
+				every_other_country = {
 					limit = {
 						is_subject_of = ROOT
 						OR = {
@@ -3127,26 +3622,33 @@
 							has_autonomy_state = autonomy_socprotect
 							has_autonomy_state = autonomy_marionet
 						}
+						NOT = { has_country_flag = is_gem_among_colonies_flag_@ROOT }
 					}
-					add_to_temp_variable = { ROOT.overseas_service = 60000 }
+					add_stability = 0.05
+					add_political_power = 50
+					capital_scope = { add_extra_state_shared_building_slots = 1 }
 				}
-				add_manpower = overseas_service
+				
+				random_other_country = {
+					limit = {
+						is_subject_of = ROOT
+						has_country_flag = is_gem_among_colonies_flag_@ROOT
+					}
+					add_stability = 0.075
+					add_political_power = 75
+					capital_scope = { add_extra_state_shared_building_slots = 2 }
+				}
 			}
 		}
 
 		ai_will_do = {
 			factor = 3
 			modifier = {
-				factor = 0
-				any_country = {
-					is_subject_of = ROOT
-					NOT = {
-						has_autonomy_state = autonomy_puppet
-						has_autonomy_state = autonomy_reichsprotectorate
-						has_autonomy_state = autonomy_integrated_puppet
-						has_autonomy_state = autonomy_reichskommissariat
-						has_autonomy_state = autonomy_socprotect
-						has_autonomy_state = autonomy_marionet
+				factor = 0.5
+				NOT = {
+					any_other_country = {
+						is_subject_of = ROOT
+						has_country_flag = is_gem_among_colonies_flag_@ROOT
 					}
 				}
 			}
@@ -3154,13 +3656,114 @@
 	}
 	
 	shared_focus = {
-		id = foreign_investor
-		icon = GFX_focus_generic_concessions
-		prerequisite = { focus = investment_in_subject }
-		prerequisite = { focus = overseas_service }
-		x = 2
+		id = infrastructure_improvement
+		icon = GFX_goal_generic_construct_civilian
+		prerequisite = { focus = colonial_elite focus = indirect_rule_policy }
+		x = -1
 		y = 1
-		relative_position_id = investment_in_subject
+		relative_position_id = colonial_elite
+		cost = 7.15
+
+		available_if_capitulated = no
+		continue_if_invalid = no
+		cancel_if_invalid = yes
+		
+		available = {
+			num_subjects > 0
+			any_other_country = {
+				is_subject_of = ROOT
+				OR = {
+					has_autonomy_state = autonomy_puppet
+					has_autonomy_state = autonomy_reichsprotectorate
+					has_autonomy_state = autonomy_integrated_puppet
+					has_autonomy_state = autonomy_reichskommissariat
+					has_autonomy_state = autonomy_socprotect
+					has_autonomy_state = autonomy_marionet
+					custom_trigger_tooltip = {
+						tooltip = is_gem_among_colonies_tt
+						has_country_flag = is_gem_among_colonies_flag_@ROOT
+					}
+				}
+			}
+		}
+
+		completion_reward = {
+			if = {
+				limit = { num_subjects < 1 }
+				custom_effect_tooltip = infrastructure_improvement_tt
+			}
+			every_other_country = {
+				limit = {
+					is_subject_of = ROOT
+					OR = {
+						has_autonomy_state = autonomy_puppet
+						has_autonomy_state = autonomy_reichsprotectorate
+						has_autonomy_state = autonomy_integrated_puppet
+						has_autonomy_state = autonomy_reichskommissariat
+						has_autonomy_state = autonomy_socprotect
+						has_autonomy_state = autonomy_marionet
+					}
+					NOT = { has_country_flag = is_gem_among_colonies_flag_@ROOT }
+				}
+				capital_scope = {
+					add_building_construction = {
+						type = infrastructure
+						level = 2
+						instant_build = yes
+					}
+					every_neighbor_state = {
+						add_building_construction = {
+							type = infrastructure
+							level = 2
+							instant_build = yes
+						}
+					} 
+				}
+			}
+			random_other_country = {
+				limit = {
+					is_subject_of = ROOT
+					has_country_flag = is_gem_among_colonies_flag_@ROOT
+				}
+				capital_scope = {
+					add_building_construction = {
+						type = infrastructure
+						level = 3
+						instant_build = yes
+					}
+					every_neighbor_state = {
+						add_building_construction = {
+							type = infrastructure
+							level = 3
+							instant_build = yes
+						}
+					} 
+				}
+			}
+		}
+
+		ai_will_do = {
+			factor = 3
+			modifier = {
+				factor = 0.5
+				NOT = {
+					any_other_country = {
+						is_subject_of = ROOT
+						has_country_flag = is_gem_among_colonies_flag_@ROOT
+					}
+				}
+			}
+		}
+	}
+	
+	shared_focus = {
+		id = oppression_of_local_elites
+		icon = GFX_z_goal_stop_east_politic
+		prerequisite = { focus = colonial_elite focus = indirect_rule_policy }
+		mutually_exclusive = { focus = comprador_bourgeoisie }
+		x = -1
+		y = 1
+		relative_position_id = indirect_rule_policy
 		cost = 7.15
 
 		available_if_capitulated = no
@@ -3174,9 +3777,152 @@
 		completion_reward = {
 			if = {
 				limit = { num_subjects < 1 }
-				custom_effect_tooltip = foreign_investor_tt
+				custom_effect_tooltip = every_our_subject_tt
+				effect_tooltip = {
+					add_timed_idea = { idea = oppression_of_local_elites days = 1000 }
+				}
 			}
-			every_country = {
+			every_other_country = {
+				limit = {
+					is_subject_of = ROOT
+				}
+				add_timed_idea = { idea = oppression_of_local_elites days = 1000 }
+			}
+		}
+
+		ai_will_do = {
+			factor = 3
+			modifier = {
+				factor = 0.5
+				num_subjects < 3
+			}
+		}
+	}
+	
+	shared_focus = {
+		id = comprador_bourgeoisie
+		icon = GFX_z_goal_restore_rights_aristocracy
+		prerequisite = { focus = indirect_rule_policy }
+		mutually_exclusive = { focus = oppression_of_local_elites }
+		x = 1
+		y = 1
+		relative_position_id = indirect_rule_policy
+		cost = 7.15
+
+		available_if_capitulated = no
+		continue_if_invalid = no
+		cancel_if_invalid = yes
+		
+		available = {
+			num_subjects > 0
+		}
+
+		completion_reward = {
+			if = {
+				limit = { num_subjects < 1 }
+				custom_effect_tooltip = every_our_colony_tt
+				effect_tooltip = {
+					add_autonomy_score = { value = 350 }
+					add_ideas = comprador_bourgeoisie
+				}
+				custom_effect_tooltip = our_gem_tt
+				effect_tooltip = {
+					add_autonomy_score = { value = 400 }
+					add_ideas = comprador_bourgeoisie_gem
+				}
+			}
+			every_other_country = {
+				limit = {
+					is_subject_of = ROOT
+					OR = {
+						has_autonomy_state = autonomy_colony
+						has_autonomy_state = autonomy_reichsprotectorate
+						has_autonomy_state = autonomy_broresp
+					}
+					NOT = { has_country_flag = is_gem_among_colonies_flag_@ROOT }
+				}
+				add_autonomy_score = { value = 350 }
+				add_ideas = comprador_bourgeoisie
+			}
+			random_other_country = {
+				limit = {
+					is_subject_of = ROOT
+					has_country_flag = is_gem_among_colonies_flag_@ROOT
+				}
+				add_autonomy_score = { value = 400 }
+				add_ideas = comprador_bourgeoisie_gem
+			}
+		}
+
+		ai_will_do = {
+			factor = 3
+			modifier = {
+				factor = 0.5
+				NOT = {
+					any_other_country = {
+						is_subject_of = ROOT
+						has_country_flag = is_gem_among_colonies_flag_@ROOT
+					}
+				}
+			}
+		}
+	}
+	
+	shared_focus = {
+		id = foreign_investor
+		icon = GFX_z_goal_trade_unions_for_white
+		prerequisite = { focus = infrastructure_improvement }
+		x = -1
+		y = 1
+		relative_position_id = infrastructure_improvement
+		cost = 7.15
+
+		available_if_capitulated = no
+		continue_if_invalid = no
+		cancel_if_invalid = yes
+		
+		available = {
+			num_subjects > 0
+			any_other_country = {
+				is_subject_of = ROOT
+				OR = {
+					has_autonomy_state = autonomy_puppet
+					has_autonomy_state = autonomy_reichsprotectorate
+					has_autonomy_state = autonomy_integrated_puppet
+					has_autonomy_state = autonomy_reichskommissariat
+					has_autonomy_state = autonomy_socprotect
+					has_autonomy_state = autonomy_marionet
+					custom_trigger_tooltip = {
+						tooltip = is_gem_among_colonies_tt
+						has_country_flag = is_gem_among_colonies_flag_@ROOT
+					}
+				}
+			}
+		}
+
+		completion_reward = {
+			if = {
+				limit = { num_subjects < 1 }
+				custom_effect_tooltip = every_our_puppet_integrated_puppet_tt
+				effect_tooltip = {
+					add_extra_state_shared_building_slots = 1
+					add_building_construction = {
+						type = industrial_complex
+						level = 1
+						instant_build = yes
+					}
+				}
+				custom_effect_tooltip = our_gem_tt
+				effect_tooltip = {
+					add_extra_state_shared_building_slots = 2
+					add_building_construction = {
+						type = industrial_complex
+						level = 2
+						instant_build = yes
+					}
+				}
+			}
+			every_other_country = {
 				limit = {
 					is_subject_of = ROOT
 					OR = {
@@ -3205,7 +3951,7 @@
 					}
 				}
 			}
-			every_country = {
+			random_other_country = {
 				limit = {
 					is_subject_of = ROOT
 					has_country_flag = is_gem_among_colonies_flag_@ROOT
@@ -3231,37 +3977,26 @@
 		ai_will_do = {
 			factor = 3
 			modifier = {
-				factor = 0
-				any_country = {
-					is_subject_of = ROOT
-					NOT = {
-						has_autonomy_state = autonomy_puppet
-						has_autonomy_state = autonomy_reichsprotectorate
-						has_autonomy_state = autonomy_integrated_puppet
-						has_autonomy_state = autonomy_reichskommissariat
-						has_autonomy_state = autonomy_socprotect
-						has_autonomy_state = autonomy_marionet
-					}
-				}
-			}
-			modifier = {
 				factor = 0.5
-				any_country = {
-					is_subject_of = ROOT
-					NOT = { has_country_flag = is_gem_among_colonies_flag_@ROOT }
+				NOT = {
+					any_other_country = {
+						is_subject_of = ROOT
+						has_country_flag = is_gem_among_colonies_flag_@ROOT
+					}
 				}
 			}
 		}
 	}
 	
+	
 	shared_focus = {
-		id = infrastructure_improvement
-		icon = GFX_goal_generic_construct_civilian
-		prerequisite = { focus = investment_in_subject }
-		prerequisite = { focus = overseas_service }
+		id = resource_extraction_in_colonies
+		icon = GFX_goal_generic_construction2
+		prerequisite = { focus = infrastructure_improvement }
+		prerequisite = { focus = oppression_of_local_elites }
 		x = 1
 		y = 1
-		relative_position_id = overseas_service
+		relative_position_id = infrastructure_improvement
 		cost = 7.15
 
 		available_if_capitulated = no
@@ -3270,136 +4005,36 @@
 		
 		available = {
 			num_subjects > 0
+			any_other_country = {
+				is_subject_of = ROOT
+				OR = {
+					has_autonomy_state = autonomy_puppet
+					has_autonomy_state = autonomy_reichsprotectorate
+					has_autonomy_state = autonomy_integrated_puppet
+					has_autonomy_state = autonomy_reichskommissariat
+					has_autonomy_state = autonomy_socprotect
+					has_autonomy_state = autonomy_marionet
+					custom_trigger_tooltip = {
+						tooltip = is_gem_among_colonies_tt
+						has_country_flag = is_gem_among_colonies_flag_@ROOT
+					}
+				}
+			}
 		}
 
 		completion_reward = {
 			if = {
 				limit = { num_subjects < 1 }
-				custom_effect_tooltip = infrastructure_improvement_tt
-			}
-			every_country = {
-				limit = {
-					is_subject_of = ROOT
-					OR = {
-						has_autonomy_state = autonomy_puppet
-						has_autonomy_state = autonomy_reichsprotectorate
-						has_autonomy_state = autonomy_integrated_puppet
-						has_autonomy_state = autonomy_reichskommissariat
-						has_autonomy_state = autonomy_socprotect
-						has_autonomy_state = autonomy_marionet
-					}
-					NOT = { has_country_flag = is_gem_among_colonies_flag_@ROOT }
+				custom_effect_tooltip = every_our_puppet_integrated_puppet_tt
+				effect_tooltip = {
+					add_ideas = resource_extraction_in_colonies_puppet
 				}
-				capital_scope = {
-					add_building_construction = {
-						type = infrastructure
-						level = 2
-						instant_build = yes
-					}
-					every_neighbor_state = {
-						add_building_construction = {
-							type = infrastructure
-							level = 2
-							instant_build = yes
-						}
-					} 
+				custom_effect_tooltip = our_gem_tt
+				effect_tooltip = {
+					add_ideas = resource_extraction_in_colonies_gem
 				}
 			}
-			every_country = {
-				limit = {
-					is_subject_of = ROOT
-					has_country_flag = is_gem_among_colonies_flag_@ROOT
-				}
-				capital_scope = {
-					add_building_construction = {
-						type = infrastructure
-						level = 3
-						instant_build = yes
-					}
-					every_neighbor_state = {
-						add_building_construction = {
-							type = infrastructure
-							level = 3
-							instant_build = yes
-						}
-					} 
-				}
-			}
-		}
-
-		ai_will_do = {
-			factor = 3
-			modifier = {
-				factor = 0
-				any_country = {
-					is_subject_of = ROOT
-					NOT = {
-						has_autonomy_state = autonomy_puppet
-						has_autonomy_state = autonomy_reichsprotectorate
-						has_autonomy_state = autonomy_integrated_puppet
-						has_autonomy_state = autonomy_reichskommissariat
-						has_autonomy_state = autonomy_socprotect
-						has_autonomy_state = autonomy_marionet
-					}
-				}
-			}
-			modifier = {
-				factor = 0.5
-				any_country = {
-					is_subject_of = ROOT
-					NOT = { has_country_flag = is_gem_among_colonies_flag_@ROOT }
-				}
-			}
-		}
-	}
-	
-	shared_focus = {
-		id = gem_among_colonies
-		icon = GFX_goal_generic_cavalry
-		prerequisite = { focus = investment_in_subject }
-		prerequisite = { focus = overseas_service }
-		x = 3
-		y = 1
-		relative_position_id = overseas_service
-		cost = 7.15
-
-		available_if_capitulated = no
-		continue_if_invalid = no
-		cancel_if_invalid = yes
-		
-		available = {
-			num_subjects > 0
-		}
-
-		completion_reward = {
-			unlock_decision_category_tooltip = generic_gem_among_colonies_category
-		}
-
-		ai_will_do = {
-			factor = 10
-		}
-	}
-	
-	shared_focus = {
-		id = resource_extraction_in_colonies
-		icon = GFX_goal_generic_construction2
-		prerequisite = { focus = industrial_development }
-		prerequisite = { focus = gem_among_colonies }
-		x = 0
-		y = 2
-		relative_position_id = gem_among_colonies
-		cost = 7.15
-
-		available_if_capitulated = no
-		continue_if_invalid = no
-		cancel_if_invalid = yes
-		
-		available = {
-			num_subjects > 0
-		}
-
-		completion_reward = {
-			every_country = {
+			every_other_country = {
 				limit = {
 					is_subject_of = ROOT
 					OR = {
@@ -3414,7 +4049,7 @@
 				}
 				add_ideas = resource_extraction_in_colonies_puppet
 			}
-			every_country = {
+			random_other_country = {
 				limit = {
 					is_subject_of = ROOT
 					has_country_flag = is_gem_among_colonies_flag_@ROOT
@@ -3426,24 +4061,12 @@
 		ai_will_do = {
 			factor = 3
 			modifier = {
-				factor = 0
-				any_country = {
-					is_subject_of = ROOT
-					NOT = {
-						has_autonomy_state = autonomy_puppet
-						has_autonomy_state = autonomy_reichsprotectorate
-						has_autonomy_state = autonomy_integrated_puppet
-						has_autonomy_state = autonomy_reichskommissariat
-						has_autonomy_state = autonomy_socprotect
-						has_autonomy_state = autonomy_marionet
-					}
-				}
-			}
-			modifier = {
 				factor = 0.5
-				any_country = {
-					is_subject_of = ROOT
-					NOT = { has_country_flag = is_gem_among_colonies_flag_@ROOT }
+				NOT = {
+					any_other_country = {
+						is_subject_of = ROOT
+						has_country_flag = is_gem_among_colonies_flag_@ROOT
+					}
 				}
 			}
 		}
@@ -3452,11 +4075,10 @@
 	shared_focus = {
 		id = cheap_labor
 		icon = GFX_z_goal_voluntary_creation_of_collective
-		prerequisite = { focus = foreign_investor }
-		prerequisite = { focus = infrastructure_improvement }
-		x = -1
+		prerequisite = { focus = oppression_of_local_elites focus = comprador_bourgeoisie }
+		x = 1
 		y = 1
-		relative_position_id = foreign_investor
+		relative_position_id = oppression_of_local_elites
 		cost = 7.15
 
 		available_if_capitulated = no
@@ -3465,13 +4087,28 @@
 		
 		available = {
 			num_subjects > 0
+			any_other_country = {
+				is_subject_of = ROOT
+				OR = {
+					has_autonomy_state = autonomy_puppet
+					has_autonomy_state = autonomy_reichsprotectorate
+					has_autonomy_state = autonomy_integrated_puppet
+					has_autonomy_state = autonomy_reichskommissariat
+					has_autonomy_state = autonomy_socprotect
+					has_autonomy_state = autonomy_marionet
+					custom_trigger_tooltip = {
+						tooltip = is_gem_among_colonies_tt
+						has_country_flag = is_gem_among_colonies_flag_@ROOT
+					}
+				}
+			}
 		}
 
 		completion_reward = {
 			custom_effect_tooltip = cheap_labor_tt
 			hidden_effect = {
 				set_variable = { cheap_labor_var = 0 }
-				every_country = {
+				every_other_country = {
 					limit = {
 						is_subject_of = ROOT
 						OR = {
@@ -3487,7 +4124,7 @@
 					add_to_variable = { ROOT.cheap_labor_var = 0.01 }
 					add_ideas = cheap_labor_puppet
 				}
-				every_country = {
+				every_other_country = {
 					limit = {
 						is_subject_of = ROOT
 						has_country_flag = is_gem_among_colonies_flag_@ROOT
@@ -3500,7 +4137,7 @@
 					max = 0.15
 				}
 				add_dynamic_modifier = { modifier = cheap_labor_dyn }
-				every_country = {
+				random_other_country = {
 					limit = {
 						is_subject_of = ROOT
 						has_country_flag = is_gem_among_colonies_flag_@ROOT
@@ -3520,36 +4157,24 @@
 		ai_will_do = {
 			factor = 3
 			modifier = {
-				factor = 0
-				any_country = {
-					is_subject_of = ROOT
-					NOT = {
-						has_autonomy_state = autonomy_puppet
-						has_autonomy_state = autonomy_reichsprotectorate
-						has_autonomy_state = autonomy_integrated_puppet
-						has_autonomy_state = autonomy_reichskommissariat
-						has_autonomy_state = autonomy_socprotect
-						has_autonomy_state = autonomy_marionet
-					}
-				}
-			}
-			modifier = {
 				factor = 0.5
-				any_country = {
-					is_subject_of = ROOT
-					NOT = { has_country_flag = is_gem_among_colonies_flag_@ROOT }
+				NOT = {
+					any_other_country = {
+						is_subject_of = ROOT
+						has_country_flag = is_gem_among_colonies_flag_@ROOT
+					}
 				}
 			}
 		}
 	}
 	
 	shared_focus = {
-		id = increased_military_presence
-		icon = GFX_z_goal_getting_rid_generals
-		prerequisite = { focus = infrastructure_improvement }
-		x = -1
+		id = export_of_capital
+		icon = GFX_z_goal_support_businessmen_2
+		prerequisite = { focus = foreign_investor focus = resource_extraction_in_colonies }
+		x = 1
 		y = 1
-		relative_position_id = infrastructure_improvement
+		relative_position_id = foreign_investor
 		cost = 7.15
 
 		available_if_capitulated = no
@@ -3558,12 +4183,213 @@
 		
 		available = {
 			num_subjects > 0
+			any_other_country = {
+				is_subject_of = ROOT
+				num_of_civilian_factories > 6
+			}
+		}
+
+		completion_reward = {
+			custom_effect_tooltip = export_of_capital_tt
+			hidden_effect = {
+				every_other_country = {
+					limit = {
+						is_subject_of = ROOT
+						num_of_civilian_factories > 6
+					}
+					random_owned_controlled_state = {
+						limit = { industrial_complex > 0 }
+						remove_building = {
+							type = industrial_complex
+							level = 1
+						}
+					}
+					random_owned_controlled_state = {
+						limit = { industrial_complex > 0 }
+						remove_building = {
+							type = industrial_complex
+							level = 1
+						}
+					}
+					random_owned_controlled_state = {
+						limit = { industrial_complex > 0 }
+						remove_building = {
+							type = industrial_complex
+							level = 1
+						}
+					}
+					random_owned_controlled_state = {
+						limit = { industrial_complex > 0 }
+						remove_building = {
+							type = industrial_complex
+							level = 1
+						}
+					}
+					random_owned_controlled_state = {
+						limit = { industrial_complex > 0 }
+						remove_building = {
+							type = industrial_complex
+							level = 1
+						}
+					}
+					random_owned_controlled_state = {
+						limit = { industrial_complex > 0 }
+						remove_building = {
+							type = industrial_complex
+							level = 1
+						}
+					}
+					ROOT = {
+						random_owned_controlled_state = {
+							limit = { 
+								free_building_slots = {
+									building = industrial_complex
+									size > 1
+									include_locked = yes
+								}
+							}
+							add_extra_state_shared_building_slots = 2
+							add_building_construction = {
+								type = industrial_complex
+								level = 2
+								instant_build = yes
+							}
+						}
+						random_owned_controlled_state = {
+							limit = { 
+								free_building_slots = {
+									building = industrial_complex
+									size > 1
+									include_locked = yes
+								}
+							}
+							add_extra_state_shared_building_slots = 2
+							add_building_construction = {
+								type = industrial_complex
+								level = 2
+								instant_build = yes
+							}
+						}
+						random_owned_controlled_state = {
+							limit = { 
+								free_building_slots = {
+									building = industrial_complex
+									size > 1
+									include_locked = yes
+								}
+							}
+							add_extra_state_shared_building_slots = 2
+							add_building_construction = {
+								type = industrial_complex
+								level = 2
+								instant_build = yes
+							}
+						}
+					}
+				}
+			}
+		}
+
+		ai_will_do = {
+			factor = 3
+			modifier = {
+				factor = 0.5
+				num_subjects < 3
+			}
+		}
+	}
+
+	shared_focus = {
+		id = overseas_service
+		icon = GFX_z_goal_generic_armed_forces
+		prerequisite = { focus = resource_extraction_in_colonies focus = cheap_labor }
+		x = 1
+		y = 1
+		relative_position_id = resource_extraction_in_colonies
+		cost = 7.15
+
+		available_if_capitulated = no
+		continue_if_invalid = no
+		cancel_if_invalid = yes
+		
+		available = {
+			num_subjects > 0
+			any_other_country = {
+				is_subject_of = ROOT
+				OR = {
+					has_autonomy_state = autonomy_puppet
+					has_autonomy_state = autonomy_reichsprotectorate
+					has_autonomy_state = autonomy_integrated_puppet
+					has_autonomy_state = autonomy_reichskommissariat
+					has_autonomy_state = autonomy_socprotect
+					has_autonomy_state = autonomy_marionet
+				}
+			}
+		}
+
+		completion_reward = {
+			custom_effect_tooltip = overseas_service_tt
+			hidden_effect = {
+				set_temp_variable = { overseas_service = 0 }
+				every_other_country = {
+					limit = {
+						is_subject_of = ROOT
+						OR = {
+							has_autonomy_state = autonomy_puppet
+							has_autonomy_state = autonomy_reichsprotectorate
+							has_autonomy_state = autonomy_integrated_puppet
+							has_autonomy_state = autonomy_reichskommissariat
+							has_autonomy_state = autonomy_socprotect
+							has_autonomy_state = autonomy_marionet
+						}
+					}
+					add_to_temp_variable = { ROOT.overseas_service = 60000 }
+				}
+				add_manpower = var:overseas_service
+			}
+		}
+
+		ai_will_do = {
+			factor = 3
+		}
+	}
+	
+	shared_focus = {
+		id = increased_military_presence
+		icon = GFX_z_goal_getting_rid_generals
+		prerequisite = { focus = cheap_labor }
+		x = 1
+		y = 1
+		relative_position_id = cheap_labor
+		cost = 7.15
+
+		available_if_capitulated = no
+		continue_if_invalid = no
+		cancel_if_invalid = yes
+		
+		available = {
+			num_subjects > 0
+			any_other_country = {
+				is_subject_of = ROOT
+				OR = {
+					has_autonomy_state = autonomy_puppet
+					has_autonomy_state = autonomy_reichsprotectorate
+					has_autonomy_state = autonomy_integrated_puppet
+					has_autonomy_state = autonomy_reichskommissariat
+					has_autonomy_state = autonomy_socprotect
+					has_autonomy_state = autonomy_marionet
+					custom_trigger_tooltip = {
+						tooltip = is_gem_among_colonies_tt
+						has_country_flag = is_gem_among_colonies_flag_@ROOT
+					}
+				}
+			}
 		}
 
 		completion_reward = {
 			custom_effect_tooltip = increased_military_presence_tt
 			hidden_effect = {
-				every_country = {
+				every_other_country = {
 					limit = {
 						OR = {
 							tag = ROOT
@@ -3606,7 +4432,7 @@
 						}
 					}
 				}
-				every_country = {
+				every_other_country = {
 					limit = {
 						is_subject_of = ROOT
 						OR = {
@@ -3626,7 +4452,7 @@
 						}
 					}
 				}
-				every_country = {
+				random_other_country = {
 					limit = {
 						is_subject_of = ROOT
 						has_country_flag = is_gem_among_colonies_flag_@ROOT
@@ -3654,10 +4480,248 @@
 		ai_will_do = {
 			factor = 3
 			modifier = {
-				factor = 0
-				any_country = {
+				factor = 0.5
+				NOT = {
+					any_other_country = {
+						is_subject_of = ROOT
+						has_country_flag = is_gem_among_colonies_flag_@ROOT
+					}
+				}
+			}
+		}
+	}
+	
+	shared_focus = {
+		id = consolidation_empire
+		icon = GFX_focus_eng_imperial_federation
+		prerequisite = { focus = export_of_capital }
+		prerequisite = { focus = overseas_service }
+		prerequisite = { focus = increased_military_presence }
+		x = 0
+		y = 1
+		relative_position_id = overseas_service
+		cost = 7.15
+
+		available_if_capitulated = no
+		continue_if_invalid = no
+		cancel_if_invalid = yes
+		
+		available = {
+			num_subjects > 0
+			any_other_country = {
+				is_subject_of = ROOT
+				OR = {
+					has_autonomy_state = autonomy_puppet
+					has_autonomy_state = autonomy_reichsprotectorate
+					has_autonomy_state = autonomy_integrated_puppet
+					has_autonomy_state = autonomy_reichskommissariat
+					has_autonomy_state = autonomy_socprotect
+					has_autonomy_state = autonomy_marionet
+					custom_trigger_tooltip = {
+						tooltip = is_gem_among_colonies_tt
+						has_country_flag = is_gem_among_colonies_flag_@ROOT
+					}
+				}
+			}
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus consolidation_empire"
+			custom_effect_tooltip = consolidation_empire_tt
+			if = {
+				limit = { num_subjects < 1 }
+				custom_effect_tooltip = every_our_puppet_integrated_puppet_gem_tt
+				effect_tooltip = {
+					add_timed_idea = { idea = consolidation_empire days = 1000 }
+				}
+			}
+			set_temp_variable = { consolidation_empire = 0 }
+			every_other_country = {
+				limit = {
 					is_subject_of = ROOT
+					OR = {
+						has_autonomy_state = autonomy_puppet
+						has_autonomy_state = autonomy_reichsprotectorate
+						has_autonomy_state = autonomy_integrated_puppet
+						has_autonomy_state = autonomy_reichskommissariat
+						has_autonomy_state = autonomy_socprotect
+						has_autonomy_state = autonomy_marionet
+						has_country_flag = is_gem_among_colonies_flag_@ROOT
+					}
+				}
+				add_to_temp_variable = { ROOT.consolidation_empire = 1 }
+				add_timed_idea = { idea = consolidation_empire days = 1000 }
+			}
+			divide_temp_variable = { consolidation_empire = 2 }
+			clamp_temp_variable = {
+				var = consolidation_empire
+				min = 1
+				max = 99
+			}
+			build_arms_factory = yes
+		}
+
+		ai_will_do = {
+			factor = 10
+		}
+	}
+	
+	shared_focus = {
+		id = gem_among_colonies
+		icon = GFX_goal_generic_cavalry
+		prerequisite = { focus = colonial_policy }
+		x = 3
+		y = 1
+		relative_position_id = colonial_policy
+		cost = 7.15
+
+		available_if_capitulated = no
+		continue_if_invalid = no
+		cancel_if_invalid = yes
+		
+		available = {
+			num_subjects > 0
+		}
+
+		completion_reward = {
+			unlock_decision_category_tooltip = generic_gem_among_colonies_category
+		}
+
+		ai_will_do = {
+			factor = 10
+		}
+	}
+	
+	shared_focus = {
+		id = joint_venture
+		icon = GFX_goal_generic_construct_civ_factory
+		prerequisite = { focus = gem_among_colonies }
+		x = 1
+		y = 1
+		relative_position_id = gem_among_colonies
+		cost = 7.15
+
+		available_if_capitulated = no
+		continue_if_invalid = no
+		cancel_if_invalid = yes
+		
+		available = {
+			any_other_country = {
+				is_subject_of = ROOT
+				custom_trigger_tooltip = {
+					tooltip = is_gem_among_colonies_tt
+					has_country_flag = is_gem_among_colonies_flag_@ROOT
+				}
+			}
+		}
+
+		completion_reward = {
+			capital_scope = {
+				add_extra_state_shared_building_slots = 2
+				add_building_construction = {
+					type = industrial_complex
+					level = 2
+					instant_build = yes
+				}
+			}
+			if = {
+				limit = {
 					NOT = {
+						any_other_country = {
+							is_subject_of = ROOT
+							has_country_flag = is_gem_among_colonies_flag_@ROOT
+						}
+					}
+				}
+				custom_effect_tooltip = our_gem_tt
+				effect_tooltip = {
+					add_extra_state_shared_building_slots = 2
+					add_building_construction = {
+						type = industrial_complex
+						level = 2
+						instant_build = yes
+					}
+				}
+			}
+			random_other_country = {
+				limit = {
+					is_subject_of = ROOT
+					has_country_flag = is_gem_among_colonies_flag_@ROOT
+				}
+				capital_scope = {
+					add_extra_state_shared_building_slots = 2
+					add_building_construction = {
+						type = industrial_complex
+						level = 2
+						instant_build = yes
+					}
+				}
+			}
+		}
+
+		ai_will_do = {
+			factor = 10
+		}
+	}
+	
+	shared_focus = {
+		id = industrial_development
+		icon = GFX_z_goal_support_businessmen
+		prerequisite = { focus = joint_venture }
+		x = -1
+		y = 1
+		relative_position_id = joint_venture
+		cost = 7.15
+
+		available_if_capitulated = no
+		continue_if_invalid = no
+		cancel_if_invalid = yes
+		
+		available = {
+			num_subjects > 0
+			any_other_country = {
+				is_subject_of = ROOT
+				OR = {
+					has_autonomy_state = autonomy_puppet
+					has_autonomy_state = autonomy_reichsprotectorate
+					has_autonomy_state = autonomy_integrated_puppet
+					has_autonomy_state = autonomy_reichskommissariat
+					has_autonomy_state = autonomy_socprotect
+					has_autonomy_state = autonomy_marionet
+					custom_trigger_tooltip = {
+						tooltip = is_gem_among_colonies_tt
+						has_country_flag = is_gem_among_colonies_flag_@ROOT
+					}
+				}
+			}
+		}
+
+		completion_reward = {
+			if = {
+				limit = { num_subjects < 1 }
+				custom_effect_tooltip = every_our_puppet_integrated_puppet_tt
+				effect_tooltip = {
+					add_extra_state_shared_building_slots = 1
+					add_building_construction = {
+						type = industrial_complex
+						level = 1
+						instant_build = yes
+					}
+				}
+				custom_effect_tooltip = our_gem_tt
+				effect_tooltip = {
+					add_extra_state_shared_building_slots = 2
+					add_building_construction = {
+						type = industrial_complex
+						level = 2
+						instant_build = yes
+					}
+				}
+			}
+			every_other_country = {
+				limit = {
+					is_subject_of = ROOT
+					OR = {
 						has_autonomy_state = autonomy_puppet
 						has_autonomy_state = autonomy_reichsprotectorate
 						has_autonomy_state = autonomy_integrated_puppet
@@ -3665,69 +4729,54 @@
 						has_autonomy_state = autonomy_socprotect
 						has_autonomy_state = autonomy_marionet
 					}
-				}
-			}
-			modifier = {
-				factor = 0.5
-				any_country = {
-					is_subject_of = ROOT
 					NOT = { has_country_flag = is_gem_among_colonies_flag_@ROOT }
 				}
+				capital_scope = {
+					add_extra_state_shared_building_slots = 1
+					add_building_construction = {
+						type = industrial_complex
+						level = 1
+						instant_build = yes
+					}
+				}
 			}
-		}
-	}
-	
-	shared_focus = {
-		id = total_rearm
-		icon = GFX_z_goal_ammo_industry
-		prerequisite = { focus = joint_military_exercise focus = increased_military_presence }
-		x = 2
-		y = 1
-		relative_position_id = joint_military_exercise
-		cost = 7.15
-
-		available_if_capitulated = no
-		continue_if_invalid = no
-		cancel_if_invalid = yes
-		
-		available = {
-			num_subjects > 0
-		}
-
-		completion_reward = {
-			add_tech_bonus = {
-				name = infantry_bonus
-				bonus = 1
-				uses = 1
-				category = infantry_weapons
-			}
-			every_country = {
+			random_other_country = {
 				limit = {
 					is_subject_of = ROOT
+					has_country_flag = is_gem_among_colonies_flag_@ROOT
 				}
-				add_tech_bonus = {
-					name = infantry_bonus
-					bonus = 1
-					uses = 1
-					category = infantry_weapons
+				capital_scope = {
+					add_extra_state_shared_building_slots = 2
+					add_building_construction = {
+						type = industrial_complex
+						level = 2
+						instant_build = yes
+					}
 				}
 			}
 		}
 
 		ai_will_do = {
-			factor = 5
+			factor = 3
+			modifier = {
+				factor = 0.5
+				NOT = {
+					any_other_country = {
+						is_subject_of = ROOT
+						has_country_flag = is_gem_among_colonies_flag_@ROOT
+					}
+				}
+			}
 		}
 	}
 	
 	shared_focus = {
 		id = transfer_of_harmful_industries
 		icon = GFX_z_goal_transfer_industries
-		prerequisite = { focus = total_rearm }
-		prerequisite = { focus = cheap_labor }
-		prerequisite = { focus = increased_military_presence }
-		x = 2
-		y = 1
-		relative_position_id = total_rearm
+		prerequisite = { focus = joint_venture }
+		x = 0
+		y = 2
+		relative_position_id = joint_venture
 		cost = 7.15
 
 		available_if_capitulated = no
@@ -3736,15 +4785,59 @@
 		
 		available = {
 			num_subjects > 0
+			any_other_country = {
+				is_subject_of = ROOT
+				OR = {
+					has_autonomy_state = autonomy_puppet
+					has_autonomy_state = autonomy_reichsprotectorate
+					has_autonomy_state = autonomy_integrated_puppet
+					has_autonomy_state = autonomy_reichskommissariat
+					has_autonomy_state = autonomy_socprotect
+					has_autonomy_state = autonomy_marionet
+					custom_trigger_tooltip = {
+						tooltip = is_gem_among_colonies_tt
+						has_country_flag = is_gem_among_colonies_flag_@ROOT
+					}
+				}
+			}
 		}
 
 		completion_reward = {
+			add_ideas = transfer_of_harmful_industries_idea
+			random_owned_controlled_state = {
+				limit = {
+					hospital < 5
+				}
+				add_building_construction = {
+					type = hospital
+					level = 1
+					instant_build = yes
+				}
+			}
 			if = {
 				limit = { num_subjects < 1 }
-				custom_effect_tooltip = foreign_investor_tt
+				custom_effect_tooltip = every_our_puppet_integrated_puppet_tt
+				effect_tooltip = {
+					add_ideas = transfer_of_harmful_industries_puppet
+					add_extra_state_shared_building_slots = 1
+					add_building_construction = {
+						type = industrial_complex
+						level = 1
+						instant_build = yes
+					}
+				}
+				custom_effect_tooltip = our_gem_tt
+				effect_tooltip = {
+					add_ideas = transfer_of_harmful_industries_puppet
+					add_extra_state_shared_building_slots = 2
+					add_building_construction = {
+						type = industrial_complex
+						level = 2
+						instant_build = yes
+					}
+				}
 			}
-			add_ideas = transfer_of_harmful_industries_idea
-			every_country = {
+			every_other_country = {
 				limit = {
 					is_subject_of = ROOT
 					OR = {
@@ -3774,7 +4867,7 @@
 				}
 				add_ideas = transfer_of_harmful_industries_puppet
 			}
-			every_country = {
+			random_other_country = {
 				limit = {
 					is_subject_of = ROOT
 					has_country_flag = is_gem_among_colonies_flag_@ROOT
@@ -3796,52 +4889,29 @@
 				}
 				add_ideas = transfer_of_harmful_industries_puppet
 			}
-			random_owned_controlled_state = {
-				limit = {
-					hospital < 5
-				}
-				add_building_construction = {
-					type = hospital
-					level = 1
-					instant_build = yes
-				}
-			}
 		}
 
 		ai_will_do = {
 			factor = 3
 			modifier = {
-				factor = 0
-				any_country = {
-					is_subject_of = ROOT
-					NOT = {
-						has_autonomy_state = autonomy_puppet
-						has_autonomy_state = autonomy_reichsprotectorate
-						has_autonomy_state = autonomy_integrated_puppet
-						has_autonomy_state = autonomy_reichskommissariat
-						has_autonomy_state = autonomy_socprotect
-						has_autonomy_state = autonomy_marionet
-					}
-				}
-			}
-			modifier = {
 				factor = 0.5
-				any_country = {
-					is_subject_of = ROOT
-					NOT = { has_country_flag = is_gem_among_colonies_flag_@ROOT }
+				NOT = {
+					any_other_country = {
+						is_subject_of = ROOT
+						has_country_flag = is_gem_among_colonies_flag_@ROOT
+					}
 				}
 			}
 		}
 	}
 	
 	shared_focus = {
-		id = industrial_development
-		icon = GFX_goal_generic_construct_civ_factory
-		prerequisite = { focus = infrastructure_improvement }
-		prerequisite = { focus = gem_among_colonies }
-		x = 1
-		y = 1
-		relative_position_id = infrastructure_improvement
+		id = relocation_from_metropolis
+		icon = GFX_z_goal_generic_political_support
+		prerequisite = { focus = increased_military_presence focus = industrial_development }
+		x = 0
+		y = 2
+		relative_position_id = industrial_development
 		cost = 7.15
 
 		available_if_capitulated = no
@@ -3850,14 +4920,46 @@
 		
 		available = {
 			num_subjects > 0
+			any_other_country = {
+				is_subject_of = ROOT
+				OR = {
+					has_autonomy_state = autonomy_puppet
+					has_autonomy_state = autonomy_reichsprotectorate
+					has_autonomy_state = autonomy_integrated_puppet
+					has_autonomy_state = autonomy_reichskommissariat
+					has_autonomy_state = autonomy_socprotect
+					has_autonomy_state = autonomy_marionet
+					custom_trigger_tooltip = {
+						tooltip = is_gem_among_colonies_tt
+						has_country_flag = is_gem_among_colonies_flag_@ROOT
+					}
+				}
+			}
 		}
 
 		completion_reward = {
 			if = {
 				limit = { num_subjects < 1 }
-				custom_effect_tooltip = foreign_investor_tt
+				custom_effect_tooltip = every_our_puppet_integrated_puppet_tt
+				effect_tooltip = {
+					add_extra_state_shared_building_slots = 1
+					add_building_construction = {
+						type = industrial_complex
+						level = 1
+						instant_build = yes
+					}
+				}
+				custom_effect_tooltip = our_gem_tt
+				effect_tooltip = {
+					add_extra_state_shared_building_slots = 2
+					add_building_construction = {
+						type = industrial_complex
+						level = 2
+						instant_build = yes
+					}
+				}
 			}
-			every_country = {
+			every_other_country = {
 				limit = {
 					is_subject_of = ROOT
 					OR = {
@@ -3879,7 +4981,7 @@
 					}
 				}
 			}
-			every_country = {
+			random_other_country = {
 				limit = {
 					is_subject_of = ROOT
 					has_country_flag = is_gem_among_colonies_flag_@ROOT
@@ -3898,300 +5000,17 @@
 		ai_will_do = {
 			factor = 3
 			modifier = {
-				factor = 0
-				any_country = {
-					is_subject_of = ROOT
-					NOT = {
-						has_autonomy_state = autonomy_puppet
-						has_autonomy_state = autonomy_reichsprotectorate
-						has_autonomy_state = autonomy_integrated_puppet
-						has_autonomy_state = autonomy_reichskommissariat
-						has_autonomy_state = autonomy_socprotect
-						has_autonomy_state = autonomy_marionet
-					}
-				}
-			}
-			modifier = {
 				factor = 0.5
-				any_country = {
-					is_subject_of = ROOT
-					NOT = { has_country_flag = is_gem_among_colonies_flag_@ROOT }
-				}
-			}
-		}
-	}
-	
-	shared_focus = {
-		id = colonial_elite
-		icon = GFX_z_goal_generic_keynesian_economics
-		prerequisite = { focus = industrial_development }
-		prerequisite = { focus = increased_military_presence }
-		x = 1
-		y = 1
-		relative_position_id = increased_military_presence
-		cost = 7.15
-
-		available_if_capitulated = no
-		continue_if_invalid = no
-		cancel_if_invalid = yes
-		
-		available = {
-			num_subjects > 0
-		}
-
-		completion_reward = {
-			set_temp_variable = { colonial_elite = 0 }
-			add_ideas = colonial_elite_idea
-			every_country = {
-				limit = {
-					is_subject_of = ROOT
-					OR = {
-						has_autonomy_state = autonomy_puppet
-						has_autonomy_state = autonomy_reichsprotectorate
-						has_autonomy_state = autonomy_integrated_puppet
-						has_autonomy_state = autonomy_reichskommissariat
-						has_autonomy_state = autonomy_socprotect
-						has_autonomy_state = autonomy_marionet
-					}
-					NOT = { has_country_flag = is_gem_among_colonies_flag_@ROOT }
-				}
-				add_to_temp_variable = { ROOT.colonial_elite = 20 }
-			}
-			every_country = {
-				limit = {
-					is_subject_of = ROOT
-					has_country_flag = is_gem_among_colonies_flag_@ROOT
-				}
-				add_to_temp_variable = { ROOT.colonial_elite = 20 }
-				add_ideas = colonial_elite_gem
-			}
-			custom_effect_tooltip = colonial_elite_tt
-			hidden_effect = { add_political_power = colonial_elite }
-		}
-
-		ai_will_do = {
-			factor = 3
-			modifier = {
-				factor = 0
-				any_country = {
-					is_subject_of = ROOT
-					NOT = {
-						has_autonomy_state = autonomy_puppet
-						has_autonomy_state = autonomy_reichsprotectorate
-						has_autonomy_state = autonomy_integrated_puppet
-						has_autonomy_state = autonomy_reichskommissariat
-						has_autonomy_state = autonomy_socprotect
-						has_autonomy_state = autonomy_marionet
-					}
-				}
-			}
-			modifier = {
-				factor = 0.5
-				any_country = {
-					is_subject_of = ROOT
-					NOT = { has_country_flag = is_gem_among_colonies_flag_@ROOT }
-				}
-			}
-		}
-	}
-	
-	shared_focus = {
-		id = passportization_of_colonists
-		icon = GFX_z_goal_generic_laws
-		prerequisite = { focus = colonial_elite }
-		mutually_exclusive = { focus = total_passportization }
-		x = 0
-		y = 1
-		relative_position_id = colonial_elite
-		cost = 7.15
-
-		available_if_capitulated = no
-		continue_if_invalid = no
-		cancel_if_invalid = yes
-		
-		available = {
-			num_subjects > 0
-		}
-
-		completion_reward = {
-			custom_effect_tooltip = passportization_of_colonists_tt
-			hidden_effect = {
-				set_temp_variable = { passportization_of_colonists = 0 }
-				every_country = {
-					limit = {
+				NOT = {
+					any_other_country = {
 						is_subject_of = ROOT
-						OR = {
-							has_autonomy_state = autonomy_puppet
-							has_autonomy_state = autonomy_reichsprotectorate
-							has_autonomy_state = autonomy_integrated_puppet
-							has_autonomy_state = autonomy_reichskommissariat
-							has_autonomy_state = autonomy_socprotect
-							has_autonomy_state = autonomy_marionet
-						}
+						has_country_flag = is_gem_among_colonies_flag_@ROOT
 					}
-					add_to_temp_variable = { ROOT.passportization_of_colonists = 10000 }
-				}
-				add_manpower = passportization_of_colonists
-			}
-		}
-
-		ai_will_do = {
-			factor = 3
-			modifier = {
-				factor = 0
-				any_country = {
-					is_subject_of = ROOT
-					NOT = {
-						has_autonomy_state = autonomy_puppet
-						has_autonomy_state = autonomy_reichsprotectorate
-						has_autonomy_state = autonomy_integrated_puppet
-						has_autonomy_state = autonomy_reichskommissariat
-						has_autonomy_state = autonomy_socprotect
-						has_autonomy_state = autonomy_marionet
-					}
-				}
-			}
-			modifier = {
-				factor = 0.5
-				any_country = {
-					is_subject_of = ROOT
-					NOT = { has_country_flag = is_gem_among_colonies_flag_@ROOT }
 				}
 			}
 		}
 	}
 	
-	shared_focus = {
-		id = total_passportization
-		icon = GFX_z_goal_generic_papers
-		prerequisite = { focus = resource_extraction_in_colonies }
-		mutually_exclusive = { focus = passportization_of_colonists }
-		x = 0
-		y = 1
-		relative_position_id = resource_extraction_in_colonies
-		cost = 7.15
-
-		available_if_capitulated = no
-		continue_if_invalid = no
-		cancel_if_invalid = yes
-		
-		available = {
-			num_subjects > 0
-		}
-
-		completion_reward = {
-			every_country = {
-				limit = {
-					is_subject_of = ROOT
-					OR = {
-						has_autonomy_state = autonomy_puppet
-						has_autonomy_state = autonomy_reichsprotectorate
-						has_autonomy_state = autonomy_integrated_puppet
-						has_autonomy_state = autonomy_reichskommissariat
-						has_autonomy_state = autonomy_socprotect
-						has_autonomy_state = autonomy_marionet
-						has_country_flag = is_gem_among_colonies_flag_@ROOT
-					}
-				}
-				add_ideas = total_passportization
-			}
-		}
-
-		ai_will_do = {
-			factor = 3
-			modifier = {
-				factor = 0
-				any_country = {
-					is_subject_of = ROOT
-					NOT = {
-						has_autonomy_state = autonomy_puppet
-						has_autonomy_state = autonomy_reichsprotectorate
-						has_autonomy_state = autonomy_integrated_puppet
-						has_autonomy_state = autonomy_reichskommissariat
-						has_autonomy_state = autonomy_socprotect
-						has_autonomy_state = autonomy_marionet
-					}
-				}
-			}
-			modifier = {
-				factor = 0.5
-				any_country = {
-					is_subject_of = ROOT
-					NOT = { has_country_flag = is_gem_among_colonies_flag_@ROOT }
-				}
-			}
-		}
-	}
-	
-	shared_focus = {
-		id = consolidation_empire
-		icon = GFX_focus_eng_imperial_federation
-		prerequisite = { focus = transfer_of_harmful_industries }
-		prerequisite = { focus = passportization_of_colonists focus = total_passportization }
-		x = 0
-		y = 1
-		relative_position_id = passportization_of_colonists
-		cost = 7.15
-
-		available_if_capitulated = no
-		continue_if_invalid = no
-		cancel_if_invalid = yes
-		
-		available = {
-			num_subjects > 0
-		}
-
-		completion_reward = {
-			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus consolidation_empire"
-			set_temp_variable = { consolidation_empire = 0 }
-			every_country = {
-				limit = {
-					is_subject_of = ROOT
-					OR = {
-						has_autonomy_state = autonomy_puppet
-						has_autonomy_state = autonomy_reichsprotectorate
-						has_autonomy_state = autonomy_integrated_puppet
-						has_autonomy_state = autonomy_reichskommissariat
-						has_autonomy_state = autonomy_socprotect
-						has_autonomy_state = autonomy_marionet
-						has_country_flag = is_gem_among_colonies_flag_@ROOT
-					}
-				}
-				add_to_temp_variable = { ROOT.consolidation_empire = 1 }
-				add_timed_idea = {
-					idea = consolidation_empire
-					days = 1000
-				}
-			}
-			divide_temp_variable = { consolidation_empire = 2 }
-			clamp_temp_variable = {
-				var = consolidation_empire
-				min = 1
-				max = 99
-			}
-			custom_effect_tooltip = consolidation_empire_tt
-			build_arms_factory = yes
-		}
-
-		ai_will_do = {
-			factor = 3
-			modifier = {
-				factor = 0
-				any_country = {
-					is_subject_of = ROOT
-					NOT = {
-						has_autonomy_state = autonomy_puppet
-						has_autonomy_state = autonomy_reichsprotectorate
-						has_autonomy_state = autonomy_integrated_puppet
-						has_autonomy_state = autonomy_reichskommissariat
-						has_autonomy_state = autonomy_socprotect
-						has_autonomy_state = autonomy_marionet
-					}
-				}
-			}
-		}
-	}
-
 	
 	#########################
 	#### SUBJECT SECTION ####
@@ -4200,7 +5019,7 @@
 	shared_focus = {
 		id = order_in_country
 		icon = GFX_goal_generic_political_pressure
-		x = 16
+		x = 18
 		y = 0
 		relative_position_id = colonial_department
 		cost = 7.15
@@ -5337,8 +6156,10 @@
 			}
 			else = {
 				OVERLORD = {
-					NOT = { has_government = fascism }
-					has_civil_war = no
+					OR = {
+						NOT = { has_government = fascism }
+						has_civil_war = yes
+					}
 				}
 			}
 		}
