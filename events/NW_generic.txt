@@ -2420,11 +2420,6 @@ country_event = {
 			elections_allowed = yes
 		}
 	}
-	
-	option = {
-		name = NWgeneric.42.b
-		activate_decision = generic_attracting_public_attention_to_our_company
-	}
 }
 
 #Вооружённое восстание
@@ -3613,7 +3608,6 @@ country_event = {
 	}
 }
 
-
 #СОБЫТИЯ ТИПОГРАФИИ
 #Наём специалистов для типографии // пульсар
 country_event = {
@@ -4080,6 +4074,392 @@ country_event = {
 		FROM = { 
 			country_event = { id = generic.7 hours = 6 }
 		}
+	}
+}
+
+
+
+
+
+
+### МОНАРХОГЕНЕРИК ###
+
+#Пульсар ивентов у монархистов // PER
+country_event = {
+	id = NWgeneric.300
+	hidden = yes
+	
+	trigger = {
+		has_government = monarchy
+		has_completed_focus = popular_representation
+		NOT = { has_country_flag = generic_dissolve_parliament_flag }
+	}
+	
+	mean_time_to_happen = { days = 70 }
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWgeneric.300" }
+	immediate = {
+		hidden_effect = {
+			random_list = {
+				50 = {
+					country_event = { id = NWgeneric.301 }
+				}
+				50 = {
+					modifier = {
+						factor = 0.5
+						has_country_flag = { flag = NWpersian_302_flag value > 0 }
+					}
+					modifier = {
+						factor = 0
+						has_country_flag = { flag = NWpersian_302_flag value > 1 }
+					}
+					country_event = { id = NWpersian.302 }
+				}
+				50 = {
+					country_event = { id = NWgeneric.303 }
+				}
+				50 = {
+					modifier = {
+						factor = 0
+						has_offensive_war = no
+					}
+					country_event = { id = NWgeneric.304 }
+				}
+				50 = {
+					modifier = {
+						factor = 0
+						surrender_progress > 0.04
+					}
+					country_event = { id = NWgeneric.305 }
+				}
+				50 = {
+					country_event = { id = NWgeneric.306 }
+				}
+				50 = {
+					country_event = { id = NWgeneric.307 }
+				}
+				50 = {
+					country_event = { id = NWgeneric.308 }
+				}
+			}
+		}
+	}
+}
+
+#Действия парламента
+country_event = {
+	id = NWgeneric.301
+	title = NWgeneric.301.t
+	desc = NWgeneric.301.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWgeneric.301" }
+	
+	option = {
+		name = NWgeneric.301.a
+		ai_chance = {
+			factor = 50
+		}
+		add_political_power = -20
+		activate_decision = generic_dissolve_parliament
+	}
+	
+	option = {
+		name = NWgeneric.301.b
+		ai_chance = {
+			factor = 50
+		}
+		if = {
+			limit = { num_of_controlled_states > 7 }
+			random_controlled_state = {
+				limit = {
+					free_building_slots = {
+						building = industrial_complex
+						size > 0
+						include_locked = no
+					}
+				}
+				add_extra_state_shared_building_slots = -1
+			}
+			random_controlled_state = {
+				limit = {
+					free_building_slots = {
+						building = industrial_complex
+						size > 0
+						include_locked = no
+					}
+				}
+				add_extra_state_shared_building_slots = -1
+			}
+			random_controlled_state = {
+				limit = {
+					free_building_slots = {
+						building = industrial_complex
+						size > 0
+						include_locked = no
+					}
+				}
+				add_extra_state_shared_building_slots = -1
+			}
+			random_controlled_state = {
+				limit = {
+					free_building_slots = {
+						building = industrial_complex
+						size > 0
+						include_locked = no
+					}
+				}
+				add_extra_state_shared_building_slots = -1
+			}
+		}
+		else = {
+			random_controlled_state = {
+				limit = {
+					free_building_slots = {
+						building = industrial_complex
+						size > 0
+						include_locked = no
+					}
+				}
+				remove_building = {
+					type = industrial_complex
+					level = 1
+				}
+			}
+		}
+	}
+}
+
+#Действия парламента
+country_event = {
+	id = NWgeneric.302
+	title = NWgeneric.301.t
+	desc = NWgeneric.302.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWgeneric.302" }
+	immediate = {
+		hidden_effect = {
+			if = {
+				limit = { NOT = { has_country_flag = NWpersian_302_flag } }
+				set_country_flag = { flag = NWpersian_302_flag value = 1 }
+			}
+			else = { modify_country_flag = { flag = NWpersian_302_flag value = 1 } }
+		}
+	}
+	
+	option = {
+		name = NWgeneric.302.a
+		ai_chance = {
+			factor = 30
+		}
+		add_political_power = -20
+		activate_decision = generic_dissolve_parliament
+	}
+	
+	option = {
+		name = NWgeneric.302.b
+		ai_chance = {
+			factor = 70
+		}
+		if = {
+			limit = { communism > 0 }
+			add_popularity = {
+				ideology = communism
+				popularity = 0.05
+			}
+		}
+		if = {
+			limit = { democratic > 0 }
+			add_popularity = {
+				ideology = democratic
+				popularity = 0.05
+			}
+		}
+		if = {
+			limit = {
+				OR = {
+					NOT = { communism > 0 }
+					NOT = { democratic > 0 }
+				}
+			}
+			add_popularity = {
+				ideology = neutrality
+				popularity = 0.05
+			}
+		}
+	}
+}
+
+#Подвешенный парламент
+country_event = {
+	id = NWgeneric.303
+	title = NWgeneric.303.t
+	desc = NWgeneric.303.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWgeneric.303" }
+	
+	option = {
+		name = NWgeneric.303.a
+		ai_chance = {
+			factor = 30
+		}
+		add_political_power = -20
+		activate_decision = generic_dissolve_parliament
+	}
+	
+	option = {
+		name = NWgeneric.303.b
+		ai_chance = {
+			factor = 70
+		}
+		add_stability = -0.05
+		add_timed_idea = { idea = generic_hung_parliament days = 70 }
+	}
+}
+
+#Действия парламента
+country_event = {
+	id = NWgeneric.304
+	title = NWgeneric.301.t
+	desc = NWgeneric.304.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWgeneric.304" }
+	
+	option = {
+		name = NWgeneric.304.a
+		ai_chance = {
+			factor = 30
+		}
+		add_political_power = -20
+		activate_decision = generic_dissolve_parliament
+	}
+	
+	option = {
+		name = NWgeneric.304.b
+		ai_chance = {
+			factor = 70
+		}
+		add_war_support = -0.07
+		add_political_power = -40
+	}
+}
+
+#Действия парламента
+country_event = {
+	id = NWgeneric.305
+	title = NWgeneric.301.t
+	desc = NWgeneric.305.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWgeneric.305" }
+	
+	option = {
+		name = NWgeneric.305.a
+		ai_chance = {
+			factor = 25
+		}
+		add_political_power = -20
+		activate_decision = generic_dissolve_parliament
+	}
+	
+	option = {
+		name = NWgeneric.305.b
+		ai_chance = {
+			factor = 75
+		}
+		add_timed_idea = { idea = generic_improving_living_conditions_of_military days = 70 }
+	}
+}
+
+#Действия парламента
+country_event = {
+	id = NWgeneric.306
+	title = NWgeneric.301.t
+	desc = NWgeneric.306.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWgeneric.306" }
+	
+	option = {
+		name = NWgeneric.306.a
+		ai_chance = {
+			factor = 30
+		}
+		add_political_power = -20
+		activate_decision = generic_dissolve_parliament
+	}
+	
+	option = {
+		name = NWgeneric.306.b
+		ai_chance = {
+			factor = 70
+		}
+		add_timed_idea = { idea = generic_concessions_in_social_sphere days = 70 }
+	}
+}
+
+#Действия парламента
+country_event = {
+	id = NWgeneric.307
+	title = NWgeneric.301.t
+	desc = NWgeneric.307.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWgeneric.307" }
+	
+	option = {
+		name = NWgeneric.307.a
+		ai_chance = {
+			factor = 70
+		}
+		activate_decision = generic_dissolve_parliament
+	}
+	
+	option = {
+		name = NWgeneric.307.b
+		ai_chance = {
+			factor = 30
+		}
+		add_political_power = -80
+	}
+}
+
+#Действия парламента
+country_event = {
+	id = NWgeneric.308
+	title = NWgeneric.301.t
+	desc = NWgeneric.308.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWgeneric.308" }
+	
+	option = {
+		name = NWgeneric.308.a
+		ai_chance = {
+			factor = 30
+		}
+		add_political_power = -20
+		activate_decision = generic_dissolve_parliament
+	}
+	
+	option = {
+		name = NWgeneric.308.b
+		ai_chance = {
+			factor = 70
+		}
+		add_political_power = -20
+		add_command_power = -60
 	}
 }
 
@@ -4851,6 +5231,7 @@ country_event = {
 }
 
 
+
 ###########################
 # Условный generic stories
 ###########################
@@ -5158,4 +5539,3 @@ country_event = {
 		}
 	}
 }
-
