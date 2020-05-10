@@ -98,11 +98,10 @@ country_event = {
 		ai_chance = {
 			factor = 90
 			modifier = {
-				AND = {
-					tag = ITA
-					has_government = fascism
-				}
 				factor = 0
+				tag = ITA
+				has_government = fascism
+				has_global_flag = NW_TUR_OLD_FOCUS_TREE
 			}
 		}
 		country_event = { id = NWturkey.3 days = 1 }
@@ -113,6 +112,12 @@ country_event = {
 		name = NWturkey.2.b
 		ai_chance = {
 			factor = 10
+			modifier = {
+				factor = 0
+				tag = ITA
+				has_government = fascism
+				FROM = { has_idea = TUR_fascist_grand_council }
+			}
 		}
 		add_opinion_modifier = {
 			target = FROM
@@ -142,6 +147,11 @@ country_event = {
 		name = NWturkey.3.a
 		ai_chance = {
 			factor = 25
+			modifier = {
+				factor = 0
+				tag = ITA
+				TUR = { has_idea = TUR_fascist_grand_council }
+			}
 		}
 		add_opinion_modifier = {
 			target = TUR
@@ -159,6 +169,11 @@ country_event = {
 		name = NWturkey.3.b
 		ai_chance = {
 			factor = 75
+			modifier = {
+				factor = 0
+				NOT = { tag = ITA }
+				TUR = { has_idea = TUR_fascist_grand_council }
+			}
 		}
 		TUR = { add_to_variable = { montreux_score = 1 } }
 		add_opinion_modifier = {
@@ -308,53 +323,58 @@ country_event = {
 				factor = 0
 				tag = GER
 				is_historical_focus_on = yes
+				has_global_flag = NW_TUR_OLD_FOCUS_TREE
 			}
 			modifier = {
 				factor = 1000
-				AND = {
-					tag = ENG
-					OR = {
-						GER = {
-							exists = yes
-							OR = {
-								has_government = monarchy
-								has_government = fascism
-							}
-						}
-						SOV = {
-							exists = yes
-							has_government = communism
+				tag = ENG
+				OR = {
+					GER = {
+						exists = yes
+						OR = {
+							has_government = monarchy
+							has_government = fascism
 						}
 					}
+					SOV = {
+						exists = yes
+						has_government = communism
+					}
 				}
+				has_global_flag = NW_TUR_OLD_FOCUS_TREE
 			}
 			modifier = {
 				factor = 0
 				tag = ENG
 				FROM = { has_government = fascism }
+				has_global_flag = NW_TUR_OLD_FOCUS_TREE
 			}
 			modifier = {
 				factor = 1000
-				AND = {
-					tag = GER
-					OR = {
-						ENG = {
-							exists = yes
-							has_government = democratic
-						}
-						SOV = {
-							exists = yes
-							has_government = communism
-						}
+				tag = GER
+				OR = {
+					ENG = {
+						exists = yes
+						has_government = democratic
+					}
+					SOV = {
+						exists = yes
+						has_government = communism
 					}
 				}
+				has_global_flag = NW_TUR_OLD_FOCUS_TREE
 			}
 			modifier = {
 				factor = 0
-				AND = {
-					tag = GER
-					FROM = { has_government = democratic }
-				}
+				tag = GER
+				FROM = { has_government = democratic }
+				has_global_flag = NW_TUR_OLD_FOCUS_TREE
+			}
+			modifier = {
+				factor = 0
+				tag = SOV
+				is_historical_focus_on = yes
+				has_global_flag = NW_TUR_NEW_FOCUS_TREE
 			}
 		}
 		set_country_flag = finding_allies_accept
@@ -368,6 +388,7 @@ country_event = {
 				factor = 0
 				tag = ENG
 				is_historical_focus_on = yes
+				has_global_flag = NW_TUR_OLD_FOCUS_TREE
 			}
 			modifier = {
 				factor = 0
@@ -393,9 +414,12 @@ country_event = {
 	option = {
 		name = NWturkey.7.a
 		hidden_effect = {
-			FROM = { 
-				set_variable = { influence = 0 }
-				set_variable = { discontent = 0 }
+			if = {
+				limit = { has_global_flag = NW_TUR_OLD_FOCUS_TREE }
+				FROM = { 
+					set_variable = { influence = 0 }
+					set_variable = { discontent = 0 }
+				}
 			}
 		}
 	}
@@ -7114,7 +7138,13 @@ country_event = {
 		set_country_flag = TUR_political_despotism_flag
 		effect_tooltip = { unlock_national_focus = TUR_political_despotism }
 		if = {
-			limit = { is_ai = yes }
+			limit = {
+				NOT = { has_country_leader = { name = "Mustafa Kemal Atatürk" ruling_only = yes } }
+				amount_taken_ideas = {
+					amount < 3
+					slots = { political_advisor }
+				}
+			}
 			add_ideas = TUR_celal_bayar_2
 		}
 	}
@@ -8811,7 +8841,7 @@ country_event = {
 		start_civil_war = {
 			ideology = democratic
 			size = 0.5
-			states = { 344 349 354 1049 355 350 353 }
+			states = { 344 349 352 354 1049 355 350 353 }
 			states_filter = {
 				owner = {
 					OR = {
@@ -8826,6 +8856,7 @@ country_event = {
 					OR = {
 						state = 344
 						state = 349
+						state = 352
 						state = 354
 						state = 1049
 						state = 355
