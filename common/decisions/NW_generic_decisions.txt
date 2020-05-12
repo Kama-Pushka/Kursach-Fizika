@@ -4120,7 +4120,14 @@ generic_anarchism_tendency_category = {
 			}
 		}
 		ai_will_do = {
-			factor = 10
+			factor = 15
+			modifier = {
+				factor = 0
+				OR = {
+					has_idea = limited_exports
+					has_idea = closed_economy
+				}
+			}
 		}
 	}
 	
@@ -4150,7 +4157,15 @@ generic_anarchism_tendency_category = {
 			custom_effect_tooltip = anarchism_unity_add_effect
 		}
 		ai_will_do = {
-			factor = 10
+			factor = 5
+			modifier = {
+				factor = 0
+				has_idea = free_trade
+			}
+			modifier = {
+				factor = 0.5
+				has_idea = export_focus
+			}
 		}
 	}
 	
@@ -4178,7 +4193,15 @@ generic_anarchism_tendency_category = {
 			custom_effect_tooltip = anarchism_unity_add_effect
 		}
 		ai_will_do = {
-			factor = 1
+			factor = 5
+			modifier = {
+				factor = 0
+				has_idea = free_trade
+			}
+			modifier = {
+				factor = 0.5
+				has_idea = export_focus
+			}
 		}
 	}
 	
@@ -4206,7 +4229,14 @@ generic_anarchism_tendency_category = {
 			custom_effect_tooltip = anarchism_unity_add_effect
 		}
 		ai_will_do = {
-			factor = 1
+			factor = 15
+			modifier = {
+				factor = 0
+				OR = {
+					has_idea = limited_exports
+					has_idea = closed_economy
+				}
+			}
 		}
 	}
 	
@@ -4236,7 +4266,7 @@ generic_anarchism_tendency_category = {
 			custom_effect_tooltip = anarchism_unity_add_effect
 		}
 		ai_will_do = {
-			factor = 10
+			factor = 5
 			modifier = {
 				factor = 0
 				check_variable = { anarchism_tendency_interest_industry_var < 1 }
@@ -4278,10 +4308,20 @@ generic_anarchism_tendency_category = {
 			}
 		}
 		ai_will_do = {
-			factor = 5
+			factor = 1
 			modifier = {
 				factor = 0
 				check_variable = { anarchism_tendency_interest_industry_var > 99 }
+			}
+			modifier = {
+				factor = 15
+				num_of_civilian_factories_available_for_projects > 5
+				check_variable = { anarchism_tendency_interest_industry_var < 50 }
+			}
+			modifier = {
+				factor = 20
+				num_of_civilian_factories_available_for_projects > 15
+				check_variable = { anarchism_tendency_interest_industry_var < 90 }
 			}
 		}
 	}
@@ -4312,10 +4352,10 @@ generic_anarchism_tendency_category = {
 			custom_effect_tooltip = anarchism_unity_add_effect
 		}
 		ai_will_do = {
-			factor = 10
+			factor = 20
 			modifier = {
 				factor = 0
-				check_variable = { anarchism_tendency_interest_industry_var > 99 }
+				check_variable = { anarchism_tendency_interest_industry_var > 90 }
 			}
 		}
 	}
@@ -4346,7 +4386,7 @@ generic_anarchism_tendency_category = {
 			custom_effect_tooltip = anarchism_unity_add_effect
 		}
 		ai_will_do = {
-			factor = 10
+			factor = 5
 			modifier = {
 				factor = 0
 				check_variable = { anarchism_tendency_interest_industry_var < 1 }
@@ -4380,7 +4420,7 @@ generic_anarchism_tendency_category = {
 			custom_effect_tooltip = anarchism_unity_add_effect
 		}
 		ai_will_do = {
-			factor = 10
+			factor = 20
 			modifier = {
 				factor = 0
 				check_variable = { anarchism_tendency_sense_of_danger_var > 99 }
@@ -4414,7 +4454,7 @@ generic_anarchism_tendency_category = {
 			custom_effect_tooltip = anarchism_unity_add_effect
 		}
 		ai_will_do = {
-			factor = 10
+			factor = 5
 			modifier = {
 				factor = 0
 				check_variable = { anarchism_tendency_sense_of_danger_var < 1 }
@@ -4449,7 +4489,7 @@ generic_anarchism_tendency_category = {
 			custom_effect_tooltip = anarchism_unity_add_effect
 		}
 		ai_will_do = {
-			factor = 10
+			factor = 20
 			modifier = {
 				factor = 0
 				check_variable = { anarchism_tendency_sense_of_danger_var > 99 }
@@ -4484,15 +4524,13 @@ generic_anarchism_tendency_category = {
 			custom_effect_tooltip = anarchism_unity_add_effect
 		}
 		ai_will_do = {
-			factor = 10
+			factor = 5
 			modifier = {
 				factor = 0
 				check_variable = { anarchism_tendency_sense_of_danger_var < 1 }
 			}
 		}
 	}
-	
-	
 }
 
 generic_anarchism_category = {
@@ -4814,4 +4852,303 @@ generic_create_printing_house_category = {
 	}
 }
 
+generic_anarchism_private_army_category = {
+	
+	generic_hire_infantry_division_mercenary_soldiers = {
+		icon = generic_prepare_civil_war
+		available = {
+			has_idea = mercenary_soldiers
+		}
+		visible = {
+			has_idea = mercenary_soldiers
+		}
+		cost = 10
+		complete_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision generic_hire_infantry_division_mercenary_soldiers"
+			hidden_effect = {
+				if = {
+					limit = { NOT = { has_template = "Squad of Mercenaries" } }
+					division_template = {
+						name = "Squad of Mercenaries"
+						is_locked = no
+						regiments = {
+							infantry = { x = 0 y = 0 }
+							infantry = { x = 0 y = 1 }
+							infantry = { x = 1 y = 0 }
+							infantry = { x = 1 y = 1 }
+						}
+					}
+				}
+			}
+			capital_scope = {
+				create_unit = {
+					division = "name = \"Squad of Mercenaries\" division_template = \"Squad of Mercenaries\" start_experience_factor = 0.1" 
+					owner = ROOT
+					count = 1
+				}
+			}
+		}
+		ai_will_do = {
+			factor = 1
+			modifier = {
+				add = 50
+				ai_wants_divisions > 0
+			}
+			modifier = {
+				add = 50
+				enemies_strength_ratio > 1
+			}
+		}
+	}
+	
+	generic_hire_infantry_division_monopolized_private_armies = {
+		icon = generic_prepare_civil_war
+		available = {
+			has_idea = monopolized_private_armies
+		}
+		visible = {
+			has_idea = monopolized_private_armies
+		}
+		cost = 25
+		complete_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision generic_hire_infantry_division_monopolized_private_armies"
+			hidden_effect = {
+				if = {
+					limit = { NOT = { has_template = "Mercenary Division" } }
+					division_template = {
+						name = "Mercenary Division"
+						is_locked = no
+						regiments = {
+							infantry = { x = 0 y = 0 }
+							infantry = { x = 0 y = 1 }
+							infantry = { x = 0 y = 2 }
+							infantry = { x = 1 y = 0 }
+							infantry = { x = 1 y = 1 }
+							infantry = { x = 1 y = 2 }
+						}
+						support = {
+							engineer = { x = 0 y = 0 }
+							artillery = { x = 0 y = 1 }
+						}
+					}
+				}
+			}
+			capital_scope = {
+				create_unit = {
+					division = "name = \"Mercenary Division\" division_template = \"Mercenary Division\" start_experience_factor = 0.2" 
+					owner = ROOT
+					count = 1
+				}
+			}
+		}
+		ai_will_do = {
+			factor = 1
+			modifier = {
+				add = 50
+				ai_wants_divisions > 0
+			}
+			modifier = {
+				add = 50
+				enemies_strength_ratio > 1
+			}
+		}
+	}
+	
+	generic_hire_tank_division_monopolized_private_armies = {
+		icon = generic_tank
+		available = {
+			has_idea = monopolized_private_armies
+		}
+		visible = {
+			has_idea = monopolized_private_armies
+		}
+		cost = 50
+		complete_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision generic_hire_tank_division_monopolized_private_armies"
+			hidden_effect = {
+				if = {
+					limit = { NOT = { has_template = "Mercenary Tank Division" } }
+					division_template = {
+						name = "Mercenary Tank Division"
+						is_locked = no
+						regiments = {
+							light_armor = { x = 0 y = 0 }
+							light_armor = { x = 0 y = 1 }
+							light_armor = { x = 1 y = 0 }
+							light_armor = { x = 1 y = 1 }
+							motorized = { x = 2 y = 0 }
+							motorized = { x = 2 y = 1 }
+							motorized = { x = 2 y = 2 }
+						}
+						support = {
+							recon = { x = 0 y = 0 }
+							engineer = { x = 0 y = 1 }
+						}
+					}
+				}
+			}
+			capital_scope = {
+				create_unit = {
+					division = "name = \"Mercenary Tank Division\" division_template = \"Mercenary Tank Division\" start_experience_factor = 0.2" 
+					owner = ROOT
+					count = 2
+				}
+			}
+		}
+		ai_will_do = {
+			factor = 1
+			modifier = {
+				add = 50
+				ai_wants_divisions > 0
+			}
+			modifier = {
+				add = 50
+				enemies_strength_ratio > 1
+			}
+		}
+	}
+	
+	generic_hire_infantry_division_thriving_private_army_market = {
+		icon = generic_prepare_civil_war
+		available = {
+			has_idea = thriving_private_army_market
+		}
+		visible = {
+			has_idea = thriving_private_army_market
+		}
+		cost = 45
+		complete_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision generic_hire_infantry_division_thriving_private_army_market"
+			hidden_effect = {
+				if = {
+					limit = { NOT = { has_template = "Corpus of Mercenaries with artillery" } }
+					division_template = {
+						name = "Corpus of Mercenaries with artillery"
+						is_locked = no
+						regiments = {
+							infantry = { x = 0 y = 0 }
+							infantry = { x = 0 y = 1 }
+							infantry = { x = 0 y = 2 }
+							infantry = { x = 1 y = 0 }
+							infantry = { x = 1 y = 1 }
+							infantry = { x = 1 y = 2 }
+							infantry = { x = 2 y = 0 }
+							artillery_brigade = { x = 2 y = 1 }
+							artillery_brigade = { x = 2 y = 2 }
+						}
+						support = {
+							recon = { x = 0 y = 0 }
+							engineer = { x = 0 y = 1 }
+							artillery = { x = 0 y = 2 }
+						}
+					}
+				}
+				if = {
+					limit = { NOT = { has_template = "Corpus of Mercenaries" } }
+					division_template = {
+						name = "Corpus of Mercenaries"
+						is_locked = no
+						regiments = {
+							infantry = { x = 0 y = 0 }
+							infantry = { x = 0 y = 1 }
+							infantry = { x = 0 y = 2 }
+							infantry = { x = 1 y = 0 }
+							infantry = { x = 1 y = 1 }
+							infantry = { x = 1 y = 2 }
+							infantry = { x = 2 y = 0 }
+							infantry = { x = 2 y = 1 }
+							infantry = { x = 2 y = 2 }
+							infantry = { x = 3 y = 0 }
+						}
+						support = {
+							recon = { x = 0 y = 0 }
+							engineer = { x = 0 y = 1 }
+							anti_tank = { x = 0 y = 2 }
+						}
+					}
+				}
+			}
+			capital_scope = {
+				create_unit = {
+					division = "name = \"Corpus of Mercenaries with artillery\" division_template = \"Corpus of Mercenaries with artillery\" start_experience_factor = 0.4" 
+					owner = ROOT
+					count = 1
+				}
+				create_unit = {
+					division = "name = \"Corpus of Mercenaries\" division_template = \"Corpus of Mercenaries\" start_experience_factor = 0.4" 
+					owner = ROOT
+					count = 1
+				}
+			}
+		}
+		ai_will_do = {
+			factor = 1
+			modifier = {
+				add = 50
+				ai_wants_divisions > 0
+			}
+			modifier = {
+				add = 50
+				enemies_strength_ratio > 1
+			}
+		}
+	}
+	
+	generic_hire_tank_division_thriving_private_army_market = {
+		icon = generic_tank
+		available = {
+			has_idea = thriving_private_army_market
+		}
+		visible = {
+			has_idea = thriving_private_army_market
+		}
+		cost = 75
+		complete_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision generic_hire_tank_division_monopolized_private_armies"
+			hidden_effect = {
+				if = {
+					limit = { NOT = { has_template = "Tank Corpus Of Mercenary" } }
+					division_template = {
+						name = "Tank Corpus Of Mercenary"
+						is_locked = no
+						regiments = {
+							medium_armor = { x = 0 y = 0 }
+							medium_armor = { x = 0 y = 1 }
+							light_armor = { x = 0 y = 2 }
+							light_armor = { x = 1 y = 0 }
+							light_armor = { x = 1 y = 1 }
+							light_armor = { x = 1 y = 2 }
+							motorized = { x = 2 y = 0 }
+							motorized = { x = 2 y = 1 }
+							motorized = { x = 2 y = 2 }
+							motorized = { x = 2 y = 3 }
+						}
+						support = {
+							recon = { x = 0 y = 0 }
+							engineer = { x = 0 y = 1 }
+						}
+					}
+				}
+			}
+			capital_scope = {
+				create_unit = {
+					division = "name = \"Tank Corpus Of Mercenary\" division_template = \"Tank Corpus Of Mercenary\" start_experience_factor = 0.4" 
+					owner = ROOT
+					count = 3
+				}
+			}
+		}
+		ai_will_do = {
+			factor = 1
+			modifier = {
+				add = 50
+				ai_wants_divisions > 0
+			}
+			modifier = {
+				add = 50
+				enemies_strength_ratio > 1
+			}
+		}
+	}
+}
 

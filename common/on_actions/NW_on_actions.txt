@@ -116,11 +116,17 @@ on_actions = {
 					}
 				}
 				set_var_for_troz_threat_dyn = yes
+				BUL = {
+					start_civil_war = {
+						ideology = fascism
+						size = 0.5
+					} 
+				}
 			}
-			random_country = {
-				set_country_flag = timer_timer_flag
-				log = "[GetDateText]: [This.GetName] ([This.GetTag]): Избран крикуном"
-			}
+			#random_country = {
+			#	set_country_flag = timer_timer_flag
+			#	log = "[GetDateText]: [This.GetName] ([This.GetTag]): Избран крикуном"
+			#}
 			#Configurator
 			#random_country = {
 			#	limit = { is_ai = no }
@@ -3145,6 +3151,123 @@ on_actions = {
 	}
 	
 	
+	on_weekly = {
+		effect = {
+			#if = {
+			#	limit = {
+			#		has_country_flag = timer_timer_flag
+			#		country_exists = ROOT
+			#	}
+			#	log = "[GetDateText]: [This.GetName] ([This.GetTag]): Новая неделя"
+			#}
+			#else_if = {
+			#	limit = {
+			#		any_country = {
+			#			has_country_flag = timer_timer_flag
+			#			NOT = { country_exists = THIS }
+			#		}
+			#	}
+			#	every_country = { clr_country_flag = timer_timer_flag }
+			#	random_country = { set_country_flag = timer_timer_flag }
+			#	log = "[GetDateText]: [This.GetName] ([This.GetTag]): Теперь крикун"
+			#}
+			
+			#Голод // Нацдух ETH / LIB
+			if = {
+				limit = {
+					OR = {
+						has_idea = ETH_hunger
+						has_idea = LIB_hunger
+					}
+				}
+				every_owned_state = {
+					limit = { is_core_of = ROOT }
+					add_manpower = -5000
+				}
+				log = "[GetDateText]: [This.GetName] ([This.GetTag]): минус 5000 менпавера"
+			}
+			#ETH_ethiopism_trait_1500 // Еженедельный прирост населения: §R-1500§!
+			if = {
+				limit = {
+					has_idea = ETH_ethiopism
+				}
+				random_owned_state = {
+					add_manpower = -1500
+				}
+				log = "[GetDateText]: [This.GetName] ([This.GetTag]): минус 1500 менпавера"
+			}
+			#ETH_ethiopism_trait_1000 // Еженедельный прирост населения: §R-1000§!
+			if = {
+				limit = {
+					OR = {
+						has_idea = ETH_ethiopism_2
+						has_idea = ETH_american_blacks_3
+					}
+				}
+				random_owned_state = {
+					add_manpower = -1000
+				}
+				log = "[GetDateText]: [This.GetName] ([This.GetTag]): минус 1000 менпавера"
+			}
+			#ETH_american_blacks_trait_1000 // Еженедельный прирост населения: §G1000§!
+			if = {
+				limit = {
+					OR = {
+						has_idea = ETH_ethiopism_3
+						has_idea = ETH_american_blacks_2
+					}
+				}
+				random_owned_state = {
+					add_manpower = 1000
+				}
+				log = "[GetDateText]: [This.GetName] ([This.GetTag]): плус 1000 менпавера"
+			}
+			#ETH_american_blacks_trait_1500 // Еженедельный прирост населения: §G1500§!
+			if = {
+				limit = {
+					has_idea = ETH_american_blacks
+				}
+				random_owned_state = {
+					add_manpower = 1500
+				}
+				log = "[GetDateText]: [This.GetName] ([This.GetTag]): плус 1500 менпавера"
+			}
+			#Нац.дух на слонов
+			if = {
+				limit = {
+					OR = {
+						has_idea = LIB_elephants
+						has_idea = ETH_elephants
+						has_idea = ETH_elephants_2
+						has_idea = ETH_elephants_3
+						has_idea = ETH_elephants_4
+						has_idea = ETH_elephants_5
+					}
+				}
+				set_temp_variable = { total_elephant_equipment = ETH_elephants_trait_var }
+				set_temp_variable = { num_elephant_states = 0 }
+				every_owned_state = {
+					limit = { has_state_flag = elephant_spawn_state_flag }
+					add_to_temp_variable = { num_elephant_states = 1 }
+				}
+				multiply_temp_variable = { total_elephant_equipment = num_elephant_states }
+				add_equipment_to_stockpile = {
+					type = elephant_equipment
+					amount = total_elephant_equipment
+				}
+				log = "[GetDateText]: [This.GetName] ([This.GetTag]): плус [?total_elephant_equipment] слонов"
+			}
+			#административная эффективность // anarchism
+			if = {
+				limit = {
+					has_variable = administrative_efficiency_var_total
+					has_country_flag = generic_attracting_public_attention_to_our_company_flag
+				}
+				add_to_variable = { administrative_efficiency_var_total = 0.025 }
+			}
+		}
+	}
+	
 	on_daily = {
 		effect = {
 			#volunteer_only
@@ -3175,126 +3298,11 @@ on_actions = {
 				round_variable = operative_slot_var
 			}
 			#Таймер недели
-			if = {
-				limit = { NOT = { check_variable = { counter_days = 7 } } }
-				add_to_variable = { counter_days = 1 }
-			}
-			if = {
-				limit = { check_variable = { counter_days = 7 } }
-				set_variable = { counter_days = 0 }
-				if = {
-					limit = {
-						has_country_flag = timer_timer_flag
-						country_exists = ROOT
-					}
-					log = "[GetDateText]: [This.GetName] ([This.GetTag]): Новая неделя"
-				}
-				else_if = {
-					limit = {
-						any_country = {
-							has_country_flag = timer_timer_flag
-							NOT = { country_exists = THIS }
-						}
-					}
-					every_country = { clr_country_flag = timer_timer_flag }
-					random_country = { set_country_flag = timer_timer_flag }
-					log = "[GetDateText]: [This.GetName] ([This.GetTag]): Теперь крикун"
-				}
-				
-				#Голод // Нацдух ETH / LIB
-				if = {
-					limit = {
-						OR = {
-							has_idea = ETH_hunger
-							has_idea = LIB_hunger
-						}
-					}
-					every_owned_state = {
-						limit = { is_core_of = ROOT }
-						add_manpower = -5000
-					}
-					log = "[GetDateText]: [This.GetName] ([This.GetTag]): минус 5000 менпавера"
-				}
-				#ETH_ethiopism_trait_1500 // Еженедельный прирост населения: §R-1500§!
-				if = {
-					limit = {
-						has_idea = ETH_ethiopism
-					}
-					random_owned_state = {
-						add_manpower = -1500
-					}
-					log = "[GetDateText]: [This.GetName] ([This.GetTag]): минус 1500 менпавера"
-				}
-				#ETH_ethiopism_trait_1000 // Еженедельный прирост населения: §R-1000§!
-				if = {
-					limit = {
-						OR = {
-							has_idea = ETH_ethiopism_2
-							has_idea = ETH_american_blacks_3
-						}
-					}
-					random_owned_state = {
-						add_manpower = -1000
-					}
-					log = "[GetDateText]: [This.GetName] ([This.GetTag]): минус 1000 менпавера"
-				}
-				#ETH_american_blacks_trait_1000 // Еженедельный прирост населения: §G1000§!
-				if = {
-					limit = {
-						OR = {
-							has_idea = ETH_ethiopism_3
-							has_idea = ETH_american_blacks_2
-						}
-					}
-					random_owned_state = {
-						add_manpower = 1000
-					}
-					log = "[GetDateText]: [This.GetName] ([This.GetTag]): плус 1000 менпавера"
-				}
-				#ETH_american_blacks_trait_1500 // Еженедельный прирост населения: §G1500§!
-				if = {
-					limit = {
-						has_idea = ETH_american_blacks
-					}
-					random_owned_state = {
-						add_manpower = 1500
-					}
-					log = "[GetDateText]: [This.GetName] ([This.GetTag]): плус 1500 менпавера"
-				}
-				#Нац.дух на слонов
-				if = {
-					limit = {
-						OR = {
-							has_idea = LIB_elephants
-							has_idea = ETH_elephants
-							has_idea = ETH_elephants_2
-							has_idea = ETH_elephants_3
-							has_idea = ETH_elephants_4
-							has_idea = ETH_elephants_5
-						}
-					}
-					set_temp_variable = { total_elephant_equipment = ETH_elephants_trait_var }
-					set_temp_variable = { num_elephant_states = 0 }
-					every_owned_state = {
-						limit = { has_state_flag = elephant_spawn_state_flag }
-						add_to_temp_variable = { num_elephant_states = 1 }
-					}
-					multiply_temp_variable = { total_elephant_equipment = num_elephant_states }
-					add_equipment_to_stockpile = {
-						type = elephant_equipment
-						amount = total_elephant_equipment
-					}
-					log = "[GetDateText]: [This.GetName] ([This.GetTag]): плус [?total_elephant_equipment] слонов"
-				}
-				#административная эффективность // anarchism
-				if = {
-					limit = {
-						has_variable = administrative_efficiency_var_total
-						has_country_flag = generic_attracting_public_attention_to_our_company_flag
-					}
-					add_to_variable = { administrative_efficiency_var_total = 0.025 }
-				}
-			}
+			#if = {
+			#	limit = { NOT = { check_variable = { counter_days = 7 } } }
+			#	add_to_variable = { counter_days = 1 }
+			#}
+			
 			#Армянские спецслужбы // Решения PER
 			if = {
 				limit = { has_idea = PER_armenian_special_services }
@@ -3702,6 +3710,13 @@ on_actions = {
 						focus_progress = { focus = continuous_anarchism_unity progress > 0 }
 					}
 					add_to_variable = { anarchism_unity_daily_var = 0.5 }
+				}
+				#anarchism_tendency_sense_of_danger_dyn // anarchism
+				if = {
+					limit = {
+						has_dynamic_modifier = { modifier = anarchism_tendency_sense_of_danger_dyn }
+					}
+					add_to_variable = { anarchism_unity_daily_var = anarchism_unity_daily_dyn_var }
 				}
 				add_to_variable = { anarchism_unity_daily_var = anarchism_unity_daily_var_dec }
 				add_to_variable = { anarchism_unity_var = anarchism_unity_daily_var }
