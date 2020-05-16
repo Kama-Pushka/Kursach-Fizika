@@ -877,6 +877,11 @@ HHNBRG_national_peoples_congresses_category = {
 		state_target = yes
 		available = {
 			has_full_control_of_state = FROM
+			set_temp_variable = { anarchism_unity_trigger_var = 5 }
+			custom_trigger_tooltip = {
+				check_variable = { anarchism_unity_var > anarchism_unity_trigger_var }
+				tooltip = anarchism_unity_trigger_more
+			}
 		}
 		visible = {
 			FROM = {
@@ -892,7 +897,15 @@ HHNBRG_national_peoples_congresses_category = {
 		}
 		target_array = owned_controlled_states
 		custom_cost_trigger = {
-			HHNBRG_custom_cost_trigger = yes
+			set_temp_variable = { custom_cost = 10 }
+			subtract_from_temp_variable = { custom_cost = custom_cost_minus }
+			set_temp_variable = { cost_multiply = 5 }
+			set_temp_variable = { total_num_of_congresses_var = num_of_congresses_var }
+			add_to_temp_variable = { total_num_of_congresses_var = compensatory_value }
+			subtract_from_temp_variable = { total_num_of_congresses_var = num_of_congresses_no_check_var }
+			multiply_temp_variable = { cost_multiply = total_num_of_congresses_var }
+			add_to_temp_variable = { custom_cost = cost_multiply }
+			has_political_power > custom_cost
 		}
 		custom_cost_text = creation_peoples_congress_cost
 		days_remove = 30
@@ -914,7 +927,25 @@ HHNBRG_national_peoples_congresses_category = {
 		}
 		
 		complete_effect = {
-			HHNBRG_creation_peoples_congress_effect = yes
+			set_temp_variable = { anarchism_unity_add_var = -5 }
+			add_to_variable = { anarchism_unity_var = anarchism_unity_add_var }
+			custom_effect_tooltip = anarchism_unity_add_effect
+			hidden_effect = {
+				set_temp_variable = { custom_cost = 10 }
+				subtract_from_temp_variable = { custom_cost = custom_cost_minus }
+				set_temp_variable = { cost_multiply = 5 }
+				set_temp_variable = { total_num_of_congresses_var = num_of_congresses_var }
+				add_to_temp_variable = { total_num_of_congresses_var = compensatory_value }
+				subtract_from_temp_variable = { total_num_of_congresses_var = num_of_congresses_no_check_var }
+				multiply_temp_variable = { cost_multiply = total_num_of_congresses_var }
+				add_to_temp_variable = { custom_cost = cost_multiply }
+
+				set_temp_variable = { custom_cost_temp = 0 }
+				subtract_from_temp_variable = { custom_cost_temp = custom_cost }
+				add_political_power = custom_cost_temp
+				country_event = { id = NWhohenberg.902 }
+			}
+			add_to_variable = { compensatory_value = 1 }
 		}
 		
 		ai_will_do = {

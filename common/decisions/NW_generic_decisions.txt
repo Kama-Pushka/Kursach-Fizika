@@ -632,6 +632,14 @@ generic_policy_interventions_category = {
 		icon = eng_propaganda_campaigns
 		
 		available = {
+			if = {
+				limit = { has_government = anarchism }
+				set_temp_variable = { anarchism_unity_trigger_var = 5 }
+				custom_trigger_tooltip = {
+					check_variable = { anarchism_unity_var > anarchism_unity_trigger_var }
+					tooltip = anarchism_unity_trigger_more
+				}
+			}
 			has_capitulated = no
 			is_subject = no
 			if = {
@@ -784,6 +792,9 @@ generic_policy_interventions_category = {
 		
 		complete_effect = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision generic_policy_interventions (From [From.GetName] [From.GetTag])"
+			set_temp_variable = { anarchism_unity_add_var = -5 }
+			add_to_variable = { anarchism_unity_var = anarchism_unity_add_var }
+			custom_effect_tooltip = anarchism_unity_add_effect
 			hidden_effect = { set_country_flag = interventions_target_@FROM }
 			if = {
 				limit = { ROOT = { has_government = democratic } }
@@ -1661,62 +1672,19 @@ generic_interventions_start_civil_war_category = {
 		icon = generic_ignite_civil_war
 		
 		available = {
+			if = {
+				limit = { has_government = anarchism }
+				set_temp_variable = { anarchism_unity_trigger_var = 10 }
+				custom_trigger_tooltip = {
+					check_variable = { anarchism_unity_var > anarchism_unity_trigger_var }
+					tooltip = anarchism_unity_trigger_more
+				}
+			}
 			has_capitulated = no
 			is_subject = no
 			custom_trigger_tooltip = {
 				tooltip = generic_start_civil_war_trigger_tt
-				OR = {
-					NOT = { country_exists = D01 }
-					NOT = { country_exists = D02 }
-					NOT = { country_exists = D03 }
-					NOT = { country_exists = D04 }
-					NOT = { country_exists = D05 }
-					NOT = { country_exists = D06 }
-					NOT = { country_exists = D07 }
-					NOT = { country_exists = D08 }
-					NOT = { country_exists = D09 }
-					NOT = { country_exists = D10 }
-					NOT = { country_exists = D11 }
-					NOT = { country_exists = D12 }
-					NOT = { country_exists = D13 }
-					NOT = { country_exists = D14 }
-					NOT = { country_exists = D15 }
-					NOT = { country_exists = D16 }
-					NOT = { country_exists = D17 }
-					NOT = { country_exists = D18 }
-					NOT = { country_exists = D19 }
-					NOT = { country_exists = D20 }
-					NOT = { country_exists = D21 }
-					NOT = { country_exists = D22 }
-					NOT = { country_exists = D23 }
-					NOT = { country_exists = D24 }
-					NOT = { country_exists = D25 }
-					NOT = { country_exists = D26 }
-					NOT = { country_exists = D27 }
-					NOT = { country_exists = D28 }
-					NOT = { country_exists = D29 }
-					NOT = { country_exists = D30 }
-					NOT = { country_exists = D31 }
-					NOT = { country_exists = D32 }
-					NOT = { country_exists = D33 }
-					NOT = { country_exists = D34 }
-					NOT = { country_exists = D35 }
-					NOT = { country_exists = D36 }
-					NOT = { country_exists = D37 }
-					NOT = { country_exists = D38 }
-					NOT = { country_exists = D39 }
-					NOT = { country_exists = D40 }
-					NOT = { country_exists = D41 }
-					NOT = { country_exists = D42 }
-					NOT = { country_exists = D43 }
-					NOT = { country_exists = D44 }
-					NOT = { country_exists = D45 }
-					NOT = { country_exists = D46 }
-					NOT = { country_exists = D47 }
-					NOT = { country_exists = D48 }
-					NOT = { country_exists = D49 }
-					NOT = { country_exists = D50 }
-				}
+				civil_war_is_available = yes
 			}
 			if = {
 				limit = { NOT = { has_government = anarchism } }
@@ -1898,6 +1866,9 @@ generic_interventions_start_civil_war_category = {
 		
 		complete_effect = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision generic_start_civil_war (From [From.GetName] [From.GetTag])"
+			set_temp_variable = { anarchism_unity_add_var = -10 }
+			add_to_variable = { anarchism_unity_var = anarchism_unity_add_var }
+			custom_effect_tooltip = anarchism_unity_add_effect
 			hidden_effect = {
 				FROM = {
 					country_event = { id = NWgeneric.10 }
@@ -4087,7 +4058,7 @@ generic_anarchism_tendency_category = {
 		icon = eng_blackshirt_march
 		available = {
 			NOT = { has_country_flag = { flag = generic_follow_trade_convoys_foreign_manufacturers_flag value > 0 } }
-			set_temp_variable = { anarchism_unity_trigger_var = 1 }
+			set_temp_variable = { anarchism_unity_trigger_var = 5 }
 			custom_trigger_tooltip = {
 				check_variable = { anarchism_unity_var > anarchism_unity_trigger_var }
 				tooltip = anarchism_unity_trigger_more
@@ -4105,7 +4076,7 @@ generic_anarchism_tendency_category = {
 			set_temp_variable = { anarchism_tendency_need_trade_user_pool_temp = -20 }
 			add_to_variable = { anarchism_tendency_need_trade_user_pool_var = anarchism_tendency_need_trade_user_pool_temp }
 			custom_effect_tooltip = anarchism_tendency_need_trade_user_pool_tt
-			set_temp_variable = { anarchism_unity_add_var = -1 }
+			set_temp_variable = { anarchism_unity_add_var = -5 }
 			add_to_variable = { anarchism_unity_var = anarchism_unity_add_var }
 			custom_effect_tooltip = anarchism_unity_add_effect
 			hidden_effect = {
@@ -4133,14 +4104,15 @@ generic_anarchism_tendency_category = {
 		icon = speech
 		available = {
 			NOT = { has_country_flag = { flag = generic_encourage_foreign_manufacturers_flag value > 0 } }
-			set_temp_variable = { anarchism_unity_trigger_var = 1 }
-			custom_trigger_tooltip = {
-				check_variable = { anarchism_unity_var > anarchism_unity_trigger_var }
-				tooltip = anarchism_unity_trigger_more
-			}
 		}
 	
-		cost = 50
+		custom_cost_trigger = {
+			set_temp_variable = { custom_cost = 7.5 }
+			check_variable = { anarchism_unity_var > custom_cost }
+			set_temp_variable = { custom_cost_pp = 50 }
+			has_political_power > custom_cost_pp
+		}
+		custom_cost_text = custom_cost_anarcho_unity_and_pp
 		
 		complete_effect = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision generic_encourage_foreign_manufacturers"
@@ -4148,11 +4120,15 @@ generic_anarchism_tendency_category = {
 			set_temp_variable = { anarchism_tendency_need_trade_user_pool_temp = 20 }
 			add_to_variable = { anarchism_tendency_need_trade_user_pool_var = anarchism_tendency_need_trade_user_pool_temp }
 			custom_effect_tooltip = anarchism_tendency_need_trade_user_pool_tt
-			set_temp_variable = { anarchism_unity_add_var = -1 }
+			set_temp_variable = { anarchism_unity_add_var = -7.5 }
 			add_to_variable = { anarchism_unity_var = anarchism_unity_add_var }
 			custom_effect_tooltip = anarchism_unity_add_effect
 			hidden_effect = {
 				set_var_generic_anarchism_tendency = yes
+				set_temp_variable = { custom_cost_pp_zero = 0 }
+				set_temp_variable = { custom_cost_pp = 50 }
+				subtract_from_temp_variable = { custom_cost_pp_zero = custom_cost_pp }
+				add_political_power = custom_cost_pp_zero
 			}
 		}
 		ai_will_do = {
@@ -4171,24 +4147,29 @@ generic_anarchism_tendency_category = {
 	generic_encourage_expansion_trade = {
 		icon = hol_attract_foreign_investors
 		available = {
-			set_temp_variable = { anarchism_unity_trigger_var = 1 }
-			custom_trigger_tooltip = {
-				check_variable = { anarchism_unity_var > anarchism_unity_trigger_var }
-				tooltip = anarchism_unity_trigger_more
-			}
 		}
-		cost = 25
+		custom_cost_trigger = {
+			set_temp_variable = { custom_cost = 5 }
+			check_variable = { anarchism_unity_var > custom_cost }
+			set_temp_variable = { custom_cost_pp = 25 }
+			has_political_power > custom_cost_pp
+		}
+		custom_cost_text = custom_cost_anarcho_unity_and_pp
 		
 		complete_effect = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision generic_encourage_expansion_trade"
 			set_temp_variable = { anarchism_tendency_need_trade_user_pool_temp = 10 }
 			add_to_variable = { anarchism_tendency_need_trade_user_pool_var = anarchism_tendency_need_trade_user_pool_temp }
 			custom_effect_tooltip = anarchism_tendency_need_trade_user_pool_tt
-			set_temp_variable = { anarchism_unity_add_var = -1 }
+			set_temp_variable = { anarchism_unity_add_var = -5 }
 			add_to_variable = { anarchism_unity_var = anarchism_unity_add_var }
 			custom_effect_tooltip = anarchism_unity_add_effect
 			hidden_effect = {
 				set_var_generic_anarchism_tendency = yes
+				set_temp_variable = { custom_cost_pp_zero = 0 }
+				set_temp_variable = { custom_cost_pp = 25 }
+				subtract_from_temp_variable = { custom_cost_pp_zero = custom_cost_pp }
+				add_political_power = custom_cost_pp_zero
 			}
 		}
 		ai_will_do = {
@@ -4207,24 +4188,30 @@ generic_anarchism_tendency_category = {
 	generic_call_for_isolationism = {
 		icon = generic_break_treaty
 		available = {
-			set_temp_variable = { anarchism_unity_trigger_var = 1 }
-			custom_trigger_tooltip = {
-				check_variable = { anarchism_unity_var > anarchism_unity_trigger_var }
-				tooltip = anarchism_unity_trigger_more
-			}
 		}
-		cost = 25
+	
+		custom_cost_trigger = {
+			set_temp_variable = { custom_cost = 5 }
+			check_variable = { anarchism_unity_var > custom_cost }
+			set_temp_variable = { custom_cost_pp = 25 }
+			has_political_power > custom_cost_pp
+		}
+		custom_cost_text = custom_cost_anarcho_unity_and_pp
 		
 		complete_effect = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision generic_encourage_expansion_trade"
 			set_temp_variable = { anarchism_tendency_need_trade_user_pool_temp = -10 }
 			add_to_variable = { anarchism_tendency_need_trade_user_pool_var = anarchism_tendency_need_trade_user_pool_temp }
 			custom_effect_tooltip = anarchism_tendency_need_trade_user_pool_tt
-			set_temp_variable = { anarchism_unity_add_var = -1 }
+			set_temp_variable = { anarchism_unity_add_var = -5 }
 			add_to_variable = { anarchism_unity_var = anarchism_unity_add_var }
 			custom_effect_tooltip = anarchism_unity_add_effect
 			hidden_effect = {
 				set_var_generic_anarchism_tendency = yes
+				set_temp_variable = { custom_cost_pp_zero = 0 }
+				set_temp_variable = { custom_cost_pp = 25 }
+				subtract_from_temp_variable = { custom_cost_pp_zero = custom_cost_pp }
+				add_political_power = custom_cost_pp_zero
 			}
 		}
 		ai_will_do = {
@@ -4243,13 +4230,14 @@ generic_anarchism_tendency_category = {
 		icon = generic_political_rally
 		available = {
 			NOT = { has_country_flag = { flag = generic_to_get_word_out_about_upcoming_strikes_flag value > 0 } }
-			set_temp_variable = { anarchism_unity_trigger_var = 1 }
-			custom_trigger_tooltip = {
-				check_variable = { anarchism_unity_var > anarchism_unity_trigger_var }
-				tooltip = anarchism_unity_trigger_more
-			}
 		}
-		cost = 50
+		custom_cost_trigger = {
+			set_temp_variable = { custom_cost = 7.5 }
+			check_variable = { anarchism_unity_var > custom_cost }
+			set_temp_variable = { custom_cost_pp = 50 }
+			has_political_power > custom_cost_pp
+		}
+		custom_cost_text = custom_cost_anarcho_unity_and_pp
 		
 		complete_effect = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision generic_to_get_word_out_about_upcoming_strikes"
@@ -4257,11 +4245,15 @@ generic_anarchism_tendency_category = {
 			set_temp_variable = { anarchism_tendency_interest_industry_user_pool_temp = -20 }
 			add_to_variable = { anarchism_tendency_interest_industry_user_pool_var = anarchism_tendency_interest_industry_user_pool_temp }
 			custom_effect_tooltip = anarchism_tendency_interest_industry_user_pool_tt
-			set_temp_variable = { anarchism_unity_add_var = -1 }
+			set_temp_variable = { anarchism_unity_add_var = -7.5 }
 			add_to_variable = { anarchism_unity_var = anarchism_unity_add_var }
 			custom_effect_tooltip = anarchism_unity_add_effect
 			hidden_effect = {
 				set_var_generic_anarchism_tendency = yes
+				set_temp_variable = { custom_cost_pp_zero = 0 }
+				set_temp_variable = { custom_cost_pp = 50 }
+				subtract_from_temp_variable = { custom_cost_pp_zero = custom_cost_pp }
+				add_political_power = custom_cost_pp_zero
 			}
 		}
 		ai_will_do = {
@@ -4277,14 +4269,15 @@ generic_anarchism_tendency_category = {
 		icon = generic_decision
 		available = {
 			NOT = { has_country_flag = { flag = generic_prepare_competition_for_best_manufacturers_flag value > 0 } }
-			set_temp_variable = { anarchism_unity_trigger_var = 1 }
-			custom_trigger_tooltip = {
-				check_variable = { anarchism_unity_var > anarchism_unity_trigger_var }
-				tooltip = anarchism_unity_trigger_more
-			}
 			num_of_civilian_factories_available_for_projects > 0
 		}
-		cost = 5
+		custom_cost_trigger = {
+			set_temp_variable = { custom_cost = 7.5 }
+			check_variable = { anarchism_unity_var > custom_cost }
+			set_temp_variable = { custom_cost_pp = 5 }
+			has_political_power > custom_cost_pp
+		}
+		custom_cost_text = custom_cost_anarcho_unity_and_pp
 		
 		complete_effect = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision generic_prepare_competition_for_best_manufacturers"
@@ -4292,7 +4285,7 @@ generic_anarchism_tendency_category = {
 			set_temp_variable = { anarchism_tendency_interest_industry_user_pool_temp = 20 }
 			add_to_variable = { anarchism_tendency_interest_industry_user_pool_var = anarchism_tendency_interest_industry_user_pool_temp }
 			custom_effect_tooltip = anarchism_tendency_interest_industry_user_pool_tt
-			set_temp_variable = { anarchism_unity_add_var = -1 }
+			set_temp_variable = { anarchism_unity_add_var = -7.5 }
 			add_to_variable = { anarchism_unity_var = anarchism_unity_add_var }
 			custom_effect_tooltip = anarchism_unity_add_effect
 			random_owned_controlled_state = {
@@ -4304,6 +4297,10 @@ generic_anarchism_tendency_category = {
 			}
 			hidden_effect = {
 				set_var_generic_anarchism_tendency = yes
+				set_temp_variable = { custom_cost_pp_zero = 0 }
+				set_temp_variable = { custom_cost_pp = 5 }
+				subtract_from_temp_variable = { custom_cost_pp_zero = custom_cost_pp }
+				add_political_power = custom_cost_pp_zero
 			}
 		}
 		ai_will_do = {
@@ -4329,13 +4326,15 @@ generic_anarchism_tendency_category = {
 		icon = generic_construction
 		available = {
 			NOT = { has_country_flag = { flag = generic_call_for_development_of_industry_flag value > 0 } }
-			set_temp_variable = { anarchism_unity_trigger_var = 1 }
-			custom_trigger_tooltip = {
-				check_variable = { anarchism_unity_var > anarchism_unity_trigger_var }
-				tooltip = anarchism_unity_trigger_more
-			}
 		}
-		cost = 25
+	
+		custom_cost_trigger = {
+			set_temp_variable = { custom_cost = 5 }
+			check_variable = { anarchism_unity_var > custom_cost }
+			set_temp_variable = { custom_cost_pp = 25 }
+			has_political_power > custom_cost_pp
+		}
+		custom_cost_text = custom_cost_anarcho_unity_and_pp
 		
 		complete_effect = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision generic_call_for_development_of_industry"
@@ -4343,11 +4342,15 @@ generic_anarchism_tendency_category = {
 			set_temp_variable = { anarchism_tendency_interest_industry_user_pool_temp = 10 }
 			add_to_variable = { anarchism_tendency_interest_industry_user_pool_var = anarchism_tendency_interest_industry_user_pool_temp }
 			custom_effect_tooltip = anarchism_tendency_interest_industry_user_pool_tt
-			set_temp_variable = { anarchism_unity_add_var = -1 }
+			set_temp_variable = { anarchism_unity_add_var = -5 }
 			add_to_variable = { anarchism_unity_var = anarchism_unity_add_var }
 			custom_effect_tooltip = anarchism_unity_add_effect
 			hidden_effect = {
 				set_var_generic_anarchism_tendency = yes
+				set_temp_variable = { custom_cost_pp_zero = 0 }
+				set_temp_variable = { custom_cost_pp = 25 }
+				subtract_from_temp_variable = { custom_cost_pp_zero = custom_cost_pp }
+				add_political_power = custom_cost_pp_zero
 			}
 		}
 		ai_will_do = {
@@ -4363,13 +4366,14 @@ generic_anarchism_tendency_category = {
 		icon = generic_political_discourse
 		available = {
 			NOT = { has_country_flag = { flag = generic_set_an_example_for_rural_workers_flag value > 0 } }
-			set_temp_variable = { anarchism_unity_trigger_var = 1 }
-			custom_trigger_tooltip = {
-				check_variable = { anarchism_unity_var > anarchism_unity_trigger_var }
-				tooltip = anarchism_unity_trigger_more
-			}
 		}
-		cost = 25
+		custom_cost_trigger = {
+			set_temp_variable = { custom_cost = 5 }
+			check_variable = { anarchism_unity_var > custom_cost }
+			set_temp_variable = { custom_cost_pp = 25 }
+			has_political_power > custom_cost_pp
+		}
+		custom_cost_text = custom_cost_anarcho_unity_and_pp
 		
 		complete_effect = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision generic_set_an_example_for_rural_workers"
@@ -4377,11 +4381,15 @@ generic_anarchism_tendency_category = {
 			set_temp_variable = { anarchism_tendency_interest_industry_user_pool_temp = -10 }
 			add_to_variable = { anarchism_tendency_interest_industry_user_pool_var = anarchism_tendency_interest_industry_user_pool_temp }
 			custom_effect_tooltip = anarchism_tendency_interest_industry_user_pool_tt
-			set_temp_variable = { anarchism_unity_add_var = -1 }
+			set_temp_variable = { anarchism_unity_add_var = -5 }
 			add_to_variable = { anarchism_unity_var = anarchism_unity_add_var }
 			custom_effect_tooltip = anarchism_unity_add_effect
 			hidden_effect = {
 				set_var_generic_anarchism_tendency = yes
+				set_temp_variable = { custom_cost_pp_zero = 0 }
+				set_temp_variable = { custom_cost_pp = 25 }
+				subtract_from_temp_variable = { custom_cost_pp_zero = custom_cost_pp }
+				add_political_power = custom_cost_pp_zero
 			}
 		}
 		ai_will_do = {
@@ -4397,13 +4405,14 @@ generic_anarchism_tendency_category = {
 		icon = recruit_operative
 		available = {
 			NOT = { has_country_flag = { flag = generic_create_image_of_external_enemy_flag value > 0 } }
-			set_temp_variable = { anarchism_unity_trigger_var = 1 }
-			custom_trigger_tooltip = {
-				check_variable = { anarchism_unity_var > anarchism_unity_trigger_var }
-				tooltip = anarchism_unity_trigger_more
-			}
 		}
-		cost = 25
+		custom_cost_trigger = {
+			set_temp_variable = { custom_cost = 5 }
+			check_variable = { anarchism_unity_var > custom_cost }
+			set_temp_variable = { custom_cost_pp = 25 }
+			has_political_power > custom_cost_pp
+		}
+		custom_cost_text = custom_cost_anarcho_unity_and_pp
 		
 		complete_effect = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision generic_create_image_of_external_enemy"
@@ -4411,11 +4420,15 @@ generic_anarchism_tendency_category = {
 			set_temp_variable = { anarchism_tendency_sense_of_danger_pool_temp = 10 }
 			add_to_variable = { anarchism_tendency_sense_of_danger_pool_var = anarchism_tendency_sense_of_danger_pool_temp }
 			custom_effect_tooltip = anarchism_tendency_sense_of_danger_pool_tt
-			set_temp_variable = { anarchism_unity_add_var = -1 }
+			set_temp_variable = { anarchism_unity_add_var = -5 }
 			add_to_variable = { anarchism_unity_var = anarchism_unity_add_var }
 			custom_effect_tooltip = anarchism_unity_add_effect
 			hidden_effect = {
 				set_var_generic_anarchism_tendency = yes
+				set_temp_variable = { custom_cost_pp_zero = 0 }
+				set_temp_variable = { custom_cost_pp = 25 }
+				subtract_from_temp_variable = { custom_cost_pp_zero = custom_cost_pp }
+				add_political_power = custom_cost_pp_zero
 			}
 		}
 		ai_will_do = {
@@ -4431,13 +4444,15 @@ generic_anarchism_tendency_category = {
 		icon = hol_exchange_intelligence_data
 		available = {
 			NOT = { has_country_flag = { flag = generic_promote_external_friendliness_flag value > 0 } }
-			set_temp_variable = { anarchism_unity_trigger_var = 1 }
-			custom_trigger_tooltip = {
-				check_variable = { anarchism_unity_var > anarchism_unity_trigger_var }
-				tooltip = anarchism_unity_trigger_more
-			}
 		}
-		cost = 25
+		
+		custom_cost_trigger = {
+			set_temp_variable = { custom_cost = 5 }
+			check_variable = { anarchism_unity_var > custom_cost }
+			set_temp_variable = { custom_cost_pp = 25 }
+			has_political_power > custom_cost_pp
+		}
+		custom_cost_text = custom_cost_anarcho_unity_and_pp
 		
 		complete_effect = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision generic_promote_external_friendliness"
@@ -4445,11 +4460,15 @@ generic_anarchism_tendency_category = {
 			set_temp_variable = { anarchism_tendency_sense_of_danger_pool_temp = -10 }
 			add_to_variable = { anarchism_tendency_sense_of_danger_pool_var = anarchism_tendency_sense_of_danger_pool_temp }
 			custom_effect_tooltip = anarchism_tendency_sense_of_danger_pool_tt
-			set_temp_variable = { anarchism_unity_add_var = -1 }
+			set_temp_variable = { anarchism_unity_add_var = -5 }
 			add_to_variable = { anarchism_unity_var = anarchism_unity_add_var }
 			custom_effect_tooltip = anarchism_unity_add_effect
 			hidden_effect = {
 				set_var_generic_anarchism_tendency = yes
+				set_temp_variable = { custom_cost_pp_zero = 0 }
+				set_temp_variable = { custom_cost_pp = 25 }
+				subtract_from_temp_variable = { custom_cost_pp_zero = custom_cost_pp }
+				add_political_power = custom_cost_pp_zero
 			}
 		}
 		ai_will_do = {
@@ -4465,16 +4484,17 @@ generic_anarchism_tendency_category = {
 		icon = ger_mefo_bills
 		available = {
 			NOT = { has_country_flag = { flag = generic_spread_boulevard_military_novels_flag value > 0 } }
-			set_temp_variable = { anarchism_unity_trigger_var = 1 }
-			custom_trigger_tooltip = {
-				check_variable = { anarchism_unity_var > anarchism_unity_trigger_var }
-				tooltip = anarchism_unity_trigger_more
-			}
 		}
 		remove_trigger = {
 			NOT = { has_government = anarchism }
 		}
-		cost = 50
+		custom_cost_trigger = {
+			set_temp_variable = { custom_cost = 7.5 }
+			check_variable = { anarchism_unity_var > custom_cost }
+			set_temp_variable = { custom_cost_pp = 50 }
+			has_political_power > custom_cost_pp
+		}
+		custom_cost_text = custom_cost_anarcho_unity_and_pp
 		days_remove = 14
 		
 		complete_effect = {
@@ -4484,11 +4504,15 @@ generic_anarchism_tendency_category = {
 			set_temp_variable = { anarchism_tendency_sense_of_danger_pool_temp = 20 }
 			add_to_variable = { anarchism_tendency_sense_of_danger_pool_var = anarchism_tendency_sense_of_danger_pool_temp }
 			custom_effect_tooltip = anarchism_tendency_sense_of_danger_pool_tt
-			set_temp_variable = { anarchism_unity_add_var = -1 }
+			set_temp_variable = { anarchism_unity_add_var = -7.5 }
 			add_to_variable = { anarchism_unity_var = anarchism_unity_add_var }
 			custom_effect_tooltip = anarchism_unity_add_effect
 			hidden_effect = {
 				set_var_generic_anarchism_tendency = yes
+				set_temp_variable = { custom_cost_pp_zero = 0 }
+				set_temp_variable = { custom_cost_pp = 50 }
+				subtract_from_temp_variable = { custom_cost_pp_zero = custom_cost_pp }
+				add_political_power = custom_cost_pp_zero
 			}
 		}
 		ai_will_do = {
@@ -4504,16 +4528,17 @@ generic_anarchism_tendency_category = {
 		icon = hol_war_on_pacifism
 		available = {
 			NOT = { has_country_flag = { flag = generic_spread_pacifist_literature_flag value > 0 } }
-			set_temp_variable = { anarchism_unity_trigger_var = 1 }
-			custom_trigger_tooltip = {
-				check_variable = { anarchism_unity_var > anarchism_unity_trigger_var }
-				tooltip = anarchism_unity_trigger_more
-			}
 		}
 		remove_trigger = {
 			NOT = { has_government = anarchism }
 		}
-		cost = 25
+		custom_cost_trigger = {
+			set_temp_variable = { custom_cost = 7.5 }
+			check_variable = { anarchism_unity_var > custom_cost }
+			set_temp_variable = { custom_cost_pp = 25 }
+			has_political_power > custom_cost_pp
+		}
+		custom_cost_text = custom_cost_anarcho_unity_and_pp
 		days_remove = 14
 		
 		complete_effect = {
@@ -4523,11 +4548,15 @@ generic_anarchism_tendency_category = {
 			set_temp_variable = { anarchism_tendency_sense_of_danger_pool_temp = -20 }
 			add_to_variable = { anarchism_tendency_sense_of_danger_pool_var = anarchism_tendency_sense_of_danger_pool_temp }
 			custom_effect_tooltip = anarchism_tendency_sense_of_danger_pool_tt
-			set_temp_variable = { anarchism_unity_add_var = -1 }
+			set_temp_variable = { anarchism_unity_add_var = -7.5 }
 			add_to_variable = { anarchism_unity_var = anarchism_unity_add_var }
 			custom_effect_tooltip = anarchism_unity_add_effect
 			hidden_effect = {
 				set_var_generic_anarchism_tendency = yes
+				set_temp_variable = { custom_cost_pp_zero = 0 }
+				set_temp_variable = { custom_cost_pp = 25 }
+				subtract_from_temp_variable = { custom_cost_pp_zero = custom_cost_pp }
+				add_political_power = custom_cost_pp_zero
 			}
 		}
 		ai_will_do = {
@@ -5725,6 +5754,10 @@ generic_anarchism_solving_question_of_social_interaction_category = {
 		}
 		ai_will_do = {
 			factor = 50
+			modifier = {
+				factor = 10
+				has_war = yes
+			}
 		}
 	}
 	
@@ -5760,6 +5793,10 @@ generic_anarchism_solving_question_of_social_interaction_category = {
 		}
 		ai_will_do = {
 			factor = 50
+			modifier = {
+				factor = 10
+				has_war = yes
+			}
 		}
 	}
 	
@@ -5793,6 +5830,10 @@ generic_anarchism_solving_question_of_social_interaction_category = {
 		}
 		ai_will_do = {
 			factor = 50
+			modifier = {
+				factor = 10
+				has_war = yes
+			}
 		}
 	}
 	
@@ -5826,6 +5867,10 @@ generic_anarchism_solving_question_of_social_interaction_category = {
 		}
 		ai_will_do = {
 			factor = 50
+			modifier = {
+				factor = 10
+				has_war = yes
+			}
 		}
 	}
 	
@@ -5859,6 +5904,67 @@ generic_anarchism_solving_question_of_social_interaction_category = {
 		}
 		ai_will_do = {
 			factor = 50
+			modifier = {
+				factor = 10
+				has_war = yes
+			}
+		}
+	}
+}
+
+generic_expand_anarchism_commune_category = {
+	
+	generic_expand_anarchism_commune_in_region = {
+		icon = eng_trade_unions_support
+		on_map_mode = map_only
+		state_target = yes
+		available = {
+			FROM = { is_fully_controlled_by = ROOT }
+		}
+		visible = {
+			FROM = {
+				NOT = { is_core_of = ROOT }
+				is_fully_controlled_by = ROOT
+			}
+		}
+		target_trigger = {
+			FROM = {
+				NOT = { is_core_of = ROOT }
+				is_fully_controlled_by = ROOT
+			}
+		}
+		target_array = controlled_states
+		custom_cost_trigger = {
+			set_temp_variable = { custom_cost = 5 }
+			check_variable = { anarchism_unity_var > custom_cost }
+		}
+		custom_cost_text = custom_cost_anarcho_unity
+		days_remove = 30
+		cancel_trigger = {
+			hidden_trigger = {
+				NOT = { FROM = { is_fully_controlled_by = ROOT } }
+			}
+		}
+		complete_effect = {
+			hidden_effect = {
+				set_temp_variable = { custom_cost = 5 }
+				subtract_from_variable = { anarchism_unity_var = custom_cost }
+			}
+		}
+		remove_effect = {
+			add_state_core = FROM
+		}
+		ai_will_do = {
+			factor = 5
+			modifier = { factor = 0.2 FROM = { distance_to = { value < 900 target = capital } } }
+			modifier = { factor = 0.3 FROM = { distance_to = { value < 800 target = capital } } }
+			modifier = { factor = 0.4 FROM = { distance_to = { value < 700 target = capital } } }
+			modifier = { factor = 0.5 FROM = { distance_to = { value < 600 target = capital } } }
+			modifier = { factor = 0.6 FROM = { distance_to = { value < 500 target = capital } } }
+			modifier = { factor = 0.7 FROM = { distance_to = { value < 400 target = capital } } }
+			modifier = { factor = 0.8 FROM = { distance_to = { value < 300 target = capital } } }
+			modifier = { factor = 0.9 FROM = { distance_to = { value < 200 target = capital } } }
+			modifier = { factor = 1 FROM = { distance_to = { value < 100 target = capital } } }
 		}
 	}
 }
