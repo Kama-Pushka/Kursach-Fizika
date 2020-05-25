@@ -5020,6 +5020,9 @@ generic_anarchism_private_army_category = {
 	
 	generic_hire_infantry_division_mercenary_soldiers = {
 		icon = generic_prepare_civil_war
+		highlight_state_targets = {
+			state = var:capital_var
+		}
 		available = {
 			has_idea = mercenary_soldiers
 		}
@@ -5067,6 +5070,9 @@ generic_anarchism_private_army_category = {
 	
 	generic_hire_infantry_division_monopolized_private_armies = {
 		icon = generic_prepare_civil_war
+		highlight_state_targets = {
+			state = var:capital_var
+		}
 		available = {
 			has_idea = monopolized_private_armies
 		}
@@ -5120,6 +5126,9 @@ generic_anarchism_private_army_category = {
 	
 	generic_hire_tank_division_monopolized_private_armies = {
 		icon = generic_tank
+		highlight_state_targets = {
+			state = var:capital_var
+		}
 		available = {
 			has_idea = monopolized_private_armies
 		}
@@ -5174,6 +5183,9 @@ generic_anarchism_private_army_category = {
 	
 	generic_hire_infantry_division_thriving_private_army_market = {
 		icon = generic_prepare_civil_war
+		highlight_state_targets = {
+			state = var:capital_var
+		}
 		available = {
 			has_idea = thriving_private_army_market
 		}
@@ -5260,6 +5272,9 @@ generic_anarchism_private_army_category = {
 	
 	generic_hire_tank_division_thriving_private_army_market = {
 		icon = generic_tank
+		highlight_state_targets = {
+			state = var:capital_var
+		}
 		available = {
 			has_idea = thriving_private_army_market
 		}
@@ -5278,7 +5293,7 @@ generic_anarchism_private_army_category = {
 						regiments = {
 							medium_armor = { x = 0 y = 0 }
 							medium_armor = { x = 0 y = 1 }
-							light_armor = { x = 0 y = 2 }
+							medium_armor = { x = 0 y = 2 }
 							light_armor = { x = 1 y = 0 }
 							light_armor = { x = 1 y = 1 }
 							light_armor = { x = 1 y = 2 }
@@ -5540,7 +5555,7 @@ generic_anarchism_solve_management_question_category = {
 				custom_effect_tooltip = anarcho_agorism_score_tt
 			}
 			remove_ideas = collapse_of_state_apparatus
-			add_ideas = self_government_of_owners
+			add_ideas = apolitical_strategy
 		}
 		ai_will_do = {
 			factor = 50
@@ -5697,6 +5712,8 @@ generic_anarchism_solve_question_of_freedoms_and_laws_category = {
 				limit = { NOT = { has_country_flag = anarchism_neutrality_flag } }
 				add_to_variable = { anarcho_egoism_score_var = 1 }
 				custom_effect_tooltip = anarcho_egoism_score_tt
+				add_to_variable = { anarcho_agorism_score_var_var = 1 }
+				custom_effect_tooltip = anarcho_agorism_score_tt
 			}
 			remove_ideas = legislative_anarchy
 			add_ideas = full_freedom_of_individual
@@ -6206,15 +6223,23 @@ generic_expand_anarchism_commune_category = {
 			}
 		}
 		remove_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): remove decision generic_expand_anarchism_commune_category [From.GetName] [From.GetID]"
 			add_state_core = FROM
 			if = {
 				limit = {
-					has_completed_focus = anarcho_egoism_focus
+					OR = {
+						has_completed_focus = anarcho_egoism_focus
+						has_completed_focus = libertarian_focus
+						has_completed_focus = agorism_focus
+					}
 					FROM = { NOT = { has_dynamic_modifier = { modifier = private_state_dyn } } }
 				}
 				FROM = {
-					set_state_var_for_private_state_dyn = yes
 					add_dynamic_modifier = { modifier = private_state_dyn }
+					set_variable = { recruitable_population_factor_state_var = -0.5 }
+					set_variable = { state_resources_factor_state_var = -0.5 }
+					set_variable = { local_building_slots_factor_state_var = -0.25 }
+					set_variable = { state_production_speed_buildings_factor_state_var = -0.25 }
 				}
 			}
 			hidden_effect = {
@@ -6488,7 +6513,7 @@ generic_peoples_bank_category = {
 				is_fully_controlled_by = ROOT
 			}
 		}
-		target_array = owned_controlled_states
+		target_array = controlled_states
 		custom_cost_trigger = {
 			set_temp_variable = { custom_cost = 5 }
 			check_variable = { anarchism_unity_var > custom_cost }
@@ -6511,6 +6536,7 @@ generic_peoples_bank_category = {
 			}
 		}
 		remove_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): remove decision generic_create_peoples_bank_in_region [From.GetName] [From.GetID]"
 			custom_effect_tooltip = generic_create_peoples_bank_in_region_tt
 			if = {
 				limit = {
@@ -6587,7 +6613,7 @@ generic_negotiate_with_private_owners_category = {
 			FROM = {
 				is_fully_controlled_by = ROOT
 				if = {
-					limit = { has_idea = union_of_egoists_focus }
+					limit = { ROOT = { has_idea = union_of_egoists_focus } }
 					custom_trigger_tooltip = {
 						set_temp_variable = { state_resources_factor_state_temp = 0.5 }
 						check_variable = { state_resources_factor_state_var < state_resources_factor_state_temp }
@@ -6618,7 +6644,7 @@ generic_negotiate_with_private_owners_category = {
 					has_resources_amount = { resource = chromium amount > 0 }
 				}
 				if = {
-					limit = { has_idea = union_of_egoists_focus }
+					limit = { ROOT = { has_idea = union_of_egoists_focus } }
 					check_variable = { state_resources_factor_state_var < 0.5 }
 				}
 				else = { check_variable = { state_resources_factor_state_var < 0 } }
@@ -6638,13 +6664,13 @@ generic_negotiate_with_private_owners_category = {
 					has_resources_amount = { resource = chromium amount > 0 }
 				}
 				if = {
-					limit = { has_idea = union_of_egoists_focus }
+					limit = { ROOT = { has_idea = union_of_egoists_focus } }
 					check_variable = { state_resources_factor_state_var < 0.5 }
 				}
 				else = { check_variable = { state_resources_factor_state_var < 0 } }
 			}
 		}
-		target_array = owned_controlled_states
+		target_array = controlled_states
 		cost = 10
 		days_remove = 30
 		cancel_trigger = {
@@ -6653,6 +6679,7 @@ generic_negotiate_with_private_owners_category = {
 			}
 		}
 		remove_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): remove decision generic_right_of_assignment_in_region [From.GetName] [From.GetID]"
 			hidden_effect = {
 				FROM = {
 					set_temp_variable = { temp_var = 0.1 }
@@ -6683,7 +6710,7 @@ generic_negotiate_with_private_owners_category = {
 			FROM = {
 				is_fully_controlled_by = ROOT
 				if = {
-					limit = { has_idea = union_of_egoists_focus }
+					limit = { ROOT = { has_idea = union_of_egoists_focus } }
 					custom_trigger_tooltip = {
 						set_temp_variable = { recruitable_population_factor_state_temp = 0.5 }
 						check_variable = { recruitable_population_factor_state_var < recruitable_population_factor_state_temp }
@@ -6709,7 +6736,7 @@ generic_negotiate_with_private_owners_category = {
 				is_fully_controlled_by = ROOT
 				has_dynamic_modifier = { modifier = private_state_dyn }
 				if = {
-					limit = { has_idea = union_of_egoists_focus }
+					limit = { ROOT = { has_idea = union_of_egoists_focus } }
 					check_variable = { recruitable_population_factor_state_var < 0.5 }
 				}
 				else = { check_variable = { recruitable_population_factor_state_var < 0 } }
@@ -6721,14 +6748,14 @@ generic_negotiate_with_private_owners_category = {
 				is_fully_controlled_by = ROOT
 				has_dynamic_modifier = { modifier = private_state_dyn }
 				if = {
-					limit = { has_idea = union_of_egoists_focus }
+					limit = { ROOT = { has_idea = union_of_egoists_focus } }
 					check_variable = { recruitable_population_factor_state_var < 0.5 }
 				}
 				else = { check_variable = { recruitable_population_factor_state_var < 0 } }
 			}
 		}
-		target_array = owned_controlled_states
-		cost = 15
+		target_array = controlled_states
+		cost = 10
 		days_remove = 30
 		cancel_trigger = {
 			hidden_trigger = {
@@ -6736,6 +6763,7 @@ generic_negotiate_with_private_owners_category = {
 			}
 		}
 		remove_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): remove decision generic_sovereignty_of_individual_in_region [From.GetName] [From.GetID]"
 			hidden_effect = {
 				FROM = {
 					set_temp_variable = { temp_var = 0.1 }
@@ -6803,7 +6831,7 @@ generic_negotiate_with_private_owners_category = {
 				is_fully_controlled_by = ROOT
 				has_dynamic_modifier = { modifier = private_state_dyn }
 				if = {
-					limit = { has_idea = union_of_egoists_focus }
+					limit = { ROOT = { has_idea = union_of_egoists_focus } }
 					OR = {
 						check_variable = { recruitable_population_factor_state_var < 0.65 }
 						check_variable = { local_building_slots_factor_state_var < 0.65 }
@@ -6840,7 +6868,7 @@ generic_negotiate_with_private_owners_category = {
 				is_fully_controlled_by = ROOT
 				has_dynamic_modifier = { modifier = private_state_dyn }
 				if = {
-					limit = { has_idea = union_of_egoists_focus }
+					limit = { ROOT = { has_idea = union_of_egoists_focus } }
 					OR = {
 						check_variable = { recruitable_population_factor_state_var < 0.65 }
 						check_variable = { local_building_slots_factor_state_var < 0.65 }
@@ -6870,7 +6898,7 @@ generic_negotiate_with_private_owners_category = {
 				}
 			}
 		}
-		target_array = owned_controlled_states
+		target_array = controlled_states
 		cost = 15
 		days_remove = 30
 		cancel_trigger = {
@@ -6879,6 +6907,7 @@ generic_negotiate_with_private_owners_category = {
 			}
 		}
 		remove_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): remove decision generic_take_property_by_force_in_region [From.GetName] [From.GetID]"
 			random_list = {
 				25 = {
 					set_temp_variable = { anarchism_unity_add_var = -5 }
@@ -6900,7 +6929,7 @@ generic_negotiate_with_private_owners_category = {
 					modifier = {
 						factor = 0
 						if = {
-							limit = { has_idea = union_of_egoists_focus }
+							limit = { ROOT = { has_idea = union_of_egoists_focus } }
 							FROM = { check_variable = { recruitable_population_factor_state_var > 0.64 } }
 						}
 						else = {
@@ -6919,7 +6948,7 @@ generic_negotiate_with_private_owners_category = {
 					modifier = {
 						factor = 0
 						if = {
-							limit = { has_idea = union_of_egoists_focus }
+							limit = { ROOT = { has_idea = union_of_egoists_focus } }
 							FROM = { check_variable = { local_building_slots_factor_state_var > 0.64 } }
 						}
 						else = {
@@ -6938,7 +6967,7 @@ generic_negotiate_with_private_owners_category = {
 					modifier = {
 						factor = 0
 						if = {
-							limit = { has_idea = union_of_egoists_focus }
+							limit = { ROOT = { has_idea = union_of_egoists_focus } }
 							FROM = {
 								OR = {
 									check_variable = { state_resources_factor_state_var > 0.64 }
@@ -6981,7 +7010,7 @@ generic_negotiate_with_private_owners_category = {
 					modifier = {
 						factor = 0
 						if = {
-							limit = { has_idea = union_of_egoists_focus }
+							limit = { ROOT = { has_idea = union_of_egoists_focus } }
 							FROM = { check_variable = { state_production_speed_buildings_factor_state_var > 0.64 } }
 						}
 						else = {
@@ -7059,7 +7088,7 @@ generic_negotiate_with_private_owners_category = {
 				check_variable = { state_resources_factor_state_var < 0 }
 			}
 		}
-		target_array = owned_controlled_states
+		target_array = controlled_states
 		cost = 10
 		days_remove = 30
 		cancel_trigger = {
@@ -7068,6 +7097,7 @@ generic_negotiate_with_private_owners_category = {
 			}
 		}
 		remove_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): remove decision generic_barter_resources_in_region [From.GetName] [From.GetID]"
 			hidden_effect = {
 				FROM = {
 					set_temp_variable = { temp_var = 0.1 }
@@ -7134,9 +7164,9 @@ generic_negotiate_with_private_owners_category = {
 				}
 			}
 		}
-		target_array = owned_controlled_states
+		target_array = controlled_states
 		custom_cost_trigger = {
-			set_temp_variable = { custom_cost = 5 }
+			set_temp_variable = { custom_cost = 2.5 }
 			check_variable = { anarchism_unity_var > custom_cost }
 		}
 		custom_cost_text = custom_cost_anarcho_unity
@@ -7148,11 +7178,12 @@ generic_negotiate_with_private_owners_category = {
 		}
 		complete_effect = {
 			hidden_effect = {
-				set_temp_variable = { custom_cost = 5 }
+				set_temp_variable = { custom_cost = 2.5 }
 				subtract_from_variable = { anarchism_unity_var = custom_cost }
 			}
 		}
 		remove_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): remove decision generic_turn_agora_into_fortress_in_region [From.GetName] [From.GetID]"
 			if = {
 				limit = { check_variable = { state_production_speed_buildings_factor_state_var < 0.25 } }
 				hidden_effect = {
@@ -7197,9 +7228,9 @@ generic_negotiate_with_private_owners_category = {
 				is_fully_controlled_by = ROOT
 				OR = {
 					custom_trigger_tooltip = {
-						set_temp_variable = { state_production_speed_buildings_factor_state_temp = 0.25 }
-						check_variable = { state_production_speed_buildings_factor_state_var < state_production_speed_buildings_factor_state_temp }
-						tooltip = state_production_speed_buildings_factor_state_trigger
+						set_temp_variable = { local_building_slots_factor_state_temp = 0.25 }
+						check_variable = { local_building_slots_factor_state_var < local_building_slots_factor_state_temp }
+						tooltip = local_building_slots_factor_state_trigger
 					}
 					custom_trigger_tooltip = {
 						set_temp_variable = { state_production_speed_factory_factor_state_temp = 0.25 }
@@ -7216,7 +7247,7 @@ generic_negotiate_with_private_owners_category = {
 				is_fully_controlled_by = ROOT
 				has_dynamic_modifier = { modifier = private_state_dyn }
 				OR = {
-					check_variable = { state_production_speed_buildings_factor_state_var < 0.25 }
+					check_variable = { local_building_slots_factor_state_var < 0.25 }
 					check_variable = { state_production_speed_factory_factor_state_var < 0.25 }
 				}
 			}
@@ -7227,14 +7258,14 @@ generic_negotiate_with_private_owners_category = {
 				is_fully_controlled_by = ROOT
 				has_dynamic_modifier = { modifier = private_state_dyn }
 				OR = {
-					check_variable = { state_production_speed_buildings_factor_state_var < 0.25 }
+					check_variable = { local_building_slots_factor_state_var < 0.25 }
 					check_variable = { state_production_speed_factory_factor_state_var < 0.25 }
 				}
 			}
 		}
-		target_array = owned_controlled_states
+		target_array = controlled_states
 		custom_cost_trigger = {
-			set_temp_variable = { custom_cost = 5 }
+			set_temp_variable = { custom_cost = 2.5 }
 			check_variable = { anarchism_unity_var > custom_cost }
 		}
 		custom_cost_text = custom_cost_anarcho_unity
@@ -7246,20 +7277,21 @@ generic_negotiate_with_private_owners_category = {
 		}
 		complete_effect = {
 			hidden_effect = {
-				set_temp_variable = { custom_cost = 5 }
+				set_temp_variable = { custom_cost = 2.5 }
 				subtract_from_variable = { anarchism_unity_var = custom_cost }
 			}
 		}
 		remove_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): remove decision generic_attach_production_facilities_agora_in_region [From.GetName] [From.GetID]"
 			if = {
-				limit = { check_variable = { state_production_speed_buildings_factor_state_var < 0.25 } }
+				limit = { check_variable = { local_building_slots_factor_state_var < 0.25 } }
 				hidden_effect = {
 					FROM = {
 						set_temp_variable = { temp_var = 0.1 }
-						add_to_variable = { state_production_speed_buildings_factor_state_var = temp_var }
+						add_to_variable = { local_building_slots_factor_state_var = temp_var }
 					}
 				}
-				custom_effect_tooltip = state_production_speed_buildings_factor_state_tt
+				custom_effect_tooltip = local_building_slots_factor_state_tt
 			}
 			if = {
 				limit = { check_variable = { state_production_speed_factory_factor_state_var < 0.25 } }
