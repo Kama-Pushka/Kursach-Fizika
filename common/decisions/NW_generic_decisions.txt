@@ -6202,15 +6202,27 @@ generic_expand_anarchism_commune_category = {
 			FROM = {
 				NOT = { is_core_of = ROOT }
 				is_fully_controlled_by = ROOT
+				NOT = {
+					#is_core_of = BRA
+					#is_core_of = BOL
+					#is_core_of = PAR
+					#is_core_of = ARG
+					#is_core_of = CHL
+					#is_core_of = URG
+					#is_core_of = PRU
+					#is_core_of = ECU
+					#is_core_of = COL
+					#is_core_of = VEN
+				}
 			}
 		}
 		target_array = controlled_states
 		custom_cost_trigger = {
-			set_temp_variable = { custom_cost = 5 }
+			set_temp_variable = { custom_cost = 0 }
 			check_variable = { anarchism_unity_var > custom_cost }
 		}
 		custom_cost_text = custom_cost_anarcho_unity
-		days_remove = 30
+		days_remove = 1
 		cancel_trigger = {
 			hidden_trigger = {
 				NOT = { FROM = { is_fully_controlled_by = ROOT } }
@@ -6218,7 +6230,7 @@ generic_expand_anarchism_commune_category = {
 		}
 		complete_effect = {
 			hidden_effect = {
-				set_temp_variable = { custom_cost = 5 }
+				set_temp_variable = { custom_cost = 0 }
 				subtract_from_variable = { anarchism_unity_var = custom_cost }
 			}
 		}
@@ -6630,7 +6642,10 @@ generic_negotiate_with_private_owners_category = {
 			}
 		}
 		visible = {
-			has_completed_focus = right_of_assignment_focus
+			OR = {
+				has_completed_focus = right_of_assignment_focus
+				has_completed_focus = homestead_principle_focus
+			}
 			FROM = {
 				is_core_of = ROOT
 				is_fully_controlled_by = ROOT
@@ -6730,6 +6745,7 @@ generic_negotiate_with_private_owners_category = {
 			OR = {
 				has_completed_focus = sovereignty_of_individual_focus
 				has_completed_focus = voluntarism_focus
+				has_completed_focus = individual_independence_focus
 			}
 			FROM = {
 				is_core_of = ROOT
@@ -7283,6 +7299,164 @@ generic_negotiate_with_private_owners_category = {
 		}
 		remove_effect = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): remove decision generic_attach_production_facilities_agora_in_region [From.GetName] [From.GetID]"
+			if = {
+				limit = { check_variable = { local_building_slots_factor_state_var < 0.25 } }
+				hidden_effect = {
+					FROM = {
+						set_temp_variable = { temp_var = 0.1 }
+						add_to_variable = { local_building_slots_factor_state_var = temp_var }
+					}
+				}
+				custom_effect_tooltip = local_building_slots_factor_state_tt
+			}
+			if = {
+				limit = { check_variable = { state_production_speed_factory_factor_state_var < 0.25 } }
+				hidden_effect = {
+					FROM = {
+						set_temp_variable = { temp_var = 0.05 }
+						add_to_variable = { state_production_speed_factory_factor_state_var = temp_var }
+					}
+				}
+				custom_effect_tooltip = state_production_speed_factory_factor_state_tt
+			}
+		}
+		ai_will_do = {
+			factor = 15
+			modifier = { factor = 0.2 FROM = { distance_to = { value < 900 target = capital } } }
+			modifier = { factor = 0.3 FROM = { distance_to = { value < 800 target = capital } } }
+			modifier = { factor = 0.4 FROM = { distance_to = { value < 700 target = capital } } }
+			modifier = { factor = 0.5 FROM = { distance_to = { value < 600 target = capital } } }
+			modifier = { factor = 0.6 FROM = { distance_to = { value < 500 target = capital } } }
+			modifier = { factor = 0.7 FROM = { distance_to = { value < 400 target = capital } } }
+			modifier = { factor = 0.8 FROM = { distance_to = { value < 300 target = capital } } }
+			modifier = { factor = 0.9 FROM = { distance_to = { value < 200 target = capital } } }
+			modifier = { factor = 1 FROM = { distance_to = { value < 100 target = capital } } }
+		}
+	}
+	
+	generic_contracts_with_local_construction_companies_in_region = {
+		icon = generic_construction
+		on_map_mode = map_only
+		state_target = yes
+		available = {
+			FROM = {
+				is_fully_controlled_by = ROOT
+				custom_trigger_tooltip = {
+					set_temp_variable = { state_production_speed_buildings_factor_state_temp = 0.25 }
+					check_variable = { state_production_speed_buildings_factor_state_var < state_production_speed_buildings_factor_state_temp }
+					tooltip = state_production_speed_buildings_factor_state_trigger
+				}
+			}
+		}
+		visible = {
+			OR = {
+				has_completed_focus = government_is_night_watchman_focus
+				has_completed_focus = private_money_focus
+			}
+			FROM = {
+				is_core_of = ROOT
+				is_fully_controlled_by = ROOT
+				has_dynamic_modifier = { modifier = private_state_dyn }
+				check_variable = { state_production_speed_buildings_factor_state_var < 0.25 }
+			}
+		}
+		target_trigger = {
+			FROM = {
+				is_core_of = ROOT
+				is_fully_controlled_by = ROOT
+				has_dynamic_modifier = { modifier = private_state_dyn }
+				check_variable = { state_production_speed_buildings_factor_state_var < 0.25 }
+			}
+		}
+		target_array = controlled_states
+		cost = 10
+		days_remove = 30
+		cancel_trigger = {
+			hidden_trigger = {
+				NOT = { FROM = { is_fully_controlled_by = ROOT } }
+			}
+		}
+		remove_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): remove decision generic_contracts_with_local_construction_companies_in_region [From.GetName] [From.GetID]"
+			hidden_effect = {
+				FROM = {
+					set_temp_variable = { temp_var = 0.1 }
+					add_to_variable = { state_production_speed_buildings_factor_state_var = temp_var }
+				}
+			}
+			custom_effect_tooltip = state_production_speed_buildings_factor_state_tt
+		}
+		ai_will_do = {
+			factor = 15
+			modifier = { factor = 0.2 FROM = { distance_to = { value < 900 target = capital } } }
+			modifier = { factor = 0.3 FROM = { distance_to = { value < 800 target = capital } } }
+			modifier = { factor = 0.4 FROM = { distance_to = { value < 700 target = capital } } }
+			modifier = { factor = 0.5 FROM = { distance_to = { value < 600 target = capital } } }
+			modifier = { factor = 0.6 FROM = { distance_to = { value < 500 target = capital } } }
+			modifier = { factor = 0.7 FROM = { distance_to = { value < 400 target = capital } } }
+			modifier = { factor = 0.8 FROM = { distance_to = { value < 300 target = capital } } }
+			modifier = { factor = 0.9 FROM = { distance_to = { value < 200 target = capital } } }
+			modifier = { factor = 1 FROM = { distance_to = { value < 100 target = capital } } }
+		}
+	}
+	
+	generic_contracts_with_local_management_companies_in_region = {
+		icon = eng_trade_unions_support
+		on_map_mode = map_only
+		state_target = yes
+		available = {
+			FROM = {
+				is_fully_controlled_by = ROOT
+				OR = {
+					custom_trigger_tooltip = {
+						set_temp_variable = { local_building_slots_factor_state_temp = 0.25 }
+						check_variable = { local_building_slots_factor_state_var < local_building_slots_factor_state_temp }
+						tooltip = local_building_slots_factor_state_trigger
+					}
+					custom_trigger_tooltip = {
+						set_temp_variable = { state_production_speed_factory_factor_state_temp = 0.25 }
+						check_variable = { state_production_speed_factory_factor_state_var < state_production_speed_factory_factor_state_temp }
+						tooltip = state_production_speed_factory_factor_state_trigger
+					}
+				}
+			}
+		}
+		visible = {
+			OR = {
+				has_completed_focus = subsidiarity_focus
+				has_completed_focus = private_military_company_focus
+			}
+			FROM = {
+				is_core_of = ROOT
+				is_fully_controlled_by = ROOT
+				has_dynamic_modifier = { modifier = private_state_dyn }
+				OR = {
+					check_variable = { local_building_slots_factor_state_var < 0.25 }
+					check_variable = { state_production_speed_factory_factor_state_var < 0.25 }
+				}
+			}
+		}
+		target_trigger = {
+			FROM = {
+				is_core_of = ROOT
+				is_fully_controlled_by = ROOT
+				has_dynamic_modifier = { modifier = private_state_dyn }
+				OR = {
+					check_variable = { local_building_slots_factor_state_var < 0.25 }
+					check_variable = { state_production_speed_factory_factor_state_var < 0.25 }
+				}
+			}
+		}
+		target_array = controlled_states
+		cost = 10
+		days_remove = 30
+		cancel_trigger = {
+			hidden_trigger = {
+				NOT = { FROM = { is_fully_controlled_by = ROOT } }
+			}
+		}
+		remove_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): remove decision generic_contracts_with_local_management_companies_in_region [From.GetName] [From.GetID]"
 			if = {
 				limit = { check_variable = { local_building_slots_factor_state_var < 0.25 } }
 				hidden_effect = {
