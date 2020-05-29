@@ -71,6 +71,188 @@ focus_tree = {
 	}
 	
 	focus = {
+		id = IRQ_capture_413
+		icon = GFX_z_goal_swing_the_sword
+		prerequisite = { focus = IRQ_suppress_shiite_uprising }
+		x = -4
+		y = 2
+		relative_position_id = IRQ_suppress_shiite_uprising
+		
+		cost = 10
+		
+		cancel_if_invalid = yes
+		continue_if_invalid = no
+		available_if_capitulated = yes
+
+		ai_will_do = {
+			factor = 10
+			modifier = {
+				factor = 0.5
+				413 = {
+					owner = {
+						ROOT = {
+							strength_ratio = {
+								tag = PREV
+								ratio < 0.5
+							}
+						}
+					}
+				}
+			}
+			modifier = {
+				add = 15
+				413 = {
+					owner = {
+						OR = {
+							has_war = yes
+							ROOT = {
+								strength_ratio = {
+									tag = PREV
+									ratio > 1
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+		available = {
+			NOT = {
+				has_full_control_of_state = 413
+				413 = { owner = { has_war_with = ROOT } }
+			}
+			413 = { is_claimed_by = ROOT }
+			threat > 0.3
+		}
+		bypass = {
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus IRQ_capture_413"
+			if = {
+				limit = { 413 = { owner = { NOT = { original_tag = PER } } } }
+				413 = {
+					owner = {
+						ROOT = {
+							create_wargoal = {
+								type = take_state_focus
+								target = PREV
+								generator = { 413 }
+							}
+						}
+					}
+				}
+			}
+			else = {
+				413 = { owner = { country_event = { id = NWiraq.54 } } }
+			}
+		}
+	}
+	
+	focus = {
+		id = IRQ_claims_against_kuwait
+		icon = GFX_z_goal_flames_of_rebellion
+		prerequisite = { focus = IRQ_suppress_shiite_uprising }
+		x = -2
+		y = 1
+		relative_position_id = IRQ_suppress_shiite_uprising
+		
+		cost = 10
+		
+		cancel_if_invalid = yes
+		continue_if_invalid = no
+		available_if_capitulated = yes
+
+		ai_will_do = {
+			factor = 10
+			modifier = {
+				factor = 3
+				is_historical_focus_on = yes
+			}
+		}
+		available = {
+			date > 1938.01.01
+		}
+		bypass = {
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus IRQ_claims_against_kuwait"
+			add_state_claim = 656
+			if = {
+				limit = {
+					656 = {
+						owner = {
+							NOT = {
+								tag = KUW
+								has_war_with = ROOT
+								is_in_faction_with = ROOT
+							}
+						}
+					}
+				}
+				656 = { owner = { country_event = { id = NWiraq.56 } } }
+			}
+		}
+	}
+	
+	focus = {
+		id = IRQ_conquer_kuwait
+		icon = GFX_z_goal_generic_struggle
+		prerequisite = { focus = IRQ_claims_against_kuwait }
+		x = 0
+		y = 1
+		relative_position_id = IRQ_claims_against_kuwait
+		
+		cost = 10
+		
+		cancel_if_invalid = yes
+		continue_if_invalid = no
+		available_if_capitulated = yes
+
+		ai_will_do = {
+			factor = 10
+			modifier = {
+				factor = 0
+				is_historical_focus_on = yes
+			}
+			modifier = {
+				factor = 0.1
+				413 = {
+					owner = {
+						ROOT = {
+							strength_ratio = {
+								tag = PREV
+								ratio < 0.5
+							}
+						}
+					}
+				}
+			}
+		}
+		available = {
+			NOT = { has_full_control_of_state = 656 }
+			threat > 0.5
+		}
+		bypass = {
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus IRQ_conquer_kuwait"
+			656 = {
+				owner = {
+					ROOT = {
+						create_wargoal = {
+							type = annex_everything
+							target = PREV
+						}
+					}
+				}
+			}
+		}
+	}
+	
+	focus = {
 		id = IRQ_patronage_of_sheikh
 		icon = GFX_focus_generic_self_management
 		prerequisite = { focus = IRQ_suppress_shiite_uprising }
@@ -4194,7 +4376,7 @@ focus_tree = {
 				owner = {
 					ROOT = {
 						create_wargoal = {
-							type = take_state
+							type = take_state_focus
 							target = PREV
 							generator = owned_states
 						}
