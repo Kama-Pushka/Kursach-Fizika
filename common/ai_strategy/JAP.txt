@@ -1450,6 +1450,10 @@ JAP_we_will_mostly_fight_on_subjects = {
 	}
 }
 
+###########
+###	NW
+###########
+
 JAP_you_should_be_prepared_for_war = {
 	allowed = {
 		tag = JAP
@@ -1464,3 +1468,339 @@ JAP_you_should_be_prepared_for_war = {
         value = 200
     }
 }
+
+
+NW_SIA_avoid_JAP_border = {
+	allowed = { tag = SIA }
+	enable = { 
+		is_in_faction_with = JAP
+		JAP = { num_divisions > 15 }
+	}
+
+	abort_when_not_enabled = yes
+
+	ai_strategy = { type = dont_defend_ally_borders id = "JAP" value = 5000 }
+}
+
+NW_dont_justify_on_axis = {
+	enable = {
+		is_in_faction_with = GER
+		GER = { has_war_together_with = JAP }
+	}
+	abort_when_not_enabled = yes
+	reversed = yes
+	
+	ai_strategy = { type = ignore_claim id = "JAP" value = 1 }
+	ai_strategy = { type = befriend id = "JAP" value = 500 }
+	ai_strategy = { type = ignore id = "JAP" value = 500 }
+	ai_strategy = { type = antagonize id = "JAP" value = -500 }
+	ai_strategy = { type = declare_war id = "JAP" value = -500 }
+}
+
+NW_ignore_SOV = {
+	allowed = { tag = JAP }
+	enable = {
+		is_historical_focus_on = yes
+		date < 1942.1.1
+	}
+
+	abort_when_not_enabled = yes
+	
+	ai_strategy = {
+		type = ignore_claim
+		id = "SOV"
+		value = 1
+	}
+	ai_strategy = {
+		type = declare_war
+		id = "SOV"
+		value = -500
+	}
+}
+
+NW_chinese_war = {
+	allowed = { tag = JAP }
+	enable = {
+		focus_progress = { focus = JAP_intervene_in_china progress > 0.0 }
+		NOT = { has_completed_focus = JAP_intervene_in_china }
+	}
+	abort = {
+		has_completed_focus = JAP_intervene_in_china
+	}
+	
+	ai_strategy = {
+		type = conquer
+		id = "CHI"			
+		value = 100
+	}
+}
+
+NW_chinese_war_2 = {
+	allowed = { tag = JAP }
+	enable = {
+		OR = { 
+			has_war_with = CHI
+			
+			AND = {
+				focus_progress = { focus = JAP_intervene_in_china progress > 0.0 }
+				NOT = { has_completed_focus = JAP_intervene_in_china }
+			}
+		}
+		NOT = { has_war_with = SHX }
+	}
+	abort = {
+		NOT = {
+			AND = {
+				OR = { 
+					has_war_with = CHI
+					
+					AND = {
+						focus_progress = { focus = JAP_intervene_in_china progress > 0.0 }
+						NOT = { has_completed_focus = JAP_intervene_in_china }
+					}
+				}
+				NOT = { has_war_with = SHX }
+			}
+		}
+	}
+	
+	ai_strategy = {
+		type = conquer
+		id = "SHX"			
+		value = 100
+	}
+}
+
+NW_JAP_garrison = {
+	allowed = { tag = JAP }
+	enable = {
+		has_war_with = CHI
+		NOT = { any_enemy_country = { is_major = yes NOT = { original_tag = CHI } } }
+		CHI = {
+			NOT = {
+				OR = {
+					has_capitulated = yes
+					exists = no
+					is_subject = yes
+				}
+			}
+		}
+	}
+	abort_when_not_enabled = yes
+
+	ai_strategy = { type = garrison value = -200 }
+}
+
+NW_JAP_garrison_home = {
+	allowed = { tag = JAP }
+	enable = {
+		has_war = yes
+		alliance_naval_strength_ratio < 0.5
+	}
+	abort_when_not_enabled = yes
+
+	### japan
+
+	ai_strategy = {
+		type = put_unit_buffers
+		ratio = 0.25
+		states = { 
+			533
+			282
+			532
+			534
+			535
+			531
+			529
+			530
+			528
+		}
+		subtract_invasions_from_need = no
+		subtract_fronts_from_need = no
+	}
+}
+
+NW_JAP_offensive_vs_CHI_inland = {
+	allowed = { tag = JAP }
+	enable = {
+		has_war_with = CHI
+		###
+		set_temp_variable = { fielded_eq_ratio = num_equipment_in_armies_k@infantry_equipment }
+		divide_temp_variable = { fielded_eq_ratio = num_target_equipment_in_armies_k@infantry_equipment }
+		add_to_temp_variable = { tot_fielded_eq_ratio = fielded_eq_ratio }
+		add_to_temp_variable = { equipment_count = 1 }
+		if = {
+			limit = { check_variable = { num_target_equipment_in_armies_k@artillery_equipment > 1 } }
+			set_temp_variable = { fielded_eq_ratio = num_equipment_in_armies_k@artillery_equipment }
+			divide_temp_variable = { fielded_eq_ratio = num_target_equipment_in_armies_k@artillery_equipment }
+			add_to_temp_variable = { tot_fielded_eq_ratio = fielded_eq_ratio }
+			add_to_temp_variable = { equipment_count = 1 }
+		}
+		divide_temp_variable = { tot_fielded_eq_ratio = equipment_count }
+		set_temp_variable = { NW_fielded_eq_ratio = tot_fielded_eq_ratio }
+		check_variable = { NW_fielded_eq_ratio > 0.9 }
+	}
+	abort = {
+		NOT = { check_variable = { NW_fielded_eq_ratio > 0.75 } }
+	}
+
+	ai_strategy = {
+		type = front_control
+		priority = 6
+		state_trigger = {
+			OR = {
+				region = 164
+				region = 165
+				region = 189
+				region = 200
+			}
+		}
+
+		execution_type = rush
+		execute_order = yes
+	}
+}
+
+NW_JAP_offensive_vs_CHI_push_north = {
+	allowed = { tag = JAP }
+	enable = {
+		has_war_with = CHI
+		597 = { CONTROLLER = { has_war_together_with = JAP } }
+		607 = { CONTROLLER = { has_war_together_with = JAP } }
+		###
+		set_temp_variable = { fielded_eq_ratio = num_equipment_in_armies_k@infantry_equipment }
+		divide_temp_variable = { fielded_eq_ratio = num_target_equipment_in_armies_k@infantry_equipment }
+		add_to_temp_variable = { tot_fielded_eq_ratio = fielded_eq_ratio }
+		add_to_temp_variable = { equipment_count = 1 }
+		if = {
+			limit = { check_variable = { num_target_equipment_in_armies_k@artillery_equipment > 1 } }
+			set_temp_variable = { fielded_eq_ratio = num_equipment_in_armies_k@artillery_equipment }
+			divide_temp_variable = { fielded_eq_ratio = num_target_equipment_in_armies_k@artillery_equipment }
+			add_to_temp_variable = { tot_fielded_eq_ratio = fielded_eq_ratio }
+			add_to_temp_variable = { equipment_count = 1 }
+		}
+		divide_temp_variable = { tot_fielded_eq_ratio = equipment_count }
+		set_temp_variable = { NW_fielded_eq_ratio = tot_fielded_eq_ratio }
+		check_variable = { NW_fielded_eq_ratio > 0.8 }
+	}
+	abort = {
+		NOT = { 
+			AND = {
+				has_war_with = CHI
+				check_variable = { NW_fielded_eq_ratio > 0.70 }
+				597 = { CONTROLLER = { has_war_together_with = JAP } }
+				607 = { CONTROLLER = { has_war_together_with = JAP } }
+			}
+		}
+	}
+
+	# northern defense is likely broken - push
+	ai_strategy = {
+		type = front_control
+		priority = 4
+		state_trigger = {
+			OR = {
+				state = 597
+				state = 607
+			}
+		}
+		execution_type = rush
+	}
+}
+
+NW_JAP_offensive_vs_CHI_coast = {
+	allowed = { tag = JAP }
+	enable = {
+		has_war_with = CHI
+		###
+		set_temp_variable = { fielded_eq_ratio = num_equipment_in_armies_k@infantry_equipment }
+		divide_temp_variable = { fielded_eq_ratio = num_target_equipment_in_armies_k@infantry_equipment }
+		add_to_temp_variable = { tot_fielded_eq_ratio = fielded_eq_ratio }
+		add_to_temp_variable = { equipment_count = 1 }
+		if = {
+			limit = { check_variable = { num_target_equipment_in_armies_k@artillery_equipment > 1 } }
+			set_temp_variable = { fielded_eq_ratio = num_equipment_in_armies_k@artillery_equipment }
+			divide_temp_variable = { fielded_eq_ratio = num_target_equipment_in_armies_k@artillery_equipment }
+			add_to_temp_variable = { tot_fielded_eq_ratio = fielded_eq_ratio }
+			add_to_temp_variable = { equipment_count = 1 }
+		}
+		divide_temp_variable = { tot_fielded_eq_ratio = equipment_count }
+		set_temp_variable = { NW_fielded_eq_ratio = tot_fielded_eq_ratio }
+		check_variable = { NW_fielded_eq_ratio > 0.8 }
+	}
+	abort = {
+		NOT = { 
+			AND = {
+				has_war_with = CHI
+				check_variable = { NW_fielded_eq_ratio > 0.70 }
+			}
+		}
+	}
+
+	abort_when_not_enabled = yes
+
+	# push invasion regions
+	ai_strategy = {
+		type = front_control
+		priority = 0
+		state_trigger = {
+			is_coastal = yes
+			OR = {
+				region = 165
+				region = 164
+				region = 143
+			}
+		}
+		ratio > 0.75
+		execution_type = rush
+		execute_order = yes
+	}
+}
+
+NW_JAP_offensive_vs_CHI_north = {
+	allowed = { tag = JAP }
+	enable = {
+		has_war_with = CHI
+	}
+
+	abort_when_not_enabled = yes
+
+	# northern front is hard to push - wait for invasions
+	ai_strategy = {
+		type = front_control
+		priority = 2
+		state_trigger = {
+			OR = {
+				region = 143
+				region = 144
+			}
+			NOT = { state = 597 }
+		}
+		execution_type = careful
+	}
+}
+
+NW_JAP_stalemate = {
+	allowed = { tag = JAP }
+	enable = {
+		has_war_with = CHI
+		CHI = { surrender_progress > 0.5 }
+		OR = {
+			NOT = {
+				MAN = { surrender_progress > 0 }
+				MEN = { surrender_progress > 0 }
+			}
+			CHI = { surrender_progress > 0.75 }
+		}
+	}
+
+	abort_when_not_enabled = yes
+
+	ai_strategy = {
+		type = front_control
+		priority = 10
+		tag = CHI
+		execute_order = no
+	}
+}
+
