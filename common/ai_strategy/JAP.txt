@@ -351,24 +351,36 @@ northern_expansion = {
 }
 
 chinese_war = {
-	allowed = {
-		tag = JAP
-	}
+	allowed = { tag = JAP }
 	enable = {
-		tag = JAP
-		has_completed_focus = JAP_intervene_in_china
-		country_exists = CHI
+		OR = {
+			focus_progress = { focus = JAP_intervene_in_china progress > 0.5 }
+			has_completed_focus = JAP_intervene_in_china
+		}
+		NOT = { 
+			CHI = { has_capitulated = yes }
+			CHI = { exists = no }
+			CHI = { is_puppet = yes }
+			CHI = { has_government = fascism }
+			is_in_faction_with = CHI
+			has_war_with = CHI
+		}
 	}
 	abort = {
-		NOT = {
-			country_exists = CHI
+		OR = { 
+			CHI = { has_capitulated = yes }
+			CHI = { exists = no }
+			CHI = { is_puppet = yes }
+			CHI = { has_government = fascism }
+			is_in_faction_with = CHI
+			has_war_with = CHI
 		}
 	}
 	
 	ai_strategy = {
 		type = antagonize
 		id = "CHI"			
-		value = 200
+		value = 1000
 	}		
 }
 
@@ -543,47 +555,47 @@ JAP_template_design = {
 
 
 # hey dynamic targets would be swole as f*
-all_china_must_prosper_in_my_prosperity_sphere_SIK = {
-	allowed = {
-		tag = JAP
-	}
-	enable = {
-		tag = JAP
-		
-		OR = {
-			NOT = { country_exists = CHI }
-			CHI = {
-				is_in_faction_with = JAP
-				is_puppet_of = JAP
-			}
-		}
-		country_exists = SIK
-		NOT = { 
-			YUN = {
-				OR = {
-					is_in_faction_with = JAP
-					is_puppet_of = JAP
-				}			
-			} 
-		}
-	}
-
-	abort = {
-		NOT = { country_exists = SIK }
-		SIK = {
-			OR = {
-				is_in_faction_with = JAP
-				is_puppet_of = JAP
-			}			
-		} 
-	}
-	
-	ai_strategy = {
-		type = antagonize
-		id = "SIK"
-		value = 5000
-	}
-}
+#all_china_must_prosper_in_my_prosperity_sphere_SIK = {
+#	allowed = {
+#		tag = JAP
+#	}
+#	enable = {
+#		tag = JAP
+#		
+#		OR = {
+#			NOT = { country_exists = CHI }
+#			CHI = {
+#				is_in_faction_with = JAP
+#				is_puppet_of = JAP
+#			}
+#		}
+#		country_exists = SIK
+#		NOT = { 
+#			YUN = {
+#				OR = {
+#					is_in_faction_with = JAP
+#					is_puppet_of = JAP
+#				}			
+#			} 
+#		}
+#	}
+#
+#	abort = {
+#		NOT = { country_exists = SIK }
+#		SIK = {
+#			OR = {
+#				is_in_faction_with = JAP
+#				is_puppet_of = JAP
+#			}			
+#		} 
+#	}
+#	
+#	ai_strategy = {
+#		type = antagonize
+#		id = "SIK"
+#		value = 5000
+#	}
+#}
 all_china_must_prosper_in_my_prosperity_sphere_XSM = {
 	allowed = {
 		tag = JAP
@@ -1318,26 +1330,6 @@ jap_invasions_of_gxc_are_super_tough_and_waste_manpower = {
 	}
 }
 
-jap_early_invasions_are_risky_and_best_wait_for_later = {
-	allowed = {
-		tag = JAP
-	}
-	enable = {
-		tag = JAP
-		date < 1939.1.1
-		has_war_with = CHI
-		CHI = { is_ai = yes }
-	}
-	
-	abort_when_not_enabled = yes
-
-	ai_strategy = {
-		type = invade
-		id = "CHI"			
-		value = -500
-	}
-}
-
 jap_doesnt_care_about_relation = {
 	allowed = {
 		tag = JAP
@@ -1436,19 +1428,19 @@ JAP_USA_we_love_islands = {
 	}
 }
 
-JAP_we_will_mostly_fight_on_subjects = {
-	allowed = {
-		tag = JAP
-	}
-	enable = {
-		tag = JAP
-	}
-	
-	ai_strategy = {
-		type = produce_unit_for_subject_supply_chunks
-		value = 50
-	}
-}
+#JAP_we_will_mostly_fight_on_subjects = {
+#	allowed = {
+#		tag = JAP
+#	}
+#	enable = {
+#		tag = JAP
+#	}
+#	
+#	ai_strategy = {
+#		type = produce_unit_for_subject_supply_chunks
+#		value = 50
+#	}
+#}
 
 ###########
 ###	NW
@@ -1516,6 +1508,11 @@ NW_ignore_SOV = {
 		id = "SOV"
 		value = -500
 	}
+	ai_strategy = {
+		type = ignore
+		id = "SOV"
+		value = 500
+	}
 }
 
 NW_chinese_war = {
@@ -1530,7 +1527,7 @@ NW_chinese_war = {
 	
 	ai_strategy = {
 		type = conquer
-		id = "CHI"			
+		id = "CHI"
 		value = 100
 	}
 }
@@ -1667,6 +1664,7 @@ NW_JAP_offensive_vs_CHI_push_north = {
 		has_war_with = CHI
 		597 = { CONTROLLER = { has_war_together_with = JAP } }
 		607 = { CONTROLLER = { has_war_together_with = JAP } }
+		743 = { CONTROLLER = { has_war_together_with = JAP } }
 		###
 		set_temp_variable = { fielded_eq_ratio = num_equipment_in_armies_k@infantry_equipment }
 		divide_temp_variable = { fielded_eq_ratio = num_target_equipment_in_armies_k@infantry_equipment }
@@ -1690,6 +1688,7 @@ NW_JAP_offensive_vs_CHI_push_north = {
 				check_variable = { NW_fielded_eq_ratio > 0.70 }
 				597 = { CONTROLLER = { has_war_together_with = JAP } }
 				607 = { CONTROLLER = { has_war_together_with = JAP } }
+				743 = { CONTROLLER = { has_war_together_with = JAP } }
 			}
 		}
 	}
@@ -1702,6 +1701,7 @@ NW_JAP_offensive_vs_CHI_push_north = {
 			OR = {
 				state = 597
 				state = 607
+				state = 743
 			}
 		}
 		execution_type = rush
@@ -1762,7 +1762,6 @@ NW_JAP_offensive_vs_CHI_north = {
 	enable = {
 		has_war_with = CHI
 	}
-
 	abort_when_not_enabled = yes
 
 	# northern front is hard to push - wait for invasions
@@ -1774,33 +1773,11 @@ NW_JAP_offensive_vs_CHI_north = {
 				region = 143
 				region = 144
 			}
-			NOT = { state = 597 }
+			NOT = {
+				state = 597
+				state = 743
+			}
 		}
 		execution_type = careful
 	}
 }
-
-NW_JAP_stalemate = {
-	allowed = { tag = JAP }
-	enable = {
-		has_war_with = CHI
-		CHI = { surrender_progress > 0.5 }
-		OR = {
-			NOT = {
-				MAN = { surrender_progress > 0 }
-				MEN = { surrender_progress > 0 }
-			}
-			CHI = { surrender_progress > 0.75 }
-		}
-	}
-
-	abort_when_not_enabled = yes
-
-	ai_strategy = {
-		type = front_control
-		priority = 10
-		tag = CHI
-		execute_order = no
-	}
-}
-
