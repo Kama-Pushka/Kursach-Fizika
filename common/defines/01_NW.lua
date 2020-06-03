@@ -1,3 +1,6 @@
+-- Buildings
+NDefines.NBuildings.MAX_SHARED_SLOTS = 36
+
 -- Operatives
 NDefines.NOperatives.MAX_RECRUITED_OPERATIVES = 500
 

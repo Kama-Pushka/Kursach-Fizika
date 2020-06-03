@@ -1575,10 +1575,6 @@
 
 		ai_will_do = {
 			factor = 30
-			modifier = {
-				factor = 0.1
-				has_global_flag = ETH_destruction_of_palace
-			}
 		}
 		available = {
 			if = {
@@ -1612,7 +1608,7 @@
 			}
 			else = {
 				has_global_flag = italo_ethiopian_war_over
-				has_global_flag = ETH_destruction_of_palace
+				NOT = { has_global_flag = ETH_destruction_of_palace }
 			}
 		}
 		bypass = {
@@ -3495,7 +3491,7 @@
 		y = 0
 		relative_position_id = ETH_greatness_of_solomon
 		
-		cost = 5
+		cost = 7.15
 		
 		cancel_if_invalid = yes
 		continue_if_invalid = no
@@ -3513,26 +3509,45 @@
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus ETH_end_of_solomons_dictatorship"
-			set_temp_variable = { ETH_civil_war_size_var = 0.1 }
-			every_owned_state = {
-				limit = { has_state_flag = support_ETH }
-				add_to_temp_variable = { ETH_civil_war_size_var = 0.1 }
+			set_temp_variable = { ETH_civil_war_size_var = 0.9 }
+			hidden_effect = {
+				1079 = { set_state_flag = support_ETH }
+				set_capital = 1079
+				every_owned_state = {
+					limit = { has_state_flag = support_ETH }
+					ROOT = { subtract_from_temp_variable = { ETH_civil_war_size_var = 0.1 } }
+				}
 			}
 			start_civil_war = {
 				ruling_party = anarchism
 				ideology = ROOT
 				states = { 271 }
 				size = ETH_civil_war_size_var
+				states = all
+				states_filter = {
+					NOT = { has_state_flag = support_ETH }
+				}
 			}
 			set_country_flag = anarchism_neutrality_flag
-			random_other_country = {
-				limit = {
-					original_tag = ROOT
-					NOT = { has_government = anarchism }
-				}
-				every_owned_state = {
-					limit = { NOT = { has_state_flag = support_ETH } }
-					PREV = { transfer_state = PREV }
+			clr_country_flag = ETH_support_for_regions_flag
+			hidden_effect = {
+				set_capital = 271
+				random_other_country = {
+					limit = {
+						original_tag = ROOT
+						NOT = { has_government = anarchism }
+					}
+					#every_state = {
+					#	limit = {
+					#		is_owned_by = ROOT
+					#		NOT = { has_state_flag = support_ETH }
+					#	}
+					#	PREV = { transfer_state = PREV }
+					#}
+					random_unit_leader = {
+						limit = { has_id = 52081 }
+						set_nationality = PREV
+					}
 				}
 			}
 		}
