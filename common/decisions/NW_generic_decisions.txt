@@ -1612,38 +1612,7 @@ generic_policy_interventions_category = {
 			}
 			modifier = {
 				factor = 0
-				if = {
-					limit = { ROOT = { has_government = democratic } }
-					FROM = { democratic > 0.500 }
-				}
-				if = {
-					limit = { ROOT = { has_government = communism } }
-					FROM = { communism > 0.500 }
-				}
-				if = {
-					limit = { ROOT = { has_government = fascism } }
-					FROM = { fascism > 0.500 }
-				}
-				if = {
-					limit = { ROOT = { has_government = neutrality } }
-					FROM = { neutrality > 0.500 }
-				}
-				if = {
-					limit = { ROOT = { has_government = technocracy } }
-					FROM = { technocracy > 0.500 }
-				}
-				if = {
-					limit = { ROOT = { has_government = trozkism } }
-					FROM = { trozkism > 0.500 }
-				}
-				if = {
-					limit = { ROOT = { has_government = monarchy } }
-					FROM = { monarchy > 0.500 }
-				}
-				if = {
-					limit = { ROOT = { has_government = anarchism } }
-					FROM = { anarchism > 0.500 }
-				}
+				FROM = { check_variable = { ROOT.party_popularity@ruling_party > 0.550 } }
 			}
 			modifier = {
 				factor = 0
@@ -1727,7 +1696,11 @@ generic_interventions_start_civil_war_category = {
 				}
 				if = {
 					limit = { ROOT = { has_government = anarchism } }
-					anarchism > 0.500
+					if = {
+						limit = { has_idea = nothing_is_sacred_focus }
+						anarchism > 0.400
+					}
+					else = { anarchism > 0.500 }
 				}
 			}
 			
@@ -3100,7 +3073,7 @@ generic_concept_of_technate_category = {
 	
 	#Ускорялки промки
 	generic_use_technopark_for_boost_production_bonus_1 = {
-		icon = generic_industry
+		icon = generic_industrial
 		available = {
 			has_idea = generic_technopark_2
 			NOT = { has_country_flag = use_technopark_for_boost_flag }
@@ -3134,7 +3107,7 @@ generic_concept_of_technate_category = {
 		}
 	}
 	generic_use_technopark_for_boost_production_bonus_2 = {
-		icon = generic_industry
+		icon = generic_industrial
 		available = {
 			has_idea = generic_technopark_2
 			NOT = { has_country_flag = use_technopark_for_boost_flag }
@@ -3168,7 +3141,7 @@ generic_concept_of_technate_category = {
 		}
 	}
 	generic_use_technopark_for_boost_production_bonus_3 = {
-		icon = generic_industry
+		icon = generic_industrial
 		available = {
 			has_idea = generic_technopark_2
 			NOT = { has_country_flag = use_technopark_for_boost_flag }
@@ -3202,7 +3175,7 @@ generic_concept_of_technate_category = {
 		}
 	}
 	generic_use_technopark_for_boost_production_bonus_4 = {
-		icon = generic_industry
+		icon = generic_industrial
 		available = {
 			has_idea = generic_technopark_2
 			NOT = { has_country_flag = use_technopark_for_boost_flag }
@@ -3236,7 +3209,7 @@ generic_concept_of_technate_category = {
 		}
 	}
 	generic_use_technopark_for_boost_production_bonus_5 = {
-		icon = generic_industry
+		icon = generic_industrial
 		available = {
 			has_idea = generic_technopark_2
 			NOT = { has_country_flag = use_technopark_for_boost_flag }
@@ -3270,7 +3243,7 @@ generic_concept_of_technate_category = {
 		}
 	}
 	generic_use_technopark_for_boost_production_bonus_6 = {
-		icon = generic_industry
+		icon = generic_industrial
 		available = {
 			has_idea = generic_technopark_2
 			NOT = { has_country_flag = use_technopark_for_boost_flag }
@@ -3304,7 +3277,7 @@ generic_concept_of_technate_category = {
 		}
 	}
 	generic_use_technopark_for_boost_production_bonus_7 = {
-		icon = generic_industry
+		icon = generic_industrial
 		available = {
 			has_idea = generic_technopark_2
 			NOT = { has_country_flag = use_technopark_for_boost_flag }
@@ -3338,7 +3311,7 @@ generic_concept_of_technate_category = {
 		}
 	}
 	generic_use_technopark_for_boost_production_bonus_8 = {
-		icon = generic_industry
+		icon = generic_industrial
 		available = {
 			has_idea = generic_technopark_2
 			NOT = { has_country_flag = use_technopark_for_boost_flag }
@@ -3372,7 +3345,7 @@ generic_concept_of_technate_category = {
 		}
 	}
 	generic_use_technopark_for_boost_production_bonus_9 = {
-		icon = generic_industry
+		icon = generic_industrial
 		available = {
 			has_idea = generic_technopark_2
 			NOT = { has_country_flag = use_technopark_for_boost_flag }
@@ -3406,7 +3379,7 @@ generic_concept_of_technate_category = {
 		}
 	}
 	generic_use_technopark_for_boost_production_bonus_10 = {
-		icon = generic_industry
+		icon = generic_industrial
 		available = {
 			has_idea = generic_technopark_2
 			NOT = { has_country_flag = use_technopark_for_boost_flag }
@@ -5132,6 +5105,8 @@ generic_anarchism_private_army_category = {
 		}
 		available = {
 			has_idea = monopolized_private_armies
+			has_tech = motorised_infantry
+			has_tech = basic_light_tank
 		}
 		visible = {
 			has_idea = monopolized_private_armies
@@ -5278,6 +5253,9 @@ generic_anarchism_private_army_category = {
 		}
 		available = {
 			has_idea = thriving_private_army_market
+			has_tech = motorised_infantry
+			has_tech = basic_light_tank
+			has_tech = basic_medium_tank
 		}
 		visible = {
 			has_idea = thriving_private_army_market
@@ -6203,27 +6181,15 @@ generic_expand_anarchism_commune_category = {
 			FROM = {
 				NOT = { is_core_of = ROOT }
 				is_fully_controlled_by = ROOT
-				NOT = {
-					#is_core_of = BRA
-					#is_core_of = BOL
-					#is_core_of = PAR
-					#is_core_of = ARG
-					#is_core_of = CHL
-					#is_core_of = URG
-					#is_core_of = PRU
-					#is_core_of = ECU
-					#is_core_of = COL
-					#is_core_of = VEN
-				}
 			}
 		}
 		target_array = controlled_states
 		custom_cost_trigger = {
-			set_temp_variable = { custom_cost = 0 }
+			set_temp_variable = { custom_cost = 5 }
 			check_variable = { anarchism_unity_var > custom_cost }
 		}
 		custom_cost_text = custom_cost_anarcho_unity
-		days_remove = 1
+		days_remove = 30
 		cancel_trigger = {
 			hidden_trigger = {
 				NOT = { FROM = { is_fully_controlled_by = ROOT } }
@@ -6231,7 +6197,7 @@ generic_expand_anarchism_commune_category = {
 		}
 		complete_effect = {
 			hidden_effect = {
-				set_temp_variable = { custom_cost = 0 }
+				set_temp_variable = { custom_cost = 5 }
 				subtract_from_variable = { anarchism_unity_var = custom_cost }
 			}
 		}
@@ -6617,6 +6583,260 @@ generic_peoples_bank_category = {
 }
 
 generic_negotiate_with_private_owners_category = {
+
+	### LEFT
+	
+	generic_left_build_slot_in_region = {
+		icon = infiltrate_state
+		on_map_mode = map_only
+		state_target = yes
+		available = {
+			FROM = {
+				is_fully_controlled_by = ROOT
+				free_building_slots = {
+					building = industrial_complex
+					size > 0
+					include_locked = yes
+				}
+			}
+		}
+		visible = {
+			OR = {
+				has_completed_focus = perfect_worker_focus
+				has_completed_focus = union_of_communes_focus
+				has_completed_focus = syndicalist_economy_focus
+			}
+			FROM = {
+				is_core_of = ROOT
+				is_fully_controlled_by = ROOT
+				free_building_slots = {
+					building = industrial_complex
+					size > 0
+					include_locked = yes
+				}
+			}
+		}
+		target_trigger = {
+			FROM = {
+				is_core_of = ROOT
+				is_fully_controlled_by = ROOT
+				free_building_slots = {
+					building = industrial_complex
+					size > 0
+					include_locked = yes
+				}
+			}
+		}
+		target_array = controlled_states
+		custom_cost_trigger = {
+			set_temp_variable = { custom_cost = 10 }
+			check_variable = { anarchism_unity_var > custom_cost }
+		}
+		custom_cost_text = custom_cost_anarcho_unity
+		days_remove = 60
+		cancel_trigger = {
+			hidden_trigger = {
+				NOT = { FROM = { is_fully_controlled_by = ROOT } }
+			}
+		}
+		complete_effect = {
+			hidden_effect = {
+				set_temp_variable = { custom_cost = 10 }
+				subtract_from_variable = { anarchism_unity_var = custom_cost }
+			}
+		}
+		remove_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): remove decision generic_left_build_slot_in_region [From.GetName] [From.GetID]"
+			FROM = { add_extra_state_shared_building_slots = 1 }
+		}
+		ai_will_do = {
+			factor = 12
+			modifier = { factor = 0.2 FROM = { distance_to = { value < 900 target = capital } } }
+			modifier = { factor = 0.3 FROM = { distance_to = { value < 800 target = capital } } }
+			modifier = { factor = 0.4 FROM = { distance_to = { value < 700 target = capital } } }
+			modifier = { factor = 0.5 FROM = { distance_to = { value < 600 target = capital } } }
+			modifier = { factor = 0.6 FROM = { distance_to = { value < 500 target = capital } } }
+			modifier = { factor = 0.7 FROM = { distance_to = { value < 400 target = capital } } }
+			modifier = { factor = 0.8 FROM = { distance_to = { value < 300 target = capital } } }
+			modifier = { factor = 0.9 FROM = { distance_to = { value < 200 target = capital } } }
+			modifier = { factor = 1 FROM = { distance_to = { value < 100 target = capital } } }
+		}
+	}
+	
+	generic_left_infrastructure_in_region = {
+		icon = hol_draw_up_staff_plans
+		on_map_mode = map_only
+		state_target = yes
+		available = {
+			FROM = {
+				is_fully_controlled_by = ROOT
+				free_building_slots = {
+					building = infrastructure
+					size > 0
+				}
+			}
+		}
+		visible = {
+			has_completed_focus = collective_ownership_focus
+			FROM = {
+				is_core_of = ROOT
+				is_fully_controlled_by = ROOT
+				free_building_slots = {
+					building = infrastructure
+					size > 0
+				}
+			}
+		}
+		target_trigger = {
+			FROM = {
+				is_core_of = ROOT
+				is_fully_controlled_by = ROOT
+				free_building_slots = {
+					building = infrastructure
+					size > 0
+				}
+			}
+		}
+		target_array = controlled_states
+		custom_cost_trigger = {
+			set_temp_variable = { custom_cost = 7.5 }
+			check_variable = { anarchism_unity_var > custom_cost }
+		}
+		custom_cost_text = custom_cost_anarcho_unity
+		days_remove = 60
+		cancel_trigger = {
+			hidden_trigger = {
+				NOT = {
+					FROM = {
+						is_fully_controlled_by = ROOT
+						free_building_slots = {
+							building = infrastructure
+							size > 0
+						}
+					}
+				}
+			}
+		}
+		complete_effect = {
+			hidden_effect = {
+				set_temp_variable = { custom_cost = 7.5 }
+				subtract_from_variable = { anarchism_unity_var = custom_cost }
+			}
+		}
+		remove_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): remove decision generic_left_infrastructure_in_region [From.GetName] [From.GetID]"
+			FROM = {
+				add_building_construction = {
+					type = infrastructure
+					level = 1
+					instant_build = yes
+				}
+			}
+		}
+		ai_will_do = {
+			factor = 12
+			modifier = { factor = 0.2 FROM = { distance_to = { value < 900 target = capital } } }
+			modifier = { factor = 0.3 FROM = { distance_to = { value < 800 target = capital } } }
+			modifier = { factor = 0.4 FROM = { distance_to = { value < 700 target = capital } } }
+			modifier = { factor = 0.5 FROM = { distance_to = { value < 600 target = capital } } }
+			modifier = { factor = 0.6 FROM = { distance_to = { value < 500 target = capital } } }
+			modifier = { factor = 0.7 FROM = { distance_to = { value < 400 target = capital } } }
+			modifier = { factor = 0.8 FROM = { distance_to = { value < 300 target = capital } } }
+			modifier = { factor = 0.9 FROM = { distance_to = { value < 200 target = capital } } }
+			modifier = { factor = 1 FROM = { distance_to = { value < 100 target = capital } } }
+		}
+	}
+	
+	generic_left_expand_syndicat_in_region = {
+		icon = generic_syndicalism
+		on_map_mode = map_only
+		state_target = yes
+		available = {
+			FROM = {
+				is_fully_controlled_by = ROOT
+				free_building_slots = {
+					building = industrial_complex
+					size > 0
+					include_locked = no
+				}
+			}
+		}
+		visible = {
+			has_completed_focus = federation_of_syndicates_focus
+			FROM = {
+				is_core_of = ROOT
+				is_fully_controlled_by = ROOT
+				free_building_slots = {
+					building = industrial_complex
+					size > 0
+					include_locked = yes
+				}
+			}
+		}
+		target_trigger = {
+			FROM = {
+				is_core_of = ROOT
+				is_fully_controlled_by = ROOT
+				free_building_slots = {
+					building = industrial_complex
+					size > 0
+					include_locked = no
+				}
+			}
+		}
+		target_array = controlled_states
+		custom_cost_trigger = {
+			set_temp_variable = { custom_cost = 15 }
+			check_variable = { anarchism_unity_var > custom_cost }
+		}
+		custom_cost_text = custom_cost_anarcho_unity
+		days_remove = 90
+		cancel_trigger = {
+			hidden_trigger = {
+				NOT = {
+					FROM = {
+						is_fully_controlled_by = ROOT
+						free_building_slots = {
+							building = industrial_complex
+							size > 0
+							include_locked = yes
+						}
+					}
+				}
+			}
+		}
+		complete_effect = {
+			hidden_effect = {
+				set_temp_variable = { custom_cost = 15 }
+				subtract_from_variable = { anarchism_unity_var = custom_cost }
+			}
+		}
+		remove_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): remove decision generic_left_expand_syndicat_in_region [From.GetName] [From.GetID]"
+			FROM = {
+				add_building_construction = {
+					type = industrial_complex
+					level = 1
+					instant_build = yes
+				}
+			}
+		}
+		ai_will_do = {
+			factor = 15
+			modifier = { factor = 0.2 FROM = { distance_to = { value < 900 target = capital } } }
+			modifier = { factor = 0.3 FROM = { distance_to = { value < 800 target = capital } } }
+			modifier = { factor = 0.4 FROM = { distance_to = { value < 700 target = capital } } }
+			modifier = { factor = 0.5 FROM = { distance_to = { value < 600 target = capital } } }
+			modifier = { factor = 0.6 FROM = { distance_to = { value < 500 target = capital } } }
+			modifier = { factor = 0.7 FROM = { distance_to = { value < 400 target = capital } } }
+			modifier = { factor = 0.8 FROM = { distance_to = { value < 300 target = capital } } }
+			modifier = { factor = 0.9 FROM = { distance_to = { value < 200 target = capital } } }
+			modifier = { factor = 1 FROM = { distance_to = { value < 100 target = capital } } }
+		}
+	}
+	
+	
+	#RIGHT
 	
 	generic_right_of_assignment_in_region = {
 		icon = generic_resources
@@ -7237,7 +7457,7 @@ generic_negotiate_with_private_owners_category = {
 	}
 	
 	generic_attach_production_facilities_agora_in_region = {
-		icon = generic_construction
+		icon = generic_industrial
 		on_map_mode = map_only
 		state_target = yes
 		available = {
