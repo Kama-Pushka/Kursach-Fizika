@@ -5315,6 +5315,9 @@ nw_anarchy_political_actions = {
 	fabricate_goal_against = {
 		icon = eng_propaganda_campaigns
 		
+		visible = {
+			has_completed_focus = private_tribunals_focus
+		}
 		available = {
 			set_temp_variable = { anarchism_unity_trigger_var = 25 }
 			custom_trigger_tooltip = {
@@ -5329,6 +5332,26 @@ nw_anarchy_political_actions = {
 		cost = 100
 		days_re_enable = 50
 	
+		complete_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision fabricate_goal_against"
+			set_temp_variable = { anarchism_unity_add_var = -10 }
+			add_to_variable = { anarchism_unity_var = anarchism_unity_add_var }
+			custom_effect_tooltip = anarchism_unity_add_effect
+			create_wargoal = {
+				type = annex_everything
+				target = event_target:fabricate_goal_against_target_@ROOT
+			}
+			custom_effect_tooltip = fabricate_goal_against_tt
+			hidden_effect = {
+				clear_global_event_target = fabricate_goal_against_target_@ROOT
+				random_neighbor_country = {
+					limit = { NOT = { has_war_with = ROOT } }
+					save_global_event_target_as = fabricate_goal_against_target_@ROOT
+					log = "[GetDateText]: [This.GetName] ([This.GetTag]): Новая цель судов [Root.GetName] ([Root.GetTag])"
+				}
+			}
+		}
+		
 		ai_will_do = {
 			factor = 0
 			modifier = {
@@ -5359,28 +5382,42 @@ nw_anarchy_political_actions = {
 				}
 			}
 		}
+	}
+	
+	prepare_for_an_ideological_anniversary = {
+		icon = generic_form_nation
 		
-		visible = {
-			has_completed_focus = private_tribunals_focus
+		available = {
+			NOT = { has_country_flag = { flag = prepare_for_an_ideological_anniversary_flag value > 0 } }
 		}
 		
+		days_remove = 50
+		custom_cost_trigger = {
+			set_temp_variable = { custom_cost = 5 }
+			check_variable = { anarchism_unity_var > custom_cost }
+		}
+		custom_cost_text = custom_cost_anarcho_unity
+		
+		
+		remove_trigger = {
+			NOT = { has_government = anarchism }
+		}
+		
+		modifier = {
+			anarchism_drift = 0.05
+		}
+
 		complete_effect = {
-			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision fabricate_goal_against"
-			set_temp_variable = { anarchism_unity_add_var = -10 }
-			add_to_variable = { anarchism_unity_var = anarchism_unity_add_var }
-			custom_effect_tooltip = anarchism_unity_add_effect
-			create_wargoal = {
-				type = annex_everything
-				target = event_target:fabricate_goal_against_target_@ROOT
-			}
-			custom_effect_tooltip = fabricate_goal_against_tt
-			hidden_effect = {
-				clear_global_event_target = fabricate_goal_against_target_@ROOT
-				random_neighbor_country = {
-					limit = { NOT = { has_war_with = ROOT } }
-					save_global_event_target_as = fabricate_goal_against_target_@ROOT
-					log = "[GetDateText]: [This.GetName] ([This.GetTag]): Новая цель судов [Root.GetName] ([Root.GetTag])"
-				}
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision prepare_for_an_ideological_anniversary"
+			subtract_from_variable = { anarchism_unity_var = 5 }
+			set_country_flag = { flag = prepare_for_an_ideological_anniversary_flag days = 365 value = 1 }
+		}
+		
+		ai_will_do = {
+			factor = 10
+			modifier = {
+				factor = 0
+				anarchism < 0.99
 			}
 		}
 	}
@@ -5419,7 +5456,7 @@ nw_anarchy_political_actions = {
 	}
 	
 	call_for_peaceful_coexistence_with_each_other = {
-		icon = generic_form_nation
+		icon = hol_radio_oranje
 
 		cost = 25
 		days_remove = 50
@@ -5677,5 +5714,209 @@ nw_anarchy_political_actions = {
 			set_country_flag = { flag = demonstrate_national_unity_to_world_flag days = 120 value = 1 }
 		}
 	}
+	
+	scientific_cooperation = {
+		icon = generic_research
+		
+		available = {
+			NOT = { has_country_flag = { flag = scientific_cooperation_flag value > 0 } }
+		}
+		
+		custom_cost_trigger = {
+			set_temp_variable = { custom_cost = 5 }
+			check_variable = { anarchism_unity_var > custom_cost }
+		}
+		custom_cost_text = custom_cost_anarcho_unity
+		days_remove = 90
+	
+		ai_will_do = {
+			factor = 5
+			modifier = {
+				factor = 0
+				political_power_daily < 0.15
+			}
+			modifier = {
+				factor = 0
+				check_variable = { modifier@consumer_goods_factor > 0.5 }
+			}
+		}
+		
+		modifier = {
+			consumer_goods_factor = 0.05
+			political_power_cost = 0.1
+			research_speed_factor = 0.03
+		}
+		remove_trigger = {
+			NOT = { has_government = anarchism }
+		}
+		
+		complete_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision scientific_cooperation"
+			subtract_from_variable = { anarchism_unity_var = 5 }
+			set_country_flag = { flag = scientific_cooperation_flag days = 180 value = 1 }
+		}
+	}
+	
+	military_training_of_population = {
+		icon = generic_prepare_civil_war
+		
+		available = {
+			NOT = { has_country_flag = { flag = military_training_of_population_flag value > 0 } }
+			has_war_support > 0.5
+		}
+		
+		custom_cost_trigger = {
+			set_temp_variable = { custom_cost = 10 }
+			check_variable = { anarchism_unity_var > custom_cost }
+		}
+		custom_cost_text = custom_cost_anarcho_unity
+		days_re_enable = 270
+	
+		ai_will_do = {
+			factor = 5
+		}
+		
+		complete_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision military_training_of_population"
+			subtract_from_variable = { anarchism_unity_var = 10 }
+			set_country_flag = { flag = military_training_of_population_flag days = 270 value = 1 }
+			army_experience = 20
+			add_tech_bonus = {
+				name = land_doc_bonus
+				bonus = 0.5
+				uses = 1
+				category = land_doctrine
+			}
+		}
+	}
+	
+	improve_public_health_system = {
+		icon = generic_health
+		
+		available = {
+			NOT = { has_country_flag = { flag = improve_public_health_system_flag value > 0 } }
+		}
+		
+		custom_cost_trigger = {
+			set_temp_variable = { custom_cost = 5 }
+			check_variable = { anarchism_unity_var > custom_cost }
+		}
+		custom_cost_text = custom_cost_anarcho_unity
+		days_remove = 90
+	
+		ai_will_do = {
+			factor = 5
+			modifier = {
+				factor = 0
+				all_owned_state = {
+					free_building_slots = {
+						building = hospital
+						size < 1
+					}					
+				}
+			}
+		}
+		
+		modifier = {
+			production_speed_hospital_factor = 0.3
+			production_speed_industrial_complex_factor = -0.1
+			production_speed_arms_factory_factor = -0.1
+		}
+		remove_trigger = {
+			NOT = { has_government = anarchism }
+		}
+		
+		complete_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision improve_public_health_system"
+			subtract_from_variable = { anarchism_unity_var = 5 }
+			set_country_flag = { flag = improve_public_health_system_flag days = 360 value = 1 }
+		}
+	}
+	
+	call_for_international_cooperation = {
+		icon = hol_exchange_intelligence_data
+		
+		available = {
+			has_offensive_war = no
+			threat > 0
+			NOT = { has_country_flag = { flag = call_for_international_cooperation_flag value > 0 } }
+			set_temp_variable = { anarchism_unity_trigger_var = 50 }
+			custom_trigger_tooltip = {
+				check_variable = { anarchism_unity_var > anarchism_unity_trigger_var }
+				tooltip = anarchism_unity_trigger_more
+			}
+		}
+		
+		custom_cost_trigger = {
+			set_temp_variable = { custom_cost = 7.5 }
+			check_variable = { anarchism_unity_var > custom_cost }
+		}
+		custom_cost_text = custom_cost_anarcho_unity
+		days_remove = 50
+	
+		ai_will_do = {
+			factor = 0
+			modifier = {
+				add = 5
+				has_added_tension_amount > 1
+			}
+			modifier = {
+				factor = 0
+				political_power_daily < 0.5
+			}
+		}
+		
+		modifier = {
+			political_power_cost = 0.5
+			custom_modifier_tooltip = add_threat_015_tt
+		}
+		remove_trigger = {
+			NOT = { has_government = anarchism }
+		}
+		
+		remove_effect = {
+			clr_country_flag = call_for_international_cooperation_flag_2
+		}
+		complete_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision call_for_international_cooperation"
+			subtract_from_variable = { anarchism_unity_var = 7.5 }
+			set_country_flag = { flag = call_for_international_cooperation_flag days = 180 value = 1 }
+			set_country_flag = call_for_international_cooperation_flag_2
+		}
+	}
+	
+	encourage_foreign_intellectuals = {
+		icon = generic_political_discourse
+		
+		available = {
+		}
+		
+		custom_cost_trigger = {
+			set_temp_variable = { custom_cost = 5 }
+			check_variable = { anarchism_unity_var > custom_cost }
+		}
+		custom_cost_text = custom_cost_anarcho_unity
+		days_remove = 90
+	
+		ai_will_do = {
+			factor = 5
+		}
+		
+		modifier = {
+			MONTHLY_POPULATION = 0.5
+			consumer_goods_factor = 0.05
+			civilian_intel_to_others = 10.0
+			drift_defence_factor = -0.075
+		}
+		remove_trigger = {
+			NOT = { has_government = anarchism }
+		}
+		
+		complete_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision encourage_foreign_intellectuals"
+			subtract_from_variable = { anarchism_unity_var = 5 }
+		}
+	}
+	
 }
 
