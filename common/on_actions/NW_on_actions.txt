@@ -278,10 +278,10 @@ on_actions = {
 						value = 0
 					}
 				}
-				random_country = {
-					limit = { is_ai = yes }
-					country_event = { id = TRpolitical.35 days = 365 random_days = 30 }
-				}
+				#random_country = {
+				#	limit = { is_ai = yes }
+				#	country_event = { id = TRpolitical.35 days = 365 random_days = 30 }
+				#}
 			}
 			
 			# generic_tree_all_allowed
@@ -3331,6 +3331,45 @@ on_actions = {
 					save_global_event_target_as = fabricate_goal_against_target_@ROOT
 					log = "[GetDateText]: [This.GetName] ([This.GetTag]): Новая цель судов [Root.GetName] ([Root.GetTag])"
 				}
+			}
+			if = {
+				limit = {
+					has_game_rule = {
+						rule = trade_weapons
+						option = DEFAULT
+					}
+					check_variable = { global.total_infantry_weapons > 0 }
+				}
+				random_country = {
+					log = "[GetDateText]: [This.GetName] ([This.GetTag]): РАСЧЕТ ПЕХОТКИ ЧЕРНОГО РЫНКА: [?global.total_infantry_weapons]"
+					set_temp_variable = { inflation_rifles = global.total_infantry_weapons }
+					divide_temp_variable = { inflation_rifles = 10 }
+					subtract_from_variable = { global.total_infantry_weapons = inflation_rifles }
+					round_variable = global.total_infantry_weapons
+				}
+			}
+		}
+	}
+	
+	on_monthly_FRF = {
+		effect = {
+			if = {
+				limit = {
+					has_game_rule = {
+						rule = trade_weapons
+						option = DEFAULT
+					}
+					check_variable = { global.total_infantry_weapons > 0 }
+					has_idea = FRF_use_global_market_idea
+				}
+				set_temp_variable = { inflation_rifles_for_fra = inflation_rifles }
+				divide_temp_variable = { inflation_rifles_for_fra = 10 }
+				round_variable = inflation_rifles_for_fra
+				add_equipment_to_stockpile = {
+					type = infantry_equipment
+					amount = inflation_rifles_for_fra
+				}
+				log = "[GetDateText]: [This.GetName] ([This.GetTag]): ПОЛУЧИЛ ПЕХОТКИ С ЧЕРНОГО РЫНКА: [?inflation_rifles_for_fra]"
 			}
 		}
 	}
