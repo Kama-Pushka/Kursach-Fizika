@@ -6692,31 +6692,51 @@ focus_tree = {
 		prerequisite = { focus = uk_commonwealth_focus }
 		available = {
 			any_country = {
-				original_tag = CAN
+				OR = {
+					original_tag = CAN
+					original_tag = NFL
+				}
 				is_in_faction_with = ROOT
 			}
 		}
 		bypass = {
-			OR = {
-				CAN = { exists = no }
-				CAN = {
-					custom_trigger_tooltip = {
-						tooltip = construction_effort_tt
-						all_owned_state = {
-							free_building_slots = {
-								building = industrial_complex
-								size < 1
-								include_locked = yes
+			AND = {
+				OR = {
+					CAN = { exists = no }
+					CAN = {
+						custom_trigger_tooltip = {
+							tooltip = construction_effort_tt
+							all_owned_state = {
+								free_building_slots = {
+									building = industrial_complex
+									size < 1
+									include_locked = yes
+								}
+							}
+						}
+						custom_trigger_tooltip = {
+							tooltip = naval_effort_tt
+							all_owned_state = {
+								free_building_slots = {
+									building = dockyard
+									size < 1
+									include_locked = yes
+								}
 							}
 						}
 					}
-					custom_trigger_tooltip = {
-						tooltip = naval_effort_tt
-						all_owned_state = {
-							free_building_slots = {
-								building = dockyard
-								size < 1
-								include_locked = yes
+				}
+				OR = {
+					NFL = { exists = no }
+					NFL = {
+						custom_trigger_tooltip = {
+							tooltip = construction_effort_tt
+							all_owned_state = {
+								free_building_slots = {
+									building = industrial_complex
+									size < 1
+									include_locked = yes
+								}
 							}
 						}
 					}
@@ -6758,6 +6778,25 @@ focus_tree = {
 					add_extra_state_shared_building_slots = 1
 					add_building_construction = {
 						type = dockyard
+						level = 1
+						instant_build = yes
+					}
+				}
+				add_autonomy_ratio = {
+					value = -0.05
+					localization = uk_canada_focus
+				}
+			}
+			random_country = {
+				limit = {
+					original_tag = NFL
+					is_in_faction_with = ROOT
+				}
+				add_opinion_modifier = { target = ENG modifier = aided_industry }
+				every_state = { limit = { has_state_flag = ENG_uk_canada_focus_3IC }
+					add_extra_state_shared_building_slots = 1
+					add_building_construction = {
+						type = industrial_complex
 						level = 1
 						instant_build = yes
 					}
@@ -6837,6 +6876,29 @@ focus_tree = {
 						instant_build = yes
 					}
 					set_state_flag = ENG_uk_canada_focus_1dockyard
+				}
+				add_autonomy_ratio = {
+					value = -0.05
+					localization = uk_canada_focus
+				}
+			}
+			NFL = {
+				add_opinion_modifier = { target = ENG modifier = aided_industry }
+				random_owned_controlled_state = {
+					limit = {
+						free_building_slots = {
+							building = industrial_complex
+							size > 0
+							include_locked = yes
+						}
+					}
+					add_extra_state_shared_building_slots = 1
+					add_building_construction = {
+						type = industrial_complex
+						level = 1
+						instant_build = yes
+					}
+					set_state_flag = ENG_uk_canada_focus_3IC
 				}
 				add_autonomy_ratio = {
 					value = -0.05
@@ -10041,7 +10103,15 @@ focus_tree = {
 		id = ENG_ceylon_forward_operating_base
 		prerequisite = { focus = ENG_god_save_the_king }
 		available = {
-			has_full_control_of_state = 422
+			422 = {
+				controller = {
+					OR = {
+						original_tag = ROOT
+						is_subject_of = ROOT
+						is_in_faction_with = ROOT
+					}
+				}
+			}
 		}
 		bypass = {
 			OR = {
@@ -10063,13 +10133,13 @@ focus_tree = {
 		ai_will_do = {
 			factor = 1
 		}	
-		completion_reward = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus ENG_ceylon_forward_operating_base"
-			# Ceylon
-			422 = {
-				if = {
-					limit = {
-						is_controlled_by = ROOT
-					}
+		completion_reward = { 
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus ENG_ceylon_forward_operating_base"
+			
+			custom_effect_tooltip = NW_ENG_invasion_ceylon_tt
+			
+			effect_tooltip = {
+				422 = {
 					add_building_construction = {
 						type = infrastructure
 						level = 3
@@ -10080,14 +10150,58 @@ focus_tree = {
 						level = 5
 						instant_build = yes
 					}
-					# Singapore
 					add_building_construction = {
 						type = naval_base
 						level = 5
-						province = 7260
+						province = 10201
 						instant_build = yes
 					}
-				}								
+				}
+			}
+			
+			# Ceylon
+			hidden_effect = {
+				422 = {
+					if = {
+						limit = {
+							422 = {
+								controller = {
+									OR = {
+										original_tag = ROOT
+										is_subject_of = ROOT
+										is_in_faction_with = ROOT
+									}
+								}
+							}
+						}
+						add_building_construction = {
+							type = infrastructure
+							level = 3
+							instant_build = yes
+						}
+						add_building_construction = {
+							type = air_base
+							level = 5
+							instant_build = yes
+						}
+						add_building_construction = {
+							type = naval_base
+							level = 5
+							province = 10201
+							instant_build = yes
+						}
+					}					
+				}
+			}
+			random_country = {
+				limit = {
+					is_subject_of = ROOT
+					has_full_control_of_state = 422
+				}
+				add_autonomy_ratio = {
+					value = -0.15
+					localization = ENG_ceylon_forward_operating_base
+				}
 			}
 		}
 	}
@@ -11702,7 +11816,15 @@ focus_tree = {
 		id = ENG_bermuda_invasion_launch_point
 		prerequisite = { focus = ENG_tackle_capitalism }
 		available = {
-			has_full_control_of_state = 696
+			696 = {
+				controller = {
+					OR = {
+						original_tag = ROOT
+						is_subject_of = ROOT
+						is_in_faction_with = ROOT
+					}
+				}
+			}
 		}
 		icon = GFX_goal_generic_position_armies
 		x = 0
@@ -11712,13 +11834,13 @@ focus_tree = {
 		ai_will_do = {
 			factor = 1
 		}	
-		completion_reward = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus ENG_bermuda_invasion_launch_point"
-			# Bermuda
-			696 = {
-				if = {
-					limit = {
-						is_controlled_by = ROOT
-					}
+		completion_reward = { 
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus ENG_bermuda_invasion_launch_point"
+			
+			custom_effect_tooltip = NW_ENG_invasion_bermud_tt
+			
+			effect_tooltip = {
+				696 = {
 					add_building_construction = {
 						type = infrastructure
 						level = 2
@@ -11729,14 +11851,59 @@ focus_tree = {
 						level = 5
 						instant_build = yes
 					}
-					# Bermuda
 					add_building_construction = {
 						type = naval_base
 						level = 5
 						province = 13010
 						instant_build = yes
 					}
-				}								
+				}
+			}
+			
+			# Bermuda
+			hidden_effect = {
+				696 = {
+					if = {
+						limit = {
+							696 = {
+								controller = {
+									OR = {
+										original_tag = ROOT
+										is_subject_of = ROOT
+										is_in_faction_with = ROOT
+									}
+								}
+							}
+						}
+						add_building_construction = {
+							type = infrastructure
+							level = 2
+							instant_build = yes
+						}
+						add_building_construction = {
+							type = air_base
+							level = 5
+							instant_build = yes
+						}
+						# Bermuda
+						add_building_construction = {
+							type = naval_base
+							level = 5
+							province = 13010
+							instant_build = yes
+						}
+					}
+				}
+			}
+			random_country = {
+				limit = {
+					is_subject_of = ROOT
+					has_full_control_of_state = 696
+				}
+				add_autonomy_ratio = {
+					value = -0.15
+					localization = ENG_bermuda_invasion_launch_point
+				}
 			}
 		}
 	}
