@@ -737,7 +737,9 @@ country_event = {
 country_event = {
 	id = nw_baltic.1
 	title = { text = nw_baltic.1.t }
-	desc = { text = nw_baltic.1.d }
+	desc = { text = nw_baltic.1.no_lit trigger = { NOT = { original_tag = LIT } } }
+	desc = { text = nw_baltic.1.lit trigger = { original_tag = LIT NOT = { has_country_flag = LIT_no_wilno } } }
+	desc = { text = nw_baltic.1.no_wilno trigger = { original_tag = LIT has_country_flag = LIT_no_wilno } }
 	picture = GFX_report_event_soviet_soldiers
 	
 	immediate = { 
@@ -785,8 +787,16 @@ country_event = {
 					active = yes
 				}
 			}
+			add_ideas = SOV_baltic_agreement_idea
 		}
 		
+		if = {
+			limit = {
+				has_country_flag = LIT_no_wilno
+			}
+			add_stability = -0.1
+			add_war_support = -0.1
+		}
 		hidden_effect = {
 			SOV = {
 				country_event = { days = 1 id = nw_baltic.5 }
@@ -836,7 +846,7 @@ country_event = {
 		}
 	}
 	
-	option = { 
+	option = {
 		name = nw_baltic.1.c
 		ai_chance = {
 			base = 30
@@ -879,10 +889,6 @@ country_event = {
 		effect_tooltip = {
 			LIT = {
 				transfer_state = 771
-				if = {
-					limit = { 1029 = { is_controlled_by = SOV } }
-					transfer_state = 1029
-				}
 			}
 		}
 		
@@ -921,10 +927,6 @@ country_event = {
 		LIT = {
 			set_country_flag = SOV_friendship_agreement
 			transfer_state = 771
-			if = {
-				limit = { 1029 = { is_controlled_by = SOV } }
-				transfer_state = 1029
-			}
 		}
 		hidden_effect = {
 			SOV = {
@@ -949,6 +951,7 @@ country_event = {
 
 	option = { 
 		name = nw_baltic.4.a
+		custom_effect_tooltip = SOV_LIT_return_to_start
 		
 		set_country_flag = LIT_no_wilno
 		hidden_effect = {
@@ -973,7 +976,14 @@ country_event = {
 	option = { 
 		name = nw_baltic.5.a
 		
-		FROM = { give_military_access = SOV }
+		FROM = { 
+			diplomatic_relation = {
+				country = ROOT
+				relation = military_access 
+				active = yes
+			}
+			add_ideas = SOV_baltic_agreement_idea
+		}
 		SOV = {
 			diplomatic_relation = {
 				country = FROM
@@ -1000,9 +1010,21 @@ country_event = {
 	option = { 
 		name = nw_baltic.6.a
 		
-		create_wargoal = {
-			type = annex_everything
-			target = FROM
+		ROOT = {
+			create_wargoal = {
+				type = annex_everything
+				target = FROM
+			}
+			add_ai_strategy = {
+				type = antagonize
+				id = FROM
+				value = 200
+			}
+			add_ai_strategy = {
+				type = conquer
+				id = FROM
+				value = 200
+			}
 		}
 	}
 }
@@ -1031,7 +1053,7 @@ country_event = {
 						}
 					}
 					has_idea = anti_soviet_pact
-					SOV = { surrender_progress > 0.5 }
+					SOV = { surrender_progress > 0.3 }
 				}
 			}
 		}
@@ -1093,6 +1115,7 @@ country_event = {
 		name = nw_baltic.8.a
 		
 		annex_country = { target = FROM }
+		add_political_power = 20
 	}
 }
 
@@ -1115,6 +1138,19 @@ country_event = {
 		create_wargoal = {
 			type = annex_everything
 			target = FROM
-		}	
+		}
+		ROOT = {
+			add_ai_strategy = {
+				type = antagonize
+				id = FROM
+				value = 200
+			}
+			add_ai_strategy = {
+				type = conquer
+				id = FROM
+				value = 200
+			}
+		}
 	}
 }
+
