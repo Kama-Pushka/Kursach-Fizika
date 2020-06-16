@@ -3263,10 +3263,122 @@ focus_tree = {
 		relative_position_id = GER_anti_comitern_pact
 		cost = 10
 		historical_ai = {
-			NOT = {
-				any_home_area_neighbor_country = {
-					has_war_with = ROOT					
-				}		
+			date > 1941.4.1
+			is_subject = no
+			
+			SOV = {
+				AND = {
+					has_capitulated = no
+					exists = yes
+					NOT = {
+						has_war_together_with = ROOT
+						is_subject_of = ROOT
+						has_government = ROOT
+						is_in_faction_with = ROOT
+					}
+				}
+				
+				any_country = {
+					PREV = {
+						OR = {
+							original_tag = PREV
+							is_in_faction_with = PREV
+							is_subject_of = PREV
+						}
+					}
+					any_home_area_neighbor_country = {
+						SOV = {
+							PREV = {
+								OR = {
+									original_tag = PREV
+									is_in_faction_with = PREV
+									is_subject_of = PREV
+								}
+							}
+						}
+					}
+				}
+			}
+			
+			# army requirements
+			OR = {
+				has_army_manpower = { size > 2250000 }
+				date > 1941.8.1
+			}
+			OR = {
+				has_army_size = { type = armor size > 10 }
+				has_army_manpower = { type = armor size > 100000 }
+				date > 1941.8.1
+			}
+			
+			# has dealt with its enemies
+			OR = {
+				OR = {
+					NOT = {
+						any_home_area_neighbor_country = {
+							has_war_with = PREV 
+						}
+					}
+					AND = {
+						enemies_strength_ratio < 0.5
+						surrender_progress < 0.05
+					}
+				}
+				NOT = {
+					OR = {
+						has_capitulated = yes
+						exists = no
+						is_subject = yes
+					}
+				}
+				has_manpower > 200000
+
+				AND = {
+					POL = {
+						NOT = {
+							AND = {
+								has_capitulated = no
+								exists = yes
+								NOT = {
+									has_war_together_with = ROOT
+									is_subject_of = ROOT
+									has_government = ROOT
+									is_in_faction_with = ROOT
+									AND = {
+										is_in_faction = yes
+										any_allied_country = { is_faction_leader = yes has_government = ROOT }
+									}
+									AND = {
+										is_subject = yes
+										any_country = { PREV = { is_subject_of = PREV } has_government = ROOT }
+									}
+								}
+							}
+						}
+					}
+					FRA = {
+						NOT = {
+							AND = {
+								has_capitulated = no
+								exists = yes
+								NOT = {
+									has_war_together_with = ROOT
+									is_subject_of = ROOT
+									has_government = ROOT
+									is_in_faction_with = ROOT
+									AND = {
+										is_in_faction = yes
+										any_allied_country = { is_faction_leader = yes has_government = ROOT }
+									}
+									AND = {
+										is_subject = yes
+										any_country = { PREV = { is_subject_of = PREV } has_government = ROOT }
+									}
+								}
+							}
+						}
+					}
+				}
 			}
 		}
 		bypass = {
@@ -3274,18 +3386,13 @@ focus_tree = {
 		}
 		ai_will_do = {
 			factor = 10
-			modifier = {
+			modifier = { #NW
 				factor = 0
-				OR = {
-					has_army_manpower = { size < 1199999 }
-					any_home_area_neighbor_country = {
-						has_war_with = ROOT
-					}
-				}
+				is_historical_focus_on = yes
 			}
 			modifier = {
 				factor = 0 #AI should not pick this focus if it does not share a border with the Soviets
-				NOT = { 
+				NOT = {
 					any_home_area_neighbor_country = {
 						tag = SOV
 					}
@@ -3296,7 +3403,7 @@ focus_tree = {
 				is_historical_focus_on = yes
 				date < 1939.1.1
 			}
-		}	
+		}
 		completion_reward = {
 			create_wargoal = {
 				type = annex_everything
