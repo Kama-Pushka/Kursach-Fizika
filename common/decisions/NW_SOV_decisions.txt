@@ -578,7 +578,7 @@ spain_civil_war_category = {
 		}
 	}
 }
-foreign_politics = {
+SOV_baltic_integration = {
 	SOV_baltic_pact = {
 
 		icon = eng_trade_unions_support
@@ -588,7 +588,9 @@ foreign_politics = {
 		}
 
 		available = {
-
+			NOT = { has_war_with = FROM }
+			NOT = { has_war_with = GER }
+			SOV = { is_subject = no }
 		}
 		
 		ai_will_do = {
@@ -596,7 +598,13 @@ foreign_politics = {
 			modifier = {
 				factor = 0
 				is_historical_focus_on = yes
-				date < 1939.11.01
+				POL = { has_capitulated = no }
+				
+			}
+			modifier = {
+				factor = 0
+				is_historical_focus_on = yes
+				date < 1940.01.01
 			}
 		}
 		
@@ -617,13 +625,14 @@ foreign_politics = {
 				NOT = {
 					has_war_with = ROOT
 					is_subject_of = ROOT
+					is_in_faction_with = ROOT
 				}
 				has_capitulated = no
 				exists = yes
 			}
 		}
 
-		cost = 20
+		cost = 10
 
 		fire_only_once = yes
 
@@ -631,6 +640,113 @@ foreign_politics = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision SOV_baltic_pact"
 			FROM = { country_event = { hours = 12 id = nw_baltic.1 } }
 		}
+	}
+	
+	SOV_baltic_fals_mission = {
 
+		icon = generic_independence
+
+		days_remove = 200 
+
+		cost = 10
+
+		available = {
+			has_capitulated = no
+			is_subject = no
+		}
+
+		visible = {
+			NOT = { has_government = democratic }
+		}
+
+		target_trigger = { 
+			FROM = { 
+				has_idea = SOV_baltic_agreement_idea 
+				
+				NOT = {
+					has_war_with = ROOT
+					is_subject_of = ROOT
+					is_in_faction_with = ROOT
+				}
+				has_capitulated = no
+				exists = yes
+			}
+		}
+		targets_dynamic = yes
+		
+		complete_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision SOV_baltic_fals_mission"
+		}
+		
+		remove_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): remove decision SOV_baltic_fals_mission"
+			FROM = { set_country_flag = SOV_baltic_falsification_ready } 
+		}
+
+		ai_will_do = {
+			factor = 100
+			modifier = {
+				factor = 0
+				has_war = yes
+				surrender_progress > 0.15
+			}
+		}
+	}
+	
+	SOV_baltic_intervation = {
+
+		icon = eng_trade_unions_support
+
+		allowed = {
+			original_tag = SOV
+		}
+
+		available = {
+			NOT = { has_war_with = FROM }
+		}
+		
+		ai_will_do = {
+			factor = 100
+			modifier = {
+				factor = 0
+				is_historical_focus_on = yes
+				date < 1939.09.01
+			}
+		}
+		
+		target_trigger = {
+			FROM = {
+				OR = {
+					original_tag = EST
+					original_tag = LIT
+					original_tag = LAT
+				}
+				NOT = {
+					has_war_with = ROOT
+					is_subject_of = ROOT
+				}
+				has_capitulated = no
+				exists = yes
+				
+				has_country_flag = SOV_baltic_falsification_ready
+				has_idea = SOV_baltic_agreement_idea
+			}
+		}
+		
+		ai_will_do = {
+			factor = 100
+			modifier = {
+				factor = 0
+				has_war = yes
+				surrender_progress > 0.3
+			}
+		}
+		
+		fire_only_once = yes
+
+		complete_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision SOV_baltic_intervation to [From.GetName] ([From.GetTag])"
+			FROM = { country_event = { days = 3 id = nw_baltic.7 } }
+		}
 	}
 }

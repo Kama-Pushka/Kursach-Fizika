@@ -2097,6 +2097,31 @@ on_actions = {
 					SOV = { set_country_flag = { flag = NW_barbarossa_defensive value = 1 days = 270 } }
 				}
 			}
+			# Для снятия договора СССР с Прибалтикой
+			if = {
+				limit = {
+					FROM = {
+						OR = {
+							original_tag = SOV
+							has_idea = SOV_baltic_agreement_idea
+						}
+					}
+					ROOT = {
+						OR = {
+							original_tag = SOV
+							has_idea = SOV_baltic_agreement_idea
+						}
+					}
+				}
+				ROOT = {
+					remove_ideas = SOV_baltic_agreement_idea
+					clr_country_flag = SOV_baltic_falsification_ready
+				}
+				FROM = {
+					remove_ideas = SOV_baltic_agreement_idea
+					clr_country_flag = SOV_baltic_falsification_ready
+				}
+			}
 		} #FROM is war target
 	}
 	
@@ -2464,6 +2489,21 @@ on_actions = {
 				set_var_for_troz_threat_dyn = yes
 				log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): добавил -1 тронапряги капитуляцией"
 			}
+			
+			#### Слёт соглашения стран Прибалтики с СССР при капитуляции последней
+			if = {
+				limit = {
+					ROOT = { original_tag = SOV }
+					any_country = {
+						has_idea = SOV_baltic_agreement_idea
+					}
+				}
+				every_country = {
+					limit = { has_idea = SOV_baltic_agreement_idea }
+					remove_ideas = SOV_baltic_agreement_idea
+					clr_country_flag = SOV_baltic_falsification_ready
+				}
+			}
 			# ROOT is capitulated country, FROM is winner
 		}
 	}
@@ -2774,6 +2814,16 @@ on_actions = {
 					ROOT = { tag = SIK }
 				}
 				ROOT = { load_focus_tree = china_warlord_focus }
+			}
+			
+			if = {
+				limit = {
+					FROM = {
+						has_idea = SOV_baltic_agreement_idea
+					}
+				}
+				remove_ideas = SOV_baltic_agreement_idea
+				clr_country_flag = SOV_baltic_falsification_ready
 			}
 		}
 	}
