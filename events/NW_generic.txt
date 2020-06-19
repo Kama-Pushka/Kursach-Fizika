@@ -4931,6 +4931,19 @@ country_event = {
 			set_country_flag = CURRENT_LEADER_FOUR_INTERNATIONAL_FLAG
 			news_event = { id = trworldnews.132 hours = 3 }
 		}
+		if = {
+			limit = {
+				has_country_leader = { name = "Leon Trotsky" ruling_only = yes }
+			}
+			add_political_power = 100
+			add_stability = 0.2
+			add_war_support = 0.2
+			add_popularity = { ideology = trozkism popularity = 0.2 }
+			add_ideas = generic_adviser_to_revolution
+			custom_effect_tooltip = available_chief_of_army
+			show_ideas_tooltip = FRC_leon_trotsky
+			set_country_flag = INVITE_LEON_TROTSKY_FLAG
+		}
 	}
 	
 	option = {
@@ -5008,7 +5021,6 @@ country_event = {
 		has_global_flag = four_international_flag
 		has_country_flag = CURRENT_LEADER_FOUR_INTERNATIONAL_FLAG
 		any_country = { NOT = { has_country_leader = { name = "Leon Trotsky" ruling_only = yes } } }
-			
 		NOT = {
 			has_global_flag = flag_mexico_invited_trotsky_to_government
 			has_global_flag = trotsky_dead
@@ -5033,12 +5045,11 @@ country_event = {
 	is_triggered_only = yes
 	
 	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWgeneric.204" }
-	immediate = { set_country_flag = INVITE_LEON_TROTSKY_FLAG }
 	
 	option = {
 		name = NWgeneric.204.a
 		ai_chance = {
-			factor = 90
+			factor = 75
 		}
 		add_political_power = 100
 		add_stability = 0.2
@@ -5057,21 +5068,504 @@ country_event = {
 		add_ideas = generic_adviser_to_revolution
 		custom_effect_tooltip = available_chief_of_army
 		show_ideas_tooltip = FRC_leon_trotsky
+		set_country_flag = INVITE_LEON_TROTSKY_FLAG
 	}
 	
 	option = {
 		name = NWgeneric.204.b
 		ai_chance = {
-			factor = 10
+			factor = 0
 		}
 		add_political_power = 50
 		add_ideas = generic_adviser_to_revolution
 		show_ideas_tooltip = FRC_leon_trotsky
+		set_country_flag = INVITE_LEON_TROTSKY_FLAG
+	}
+	
+	option = {
+		name = NWgeneric.204.c
+		ai_chance = {
+			factor = 25
+		}
+		add_political_power = -50
+		set_global_flag = NO_INVITE_LEON_TROTSKY_FLAG
+		save_global_event_target_as = no_invite_leon_trotsky_scope
+	}
+}
+
+#*бывший тролидер* обвиняет Льва Троцкого в развязывании войны на весь мир
+country_event = {
+	id = NWgeneric.205
+	title = NWgeneric.205.t
+	desc = NWgeneric.205.desc
+	picture = GFX_report_event_generic_rally_3
+	
+	trigger = {
+		OR = {
+			check_variable = { global.troz_threat_var > 99 }
+			AND = {
+				NOT = {
+					any_country = {
+						has_government = trozkism
+						has_war = no
+					}
+				}
+				check_variable = { global.troz_threat_var > 30 }
+			}
+		}
+		has_civil_war = no
+		has_government = trozkism
+		has_country_leader = { name = "Leon Trotsky" ruling_only = yes }
+		has_global_flag = four_international_flag
+		NOT = { has_global_flag = fifth_international_flag }
+	}
+	
+	fire_only_once = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWgeneric.205" }
+	immediate = {
+		hidden_effect = {
+			retire_ideology_leader = trozkism
+		}
+	}
+	
+	mean_time_to_happen = { days = 14 }
+	
+	option = {
+		name = NWgeneric.205.a
+		set_country_flag = same_ideology_civil_war_flag
+		clr_country_flag = INVITE_LEON_TROTSKY_FLAG
+		effect_tooltip = {
+			start_civil_war = {
+				ideology = trozkism
+				size = 0.5
+			}
+		}
+		hidden_effect = {
+			start_civil_war = {
+				ideology = fascism
+				size = 0.5
+			}
+			random_other_country = {
+				limit = {
+					original_tag = ROOT
+					has_government = fascism
+				}
+				set_country_flag = same_ideology_civil_war_flag
+				add_popularity = {
+					ideology = trozkism
+					popularity = 1
+				}
+				set_politics = {
+					ruling_party = trozkism
+					elections_allowed = yes
+				}
+				create_country_leader = {
+					name = "Leon Trotsky"
+					desc = "POLITICS_LEON_TROTSKY_DESC"
+					picture = "gfx/leaders/SOV/Portrait_Leon_Trotsky.dds"
+					expire = "1965.1.1"
+					ideology = trozkism1
+					traits = {
+						exiled_revolutionary
+					}
+				}
+				add_ideas = generic_adviser_to_revolution
+				set_country_flag = INVITE_LEON_TROTSKY_FLAG
+				set_rule = { can_create_factions = yes }
+				create_faction = international5
+				set_global_flag = fifth_international_flag
+			}
+			every_other_country = {
+				limit = {
+					has_government = trozkism
+					is_in_faction_with = ROOT
+				}
+				country_event = { id = NWgeneric.206 hours = 3 }
+			}
+		}
+	}
+}
+
+#Нужна ли нам эта революция?
+country_event = {
+	id = NWgeneric.206
+	title = NWgeneric.206.t
+	desc = NWgeneric.206.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWgeneric.206" }
+	
+	option = {
+		name = NWgeneric.206.a
+		ai_chance = {
+			factor = 66
+		}
+		hidden_effect = {
+			random_other_country = {
+				limit = {
+					original_tag = FROM
+					NOT = { has_country_leader = { name = "Leon Trotsky" ruling_only = yes } }
+				}
+				set_temp_variable = { enemy_troz_id = THIS.id }
+			}
+		}
+		add_to_war = {
+			targeted_alliance = FROM
+			enemy = var:enemy_troz_id
+			hostility_reason = asked_to_join
+		}
+		hidden_effect = {
+			var:enemy_troz_id = {
+				ROOT = {
+					add_ai_strategy = {
+						type = alliance
+						id = PREV		
+						value = -1000
+					}
+					add_ai_strategy = {
+						type = antagonize
+						id = PREV		
+						value = 200
+					}
+				}
+			}
+		}
+	}
+	
+	option = {
+		name = NWgeneric.206.b
+		ai_chance = {
+			factor = 33
+		}
+		add_ai_strategy = {
+			type = alliance
+			id = FROM		
+			value = -1000
+		}
+		add_ai_strategy = {
+			type = antagonize
+			id = FROM	
+			value = 200
+		}
+		leave_faction = yes
+		every_other_country = {
+			limit = {
+				has_war_with = ROOT
+				is_subject = no
+				OR = { is_faction_leader = yes is_in_faction = no }
+				ROOT = { NOT = { has_country_flag = is_war_target_of_@PREV } }
+			}
+			white_peace = ROOT
+		}
+		random_other_country = {
+			limit = {
+				original_tag = FROM
+				NOT = { has_country_leader = { name = "Leon Trotsky" ruling_only = yes } }
+			}
+			add_to_faction = ROOT
+			ROOT = {
+				add_ai_strategy = {
+					type = alliance
+					id = PREV	
+					value = 200
+				}
+				add_to_war = {
+					targeted_alliance = PREV
+					enemy = FROM
+					hostility_reason = asked_to_join
+				}
+			}
+		}
+	}
+}
+
+#Пульсар. Троцкий предложил помощь в революции
+country_event = {
+	id = NWgeneric.207
+	hidden = yes
+	
+	trigger = {
+		OR = {
+			check_variable = { global.troz_threat_var > 99 }
+			AND = {
+				NOT = {
+					any_country = {
+						has_government = trozkism
+						has_war = no
+					}
+				}
+				check_variable = { global.troz_threat_var > 30 }
+			}
+		}
+		NOT = { has_country_leader = { name = "Leon Trotsky" ruling_only = yes } }
+		has_government = trozkism
+		has_global_flag = four_international_flag
+		is_faction_leader = no
+	}
+	
+	fire_only_once = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWgeneric.207" }
+	immediate = {
+		country_event = NWgeneric.20001		#вторая по мажорности страна 4 интернационала
+	}
+	
+	mean_time_to_happen = { days = 14 }
+}
+
+#Троцкий предложил помощь в революции // второй мажор троцев
+country_event = {
+	id = NWgeneric.208
+	title = NWgeneric.208.t
+	desc = NWgeneric.208.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWgeneric.208" }
+	
+	option = {
+		name = NWgeneric.208.a
+		ai_chance = {
+			factor = 50
+		}
+		add_political_power = 50
+		create_country_leader = {
+			name = "Leon Trotsky"
+			desc = "POLITICS_LEON_TROTSKY_DESC"
+			picture = "gfx/leaders/SOV/Portrait_Leon_Trotsky.dds"
+			expire = "1965.1.1"
+			ideology = trozkism1
+			traits = {
+				exiled_revolutionary
+			}
+		}
+		every_country = {
+			limit = { has_government = trozkism }
+			country_event = { id = NWgeneric.209 days = 7 }
+		}
+	}
+	
+	option = {
+		name = NWgeneric.208.b
+		ai_chance = {
+			factor = 50
+		}
+		add_political_power = -50
+	}
+}
+
+#Выступление Троцкого на конгрессе Четвертого Интернационала
+country_event = {
+	id = NWgeneric.209
+	title = NWgeneric.209.t
+	desc = NWgeneric.209.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWgeneric.209" }
+	
+	option = {
+		name = NWgeneric.209.a
+		ai_chance = {
+			factor = 10
+		}
+		trigger = {
+			has_country_flag = CURRENT_LEADER_FOUR_INTERNATIONAL_FLAG
+		}
+		every_other_country = {
+			limit = {
+				NOT = {
+					is_in_faction_with = ROOT
+					has_government = ROOT
+				}
+			}
+			ROOT = {
+				create_wargoal = {
+					type = annex_everything
+					target = PREV
+				}
+			}
+		}
+	}
+	
+	option = {
+		name = NWgeneric.209.b
+		ai_chance = {
+			factor = 90
+		}
+		trigger = {
+			has_country_flag = CURRENT_LEADER_FOUR_INTERNATIONAL_FLAG
+		}
+		FROM = { country_event = { id = NWgeneric.210 } }
+	}
+	
+	option = {
+		name = NWgeneric.209.c
+		ai_chance = {
+			factor = 50
+		}
+		trigger = {
+			has_country_leader = { name = "Leon Trotsky" ruling_only = yes }
+		}
+	}
+	
+	option = {
+		name = NWgeneric.209.d
+		ai_chance = {
+			factor = 50
+		}
+		trigger = {
+			NOT = {
+				has_country_leader = { name = "Leon Trotsky" ruling_only = yes }
+				has_country_flag = CURRENT_LEADER_FOUR_INTERNATIONAL_FLAG
+			}
+		}
+	}
+}
+
+#Лидер 4 интернационала бездействует // Троцкий
+country_event = {
+	id = NWgeneric.210
+	title = NWgeneric.210.t
+	desc = NWgeneric.210.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWgeneric.210" }
+	
+	option = {
+		name = NWgeneric.210.a
+		ai_chance = {
+			factor = 90
+		}
+		set_rule = { can_create_factions = yes }
+		create_faction = true_international
+		every_other_country = {
+			limit = {
+				has_government = ROOT
+				NOT = { tag = FROM }
+			}
+			country_event = { id = NWgeneric.211 days = 3 }
+		}
+		FROM = { country_event = { id = NWgeneric.212 days = 3 } }
+		hidden_effect = {
+			add_ai_strategy = {
+				type = alliance
+				id = FROM
+				value = -9999
+			}
+			add_ai_strategy = {
+				type = antagonize
+				id = FROM
+				value = 500
+			}
+			add_ai_strategy = {
+				type = contain
+				id = FROM
+				value = 500
+			}
+			FROM = {
+				add_ai_strategy = {
+					type = alliance
+					id = ROOT
+					value = -9999
+				}
+				add_ai_strategy = {
+					type = antagonize
+					id = ROOT
+					value = 500
+				}
+				add_ai_strategy = {
+					type = contain
+					id = ROOT
+					value = 500
+				}
+			}
+		}
+	}
+	
+	option = {
+		name = NWgeneric.210.b
+		ai_chance = {
+			factor = 10
+		}
+	}
+}
+
+#Троцкий предлагает присоединиться к совершенной революции
+country_event = {
+	id = NWgeneric.211
+	title = NWgeneric.211.t
+	desc = NWgeneric.211.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWgeneric.211" }
+	
+	option = {
+		name = NWgeneric.211.a
+		ai_chance = {
+			factor = 100
+		}
+		FROM = {
+			add_to_faction = ROOT
+			country_event = { id = generic.6 hours = 6 } 
+		}
+		add_ai_strategy = {
+			type = alliance
+			id = FROM
+			value = 200
+		}
+		hidden_effect = {
+			set_country_flag = alliance_applicant@ROOT
+			FROM = { set_country_flag = alliance_inviter@ROOT }
+			news_event = { id = news.289 hours = 12 }
+		}
+	}
+	
+	option = {
+		name = NWgeneric.211.b
+		ai_chance = {
+			factor = 0
+		}
+		FROM = { 
+			country_event = { id = generic.7 hours = 6 }
+		}
 	}
 }
 
 
-
+#Создание «Истинного интернационала» // Лидер 4 интернационала
+country_event = {
+	id = NWgeneric.212
+	title = NWgeneric.212.t
+	desc = NWgeneric.212.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWgeneric.212" }
+	
+	option = {
+		name = NWgeneric.212.a
+		ai_chance = {
+			factor = 90
+		}
+		create_wargoal = {
+			type = annex_everything
+			target = FROM
+		}
+	}
+	
+	option = {
+		name = NWgeneric.212.b
+		ai_chance = {
+			factor = 10
+		}
+		add_political_power = -100
+	}
+}
 
 
 
