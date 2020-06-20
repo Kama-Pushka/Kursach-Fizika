@@ -1040,17 +1040,23 @@ focus_tree = {
 
 	focus = {
 		id = USA_unholy_alliance
-		icon = GFX_focus_chi_mission_to_the_soviet_union
+		text = JAP_join_four_inter
+		icon = GFX_z_focus_generic_join_tro
+		#icon = GFX_focus_chi_mission_to_the_soviet_union
 		prerequisite = { focus = USA_us_ussr_economic_cooperation }
 		mutually_exclusive = { focus = USA_secure_china }
 		available = {
-			NOT = {
-				has_war_with = SOV
-			}
-			SOV = {
+			is_subject = no
+			has_government = trozkism
+		}
+		
+		bypass = {
+			any_other_country = {
+				is_in_faction_with = ROOT
+				has_government = trozkism
 				is_faction_leader = yes
+				has_country_flag = CURRENT_LEADER_FOUR_INTERNATIONAL_FLAG
 			}
-			is_in_faction = no
 		}
 
 		x = 0
@@ -1066,9 +1072,30 @@ focus_tree = {
 		available_if_capitulated = no
 
 		completion_reward = {
-			SOV = {
-				country_event = generic.2
+			set_rule = { can_create_factions = yes }
+			if = {
+				limit = { NOT = { has_global_flag = four_international_flag } }
+				if = {
+					limit = { is_faction_leader = yes }
+					set_faction_name = USA_section_fourth_international
+				}
+				else = { create_faction = USA_section_fourth_international }
 			}
+			else = {
+				random_other_country = {
+					limit = {
+						NOT = { has_war_with = ROOT }
+						has_government = trozkism
+						is_faction_leader = yes
+						has_country_flag = CURRENT_LEADER_FOUR_INTERNATIONAL_FLAG
+					}
+					country_event = { id = generic.2 }
+				}
+			}
+			set_temp_variable = { troz_threat_temp_var = 3 }
+			add_to_variable = { global.troz_threat_var = troz_threat_temp_var }
+			custom_effect_tooltip = troz_threat_tt1
+			set_var_for_troz_threat_dyn = yes
 		}
 	}
 	focus = {
