@@ -9698,6 +9698,33 @@ focus_tree = {
 				limit = { is_in_faction = yes }
 				leave_faction = yes
 			}
+			effect_tooltip = { release_puppet = PRS }
+			hidden_effect = {
+				every_owned_state = {
+					limit = {
+						NOT = {
+							state = 5
+							state = 981
+							state = 762
+						}
+					}
+					remove_core_of = PRS
+				}
+				release_puppet = PRS
+				PRS = {
+					every_owned_state = {
+						limit = {
+							is_core_of = ROOT
+						}
+						remove_core_of = ROOT
+					}
+					set_politics = { ruling_party = trozkism elections_allowed = yes }
+				}
+				set_autonomy = {
+					target = PRS
+					autonomous_state = autonomy_socprotect
+				}
+			}
 		}
 	}
 	
@@ -10066,7 +10093,23 @@ focus_tree = {
 		
 		completion_reward = {
 			random_other_country = {
-				limit = { original_tag = SPR }
+				limit = {
+					OR = {
+						original_tag = SPR
+						original_tag = CAS
+						original_tag = NAV
+						original_tag = SEU
+						original_tag = SPC
+						original_tag = ANL
+						original_tag = ARA
+						original_tag = ASU
+						original_tag = SNT
+						original_tag = CAT
+						original_tag = BAS
+						original_tag = GLC
+						original_tag = VLA
+					}
+				}
 				add_timed_idea = { idea = trozkism_influence6 days = 180 }
 			}
 		}
@@ -10110,9 +10153,13 @@ focus_tree = {
 			POR = {
 				exists = yes
 				is_puppet = no
-                owns_state = 540
-                owns_state = 544
-                owns_state = 296
+				OR = {
+					owns_state = 540
+					owns_state = 1044
+					owns_state = 1045
+					owns_state = 983
+					owns_state = 544
+				}
             }
 		}
 		
@@ -10138,28 +10185,60 @@ focus_tree = {
 			#	target = GUN
 			#	autonomous_state = autonomy_socprotect
 			#}
-			release_puppet = ANG
+			if = {
+				limit = {
+					NOT = { country_exists = ANG }
+					POR = {
+						OR = {
+							owns_state = 540
+							owns_state = 1044
+							owns_state = 1045
+						}
+					}
+				}
+				POR = {
+					release_puppet = ANG
+				}
+				set_autonomy = {
+					target = ANG
+					autonomous_state = autonomy_socprotect
+				}
+				every_state = {
+					limit = { is_core_of = ANG }
+					add_state_claim = POR
+				}
+			}
 			ANG = {
-				add_state_core = 540
-                transfer_state = 540
 				add_popularity = { ideology = trozkism popularity = 0.5 }
 				set_politics = { ruling_party = trozkism elections_allowed = yes }
             }
-			set_autonomy = {
-				target = ANG
-				autonomous_state = autonomy_socprotect
+			
+			if = {
+				limit = {
+					NOT = { country_exists = MZB }
+					POR = {
+						OR = {
+							owns_state = 983
+							owns_state = 544
+						}
+					}
+				}
+				POR = {
+					release_puppet = MZB
+				}
+				set_autonomy = {
+					target = MZB
+					autonomous_state = autonomy_socprotect
+				}
+				every_state = {
+					limit = { is_core_of = MZB }
+					add_state_claim = POR
+				}
 			}
-			release_puppet = MZB
 			MZB = {
-				add_state_core = 544
-                transfer_state = 544
 				add_popularity = { ideology = trozkism popularity = 0.5 }
 				set_politics = { ruling_party = trozkism elections_allowed = yes }
             }
-			set_autonomy = {
-				target = MZB
-				autonomous_state = autonomy_socprotect
-			}
 		}
 	}
 	
@@ -10171,7 +10250,21 @@ focus_tree = {
 			is_subject = no
 			OR = {
 				any_other_country = {
-					original_tag = SPR
+					OR = {
+						original_tag = SPR
+						original_tag = CAS
+						original_tag = NAV
+						original_tag = SEU
+						original_tag = SPC
+						original_tag = ANL
+						original_tag = ARA
+						original_tag = ASU
+						original_tag = SNT
+						original_tag = CAT
+						original_tag = BAS
+						original_tag = GLC
+						original_tag = VLA
+					}
 					exists = yes
 					trozkism > 0.3
 					OR = {
@@ -10191,9 +10284,25 @@ focus_tree = {
 		}
 		
 		bypass = {
-			any_other_country = {
-				original_tag = SPR
-				exists = no
+			NOT = {
+				any_other_country = {
+					OR = {
+						original_tag = SPR
+						original_tag = CAS
+						original_tag = NAV
+						original_tag = SEU
+						original_tag = SPC
+						original_tag = ANL
+						original_tag = ARA
+						original_tag = ASU
+						original_tag = SNT
+						original_tag = CAT
+						original_tag = BAS
+						original_tag = GLC
+						original_tag = VLA
+					}
+					exists = yes
+				}
 			}
 			POR = { exists = no }
 		}
@@ -10207,66 +10316,40 @@ focus_tree = {
 		}
 		
 		completion_reward = {
-			if = {
+			every_other_country = {
 				limit = {
-					GER = { is_in_faction_with = KMX }
-					is_faction_leader = no
+					OR = {
+						original_tag = SPR
+						original_tag = CAS
+						original_tag = NAV
+						original_tag = SEU
+						original_tag = SPC
+						original_tag = ANL
+						original_tag = ARA
+						original_tag = ASU
+						original_tag = SNT
+						original_tag = CAT
+						original_tag = BAS
+						original_tag = GLC
+						original_tag = VLA
+					}
+					trozkism > 0.3
+					is_subject = no
 				}
-				if = {
-					limit = { POR = { exists = yes }  }
-					KMX = {	add_to_faction = POR }
-				}
-				if = {
-					limit = { SPR = { exists = yes }  }
-					KMX = {	add_to_faction = SPR }
+				country_event = { id = tr_german.11 days = 1 }
+				add_ai_strategy = {
+					type = alliance
+					id = "GER"
+					value = 200
 				}
 			}
 			
-			if = {
-				limit = {
-					GER = { 
-						NOT = { is_in_faction_with = KMX }
-						is_in_faction = yes
-						is_faction_leader = yes
-					}
-				}
-				if = {
-					limit = { POR = { exists = yes }  }
-					GER = {	add_to_faction = POR }
-				}
-				if = {
-					limit = { SPR = { exists = yes }  }
-					GER = {	add_to_faction = SPR }
-				}
-			}
-			
-			if = {
-				limit = { 
-					GER = { is_in_faction = no }
-				}
-				if = {
-					limit = { SPR = { exists = yes }  }
-					puppet = SPR
-					set_autonomy = {
-						target = SPR
-						autonomous_state = autonomy_socprotect
-					}
-					SPR = {
-						add_popularity = { ideology = trozkism popularity = 0.3 }
-						set_politics = { ruling_party = trozkism elections_allowed = yes }
-					}
-				}
-				if = {
-					limit = { POR = { exists = yes }  }
-					puppet = POR
-					set_autonomy = {
-						target = POR
-						autonomous_state = autonomy_socprotect
-					}
-					POR = {
-						add_popularity = { ideology = trozkism popularity = 0.3 }
-						set_politics = { ruling_party = trozkism elections_allowed = yes }
-					}
+			POR = {
+				country_event = { id = tr_german.11 days = 1 }
+				add_ai_strategy = {
+					type = alliance
+					id = "GER"
+					value = 200
 				}
 			}
 		}
