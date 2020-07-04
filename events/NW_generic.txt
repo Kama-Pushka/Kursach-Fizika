@@ -5130,6 +5130,14 @@ country_event = {
 	is_triggered_only = yes
 	
 	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWgeneric.202" }
+	immediate = {
+		hidden_effect = {
+			save_event_target_as = alliance_applicant
+			FROM = {
+				save_event_target_as = alliance_inviter
+			}
+		}
+	}
 	
 	option = {
 		name = NWgeneric.202.a
@@ -5247,6 +5255,22 @@ country_event = {
 		add_political_power = -50
 		set_global_flag = NO_INVITE_LEON_TROTSKY_FLAG
 		save_global_event_target_as = no_invite_leon_trotsky_scope
+		#hidden_effect = {
+		#	random_other_country = {
+		#		limit = {
+		#			has_government = trozkism
+		#			NOT = {
+		#				has_country_flag = looser_flag
+		#				has_country_flag = NOT_WANT_LEADER_FLAG
+		#				has_country_leader = { name = "Leon Trotsky" ruling_only = yes }
+		#				tag = event_target:no_invite_leon_trotsky_scope
+		#			}
+		#		}
+		#		set_variable = { global.current_leader = num_of_factories }
+		#		add_to_variable = { global.current_leader = num_battalions }
+		#		get_best_alliance_match_trozkism_international_effect = yes
+		#	}
+		#}
 	}
 }
 
@@ -5298,6 +5322,13 @@ country_event = {
 				size = 0.5
 			}
 		}
+		every_other_country = {
+			limit = {
+				has_government = trozkism
+				is_in_faction_with = ROOT
+			}
+			country_event = { id = NWgeneric.206 hours = 3 }
+		}
 		hidden_effect = {
 			start_civil_war = {
 				ideology = fascism
@@ -5330,16 +5361,84 @@ country_event = {
 				add_ideas = generic_adviser_to_revolution
 				set_country_flag = INVITE_LEON_TROTSKY_FLAG
 				set_rule = { can_create_factions = yes }
+				random_country = {
+					limit = { is_in_faction_with = ROOT }
+					set_faction_leader = yes
+					ROOT = { leave_faction = yes }
+					add_to_faction = PREV
+				}
+				set_faction_leader = yes
+			}
+			set_global_flag = fifth_international_flag
+			set_rule = { can_create_factions = yes }
+			create_faction = international5
+		}
+	}
+	
+	option = {
+		name = NWgeneric.205.b
+		trigger = { is_ai = no }
+		set_country_flag = same_ideology_civil_war_flag
+		effect_tooltip = {
+			start_civil_war = {
+				ideology = trozkism
+				size = 0.5
+			}
+		}
+		every_other_country = {
+			limit = {
+				has_government = trozkism
+				is_in_faction_with = ROOT
+			}
+			country_event = { id = NWgeneric.206 hours = 3 }
+		}
+		hidden_effect = {
+			set_country_flag = DEFEND_ON_GOVERNMENT_CHANGE_FLAG
+			set_politics = {
+				ruling_party = communism
+				elections_allowed = yes
+			}
+			start_civil_war = {
+				ideology = trozkism
+				size = 0.5
+			}
+			set_politics = {
+				ruling_party = trozkism
+				elections_allowed = yes
+			}
+			add_popularity = {
+				ideology = trozkism
+				popularity = 1
+			}
+			random_other_country = {
+				limit = {
+					original_tag = ROOT
+					has_government = trozkism
+				}
+				set_country_flag = same_ideology_civil_war_flag
+				add_popularity = {
+					ideology = trozkism
+					popularity = 1
+				}
+				set_rule = { can_create_factions = yes }
 				create_faction = international5
 				set_global_flag = fifth_international_flag
 			}
-			every_other_country = {
-				limit = {
-					has_government = trozkism
-					is_in_faction_with = ROOT
+			create_country_leader = {
+				name = "Leon Trotsky"
+				desc = "POLITICS_LEON_TROTSKY_DESC"
+				picture = "gfx/leaders/SOV/Portrait_Leon_Trotsky.dds"
+				expire = "1965.1.1"
+				ideology = trozkism1
+				traits = {
+					exiled_revolutionary
 				}
-				country_event = { id = NWgeneric.206 hours = 3 }
 			}
+			if = {
+				limit = { NOT = { has_idea = generic_adviser_to_revolution } }
+				add_ideas = generic_adviser_to_revolution
+			}
+			clr_country_flag = DEFEND_ON_GOVERNMENT_CHANGE_FLAG
 		}
 	}
 }
@@ -5358,6 +5457,10 @@ country_event = {
 		name = NWgeneric.206.a
 		ai_chance = {
 			factor = 66
+			modifier = {
+				factor = 2
+				is_neighbor_of = var:troz_id
+			}
 		}
 		hidden_effect = {
 			random_other_country = {
@@ -5366,12 +5469,35 @@ country_event = {
 					NOT = { has_country_leader = { name = "Leon Trotsky" ruling_only = yes } }
 				}
 				set_temp_variable = { enemy_troz_id = THIS.id }
+				log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): enemy_troz_id is [This.GetName] ([This.GetTag])"
+			}
+			random_other_country = {
+				limit = {
+					original_tag = FROM
+					has_country_leader = { name = "Leon Trotsky" ruling_only = yes }
+				}
+				set_temp_variable = { troz_id = THIS.id }
+				log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): troz_id is [This.GetName] ([This.GetTag])"
 			}
 		}
-		add_to_war = {
-			targeted_alliance = FROM
-			enemy = var:enemy_troz_id
-			hostility_reason = asked_to_join
+		random_other_country = {
+			limit = {
+				original_tag = FROM
+				NOT = { has_country_leader = { name = "Leon Trotsky" ruling_only = yes } }
+			}
+			random_other_country = {
+				limit = {
+					original_tag = FROM
+					has_country_leader = { name = "Leon Trotsky" ruling_only = yes }
+				}
+				ROOT = {
+					add_to_war = {
+						targeted_alliance = PREV
+						enemy = PREV.PREV
+						hostility_reason = asked_to_join
+					}
+				}
+			}
 		}
 		hidden_effect = {
 			var:enemy_troz_id = {
@@ -5395,18 +5521,42 @@ country_event = {
 		name = NWgeneric.206.b
 		ai_chance = {
 			factor = 33
-		}
-		add_ai_strategy = {
-			type = alliance
-			id = FROM		
-			value = -1000
-		}
-		add_ai_strategy = {
-			type = antagonize
-			id = FROM	
-			value = 200
+			modifier = {
+				factor = 2
+				is_neighbor_of = var:enemy_troz_id
+			}
 		}
 		leave_faction = yes
+		hidden_effect = {
+			random_other_country = {
+				limit = {
+					original_tag = FROM
+					NOT = { has_country_leader = { name = "Leon Trotsky" ruling_only = yes } }
+				}
+				set_temp_variable = { enemy_troz_id = THIS.id }
+			}
+			random_other_country = {
+				limit = {
+					original_tag = FROM
+					has_country_leader = { name = "Leon Trotsky" ruling_only = yes }
+				}
+				set_temp_variable = { troz_id = THIS.id }
+			}
+			var:troz_id = {
+				ROOT = {
+					add_ai_strategy = {
+						type = alliance
+						id = PREV		
+						value = -1000
+					}
+					add_ai_strategy = {
+						type = antagonize
+						id = PREV		
+						value = 200
+					}
+				}
+			}
+		}
 		every_other_country = {
 			limit = {
 				has_war_with = ROOT
@@ -5416,11 +5566,7 @@ country_event = {
 			}
 			white_peace = ROOT
 		}
-		random_other_country = {
-			limit = {
-				original_tag = FROM
-				NOT = { has_country_leader = { name = "Leon Trotsky" ruling_only = yes } }
-			}
+		var:enemy_troz_id = {
 			add_to_faction = ROOT
 			ROOT = {
 				add_ai_strategy = {
@@ -5428,10 +5574,24 @@ country_event = {
 					id = PREV	
 					value = 200
 				}
-				add_to_war = {
-					targeted_alliance = PREV
-					enemy = FROM
-					hostility_reason = asked_to_join
+			}
+		}
+		random_other_country = {
+			limit = {
+				original_tag = FROM
+				NOT = { has_country_leader = { name = "Leon Trotsky" ruling_only = yes } }
+			}
+			random_other_country = {
+				limit = {
+					original_tag = FROM
+					has_country_leader = { name = "Leon Trotsky" ruling_only = yes }
+				}
+				ROOT = {
+					add_to_war = {
+						targeted_alliance = PREV.PREV
+						enemy = PREV
+						hostility_reason = asked_to_join
+					}
 				}
 			}
 		}
@@ -5458,7 +5618,7 @@ country_event = {
 		}
 		NOT = { has_country_leader = { name = "Leon Trotsky" ruling_only = yes } }
 		has_government = trozkism
-		has_global_flag = four_international_flag
+		has_global_flag = NO_INVITE_LEON_TROTSKY_FLAG
 		is_faction_leader = no
 	}
 	
@@ -5507,7 +5667,7 @@ country_event = {
 	option = {
 		name = NWgeneric.208.b
 		ai_chance = {
-			factor = 50
+			factor = 0
 		}
 		add_political_power = -50
 	}
@@ -5660,11 +5820,23 @@ country_event = {
 	is_triggered_only = yes
 	
 	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWgeneric.211" }
+	immediate = {
+		hidden_effect = {
+			save_event_target_as = alliance_applicant
+			FROM = {
+				save_event_target_as = alliance_inviter
+			}
+		}
+	}
 	
 	option = {
 		name = NWgeneric.211.a
 		ai_chance = {
-			factor = 100
+			factor = 50
+			modifier = {
+				factor = 2
+				is_neighbor_of = FROM
+			}
 		}
 		FROM = {
 			add_to_faction = ROOT
@@ -5685,7 +5857,15 @@ country_event = {
 	option = {
 		name = NWgeneric.211.b
 		ai_chance = {
-			factor = 0
+			factor = 50
+			modifier = {
+				factor = 2
+				any_other_country = {
+					is_faction_leader = yes
+					is_in_faction_with = ROOT
+					is_neighbor_of = ROOT
+				}
+			}
 		}
 		FROM = { 
 			country_event = { id = generic.7 hours = 6 }
