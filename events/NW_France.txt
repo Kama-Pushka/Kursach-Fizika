@@ -1532,19 +1532,20 @@ country_event = {
 		if = {
 			limit = {
 				has_country_leader = {
-					name = "Jean d'Orléans"
+					name = "Jean III"
 					ruling_only = yes
 				}
 			}
 			kill_country_leader = yes
 		}
 		create_country_leader = {
-			name = "Henri d'Orléans"
-			desc = "POLITICS_HENRI_D_ORLEANS_DESC"
-			picture = "gfx/leaders/FRA/portrait_france_henri_giraud.dds"
+			name = "Henri VI"
+			desc = "POLITICS_HENRI_VI_DESC"
+			picture = GFX_portrait_fra_henry_count_of_paris
 			expire = "1965.1.1"
 			ideology = monarchy_ideology
 			traits = {
+				count_of_paris
 			}
 		}
 	}
@@ -4118,6 +4119,8 @@ country_event = {
 				}
 			}
 		}
+		set_country_flag = become_vichy
+		save_global_event_target_as = VIC
 		set_politics = {
 			ruling_party = neutrality
 			elections_allowed = no
@@ -4182,7 +4185,7 @@ country_event = {
 			}
 			add_ideas = partial_economic_mobilisation
 			add_ideas = extensive_conscription
-			
+			set_global_flag = fall_of_france
 			if = {
 				limit = {
 					is_faction_leader = yes
@@ -4311,13 +4314,9 @@ country_event = {
 				is_historical_focus_on = yes
 			}
 		}
-		hidden_effect = {
-			if = {
-				limit = { FROM = { is_in_faction_with = ENG } }
-				ENG = { country_event = { id = NWfrance.105 days = 11 } }
-			}
-			FROM = { country_event = { id = NWfrance.202 days = 14 } }
-		}
+		custom_effect_tooltip = establishing_vichy_tt
+		leave_faction = yes
+		set_global_flag = fall_of_france
 		every_other_country = {
 			limit = { is_subject_of = FROM }
 			set_country_flag = ex_fra_subject_flag
@@ -4346,72 +4345,112 @@ country_event = {
 				white_peace = PREV
 			}
 		}
-		set_autonomy = {
-			target = FROM
-			autonomy_state = autonomy_satellite
-		}
 		add_ideas = {
 			FRA_french_prisoners_of_war
 			FRA_french_payments
 			FRA_french_food
 		}
-		FROM = {
-			add_ideas = {
-				FRA_prisoners_war_in_foreign_land
-				FRA_payments_to_winners
-				FRA_hunger_in_big_cities
-			}
-		}
 		hidden_effect = {
-			FROM = {
-				country_event = { id = NWfrance.114 days = 1 }
-				add_popularity = {
-					ideology = neutrality
-					popularity = 0.4
-				}
+			create_dynamic_country = {
+				original_tag = FRA
+				save_event_target_as = free_france
+			    every_state = { #set up cores for French cores
+				    limit = {
+				    	is_core_of = FRA
+				    }
+				    add_core_of = event_target:free_france
+				}	
+				transfer_state = 635
+				transfer_state = 320
+				transfer_state = 641
+				set_capital = 635
+				add_ideas = FRA_defeatism
+				load_focus_tree = nw_free_french_focus
+			    set_cosmetic_tag = FRA_FREE 
 				set_politics = {
-					ruling_party = neutrality
-					elections_allowed = no
+					ruling_party = democratic
+					elections_allowed = yes
 				}
-				delete_unit = { disband = yes }
-				hidden_effect = {
-					division_template = {
-						name = "France Collaborationists Division"
-						regiments = {
-							infantry = { x = 0 y = 0 }
-							infantry = { x = 0 y = 1 }
-							infantry = { x = 0 y = 2 }
-							infantry = { x = 0 y = 3 }
-							infantry = { x = 1 y = 0 }
-							infantry = { x = 1 y = 1 }
-							infantry = { x = 1 y = 2 }
-							infantry = { x = 1 y = 3 }
-						}
+				set_popularities = {
+					democratic = 60
+					neutrality = 10
+					communism = 30
+				}
+				set_country_flag = france_de_gaulle
+			 	create_country_leader = {
+					name = "Charles de Gaulle"
+					desc = "POLITICS_CHARLES_DE_GAULLE_DESC"
+					picture = "Portrait_France_Charles_De_Gaulle.dds"
+					expire = "1965.1.1"
+					ideology = conservatism
+					traits = {
+					
 					}
 				}
-				capital_scope = {
-					create_unit = {
-						division = "name = \"1. France Collaborationists Division\" division_template = \"France Collaborationists Division\" start_experience_factor = 0.4"
-						owner = PREV
-					}
-					create_unit = {
-						division = "name = \"2. France Collaborationists Division\" division_template = \"France Collaborationists Division\" start_experience_factor = 0.4"
-						owner = PREV
-					}
-					create_unit = {
-						division = "name = \"3. France Collaborationists Division\" division_template = \"France Collaborationists Division\" start_experience_factor = 0.4"
-						owner = PREV
-					}
-					create_unit = {
-						division = "name = \"4. France Collaborationists Division\" division_template = \"France Collaborationists Division\" start_experience_factor = 0.4"
-						owner = PREV
-					}
-					create_unit = {
-						division = "name = \"5. France Collaborationists Division\" division_template = \"France Collaborationists Division\" start_experience_factor = 0.4"
-						owner = PREV
-					}
+				random_country = {
+					limit = {
+						has_focus_tree = nw_collaborationist_french_focus
+					}		
+		        	transfer_units_fraction = {
+	      		    	target = event_target:free_france
+		      	    	size = 0.1
+	        	    	stockpile_ratio = 0.1
+			   	    	army_ratio = 0.05
+		       	    	navy_ratio = 0.05
+			       	}
+			    	set_rule = { 
+                        can_join_factions = no 
+		            	can_create_factions = no
+			        	can_not_declare_war = yes
+		            }	
+			        add_ideas = {
+			        	FRA_prisoners_war_in_foreign_land
+			           	FRA_payments_to_winners
+			           	FRA_hunger_in_big_cities
+		            }
 				}
 			}
+            random_country = {
+				limit = {
+					has_focus_tree = nw_collaborationist_french_focus
+				} 		
+				every_unit_leader = {
+				   	limit = {
+			     		has_id = 101 #de Gaulle
+			        	}
+			       	set_nationality = FRR
+		        }
+			    every_army_leader = {
+		        	limit = {
+				   		NOT = { has_trait = old_guard }
+			     	}
+		        	set_nationality = FRR
+		      	}		       
+		        country_event = NWfrance.202
+			    event_target:france_occupy_leader = {
+		        	give_guarantee = FRA
+				}			
+			}
+            random_country = {
+				limit = {
+					has_focus_tree = nw_free_french_focus
+				}
+				every_unit_leader = {
+			    	limit = {
+			      		OR = {
+			    			has_trait = old_guard
+		        			has_trait = old_guard_navy
+			           	}
+					}
+				    set_nationality = FRA
+				}
+			    every_navy_leader = {
+		           	limit = {
+			       		has_id = 102 #Darlan
+			       	}
+			        set_nationality = FRA
+		        }	
+            }				
 		}
 	}
 	option = {
@@ -4444,6 +4483,7 @@ country_event = {
 		every_other_country = {
 			limit = { is_subject_of = ROOT }
 			set_country_flag = ex_fra_subject_flag
+			set_global_flag = fall_of_france
 			set_autonomy = {
 				target = PREV
 				autonomy_state = autonomy_free
@@ -4457,26 +4497,15 @@ country_event = {
 				white_peace = PREV
 			}
 		}
-		hidden_effect = {
-			if = {
-				limit = { is_in_faction_with = ENG }
-				ENG = { country_event = { id = NWfrance.105 days = 11 } }
-			}
-			country_event = { id = NWfrance.202 days = 14 }
-		}
+		custom_effect_tooltip = establishing_vichy_tt
 		leave_faction = yes
+		set_global_flag = fall_of_france
 		every_enemy_country = {
 			limit = {
 				is_subject = no
 				OR = { is_faction_leader = yes is_in_faction = no }
 			}
 			white_peace = ROOT
-		}
-		FROM = {
-			set_autonomy = {
-				target = ROOT
-				autonomy_state = autonomy_satellite
-			}
 		}
 		if = {
 			limit = { FROM = { tag = ITA } }
@@ -4564,60 +4593,108 @@ country_event = {
 				FRA_french_food
 			}
 		}
-		add_ideas = {
-			FRA_prisoners_war_in_foreign_land
-			FRA_payments_to_winners
-			FRA_hunger_in_big_cities
-		}
 		hidden_effect = {
-			country_event = { id = NWfrance.114 days = 1 }
-			add_popularity = {
-				ideology = neutrality
-				popularity = 0.4
-			}
-			set_politics = {
-				ruling_party = neutrality
-				elections_allowed = no
-			}
-			delete_unit = { disband = yes }
-			hidden_effect = {
-				division_template = {
-					name = "France Collaborationists Division"
-					regiments = {
-						infantry = { x = 0 y = 0 }
-						infantry = { x = 0 y = 1 }
-						infantry = { x = 0 y = 2 }
-						infantry = { x = 0 y = 3 }
-						infantry = { x = 1 y = 0 }
-						infantry = { x = 1 y = 1 }
-						infantry = { x = 1 y = 2 }
-						infantry = { x = 1 y = 3 }
+			create_dynamic_country = {
+				original_tag = FRA
+				save_event_target_as = free_france
+			    every_state = { #set up cores for French cores
+				    limit = {
+				    	is_core_of = FRA
+				    }
+				    add_core_of = event_target:free_france
+				}	
+				transfer_state = 635
+				transfer_state = 320
+				transfer_state = 641
+				set_capital = 635
+				add_ideas = FRA_defeatism
+				load_focus_tree = nw_free_french_focus
+			    set_cosmetic_tag = FRA_FREE 
+				set_politics = {
+					ruling_party = democratic
+					elections_allowed = yes
+				}
+				set_popularities = {
+					democratic = 60
+					neutrality = 10
+					communism = 30
+				}
+				set_country_flag = france_de_gaulle
+			 	create_country_leader = {
+					name = "Charles de Gaulle"
+					desc = "POLITICS_CHARLES_DE_GAULLE_DESC"
+					picture = "Portrait_France_Charles_De_Gaulle.dds"
+					expire = "1965.1.1"
+					ideology = conservatism
+					traits = {
+					
 					}
 				}
+				random_country = {
+					limit = {
+						has_focus_tree = nw_collaborationist_french_focus
+					}		
+		        	transfer_units_fraction = {
+	      		    	target = event_target:free_france
+		      	    	size = 0.1
+	        	    	stockpile_ratio = 0.1
+			   	    	army_ratio = 0.05
+		       	    	navy_ratio = 0.05
+			       	}
+			    	set_rule = { 
+                        can_join_factions = no 
+		            	can_create_factions = no
+			        	can_not_declare_war = yes
+		            }	
+			        add_ideas = {
+			        	FRA_prisoners_war_in_foreign_land
+			           	FRA_payments_to_winners
+			           	FRA_hunger_in_big_cities
+		            }
+				}
 			}
-			capital_scope = {
-				create_unit = {
-					division = "name = \"1. France Collaborationists Division\" division_template = \"France Collaborationists Division\" start_experience_factor = 0.4"
-					owner = PREV
-				}
-				create_unit = {
-					division = "name = \"2. France Collaborationists Division\" division_template = \"France Collaborationists Division\" start_experience_factor = 0.4"
-					owner = PREV
-				}
-				create_unit = {
-					division = "name = \"3. France Collaborationists Division\" division_template = \"France Collaborationists Division\" start_experience_factor = 0.4"
-					owner = PREV
-				}
-				create_unit = {
-					division = "name = \"4. France Collaborationists Division\" division_template = \"France Collaborationists Division\" start_experience_factor = 0.4"
-					owner = PREV
-				}
-				create_unit = {
-					division = "name = \"5. France Collaborationists Division\" division_template = \"France Collaborationists Division\" start_experience_factor = 0.4"
-					owner = PREV
-				}
+            random_country = {
+				limit = {
+					has_focus_tree = nw_collaborationist_french_focus
+				} 		
+				every_unit_leader = {
+				   	limit = {
+			     		has_id = 101 #de Gaulle
+			        	}
+			       	set_nationality = FRR
+		        }
+			    every_army_leader = {
+		        	limit = {
+				   		NOT = { has_trait = old_guard }
+			     	}
+		        	set_nationality = FRR
+		      	}		       
+		        country_event = NWfrance.202
+			    event_target:france_occupy_leader = {
+		        	give_guarantee = FRA
+				}			
 			}
-		}
+            random_country = {
+				limit = {
+					has_focus_tree = nw_free_french_focus
+				}
+				every_unit_leader = {
+			    	limit = {
+			      		OR = {
+			    			has_trait = old_guard
+		        			has_trait = old_guard_navy
+			           	}
+					}
+				    set_nationality = FRA
+				}
+			    every_navy_leader = {
+		           	limit = {
+			       		has_id = 102 #Darlan
+			       	}
+			        set_nationality = FRA
+		        }	
+            }				
+		}			
 	}
 	option = {
 		name = NWfrance.103.b
@@ -4643,9 +4720,7 @@ country_event = {
 	desc = NWfrance.104.desc
 	picture = GFX_report_event_british_artillery
 	is_triggered_only = yes
-	
 	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWfrance.104" }
-	
 	option = {
 		name = NWfrance.104.a
 	}
@@ -4665,10 +4740,6 @@ country_event = {
 		name = NWfrance.105.a
 		ai_chance = {
 			factor = 50
-		}
-		declare_war_on = {
-			target = FRA
-			type = annex_everything
 		}
 		FRA = {
 			add_manpower = -297
@@ -5111,57 +5182,7 @@ country_event = {
 	
 	option = {
 		name = NWfrance.202.a
-		remove_unit_leader = 101
-		every_state = {
-			limit = {
-				is_owned_by = ROOT
-				OR = {
-					state = 1005
-					state = 1006
-					state = 660
-					state = 1019
-					state = 1007
-					state = 635
-					state = 734
-					state = 320
-					state = 641
-					state = 728
-					state = 539
-				}
-			}
-			FRR = { transfer_state = PREV }
-		}
-		FRR = {
-			declare_war_on = {
-				target = ROOT
-				type = civil_war
-			}
-			add_civil_war_target = ROOT
-		}
 		hidden_effect = {
-			every_other_country = {
-				limit = { has_country_flag = ex_fra_subject_flag }
-				FRR = {
-					set_autonomy = {
-						target = PREV
-						autonomy_state = autonomy_dominion
-					}
-				}
-			}
-			every_state = {
-				limit = {
-					OR = {
-						is_core_of = ROOT
-						state = 1005
-						state = 1006
-						state = 660
-						state = 1019
-						state = 1007
-						state = 539
-					}
-				}
-				add_core_of = FRR
-			}
 			every_state = {
 				limit = {
 					is_owned_by = ROOT
@@ -5174,18 +5195,7 @@ country_event = {
 				}
 				add_claim_by = ROOT
 			}
-			if = {
-				limit = {
-					ENG = {
-						has_government = democratic
-						is_faction_leader = yes
-						has_war_with = ROOT
-					}
-				}
-				ENG = { add_to_faction = FRR }
-			}
 			FRR = {
-				add_ideas = { FRR_armed_uprising_june FRR_illegitimate_government }
 				add_equipment_to_stockpile = {
 					type = infantry_equipment
 					amount = 15000
@@ -5217,56 +5227,7 @@ country_event = {
 	option = {
 		name = NWfrance.202.b
 		trigger = { is_ai = no }
-		remove_unit_leader = 101
-		every_state = {
-			limit = {
-				OR = {
-					state = 1005
-					state = 1006
-					state = 660
-					state = 1019
-					state = 1007
-					state = 635
-					state = 734
-					state = 320
-					state = 641
-					state = 728
-					state = 539
-				}
-			}
-			FRR = { transfer_state = PREV }
-		}
-		FRR = {
-			declare_war_on = {
-				target = ROOT
-				type = civil_war
-			}
-			add_civil_war_target = ROOT
-		}
 		hidden_effect = {
-			every_other_country = {
-				limit = { has_country_flag = ex_fra_subject_flag }
-				FRR = {
-					set_autonomy = {
-						target = PREV
-						autonomy_state = autonomy_dominion
-					}
-				}
-			}
-			every_state = {
-				limit = {
-					OR = {
-						is_core_of = ROOT
-						state = 1005
-						state = 1006
-						state = 660
-						state = 1019
-						state = 1007
-						state = 539
-					}
-				}
-				add_core_of = FRR
-			}
 			every_state = {
 				limit = {
 					is_owned_by = ROOT
@@ -5279,24 +5240,23 @@ country_event = {
 				}
 				add_claim_by = ROOT
 			}
-			if = {
-				limit = {
-					ENG = {
-						has_government = democratic
-						is_faction_leader = yes
-						has_war_with = ROOT
-					}
-				}
-				ENG = { add_to_faction = FRR }
-			}
 			FRR = {
-				add_ideas = { FRR_armed_uprising_june FRR_illegitimate_government }
 				add_equipment_to_stockpile = {
 					type = infantry_equipment
-					amount = 15000
+					amount = 5000
 				}
 				inherit_technology = ROOT
-				load_oob = "FRR_rise"
+				add_ai_strategy = {
+					type = antagonize
+					id = "GER"
+					value = 200
+				}
+				add_ai_strategy = {
+					type = conquer
+					id = "GER"
+					value = 200
+				}
+				change_tag_from = FRA
 			}
 			if = {
 				limit = { NOT = { tag = FRA } }
@@ -5307,7 +5267,6 @@ country_event = {
 				}
 			}
 		}
-		FRR = { change_tag_from = ROOT }
 	}
 }
 
