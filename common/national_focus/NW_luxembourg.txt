@@ -70,12 +70,11 @@ focus_tree = {
 		ai_will_do = {
 			factor = 5
 			modifier = {
-				add = 500
-				has_country_flag = NW_LUX_AI_COMMUNIST
-			}
-			modifier = {
 				factor = 0
-				has_country_flag = NW_LUX_AI_FASCIST
+				OR = {
+					has_country_flag = NW_LUX_AI_FASCIST
+					has_country_flag = NW_LUX_AI_COMMUNIST
+				}
 			}
 		}
 		completion_reward = {
@@ -109,20 +108,20 @@ focus_tree = {
 			factor = 5
 			modifier = {
 				add = 500
-				has_country_flag = NW_LUX_AI_FASCIST
-			}
-			modifier = {
-				factor = 0
-				has_country_flag = NW_LUX_AI_COMMUNIST
+				OR = {
+					has_country_flag = NW_LUX_AI_FASCIST
+					has_country_flag = NW_LUX_AI_COMMUNIST
+				}
 			}
 		}
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus LUX_maulkuerfgesetz_no"
 			add_stability = 0.05
 			add_popularity = { ideology = communism popularity = 0.1 }
-			add_popularity = { ideology = fascism popularity = 0.05 }
+			add_popularity = { ideology = fascism popularity = 0.1 }
 			hidden_effect = {
-				if = { limit = { has_country_flag = LUX_muzzle_law_yes_flag }
+				if = {
+					limit = { has_country_flag = LUX_muzzle_law_yes_flag }
 					random_list = {
 						80 = { country_event = { id = luxembourg.5 hours = 6 } }
 						20 = {  }
@@ -139,7 +138,7 @@ focus_tree = {
 		available = {
 			democratic > 0.65
 			NOT = { has_war_with = event_target:NW_france_scope }
-			event_target:NW_france_scope = { is_puppet = no }
+			event_target:NW_france_scope = { is_subject = no }
 			country_exists = event_target:NW_france_scope
 		}
 		bypass = { NOT = { country_exists = event_target:NW_france_scope } }
@@ -163,7 +162,7 @@ focus_tree = {
 		available = {
 			democratic > 0.65
 			NOT = { has_war_with = BEL }
-			BEL = { is_puppet = no }
+			BEL = { is_subject = no }
 			country_exists = BEL
 		}
 		bypass = { NOT = { country_exists = BEL } }
@@ -182,11 +181,11 @@ focus_tree = {
 	
 	focus = {
 		id = LUX_french_economic_help
-		icon = GFX_goal_generic_intelligence_exchange
+		icon = GFX_z_goal_economic_integration_france
 		prerequisite = { focus = LUX_french_guruantee }
 		available = {
 			NOT = { has_war_with = event_target:NW_france_scope }
-			event_target:NW_france_scope = { is_puppet = no }
+			event_target:NW_france_scope = { is_subject = no }
 			country_exists = event_target:NW_france_scope
 		}
 		bypass = { NOT = { country_exists = event_target:NW_france_scope } }
@@ -257,11 +256,11 @@ focus_tree = {
 	
 	focus = {
 		id = LUX_belgian_economic_help
-		icon = GFX_goal_generic_intelligence_exchange
+		icon = GFX_goal_generic_trade
 		prerequisite = { focus = LUX_belgian_guruantee }
 		available = {
 			NOT = { has_war_with = BEL }
-			BEL = { is_puppet = no }
+			BEL = { is_subject = no }
 			country_exists = BEL
 		}
 		bypass = { NOT = { country_exists = BEL } }
@@ -346,7 +345,7 @@ focus_tree = {
 		}
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus LUX_war_neutrality"
-			add_ideas = LUX_war_neutrality_idea
+			add_ideas = LUX_war_neutrality
 		}
 	}
 	
@@ -424,6 +423,13 @@ focus_tree = {
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus LUX_nationalize_bear"
 			add_ideas = LUX_nationalize_bear_idea
+			if = {
+				limit = { has_idea = LUX_pivo_army }
+				swap_ideas = {
+					remove_idea = LUX_pivo_army
+					add_idea = LUX_pivo_army_2
+				}
+			}
 		}
 	}
 	
@@ -444,7 +450,7 @@ focus_tree = {
 		cost = 10
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus LUX_communist_island"
-			add_ideas = LUX_communist_island_idea
+			add_ideas = LUX_communist_island
 		}
 	}
 	
@@ -464,7 +470,7 @@ focus_tree = {
 		cost = 10
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus LUX_opora_our_strenth"
-			add_ideas = LUX_opora_our_strenth_idea
+			add_ideas = LUX_opora_our_strenth
 		}
 	}
 	
@@ -484,7 +490,11 @@ focus_tree = {
 		cost = 10
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus LUX_isolition"
-			add_ideas = closed_economy
+			if = {
+				limit = { NOT = { has_idea = closed_economy } }
+				add_ideas = closed_economy
+			}
+			else = { add_political_power = 150 }
 		}
 	}
 	
@@ -537,7 +547,7 @@ focus_tree = {
 		relative_position_id = LUX_fascist_win
 		cost = 5
 		ai_will_do = {
-			factor = 5
+			factor = 10
 		}
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus LUX_nationalism"
@@ -570,7 +580,7 @@ focus_tree = {
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus LUX_nationalism"
 			add_popularity = { ideology = fascism popularity = 0.1 }
-			add_ideas = LUX_nationalism_idea
+			add_ideas = LUX_nationalism
 		}
 	}
 	
@@ -580,8 +590,10 @@ focus_tree = {
 		prerequisite = { focus = LUX_fascist_win }
 		mutually_exclusive = { focus = LUX_power_to_duchess }
 		available = {
+			has_government = fascism
+			is_subject = no
 			NOT = { has_war_with = GER }
-			GER = { is_puppet = no }
+			GER = { is_subject = no }
 			country_exists = GER
 		}
 		x = 1
@@ -593,7 +605,14 @@ focus_tree = {
 		}
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus LUX_german"
-			GER = { country_event = { id = luxembourg.17 hours = 6 } }
+			GER = {
+				country_event = { id = luxembourg.17 hours = 6 }
+				custom_effect_tooltip = needs_approval
+			}
+			if = {
+				limit = { is_ai = yes }
+				custom_effect_tooltip = GAME_OVER_TT
+			}
 		}
 	}
 	
@@ -614,6 +633,8 @@ focus_tree = {
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus LUX_old_luxembourgian"
 			add_popularity = { ideology = fascism popularity = 0.15 }
+			add_stability = 0.05
+			add_war_support = 0.1
 		}
 	}
 	
@@ -629,12 +650,58 @@ focus_tree = {
 		relative_position_id = LUX_old_luxembourgian
 		cost = 10
 		ai_will_do = {
-			factor = 5
+			factor = 10
 		}
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus LUX_great_luxembourg"
-			973 = { add_core_of = LUX }
+			973 = {
+				add_core_of = LUX
+				owner = {
+					ROOT = {
+						add_ai_strategy = {
+							type = antagonize
+							id = PREV
+							value = 400
+						}
+						add_ai_strategy = {
+							type = conquer
+							id = PREV
+							value = 400
+						}
+					}
+				}
+			}
 			add_ideas = LUX_great_luxembourg
+			add_ai_strategy = {
+				type = antagonize
+				id = "BEL"
+				value = 400
+			}
+			add_ai_strategy = {
+				type = conquer
+				id = "BEL"
+				value = 400
+			}
+			add_ai_strategy = {
+				type = antagonize
+				id = "FLA"
+				value = 400
+			}
+			add_ai_strategy = {
+				type = conquer
+				id = "FLA"
+				value = 400
+			}
+			add_ai_strategy = {
+				type = antagonize
+				id = "HOL"
+				value = 400
+			}
+			add_ai_strategy = {
+				type = conquer
+				id = "HOL"
+				value = 400
+			}
 		}
 	}
 	
@@ -650,11 +717,11 @@ focus_tree = {
 		relative_position_id = LUX_old_luxembourgian
 		cost = 10
 		ai_will_do = {
-			factor = 5
+			factor = 10
 		}
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus LUX_defend_fatherland"
-			add_ideas = LUX_defend_fatherland_idea
+			add_ideas = LUX_defend_fatherland
 		}
 	}
 	
@@ -674,7 +741,11 @@ focus_tree = {
 		}
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus LUX_belgian_luxembourg"
-			BEL = { country_event = { id = luxembourg.18 hours = 6 } }
+			973 = { add_core_of = ROOT }
+			if = {
+				limit = { NOT = { owns_state = 973 } }
+				973 = { owner = { country_event = { id = luxembourg.18 hours = 6 } } }
+			}
 		}
 	}
 
@@ -750,7 +821,11 @@ focus_tree = {
 		}
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus LUX_pivo_army"
-			add_ideas = LUX_pivo_army_idea
+			if = {
+				limit = { has_completed_focus = LUX_nationalize_bear }
+				add_ideas = LUX_pivo_army_2
+			}
+			else = { add_ideas = LUX_pivo_army }
 		}
 	}
 	
@@ -786,7 +861,7 @@ focus_tree = {
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus LUX_hospital"
 			add_political_power = 10
-			add_ideas = LUX_hospital_idea
+			add_ideas = LUX_hospital
 		}
 	}
 	
@@ -895,12 +970,12 @@ focus_tree = {
 		available = {
 			OR = {
 				event_target:NW_france_scope = { 
-					is_puppet = no
+					is_subject = no
 					NOT = { has_war_with = LUX }
 					exists = yes
 				}
 				GER = { 
-					is_puppet = no
+					is_subject = no
 					NOT = { has_war_with = GER }
 					exists = yes
 				}
@@ -926,7 +1001,7 @@ focus_tree = {
 		mutually_exclusive = { focus = LUX_referendum_economy }
 		available = {
 			NOT = { has_war_with = BEL }
-			BEL = { is_puppet = no }
+			BEL = { is_subject = no }
 			country_exists = BEL
 		}
 		x = 3
@@ -942,9 +1017,9 @@ focus_tree = {
 			BEL = { add_opinion_modifier = { target = LUX modifier = LUX_french_economy_friend } }
 			LUX = { add_opinion_modifier = { target = BEL modifier = LUX_french_economy_friend } }
 			swap_ideas = {
-					remove_idea = LUX_belgian_economy_idea
-					add_idea = LUX_belgian_economy_idea2
-				}
+				remove_idea = LUX_belgian_economy_idea
+				add_idea = LUX_belgian_economy_idea2
+			}
 		}
 	}
 	
@@ -1036,7 +1111,7 @@ focus_tree = {
 		available = {
 			has_country_flag = LUX_belgian_economy_flag
 			NOT = { has_war_with = BEL }
-			BEL = { is_puppet = no }
+			BEL = { is_subject = no }
 			country_exists = BEL
 		}
 		x = 1
@@ -1048,7 +1123,7 @@ focus_tree = {
 		}
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus LUX_belgian_dotation"
-			add_ideas = LUX_belgian_dotation_idea
+			add_ideas = LUX_belgian_dotation
 		}
 	}
 	
@@ -1059,7 +1134,7 @@ focus_tree = {
 		available = {
 			has_country_flag = LUX_french_economy_flag
 			NOT = { has_war_with = event_target:NW_france_scope }
-			event_target:NW_france_scope = { is_puppet = no }
+			event_target:NW_france_scope = { is_subject = no }
 			country_exists = event_target:NW_france_scope
 		}
 		x = -1
@@ -1071,7 +1146,7 @@ focus_tree = {
 		}
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus LUX_french_dotation"
-			add_ideas = LUX_french_dotation_idea
+			add_ideas = LUX_french_dotation
 		}
 	}
 	
@@ -1082,7 +1157,7 @@ focus_tree = {
 		available = {
 			has_country_flag = LUX_german_economy_flag
 			NOT = { has_war_with = GER }
-			GER = { is_puppet = no }
+			GER = { is_subject = no }
 			country_exists = GER
 		}
 		x = -2
@@ -1157,7 +1232,7 @@ focus_tree = {
 		available = {
 			has_country_flag = LUX_german_economy_flag
 			NOT = { has_war_with = GER }
-			GER = { is_puppet = no }
+			GER = { is_subject = no }
 			country_exists = GER
 		}
 		x = 0
@@ -1169,7 +1244,7 @@ focus_tree = {
 		}
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus LUX_german_dotation"
-			add_ideas = LUX_german_dotation_idea
+			add_ideas = LUX_german_dotation
 		}
 	}
 	
@@ -1414,7 +1489,7 @@ focus_tree = {
 		}
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus LUX_Luxembourgeois"
-			add_ideas = LUX_nacional_JD_road_idea
+			add_ideas = LUX_Luxembourgeois
 			random_owned_state = {
 				limit = {
 					free_building_slots = {
@@ -1488,7 +1563,7 @@ focus_tree = {
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus LUX_patriotism"
 			add_war_support = 0.15
-			add_ideas = LUX_patriotism_idea
+			add_ideas = LUX_patriotism
 		}
 	}
 	
@@ -1603,7 +1678,7 @@ focus_tree = {
 		}
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus LUX_war_academy"
-			add_ideas = LUX_war_academy_idea
+			add_ideas = LUX_war_academy
 		}
 	}
 	
