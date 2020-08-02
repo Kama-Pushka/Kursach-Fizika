@@ -4314,8 +4314,18 @@ country_event = {
 				is_historical_focus_on = yes
 			}
 		}
+		hidden_effect = {
+			give_guarantee = FROM
+			if = {
+				limit = { FROM = { is_in_faction_with = ENG } }
+				ENG = { country_event = { id = NWfrance.105 days = 11 } }
+			}
+			FROM = {
+				country_event = { id = NWfrance.202 days = 14 }
+				delete_unit = { disband = yes }
+			}
+		}
 		custom_effect_tooltip = establishing_vichy_tt
-		leave_faction = yes
 		set_global_flag = fall_of_france
 		every_other_country = {
 			limit = { is_subject_of = FROM }
@@ -4345,112 +4355,56 @@ country_event = {
 				white_peace = PREV
 			}
 		}
+		set_autonomy = {
+			target = FROM
+			autonomy_state = autonomy_satellite
+		}
 		add_ideas = {
 			FRA_french_prisoners_of_war
 			FRA_french_payments
 			FRA_french_food
 		}
-		hidden_effect = {
-			create_dynamic_country = {
-				original_tag = FRA
-				save_event_target_as = free_france
-			    every_state = { #set up cores for French cores
-				    limit = {
-				    	is_core_of = FRA
-				    }
-				    add_core_of = event_target:free_france
-				}	
-				transfer_state = 635
-				transfer_state = 320
-				transfer_state = 641
-				set_capital = 635
-				add_ideas = FRA_defeatism
-				load_focus_tree = nw_free_french_focus
-			    set_cosmetic_tag = FRA_FREE 
+		FROM = {
+			add_ideas = {
+				FRA_prisoners_war_in_foreign_land
+				FRA_payments_to_winners
+				FRA_hunger_in_big_cities
+			}
+			hidden_effect = {
+				country_event = { id = NWfrance.114 days = 1 }
+				add_popularity = {
+					ideology = neutrality
+					popularity = 0.4
+				}
 				set_politics = {
-					ruling_party = democratic
-					elections_allowed = yes
+					ruling_party = neutrality
+					elections_allowed = no
 				}
-				set_popularities = {
-					democratic = 60
-					neutrality = 10
-					communism = 30
-				}
-				set_country_flag = france_de_gaulle
-			 	create_country_leader = {
-					name = "Charles de Gaulle"
-					desc = "POLITICS_CHARLES_DE_GAULLE_DESC"
-					picture = "Portrait_France_Charles_De_Gaulle.dds"
-					expire = "1965.1.1"
-					ideology = conservatism
-					traits = {
-					
+				division_template = {
+					name = "France Collaborationists Division"
+					regiments = {
+						infantry = { x = 0 y = 0 }
+						infantry = { x = 0 y = 1 }
+						infantry = { x = 0 y = 2 }
+						infantry = { x = 0 y = 3 }
+						infantry = { x = 1 y = 0 }
+						infantry = { x = 1 y = 1 }
+						infantry = { x = 1 y = 2 }
+						infantry = { x = 1 y = 3 }
 					}
 				}
-				random_country = {
-					limit = {
-						has_focus_tree = nw_collaborationist_french_focus
-					}		
-		        	transfer_units_fraction = {
-	      		    	target = event_target:free_france
-		      	    	size = 0.1
-	        	    	stockpile_ratio = 0.1
-			   	    	army_ratio = 0.05
-		       	    	navy_ratio = 0.05
-			       	}
-			    	set_rule = { 
-                        can_join_factions = no 
-		            	can_create_factions = no
-			        	can_not_declare_war = yes
-		            }	
-			        add_ideas = {
-			        	FRA_prisoners_war_in_foreign_land
-			           	FRA_payments_to_winners
-			           	FRA_hunger_in_big_cities
-		            }
-				}
-			}
-            random_country = {
-				limit = {
-					has_focus_tree = nw_collaborationist_french_focus
-				} 		
-				every_unit_leader = {
-				   	limit = {
-			     		has_id = 101 #de Gaulle
-			        	}
-			       	set_nationality = FRR
-		        }
-			    every_army_leader = {
-		        	limit = {
-				   		NOT = { has_trait = old_guard }
-			     	}
-		        	set_nationality = FRR
-		      	}		       
-		        country_event = NWfrance.202
-			    event_target:france_occupy_leader = {
-		        	give_guarantee = FRA
-				}			
-			}
-            random_country = {
-				limit = {
-					has_focus_tree = nw_free_french_focus
-				}
-				every_unit_leader = {
-			    	limit = {
-			      		OR = {
-			    			has_trait = old_guard
-		        			has_trait = old_guard_navy
-			           	}
+				capital_scope = {
+					create_unit = {
+						division = "name = \"France Collaborationists Division\" division_template = \"France Collaborationists Division\" start_experience_factor = 0.2"
+						owner = PREV
+						count = 5
 					}
-				    set_nationality = FRA
 				}
-			    every_navy_leader = {
-		           	limit = {
-			       		has_id = 102 #Darlan
-			       	}
-			        set_nationality = FRA
-		        }	
-            }				
+				set_rule = {
+					can_join_factions = no 
+					can_create_factions = no
+				}
+			}
 		}
 	}
 	option = {
@@ -4465,7 +4419,7 @@ country_event = {
 	}
 }
 
-#FROM.CountryName выдвигает условия перемирия
+#FROM.CountryName выдвигает условия перемирия // FRA
 country_event = {
 	id = NWfrance.103
 	title = NWfrance.103.t
@@ -4479,6 +4433,9 @@ country_event = {
 		name = NWfrance.103.a
 		ai_chance = {
 			factor = 85
+		}
+		hidden_effect = {
+			delete_unit = { disband = yes }
 		}
 		every_other_country = {
 			limit = { is_subject_of = ROOT }
@@ -4587,113 +4544,59 @@ country_event = {
 			}
 		}
 		FROM = {
+			set_autonomy = {
+				target = ROOT
+				autonomy_state = autonomy_satellite
+			}
 			add_ideas = {
 				FRA_french_prisoners_of_war
 				FRA_french_payments
 				FRA_french_food
 			}
 		}
+		add_ideas = {
+			FRA_prisoners_war_in_foreign_land
+			FRA_payments_to_winners
+			FRA_hunger_in_big_cities
+		}
 		hidden_effect = {
-			create_dynamic_country = {
-				original_tag = FRA
-				save_event_target_as = free_france
-			    every_state = { #set up cores for French cores
-				    limit = {
-				    	is_core_of = FRA
-				    }
-				    add_core_of = event_target:free_france
-				}	
-				transfer_state = 635
-				transfer_state = 320
-				transfer_state = 641
-				set_capital = 635
-				add_ideas = FRA_defeatism
-				load_focus_tree = nw_free_french_focus
-			    set_cosmetic_tag = FRA_FREE 
-				set_politics = {
-					ruling_party = democratic
-					elections_allowed = yes
-				}
-				set_popularities = {
-					democratic = 60
-					neutrality = 10
-					communism = 30
-				}
-				set_country_flag = france_de_gaulle
-			 	create_country_leader = {
-					name = "Charles de Gaulle"
-					desc = "POLITICS_CHARLES_DE_GAULLE_DESC"
-					picture = "Portrait_France_Charles_De_Gaulle.dds"
-					expire = "1965.1.1"
-					ideology = conservatism
-					traits = {
-					
-					}
-				}
-				random_country = {
-					limit = {
-						has_focus_tree = nw_collaborationist_french_focus
-					}		
-		        	transfer_units_fraction = {
-	      		    	target = event_target:free_france
-		      	    	size = 0.1
-	        	    	stockpile_ratio = 0.1
-			   	    	army_ratio = 0.05
-		       	    	navy_ratio = 0.05
-			       	}
-			    	set_rule = { 
-                        can_join_factions = no 
-		            	can_create_factions = no
-			        	can_not_declare_war = yes
-		            }	
-			        add_ideas = {
-			        	FRA_prisoners_war_in_foreign_land
-			           	FRA_payments_to_winners
-			           	FRA_hunger_in_big_cities
-		            }
+			country_event = { id = NWfrance.114 days = 1 }
+			add_popularity = {
+				ideology = neutrality
+				popularity = 0.4
+			}
+			set_politics = {
+				ruling_party = neutrality
+				elections_allowed = no
+			}
+			division_template = {
+				name = "France Collaborationists Division"
+				regiments = {
+					infantry = { x = 0 y = 0 }
+					infantry = { x = 0 y = 1 }
+					infantry = { x = 0 y = 2 }
+					infantry = { x = 0 y = 3 }
+					infantry = { x = 1 y = 0 }
+					infantry = { x = 1 y = 1 }
+					infantry = { x = 1 y = 2 }
+					infantry = { x = 1 y = 3 }
 				}
 			}
-            random_country = {
-				limit = {
-					has_focus_tree = nw_collaborationist_french_focus
-				} 		
-				every_unit_leader = {
-				   	limit = {
-			     		has_id = 101 #de Gaulle
-			        	}
-			       	set_nationality = FRR
-		        }
-			    every_army_leader = {
-		        	limit = {
-				   		NOT = { has_trait = old_guard }
-			     	}
-		        	set_nationality = FRR
-		      	}		       
-		        country_event = NWfrance.202
-			    event_target:france_occupy_leader = {
-		        	give_guarantee = FRA
-				}			
+			capital_scope = {
+				create_unit = {
+					division = "name = \"France Collaborationists Division\" division_template = \"France Collaborationists Division\" start_experience_factor = 0.2"
+					owner = PREV
+					count = 5
+				}
 			}
-            random_country = {
-				limit = {
-					has_focus_tree = nw_free_french_focus
-				}
-				every_unit_leader = {
-			    	limit = {
-			      		OR = {
-			    			has_trait = old_guard
-		        			has_trait = old_guard_navy
-			           	}
-					}
-				    set_nationality = FRA
-				}
-			    every_navy_leader = {
-		           	limit = {
-			       		has_id = 102 #Darlan
-			       	}
-			        set_nationality = FRA
-		        }	
-            }				
+			set_rule = {
+				can_join_factions = no 
+				can_create_factions = no
+			}
+			country_event = { id = NWfrance.202 days = 14 }
+			event_target:france_occupy_leader = {
+				give_guarantee = FRA
+			}			
 		}			
 	}
 	option = {
@@ -5183,24 +5086,69 @@ country_event = {
 	option = {
 		name = NWfrance.202.a
 		hidden_effect = {
-			every_state = {
-				limit = {
-					is_owned_by = ROOT
+			create_dynamic_country = {
+				original_tag = FRA
+				save_event_target_as = free_france
+				set_country_flag = france_de_gaulle
+			    every_state = { #set up cores for French cores
+				    limit = {
+				    	is_core_of = ROOT
+				    }
+				    add_core_of = event_target:free_france
 				}
-				add_claim_by = FRR
-			}
-			every_state = {
-				limit = {
-					is_owned_by = FRR
+				every_state = {
+					limit = {
+						is_owned_by = ROOT
+					}
+					add_claim_by = event_target:free_france
 				}
-				add_claim_by = ROOT
-			}
-			FRR = {
-				add_equipment_to_stockpile = {
-					type = infantry_equipment
-					amount = 15000
+				every_state = {
+					limit = {
+						is_owned_by = ROOT
+						OR = {
+							state = 1005
+							state = 1006
+							state = 660
+							state = 1019
+							state = 1007
+							state = 635
+							state = 734
+							state = 320
+							state = 641
+							state = 728
+							state = 539
+						}
+					}
+					FRR = { transfer_state = PREV }
 				}
-				inherit_technology = ROOT
+				set_capital = 1005
+				declare_war_on = {
+					target = ROOT
+					type = civil_war
+				}
+				add_civil_war_target = ROOT
+				add_ideas = FRA_defeatism
+				load_focus_tree = nw_free_french_focus
+			    set_cosmetic_tag = FRA_FREE 
+				set_politics = {
+					ruling_party = democratic
+					elections_allowed = yes
+				}
+				set_popularities = {
+					democratic = 60
+					neutrality = 10
+					communism = 30
+				}
+			 	create_country_leader = {
+					name = "Charles de Gaulle"
+					desc = "POLITICS_CHARLES_DE_GAULLE_DESC"
+					picture = "Portrait_France_Charles_De_Gaulle.dds"
+					expire = "1965.1.1"
+					ideology = conservatism
+					traits = {
+					
+					}
+				}
 				load_oob = "FRR_rise"
 				add_ai_strategy = {
 					type = antagonize
@@ -5213,14 +5161,60 @@ country_event = {
 					value = 200
 				}
 			}
+			transfer_units_fraction = {
+				target = FRR
+				size = 0.1
+				stockpile_ratio = 0.1
+				army_ratio = 0.05
+				navy_ratio = 0.05
+			}
+			every_unit_leader = {
+				limit = {
+					has_id = 101 #de Gaulle
+				}
+				set_nationality = FRR
+			}
+			every_army_leader = {
+				limit = {
+					NOT = { has_trait = old_guard }
+				}
+				set_nationality = FRR
+			}
 			if = {
-				limit = { NOT = { tag = FRA } }
-				FRA = {
-					every_army_leader = {
-						set_nationality = FRR
+				limit = {
+					ENG = {
+						has_government = democratic
+						is_faction_leader = yes
+						has_war_with = ROOT
 					}
 				}
+				ENG = { add_to_faction = FRR }
 			}
+            FRR = {
+				every_unit_leader = {
+			    	limit = {
+			      		OR = {
+			    			has_trait = old_guard
+		        			has_trait = old_guard_navy
+			           	}
+					}
+				    set_nationality = ROOT
+				}
+			    every_navy_leader = {
+		           	limit = {
+			       		has_id = 102 #Darlan
+			       	}
+			        set_nationality = ROOT
+		        }
+				add_equipment_to_stockpile = {
+					type = infantry_equipment
+					amount = 5000
+				}
+				add_ideas = {
+					FRR_armed_uprising_june
+					FRR_illegitimate_government
+				}
+            }
 		}
 	}
 	
@@ -5228,24 +5222,70 @@ country_event = {
 		name = NWfrance.202.b
 		trigger = { is_ai = no }
 		hidden_effect = {
-			every_state = {
-				limit = {
-					is_owned_by = ROOT
+			create_dynamic_country = {
+				original_tag = FRA
+				save_event_target_as = free_france
+				set_country_flag = france_de_gaulle
+			    every_state = { #set up cores for French cores
+				    limit = {
+				    	is_core_of = ROOT
+				    }
+				    add_core_of = event_target:free_france
 				}
-				add_claim_by = FRR
-			}
-			every_state = {
-				limit = {
-					is_owned_by = FRR
+				every_state = {
+					limit = {
+						is_owned_by = ROOT
+					}
+					add_claim_by = event_target:free_france
 				}
-				add_claim_by = ROOT
-			}
-			FRR = {
-				add_equipment_to_stockpile = {
-					type = infantry_equipment
-					amount = 5000
+				every_state = {
+					limit = {
+						is_owned_by = ROOT
+						OR = {
+							state = 1005
+							state = 1006
+							state = 660
+							state = 1019
+							state = 1007
+							state = 635
+							state = 734
+							state = 320
+							state = 641
+							state = 728
+							state = 539
+						}
+					}
+					FRR = { transfer_state = PREV }
 				}
-				inherit_technology = ROOT
+				set_capital = 1005
+				declare_war_on = {
+					target = ROOT
+					type = civil_war
+				}
+				add_civil_war_target = ROOT
+				add_ideas = FRA_defeatism
+				load_focus_tree = nw_free_french_focus
+			    set_cosmetic_tag = FRA_FREE 
+				set_politics = {
+					ruling_party = democratic
+					elections_allowed = yes
+				}
+				set_popularities = {
+					democratic = 60
+					neutrality = 10
+					communism = 30
+				}
+			 	create_country_leader = {
+					name = "Charles de Gaulle"
+					desc = "POLITICS_CHARLES_DE_GAULLE_DESC"
+					picture = "Portrait_France_Charles_De_Gaulle.dds"
+					expire = "1965.1.1"
+					ideology = conservatism
+					traits = {
+					
+					}
+				}
+				load_oob = "FRR_rise"
 				add_ai_strategy = {
 					type = antagonize
 					id = "GER"
@@ -5256,16 +5296,62 @@ country_event = {
 					id = "GER"
 					value = 200
 				}
-				change_tag_from = FRA
+			}
+			transfer_units_fraction = {
+				target = FRR
+				size = 0.1
+				stockpile_ratio = 0.1
+				army_ratio = 0.05
+				navy_ratio = 0.05
+			}
+			every_unit_leader = {
+				limit = {
+					has_id = 101 #de Gaulle
+				}
+				set_nationality = FRR
+			}
+			every_army_leader = {
+				limit = {
+					NOT = { has_trait = old_guard }
+				}
+				set_nationality = FRR
 			}
 			if = {
-				limit = { NOT = { tag = FRA } }
-				FRA = {
-					every_army_leader = {
-						set_nationality = FRR
+				limit = {
+					ENG = {
+						has_government = democratic
+						is_faction_leader = yes
+						has_war_with = ROOT
 					}
 				}
+				ENG = { add_to_faction = FRR }
 			}
+            FRR = {
+				every_unit_leader = {
+			    	limit = {
+			      		OR = {
+			    			has_trait = old_guard
+		        			has_trait = old_guard_navy
+			           	}
+					}
+				    set_nationality = ROOT
+				}
+			    every_navy_leader = {
+		           	limit = {
+			       		has_id = 102 #Darlan
+			       	}
+			        set_nationality = ROOT
+		        }
+				add_equipment_to_stockpile = {
+					type = infantry_equipment
+					amount = 5000
+				}
+				add_ideas = {
+					FRR_armed_uprising_june
+					FRR_illegitimate_government
+				}
+				change_tag_from = ROOT
+            }
 		}
 	}
 }
