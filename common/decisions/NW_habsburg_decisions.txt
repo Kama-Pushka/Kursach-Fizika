@@ -577,6 +577,7 @@ HBBRG_return_decisions_category = {
 					is_subject_of = ROOT
 				}
 			}
+			NOT = { has_government = democratic }
 		}
 		
 		fire_only_once = yes
@@ -761,6 +762,34 @@ HBBRG_form_USE_annex_category = {
 				#has_government = ROOT
 				capital_scope = { is_on_continent = europe }
 			}
+			set_temp_variable = { use_annex_puppet_t1 = FROM.num_battalions }
+			divide_temp_variable = { use_annex_puppet_t1 = 10 }
+			set_temp_variable = { use_annex_puppet_cost = use_annex_puppet_t1 }
+			add_to_temp_variable = { use_annex_puppet_cost = FROM.num_owned_states }
+			set_temp_variable = { use_annex_puppet_t2 = FROM.num_of_factories }
+			add_to_temp_variable = { use_annex_puppet_t2 = FROM.num_of_civilian_factories }
+			add_to_temp_variable = { use_annex_puppet_cost = use_annex_puppet_t2 }
+			if = {
+				limit = { FROM = { is_major = yes } }
+				multiply_temp_variable = { use_annex_puppet_cost = 1.7 }
+			}
+			if = {
+				limit = { check_variable = { use_annex_puppet_cost < 50 } }
+				set_temp_variable = { use_annex_puppet_cost = 50 }
+			}
+			else = {
+				if = {
+					limit = { FROM = { is_major = yes } }
+					custom_trigger_tooltip = {
+						tooltip = USE_annex_puppet_tt2
+					}
+				}
+				else = {
+					custom_trigger_tooltip = {
+						tooltip = USE_annex_puppet_tt1
+					}
+				}
+			}
 		}
 		
 		visible = {
@@ -781,11 +810,10 @@ HBBRG_form_USE_annex_category = {
 			}
 		}
 		
-		cost = 150
+		cost = var:use_annex_puppet_cost
 
 		complete_effect = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision USE_annex_puppet (From [From.GetTag])"
-			
 			annex_country = {
 				target = FROM
 				transfer_troops = yes
