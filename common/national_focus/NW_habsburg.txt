@@ -2072,7 +2072,7 @@ focus_tree = {
 					desc = "POLITICS_OTTO_VON_HABSBURG_DESC"
 					picture = GFX_Portrait_hungary_otto_von_hapsburg
 					expire = "1965.1.1"
-					ideology = monarchy_ideology
+					ideology = absolute_monarchy
 					traits = {
 					}
 				}
@@ -2206,12 +2206,35 @@ focus_tree = {
 			factor = 10
 		}
 		available = {
+			has_government = monarchy
+			custom_trigger_tooltip = {
+				tooltip = form_country_austria_required_states_tt
+				NOT = {
+					any_state = {
+						is_core_of = AUS
+						is_on_continent = europe
+						NOT = { is_controlled_by = ROOT }
+					}
+				}
+			}
+			custom_trigger_tooltip = {
+				tooltip = form_country_hungary_required_states_tt
+				NOT = {
+					any_state = {
+						is_core_of = HUN
+						is_on_continent = europe
+						NOT = { is_controlled_by = ROOT }
+					}
+				}
+			}
 		}
 		bypass = {
 		}
 		
 		completion_reward = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus HBBRG_confirm_dualism"
 			add_stability = 0.05
+			set_country_leader_ideology = dual_monarchy
+			custom_effect_tooltip = set_country_leader_ideology_dual_monarchy
 			if = {
 				limit = { has_idea = HBBRG_monarchy_empire1 }
 				remove_ideas = HBBRG_monarchy_empire1
@@ -2222,6 +2245,22 @@ focus_tree = {
 				swap_ideas = {
 					remove_idea = HBBRG_patchwork_empire_1
 					add_idea = HBBRG_patchwork_empire_dualism
+				}
+			}
+			custom_effect_tooltip = form_country_hungary_coring_states_tt
+			custom_effect_tooltip = form_country_austria_coring_states_tt
+			hidden_effect = {
+				every_state = {
+					limit = {
+						is_controlled_by = ROOT
+						is_on_continent = europe
+						NOT = { is_core_of = ROOT }
+						OR = {
+							is_core_of = AUS
+							is_core_of = HUN
+						}
+					}
+					add_core_of = ROOT
 				}
 			}
 		}
@@ -2273,6 +2312,32 @@ focus_tree = {
 			factor = 10
 		}
 		available = {
+			custom_trigger_tooltip = {
+				tooltip = form_country_yugoslavia_required_states_tt
+				controls_state = 45
+				controls_state = 102
+				controls_state = 103
+				controls_state = 104
+				controls_state = 105
+				controls_state = 106
+				controls_state = 107
+				controls_state = 108
+				controls_state = 109
+				
+				controls_state = 778
+				controls_state = 779
+				controls_state = 811
+				controls_state = 812
+				controls_state = 813
+				controls_state = 814
+				controls_state = 816
+				controls_state = 817
+				controls_state = 825
+				controls_state = 826
+				controls_state = 827
+				controls_state = 828
+				controls_state = 858
+			}
 		}
 		bypass = {
 		}
@@ -2420,6 +2485,85 @@ focus_tree = {
 		completion_reward = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus HBBRG_exarticulate_slavia"
 			set_cosmetic_tag = HBBRG_HUN_AUS_SLAVIA_tag
 			add_war_support = 0.1
+			custom_effect_tooltip = form_country_yugoslavia_coring_states_tt
+			hidden_effect = {
+				every_state = {
+					limit = {
+						NOT = { is_core_of = ROOT }
+						OR = {
+							state = 45
+							state = 102
+							state = 103
+							state = 104
+							state = 105
+							state = 106
+							state = 107
+							state = 108
+							state = 109
+							
+							state = 778
+							state = 779
+							state = 811
+							state = 812
+							state = 813
+							state = 814
+							state = 816
+							state = 817
+							state = 825
+							state = 826
+							state = 827
+							state = 828
+							state = 858
+						}
+					}
+					add_core_of = ROOT
+				}
+			}
+		}
+	}
+	
+	focus = {
+		id = HBBRG_position_of_active_intervention
+		icon = GFX_focus_generic_monarchy_1
+		prerequisite = { focus = HBBRG_exarticulate_slavia }
+		x = 0
+		y = 1
+		relative_position_id = HBBRG_exarticulate_slavia
+
+		cost = 10
+		
+		cancel_if_invalid = yes
+		continue_if_invalid = no
+		available_if_capitulated = yes
+
+		ai_will_do = {
+			factor = 15
+		}
+		available = {
+			has_completed_focus = HBBRG_vanguard_monarchy
+			has_government = monarchy
+			is_faction_leader = yes
+			any_other_country = {
+				is_major = yes
+				is_in_faction_with = ROOT
+			}
+		}
+		bypass = {
+		}
+		
+		completion_reward = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus HBBRG_position_of_active_intervention"
+			unlock_decision_category_tooltip = generic_policy_interventions_category
+			unlock_decision_category_tooltip = generic_interventions_start_civil_war_category
+			custom_effect_tooltip = HBBRG_position_of_active_intervention_tt
+			hidden_effect = {
+				every_other_country = {
+					limit = {
+						has_government = monarchy
+						capital_scope = { is_on_continent = europe }
+					}
+					add_to_array = { global.HBBRG_monarchy_of_europe_array = THIS }
+				}
+			}
 		}
 	}
 	
@@ -4683,7 +4827,7 @@ focus_tree = {
 		}
 		available = {
 			SOV = { exists = yes }
-			SOV = { NOT = { has_government = democratic } }
+			SOV = { has_government = communism }
 		}
 		bypass = {
 			OR = {
@@ -4719,21 +4863,129 @@ focus_tree = {
 			factor = 8
 		}
 		available = {
-			KMX = { exists = yes }
-			KMX = { NOT = { has_government = democratic } }
+			if = {
+				limit = {
+					any_other_country = {
+						has_government = trozkism
+						OR = {
+							has_country_flag = CURRENT_LEADER_FOUR_INTERNATIONAL_FLAG
+							has_country_leader = { name = "Leon Trotsky" ruling_only = yes }
+						}
+					}
+				}
+				any_other_country = {
+					has_government = trozkism
+					OR = {
+						has_country_flag = CURRENT_LEADER_FOUR_INTERNATIONAL_FLAG
+						has_country_leader = { name = "Leon Trotsky" ruling_only = yes }
+					}
+					NOT = { has_war_with = ROOT }
+				}
+			}
+			any_other_country = {
+				exists = yes
+				has_government = trozkism
+				NOT = { has_war_with = ROOT }
+			}
 		}
 		bypass = {
-			OR = {
-				KMX = { exists = no }
-				KMX = { has_government = democratic }
-				KMX = { is_subject_of = ROOT }
-			}
 		}
 		
 		completion_reward = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus HBBRG_orange_menace"
-			create_wargoal = {
-				type = topple_government
-				target = KMX
+			if = {
+				limit = {
+					any_other_country = {
+						has_government = trozkism
+						OR = {
+							has_country_flag = CURRENT_LEADER_FOUR_INTERNATIONAL_FLAG
+							has_country_leader = { name = "Leon Trotsky" ruling_only = yes }
+						}
+					}
+				}
+				random_other_country = {
+					limit = {
+						has_government = trozkism
+						OR = {
+							has_country_flag = CURRENT_LEADER_FOUR_INTERNATIONAL_FLAG
+							has_country_leader = { name = "Leon Trotsky" ruling_only = yes }
+						}
+					}
+					ROOT = {
+						create_wargoal = {
+							type = topple_government
+							target = PREV
+						}
+						add_ai_strategy = {
+							type = antagonize
+							id = PREV
+							value = 200
+						}
+					}
+				}
+			}
+			else_if = {
+				limit = {
+					country_exists = MEX
+					MEX = { has_government = trozkism }
+				}
+				create_wargoal = {
+					type = topple_government
+					target = MEX
+				}
+				add_ai_strategy = {
+					type = antagonize
+					id = "MEX"
+					value = 200
+				}
+			}
+			else_if = {
+				limit = {
+					country_exists = GER
+					GER = { has_government = trozkism }
+				}
+				create_wargoal = {
+					type = topple_government
+					target = GER
+				}
+				add_ai_strategy = {
+					type = antagonize
+					id = "GER"
+					value = 200
+				}
+			}
+			else_if = {
+				limit = {
+					country_exists = FRC
+					FRC = { has_government = trozkism }
+				}
+				create_wargoal = {
+					type = topple_government
+					target = FRC
+				}
+				add_ai_strategy = {
+					type = antagonize
+					id = "FRC"
+					value = 200
+				}
+			}
+			else = {
+				every_other_country = {
+					limit = {
+						has_government = trozkism
+						NOT = { has_war_with = ROOT }
+					}
+					ROOT = {
+						create_wargoal = {
+							type = topple_government
+							target = PREV
+						}
+						add_ai_strategy = {
+							type = antagonize
+							id = PREV
+							value = 200
+						}
+					}
+				}
 			}
 		}
 	}

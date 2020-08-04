@@ -26,7 +26,7 @@ country_event = {
 			desc = "POLITICS_OTTO_VON_HABSBURG_DESC"
 			picture = GFX_Portrait_hungary_otto_von_hapsburg
 			expire = "1965.1.1"
-			ideology = monarchy_ideology
+			ideology = absolute_monarchy
 			traits = {
 			}
 		}
@@ -3084,7 +3084,7 @@ country_event = {
 				desc = "POLITICS_OTTO_VON_HABSBURG_DESC"
 				picture = GFX_Portrait_hungary_otto_von_hapsburg
 				expire = "1965.1.1"
-				ideology = monarchy_ideology
+				ideology = dual_monarchy
 				traits = {
 				}
 			}
@@ -7533,3 +7533,137 @@ country_event = {
 		}
 	}
 }
+
+# Чек / фикс столицы европейского монарха
+country_event = {
+	id = NWmonarchy.103
+	hidden = yes
+	mean_time_to_happen = {
+		days = 30
+	}
+	
+	trigger = {
+		NOT = { has_focus_tree = hbbrg_focus }
+		has_government = monarchy
+		NOT = { has_country_flag = { flag = HBBRG_solution_on_root value > 0 } }
+		OR = {
+			AND = {
+				capital_scope = { is_on_continent = europe }
+				NOT = { is_in_array = { global.HBBRG_monarchy_of_europe_array = ROOT } }
+			}
+			AND = {
+				NOT = { capital_scope = { is_on_continent = europe } }
+				is_in_array = { global.HBBRG_monarchy_of_europe_array = ROOT }
+			}
+		}
+	}
+	
+	immediate = {
+		log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWmonarchy.103"
+		if = {
+			limit = {
+				capital_scope = { is_on_continent = europe }
+				NOT = { is_in_array = { global.HBBRG_monarchy_of_europe_array = ROOT } }
+			}
+			add_to_array = { global.HBBRG_monarchy_of_europe_array = ROOT }
+		}
+		else_if = {
+			limit = {
+				NOT = {capital_scope = { is_on_continent = europe } }
+				is_in_array = { global.HBBRG_monarchy_of_europe_array = ROOT }
+			}
+			remove_from_array = { global.HBBRG_monarchy_of_europe_array = ROOT }
+		}
+	}
+}
+
+#Вмешательство в дела монархиста?
+country_event = {
+	id = NWmonarchy.104
+	title = NWmonarchy.104.t
+	desc = NWmonarchy.104.desc
+	picture = GFX_report_event_generic_rally_3
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWmonarchy.104" }
+	immediate = {
+		hidden_effect = {
+			random_other_country = {
+				limit = {
+					is_in_array = { global.HBBRG_monarchy_of_europe_array = THIS }
+					OR = {
+						NOT = { has_government = monarchy }
+						has_civil_war = yes
+					}
+				}
+				save_event_target_as = target_for_HBBRG_scope
+				remove_from_array = { global.HBBRG_monarchy_of_europe_array = THIS }
+				set_country_flag = { flag = HBBRG_solution_on_root days = 120 value = 1 }
+			}
+		}
+	}
+	
+	trigger = {
+		has_completed_focus = HBBRG_position_of_active_intervention
+		has_government = monarchy
+		any_other_country = {
+			is_in_array = { global.HBBRG_monarchy_of_europe_array = THIS }
+			OR = {
+				NOT = { has_government = monarchy }
+				has_civil_war = yes
+			}
+		}
+	}
+	
+	mean_time_to_happen = { days = 3 }
+
+	option = {
+		log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): choose option NWmonarchy.104.a"
+		name = NWmonarchy.104.a
+		ai_chance = {
+			factor = 90
+			modifier = {
+				factor = 0
+				num_divisions < 10
+			}
+		}
+		if = {
+			limit = {
+				event_target:target_for_HBBRG_scope = { has_civil_war = yes }
+			}
+			random_other_country = {
+				limit = {
+					original_tag = event_target:target_for_HBBRG_scope
+					has_government = monarchy
+				}
+				every_other_country = {
+					limit = {
+						original_tag = event_target:target_for_HBBRG_scope
+						has_war_with = PREV
+					}
+					ROOT = {
+						add_to_war = {
+							targeted_alliance = PREV.PREV
+							enemy = PREV
+						}
+					}
+				}
+			}
+		}
+		else = {
+			create_wargoal = {
+				type = topple_government
+				target = event_target:target_for_HBBRG_scope
+				expire = 90
+			}
+		}
+	}
+	
+	option = {
+		log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): choose option NWmonarchy.104.b"
+		name = NWmonarchy.104.b
+		ai_chance = {
+			factor = 10
+		}
+	}
+}
+
