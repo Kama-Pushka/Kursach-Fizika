@@ -1,6 +1,7 @@
 version="0.3"
 replace_path="common/national_focus"
 replace_path="map/"
+replace_path="portraits/"
 tags={
 	"Alternative History"
 	"Map"
