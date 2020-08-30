@@ -47,7 +47,7 @@ focus_tree = {
 		id = political_effort
 		icon = GFX_z_goal_diplomacy_1
 		mutually_exclusive = { focus = generic_AUS_discuss_establishment_monarchy }
-		x = 12
+		x = 19
 		y = 0
 		cost = 10
 		
@@ -392,7 +392,7 @@ focus_tree = {
 				has_global_flag = generic_all_flag
 			}
 		}
-		x = -9
+		x = -17
 		y = 1
 		relative_position_id = collectivist_ethos
 
@@ -479,11 +479,36 @@ focus_tree = {
 	}
 	
 	focus = {
-		id = militarism
-		icon = GFX_goal_generic_political_pressure
+		id = principles_of_corporatism
+		icon = GFX_z_goal_principles_of_corporatism
 		prerequisite = { focus = nationalism_focus }
+		mutually_exclusive = { focus = national_solidarity }
 		
 		x = -1
+		y = 1
+		relative_position_id = nationalism_focus
+
+		cost = 10
+
+		available_if_capitulated = yes
+
+		search_filters = { FOCUS_FILTER_POLITICAL FOCUS_FILTER_INDUSTRY }
+		completion_reward = {
+			if = {
+				limit = { has_idea = neutrality_idea }
+				remove_ideas = neutrality_idea
+			}
+			add_ideas = principles_of_corporatism
+		}
+	}
+	
+	focus = {
+		id = national_solidarity
+		icon = GFX_z_focus_propaganda_fascism
+		prerequisite = { focus = nationalism_focus }
+		mutually_exclusive = { focus = principles_of_corporatism }
+		
+		x = 1
 		y = 1
 		relative_position_id = nationalism_focus
 
@@ -496,21 +521,43 @@ focus_tree = {
 			if = {
 				limit = { has_idea = neutrality_idea }
 				remove_ideas = neutrality_idea
-			}			
-			add_ideas = militarism_focus
-			army_experience = 20
-			set_rule = { can_send_volunteers = yes }
+			}
+			add_ideas = national_solidarity
+		}
+	}
+	
+	focus = {
+		id = paramilitarism
+		icon = GFX_goal_generic_military_sphere
+		prerequisite = {
+			focus = principles_of_corporatism
+			focus = national_solidarity
+		}
+		
+		x = 0
+		y = 1
+		relative_position_id = principles_of_corporatism
+
+		cost = 10
+
+		available_if_capitulated = yes
+
+		completion_reward = {
+			add_ideas = paramilitarism_focus
 		}
 	}
 	
 	focus = {
 		id = military_youth
 		icon = GFX_goal_generic_more_territorial_claims
-		prerequisite = { focus = militarism }
+		prerequisite = {
+			focus = principles_of_corporatism
+			focus = national_solidarity
+		}
 		
 		x = 0
 		y = 1
-		relative_position_id = militarism
+		relative_position_id = national_solidarity
 
 		cost = 10
 
@@ -527,29 +574,15 @@ focus_tree = {
 	}
 	
 	focus = {
-		id = paramilitarism
-		icon = GFX_goal_generic_military_sphere
-		prerequisite = { focus = military_youth }
+		id = secularization_focus
+		icon = GFX_z_goal_secularization
+		prerequisite = {
+			focus = principles_of_corporatism
+			focus = national_solidarity
+		}
+		mutually_exclusive = { focus = union_with_church }
 		
 		x = -1
-		y = 1
-		relative_position_id = military_youth
-
-		cost = 10
-
-		available_if_capitulated = yes
-
-		completion_reward = {
-			add_ideas = paramilitarism_focus
-		}
-	}
-	
-	focus = {
-		id = generic_ethics_for_war
-		icon = GFX_goal_generic_forceful_treaty
-		prerequisite = { focus = military_youth }
-		
-		x = 1
 		y = 1
 		relative_position_id = military_youth
 
@@ -559,7 +592,123 @@ focus_tree = {
 		
 		search_filters = { FOCUS_FILTER_INDUSTRY }
 		completion_reward = {
-			add_ideas = generic_ethics_for_war
+			add_political_power = 150
+			if = {
+				limit = { check_variable = { num_owned_states < 5 } }
+				random_owned_controlled_state = {
+					limit = {
+						free_building_slots = {
+							building = industrial_complex
+							size > 0
+							include_locked = yes
+						}
+					}
+					add_extra_state_shared_building_slots = 1
+				}
+				random_owned_controlled_state = {
+					limit = {
+						free_building_slots = {
+							building = industrial_complex
+							size > 0
+							include_locked = yes
+						}
+					}
+					add_extra_state_shared_building_slots = 1
+				}
+			}
+			else = {
+				random_owned_controlled_state = {
+					limit = {
+						free_building_slots = {
+							building = industrial_complex
+							size > 0
+							include_locked = yes
+						}
+					}
+					add_extra_state_shared_building_slots = 1
+				}
+				random_owned_controlled_state = {
+					limit = {
+						free_building_slots = {
+							building = industrial_complex
+							size > 0
+							include_locked = yes
+						}
+					}
+					add_extra_state_shared_building_slots = 1
+				}
+				random_owned_controlled_state = {
+					limit = {
+						free_building_slots = {
+							building = industrial_complex
+							size > 0
+							include_locked = yes
+						}
+					}
+					add_extra_state_shared_building_slots = 1
+				}
+				random_owned_controlled_state = {
+					limit = {
+						free_building_slots = {
+							building = industrial_complex
+							size > 0
+							include_locked = yes
+						}
+					}
+					add_extra_state_shared_building_slots = 1
+				}
+			}
+		}
+	}
+	
+	focus = {
+		id = union_with_church
+		icon = GFX_z_goal_monarchism_10
+		prerequisite = {
+			focus = principles_of_corporatism
+			focus = national_solidarity
+		}
+		mutually_exclusive = { focus = secularization_focus }
+		
+		x = 1
+		y = 1
+		relative_position_id = military_youth
+
+		cost = 10
+
+		available_if_capitulated = yes
+		
+		search_filters = { FOCUS_FILTER_MANPOWER }
+		completion_reward = {
+			add_ideas = union_with_church
+		}
+	}
+	
+	focus = {
+		id = militarism
+		icon = GFX_goal_generic_political_pressure
+		prerequisite = {
+			focus = secularization_focus
+			focus = union_with_church
+		}
+		
+		x = 1
+		y = 1
+		relative_position_id = secularization_focus
+
+		cost = 10
+
+		available_if_capitulated = yes
+
+		search_filters = { FOCUS_FILTER_MANPOWER }
+		completion_reward = {
+			if = {
+				limit = { has_idea = neutrality_idea }
+				remove_ideas = neutrality_idea
+			}			
+			add_ideas = militarism_focus
+			army_experience = 20
+			set_rule = { can_send_volunteers = yes }
 		}
 	}
 	
@@ -582,7 +731,7 @@ focus_tree = {
 				has_global_flag = generic_all_flag
 			}
 		}
-		x = -7
+		x = -11
 		y = 1
 		relative_position_id = collectivist_ethos
 		cost = 10
@@ -657,13 +806,84 @@ focus_tree = {
 			}
 		}
 	}
-
-
+	
 	focus = {
-		id = political_correctness
-		icon = GFX_goal_generic_dangerous_deal
+		id = socialist_stratocracy_focus
+		icon = GFX_z_goal_socialist_stratocracy
 		prerequisite = { focus = internationalism_focus }
+		mutually_exclusive = { focus = leadership_role_of_party }
+		x = -3
+		y = 1
+		relative_position_id = internationalism_focus
+
+		cost = 10
+		
+		available = {
+			NOT = { has_completed_focus = peoples_democracy }
+		}
+		available_if_capitulated = yes
+		
+		completion_reward = {
+			if = {
+				limit = { has_idea = neutrality_idea }
+				remove_ideas = neutrality_idea
+			}
+			add_war_support = 0.05
+			add_ideas = socialist_stratocracy_focus
+			if = {
+				limit = { has_government = communism }
+				set_country_leader_ideology = socialist_stratocracy
+				custom_effect_tooltip = set_country_leader_ideology_socialist_stratocracy
+			}
+			else = {
+				custom_effect_tooltip = set_country_leader_ideology_future_socialist_stratocracy
+				set_country_flag = socialist_stratocracy
+			}
+		}
+	}
+	
+	focus = {
+		id = socmilitarism_focus
+		icon = GFX_z_goal_socmilirarism
+		prerequisite = { focus = socialist_stratocracy_focus }
 		x = 0
+		y = 1
+		relative_position_id = socialist_stratocracy_focus
+		cost = 10
+
+		available_if_capitulated = yes
+		
+		search_filters = { FOCUS_FILTER_MANPOWER }
+		completion_reward = {
+			add_ideas = idea_socmilitarism
+		}
+	}
+	
+	focus = {
+		id = generic_ethics_for_war
+		icon = GFX_goal_generic_forceful_treaty
+		prerequisite = { focus = socmilitarism_focus }
+		
+		x = 1
+		y = 1
+		relative_position_id = socmilitarism_focus
+
+		cost = 10
+
+		available_if_capitulated = yes
+		
+		search_filters = { FOCUS_FILTER_INDUSTRY }
+		completion_reward = {
+			add_ideas = generic_ethics_for_war
+		}
+	}
+	
+	focus = {
+		id = leadership_role_of_party
+		icon = GFX_focus_generic_soviet_politics
+		prerequisite = { focus = internationalism_focus }
+		mutually_exclusive = { focus = socialist_stratocracy_focus }
+		x = -1
 		y = 1
 		relative_position_id = internationalism_focus
 
@@ -671,42 +891,53 @@ focus_tree = {
 
 		available_if_capitulated = yes
 		
-		search_filters = { FOCUS_FILTER_POLITICAL }
 		completion_reward = {
 			if = {
 				limit = { has_idea = neutrality_idea }
 				remove_ideas = neutrality_idea
-			}		
-			add_political_power = 200
-			add_ideas = idea_political_correctness
+			}
+			add_ideas = leadership_role_of_party
 		}
 	}
 
-	
 
 	focus = {
-		id = indoctrination_focus
-		icon = GFX_goal_generic_propaganda
-		prerequisite = { focus = political_correctness }
-		x = -1
+		id = political_correctness
+		icon = GFX_goal_generic_dangerous_deal
+		prerequisite = { focus = leadership_role_of_party }
+		x = 0
 		y = 1
-		relative_position_id = political_correctness
+		relative_position_id = leadership_role_of_party
 
 		cost = 10
 
 		available_if_capitulated = yes
-
-		search_filters = { FOCUS_FILTER_POLITICAL FOCUS_FILTER_STABILITY }
+		
+		search_filters = { FOCUS_FILTER_POLITICAL }
 		completion_reward = {
-			add_ideas = indoctrination_focus
-			add_political_power = 150
+			add_ideas = idea_political_correctness
 		}
 	}
 
+	#focus = {
+	#	id = indoctrination_focus
+	#	icon = GFX_goal_generic_propaganda
+	#	prerequisite = { focus = political_correctness }
+	#	x = -1
+	#	y = 1
+	#	relative_position_id = political_correctness
+	#	cost = 10
+	#	available_if_capitulated = yes
+	#	search_filters = { FOCUS_FILTER_POLITICAL FOCUS_FILTER_STABILITY }
+	#	completion_reward = {
+	#		add_ideas = indoctrination_focus
+	#		add_political_power = 150
+	#	}
+	#}
 
 	focus = {
 		id = political_commissars
-		icon = GFX_goal_generic_forceful_treaty
+		icon = GFX_z_goal_political_commissars
 		prerequisite = { focus = political_correctness }
 		available = {
 		}
@@ -726,30 +957,34 @@ focus_tree = {
 				ideology = communism
 				popularity = 0.2
 			}
-			add_political_power = 200
+			add_political_power = 75
 		}
 	}
 	
 	focus = {
-		id = generic_civil_factory
-		icon = GFX_goal_generic_construction
-		prerequisite = { focus = indoctrination_focus }
-		prerequisite = { focus = political_commissars }
+		id = socialist_camp
+		icon = GFX_z_goal_socialist_camp
+		prerequisite = {
+			focus = generic_ethics_for_war
+			focus = political_commissars
+		}
 		available = {
 		}
 		x = 1
 		y = 1
-		relative_position_id = indoctrination_focus
+		relative_position_id = political_commissars
+
 		cost = 10
 
 		available_if_capitulated = yes
 		
-		search_filters = { FOCUS_FILTER_INDUSTRY }
+		search_filters = { FOCUS_FILTER_POLITICAL }
+
 		completion_reward = {
-			add_ideas = generic_civil_factory
-		}	
+			add_ideas = socialist_camp
+		}
 	}
-	
+
 	
 	## TROZKISM BLOCK ##
 	
@@ -761,7 +996,7 @@ focus_tree = {
 			focus = nationalism_focus
 			focus = internationalism_focus
 		}
-		x = -5
+		x = -7
 		y = 1
 		relative_position_id = collectivist_ethos
 		cost = 10
@@ -860,69 +1095,170 @@ focus_tree = {
 		}
 	}
 	
+	#focus = {
+	#	id = rabgosudarstvo_focus
+	#	icon = GFX_z_goal_rabgosudarstvo
+	#	prerequisite = { focus = revolution_focus }
+	#	x = 1
+	#	y = 1
+	#	relative_position_id = revolution_focus
+	#	cost = 10
+	#	available_if_capitulated = yes
+	#	search_filters = { FOCUS_FILTER_POLITICAL FOCUS_FILTER_INDUSTRY }
+	#	completion_reward = {
+	#		if = {
+	#			limit = { has_idea = neutrality_idea }
+	#			remove_ideas = neutrality_idea
+	#		}		
+	#		add_political_power = 200
+	#		add_ideas = idea_rabgosudarstvo
+	#	}
+	#}
+	
 	focus = {
-		id = rabgosudarstvo_focus
-		icon = GFX_z_goal_rabgosudarstvo
+		id = soviet_power
+		icon = GFX_z_focus_revolutionary_council
 		prerequisite = { focus = revolution_focus }
+		mutually_exclusive = { focus = party_democracy }
 		x = 1
 		y = 1
 		relative_position_id = revolution_focus
 		cost = 10
-
+		
 		available_if_capitulated = yes
-
-		search_filters = { FOCUS_FILTER_POLITICAL FOCUS_FILTER_INDUSTRY }
+		
+		search_filters = { FOCUS_FILTER_POLITICAL }
 		completion_reward = {
 			if = {
 				limit = { has_idea = neutrality_idea }
 				remove_ideas = neutrality_idea
 			}		
-			add_political_power = 200
-			add_ideas = idea_rabgosudarstvo
+			add_ideas = soviet_power
+			if = {
+				limit = { has_government = trozkism }
+				set_country_leader_ideology = communism_workers_soviets
+				custom_effect_tooltip = set_country_leader_ideology_communism_workers_soviets
+			}
+			else = {
+				custom_effect_tooltip = set_country_leader_ideology_future_communism_workers_soviets
+				set_country_flag = communism_workers_soviets
+			}
 		}
 	}
 	
 	focus = {
-		id = socmilitarism_focus
-		icon = GFX_z_goal_socmilirarism
-		prerequisite = { focus = rabgosudarstvo_focus }
+		id = socialist_competition
+		icon = GFX_z_focus_the_workers
+		prerequisite = { focus = soviet_power }
 		x = 0
 		y = 1
-		relative_position_id = rabgosudarstvo_focus
+		relative_position_id = soviet_power
 		cost = 10
-
-		available_if_capitulated = yes
 		
-		search_filters = { FOCUS_FILTER_MANPOWER }
-		completion_reward = {
-			add_ideas = idea_socmilitarism
-		}
-	}
-	
-	focus = {
-		id = generic_resourse
-		icon = GFX_z_goal_excavations
-		prerequisite = { focus = socmilitarism_focus }
-		x = -1
-		y = 1
-		relative_position_id = socmilitarism_focus
-		cost = 10
-
 		available_if_capitulated = yes
 		
 		search_filters = { FOCUS_FILTER_INDUSTRY }
 		completion_reward = {
-			add_ideas = generic_resourse
+			add_ideas = socialist_competition
+		}
+	}
+	
+	focus = {
+		id = militarization_of_labor
+		icon = GFX_z_goal_ammo_industry
+		prerequisite = { focus = socialist_competition }
+		x = -1
+		y = 1
+		relative_position_id = socialist_competition
+		cost = 10
+		
+		available_if_capitulated = yes
+		
+		search_filters = { FOCUS_FILTER_INDUSTRY }
+		completion_reward = {
+			add_ideas = militarization_of_labor
+		}
+	}
+	
+	focus = {
+		id = party_democracy
+		icon = GFX_z_goal_troz_federation
+		prerequisite = { focus = revolution_focus }
+		mutually_exclusive = { focus = soviet_power }
+		x = 3
+		y = 1
+		relative_position_id = revolution_focus
+		cost = 10
+		
+		available = {
+			NOT = { has_completed_focus = dictatorship_of_proletariat }
+		}
+		
+		available_if_capitulated = yes
+		
+		search_filters = { FOCUS_FILTER_STABILITY }
+		completion_reward = {
+			if = {
+				limit = { has_idea = neutrality_idea }
+				remove_ideas = neutrality_idea
+			}		
+			add_ideas = party_democracy
+			if = {
+				limit = { has_government = trozkism }
+				set_country_leader_ideology = trozkism1
+				custom_effect_tooltip = set_country_leader_ideology_trozkism1
+			}
+			else = {
+				custom_effect_tooltip = set_country_leader_ideology_future_trozkism1
+				set_country_flag = trozkism1
+			}
+		}
+	}
+	
+	focus = {
+		id = labor_army
+		icon = GFX_z_goal_red_army
+		prerequisite = { focus = party_democracy }
+		x = 0
+		y = 1
+		relative_position_id = party_democracy
+		cost = 10
+		
+		available_if_capitulated = yes
+		
+		search_filters = { FOCUS_FILTER_MANPOWER FOCUS_FILTER_INDUSTRY }
+		completion_reward = {
+			add_ideas = labor_army
+		}
+	}
+	
+	focus = {
+		id = combined_development
+		icon = GFX_z_goal_production
+		prerequisite = { focus = labor_army }
+		x = -1
+		y = 1
+		relative_position_id = labor_army
+		cost = 10
+		
+		available_if_capitulated = yes
+		
+		search_filters = { FOCUS_FILTER_INDUSTRY }
+		completion_reward = {
+			add_ideas = combined_development
 		}
 	}
 	
 	focus = {
 		id = permrevolt_focus
 		icon = GFX_z_goal_permrevolt
-		prerequisite = { focus = socmilitarism_focus }
-		x = 1
+		prerequisite = {
+			focus = militarization_of_labor
+			focus = combined_development
+		}
+		x = -1
 		y = 1
-		relative_position_id = socmilitarism_focus
+		relative_position_id = militarization_of_labor
 		cost = 10
 
 		available_if_capitulated = yes
@@ -937,13 +1273,156 @@ focus_tree = {
 		}
 	}
 	
+	
+	## COMM/TRO BLOCK ##
+	
+	focus = {
+		id = dictatorship_of_proletariat
+		icon = GFX_z_goal_generic_dictatorship_of_proletariat
+		prerequisite = {
+			focus = internationalism_focus
+			focus = revolution_focus
+		}
+		mutually_exclusive = { focus = peoples_democracy }
+		available = {
+			NOT = { has_completed_focus = party_democracy }
+		}
+		x = 1
+		y = 1
+		relative_position_id = internationalism_focus
+		cost = 10
+
+		available_if_capitulated = yes
+		
+		search_filters = { FOCUS_FILTER_POLITICAL FOCUS_FILTER_STABILITY }
+		completion_reward = {
+			add_political_power = 200
+			add_stability = 0.05
+		}	
+	}
+	
+	focus = {
+		id = peoples_democracy
+		icon = GFX_z_goal_communist_discourse
+		prerequisite = {
+			focus = internationalism_focus
+			focus = revolution_focus
+		}
+		mutually_exclusive = { focus = dictatorship_of_proletariat }
+		available = {
+			NOT = { has_completed_focus = socialist_stratocracy_focus }
+		}
+		x = -1
+		y = 1
+		relative_position_id = revolution_focus
+		cost = 10
+
+		available_if_capitulated = yes
+		
+		search_filters = { FOCUS_FILTER_POLITICAL FOCUS_FILTER_STABILITY }
+		completion_reward = {
+			add_political_power = 100
+			if = {
+				limit = { has_completed_focus = internationalism_focus }
+				add_popularity = { ideology = communism popularity = 0.2 }
+			}
+			else_if = {
+				limit = { has_completed_focus = revolution_focus }
+				add_popularity = { ideology = trozkism popularity = 0.2 }
+			}
+			else = {
+				effect_tooltip = { add_popularity = { ideology = communism popularity = 0.2 } }
+			}
+		}	
+	}
+	
+	focus = {
+		id = collectivization_focus
+		icon = GFX_z_goal_voluntary_creation_of_collective
+		prerequisite = {
+			focus = dictatorship_of_proletariat
+			focus = peoples_democracy
+		}
+		available = {
+		}
+		x = 0
+		y = 1
+		relative_position_id = dictatorship_of_proletariat
+		cost = 10
+
+		available_if_capitulated = yes
+		
+		search_filters = { FOCUS_FILTER_INDUSTRY }
+		completion_reward = {
+			add_ideas = collectivization_focus
+		}	
+	}
+	
+	focus = {
+		id = generic_resourse
+		icon = GFX_z_goal_excavations
+		prerequisite = {
+			focus = dictatorship_of_proletariat
+			focus = peoples_democracy
+		}
+		x = 0
+		y = 1
+		relative_position_id = peoples_democracy
+		cost = 10
+
+		available_if_capitulated = yes
+		
+		search_filters = { FOCUS_FILTER_INDUSTRY }
+		completion_reward = {
+			add_ideas = generic_resourse
+		}
+	}
+	
+	focus = {
+		id = generic_civil_factory
+		icon = GFX_goal_generic_construction
+		prerequisite = {
+			focus = dictatorship_of_proletariat
+			focus = peoples_democracy
+		}
+		available = {
+		}
+		x = 1
+		y = 1
+		relative_position_id = collectivization_focus
+		cost = 10
+
+		available_if_capitulated = yes
+		
+		search_filters = { FOCUS_FILTER_INDUSTRY }
+		completion_reward = {
+			#add_ideas = generic_civil_factory
+			random_owned_controlled_state = {
+				limit = {
+					free_building_slots = {
+						building = industrial_complex
+						size > 0
+						include_locked = yes
+					}
+				}
+				add_extra_state_shared_building_slots = 1
+				add_building_construction = {
+					type = industrial_complex
+					level = 1
+					instant_build = yes
+				}
+			}
+		}	
+	}
+	
+	
 	focus = {
 		id = generic_promotion_science
 		icon = GFX_z_goal_great_science
-		prerequisite = { focus = paramilitarism focus = generic_ethics_for_war focus = generic_civil_factory focus = generic_resourse focus = permrevolt_focus }
-		x = 1
+		prerequisite = { focus = militarism focus = socialist_camp focus = permrevolt_focus }
+		x = -5
 		y = 1
-		relative_position_id = paramilitarism
+		relative_position_id = socialist_camp
 		cost = 10
 
 		available_if_capitulated = yes
@@ -957,10 +1436,10 @@ focus_tree = {
 	focus = {
 		id = generic_union_country
 		icon = GFX_goal_generic_national_unity
-		prerequisite = { focus = paramilitarism focus = generic_ethics_for_war focus = generic_civil_factory focus = generic_resourse focus = permrevolt_focus }
-		x = 0
+		prerequisite = { focus = militarism focus = socialist_camp focus = permrevolt_focus }
+		x = -2
 		y = 1
-		relative_position_id = generic_civil_factory
+		relative_position_id = socialist_camp
 		cost = 10
 
 		available_if_capitulated = yes
@@ -995,10 +1474,10 @@ focus_tree = {
 	focus = {
 		id = generic_political_dominant
 		icon = GFX_z_goal_government
-		prerequisite = { focus = paramilitarism focus = generic_ethics_for_war focus = generic_civil_factory focus = generic_resourse focus = permrevolt_focus }
-		x = -1
+		prerequisite = { focus = militarism focus = socialist_camp focus = permrevolt_focus }
+		x = 1
 		y = 1
-		relative_position_id = permrevolt_focus
+		relative_position_id = socialist_camp
 		cost = 10
 
 		available_if_capitulated = yes
