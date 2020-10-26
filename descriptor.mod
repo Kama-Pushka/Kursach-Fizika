@@ -9,6 +9,6 @@ tags={
 	"Historical"
 	"Events"
 }
-supported_version="1.9.*"
+supported_version="1.10.*"
 picture="thumbnail.png"
 name="New Ways alpha 0.3.1 dev build"
