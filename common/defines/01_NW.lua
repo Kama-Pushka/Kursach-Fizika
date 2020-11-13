@@ -5,7 +5,7 @@ NDefines.NGame.COMBAT_LOG_MAX_MONTHS = 36
 
 -- Country
 NDefines.NCountry.EVENT_PROCESS_OFFSET = 30									-- Events are checked every X day per country or state (1 is ideal, but CPU heavy)
-NDefines.NCountry.SPECIAL_FORCES_CAP_BASE = 0.1								-- Max ammount of special forces battalions is total number of non-special forces battalions multiplied by this and modified by a country modifier
+NDefines.NCountry.SPECIAL_FORCES_CAP_BASE = 0.05							-- Max ammount of special forces battalions is total number of non-special forces battalions multiplied by this and modified by a country modifier
 NDefines.NCountry.SPECIAL_FORCES_CAP_MIN = 36								-- You can have a minimum of this many special forces battalions, regardless of the number of non-special forces battalions you have, this can also be modified by a country modifier
 NDefines.NCountry.MIN_FOCUSES_FOR_CONTINUOUS = 0							-- Focuses needed to unlock continuous focuses
 NDefines.NCountry.MAJOR_MIN_FACTORIES = 45									-- need at least these many factories to become a major
@@ -84,7 +84,7 @@ NDefines.NAI.INVASION_DISTANCE_RANDOMNESS = 400								-- This higher the value,
 
 NDefines.NAI.UPGRADE_XP_RUSH_UPDATE = 5										-- If XP is above this on the daily tick the AI will attempt to spend it
 
-NDefines.NMilitary.PLAN_EXECUTE_CAREFUL_MAX_FORT = 4						-- If execution mode is set to careful, units will not attack provinces with fort levels greater than or equal to this
+--NDefines.NMilitary.PLAN_EXECUTE_CAREFUL_MAX_FORT = 4						-- If execution mode is set to careful, units will not attack provinces with fort levels greater than or equal to this
 
 NDefines.NAI.DIPLOMACY_ACCEPT_VOLUNTEERS_BASE = 100							-- Base value of volunteer acceptance (help is welcome)
 NDefines.NDiplomacy.VOLUNTEERS_DIVISIONS_REQUIRED = 10						-- This many divisons are required for the country to be able to send volunteers.
@@ -94,7 +94,7 @@ NDefines.NAI.DIVISION_DESIGN_COMBAT_WIDTH_TARGET_WEIGHT = -1000				-- This score
 NDefines.NAI.DEPLOYED_UNIT_MANPOWER_RATIO_TO_BUFFER_WARTIME = 0.2 			-- deployment will try to buffer a ratio of deployed manpower (for reinforcements) during war time
 NDefines.NAI.MAX_AVAILABLE_MANPOWER_RATIO_TO_BUFFER_WARTIME = 0.2			-- deployment will try to buffer a ratio of manpower (for reinforcements) during war time
 
-NDefines.NAI.MANPOWER_FREE_USAGE_THRESHOLD = 100000 			            -- If AI has this much manpower he doesn't care about the percentage
+--NDefines.NAI.MANPOWER_FREE_USAGE_THRESHOLD = 100000 			            -- If AI has this much manpower he doesn't care about the percentage
 NDefines.NAI.MANPOWER_RESERVED_THRESHOLD = 0 								-- The AI will not deploy more units if he goes below this percentag
 
 NDefines.NAI.DEPLOY_MIN_TRAINING_PEACE_FACTOR = 0.95						-- Required percentage of training (1.0 = 100%) for AI to deploy unit in peacetime
@@ -115,8 +115,8 @@ NDefines.NAI.FUEL_RATIO_TO_EXIST_FUEL_SAVING_MODE = 0.40					-- countries will e
 NDefines.NAI.GENERATE_WARGOAL_THREAT_BASELINE = 0.6							-- The baseline for what the AI considers the world is getting dangerous and we want to generate wargoals with no antagonize value	
 
 NDefines.NAI.TRADEABLE_FACTORIES_FRACTION = 1								-- Will at most trade away this fraction of factories.
-NDefines.NAI.WAIT_YEARS_BEFORE_FREER_BUILDING = 1							-- The AI will skip considering certain buildings during the buildup phase, after htese many years it starts building them regardless of threat.
-NDefines.NAI.MAX_THREAT_FOR_FIRST_YEAR_CIVILIAN_MODE = 20 					-- above this threshold, ai will leave first year civilian factory mode which bumps it civilian factory scores while building
+--NDefines.NAI.WAIT_YEARS_BEFORE_FREER_BUILDING = 1							-- The AI will skip considering certain buildings during the buildup phase, after htese many years it starts building them regardless of threat.
+--NDefines.NAI.MAX_THREAT_FOR_FIRST_YEAR_CIVILIAN_MODE = 20 					-- above this threshold, ai will leave first year civilian factory mode which bumps it civilian factory scores while building
 
 NDefines.NAI.DOCKYARDS_PER_NAVAL_DESIRE_EFFECT = -100.0						-- Effects how much AI wants to build dockyards based on how navally focused they are in general. Recommended range -100.0 to 100.0.
 
@@ -124,33 +124,29 @@ NDefines.NAI.NUM_SILOS_PER_CIVILIAN_FACTORIES = 0.0							-- ai will try to buil
 NDefines.NAI.NUM_SILOS_PER_MILITARY_FACTORIES = 0.0							-- ai will try to build a silo per this ratio of mil factories
 NDefines.NAI.NUM_SILOS_PER_DOCKYARDS = 0.0									-- ai will try to build a silo per this ratio of dockyards
 
-NDefines.NAI.NEW_LEADER_EXTRA_PP_FACTOR = 1									-- Country must have at least this many times extra PP to get new admirals or army leaders
+--NDefines.NAI.NEW_LEADER_EXTRA_PP_FACTOR = 1.0								-- Country must have at least this many times extra PP to get new admirals or army leaders
 
 NDefines.NAI.HOUR_BAD_COMBAT_REEVALUATE = 24								-- if we are in combat for this amount and it goes shitty then try skipping it
 
-NDefines.NAI.PLAN_ATTACK_MIN_ORG_FACTOR_LOW = 0.85							-- Minimum org % for a unit to actively attack an enemy unit when executing a plan
-NDefines.NAI.PLAN_ATTACK_MIN_STRENGTH_FACTOR_LOW = 0.85						-- Minimum strength for a unit to actively attack an enemy unit when executing a plan
+--NDefines.NAI.PLAN_ATTACK_MIN_ORG_FACTOR_LOW = 0.85							-- Minimum org % for a unit to actively attack an enemy unit when executing a plan
+--NDefines.NAI.PLAN_ATTACK_MIN_STRENGTH_FACTOR_LOW = 0.85						-- Minimum strength for a unit to actively attack an enemy unit when executing a plan
 
-NDefines.NAI.PLAN_ATTACK_MIN_ORG_FACTOR_MED = 0.65							-- (LOW,MED,HIGH) corresponds to the plan execution agressiveness level.
-NDefines.NAI.PLAN_ATTACK_MIN_STRENGTH_FACTOR_MED = 0.65	
+--NDefines.NAI.PLAN_ATTACK_MIN_ORG_FACTOR_MED = 0.65							-- (LOW,MED,HIGH) corresponds to the plan execution agressiveness level.
+--NDefines.NAI.PLAN_ATTACK_MIN_STRENGTH_FACTOR_MED = 0.65	
 
-NDefines.NAI.PLAN_ATTACK_MIN_ORG_FACTOR_HIGH = 0.5		
-NDefines.NAI.PLAN_ATTACK_MIN_STRENGTH_FACTOR_HIGH = 0.5	
+--NDefines.NAI.PLAN_ATTACK_MIN_ORG_FACTOR_HIGH = 0.5		
+--NDefines.NAI.PLAN_ATTACK_MIN_STRENGTH_FACTOR_HIGH = 0.5	
 
-NDefines.NAI.PLAN_FACTION_STRONG_TO_EXECUTE = 0.65							-- % or more of units in an order to consider ececuting the plan
-NDefines.NAI.ORG_UNIT_STRONG = 0.75											-- Organization % for unit to be considered strong
-NDefines.NAI.STR_UNIT_STRONG = 0.75											-- Strength (equipment) % for unit to be considered strong
+--NDefines.NAI.PLAN_FACTION_STRONG_TO_EXECUTE = 0.65							-- % or more of units in an order to consider ececuting the plan
 
-NDefines.NAI.PLAN_FACTION_NORMAL_TO_EXECUTE = 0.65							-- % or more of units in an order to consider executing the plan
-NDefines.NAI.ORG_UNIT_NORMAL = 0.6											-- Organization % for unit to be considered normal
-NDefines.NAI.STR_UNIT_NORMAL = 0.6											-- Strength (equipment) % for unit to be considered normal
+--NDefines.NAI.ORG_UNIT_NORMAL = 0.6											-- Organization % for unit to be considered normal
+--NDefines.NAI.STR_UNIT_NORMAL = 0.6											-- Strength (equipment) % for unit to be considered normal
 
-NDefines.NAI.PLAN_FACTION_WEAK_TO_ABORT = 0.5						        -- % or more of units in an order to consider ececuting the plan
-NDefines.NAI.ORG_UNIT_WEAK = 0.45 											-- Organization % for unit to be considered weak
-NDefines.NAI.STR_UNIT_WEAK = 0.4 											-- Strength (equipment) % for unit to be considered weak
+--NDefines.NAI.PLAN_FACTION_WEAK_TO_ABORT = 0.5						        -- % or more of units in an order to consider ececuting the plan
+--NDefines.NAI.ORG_UNIT_WEAK = 0.45 											-- Organization % for unit to be considered weak
+--NDefines.NAI.STR_UNIT_WEAK = 0.4 											-- Strength (equipment) % for unit to be considered weak
 
-NDefines.NAI.PLAN_AVG_PREPARATION_TO_EXECUTE = 0.5							-- % or more average plan preparation before executing
-NDefines.NAI.AI_FRONT_MOVEMENT_FACTOR_FOR_READY = 0.5						-- If less than this fraction of units on a front is moving  AI sees it as ready for action
+--NDefines.NAI.AI_FRONT_MOVEMENT_FACTOR_FOR_READY = 0.5						-- If less than this fraction of units on a front is moving  AI sees it as ready for action
 
 NDefines.NAI.PLAN_ACTIVATION_MAJOR_WEIGHT_FACTOR = 1						-- AI countries will hold on activating plans if stronger countries have plans in the same location. Majors count extra (value of 1 will negate this)
 NDefines.NAI.PLAN_ACTIVATION_PLAYER_WEIGHT_FACTOR = 1						-- AI countries will hold on activating plans if player controlled countries have plans in the same location. Majors count extra (value of 1 will negate this)
