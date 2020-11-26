@@ -2807,6 +2807,100 @@ focus_tree = {
 			custom_effect_tooltip = set_country_leader_ideology_dual_monarchy
 		}
 	}
+	
+	focus = {
+		id = JAP_join_axis
+		icon = GFX_focus_chi_mission_to_germany
+		prerequisite = { focus = JAP_modern_shogunate focus = JAP_showa_restoration }
+		mutually_exclusive = { focus = JAP_asian_anti_communist_treaty }
+		x = -1
+		y = 1
+		relative_position_id = JAP_modern_shogunate
+
+		cost = 10
+
+		ai_will_do = {
+			factor = 1
+			modifier = {
+				factor = 0
+				OR = {
+					GER = { has_civil_war = yes }
+					GER = { focus_progress = { focus = GER_oppose_hitler progress > 0 } }
+					NOT = {
+						has_game_rule = { rule = GER_ai_behavior option = DEFAULT }
+						has_game_rule = { rule = GER_ai_behavior option = FASCIST }
+					}
+				}
+			}
+		}
+
+		available = {
+			country_exists = GER
+			GER = {
+				is_faction_leader = yes
+				has_government = fascism
+				NOT = { has_war_with = ROOT }
+			}
+		}
+		
+		bypass = {
+			is_in_faction_with = GER
+		}
+
+		cancel_if_invalid = yes
+		continue_if_invalid = no
+		available_if_capitulated = no
+		
+		search_filters = { FOCUS_FILTER_POLITICAL }
+		completion_reward = {
+			GER = { country_event = generic.2 }
+		}
+	}
+	
+	focus = {
+		id = JAP_asian_anti_communist_treaty
+		icon = GFX_z_goal_asian_anti_communist_treaty
+		prerequisite = { focus = JAP_modern_shogunate focus = JAP_showa_restoration }
+		mutually_exclusive = { focus = JAP_join_axis }
+		x = 1
+		y = 1
+		relative_position_id = JAP_modern_shogunate
+
+		cost = 10
+
+		ai_will_do = {
+			factor = 2
+		}
+		
+		available = {
+			is_subject = no
+		}
+
+		bypass = {
+			is_in_faction = yes
+		}
+
+		cancel_if_invalid = yes
+		continue_if_invalid = no
+		available_if_capitulated = no
+
+		search_filters = { FOCUS_FILTER_POLITICAL }
+		completion_reward = {
+			set_rule = { can_create_factions = yes }
+			create_faction = JAP_asian_anti_communist_treaty
+			if = {
+				limit = {
+					CHI = {
+						is_subject = no
+						is_in_faction = no
+					}
+					NOT = { has_war_with = CHI }
+				}
+				CHI = { country_event = { id = tr_japan.3 hours = 12 } }
+				custom_effect_tooltip = JAP_asian_anti_communist_treaty_tt
+			}
+		}
+	}
 
 	focus = {
 		id = JAP_prepare_for_war_with_the_soviet_union
@@ -2814,7 +2908,7 @@ focus_tree = {
 		prerequisite = { focus = JAP_modern_shogunate focus = JAP_showa_restoration }
 		x = 1
 		y = 1
-		relative_position_id = JAP_modern_shogunate
+		relative_position_id = JAP_showa_restoration
 
 		cost = 10
 
@@ -2902,9 +2996,10 @@ focus_tree = {
 		id = JAP_join_the_london_naval_treaty
 		icon = GFX_focus_generic_diplomatic_treaty
 		prerequisite = { focus = JAP_prepare_for_war_with_the_soviet_union }
+		prerequisite = { focus = JAP_join_axis focus = JAP_asian_anti_communist_treaty }
 		x = -1
 		y = 1
-		relative_position_id = JAP_prepare_for_war_with_the_soviet_union
+		relative_position_id = JAP_asian_anti_communist_treaty
 
 		cost = 10
 
@@ -2942,9 +3037,10 @@ focus_tree = {
 		id = JAP_build_up_the_manchurian_army
 		icon = GFX_goal_generic_army_doctrines
 		prerequisite = { focus = JAP_prepare_for_war_with_the_soviet_union }
+		prerequisite = { focus = JAP_join_axis focus = JAP_asian_anti_communist_treaty }
 		x = 1
 		y = 1
-		relative_position_id = JAP_prepare_for_war_with_the_soviet_union
+		relative_position_id = JAP_asian_anti_communist_treaty
 
 		cost = 10
 
@@ -3120,7 +3216,10 @@ focus_tree = {
 
 
 		completion_reward = {
-			CHI = { country_event = wtt_japan.11 } #TODO_WTT_CD make a proper is nationalist china trigger
+			if = {
+				limit = { NOT = { is_in_faction_with = ROOT } }
+				CHI = { country_event = wtt_japan.11 } #TODO_WTT_CD make a proper is nationalist china trigger
+			}
 			609 = {
 				if = {
 					limit = { is_controlled_by = ROOT }
@@ -3128,6 +3227,12 @@ focus_tree = {
 						type = bunker
 						level = 3
 						province = 6969
+						instant_build = yes
+					}
+					add_building_construction = {
+						type = bunker
+						level = 3
+						province = 14410
 						instant_build = yes
 					}
 					add_building_construction = {
@@ -3147,19 +3252,23 @@ focus_tree = {
 			if = {
 				limit = {
 					MAN = {
-						is_puppet_of = ROOT
+						is_subject_of = ROOT
 					}
 				}
-				MAN = {
-					610 = {
-						if = {
-							limit = { is_controlled_by = PREV }
-							add_building_construction = {
-								type = bunker
-								level = 3
-								province = 3955
-								instant_build = yes
-							}
+				610 = {
+					if = {
+						limit = { is_controlled_by = MAN }
+						add_building_construction = {
+							type = bunker
+							level = 3
+							province = 3955
+							instant_build = yes
+						}
+						add_building_construction = {
+							type = bunker
+							level = 3
+							province = 9768
+							instant_build = yes
 						}
 					}
 				}
@@ -3167,31 +3276,23 @@ focus_tree = {
 			if = {
 				limit = {
 					MEN = {
-						is_puppet_of = ROOT
+						is_subject_of = ROOT
 					}
 				}
-				MEN = {
-					611 = {
-						if = {
-							limit = { is_controlled_by = PREV }
-							add_building_construction = {
-								type = bunker
-								level = 3
-								province = 1137
-								instant_build = yes
-							}
-							add_building_construction = {
-								type = bunker
-								level = 3
-								province = 6904
-								instant_build = yes
-							}
-							add_building_construction = {
-								type = bunker
-								level = 3
-								province = 9776
-								instant_build = yes
-							}
+				1133 = {
+					if = {
+						limit = { is_controlled_by = MEN }
+						add_building_construction = {
+							type = bunker
+							level = 3
+							province = 828
+							instant_build = yes
+						}
+						add_building_construction = {
+							type = bunker
+							level = 3
+							province = 10397
+							instant_build = yes
 						}
 					}
 				}
@@ -3489,7 +3590,7 @@ focus_tree = {
 		id = JAP_strengthen_civilian_government
 		icon = GFX_goal_support_democracy
 		mutually_exclusive = { focus = JAP_purge_the_kodoha_faction focus = JAP_support_the_kodoha_faction focus = JAP_the_unthinkable_option focus = JAP_the_bezumie_option }
-		x = 4
+		x = 5
 		y = 0
 		relative_position_id = JAP_support_the_kodoha_faction
 

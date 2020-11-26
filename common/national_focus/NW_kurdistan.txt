@@ -5,8 +5,9 @@ focus_tree = {
 		factor = 0
 		
 		modifier = {
-			add = 0
+			add = 10
 			tag = KRD
+			has_country_flag = kurd_focus_tree_flag
 		}
 	}
 	continuous_focus_position = { x = 200 y = 1500 }
@@ -465,13 +466,27 @@ focus_tree = {
 			factor = 10
 		}
 		available = {
+			controls_state = 352
+			352 = { has_resources_amount = { resource = oil amount > 0 } }
 		}
 		bypass = {
 		}
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus KRD_develop_economy_of_eastern_kurdistan"
-			
+			352 = {
+				add_extra_state_shared_building_slots = 2
+				add_building_construction = {
+					type = infrastructure
+					level = 1
+					instant_build = yes
+				}
+				add_building_construction = {
+					type = industrial_complex
+					level = 1
+					instant_build = yes
+				}
+			}
 		}
 	}
 	
@@ -621,7 +636,7 @@ focus_tree = {
 		y = 0
 		relative_position_id = KRD_start_modernization_of_economy
 		
-		cost = 10
+		cost = 5
 		
 		cancel_if_invalid = no
 		continue_if_invalid = yes
@@ -637,7 +652,9 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus KRD_call_tribal_sheikhs_to_your_side"
-			
+			add_ideas = KRD_call_tribal_sheikhs_to_your_side_idea
+			country_event = { id = NWkurd.12 days = 1 }
+			unlock_decision_category_tooltip = KRD_raise_tribal_militia_category
 		}
 	}
 	
@@ -659,13 +676,31 @@ focus_tree = {
 			factor = 10
 		}
 		available = {
+			controls_state = 350
 		}
 		bypass = {
 		}
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus KRD_strengthen_capital_region"
-			
+			350 = {
+				add_building_construction = {
+					type = bunker
+					level = 2
+					instant_build = yes
+					province = {
+						id = 4512
+						id = 9823
+						id = 11759
+						id = 876
+						id = 11739
+						id = 11871
+						id = 12416
+						id = 12387
+					}
+				}
+			}
+			add_timed_idea = { idea = KRD_urgent_construction_fortifications days = 180 }
 		}
 	}
 	
@@ -691,9 +726,17 @@ focus_tree = {
 		bypass = {
 		}
 		
+		select_effect = {
+			add_timed_idea = { idea = KRD_expel_albanians_and_assyrians_idea days = 70 }
+		}
+		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus KRD_expel_albanians_and_assyrians"
-			
+			custom_effect_tooltip = on_select_focus_tt
+			effect_tooltip = { add_timed_idea = { idea = KRD_expel_albanians_and_assyrians_idea days = 70 } }
+			custom_effect_tooltip = on_completion_focus_tt
+			add_stability = 0.05
+			add_ideas = KRD_ethnically_unified_kurdistan
 		}
 	}
 	
@@ -735,21 +778,38 @@ focus_tree = {
 		
 		cost = 10
 		
-		cancel_if_invalid = no
-		continue_if_invalid = yes
+		cancel_if_invalid = yes
+		continue_if_invalid = no
 		available_if_capitulated = no
 
 		ai_will_do = {
 			factor = 10
 		}
 		available = {
+			is_subject = no
+			date > 1939.1.1
+			has_army_manpower = { size > 100000 }
+			any_state = {
+				is_core_of = ROOT
+				NOT = { is_owned_by = ROOT }
+			}
 		}
 		bypass = {
 		}
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus KRD_unite_kurdistan"
-			
+			every_state = {
+				limit = {
+					is_core_of = ROOT
+					NOT = { is_owned_by = ROOT }
+					owner = {
+						is_subject = no
+						NOT = { has_war_with = ROOT }
+					}
+				}
+				owner = { country_event = NWkurd.20 }
+			}
 		}
 	}
 	
@@ -761,7 +821,7 @@ focus_tree = {
 		y = 1
 		relative_position_id = KRD_call_tribal_sheikhs_to_your_side
 		
-		cost = 10
+		cost = 5
 		
 		cancel_if_invalid = no
 		continue_if_invalid = yes
@@ -771,13 +831,14 @@ focus_tree = {
 			factor = 10
 		}
 		available = {
+			has_war_with = TUR
 		}
 		bypass = {
 		}
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus KRD_bring_war_to_neighboring_kurds"
-			
+			unlock_decision_category_tooltip = KRD_call_all_kurds_to_war_category
 		}
 	}
 	
@@ -799,13 +860,16 @@ focus_tree = {
 			factor = 10
 		}
 		available = {
+			NOT = { has_war_with = TUR }
 		}
 		bypass = {
 		}
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus KRD_form_confederation_of_kurdish_tribes"
-			
+			add_political_power = 100
+			add_war_support = 0.1
+			hidden_effect = { drop_cosmetic_tag = yes }
 		}
 	}
 	
@@ -833,7 +897,8 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus KRD_enter_into_agreements_with_major_sheikhs"
-			
+			add_political_power = 100
+			add_stability = 0.1
 		}
 	}
 	
@@ -3109,6 +3174,8 @@ focus_tree = {
 			factor = 10
 		}
 		available = {
+			NOT = { has_government = fascism }
+			SOV = { has_opinion_modifier = KRD_support_us_op }
 		}
 		bypass = {
 		}
@@ -3117,7 +3184,20 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus KRD_implement_experience_of_soviet_volunteers"
-			
+			army_experience = 10
+			add_popularity = { ideology = var:SOV.current_party_ideology_group popularity = 0.03 }
+			add_tech_bonus = {
+				name = KRD_implement_experience_of_soviet_volunteers
+				bonus = 1.0
+				uses = 1
+				category = cat_mass_assault
+			}
+			add_tech_bonus = {
+				name = KRD_implement_experience_of_soviet_volunteers
+				bonus = 1.0
+				uses = 1
+				category = infantry_weapons
+			}
 		}
 	}
 	
@@ -3139,6 +3219,8 @@ focus_tree = {
 			factor = 10
 		}
 		available = {
+			NOT = { has_government = communism }
+			GER = { has_opinion_modifier = KRD_support_us_op }
 		}
 		bypass = {
 		}
@@ -3147,7 +3229,20 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus KRD_implement_experience_of_german_volunteers"
-			
+			army_experience = 10
+			add_popularity = { ideology = var:GER.current_party_ideology_group popularity = 0.03 }
+			add_tech_bonus = {
+				name = KRD_implement_experience_of_german_volunteers
+				bonus = 1.0
+				uses = 1
+				category = cat_mobile_warfare
+			}
+			add_tech_bonus = {
+				name = KRD_implement_experience_of_german_volunteers
+				bonus = 1.0
+				uses = 1
+				category = armor
+			}
 		}
 	}
 	
@@ -3461,7 +3556,7 @@ focus_tree = {
 		y = 1
 		relative_position_id = KRD_build_an_airport
 		
-		cost = 10
+		cost = 5
 		
 		cancel_if_invalid = no
 		continue_if_invalid = yes
@@ -3471,6 +3566,19 @@ focus_tree = {
 			factor = 10
 		}
 		available = {
+			num_of_civilian_factories_available_for_projects > 2
+			country_exists = GER
+			NOT = { has_war_with = GER }
+			GER = {
+				OR = {
+					has_equipment = { fighter_equipment > 100 }
+					has_deployed_air_force_size = { size > 100 type = fighter }
+				}
+				OR = {
+					has_equipment = { tac_bomber_equipment > 100 }
+					has_deployed_air_force_size = { size > 100 type = tactical_bomber }
+				}
+			}
 		}
 		bypass = {
 		}
@@ -3479,7 +3587,7 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus KRD_purchase_aircraft_from_germany"
-			
+			GER = { country_event = NWkurd.16 }
 		}
 	}
 	
@@ -3491,7 +3599,7 @@ focus_tree = {
 		y = 1
 		relative_position_id = KRD_build_an_airport
 		
-		cost = 10
+		cost = 5
 		
 		cancel_if_invalid = no
 		continue_if_invalid = yes
@@ -3501,6 +3609,19 @@ focus_tree = {
 			factor = 10
 		}
 		available = {
+			num_of_civilian_factories_available_for_projects > 2
+			country_exists = SOV
+			NOT = { has_war_with = SOV }
+			SOV = {
+				OR = {
+					has_equipment = { fighter_equipment > 100 }
+					has_deployed_air_force_size = { size > 100 type = fighter }
+				}
+				OR = {
+					has_equipment = { tac_bomber_equipment > 100 }
+					has_deployed_air_force_size = { size > 100 type = tactical_bomber }
+				}
+			}
 		}
 		bypass = {
 		}
@@ -3509,7 +3630,7 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus KRD_buy_aviation_from_soviet_union"
-			
+			SOV = { country_event = NWkurd.16 }
 		}
 	}
 	
