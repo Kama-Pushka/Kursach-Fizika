@@ -1,4 +1,4 @@
-version="0.3.1"
+version="0.4.0"
 replace_path="common/national_focus"
 replace_path="common/difficulty_settings"
 replace_path="history/states"
@@ -13,4 +13,4 @@ tags={
 }
 supported_version="1.10.*"
 picture="thumbnail.png"
-name="New Ways alpha 0.3.1 dev build"
+name="New Ways alpha DEV BUILD"
