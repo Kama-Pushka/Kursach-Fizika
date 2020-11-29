@@ -953,9 +953,29 @@ focus_tree = {
 		bypass = {
 		}
 		
+		select_effect = {
+			hidden_effect = {
+				country_event = { id = NWkurd.22 days = 5 }
+				country_event = { id = NWkurd.23 days = 25 }
+				country_event = { id = NWkurd.24 days = 35 }
+				country_event = { id = NWkurd.25 days = 45 }
+				country_event = { id = NWkurd.26 days = 55 }
+			}
+		}
+		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus KRD_draw_up_laws_of_kurdish_state"
-			
+			add_political_power = 50
+			custom_effect_tooltip = KRD_draw_up_laws_of_kurdish_state_tt
+			hidden_effect = {
+				if = {
+					limit = {
+						has_country_flag = NWkurd_24a_flag
+					}
+					country_event = { id = NWkurd.28 hours = 3 }
+				}
+				else = { country_event = { id = NWkurd.29 hours = 3 } }
+			}
 		}
 	}
 	
@@ -983,7 +1003,8 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus KRD_strengthen_kurdish_statehood"
-			
+			add_stability = 0.1
+			remove_ideas = KRD_local_uprising
 		}
 	}
 	
@@ -1011,7 +1032,21 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus KRD_establish_ties_with_western_countries"
-			
+			every_other_country = {
+				limit = {
+					is_major = yes
+					NOT = { has_war_with = ROOT }
+				}
+				add_opinion_modifier = { target = ROOT modifier = KRD_establish_ties_with_western_countries_op }
+				ROOT = { add_opinion_modifier = { target = PREV modifier = KRD_establish_ties_with_western_countries_op } }
+			}
+			hidden_effect = {
+				add_ai_strategy = {
+					type = befriend
+					id = "ENG"
+					value = 100
+				}
+			}
 		}
 	}
 	
@@ -1033,13 +1068,18 @@ focus_tree = {
 			factor = 10
 		}
 		available = {
+			is_subject = no
+			owns_state = 352
+			country_exists = ENG
+			NOT = { has_war_with = ENG }
+			ENG = { has_opinion = { target = ROOT value > 20 } }
 		}
 		bypass = {
 		}
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus KRD_grant_britain_rights_develop_oil_near_lake_van"
-			
+			ENG = { country_event = { id = NWkurd.30 hours = 6 } }
 		}
 	}
 	
@@ -1062,13 +1102,24 @@ focus_tree = {
 			factor = 10
 		}
 		available = {
+			owns_state = 352
+			country_exists = ENG
+			NOT = { has_war_with = ENG }
+			ENG = { has_country_flag = development_of_oil_fields_near_lake_van_flag }
 		}
 		bypass = {
 		}
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus KRD_attract_british_investment"
-			
+			352 = {
+				add_extra_state_shared_building_slots = 2
+				add_building_construction = {
+					type = industrial_complex
+					level = 2
+					instant_build = yes
+				}
+			}
 		}
 	}
 	
@@ -1100,6 +1151,7 @@ focus_tree = {
 			factor = 10
 		}
 		available = {
+			has_country_flag = KRD_kurdistan_communist_party_flag
 		}
 		bypass = {
 		}
@@ -1108,7 +1160,7 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus KRD_introduction_of_soviet_practice"
-			
+			add_timed_idea = { idea = KRD_introduction_of_soviet_practice days = 180 }
 		}
 	}
 	
@@ -1130,6 +1182,7 @@ focus_tree = {
 			factor = 10
 		}
 		available = {
+			communism > 0.299
 		}
 		bypass = {
 		}
@@ -1138,7 +1191,8 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus KRD_create_socialist_republic"
-			
+			set_politics = { ruling_party = communism elections_allowed = no }
+			country_event = { id = NWkurd.44 hours = 6 }
 		}
 	}
 	
@@ -1198,7 +1252,9 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus KRD_introduce_new_economic_policy"
-			
+			add_ideas = KRD_introduce_new_economic_policy
+			unlock_decision_category_tooltip = KRD_introduce_new_economic_policy_category
+			set_variable = { level_kurdish_introduce_new_economic_policy_var = 0 }
 		}
 	}
 	
@@ -1305,6 +1361,7 @@ focus_tree = {
 			factor = 10
 		}
 		available = {
+			NOT = { has_idea = KRD_introduce_new_economic_policy }
 		}
 		bypass = {
 		}
@@ -1313,7 +1370,26 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus KRD_first_five_year_plan"
-			
+			add_ideas = KRD_first_five_year_plan
+			random_owned_controlled_state = {
+				limit = {
+					free_building_slots = {
+						building = industrial_complex
+						size > 1
+						include_locked = yes
+					}
+				}
+				add_extra_state_shared_building_slots = 2
+				add_building_construction = {
+					type = industrial_complex
+					level = 2
+					instant_build = yes
+				}
+			}
+			every_owned_state = {
+				limit = { is_core_of = ROOT }
+				add_extra_state_shared_building_slots = 1
+			}
 		}
 	}
 	
@@ -1343,7 +1419,8 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus KRD_socialist_propaganda"
-			
+			custom_effect_tooltip = KRD_socialist_propaganda_tt
+			unlock_decision_category_tooltip = KRD_socialist_propaganda_category
 		}
 	}
 	
@@ -1373,7 +1450,13 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus KRD_carry_out_collectivization_among_peasantry"
-			
+			capital_scope = {
+				add_extra_state_shared_building_slots = 2
+				every_neighbor_state = {
+					add_extra_state_shared_building_slots = 2
+				} 
+			}
+			add_ideas = KRD_carry_out_collectivization_among_peasantry_idea
 		}
 	}
 	
@@ -1535,7 +1618,7 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus KRD_deprive_tribes_of_their_autonomy"
-			#remove_ideas = KRD_discontent_among_tribes
+			remove_ideas = KRD_discontent_among_tribes
 			add_stability = -0.05
 			capital_scope = { add_extra_state_shared_building_slots = 1 }
 		}
@@ -1699,7 +1782,59 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus KRD_anticolonialism"
-			
+			add_war_support = 0.1
+			if = {
+				limit = {
+					country_exists = SYR
+					SYR = { is_subject = yes }
+					NOT = {
+						has_war_with = SYR
+						is_in_faction_with = SYR
+						SYR = { is_subject_of = ROOT }
+					}
+				}
+				create_wargoal = {
+					type = puppet_wargoal_focus
+					target = SYR
+					expire = 0
+				}
+				add_ai_strategy = {
+					type = antagonize
+					id = "SYR"
+					value = 200
+				}
+				add_ai_strategy = {
+					type = conquer
+					id = "SYR"
+					value = 200
+				}
+			}
+			if = {
+				limit = {
+					country_exists = PER
+					PER = { is_subject = yes }
+					NOT = {
+						has_war_with = PER
+						is_in_faction_with = PER
+						PER = { is_subject_of = ROOT }
+					}
+				}
+				create_wargoal = {
+					type = puppet_wargoal_focus
+					target = PER
+					expire = 0
+				}
+				add_ai_strategy = {
+					type = antagonize
+					id = "PER"
+					value = 200
+				}
+				add_ai_strategy = {
+					type = conquer
+					id = "PER"
+					value = 200
+				}
+			}
 		}
 	}
 	
@@ -1764,6 +1899,7 @@ focus_tree = {
 			factor = 10
 		}
 		available = {
+			has_country_flag = KRD_fascism_grand_council_flag
 		}
 		bypass = {
 		}
@@ -1772,7 +1908,7 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus KRD_spend_radicalization"
-			
+			add_timed_idea = { idea = KRD_introduction_radicalization days = 180 }
 		}
 	}
 	
@@ -1824,15 +1960,17 @@ focus_tree = {
 			factor = 10
 		}
 		available = {
+			fascism > 0.299
 		}
 		bypass = {
+			has_government = fascism
 		}
 		select_effect = {
 		}
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus KRD_expand_powers_of_fascist_council"
-			
+			set_politics = { ruling_party = fascism elections_allowed = no }
 		}
 	}
 	
@@ -1914,6 +2052,13 @@ focus_tree = {
 			factor = 10
 		}
 		available = {
+			OR = {
+				controls_state = 353
+				controls_state = 998
+				controls_state = 417
+				controls_state = 895
+				controls_state = 894
+			}
 		}
 		bypass = {
 		}
@@ -1922,7 +2067,7 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus KRD_settle_in_neighboring_territories_kurds"
-			
+			unlock_decision_category_tooltip = KRD_colonization_neighboring_territories_kurds_category
 		}
 	}
 	
@@ -1984,6 +2129,15 @@ focus_tree = {
 			factor = 10
 		}
 		available = {
+			custom_trigger_tooltip = {
+				tooltip = all_core_is_controlled_tt
+				NOT = {
+					any_state = {
+						is_core_of = ROOT
+						NOT = { is_controlled_by = ROOT }
+					}
+				}
+			}
 		}
 		bypass = {
 		}
@@ -1992,7 +2146,27 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus KRD_liberation_of_soviet_kurds"
-			
+			every_state = {
+				limit = {
+					NOT = { is_owned_and_controlled_by = ROOT }
+					OR = {
+						state = 230
+						state = 894
+						state = 895
+					}
+				}
+				add_claim_by = ROOT
+			}
+			if = {
+				limit = {
+					SOV = {
+						NOT = { has_war_with = ROOT }
+						owns_state = 894
+						owns_state = 895
+					}
+				}
+				SOV = { country_event = { id = NWkurd.33 hours = 6 } }
+			}
 		}
 	}
 	
@@ -2172,6 +2346,7 @@ focus_tree = {
 		}
 		available = {
 			is_subject = no
+			NOT = { has_government = democratic }
 		}
 		bypass = {
 			OR = {
@@ -2204,6 +2379,7 @@ focus_tree = {
 				create_wargoal = {
 					type = annex_everything
 					target = AFG
+					expire = 0
 				}
 				add_ai_strategy = {
 					type = antagonize
@@ -2228,6 +2404,7 @@ focus_tree = {
 				create_wargoal = {
 					type = annex_everything
 					target = PER
+					expire = 0
 				}
 				add_ai_strategy = {
 					type = antagonize
@@ -2278,7 +2455,9 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus KRD_establish_kingdom_of_kurdistan"
-			
+			add_political_power = 100
+			add_ideas = KRD_establish_kingdom_of_kurdistan_idea
+			set_cosmetic_tag = KRD_kingdom
 		}
 	}
 	
@@ -2308,7 +2487,8 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus KRD_attract_ulema_to_your_side"
-			
+			add_stability = 0.05
+			add_ideas = KRD_attract_ulema_to_your_side_idea
 		}
 	}
 	
@@ -2341,7 +2521,7 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus KRD_indirect_rule_for_tribes"
-			
+			add_ideas = KRD_indirect_rule_for_tribes_idea
 		}
 	}
 	
@@ -2372,7 +2552,20 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus KRD_establish_royal_guard"
-			
+			army_experience = 15
+			add_tech_bonus = {
+				name = KRD_establish_royal_guard
+				bonus = 1.0
+				uses = 1
+				category = land_doctrine
+			}
+			capital_scope = {
+				create_unit = {
+					division = "name = \"Kurdish Cavalry\" division_template = \"Kurdish Cavalry\" start_experience_factor = 0.2"
+					owner = PREV
+					count = 3
+				}
+			}
 		}
 	}
 	
@@ -2650,15 +2843,110 @@ focus_tree = {
 			factor = 10
 		}
 		available = {
+			has_army_manpower = { size > 100000 }
 		}
 		bypass = {
+			OR = {
+				NOT = { country_exists = TUR }
+				has_war_with = TUR
+				is_in_faction_with = TUR
+				TUR = { is_subject_of = ROOT }
+			}
+			OR = {
+				NOT = { country_exists = PER }
+				has_war_with = PER
+				is_in_faction_with = PER
+				PER = { is_subject_of = ROOT }
+			}
+			OR = {
+				NOT = { country_exists = IRQ }
+				has_war_with = IRQ
+				is_in_faction_with = IRQ
+				IRQ = { is_subject_of = ROOT }
+			}
 		}
 		select_effect = {
 		}
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus KRD_defend_independence"
-			
+			add_war_support = 0.1
+			add_timed_idea = { idea = KRD_defend_independence_idea days = 120 }
+			if = {
+				limit = {
+					country_exists = TUR
+					NOT = {
+						has_war_with = TUR
+						is_in_faction_with = TUR
+						TUR = { is_subject_of = ROOT }
+					}
+				}
+				create_wargoal = {
+					type = puppet_wargoal_focus
+					target = TUR
+					expire = 0
+				}
+				add_ai_strategy = {
+					type = antagonize
+					id = "TUR"
+					value = 200
+				}
+				add_ai_strategy = {
+					type = conquer
+					id = "TUR"
+					value = 200
+				}
+			}
+			if = {
+				limit = {
+					country_exists = PER
+					NOT = {
+						has_war_with = PER
+						is_in_faction_with = PER
+						PER = { is_subject_of = ROOT }
+					}
+				}
+				create_wargoal = {
+					type = puppet_wargoal_focus
+					target = PER
+					expire = 0
+				}
+				add_ai_strategy = {
+					type = antagonize
+					id = "PER"
+					value = 200
+				}
+				add_ai_strategy = {
+					type = conquer
+					id = "PER"
+					value = 200
+				}
+			}
+			if = {
+				limit = {
+					country_exists = IRQ
+					NOT = {
+						has_war_with = IRQ
+						is_in_faction_with = IRQ
+						IRQ = { is_subject_of = ROOT }
+					}
+				}
+				create_wargoal = {
+					type = puppet_wargoal_focus
+					target = IRQ
+					expire = 0
+				}
+				add_ai_strategy = {
+					type = antagonize
+					id = "IRQ"
+					value = 200
+				}
+				add_ai_strategy = {
+					type = conquer
+					id = "IRQ"
+					value = 200
+				}
+			}
 		}
 	}
 	
@@ -2698,7 +2986,9 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus KRD_proclaim_kurdish_republic_of_ararat"
-			
+			set_politics = { ruling_party = democratic elections_allowed = yes }
+			add_timed_idea = { idea = KRD_proclaim_kurdish_republic_of_ararat_idea days = 180 }
+			unlock_decision_category_tooltip = KRD_protect_kurdish_sovereignty_over_mount_ararat_category
 		}
 	}
 	
@@ -2728,7 +3018,11 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus KRD_begin_westernization"
-			
+			add_political_power = 50
+			unlock_decision_category_tooltip = KRD_execution_westernization_category
+			hidden_effect = {
+				country_event = { id = NWkurd.41 days = 30 }
+			}
 		}
 	}
 	
@@ -2758,7 +3052,7 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus KRD_implementation_principles_of_liberalism"
-			
+			add_ideas = KRD_implementation_principles_of_liberalism
 		}
 	}
 	
@@ -2955,7 +3249,22 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus KRD_expand_trade_with_west"
-			
+			add_ideas = KRD_expand_trade_with_west_idea
+			random_owned_controlled_state = {
+				limit = { 
+					free_building_slots = {
+						building = industrial_complex
+						size > 1
+						include_locked = yes
+					}
+				}
+				add_extra_state_shared_building_slots = 2
+				add_building_construction = {
+					type = industrial_complex
+					level = 2
+					instant_build = yes
+				}
+			}
 		}
 	}
 	
@@ -3007,6 +3316,14 @@ focus_tree = {
 			factor = 10
 		}
 		available = {
+			ARM = {
+				NOT = { has_war_with = ROOT }
+				is_subject = no
+				has_capitulated = no
+			}
+			353 = { is_owned_and_controlled_by = ROOT }
+			354 = {is_owned_and_controlled_by = ROOT }
+			1049 = {is_owned_and_controlled_by = ROOT }
 		}
 		bypass = {
 		}
@@ -3014,8 +3331,54 @@ focus_tree = {
 		}
 
 		completion_reward = {
-			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus KRD_introduction_neighboring_countries"
-			add_ideas = KRD_introduction_neighboring_countries
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus KRD_remember_friendship_with_armenian_revolutionaries"
+			if = {
+				limit = {
+					NOT = { country_exists = ARM }
+				}
+				every_state = {
+					limit = {
+						OR = {
+							state = 353
+							state = 354
+							state = 1049
+						}
+					}
+					ARM = {
+						transfer_state = PREV
+						add_state_core = PREV
+					}
+				}
+				ARM = {
+					hidden_effect = {
+						division_template = {
+							name = "Armenian Infantry"
+							regiments = {
+								infantry = { x = 0 y = 0 }
+								infantry = { x = 0 y = 1 }
+								infantry = { x = 1 y = 0 }
+								infantry = { x = 1 y = 1 }
+								infantry = { x = 2 y = 0 }
+								infantry = { x = 2 y = 1 }
+							}
+						}
+					}
+					capital_scope = {
+						create_unit = {
+							division = "name = \"Armenian Infantry\" division_template = \"Armenian Infantry\" start_experience_factor = 0.2"
+							owner = PREV
+							count = 4
+						}
+					}
+				}
+				set_autonomy = {
+					target = ARM
+					autonomy_state = autonomy_dominion
+				}
+			}
+			else = {
+				ARM = { country_event = { id = NWkurd.42 hours = 6 } }
+			}
 		}
 	}
 	
@@ -3037,7 +3400,14 @@ focus_tree = {
 			factor = 10
 		}
 		available = {
-			has_full_control_of_state = 354
+			354 = {
+				controller = {
+					OR = {
+						tag = ROOT
+						is_subject_of = ROOT
+					}
+				}
+			}
 		}
 		bypass = {
 		}
@@ -3080,6 +3450,13 @@ focus_tree = {
 			factor = 10
 		}
 		available = {
+			has_army_manpower = { size > 100000 }
+			ARM = { is_subject_of = ROOT }
+			OR = {
+				NOT = { 230 = { is_controlled_by = ARM } }
+				NOT = { 894 = { is_controlled_by = ARM } }
+				NOT = { 895 = { is_controlled_by = ARM } }
+			}
 		}
 		bypass = {
 		}
@@ -3088,7 +3465,42 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus KRD_liberate_of_soviet_armenians"
-			
+			every_state = {
+				limit = {
+					NOT = {
+						owner = {
+							OR = {
+								tag = ROOT
+								is_subject_of = ROOT
+							}
+						}
+					}
+					OR = {
+						state = 230
+						state = 895
+						state = 894
+					}
+				}
+				owner = {
+					ROOT = {
+						create_wargoal = {
+							type = annex_everything
+							target = PREV
+							expire = 0
+						}
+						add_ai_strategy = {
+							type = antagonize
+							id = PREV
+							value = 200
+						}
+						add_ai_strategy = {
+							type = conquer
+							id = PREV
+							value = 200
+						}
+					}
+				}
+			}
 		}
 	}
 	
@@ -3118,7 +3530,42 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus KRD_invite_western_engineers"
-			
+			add_tech_bonus = {
+				name = industrial_bonus
+				bonus = 1.0
+				uses = 1
+				category = industry
+			}
+			random_owned_controlled_state = {
+				limit = {
+					free_building_slots = {
+						building = industrial_complex
+						size > 0
+						include_locked = yes
+					}
+				}
+				add_extra_state_shared_building_slots = 1
+				add_building_construction = {
+					type = industrial_complex
+					level = 1
+					instant_build = yes
+				}
+			}
+			random_owned_controlled_state = {
+				limit = {
+					free_building_slots = {
+						building = arms_factory
+						size > 0
+						include_locked = yes
+					}
+				}
+				add_extra_state_shared_building_slots = 1
+				add_building_construction = {
+					type = arms_factory
+					level = 1
+					instant_build = yes
+				}
+			}
 		}
 	}
 	
@@ -3134,14 +3581,14 @@ focus_tree = {
 		y = 0
 		relative_position_id = KRD_form_government
 		
-		cost = 10
+		cost = 7.15
 		
 		cancel_if_invalid = no
 		continue_if_invalid = yes
 		available_if_capitulated = no
 
 		ai_will_do = {
-			factor = 10
+			factor = 15
 		}
 		available = {
 		}
@@ -3152,7 +3599,7 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus KRD_convert_tribal_army_to_regular_one"
-			
+			remove_ideas = KRD_tribal_army
 		}
 	}
 	
@@ -3164,7 +3611,7 @@ focus_tree = {
 		y = 1
 		relative_position_id = KRD_convert_tribal_army_to_regular_one
 		
-		cost = 10
+		cost = 7.15
 		
 		cancel_if_invalid = no
 		continue_if_invalid = yes
@@ -3209,7 +3656,7 @@ focus_tree = {
 		y = 1
 		relative_position_id = KRD_convert_tribal_army_to_regular_one
 		
-		cost = 10
+		cost = 7.15
 		
 		cancel_if_invalid = no
 		continue_if_invalid = yes
@@ -3254,7 +3701,7 @@ focus_tree = {
 		y = 1
 		relative_position_id = KRD_convert_tribal_army_to_regular_one
 		
-		cost = 10
+		cost = 7.15
 		
 		cancel_if_invalid = no
 		continue_if_invalid = yes
@@ -3272,7 +3719,13 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus KRD_establish_military_academy"
-			
+			army_experience = 15
+			add_tech_bonus = {
+				name = KRD_establish_military_academy
+				bonus = 1.0
+				uses = 1
+				category = land_doctrine
+			}
 		}
 	}
 	
@@ -3284,7 +3737,7 @@ focus_tree = {
 		y = 1
 		relative_position_id = KRD_establish_military_academy
 		
-		cost = 10
+		cost = 7.15
 		
 		cancel_if_invalid = no
 		continue_if_invalid = yes
@@ -3302,7 +3755,27 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus KRD_start_manufacturing_your_own_weapons"
-			
+			add_tech_bonus = {
+				name = KRD_start_manufacturing_your_own_weapons
+				bonus = 1.0
+				uses = 1
+				category = infantry_weapons
+			}
+			random_owned_controlled_state = {
+				limit = {
+					free_building_slots = {
+						building = arms_factory
+						size > 0
+						include_locked = yes
+					}
+				}
+				add_extra_state_shared_building_slots = 1
+				add_building_construction = {
+					type = arms_factory
+					level = 1
+					instant_build = yes
+				}
+			}
 		}
 	}
 	
@@ -3314,7 +3787,7 @@ focus_tree = {
 		y = 1
 		relative_position_id = KRD_start_manufacturing_your_own_weapons
 		
-		cost = 10
+		cost = 7.15
 		
 		cancel_if_invalid = no
 		continue_if_invalid = yes
@@ -3332,7 +3805,12 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus KRD_implement_transport"
-			
+			add_tech_bonus = {
+				name = KRD_implement_transport
+				bonus = 1.0
+				uses = 1
+				category = motorized_equipment
+			}
 		}
 	}
 	
@@ -3344,7 +3822,7 @@ focus_tree = {
 		y = 1
 		relative_position_id = KRD_start_manufacturing_your_own_weapons
 		
-		cost = 10
+		cost = 7.15
 		
 		cancel_if_invalid = no
 		continue_if_invalid = yes
@@ -3362,7 +3840,12 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus KRD_implement_tanks"
-			
+			add_tech_bonus = {
+				name = KRD_implement_tanks
+				bonus = 1.0
+				uses = 1
+				category = armor
+			}
 		}
 	}
 	
@@ -3374,7 +3857,7 @@ focus_tree = {
 		y = 1
 		relative_position_id = KRD_start_manufacturing_your_own_weapons
 		
-		cost = 10
+		cost = 7.15
 		
 		cancel_if_invalid = no
 		continue_if_invalid = yes
@@ -3392,7 +3875,12 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus KRD_implement_artillery"
-			
+			add_tech_bonus = {
+				name = KRD_implement_artillery
+				bonus = 1.0
+				uses = 1
+				category = artillery
+			}
 		}
 	}
 	
@@ -3404,7 +3892,7 @@ focus_tree = {
 		y = 1
 		relative_position_id = KRD_convert_tribal_army_to_regular_one
 		
-		cost = 10
+		cost = 7.15
 		
 		cancel_if_invalid = no
 		continue_if_invalid = yes
@@ -3422,7 +3910,12 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus KRD_war_in_mountains"
-			
+			add_tech_bonus = {
+				name = KRD_war_in_mountains
+				bonus = 1.0
+				uses = 1
+				category = mountaineers_tech
+			}
 		}
 	}
 	
@@ -3434,7 +3927,7 @@ focus_tree = {
 		y = 1
 		relative_position_id = KRD_convert_tribal_army_to_regular_one
 		
-		cost = 10
+		cost = 7.15
 		
 		cancel_if_invalid = no
 		continue_if_invalid = yes
@@ -3452,7 +3945,13 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus KRD_build_an_airport"
-			
+			capital_scope = { 
+				add_building_construction = {
+					type = air_base
+					level = 2
+					instant_build = yes
+				}
+			}
 		}
 	}
 	
@@ -3464,7 +3963,7 @@ focus_tree = {
 		y = 1
 		relative_position_id = KRD_build_an_airport
 		
-		cost = 10
+		cost = 7.15
 		
 		cancel_if_invalid = no
 		continue_if_invalid = yes
@@ -3482,7 +3981,16 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus KRD_introduce_light_aircraft"
-			
+			add_tech_bonus = {
+				name = fighter_bonus
+				bonus = 1.0
+				uses = 2
+				technology = early_fighter
+				technology = fighter1
+				technology = fighter2
+				technology = fighter3
+				category = cas_bomber
+			}
 		}
 	}
 	
@@ -3495,7 +4003,7 @@ focus_tree = {
 		y = 1
 		relative_position_id = KRD_introduce_light_aircraft
 		
-		cost = 10
+		cost = 7.15
 		
 		cancel_if_invalid = no
 		continue_if_invalid = yes
@@ -3513,7 +4021,12 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus KRD_implement_tactical_bombers"
-			
+			add_tech_bonus = {
+				name = bomber_bonus
+				bonus = 1.0
+				uses = 1
+				category = tactical_bomber
+			}
 		}
 	}
 	
@@ -3526,7 +4039,7 @@ focus_tree = {
 		y = 1
 		relative_position_id = KRD_introduce_light_aircraft
 		
-		cost = 10
+		cost = 7.15
 		
 		cancel_if_invalid = no
 		continue_if_invalid = yes
@@ -3544,7 +4057,14 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus KRD_implement_strategic_bombers"
-			
+			add_tech_bonus = {
+				name = bomber_bonus
+				bonus = 1.0
+				uses = 1
+				technology = strategic_bomber1
+				technology = strategic_bomber2
+				technology = strategic_bomber3
+			}
 		}
 	}
 	
@@ -3642,7 +4162,7 @@ focus_tree = {
 		y = 1
 		relative_position_id = KRD_convert_tribal_army_to_regular_one
 		
-		cost = 10
+		cost = 7.15
 		
 		cancel_if_invalid = no
 		continue_if_invalid = yes
@@ -3652,6 +4172,10 @@ focus_tree = {
 			factor = 10
 		}
 		available = {
+			any_state = {
+				is_coastal = yes
+				is_controlled_by = ROOT
+			}
 		}
 		bypass = {
 		}
@@ -3660,19 +4184,35 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus KRD_establish_navy"
-			
+			navy_experience = 15
+			random_owned_controlled_state = {
+				limit = {
+					is_coastal = yes
+					free_building_slots = {
+						building = dockyard
+						size > 0
+						include_locked = yes
+					}
+				}
+				add_extra_state_shared_building_slots = 1
+				add_building_construction = {
+					type = dockyard
+					level = 1
+					instant_build = yes
+				}
+			}
 		}
 	}
 	
 	focus = {
 		id = KRD_protection_of_kurdish_coast
-		icon = GFX_z_goal_claims_hatay
+		icon = GFX_goal_generic_navy_anti_submarine
 		prerequisite = { focus = KRD_establish_navy }
 		x = 0
 		y = 1
 		relative_position_id = KRD_establish_navy
 		
-		cost = 10
+		cost = 7.15
 		
 		cancel_if_invalid = no
 		continue_if_invalid = yes
@@ -3690,20 +4230,26 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus KRD_protection_of_kurdish_coast"
-			
+			add_tech_bonus = {
+				name = dd_bonus
+				bonus = 1.0
+				ahead_reduction = 2
+				uses = 2
+				category = dd_tech
+			}
 		}
 	}
 	
 	focus = {
 		id = KRD_submarine_warfare
-		icon = GFX_z_goal_claims_hatay
+		icon = GFX_goal_generic_navy_submarine
 		prerequisite = { focus = KRD_protection_of_kurdish_coast }
 		mutually_exclusive = { focus = KRD_bet_on_battleships }
 		x = -1
 		y = 1
 		relative_position_id = KRD_protection_of_kurdish_coast
 		
-		cost = 10
+		cost = 7.15
 		
 		cancel_if_invalid = no
 		continue_if_invalid = yes
@@ -3721,20 +4267,26 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus KRD_submarine_warfare"
-			
+			add_tech_bonus = {
+				name = ss_bonus
+				bonus = 1.0
+				ahead_reduction = 2
+				uses = 2
+				category = ss_tech
+			}
 		}
 	}
 	
 	focus = {
 		id = KRD_bet_on_battleships
-		icon = GFX_z_goal_claims_hatay
+		icon = GFX_focus_generic_cruiser2
 		prerequisite = { focus = KRD_protection_of_kurdish_coast }
 		mutually_exclusive = { focus = KRD_submarine_warfare }
 		x = 1
 		y = 1
 		relative_position_id = KRD_protection_of_kurdish_coast
 		
-		cost = 10
+		cost = 7.15
 		
 		cancel_if_invalid = no
 		continue_if_invalid = yes
@@ -3752,9 +4304,15 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus KRD_bet_on_battleships"
-			
+			add_tech_bonus = {
+				name = capital_ships_bonus
+				bonus = 1.0
+				uses = 2
+				category = bc_tech
+				category = bb_tech
+				category = cv_tech	
+				category = ca_tech  
+			}
 		}
 	}
-	
-	
 }
