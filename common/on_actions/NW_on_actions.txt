@@ -4608,38 +4608,6 @@ on_actions = {
 			#	add_to_variable = { counter_days = 1 }
 			#}
 			
-			#Армянские спецслужбы // Решения PER
-			if = {
-				limit = { has_idea = PER_armenian_special_services }
-				subtract_from_variable = { level_integration_south_azerbaijan = 0.01 }
-			}
-			#PER_growth_of_suspicion_among_officers
-			if = {
-				limit = {
-					has_idea = PER_growth_of_suspicion_among_officers
-				}
-				add_to_variable = { PER_army_tension_var = 0.1 }
-				clamp_variable = { var = PER_army_tension_var min = 0 max = 100 }
-			}
-			#PER_dissatisfaction_due_decrease_in_salary
-			if = {
-				limit = {
-					has_idea = PER_dissatisfaction_due_decrease_in_salary
-				}
-				add_to_variable = { PER_army_tension_var = 0.1 }
-				clamp_variable = { var = PER_army_tension_var min = 0 max = 100 }
-			}
-			#ЧЕК 100% НАПРЯГИ ГЕНЕРАЛИТЕТА PER
-			if = {
-				limit = {
-					tag = PER
-					has_variable = PER_army_tension_var
-					check_variable = { PER_army_tension_var = 100 }
-					NOT = { has_country_flag = PER_army_tension_var_end_flag }
-				}
-				set_country_flag = PER_army_tension_var_end_flag
-				country_event = { id = NWpersian.90 }
-			}
 			#ФИКСАЦИЯ ВЛИЯНИЯ И ОТНОШЕНИЯ ДУХОВЕНСТВА PER
 			if = {
 				limit = {
@@ -4651,94 +4619,6 @@ on_actions = {
 				set_variable = { influence_of_clergy_var = 10 }
 			}
 			
-			
-			#ПАЛЕСТИНА
-			#СБРОС ПРИРОСТА НАПРЯГИ
-			if = {
-				limit = { has_variable = BPL_arab_tensions_total }
-				set_variable = { BPL_arab_tensions_chance = modifier@arab_tensions_bonus }
-			}
-			if = {
-				limit = { has_variable = BPL_jews_tensions_total }
-				set_variable = { BPL_jews_tensions_chance = modifier@jews_tensions_bonus }
-			}
-			#Стремление к компромиссу // BPL
-			if = {
-				limit = {
-					OR = {
-						has_variable = BPL_arab_tensions_total
-						has_variable = BPL_jews_tensions_total
-					}
-					has_idea = BPL_striving_for_compromise
-				}
-				if = {
-					limit = {
-						has_variable = BPL_arab_tensions_total
-						check_variable = { BPL_arab_tensions_chance > 0 }
-					}
-					divide_variable = { BPL_arab_tensions_chance = 2 }
-				}
-				if = {
-					limit = {
-						has_variable = BPL_jews_tensions_total
-						check_variable = { BPL_jews_tensions_chance > 0 }
-					}
-					divide_variable = { BPL_jews_tensions_chance = 2 }
-				}
-			}
-			if = {
-				limit = { has_variable = BPL_arab_tensions_total }
-				add_to_variable = { BPL_arab_tensions_total = BPL_arab_tensions_chance }
-				clamp_variable = { var = BPL_arab_tensions_total min = 0 max = 100 }
-			}
-			if = {
-				limit = { has_variable = BPL_jews_tensions_total }
-				add_to_variable = { BPL_jews_tensions_total = BPL_jews_tensions_chance }
-				clamp_variable = { var = BPL_jews_tensions_total min = 0 max = 100 }
-			}
-			
-			#BPL_legalize_arms_supplies_from_europe_idea // BPL
-			if = {
-				limit = {
-					has_idea = BPL_legalize_arms_supplies_from_europe_idea
-				}
-				add_equipment_to_stockpile = {
-					type = infantry_equipment
-					amount = 2
-				}
-			}
-			
-			
-			#TUR_send_kurds_from_region // Ежедневная численность населения в регионе: §R-300§!
-			if = {
-				limit = {
-					any_owned_state = { has_state_flag = TUR_send_kurds_from_region_flag }
-				}
-				every_owned_state = {
-					limit = { has_state_flag = TUR_send_kurds_from_region_flag }
-					add_manpower = -300
-				}
-			}
-			#PER_organize_an_uprising_in_tajikistan // PER
-			if = {
-				limit = {
-					has_country_flag = PER_organize_an_uprising_in_tajikistan_flag
-				}
-				add_equipment_to_stockpile = {
-					type = infantry_equipment
-					amount = -10
-				}
-			}
-			#PER_organize_an_uprising_in_azerbaijan // PER
-			if = {
-				limit = {
-					has_country_flag = PER_organize_an_uprising_in_azerbaijan_flag
-				}
-				add_equipment_to_stockpile = {
-					type = infantry_equipment
-					amount = -10
-				}
-			}
 			#communication_with_black_market_focus // generic
 			if = {
 				limit = {
@@ -4750,7 +4630,6 @@ on_actions = {
 					amount = anarchism_tendency_need_trade_var
 				}
 			}
-			
 			
 			#ANARCHISM UNITY
 			#СБРОС ПРИРОСТА ЕДИНСТВА
@@ -4821,6 +4700,143 @@ on_actions = {
 					}
 					set_country_flag = kurdish_westernization_completed_flag
 					clear_variable = level_kurdish_westernization_var
+				}
+			}
+		}
+	}
+	
+	on_daily_SOV = {
+		effect = {
+			#Армянские спецслужбы // Решения PER
+			if = {
+				limit = { has_idea = PER_armenian_special_services }
+				subtract_from_variable = { level_integration_south_azerbaijan = 0.01 }
+			}
+		}
+	}
+	
+	on_daily_PER = {
+		effect = {
+			#PER_growth_of_suspicion_among_officers
+			if = {
+				limit = {
+					has_idea = PER_growth_of_suspicion_among_officers
+				}
+				add_to_variable = { PER_army_tension_var = 0.1 }
+				clamp_variable = { var = PER_army_tension_var min = 0 max = 100 }
+			}
+			#PER_dissatisfaction_due_decrease_in_salary
+			if = {
+				limit = {
+					has_idea = PER_dissatisfaction_due_decrease_in_salary
+				}
+				add_to_variable = { PER_army_tension_var = 0.1 }
+				clamp_variable = { var = PER_army_tension_var min = 0 max = 100 }
+			}
+			#ЧЕК 100% НАПРЯГИ ГЕНЕРАЛИТЕТА PER
+			if = {
+				limit = {
+					tag = PER
+					has_variable = PER_army_tension_var
+					check_variable = { PER_army_tension_var = 100 }
+					NOT = { has_country_flag = PER_army_tension_var_end_flag }
+				}
+				set_country_flag = PER_army_tension_var_end_flag
+				country_event = { id = NWpersian.90 }
+			}
+			#PER_organize_an_uprising_in_tajikistan // PER
+			if = {
+				limit = {
+					has_country_flag = PER_organize_an_uprising_in_tajikistan_flag
+				}
+				add_equipment_to_stockpile = {
+					type = infantry_equipment
+					amount = -10
+				}
+			}
+			#PER_organize_an_uprising_in_azerbaijan // PER
+			if = {
+				limit = {
+					has_country_flag = PER_organize_an_uprising_in_azerbaijan_flag
+				}
+				add_equipment_to_stockpile = {
+					type = infantry_equipment
+					amount = -10
+				}
+			}
+		}
+	}
+	
+	on_daily_BPL = {
+		effect = {
+			#СБРОС ПРИРОСТА НАПРЯГИ
+			if = {
+				limit = { has_variable = BPL_arab_tensions_total }
+				set_variable = { BPL_arab_tensions_chance = modifier@arab_tensions_bonus }
+			}
+			if = {
+				limit = { has_variable = BPL_jews_tensions_total }
+				set_variable = { BPL_jews_tensions_chance = modifier@jews_tensions_bonus }
+			}
+			
+			#Стремление к компромиссу // BPL
+			if = {
+				limit = {
+					OR = {
+						has_variable = BPL_arab_tensions_total
+						has_variable = BPL_jews_tensions_total
+					}
+					has_idea = BPL_striving_for_compromise
+				}
+				if = {
+					limit = {
+						has_variable = BPL_arab_tensions_total
+						check_variable = { BPL_arab_tensions_chance > 0 }
+					}
+					divide_variable = { BPL_arab_tensions_chance = 2 }
+				}
+				if = {
+					limit = {
+						has_variable = BPL_jews_tensions_total
+						check_variable = { BPL_jews_tensions_chance > 0 }
+					}
+					divide_variable = { BPL_jews_tensions_chance = 2 }
+				}
+			}
+			if = {
+				limit = { has_variable = BPL_arab_tensions_total }
+				add_to_variable = { BPL_arab_tensions_total = BPL_arab_tensions_chance }
+				clamp_variable = { var = BPL_arab_tensions_total min = 0 max = 100 }
+			}
+			if = {
+				limit = { has_variable = BPL_jews_tensions_total }
+				add_to_variable = { BPL_jews_tensions_total = BPL_jews_tensions_chance }
+				clamp_variable = { var = BPL_jews_tensions_total min = 0 max = 100 }
+			}
+			
+			#BPL_legalize_arms_supplies_from_europe_idea // BPL
+			if = {
+				limit = {
+					has_idea = BPL_legalize_arms_supplies_from_europe_idea
+				}
+				add_equipment_to_stockpile = {
+					type = infantry_equipment
+					amount = 2
+				}
+			}
+		}
+	}
+	
+	on_daily_TUR = {
+		effect = {
+			#TUR_send_kurds_from_region // Ежедневная численность населения в регионе: §R-300§!
+			if = {
+				limit = {
+					any_owned_state = { has_state_flag = TUR_send_kurds_from_region_flag }
+				}
+				every_owned_state = {
+					limit = { has_state_flag = TUR_send_kurds_from_region_flag }
+					add_manpower = -300
 				}
 			}
 		}
