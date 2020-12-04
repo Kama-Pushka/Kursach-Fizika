@@ -42,7 +42,31 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus CER_establish_regular_army"
-			
+			hidden_effect = {
+				if = {
+					limit = { NOT = { has_template = "Circassian Division" } }
+					division_template = {
+						name = "Circassian Division"
+						is_locked = no
+						regiments = {
+							infantry = { x = 0 y = 0 }
+							infantry = { x = 0 y = 1 }
+							infantry = { x = 0 y = 2 }
+							infantry = { x = 1 y = 0 }
+							infantry = { x = 1 y = 1 }
+							infantry = { x = 1 y = 2 }
+						}
+					}
+				}
+			}
+			capital_scope = {
+				create_unit = {
+					division = "name = \"Circassian Division\" division_template = \"Circassian Division\" start_experience_factor = 0.2" 
+					owner = ROOT
+					count = 2
+					allow_spawning_on_enemy_provs = yes
+				}
+			}
 		}
 	}
 	
@@ -71,7 +95,31 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus CER_form_mountaineer_squad"
-			
+			hidden_effect = {
+				if = {
+					limit = { NOT = { has_template = "Circassian Mountaineers" } }
+					division_template = {
+						name = "Circassian Mountaineers"
+						is_locked = no
+						regiments = {
+							mountaineers = { x = 0 y = 0 }
+							mountaineers = { x = 0 y = 1 }
+							mountaineers = { x = 0 y = 2 }
+							mountaineers = { x = 1 y = 0 }
+							mountaineers = { x = 1 y = 1 }
+							mountaineers = { x = 1 y = 2 }
+						}
+					}
+				}
+			}
+			capital_scope = {
+				create_unit = {
+					division = "name = \"Circassian Mountaineers\" division_template = \"Circassian Mountaineers\" start_experience_factor = 0.2" 
+					owner = ROOT
+					count = 2
+					allow_spawning_on_enemy_provs = yes
+				}
+			}
 		}
 	}
 	
@@ -100,7 +148,13 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus CER_establish_military_academy"
-			
+			add_tech_bonus = {
+				name = CER_establish_military_academy
+				bonus = 1.0
+				uses = 1
+				category = land_doctrine
+			}
+			add_ideas = CER_establish_military_academy_idea
 		}
 	}
 	
@@ -129,7 +183,12 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus CER_introduce_modern_weapons"
-			
+			add_tech_bonus = {
+				name = CER_introduce_modern_weapons
+				bonus = 1.0
+				uses = 1
+				category = infantry_weapons
+			}
 		}
 	}
 	
@@ -163,7 +222,7 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus CER_recall_experience_of_caucasian_war"
-			
+			add_ideas = CER_recall_experience_of_caucasian_war_idea
 		}
 	}
 	
@@ -192,7 +251,8 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus CER_unite_circassians_and_kabardians"
-			
+			add_stability = 0.15
+			add_war_support = 0.1
 		}
 	}
 	
@@ -221,7 +281,7 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus CER_form_government"
-			
+			add_political_power = 100
 		}
 	}
 	
@@ -244,14 +304,15 @@ focus_tree = {
 			factor = 10
 		}
 		available = {
-			
+			NOT = { has_war_with = TUR }
 		}
 		bypass = {
 		}
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus CER_adopt_first_constitution"
-			
+			add_stability = 0.05
+			add_political_power = 100
 		}
 	}
 	
@@ -281,7 +342,19 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus CER_bet_on_middle_east"
-			
+			every_other_country = {
+				limit = {
+					OR = {
+						original_tag = PER
+						original_tag = IRQ
+						original_tag = SYR
+						original_tag = AFG
+						original_tag = BPL
+					}
+				}
+				add_opinion_modifier = { target = ROOT modifier = CER_friendship_op }
+				ROOT = { add_opinion_modifier = { target = PREV modifier = CER_friendship_op } }
+			}
 		}
 	}
 	
@@ -304,14 +377,20 @@ focus_tree = {
 			factor = 10
 		}
 		available = {
-			
+			is_subject = no
+			GER = {
+				is_faction_leader = yes
+				has_government = fascism
+			}
+			NOT = { has_war_with = GER }
 		}
 		bypass = {
+			is_in_faction_with = GER
 		}
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus CER_join_axis"
-			
+			GER = { country_event = { id = generic.2 days = 1 } }
 		}
 	}
 	
@@ -340,7 +419,28 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus CER_invite_german_advisers"
-			
+			army_experience = 15
+			add_tech_bonus = {
+				name = CER_invite_german_advisers
+				bonus = 1.0
+				uses = 1
+				category = land_doctrine
+			}
+			random_owned_controlled_state = {
+				limit = { 
+					free_building_slots = {
+						building = arms_factory
+						size > 0
+						include_locked = yes
+					}
+				}
+				add_extra_state_shared_building_slots = 1
+				add_building_construction = {
+					type = arms_factory
+					level = 1
+					instant_build = yes
+				}
+			}
 		}
 	}
 	
@@ -369,7 +469,37 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus CER_avenge_muhajirun"
-			
+			add_war_support = 0.05
+			every_state = {
+				limit = {
+					NOT = { is_owned_by = ROOT }
+					OR = {
+						state = 969
+						state = 234
+						state = 970
+						state = 233
+						state = 968
+						state = 893
+					}
+				}
+				add_claim_by = ROOT
+				hidden_effect = {
+					owner = {
+						ROOT = {
+							add_ai_strategy = {
+								type = antagonize
+								id = PREV
+								value = 200
+							}
+							add_ai_strategy = {
+								type = conquer
+								id = PREV
+								value = 100
+							}
+						}
+					}
+				}
+			}
 		}
 	}
 	
@@ -392,14 +522,14 @@ focus_tree = {
 			factor = 10
 		}
 		available = {
-			
+			has_war = no
 		}
 		bypass = {
 		}
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus CER_neutral_foreign_policy"
-			
+			add_ideas = neutrality_idea
 		}
 	}
 	
@@ -422,14 +552,20 @@ focus_tree = {
 			factor = 10
 		}
 		available = {
-			
+			is_subject = no
+			ENG = {
+				is_faction_leader = yes
+				has_government = democratic
+			}
+			NOT = { has_war_with = ENG }
 		}
 		bypass = {
+			is_in_faction_with = ENG
 		}
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus CER_join_allies"
-			
+			ENG = { country_event = { id = generic.2 days = 1 } }
 		}
 	}
 	
@@ -451,14 +587,34 @@ focus_tree = {
 			factor = 10
 		}
 		available = {
-			
 		}
 		bypass = {
 		}
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus CER_prepare_for_defense"
-			
+			add_ideas = KRD_prepare_defend_yourselves_idea
+			every_owned_state = {
+				limit = {
+					is_controlled_by = ROOT
+					any_neighbor_state = {
+						OR = {
+							is_controlled_by = SOV
+							is_controlled_by = TUR
+							is_owned_by = SOV
+							is_owned_by = TUR
+						}
+					}
+				}
+				add_building_construction = {
+					type = bunker
+					level = 1
+					instant_build = yes
+					province = {
+						limit_to_border = yes
+					}
+				}
+			}
 		}
 	}
 	
@@ -492,7 +648,12 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus CER_restore_economy"
-			
+			add_tech_bonus = {
+				name = industrial_bonus
+				bonus = 1.0
+				uses = 1
+				category = industry
+			}
 		}
 	}
 	
@@ -521,7 +682,18 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus CER_rebuild_infrastructure"
-			
+			capital_scope = {
+				add_building_construction = {
+					type = infrastructure
+					level = 1
+					instant_build = yes
+				}
+				add_building_construction = {
+					type = hospital
+					level = 1
+					instant_build = yes
+				}
+			}
 		}
 	}
 	
@@ -550,7 +722,14 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus CER_modernize_economy"
-			
+			capital_scope = {
+				add_extra_state_shared_building_slots = 1
+				add_building_construction = {
+					type = industrial_complex
+					level = 1
+					instant_build = yes
+				}
+			}
 		}
 	}
 	
@@ -572,14 +751,13 @@ focus_tree = {
 			factor = 10
 		}
 		available = {
-			
 		}
 		bypass = {
 		}
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus CER_introduce_study_circassian_languages"
-			
+			add_research_slot = 1
 		}
 	}
 	
@@ -601,14 +779,14 @@ focus_tree = {
 			factor = 10
 		}
 		available = {
-			
+			num_of_factories > 24
 		}
 		bypass = {
 		}
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus CER_university_trabzon"
-			
+			add_research_slot = 1
 		}
 	}
 	
@@ -630,14 +808,14 @@ focus_tree = {
 			factor = 10
 		}
 		available = {
-			
+			num_of_factories > 74
 		}
 		bypass = {
 		}
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus CER_close_gap_with_european_powers"
-			
+			add_research_slot = 1
 		}
 	}
 }
