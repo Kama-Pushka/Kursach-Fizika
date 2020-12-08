@@ -1,0 +1,383 @@
+generic_irregular_army_category = {
+	
+	BHU_summon_peoples_militia = {
+
+		icon = generic_military
+		
+		allowed = {
+			original_tag = BHU
+		}
+		
+		available = {
+			has_war = yes
+			any_state = {
+				is_fully_controlled_by = ROOT
+			}
+		}
+		visible = {
+		}
+		
+		cost = 20
+		days_remove = 7
+		fire_only_once = yes
+		
+		remove_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): remove decision BHU_summon_peoples_militia"
+			custom_effect_tooltip = BHU_summon_peoples_militia_tt
+			hidden_effect = {
+				if = {
+					limit = { NOT = { has_template = "Druk Gyal Khap sena" } }
+					division_template = {
+						name = "Druk Gyal Khap sena"
+						is_locked = yes
+						regiments = {
+							infantry = { x = 0 y = 0 }
+							infantry = { x = 0 y = 1 }
+						}
+					}
+				}
+			}
+			random_controlled_state = {
+				create_unit = {
+					division = "name = \"Punakha sena\" division_template = \"Druk Gyal Khap sena\" start_experience_factor = 0.1" 
+					owner = ROOT
+					count = var:peoples_militia_var
+					allow_spawning_on_enemy_provs = yes
+				}
+			}
+			custom_effect_tooltip = BHU_summon_peoples_militia_tt2
+		}
+		
+		ai_will_do = {
+			factor = 1
+			modifier = {
+				add = 50
+				ai_wants_divisions > 0
+			}
+			modifier = {
+				add = 50
+				enemies_strength_ratio > 1
+			}
+			modifier = {
+				add = -500
+				has_game_rule = { rule = ai_division_limiter_status option = AI_DIVISION_LIMITER_DYNAMIC }
+				check_variable = { num_divisions > ai_upper_limit }
+			}
+		}
+	}
+}
+
+BHU_attracting_foreign_investment_category = {
+
+	BHU_request_financial_assistance_from_london = {
+    	icon = hol_attract_foreign_investors
+		
+        available = {
+            has_idea = BHU_treaty_of_punakha
+			hidden_trigger = {
+				OR = {
+					has_idea = BHU_treaty_of_punakha
+					has_idea = BHU_treaty_of_punakha_2
+				}
+			}
+        }
+		visible = {
+			OR = {
+				has_idea = BHU_treaty_of_punakha
+				has_idea = BHU_treaty_of_punakha_2
+			}
+        }
+		
+		cost = 20
+		
+		complete_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision BHU_request_financial_assistance_from_london"
+			ENG = { country_event = { id = NWbhutan.2 hours = 6 } }
+		}
+		
+		ai_will_do = {
+			factor = 10
+		}
+    }
+	
+	BHU_request_financial_assistance_from_india = {
+    	icon = hol_attract_foreign_investors
+		
+        available = {
+			OR = {
+				has_idea = BHU_treaty_of_punakha
+				RAJ = { is_subject = no }
+			}
+			NOT = { has_war_with = RAJ }
+			hidden_trigger = {
+				OR = {
+					has_idea = BHU_treaty_of_punakha
+					has_idea = BHU_treaty_of_punakha_2
+					RAJ = { is_subject = no }
+				}
+			}
+        }
+		visible = {
+            country_exists = RAJ
+			OR = {
+				has_idea = BHU_treaty_of_punakha
+				has_idea = BHU_treaty_of_punakha_2
+				RAJ = { is_subject = no }
+			}
+			NOT = { has_war_with = RAJ }
+        }
+		
+		cost = 30
+		
+		complete_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision BHU_request_financial_assistance_from_india"
+			RAJ = { country_event = { id = NWbhutan.5 hours = 6 } }
+		}
+		
+		ai_will_do = {
+			factor = 15
+		}
+    }
+	
+	BHU_direct_payments_under_punak_agreement_to_reforms = {
+    	icon = generic_break_treaty
+		
+        available = {
+			has_idea = BHU_treaty_of_punakha
+        }
+		visible = {
+            has_idea = BHU_treaty_of_punakha
+        }
+		fire_only_once = yes
+		cost = 70
+		
+		complete_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision BHU_direct_payments_under_punak_agreement_to_reforms"
+			swap_ideas = {
+				remove_idea = BHU_treaty_of_punakha
+				add_idea = BHU_treaty_of_punakha_2
+			}
+			set_temp_variable = { investment_points_var_temp = 1 }
+			add_to_variable = { investment_points_var = investment_points_var_temp }
+			custom_effect_tooltip = investment_points_var_up_tt
+		}
+		
+		ai_will_do = {
+			factor = 25
+			modifier = {
+				factor = 0
+				is_historical_focus_on = yes
+			}
+		}
+    }
+	
+	BHU_try_to_attract_investment_from_indian_merchants = {
+    	icon = gre_investment_decisions
+	
+		cost = 40
+		
+		complete_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision BHU_try_to_attract_investment_from_indian_merchants"
+			random_list = {
+				40 = {
+					set_temp_variable = { investment_points_var_temp = 1 }
+					add_to_variable = { investment_points_var = investment_points_var_temp }
+					custom_effect_tooltip = investment_points_var_up_tt
+				}
+				60 = { }
+			}
+		}
+		
+		ai_will_do = {
+			factor = 15
+			modifier = {
+				factor = 0
+				is_historical_focus_on = yes
+			}
+		}
+    }
+	
+	BHU_infrastructure_development_in_bhutan = {
+    	icon = hol_draw_up_staff_plans
+		
+		available = {
+			set_temp_variable = { investment_points_trigger_var = 0 }
+			custom_trigger_tooltip = {
+				check_variable = { investment_points_var > investment_points_trigger_var }
+				tooltip = investment_points_var_trigger_tt
+			}
+		}
+		
+		complete_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision BHU_infrastructure_development_in_bhutan"
+			swap_feudal_state_idea = yes
+			random_owned_controlled_state = {
+				limit = {
+					infrastructure < 9
+				}
+				add_building_construction = {
+					type = infrastructure
+					level = 2
+					instant_build = yes
+				}
+			}
+			random_owned_controlled_state = {
+				limit = {
+					hospital < 5
+				}
+				add_building_construction = {
+					type = hospital
+					level = 1
+					instant_build = yes
+				}
+			}
+			set_temp_variable = { investment_points_var_temp = -1 }
+			add_to_variable = { investment_points_var = investment_points_var_temp }
+			custom_effect_tooltip = investment_points_var_up_tt
+		}
+		
+		ai_will_do = {
+			factor = 5
+		}
+    }
+	
+	BHU_creation_of_first_manufactories = {
+    	icon = generic_factory
+		
+		available = {
+			set_temp_variable = { investment_points_trigger_var = 0 }
+			custom_trigger_tooltip = {
+				check_variable = { investment_points_var > investment_points_trigger_var }
+				tooltip = investment_points_var_trigger_tt
+			}
+		}
+		
+		complete_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision BHU_creation_of_first_manufactories"
+			swap_feudal_state_idea = yes
+			random_owned_controlled_state = {
+				limit = { 
+					free_building_slots = {
+						building = industrial_complex
+						size > 1
+						include_locked = yes
+					}
+				}
+				add_extra_state_shared_building_slots = 2
+				add_building_construction = {
+					type = industrial_complex
+					level = 2
+					instant_build = yes
+				}
+			}
+			random_owned_controlled_state = {
+				limit = {
+					hospital < 5
+				}
+				add_building_construction = {
+					type = hospital
+					level = 1
+					instant_build = yes
+				}
+			}
+			set_temp_variable = { investment_points_var_temp = -1 }
+			add_to_variable = { investment_points_var = investment_points_var_temp }
+			custom_effect_tooltip = investment_points_var_up_tt
+		}
+		
+		ai_will_do = {
+			factor = 10
+		}
+    }
+	
+	BHU_agrarian_reform = {
+    	icon = generic_farm
+		fire_only_once = yes
+		available = {
+			set_temp_variable = { investment_points_trigger_var = 0 }
+			custom_trigger_tooltip = {
+				check_variable = { investment_points_var > investment_points_trigger_var }
+				tooltip = investment_points_var_trigger_tt
+			}
+		}
+		
+		complete_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision BHU_agrarian_reform"
+			add_ideas = BHU_agrarian_reform
+			swap_feudal_state_idea = yes
+			set_temp_variable = { investment_points_var_temp = -1 }
+			add_to_variable = { investment_points_var = investment_points_var_temp }
+			custom_effect_tooltip = investment_points_var_up_tt
+		}
+		
+		ai_will_do = {
+			factor = 15
+			modifier = {
+				factor = 0
+				is_historical_focus_on = yes
+			}
+		}
+    }
+	
+	BHU_administrative_reform = {
+    	icon = eng_trade_unions_support
+		fire_only_once = yes
+		available = {
+			set_temp_variable = { investment_points_trigger_var = 0 }
+			custom_trigger_tooltip = {
+				check_variable = { investment_points_var > investment_points_trigger_var }
+				tooltip = investment_points_var_trigger_tt
+			}
+		}
+		
+		complete_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision BHU_administrative_reform"
+			add_political_power = 100
+			swap_feudal_state_idea = yes
+			set_temp_variable = { investment_points_var_temp = -1 }
+			add_to_variable = { investment_points_var = investment_points_var_temp }
+			custom_effect_tooltip = investment_points_var_up_tt
+		}
+		
+		ai_will_do = {
+			factor = 5
+			modifier = {
+				factor = 0
+				is_historical_focus_on = yes
+			}
+			modifier = {
+				add = 10
+				is_historical_focus_on = no
+				has_political_power < 0
+			}
+		}
+    }
+	
+	BHU_opening_sherubtse_college = {
+    	icon = generic_atomic_research
+		fire_only_once = yes
+		available = {
+			set_temp_variable = { investment_points_trigger_var = 0 }
+			custom_trigger_tooltip = {
+				check_variable = { investment_points_var > investment_points_trigger_var }
+				tooltip = investment_points_var_trigger_tt
+			}
+		}
+		
+		complete_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision BHU_opening_sherubtse_college"
+			add_research_slot = 1
+			set_temp_variable = { investment_points_var_temp = -1 }
+			add_to_variable = { investment_points_var = investment_points_var_temp }
+			custom_effect_tooltip = investment_points_var_up_tt
+		}
+		
+		ai_will_do = {
+			factor = 20
+			modifier = {
+				factor = 0
+				is_historical_focus_on = yes
+			}
+		}
+    }
+}
