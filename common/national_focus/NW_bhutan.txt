@@ -5,20 +5,20 @@ focus_tree = {
 		factor = 0
 		
 		modifier = {
-			add = 0
+			add = 10
 			tag = BHU
 		}
 	}
-	continuous_focus_position = { x = 200 y = 1500 }
+	continuous_focus_position = { x = 200 y = 900 }
 	default = no
 	
 	
 	
 	focus = {
 		id = BHU_growing_centralization
-		icon = GFX_focus_mex_privatisation
+		icon = GFX_focus_rom_royal_dictatorship
 		
-		x = 20
+		x = 18
 		y = 0
 		
 		cost = 10
@@ -50,7 +50,7 @@ focus_tree = {
 	
 	focus = {
 		id = BHU_try_to_attract_western_investors
-		icon = GFX_focus_mex_privatisation
+		icon = GFX_z_goal_generic_papers
 		prerequisite = { focus = BHU_growing_centralization }
 		x = -8
 		y = 1
@@ -79,7 +79,7 @@ focus_tree = {
 	
 	focus = {
 		id = BHU_cancel_punakha_treaty
-		icon = GFX_focus_mex_privatisation
+		icon = GFX_focus_generic_monarchy_1
 		prerequisite = { focus = BHU_try_to_attract_western_investors }
 		mutually_exclusive = { focus = BHU_house_of_bhutan }
 		x = -5
@@ -94,22 +94,41 @@ focus_tree = {
 
 		ai_will_do = {
 			factor = 10
+			modifier = {
+				factor = 0
+				is_historical_focus_on = yes
+			}
 		}
 		available = {
-			
 		}
 		bypass = {
+			NOT = { has_idea = BHU_treaty_of_punakha }
+			hidden_trigger = {
+				NOT = { has_idea = BHU_treaty_of_punakha }
+				NOT = { has_idea = BHU_treaty_of_punakha_2 }
+			}
 		}
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BHU_cancel_punakha_treaty"
-			
+			effect_tooltip = { remove_ideas = BHU_treaty_of_punakha }
+			hidden_effect = {
+				remove_ideas = {
+					BHU_treaty_of_punakha
+					BHU_treaty_of_punakha_2
+				}
+			}
+			add_stability = -0.1
+			add_opinion_modifier = { target = ENG modifier = BHU_cancel_punakha_treaty_op }
+			add_opinion_modifier = { target = RAJ modifier = BHU_cancel_punakha_treaty_op }
+			ENG = { add_opinion_modifier = { target = ROOT modifier = BHU_cancel_punakha_treaty_op } }
+			RAJ = { add_opinion_modifier = { target = ROOT modifier = BHU_cancel_punakha_treaty_op } }
 		}
 	}
 	
 	focus = {
 		id = BHU_house_of_bhutan
-		icon = GFX_focus_mex_privatisation
+		icon = GFX_z_goal_government_engineers_2
 		prerequisite = { focus = BHU_try_to_attract_western_investors }
 		mutually_exclusive = { focus = BHU_cancel_punakha_treaty }
 		x = -3
@@ -133,13 +152,26 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BHU_house_of_bhutan"
-			
+			add_tech_bonus = {
+				name = industrial_bonus
+				bonus = 1.0
+				uses = 1
+				category = industry
+			}
+			add_opinion_modifier = { target = ENG modifier = BHU_house_of_bhutan_op }
+			add_opinion_modifier = { target = ENG modifier = BHU_house_of_bhutan_trade_op }
+			add_opinion_modifier = { target = RAJ modifier = BHU_house_of_bhutan_op }
+			add_opinion_modifier = { target = RAJ modifier = BHU_house_of_bhutan_trade_op }
+			ENG = { add_opinion_modifier = { target = ROOT modifier = BHU_house_of_bhutan_op } }
+			ENG = { add_opinion_modifier = { target = ROOT modifier = BHU_house_of_bhutan_trade_op } }
+			RAJ = { add_opinion_modifier = { target = ROOT modifier = BHU_house_of_bhutan_op } }
+			RAJ = { add_opinion_modifier = { target = ROOT modifier = BHU_house_of_bhutan_trade_op } }
 		}
 	}
 	
 	focus = {
 		id = BHU_recall_claim_to_cooch_bihar
-		icon = GFX_focus_mex_privatisation
+		icon = GFX_goal_generic_territory_or_war
 		prerequisite = { focus = BHU_cancel_punakha_treaty }
 		x = -5
 		y = 1
@@ -190,7 +222,7 @@ focus_tree = {
 	
 	focus = {
 		id = BHU_establish_contact_with_japan
-		icon = GFX_focus_mex_privatisation
+		icon = GFX_focus_chi_collaboration_with_the_japanese
 		prerequisite = { focus = BHU_cancel_punakha_treaty }
 		mutually_exclusive = { focus = BHU_unite_himalayas focus = BHU_persistence_of_political_isolation }
 		x = -3
@@ -207,20 +239,90 @@ focus_tree = {
 			factor = 10
 		}
 		available = {
-			
+			country_exists = JAP
+			NOT = { has_war_with = JAP }
+			is_subject = no
+			is_in_faction = no
+			JAP = { is_subject = no }
 		}
 		bypass = {
+			is_in_faction_with = JAP
 		}
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BHU_establish_contact_with_japan"
-			
+			add_opinion_modifier = { target = JAP modifier = emphasis_on_alliance }
+			JAP = {
+				add_opinion_modifier = { target = ROOT modifier = emphasis_on_alliance }
+				add_ai_strategy = {
+					type = befriend
+					id = ROOT
+					value = 100
+				}
+				add_ai_strategy = {
+					type = alliance
+					id = ROOT		
+					value = 200
+				}
+			}
+			if = {
+				limit = {
+					JAP = {
+						is_in_faction = yes
+						is_faction_leader = no
+					}
+				}
+				random_other_country = {
+					limit = {
+						is_in_faction = yes
+						is_in_faction_with = JAP
+					}
+					country_event = { id = generic.2 hours = 6 }
+					hidden_effect = {
+						add_ai_strategy = {
+							type = alliance
+							id = ROOT		
+							value = 200
+						}
+						ROOT = {
+							add_ai_strategy = {
+								type = alliance
+								id = PREV		
+								value = 200
+							}
+						}
+					}
+				}
+			}
+			else_if = {
+				limit = {
+					JAP = { is_faction_leader = yes }
+				}
+				JAP = { country_event = { id = generic.2 hours = 6 } }
+			}
+			if = {
+				limit = { has_idea = isolation }
+				swap_ideas = {
+					remove_idea = isolation
+					add_idea = civilian_economy
+				}
+			}
+			add_ai_strategy = {
+				type = befriend
+				id = JAP
+				value = 100
+			}
+			add_ai_strategy = {
+				type = alliance
+				id = JAP		
+				value = 200
+			}
 		}
 	}
 	
 	focus = {
 		id = BHU_second_invasion_of_sikkim
-		icon = GFX_focus_mex_privatisation
+		icon = GFX_goal_generic_major_war
 		prerequisite = { focus = BHU_establish_contact_with_japan }
 		x = -2
 		y = 1
@@ -263,7 +365,7 @@ focus_tree = {
 	
 	focus = {
 		id = BHU_sikkim_tanning_industry
-		icon = GFX_focus_mex_privatisation
+		icon = GFX_z_goal_lather_factory
 		prerequisite = { focus = BHU_second_invasion_of_sikkim }
 		x = 0
 		y = 1
@@ -299,7 +401,7 @@ focus_tree = {
 	
 	focus = {
 		id = BHU_revenge_on_tibet
-		icon = GFX_focus_mex_privatisation
+		icon = GFX_goal_generic_political_pressure
 		prerequisite = { focus = BHU_establish_contact_with_japan }
 		x = 0
 		y = 1
@@ -342,7 +444,7 @@ focus_tree = {
 	
 	focus = {
 		id = BHU_manufacture_of_weapons_drably_lecong
-		icon = GFX_focus_mex_privatisation
+		icon = GFX_z_goal_generic_king_factory
 		prerequisite = { focus = BHU_revenge_on_tibet }
 		x = 0
 		y = 1
@@ -368,7 +470,7 @@ focus_tree = {
 			757 = {
 				add_extra_state_shared_building_slots = 1
 				add_building_construction = {
-					type = industrial_complex
+					type = arms_factory
 					level = 1
 					instant_build = yes
 				}
@@ -378,7 +480,7 @@ focus_tree = {
 	
 	focus = {
 		id = BHU_unite_himalayas
-		icon = GFX_focus_mex_privatisation
+		icon = GFX_goal_molotov_ribbentrop_pact
 		prerequisite = { focus = BHU_cancel_punakha_treaty }
 		mutually_exclusive = { focus = BHU_establish_contact_with_japan focus = BHU_persistence_of_political_isolation }
 		x = 0
@@ -392,7 +494,7 @@ focus_tree = {
 		available_if_capitulated = no
 
 		ai_will_do = {
-			factor = 10
+			factor = 0
 		}
 		available = {
 			is_subject = no
@@ -405,6 +507,13 @@ focus_tree = {
 				can_create_factions = yes
 			}
 			create_faction = nepal_ally
+			if = {
+				limit = { has_idea = isolation }
+				swap_ideas = {
+					remove_idea = isolation
+					add_idea = civilian_economy
+				}
+			}
 		}
 	}
 	
@@ -779,7 +888,7 @@ focus_tree = {
 	
 	focus = {
 		id = BHU_persistence_of_political_isolation
-		icon = GFX_focus_mex_privatisation
+		icon = GFX_z_goal_generic_neutrality
 		prerequisite = { focus = BHU_cancel_punakha_treaty focus = BHU_house_of_bhutan }
 		mutually_exclusive = { focus = BHU_establish_contact_with_japan focus = BHU_unite_himalayas }
 		x = 0
@@ -802,14 +911,16 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BHU_persistence_of_political_isolation"
-			
+			add_stability = 0.1
+			add_opinion_modifier = { target = RAJ modifier = BHU_persistence_of_political_isolation_op }
+			RAJ = { add_opinion_modifier = { target = ROOT modifier = BHU_persistence_of_political_isolation_op } }
 		}
 	}
 	
 	
 	focus = {
 		id = BHU_infrastructure_development_in_bhutan
-		icon = GFX_focus_mex_privatisation
+		icon = GFX_goal_generic_construct_infrastructure
 		prerequisite = { focus = BHU_try_to_attract_western_investors }
 		x = 0
 		y = 1
@@ -825,20 +936,47 @@ focus_tree = {
 			factor = 10
 		}
 		available = {
-			
+			set_temp_variable = { investment_points_trigger_var = 0 }
+			custom_trigger_tooltip = {
+				check_variable = { investment_points_var > investment_points_trigger_var }
+				tooltip = investment_points_var_trigger_tt
+			}
 		}
 		bypass = {
 		}
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BHU_infrastructure_development_in_bhutan"
-			
+			swap_feudal_state_idea = yes
+			random_owned_controlled_state = {
+				limit = {
+					infrastructure < 9
+				}
+				add_building_construction = {
+					type = infrastructure
+					level = 2
+					instant_build = yes
+				}
+			}
+			random_owned_controlled_state = {
+				limit = {
+					hospital < 5
+				}
+				add_building_construction = {
+					type = hospital
+					level = 1
+					instant_build = yes
+				}
+			}
+			set_temp_variable = { investment_points_var_temp = -1 }
+			add_to_variable = { investment_points_var = investment_points_var_temp }
+			custom_effect_tooltip = investment_points_var_up_tt
 		}
 	}
 	
 	focus = {
 		id = BHU_creation_of_first_manufactories
-		icon = GFX_focus_mex_privatisation
+		icon = GFX_goal_generic_construct_civ_factory
 		prerequisite = { focus = BHU_infrastructure_development_in_bhutan }
 		x = -1
 		y = 1
@@ -854,20 +992,52 @@ focus_tree = {
 			factor = 10
 		}
 		available = {
-			
+			set_temp_variable = { investment_points_trigger_var = 0 }
+			custom_trigger_tooltip = {
+				check_variable = { investment_points_var > investment_points_trigger_var }
+				tooltip = investment_points_var_trigger_tt
+			}
 		}
 		bypass = {
 		}
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BHU_creation_of_first_manufactories"
-			
+			swap_feudal_state_idea = yes
+			random_owned_controlled_state = {
+				limit = { 
+					free_building_slots = {
+						building = industrial_complex
+						size > 1
+						include_locked = yes
+					}
+				}
+				add_extra_state_shared_building_slots = 2
+				add_building_construction = {
+					type = industrial_complex
+					level = 2
+					instant_build = yes
+				}
+			}
+			random_owned_controlled_state = {
+				limit = {
+					hospital < 5
+				}
+				add_building_construction = {
+					type = hospital
+					level = 1
+					instant_build = yes
+				}
+			}
+			set_temp_variable = { investment_points_var_temp = -1 }
+			add_to_variable = { investment_points_var = investment_points_var_temp }
+			custom_effect_tooltip = investment_points_var_up_tt
 		}
 	}
 	
 	focus = {
 		id = BHU_agrarian_reform
-		icon = GFX_focus_mex_privatisation
+		icon = GFX_goal_agrarian
 		prerequisite = { focus = BHU_infrastructure_development_in_bhutan }
 		x = 1
 		y = 1
@@ -881,22 +1051,34 @@ focus_tree = {
 
 		ai_will_do = {
 			factor = 10
+			modifier = {
+				factor = 0
+				is_historical_focus_on = yes
+			}
 		}
 		available = {
-			
+			set_temp_variable = { investment_points_trigger_var = 0 }
+			custom_trigger_tooltip = {
+				check_variable = { investment_points_var > investment_points_trigger_var }
+				tooltip = investment_points_var_trigger_tt
+			}
 		}
 		bypass = {
 		}
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BHU_agrarian_reform"
-			
+			add_ideas = BHU_agrarian_reform
+			swap_feudal_state_idea = yes
+			set_temp_variable = { investment_points_var_temp = -1 }
+			add_to_variable = { investment_points_var = investment_points_var_temp }
+			custom_effect_tooltip = investment_points_var_up_tt
 		}
 	}
 	
 	focus = {
 		id = BHU_administrative_reform
-		icon = GFX_focus_mex_privatisation
+		icon = GFX_focus_generic_treaty
 		prerequisite = { focus = BHU_agrarian_reform }
 		x = 0
 		y = 1
@@ -910,22 +1092,34 @@ focus_tree = {
 
 		ai_will_do = {
 			factor = 10
+			modifier = {
+				factor = 0
+				is_historical_focus_on = yes
+			}
 		}
 		available = {
-			
+			set_temp_variable = { investment_points_trigger_var = 0 }
+			custom_trigger_tooltip = {
+				check_variable = { investment_points_var > investment_points_trigger_var }
+				tooltip = investment_points_var_trigger_tt
+			}
 		}
 		bypass = {
 		}
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BHU_administrative_reform"
-			
+			add_political_power = 100
+			swap_feudal_state_idea = yes
+			set_temp_variable = { investment_points_var_temp = -1 }
+			add_to_variable = { investment_points_var = investment_points_var_temp }
+			custom_effect_tooltip = investment_points_var_up_tt
 		}
 	}
 	
 	focus = {
 		id = BHU_opening_of_college_sherubtse
-		icon = GFX_focus_mex_privatisation
+		icon = GFX_z_goal_vienna_circle
 		prerequisite = { focus = BHU_creation_of_first_manufactories focus = BHU_agrarian_reform }
 		x = -1
 		y = 1
@@ -939,16 +1133,27 @@ focus_tree = {
 
 		ai_will_do = {
 			factor = 10
+			modifier = {
+				factor = 0
+				is_historical_focus_on = yes
+			}
 		}
 		available = {
-			
+			set_temp_variable = { investment_points_trigger_var = 0 }
+			custom_trigger_tooltip = {
+				check_variable = { investment_points_var > investment_points_trigger_var }
+				tooltip = investment_points_var_trigger_tt
+			}
 		}
 		bypass = {
 		}
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BHU_opening_of_college_sherubtse"
-			
+			add_research_slot = 1
+			set_temp_variable = { investment_points_var_temp = -1 }
+			add_to_variable = { investment_points_var = investment_points_var_temp }
+			custom_effect_tooltip = investment_points_var_up_tt
 		}
 	}
 	
@@ -959,7 +1164,7 @@ focus_tree = {
 	
 	focus = {
 		id = BHU_categorization_of_taxation
-		icon = GFX_focus_mex_privatisation
+		icon = GFX_z_goal_generic_keynesian_economics
 		prerequisite = { focus = BHU_growing_centralization }
 		x = 0
 		y = 1
@@ -987,7 +1192,7 @@ focus_tree = {
 	
 	focus = {
 		id = BHU_improve_administrative_system
-		icon = GFX_focus_mex_privatisation
+		icon = GFX_z_goal_generic_state1
 		prerequisite = { focus = BHU_try_to_attract_western_investors focus = BHU_categorization_of_taxation }
 		x = -5
 		y = 1
@@ -1015,7 +1220,7 @@ focus_tree = {
 	
 	focus = {
 		id = BHU_craft_workshop
-		icon = GFX_focus_mex_privatisation
+		icon = GFX_z_goal_market_is_source_of_life
 		prerequisite = { focus = BHU_categorization_of_taxation }
 		x = -3
 		y = 2
@@ -1057,7 +1262,7 @@ focus_tree = {
 	
 	focus = {
 		id = BHU_renovation_of_monasteries
-		icon = GFX_focus_mex_privatisation
+		icon = GFX_z_goal_stop_east_politic
 		prerequisite = { focus = BHU_categorization_of_taxation }
 		x = -2
 		y = 1
@@ -1098,7 +1303,7 @@ focus_tree = {
 	
 	focus = {
 		id = BHU_monastic_education
-		icon = GFX_focus_mex_privatisation
+		icon = GFX_z_goal_generic_political_support
 		prerequisite = { focus = BHU_renovation_of_monasteries }
 		x = 0
 		y = 2
@@ -1127,7 +1332,7 @@ focus_tree = {
 	
 	focus = {
 		id = BHU_irrigation_system
-		icon = GFX_focus_mex_privatisation
+		icon = GFX_z_goal_irrigation_system
 		prerequisite = { focus = BHU_categorization_of_taxation }
 		x = 0
 		y = 1
@@ -1158,7 +1363,7 @@ focus_tree = {
 	
 	focus = {
 		id = BHU_white_rice
-		icon = GFX_focus_mex_privatisation
+		icon = GFX_z_goal_white_rice
 		prerequisite = { focus = BHU_irrigation_system }
 		mutually_exclusive = { focus = BHU_red_rice }
 		x = -1
@@ -1188,7 +1393,7 @@ focus_tree = {
 	
 	focus = {
 		id = BHU_red_rice
-		icon = GFX_focus_mex_privatisation
+		icon = GFX_z_goal_red_rice
 		prerequisite = { focus = BHU_irrigation_system }
 		mutually_exclusive = { focus = BHU_white_rice }
 		x = 1
@@ -1218,7 +1423,7 @@ focus_tree = {
 	
 	focus = {
 		id = BHU_transit_of_goods_through_phuntsholing
-		icon = GFX_focus_mex_privatisation
+		icon = GFX_z_goal_market_is_source_of_law
 		prerequisite = { focus = BHU_white_rice focus = BHU_red_rice }
 		x = 1
 		y = 1
@@ -1247,7 +1452,7 @@ focus_tree = {
 	
 	focus = {
 		id = BHU_send_heir_to_study_in_sikkim
-		icon = GFX_focus_mex_privatisation
+		icon = GFX_z_goal_brain
 		prerequisite = { focus = BHU_categorization_of_taxation }
 		x = 2
 		y = 1
@@ -1276,7 +1481,7 @@ focus_tree = {
 	
 	focus = {
 		id = BHU_new_residence_for_first_wife
-		icon = GFX_focus_mex_privatisation
+		icon = GFX_z_goal_approval_of_private_property
 		prerequisite = { focus = BHU_send_heir_to_study_in_sikkim }
 		x = 0
 		y = 2
@@ -1305,7 +1510,7 @@ focus_tree = {
 	
 	focus = {
 		id = BHU_open_school_in_paro_and_wangdi_gangtang
-		icon = GFX_focus_mex_privatisation
+		icon = GFX_z_goal_great_science
 		prerequisite = { focus = BHU_monastic_education }
 		prerequisite = { focus = BHU_transit_of_goods_through_phuntsholing }
 		prerequisite = { focus = BHU_new_residence_for_first_wife }
@@ -1336,7 +1541,7 @@ focus_tree = {
 	
 	focus = {
 		id = BHU_discredit_lamas_among_people
-		icon = GFX_focus_mex_privatisation
+		icon = GFX_z_goal_discredit_lamas_among_people
 		prerequisite = { focus = BHU_categorization_of_taxation }
 		x = 3
 		y = 2
@@ -1370,7 +1575,7 @@ focus_tree = {
 	
 	focus = {
 		id = BHU_military_courses_for_king
-		icon = GFX_focus_mex_privatisation
+		icon = GFX_z_goal_lessons_of_italian_ethiopian_war
 		prerequisite = { focus = BHU_growing_centralization }
 		x = 11
 		y = 1
@@ -1405,7 +1610,7 @@ focus_tree = {
 	
 	focus = {
 		id = BHU_handicraft_workshop
-		icon = GFX_focus_mex_privatisation
+		icon = GFX_z_goal_production
 		prerequisite = { focus = BHU_categorization_of_taxation focus = BHU_military_courses_for_king }
 		x = 5
 		y = 1
@@ -1448,7 +1653,7 @@ focus_tree = {
 	
 	focus = {
 		id = BHU_royal_bodyguards
-		icon = GFX_focus_mex_privatisation
+		icon = GFX_z_goal_peoples_army_anarch
 		prerequisite = { focus = BHU_military_courses_for_king }
 		x = -3
 		y = 1
@@ -1477,7 +1682,7 @@ focus_tree = {
 	
 	focus = {
 		id = BHU_purchase_of_british_rifles
-		icon = GFX_focus_mex_privatisation
+		icon = GFX_z_goal_let_me_guns
 		prerequisite = { focus = BHU_royal_bodyguards }
 		x = -1
 		y = 1
@@ -1514,7 +1719,7 @@ focus_tree = {
 	
 	focus = {
 		id = BHU_support_network_of_dzongs
-		icon = GFX_focus_mex_privatisation
+		icon = GFX_z_goal_nested_fortifications
 		prerequisite = { focus = BHU_military_courses_for_king }
 		x = -1
 		y = 1
@@ -1527,7 +1732,7 @@ focus_tree = {
 		available_if_capitulated = no
 
 		ai_will_do = {
-			factor = 10
+			factor = 25
 		}
 		available = {
 			
@@ -1537,13 +1742,22 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BHU_support_network_of_dzongs"
-			
+			add_ideas = BHU_support_network_of_dzongs_idea
+			every_owned_state = {
+				add_building_construction = {
+					type = infrastructure
+					level = 1
+					instant_build = yes
+				}
+			}
+			add_to_variable = { peoples_militia_var = 1 }
+			custom_effect_tooltip = BHU_support_network_of_dzongs_tt
 		}
 	}
 	
 	focus = {
 		id = BHU_trongsa_dzong
-		icon = GFX_focus_mex_privatisation
+		icon = GFX_z_goal_monarchy_power
 		prerequisite = { focus = BHU_support_network_of_dzongs }
 		x = 0
 		y = 1
@@ -1579,7 +1793,7 @@ focus_tree = {
 	
 	focus = {
 		id = BHU_send_recruits_to_india_for_training
-		icon = GFX_focus_mex_privatisation
+		icon = GFX_z_goal_Segreration
 		prerequisite = { focus = BHU_royal_bodyguards }
 		prerequisite = { focus = BHU_trongsa_dzong }
 		x = -1
@@ -1616,7 +1830,7 @@ focus_tree = {
 	
 	focus = {
 		id = BHU_start_creation_of_regular_army
-		icon = GFX_focus_mex_privatisation
+		icon = GFX_focus_generic_manpower
 		prerequisite = { focus = BHU_support_network_of_dzongs }
 		mutually_exclusive = { focus = BHU_bet_on_militia }
 		x = 2
@@ -1640,13 +1854,34 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BHU_start_creation_of_regular_army"
-			
+			add_stability = -0.1
+			army_experience = 25
+			if = {
+				limit = { NOT = { has_template = "Paidala Dibhijana" } }
+				division_template = {
+					name = "Paidala Dibhijana"
+					regiments = {
+						infantry = { x = 0 y = 0 }
+						infantry = { x = 0 y = 1 }
+						infantry = { x = 1 y = 0 }
+						infantry = { x = 1 y = 1 }
+						infantry = { x = 2 y = 0 }
+					}
+				}
+			}
+			if = {
+				limit = { has_idea = irregular_army }
+				swap_ideas = {
+					remove_idea = irregular_army
+					add_idea = limited_conscription
+				}
+			}
 		}
 	}
 	
 	focus = {
 		id = BHU_production_of_equipment_for_troops
-		icon = GFX_focus_mex_privatisation
+		icon = GFX_z_goal_factory_complex
 		prerequisite = { focus = BHU_start_creation_of_regular_army }
 		x = 0
 		y = 1
@@ -1669,13 +1904,27 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BHU_production_of_equipment_for_troops"
-			
+			random_owned_controlled_state = {
+				limit = { 
+					free_building_slots = {
+						building = arms_factory
+						size > 0
+						include_locked = yes
+					}
+				}
+				add_extra_state_shared_building_slots = 1
+				add_building_construction = {
+					type = arms_factory
+					level = 1
+					instant_build = yes
+				}
+			}
 		}
 	}
 	
 	focus = {
 		id = BHU_introduce_artillery_to_troops
-		icon = GFX_focus_mex_privatisation
+		icon = GFX_z_goal_artillery
 		prerequisite = { focus = BHU_production_of_equipment_for_troops }
 		x = 0
 		y = 1
@@ -1698,13 +1947,18 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BHU_introduce_artillery_to_troops"
-			
+			add_tech_bonus = {
+				name = BHU_introduce_artillery_to_troops
+				bonus = 1.0
+				uses = 1
+				category = artillery
+			}
 		}
 	}
 	
 	focus = {
 		id = BHU_bet_on_militia
-		icon = GFX_focus_mex_privatisation
+		icon = GFX_z_goal_bet_on_militia
 		prerequisite = { focus = BHU_support_network_of_dzongs }
 		mutually_exclusive = { focus = BHU_start_creation_of_regular_army }
 		x = 4
@@ -1719,6 +1973,10 @@ focus_tree = {
 
 		ai_will_do = {
 			factor = 10
+			modifier = {
+				factor = 0
+				is_historical_focus_on = yes
+			}
 		}
 		available = {
 			
@@ -1728,13 +1986,19 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BHU_bet_on_militia"
-			
+			custom_effect_tooltip = BHU_bet_on_militia_tt
+			hidden_effect = {
+				if = {
+					limit = { has_war = no }
+					delete_unit_template_and_units = { division_template = "Druk Gyal Khap sena" }
+				}
+			}
 		}
 	}
 	
 	focus = {
 		id = BHU_arm_loyal_penlops
-		icon = GFX_focus_mex_privatisation
+		icon = GFX_z_goal_peasents_soldiers
 		prerequisite = { focus = BHU_bet_on_militia }
 		x = 0
 		y = 1
@@ -1750,20 +2014,27 @@ focus_tree = {
 			factor = 10
 		}
 		available = {
-			
+			OR = {
+				434 = { NOT = { is_controlled_by = TIB } }
+				757 = { NOT = { is_controlled_by = TIB } }
+				1104 = { NOT = { is_controlled_by = SKM } }
+				432 = { NOT = { is_controlled_by = RAJ } }
+				902 = { NOT = { is_controlled_by = RAJ } }
+			}
 		}
 		bypass = {
 		}
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BHU_arm_loyal_penlops"
-			
+			add_to_variable = { peoples_militia_var = 2 }
+			custom_effect_tooltip = BHU_arm_loyal_penlops_tt
 		}
 	}
 	
 	focus = {
 		id = BHU_experience_of_duar_war
-		icon = GFX_focus_mex_privatisation
+		icon = GFX_z_goal_mountain_rifle_artillery
 		prerequisite = { focus = BHU_military_courses_for_king }
 		x = 2
 		y = 1
@@ -1797,5 +2068,4 @@ focus_tree = {
 			hidden_effect = { set_technology = { mountain_warfare = 1 } }
 		}
 	}
-	
 }
