@@ -5095,6 +5095,17 @@ nw_interactions_with_allies_category = {
 						is_subject_of = FROM
 					}
 				}
+				OR = {
+					any_neighbor_state = {
+						owner = {
+							OR = {
+								tag = ROOT
+								is_subject_of = ROOT
+							}
+						}
+					}
+					is_coastal = yes
+				}
 			}
 		}
 		
@@ -5123,6 +5134,17 @@ nw_interactions_with_allies_category = {
 						tag = FROM
 						is_subject_of = FROM
 					}
+				}
+				OR = {
+					any_neighbor_state = {
+						owner = {
+							OR = {
+								tag = ROOT
+								is_subject_of = ROOT
+							}
+						}
+					}
+					is_coastal = yes
 				}
 			}
 			if = {
@@ -5164,6 +5186,17 @@ nw_interactions_with_allies_category = {
 						tag = FROM
 						is_subject_of = FROM
 					}
+				}
+				OR = {
+					any_neighbor_state = {
+						owner = {
+							OR = {
+								tag = ROOT
+								is_subject_of = ROOT
+							}
+						}
+					}
+					is_coastal = yes
 				}
 			}
 		}
@@ -5210,7 +5243,44 @@ nw_interactions_with_allies_category = {
 							}
 						}
 					}
-					set_state_flag = is_demand_territories_of_@ROOT
+					ROOT = {
+						add_to_temp_variable = { temp0 = 1 }
+						log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): NUM OF DEMAND STATES: [?temp0]"
+					}
+				}
+				while_loop_effect = {
+					limit = { check_variable = { temp0 > 0 } }
+					add_to_temp_variable = { temp0 = -1 }
+					random_state = {
+						limit = {
+							NOT = { has_state_flag = is_demand_territories_of_@ROOT }
+							OR = {
+								is_core_of = ROOT
+								is_claimed_by = ROOT
+							}
+							owner = {
+								OR = {
+									tag = FROM
+									is_subject_of = FROM
+								}
+							}
+							OR = {
+								any_neighbor_state = {
+									OR = {
+										has_state_flag = is_demand_territories_of_@ROOT
+										owner = {
+											OR = {
+												tag = ROOT
+												is_subject_of = ROOT
+											}
+										}
+									}
+								}
+								is_coastal = yes
+							}
+						}
+						set_state_flag = is_demand_territories_of_@ROOT
+					}
 				}
 			}
 		}
