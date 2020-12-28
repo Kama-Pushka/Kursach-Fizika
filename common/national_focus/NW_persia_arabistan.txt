@@ -40,7 +40,13 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus KHU_arabistans_own_army"
-			
+			add_war_support = 0.15
+			add_tech_bonus = {
+				name = KHU_arabistans_own_army
+				bonus = 0.25
+				uses = 1
+				category = support_tech			
+			}
 		}
 	}
 	
@@ -146,11 +152,37 @@ focus_tree = {
 		available = {
 		}
 		bypass = {
+			OR = {
+				NOT = { ountry_exists = ENG }
+				has_war_with = ENG
+			}
 		}
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus KHU_official_purchase_of_british_weapons"
-			
+			ENG = { country_event = { id = NWpersian.302 hours = 6 } }
+			effect_tooltip = {
+				add_political_power = -150
+				ENG = {
+					add_political_power = 150
+					send_equipment = {
+						equipment = infantry_equipment
+						amount = 1000
+						target = ROOT
+					}
+					send_equipment = {
+						equipment = support_equipment
+						amount = 150
+						target = ROOT
+					}
+					send_equipment = {
+						equipment = artillery_equipment
+						amount = 250
+						target = ROOT
+					}
+					custom_effect_tooltip = needs_approval
+				}
+			}
 		}
 	}
 	
@@ -267,6 +299,12 @@ focus_tree = {
 			factor = 10
 		}
 		available = {
+			ENG = {
+				OR = {
+					has_tech = improved_infantry_weapons
+					has_tech = advanced_infantry_weapons
+				}
+			}
 		}
 		bypass = {
 			OR = {
@@ -277,26 +315,35 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus KHU_british_licenses"
-			if = {
-				limit = { ENG = { has_tech = improved_infantry_weapons } }
-				ENG = {
-					create_production_license = {
-						target = ROOT
-						equipment = {
-							type = infantry_equipment_2
+			ENG = { country_event = { id = NWpersian.303 hours = 6 } }
+			effect_tooltip = {
+				add_political_power = -75
+				if = {
+					limit = { ENG = { has_tech = advanced_infantry_weapons } }
+					ENG = {
+						add_political_power = 75
+						create_production_license = {
+							target = ROOT
+							equipment = {
+								type = infantry_equipment_3
+							}
+							cost_factor = 0
 						}
-						cost_factor = 0
+						custom_effect_tooltip = needs_approval
 					}
 				}
-			}
-			else = {
-				ENG = {
-					create_production_license = {
-						target = ROOT
-						equipment = {
-							type = infantry_equipment_1
+				else_if = {
+					limit = { ENG = { has_tech = improved_infantry_weapons } }
+					ENG = {
+						add_political_power = 75
+						create_production_license = {
+							target = ROOT
+							equipment = {
+								type = infantry_equipment_2
+							}
+							cost_factor = 0
 						}
-						cost_factor = 0
+						custom_effect_tooltip = needs_approval
 					}
 				}
 			}
@@ -641,8 +688,8 @@ focus_tree = {
 	}
 	
 	focus = {
-		id = KHU_xxx
-		icon = GFX_focus_generic_treaty
+		id = KHU_development_plan_ahwaz
+		icon = GFX_goal_generic_construction
 		prerequisite = { focus = KHU_sell_personal_possessions_in_other_countries }
 		prerequisite = { focus = KHU_modernization_of_port_of_ahvaz }
 		x = 1
@@ -659,13 +706,25 @@ focus_tree = {
 			factor = 10
 		}
 		available = {
+			controls_state = 413
 		}
 		bypass = {
 		}
 		
 		completion_reward = {
-			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus KHU_xxx"
-			
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus KHU_development_plan_ahwaz"
+			413 = {
+				add_building_construction = {
+					type = infrastructure
+					level = 2
+					instant_build = yes
+				}
+				add_building_construction = {
+					type = hospital
+					level = 2
+					instant_build = yes
+				}
+			}
 		}
 	}
 	
@@ -673,10 +732,10 @@ focus_tree = {
 		id = KHU_army_elites
 		icon = GFX_z_goal_generic_military_lobby
 		prerequisite = { focus = KHU_high_quality_training }
-		prerequisite = { focus = KHU_xxx }
+		prerequisite = { focus = KHU_development_plan_ahwaz }
 		x = -1
 		y = 1
-		relative_position_id = KHU_xxx
+		relative_position_id = KHU_development_plan_ahwaz
 
 		cost = 10
 		
@@ -864,7 +923,7 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus KHU_working_constitution"
-			
+			remove_ideas = KHU_manual_state_management
 		}
 	}
 	
@@ -892,7 +951,8 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus KHU_political_rights_for_women"
-			
+			add_popularity = { ideology = var:current_party_ideology_group popularity = 0.15 }
+			set_rule = { can_generate_female_aces = yes }
 		}
 	}
 	
@@ -962,7 +1022,7 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus KHU_political_freedoms_without_political_parties"
-			
+			add_ideas = KHU_political_freedoms_without_political_parties
 		}
 	}
 	
@@ -1018,7 +1078,7 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus KHU_restoration_of_local_autonomy"
-			add_stability = 0.1
+			add_ideas = KHU_restoration_of_local_autonomy_idea
 			every_other_country = {
 				limit = { NOT = { has_war_with = ROOT } }
 				every_state = {
@@ -1146,8 +1206,8 @@ focus_tree = {
 	}
 	
 	focus = {
-		id = KHU_xxx2
-		icon = GFX_focus_generic_treaty
+		id = KHU_transition_to_full_federation
+		icon = GFX_goal_generic_national_unity
 		prerequisite = { focus = KHU_link_country_with_roads }
 		prerequisite = { focus = KHU_modern_tax_legislation }
 		x = 1
@@ -1169,8 +1229,9 @@ focus_tree = {
 		}
 		
 		completion_reward = {
-			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus KHU_xxx2"
-			
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus KHU_transition_to_full_federation"
+			remove_ideas = KHU_restoration_of_local_autonomy_idea
+			set_cosmetic_tag = KHU_FEDERATION
 		}
 	}
 	
@@ -1203,9 +1264,17 @@ focus_tree = {
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus KHU_dispatch_to_london"
 			add_war_support = 0.1
-			add_equipment_to_stockpile = {
-				type = infantry_equipment
-				amount = 2000
+			ENG = { country_event = { id = NWpersian.304 hours = 6 } }
+			effect_tooltip = {
+				add_political_power = -25
+				ENG = {
+					add_political_power = 25
+					send_equipment = {
+						equipment = infantry_equipment
+						amount = 1000
+						target = ROOT
+					}
+				}
 			}
 		}
 	}
@@ -1230,6 +1299,10 @@ focus_tree = {
 		available = {
 		}
 		bypass = {
+			OR = {
+				NOT = { country_exists = ENG }
+				has_war_with = ENG
+			}
 		}
 		
 		completion_reward = {
@@ -1264,6 +1337,10 @@ focus_tree = {
 			controls_state = 413
 		}
 		bypass = {
+			OR = {
+				NOT = { country_exists = ENG }
+				has_war_with = ENG
+			}
 		}
 		
 		completion_reward = {
@@ -1293,6 +1370,10 @@ focus_tree = {
 			controls_state = 413
 		}
 		bypass = {
+			OR = {
+				NOT = { country_exists = ENG }
+				has_war_with = ENG
+			}
 		}
 		
 		completion_reward = {
@@ -1331,6 +1412,8 @@ focus_tree = {
 			factor = 10
 		}
 		available = {
+			country_exists = ENG
+			NOT = { has_war_with = ENG }
 		}
 		bypass = {
 		}
@@ -1361,11 +1444,20 @@ focus_tree = {
 		available = {
 		}
 		bypass = {
+			owns_state = 656
 		}
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus KHU_old_british_intrigue"
-			add_state_claim = 656
+			if = {
+				limit = { 656 = { owner = { NOT = { has_war_with = ROOT } } } }
+				656 = { owner = { country_event = { id = NWpersian.305 hours = 6 } } }
+				effect_tooltip = {
+					transfer_state = 656
+					656 = { owner = { custom_effect_tooltip = needs_approval } }
+				}
+			}
+			else = { add_state_claim = 656 }
 		}
 	}
 	
@@ -1394,7 +1486,13 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus KHU_waiver_of_claims_for_el_wafr"
-			959 = { set_demilitarized_zone = yes }
+			effect_tooltip = { 959 = { set_demilitarized_zone = no } }
+			959 = {
+				owner = {
+					ROOT = { add_opinion_modifier = { target = PREV modifier = KHU_waiver_of_claims_for_el_wafr_op } }
+					country_event = { id = NWpersian.306 hours = 6 }
+				}
+			}
 		}
 	}
 }
