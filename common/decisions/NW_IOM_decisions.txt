@@ -1,0 +1,76 @@
+IOM_generic_irregular_army_category = {
+	
+	IOM_summon_peoples_militia = {
+	
+		highlight_states = {
+			is_controlled_by = ROOT
+			is_capital = yes
+		}
+		
+		icon = generic_military
+		
+		available = {
+			has_war = yes
+			any_state = {
+				is_controlled_by = ROOT
+			}
+			NOT = { has_country_flag = summon_peoples_militia_flag }
+		}
+		visible = {
+		}
+		
+		cost = 20
+		days_remove = 2
+		
+		remove_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): remove decision IOM_summon_peoples_militia"
+			set_country_flag = summon_peoples_militia_flag
+			hidden_effect = {
+				if = {
+					limit = { NOT = { has_template = "Alfurqat Alfursan war" } }
+					division_template = {
+						name = "Alfurqat Alfursan war"
+						division_names_group = OMA_CAV_01
+						regiments = {
+							cavalry = { x = 0 y = 0 }
+							cavalry = { x = 0 y = 1 }
+							cavalry = { x = 0 y = 2 }
+						}
+					}
+				}
+			}
+			set_temp_variable = { num_of_cycle = 2 }
+			while_loop_effect = {
+				limit = { check_variable = { num_of_cycle > 0 } }
+				add_to_temp_variable = { num_of_cycle = -1 }
+				random_controlled_state = {
+					prioritize = { 942 }
+					create_unit = {
+						division = "name = \"Alfurqat Alfursan\" division_template = \"Alfurqat Alfursan war\" start_experience_factor = 0.1" 
+						owner = ROOT
+						count = 1
+						allow_spawning_on_enemy_provs = yes
+					}
+				}
+			}
+			custom_effect_tooltip = BHU_summon_peoples_militia_tt3
+		}
+		
+		ai_will_do = {
+			factor = 1
+			modifier = {
+				add = 50
+				ai_wants_divisions > 0
+			}
+			modifier = {
+				add = 50
+				enemies_strength_ratio > 1
+			}
+			modifier = {
+				add = -500
+				has_game_rule = { rule = ai_division_limiter_status option = AI_DIVISION_LIMITER_DYNAMIC }
+				check_variable = { num_divisions > ai_upper_limit }
+			}
+		}
+	}
+}
