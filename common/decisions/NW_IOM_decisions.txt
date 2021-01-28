@@ -38,21 +38,22 @@ IOM_generic_irregular_army_category = {
 						}
 					}
 				}
-			}
-			set_temp_variable = { num_of_cycle = 2 }
-			while_loop_effect = {
-				limit = { check_variable = { num_of_cycle > 0 } }
-				add_to_temp_variable = { num_of_cycle = -1 }
-				random_controlled_state = {
-					prioritize = { 942 }
-					create_unit = {
-						division = "name = \"Alfurqat Alfursan\" division_template = \"Alfurqat Alfursan war\" start_experience_factor = 0.1" 
-						owner = ROOT
-						count = 1
-						allow_spawning_on_enemy_provs = yes
+				set_temp_variable = { num_of_cycle = peoples_militia_var }
+				while_loop_effect = {
+					limit = { check_variable = { num_of_cycle > 0 } }
+					add_to_temp_variable = { num_of_cycle = -1 }
+					random_controlled_state = {
+						prioritize = { 942 }
+						create_unit = {
+							division = "name = \"Alfurqat Alfursan\" division_template = \"Alfurqat Alfursan war\" start_experience_factor = 0.1" 
+							owner = ROOT
+							count = 1
+							allow_spawning_on_enemy_provs = yes
+						}
 					}
 				}
 			}
+			custom_effect_tooltip = IOM_summon_peoples_militia_tt
 			custom_effect_tooltip = BHU_summon_peoples_militia_tt3
 		}
 		
@@ -73,4 +74,39 @@ IOM_generic_irregular_army_category = {
 			}
 		}
 	}
+}
+
+political_actions = {
+
+    IOM_offer_peace_eng = {
+    	icon = hol_exchange_intelligence_data
+        allowed = {
+            original_tag = IOM
+        }
+        available = {
+			OMA = {
+				is_subject_of = ENG
+				has_capitulated = yes
+			}
+			surrender_progress < 0.05
+			NOT = { has_country_flag = { flag = IOM_offer_peace_eng_flag value > 0 } }
+        }
+		visible = {
+            has_war_with = ENG
+			OMA = { is_subject_of = ENG }
+			has_completed_focus = IOM_war_against_despot
+			NOT = { has_country_flag = { flag = IOM_offer_peace_eng_enable_flag value > 0 } }
+        }
+		cost = 10
+
+        ai_will_do = {
+			factor = 5
+		}
+		
+		complete_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision IOM_offer_peace_eng"
+			set_country_flag = { flag = IOM_offer_peace_eng_flag days = 50 value = 1 }
+			ENG = { country_event = { id = NWoman.17 hours = 6 } }
+		}
+    }
 }

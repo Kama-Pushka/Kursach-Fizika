@@ -67,16 +67,36 @@ focus_tree = {
 		available_if_capitulated = no
 
 		ai_will_do = {
-			factor = 10
+			factor = 2
+			modifier = {
+				factor = 0
+				is_historical_focus_on = yes
+			}
 		}
 		available = {
+			country_exists = OMA
+			OMA = {
+				OR = {
+					is_subject_of = ENG
+					is_subject = no
+				}
+			}
 		}
 		bypass = {
 		}
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus IOM_acceptance_of_officials_from_muscat"
-			
+			effect_tooltip = {
+				OMA = {
+					puppet = ROOT
+					add_opinion_modifier = { target = ROOT modifier = IOM_acceptance_of_officials_from_muscat }
+				}
+				add_opinion_modifier = { target = OMA modifier = IOM_acceptance_of_officials_from_muscat }
+			}
+			hidden_effect = {
+				OMA = { country_event = { id = NWoman.13 } }
+			}
 		}
 	}
 	
@@ -171,6 +191,10 @@ focus_tree = {
 
 		ai_will_do = {
 			factor = 10
+			modifier = {
+				is_historical_focus_on = no
+				factor = 0.4
+			}
 		}
 		available = {
 		}
@@ -209,7 +233,16 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus IOM_request_reduction_of_zakyat_for_muscat"
-			
+			effect_tooltip = {
+				swap_ideas = {
+					remove_idea = IOM_sebsky_agreement
+					add_idea = IOM_sebsky_agreement_2
+				}
+			}
+			OMA = {
+				custom_effect_tooltip = needs_approval
+				hidden_effect = { country_event = { id = NWoman.15 } }
+			}
 		}
 	}
 	
@@ -236,20 +269,39 @@ focus_tree = {
 		available_if_capitulated = no
 
 		ai_will_do = {
-			factor = 10
+			factor = 4
 			modifier = {
-				factor = 3
-				is_historical_focus_on = no
+				factor = 0
+				is_historical_focus_on = yes
 			}
 		}
 		available = {
+			is_subject = no
 		}
 		bypass = {
+			OR = {
+				NOT = { country_exists = OMA }
+				NOT = { has_idea = IOM_sebsky_agreement }
+			}
 		}
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus IOM_break_off_sebsky_agreement"
-			
+			remove_idea = IOM_sebsky_agreement
+			country_event = { id = NWoman.17 hours = 6 }
+			every_other_country = {
+				limit = {
+					OR = {
+						original_tag = OMA
+						OMA = { is_subject_of = PREV }
+						original_tag = PER
+						original_tag = IRQ
+						original_tag = SAU
+						original_tag = YEM
+					}
+				}
+				country_event = { id = trworldnews.141 hours = 6 }
+			}
 		}
 	}
 	
@@ -271,13 +323,14 @@ focus_tree = {
 			factor = 10
 		}
 		available = {
+			has_war_with = OMA
 		}
 		bypass = {
 		}
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus IOM_call_for_jihad_against_sultan"
-			
+			add_ideas = IOM_call_for_jihad_against_sultan_idea
 		}
 	}
 	
@@ -299,13 +352,33 @@ focus_tree = {
 			factor = 10
 		}
 		available = {
+			is_subject = no
 		}
 		bypass = {
+			OR = {
+				NOT = { country_exists = OMA }
+				OMA = { is_subject_of = ROOT }
+			}
 		}
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus IOM_war_against_despot"
-			
+			create_wargoal = {
+				type = annex_everything
+				target = OMA
+				expire = 0
+			}
+			add_ai_strategy = {
+				type = antagonize
+				id = "OMA"
+				value = 200
+			}
+			add_ai_strategy = {
+				type = conquer
+				id = "OMA" 
+				value = 100
+			}
+			custom_effect_tooltip = IOM_war_against_despot_tt
 		}
 	}
 	
@@ -841,15 +914,34 @@ focus_tree = {
 
 		ai_will_do = {
 			factor = 10
+			modifier = {
+				factor = 0
+				is_historical_focus_on = yes
+				has_war = no
+			}
 		}
 		available = {
+			custom_trigger_tooltip = {
+				OR = {
+					check_variable = { IOM_authority > 3 }
+					controls_state = 294
+				}
+				tooltip = IOM_expand_powers_of_imam_trigger_tt
+			}
 		}
 		bypass = {
 		}
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus IOM_expand_powers_of_imam"
-			
+			country_event = { id = NWoman.12 hours = 3 }
+			effect_tooltip = {
+				add_popularity = { ideology = monarchy popularity = 0.7 }
+				set_politics = {
+					ruling_party = monarchy
+					elections_allowed = no
+				}
+			}
 		}
 	}
 	
@@ -877,7 +969,41 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus IOM_expand_personal_army_of_imam"
-			
+			if = {
+				limit = { has_template = "Alfurqat Almasha" }
+				capital_scope = {
+					create_unit = {
+						division = "name = \"Haris al'imam Samail\" division_template = \"Alfurqat Almasha\" start_experience_factor = 0.2"
+						owner = ROOT
+						count = 1
+						allow_spawning_on_enemy_provs = yes
+					}
+				}
+			}
+			else = {
+				hidden_effect = {
+					if = {
+						limit = { NOT = { has_template = "Haris al'imam Samail" } }
+						division_template = {
+							name = "Haris al'imam Samail"
+							regiments = {
+								infantry = { x = 0 y = 0 }
+								infantry = { x = 0 y = 1 }
+								infantry = { x = 1 y = 0 }
+								infantry = { x = 1 y = 1 }
+							}
+						}
+					}
+				}
+				capital_scope = {
+					create_unit = {
+						division = "name = \"Haris al'imam Samail\" division_template = \"Haris al'imam Samail\" start_experience_factor = 0.2"
+						owner = ROOT
+						count = 1
+						allow_spawning_on_enemy_provs = yes
+					}
+				}
+			}
 		}
 	}
 	
@@ -981,7 +1107,7 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus IOM_school_of_imam_al_halili"
-			
+			add_research_slot = 1
 		}
 	}
 	
@@ -1009,7 +1135,7 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus IOM_byte_al_mal"
-			
+			add_ideas = IOM_byte_al_mal
 		}
 	}
 	
@@ -1037,7 +1163,7 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus IOM_judges_of_sharia"
-			
+			add_ideas = IOM_judges_of_sharia
 		}
 	}
 	
@@ -1066,7 +1192,7 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus IOM_unification_ibadi_umms"
-			
+			add_ideas = IOM_unification_ibadi_umms
 		}
 	}
 	
@@ -1157,7 +1283,7 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus IOM_release_of_own_passports"
-			
+			add_political_power = 100
 		}
 	}
 	
@@ -1185,7 +1311,7 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus IOM_room_of_training_of_women_in_koran_in_nizvas_fort"
-			
+			add_ideas = IOM_room_of_training_of_women_in_koran
 		}
 	}
 	
@@ -1303,7 +1429,7 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus IOM_collecting_zakyat"
-			
+			add_ideas = IOM_collecting_zakyat
 		}
 	}
 	
@@ -1326,13 +1452,21 @@ focus_tree = {
 			factor = 10
 		}
 		available = {
+			controls_state = 294
 		}
 		bypass = {
 		}
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus IOM_reconciliation_with_dealers_of_muscat_and_matrakh"
-			
+			294 = {
+				add_extra_state_shared_building_slots = 1
+				add_building_construction = {
+					type = industrial_complex
+					level = 1
+					instant_build = yes
+				}
+			}
 		}
 	}
 	
@@ -1360,7 +1494,21 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus IOM_weavers_workshops"
-			
+			random_owned_controlled_state = {
+				limit = { 
+					free_building_slots = {
+						building = industrial_complex
+						size > 0
+						include_locked = yes
+					}
+				}
+				add_extra_state_shared_building_slots = 1
+				add_building_construction = {
+					type = industrial_complex
+					level = 1
+					instant_build = yes
+				}
+			}
 		}
 	}
 	
@@ -1419,7 +1567,17 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus IOM_strengthen_relations_with_sheikh_khimdzhi"
-			
+			if = {
+				limit = { country_exists = RAJ }
+				add_opinion_modifier = { target = RAJ modifier = IOM_strengthen_relations_with_sheikh_khimdzhi }
+				RAJ = { add_opinion_modifier = { target = ROOT modifier = IOM_strengthen_relations_with_sheikh_khimdzhi } }
+			}
+			add_tech_bonus = {
+				name = IOM_strengthen_relations_with_sheikh_khimdzhi
+				bonus = 1.0
+				uses = 1
+				category = industry
+			}
 		}
 	}
 	
@@ -1447,7 +1605,13 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus IOM_irrigational_systems"
-			
+			capital_scope = {
+				add_extra_state_shared_building_slots = 2
+			}
+			every_controlled_state = {
+				limit = { is_capital = no }
+				add_extra_state_shared_building_slots = 1
+			}
 		}
 	}
 	
@@ -1475,7 +1639,7 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus IOM_trade_in_dates"
-			
+			add_ideas = IOM_trade_in_dates
 		}
 	}
 	
@@ -1503,7 +1667,7 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus IOM_trade_in_pomegranate"
-			
+			add_ideas = IOM_trade_in_pomegranate
 		}
 	}
 	
@@ -1536,12 +1700,18 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus IOM_protection_of_true_oman"
-			
+			army_experience = 10
+			add_tech_bonus = {
+				name = IOM_protection_of_true_oman
+				bonus = 1.0
+				uses = 1
+				category = land_doctrine
+			}
 		}
 	}
 	
 	focus = {
-		id = IOM_nizvas_bough
+		id = IOM_souk_of_nizwa
 		icon = GFX_z_goal_generic_papers
 		prerequisite = { focus = IOM_protection_of_true_oman }
 		x = -1
@@ -1558,23 +1728,32 @@ focus_tree = {
 			factor = 10
 		}
 		available = {
+			controls_state = 942
 		}
 		bypass = {
 		}
 		
 		completion_reward = {
-			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus IOM_nizvas_bough"
-			
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus IOM_souk_of_nizwa"
+			add_ideas = IOM_souk_of_nizwa
+			942 = {
+				add_extra_state_shared_building_slots = 1
+				add_building_construction = {
+					type = arms_factory
+					level = 1
+					instant_build = yes
+				}
+			}
 		}
 	}
 	
 	focus = {
 		id = IOM_studying_of_british_guns
 		icon = GFX_z_goal_generic_papers
-		prerequisite = { focus = IOM_nizvas_bough }
+		prerequisite = { focus = IOM_souk_of_nizwa }
 		x = 0
 		y = 1
-		relative_position_id = IOM_nizvas_bough
+		relative_position_id = IOM_souk_of_nizwa
 		
 		cost = 10
 		
@@ -1592,7 +1771,12 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus IOM_studying_of_british_guns"
-			
+			add_tech_bonus = {
+				name = IOM_studying_of_british_guns
+				bonus = 1.0
+				uses = 1
+				category = infantry_weapons
+			}
 		}
 	}
 	
@@ -1620,7 +1804,7 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus IOM_on_soldier_from_each_family"
-			
+			add_ideas = IOM_on_soldier_from_each_family
 		}
 	}
 	
@@ -1648,7 +1832,8 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus IOM_expansion_of_tribal_conscription"
-			
+			custom_effect_tooltip = IOM_expansion_of_tribal_conscription_tt
+			add_to_variable = { peoples_militia_var = 1 }
 		}
 	}
 	
@@ -1676,7 +1861,12 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus IOM_soldiers_hadzhar"
-			
+			add_tech_bonus = {
+				name = IOM_soldiers_hadzhar
+				bonus = 1.0
+				uses = 1
+				category = mountaineers_tech
+			}
 		}
 	}
 	
