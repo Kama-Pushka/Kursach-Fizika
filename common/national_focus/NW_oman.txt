@@ -5,7 +5,7 @@ focus_tree = {
 		factor = 0
 		
 		modifier = {
-			add = 0
+			add = 10
 			tag = IOM
 		}
 	}
@@ -71,6 +71,11 @@ focus_tree = {
 			modifier = {
 				factor = 0
 				is_historical_focus_on = yes
+			}
+			modifier = {
+				factor = 0
+				date < 1937.6.1
+				OMA = { is_ai = no }
 			}
 		}
 		available = {
@@ -158,11 +163,10 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus IOM_oil_field_dzhebel_fakhud"
-			942 = {
-				add_resource = {
-					type = oil
-					amount = 12
-				}
+			add_resource = {
+				type = oil
+				amount = 12
+				state = 942
 			}
 		}
 	}
@@ -194,6 +198,11 @@ focus_tree = {
 			modifier = {
 				is_historical_focus_on = no
 				factor = 0.4
+			}
+			modifier = {
+				factor = 0
+				date < 1937.6.1
+				OMA = { is_ai = no }
 			}
 		}
 		available = {
@@ -274,6 +283,11 @@ focus_tree = {
 				factor = 0
 				is_historical_focus_on = yes
 			}
+			modifier = {
+				factor = 0
+				date < 1937.6.1
+				OMA = { is_ai = no }
+			}
 		}
 		available = {
 			is_subject = no
@@ -287,20 +301,22 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus IOM_break_off_sebsky_agreement"
-			remove_idea = IOM_sebsky_agreement
+			remove_ideas = IOM_sebsky_agreement
 			country_event = { id = NWoman.17 hours = 6 }
-			every_other_country = {
-				limit = {
-					OR = {
-						original_tag = OMA
-						OMA = { is_subject_of = PREV }
-						original_tag = PER
-						original_tag = IRQ
-						original_tag = SAU
-						original_tag = YEM
+			hidden_effect = {
+				every_other_country = {
+					limit = {
+						OR = {
+							original_tag = OMA
+							OMA = { is_subject_of = PREV }
+							original_tag = PER
+							original_tag = IRQ
+							original_tag = SAU
+							original_tag = YEM
+						}
 					}
+					country_event = { id = trworldnews.141 hours = 6 }
 				}
-				country_event = { id = trworldnews.141 hours = 6 }
 			}
 		}
 	}
@@ -400,13 +416,25 @@ focus_tree = {
 			factor = 10
 		}
 		available = {
+			controls_state = 294
+			OR = {
+				NOT = { has_war_with = OMA }
+				OMA = { has_capitulated = yes }
+			}
 		}
 		bypass = {
 		}
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus IOM_association_of_muscat_and_oman"
-			
+			every_state = {
+				limit = {
+					is_core_of = OMA
+					NOT = { is_core_of = ROOT }
+				}
+				add_core_of = ROOT
+			}
+			set_cosmetic_tag = IOM_OMA_tag
 		}
 	}
 	
@@ -428,13 +456,21 @@ focus_tree = {
 			factor = 10
 		}
 		available = {
+			has_war_with = OMA
+			SAU = {
+				NOT = { has_war_with = ROOT }
+				has_government = monarchy
+			}
 		}
 		bypass = {
 		}
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus IOM_get_support_of_saudi_arabia"
-			
+			custom_effect_tooltip = IOM_get_support_of_saudi_arabia_tt
+			hidden_effect = {
+				SAU = { country_event = { id = NWoman.21 hours = 3 } }
+			}
 		}
 	}
 	
@@ -457,13 +493,16 @@ focus_tree = {
 			factor = 10
 		}
 		available = {
+			is_subject = no
+			NOT = { has_completed_focus = IOM_agreement_with_great_britain }
 		}
 		bypass = {
 		}
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus IOM_keep_traditions_of_decentralization"
-			
+			custom_effect_tooltip = IOM_keep_traditions_of_decentralization_tt
+			add_to_variable = { peoples_militia_var = 1 }
 		}
 	}
 	
@@ -492,7 +531,10 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus IOM_reorganization_of_government"
-			
+			swap_ideas = {
+				remove_idea = IOM_underdeveloped_semi_feudal_state
+				add_idea = IOM_underdeveloped_semi_feudal_state_2
+			}
 		}
 	}
 	
@@ -708,13 +750,21 @@ focus_tree = {
 			factor = 10
 		}
 		available = {
+			is_subject = no
+			is_in_faction = no
+			NOT = { has_completed_focus = IOM_agreement_with_great_britain }
+			
 		}
 		bypass = {
+			OR = {
+				is_subject = yes
+				is_in_faction = yes
+			}
 		}
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus IOM_search_of_allies_in_middle_east"
-			
+			unlock_decision_category_tooltip = IOM_search_of_allies_in_middle_east
 		}
 	}
 	
@@ -736,13 +786,21 @@ focus_tree = {
 			factor = 10
 		}
 		available = {
+			is_subject = no
+			any_controlled_state = {
+				is_coastal = yes
+			}
 		}
 		bypass = {
 		}
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus IOM_barre_az_zindzh"
-			
+			if = {
+				limit = { NOT = { has_completed_focus = IOM_barre_arab_al } }
+				unlock_decision_category_tooltip = IOM_restoration_of_omani_empire_category
+			}
+			custom_effect_tooltip = IOM_barre_az_zindzh_tt
 		}
 	}
 	
@@ -764,13 +822,21 @@ focus_tree = {
 			factor = 10
 		}
 		available = {
+			is_subject = no
+			any_controlled_state = {
+				is_coastal = yes
+			}
 		}
 		bypass = {
 		}
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus IOM_barre_arab_al"
-			
+			if = {
+				limit = { NOT = { has_completed_focus = IOM_barre_az_zindzh } }
+				unlock_decision_category_tooltip = IOM_restoration_of_omani_empire_category
+			}
+			custom_effect_tooltip = IOM_barre_arab_al_tt
 		}
 	}
 	
@@ -792,12 +858,24 @@ focus_tree = {
 			factor = 10
 		}
 		available = {
+			controls_state = 294
+			controls_state = 942
 		}
 		bypass = {
 		}
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus IOM_agreement_with_socal"
+			add_resource = {
+				type = oil
+				amount = 10
+				state = 942
+			}
+			add_resource = {
+				type = oil
+				amount = 7
+				state = 941
+			}
 			
 		}
 	}
@@ -855,13 +933,16 @@ focus_tree = {
 			factor = 10
 		}
 		available = {
+			hidden_trigger = {
+				always = no
+			}
 		}
 		bypass = {
 		}
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus IOM_agreement_with_great_britain"
-			
+			custom_effect_tooltip = TUR_focus_autocomplete_tt
 		}
 	}
 	
@@ -883,13 +964,34 @@ focus_tree = {
 			factor = 10
 		}
 		available = {
+			is_subject = no
 		}
 		bypass = {
+			OR = {
+				NOT = { country_exists = SAU }
+				is_in_faction_with = SAU
+				SAU = { is_subject_of = ROOT }
+				has_war_with = SAU
+			}
 		}
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus IOM_break_wahhabites"
-			
+			create_wargoal = {
+				target = SAU
+				type = annex_everything
+				expire = 0
+			}
+			add_ai_strategy = {
+				type = antagonize
+				id = "SAU"
+				value = 200
+			}
+			add_ai_strategy = {
+				type = conquer
+				id = "SAU" 
+				value = 100
+			}
 		}
 	}
 	
@@ -1223,7 +1325,7 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus IOM_big_jihad"
-			
+			add_ideas = IOM_big_jihad
 		}
 	}
 	
@@ -1254,7 +1356,7 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus IOM_small_jihad"
-			
+			custom_effect_tooltip = IOM_small_jihad_tt
 		}
 	}
 	
@@ -1335,13 +1437,14 @@ focus_tree = {
 		}
 		available = {
 			#has_completed_focus = IOM_association_of_muscat_and_oman
+			num_of_factories > 3
 		}
 		bypass = {
 		}
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus IOM_network_of_madrasah"
-			
+			add_research_slot = 1
 		}
 	}
 	
@@ -1363,13 +1466,14 @@ focus_tree = {
 			factor = 10
 		}
 		available = {
+			num_of_factories > 15
 		}
 		bypass = {
 		}
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus IOM_darul_ulyum"
-			
+			add_research_slot = 1
 		}
 	}
 	
@@ -1397,7 +1501,34 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus IOM_construction_of_hospitals"
-			
+			every_controlled_state = {
+				limit = {
+					is_core_of = ROOT
+					OR = {
+						state = 294
+						state = 942
+					}
+				}
+				add_building_construction = {
+					type = hospital
+					level = 2
+					instant_build = yes
+				}
+			}
+			every_controlled_state = {
+				limit = {
+					is_core_of = ROOT
+					NOT = {
+						state = 294
+						state = 942
+					}
+				}
+				add_building_construction = {
+					type = hospital
+					level = 1
+					instant_build = yes
+				}
+			}
 		}
 	}
 	
@@ -1538,7 +1669,38 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus IOM_support_handicraftsmen_of_coast"
-			
+			random_owned_controlled_state = {
+				prioritize = { 941 }
+				limit = { 
+					free_building_slots = {
+						building = industrial_complex
+						size > 0
+						include_locked = yes
+					}
+				}
+				add_extra_state_shared_building_slots = 1
+				add_building_construction = {
+					type = industrial_complex
+					level = 1
+					instant_build = yes
+				}
+			}
+			random_owned_controlled_state = {
+				prioritize = { 943 }
+				limit = { 
+					free_building_slots = {
+						building = industrial_complex
+						size > 0
+						include_locked = yes
+					}
+				}
+				add_extra_state_shared_building_slots = 1
+				add_building_construction = {
+					type = industrial_complex
+					level = 1
+					instant_build = yes
+				}
+			}
 		}
 	}
 	
@@ -1897,7 +2059,7 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus IOM_submission_of_tribes_of_coast"
-			
+			custom_effect_tooltip = IOM_submission_of_tribes_of_coast_tt
 		}
 	}
 	
@@ -1925,7 +2087,7 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus IOM_tribal_unions"
-			
+			custom_effect_tooltip = IOM_tribal_unions_tt
 		}
 	}
 	
@@ -1953,7 +2115,7 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus IOM_resolve_sunnites_to_serve_in_militia"
-			
+			custom_effect_tooltip = IOM_resolve_sunnites_to_serve_in_militia_tt
 		}
 	}
 	
@@ -1976,13 +2138,17 @@ focus_tree = {
 			factor = 10
 		}
 		available = {
+			has_idea = irregular_army
 		}
 		bypass = {
 		}
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus IOM_increase_role_of_personal_army_of_imam"
-			
+			swap_ideas = {
+				remove_idea = irregular_army
+				add_idea = partial_regular_army
+			}
 		}
 	}
 	
@@ -2010,7 +2176,7 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus IOM_network_of_points_of_conscription"
-			
+			add_ideas = IOM_network_of_points_of_conscription
 		}
 	}
 	
@@ -2038,7 +2204,12 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus IOM_study_new_equipment"
-			
+			add_tech_bonus = {
+				name = IOM_study_new_equipment
+				bonus = 1.0
+				uses = 1
+				category = infantry_weapons
+			}
 		}
 	}
 	
@@ -2069,7 +2240,12 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus IOM_creation_of_regular_army"
-			
+			army_experience = 25
+			add_stability = -0.1
+			swap_ideas = {
+				remove_idea = irregular_army
+				add_idea = extensive_conscription
+			}
 		}
 	}
 	
@@ -2097,7 +2273,21 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus IOM_own_production_of_weapon"
-			
+			random_owned_controlled_state = {
+				limit = { 
+					free_building_slots = {
+						building = arms_factory
+						size > 1
+						include_locked = yes
+					}
+				}
+				add_extra_state_shared_building_slots = 2
+				add_building_construction = {
+					type = arms_factory
+					level = 2
+					instant_build = yes
+				}
+			}
 		}
 	}
 	
@@ -2126,7 +2316,14 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus IOM_introduce_equipment_in_army"
-			
+			add_tech_bonus = {
+				name = IOM_introduce_equipment_in_army
+				bonus = 1.0
+				uses = 1
+				category = motorized_equipment
+				category = cat_mechanized_equipment
+				category = armor
+			}
 		}
 	}
 	
@@ -2154,8 +2351,13 @@ focus_tree = {
 		}
 		
 		completion_reward = {
-			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus IOM_introduce_equipment_in_army"
-			
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus IOM_introduce_artillery_in_army"
+			add_tech_bonus = {
+				name = IOM_introduce_artillery_in_army
+				bonus = 1.0
+				uses = 1
+				category = artillery
+			}
 		}
 	}
 	
@@ -2177,13 +2379,26 @@ focus_tree = {
 			factor = 10
 		}
 		available = {
+			NOT = { has_idea = IOM_underdeveloped_semi_feudal_state }
+			hidden_trigger = {
+				NOT = {
+					has_idea = IOM_underdeveloped_semi_feudal_state
+					has_idea = IOM_underdeveloped_semi_feudal_state_2
+				}
+			}
 		}
 		bypass = {
 		}
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus IOM_create_air_force"
-			
+			air_experience = 20
+			add_tech_bonus = {
+				name = IOM_create_air_force
+				bonus = 1.0
+				uses = 1
+				category = air_doctrine
+			}
 		}
 	}
 	
@@ -2211,7 +2426,13 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus IOM_study_european_models_of_planes"
-			
+			add_tech_bonus = {
+				name = IOM_study_european_models_of_planes
+				bonus = 1.0
+				uses = 1
+				category = light_fighter
+				category = cas_bomber
+			}
 		}
 	}
 	
@@ -2233,13 +2454,26 @@ focus_tree = {
 			factor = 10
 		}
 		available = {
+			NOT = { has_idea = IOM_underdeveloped_semi_feudal_state }
+			hidden_trigger = {
+				NOT = {
+					has_idea = IOM_underdeveloped_semi_feudal_state
+					has_idea = IOM_underdeveloped_semi_feudal_state_2
+				}
+			}
 		}
 		bypass = {
 		}
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus IOM_expand_coast_guard"
-			
+			navy_experience = 20
+			add_tech_bonus = {
+				name = IOM_study_european_models_of_planes
+				bonus = 1.0
+				uses = 1
+				category = dd_tech
+			}
 		}
 	}
 	
@@ -2261,13 +2495,33 @@ focus_tree = {
 			factor = 10
 		}
 		available = {
+			any_owned_state = {
+				is_controlled_by = ROOT
+				is_coastal = yes
+			}
 		}
 		bypass = {
 		}
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus IOM_ship_builders_of_muscat"
-			
+			random_owned_controlled_state = {
+				prioritize = { 294 }
+				limit = {
+					is_coastal = yes
+					free_building_slots = {
+						building = dockyard
+						size > 2
+						include_locked = yes
+					}
+				}
+				add_extra_state_shared_building_slots = 2
+				add_building_construction = {
+					type = dockyard
+					level = 2
+					instant_build = yes
+				}
+			}
 		}
 	}
 	
@@ -2295,7 +2549,12 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus IOM_development_tactics_use_of_fleet"
-			
+			add_tech_bonus = {
+				name = IOM_development_tactics_use_of_fleet
+				bonus = 1.0
+				uses = 1
+				category = naval_doctrine
+			}
 		}
 	}
 	
