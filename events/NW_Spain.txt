@@ -245,10 +245,41 @@ country_event = {
 		ai_chance = {
 			factor = 75
 		}
-		add_popularity = { ideology = communism popularity = -0.05 }
-		add_popularity = { ideology = trozkism popularity = -0.05 }
-		add_popularity = { ideology = anarchism popularity = -0.02 }
-		add_popularity = { ideology = democratic popularity = 0.12 }
+		if = {
+			limit = { communism < 0.05 }
+			set_temp_variable = { temp_communism = 0 }
+			subtract_from_temp_variable = { temp_communism = party_popularity@communism }
+			add_to_temp_variable = { temp_nf = party_popularity@communism }
+			add_popularity = { ideology = communism popularity = temp_communism }
+		}
+		else = {
+			add_popularity = { ideology = communism popularity = -0.05 }
+			add_to_temp_variable = { temp_nf = 0.05 }
+		}
+		if = {
+			limit = { trozkism < 0.05 }
+			set_temp_variable = { temp_trozkism = 0 }
+			subtract_from_temp_variable = { temp_trozkism = party_popularity@trozkism }
+			add_to_temp_variable = { temp_nf = party_popularity@trozkism }
+			add_popularity = { ideology = trozkism popularity = temp_trozkism }
+		}
+		else = {
+			add_popularity = { ideology = trozkism popularity = -0.05 }
+			add_to_temp_variable = { temp_nf = 0.05 }
+		}
+		if = {
+			limit = { anarchism < 0.05 }
+			set_temp_variable = { temp_anarchism = 0 }
+			subtract_from_temp_variable = { temp_anarchism = party_popularity@anarchism }
+			add_to_temp_variable = { temp_nf = party_popularity@anarchism }
+			add_popularity = { ideology = anarchism popularity = temp_anarchism }
+		}
+		else = {
+			add_popularity = { ideology = anarchism popularity = -0.05 }
+			add_to_temp_variable = { temp_nf = 0.05 }
+		}
+		add_to_temp_variable = { temp_nf = 0.03 }
+		add_popularity = { ideology = democratic popularity = temp_nf }
 		set_party_name = { ideology = democratic name = SPR_popular_front_party long_name = SPR_popular_front_party }
 	}
 	
@@ -1587,11 +1618,11 @@ country_event = {
 		}
 		add_popularity = {
 			ideology = anarchism
-			popularity = 0.17
+			popularity = 0.1
 		}
 		add_popularity = {
-			ideology = trozkism
-			popularity = 0.03
+			ideology = communism
+			popularity = 0.1
 		}
 		set_party_name = { ideology = democratic name = SPR_republic_left long_name = SPR_republic_left }
 	}
@@ -1636,12 +1667,8 @@ country_event = {
 			}
 		}
 		add_stability = -0.07
-		set_politics = {
-			ruling_party = trozkism
-			elections_allowed = yes
-		}
 		add_popularity = {
-			ideology = trozkism
+			ideology = communism
 			popularity = 0.1
 		}
 		add_popularity = {
@@ -1666,6 +1693,7 @@ country_event = {
 	immediate = {
 		set_variable = { SPRdemo = party_popularity@democratic }
 		set_variable = { SPRtroz = party_popularity@trozkism }
+		add_to_variable = { SPRtroz = party_popularity@communism }
 		#set_variable = { SPRanarch = party_popularity@anarchism }
 	}
 	
@@ -1684,7 +1712,7 @@ country_event = {
 		complete_national_focus = SPR_victory_socialists
 	}
 	
-	#Победа троцкистов
+	#Победа ПОУМ
 	option = {
 		name = NWspain.16.b
 		trigger = {
@@ -1701,7 +1729,7 @@ country_event = {
 			}
 		}
 		add_popularity = {
-			ideology = trozkism
+			ideology = communism
 			popularity = 0.05
 		}
 		complete_national_focus = SPR_independent_communists
@@ -2152,7 +2180,15 @@ country_event = {
 	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWspain.23" }
 	immediate = {
 		hidden_effect = {
-			SPR = { country_event = { id = NWspain.66 days = 5 } }
+			if = {
+				limit = {
+					OR = {
+						NOT = { country_exists = ARA }
+						ARA = { NOT = { has_focus_tree = aragon_focus_anarchist } }
+					}
+				}
+				SPR = { country_event = { id = NWspain.66 days = 5 } }
+			}
 		}
 	}
 	
@@ -7433,6 +7469,7 @@ country_event = {
 		}
 		create_corps_commander = {
 			name = "Eduardo Medrano Rivas"
+			id = 4734
 			gfx = "GFX_portrait_SPR_eduardo_medrano_rivas"
 			traits = { infantry_leader }
 			skill = 3
@@ -7443,6 +7480,7 @@ country_event = {
 		}
 		create_corps_commander = {
 			name = "Lina Ódena"
+			id = 4735
 			gfx = "GFX_portrait_SPR_lina_odena"
 			traits = { adaptable }
 			female = yes
@@ -7684,6 +7722,16 @@ country_event = {
 		name = NWspain.70.a
 		ai_chance = {
 			factor = 50
+		}
+		set_temp_variable = { temp1 = party_popularity@communism }
+		add_popularity = {
+			ideology = trozkism
+			popularity = temp1
+		}
+		multiply_temp_variable = { temp1 = -1 }
+		add_popularity = {
+			ideology = communism
+			popularity = temp1
 		}
 		if = {
 			limit = { NOT = { has_government = trozkism } }

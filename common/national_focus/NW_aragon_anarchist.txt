@@ -436,7 +436,6 @@ focus_tree = {
 		bypass = {
 			OR = {
 				has_global_flag = scw_over
-				has_global_flag = SPR_anarchist_uprising_flag
 				has_global_flag = SPR_gold_reserves_flag
 			}
 		}
@@ -579,6 +578,36 @@ focus_tree = {
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus ARA_syndication"
 			add_ideas = ARA_syndication
+			random_owned_controlled_state = {
+				limit = {
+					free_building_slots = {
+						building = industrial_complex
+						size > 0
+						include_locked = yes
+					}
+				}
+				add_extra_state_shared_building_slots = 1
+				add_building_construction = {
+					type = industrial_complex
+					level = 1
+					instant_build = yes
+				}
+			}
+			random_owned_controlled_state = {
+				limit = {
+					free_building_slots = {
+						building = industrial_complex
+						size > 0
+						include_locked = yes
+					}
+				}
+				add_extra_state_shared_building_slots = 1
+				add_building_construction = {
+					type = industrial_complex
+					level = 1
+					instant_build = yes
+				}
+			}
 		}
 	}
 	
@@ -586,6 +615,7 @@ focus_tree = {
 		id = ARA_literacy_programs
 		text = SPR_literacy_programs
 		available = {
+			num_of_factories > 25
 		}
 		bypass = {
 		}
@@ -628,7 +658,7 @@ focus_tree = {
 			factor = 5
 		}
 		available = {
-			num_of_factories > 25
+			num_of_factories > 40
 		}
 		bypass = {
 		}
@@ -681,6 +711,7 @@ focus_tree = {
 			}
 			create_corps_commander = {
 				name = "Eduardo Medrano Rivas"
+				id = 4734
 				gfx = "GFX_portrait_SPR_eduardo_medrano_rivas"
 				traits = { infantry_leader }
 				skill = 3
@@ -691,6 +722,7 @@ focus_tree = {
 			}
 			create_corps_commander = {
 				name = "Lina Ódena"
+				id = 4735
 				gfx = "GFX_portrait_SPR_lina_odena"
 				traits = { adaptable }
 				female = yes
@@ -699,6 +731,20 @@ focus_tree = {
 			    defense_skill = 2
 			    planning_skill = 2
 			    logistics_skill = 1
+			}
+			hidden_effect = {
+				SPR = {
+					every_unit_leader = {
+						limit = {
+							OR = {
+								has_id = 4712
+								has_id = 4734
+								has_id = 4735
+							}
+						}
+						retire = yes
+					}
+				}
 			}
 			add_political_power = 150
 			add_stability = -0.1
@@ -1272,6 +1318,10 @@ focus_tree = {
 					target = SPR
 				}
 				add_civil_war_target = SPR
+				every_other_country = {
+					limit = { is_subject_of = SPR }
+					add_to_war = { targeted_alliance = SPR enemy = ROOT hostility_reason = asked_to_join }
+				}
 			}
 			if = {
 				limit = {
@@ -1283,6 +1333,10 @@ focus_tree = {
 					target = SPA
 				}
 				add_civil_war_target = SPA
+				every_other_country = {
+					limit = { is_subject_of = SPA }
+					add_to_war = { targeted_alliance = SPA enemy = ROOT hostility_reason = asked_to_join }
+				}
 			}
 			hidden_effect = {
 				#if = {
@@ -1315,42 +1369,13 @@ focus_tree = {
 					news_event = { id = trworldnews.68 hours = 6 }
 				}
 				every_state = {
-					limit = { is_owned_by = SPR }
+					limit = {
+						OR = {
+							is_owned_by = SPR
+							is_owned_by = SPA
+						}
+					}
 					add_claim_by = ROOT
-				}
-				every_state = {
-					limit = { is_core_of = SPR }
-					add_core_of = ROOT
-				}
-				if = {
-					limit = { country_exists = SPR }
-					every_state = {
-						limit = { is_owned_by = ROOT }
-						add_claim_by = SPR
-					}
-					every_state = {
-						limit = { is_core_of = ROOT }
-						add_core_of = SPR
-					}
-				}
-				if = {
-					limit = { country_exists = SPA }
-					every_state = {
-						limit = { is_owned_by = ROOT }
-						add_claim_by = SPA
-					}
-					every_state = {
-						limit = { is_core_of = ROOT }
-						add_core_of = SPA
-					}
-					every_state = {
-						limit = { is_owned_by = SPA }
-						add_claim_by = ROOT
-					}
-					every_state = {
-						limit = { is_core_of = SPA }
-						add_core_of = ROOT
-					}
 				}
 			}
 		}
@@ -1394,16 +1419,14 @@ focus_tree = {
 					if = {
 						limit = {
 							NOT = {
-								OR = {
-									169 = { is_core_of = ANL }
-									173 = { is_core_of = ANL }
-									169 = { is_core_of = SPC }
-									173 = { is_core_of = SPC }
-								}
+								169 = { is_core_of = ANL }
+								173 = { is_core_of = ANL }
+								169 = { is_core_of = SPC }
+								173 = { is_core_of = SPC }
 							}
 						}
-						transfer_state = 169
-						transfer_state = 173
+						set_state_controller = 169
+						set_state_controller = 173
 					}
 					ROOT = {
 						if = {
@@ -1416,9 +1439,6 @@ focus_tree = {
 									infantry = { x = 0 y = 0 }
 									infantry = { x = 0 y = 1 }
 									infantry = { x = 0 y = 2 }
-									infantry = { x = 1 y = 0 }
-									infantry = { x = 1 y = 1 }
-									infantry = { x = 1 y = 2 }
 								}
 							}
 						}
@@ -1426,14 +1446,16 @@ focus_tree = {
 							create_unit = {
 								division = "name = \"1. Anarchists Brigada\" division_template = \"Anarchists Brigada N2\" start_experience_factor = 0.5" 
 								owner = ARA
-								count = 4
+								count = 3
+								allow_spawning_on_enemy_provs = yes
 							}
 						}
 						173 = {
 							create_unit = {
 								division = "name = \"2. Anarchists Brigada\" division_template = \"Anarchists Brigada N2\" start_experience_factor = 0.5" 
 								owner = ARA
-								count = 4
+								count = 3
+								allow_spawning_on_enemy_provs = yes
 							}
 						}
 					}
@@ -1541,12 +1563,13 @@ focus_tree = {
 							}
 						}
 						every_state = {
-							limit = { is_owned_by = SPR }
-							add_claim_by = CAT
-						}
-						every_state = {
-							limit = { is_core_of = SPR }
-							add_core_of = CAT
+							limit = {
+								OR = {
+									is_owned_by = SPR
+									is_owned_by = SPA
+								}
+							}
+							add_claim_by = ROOT
 						}
 					}
 					ARA = { give_military_access = CAT }
@@ -1561,6 +1584,10 @@ focus_tree = {
 							add_civil_war_target = CAT
 							remove_ideas = SPR_catalon_nationalism
 						}
+						every_other_country = {
+							limit = { is_subject_of = SPR }
+							add_to_war = { targeted_alliance = SPR enemy = ROOT hostility_reason = asked_to_join }
+						}
 					}
 					if = {
 						limit = { country_exists = SPA }
@@ -1571,6 +1598,10 @@ focus_tree = {
 							}
 							add_civil_war_target = CAT
 							remove_ideas = SPR_catalon_nationalism
+						}
+						every_other_country = {
+							limit = { is_subject_of = SPA }
+							add_to_war = { targeted_alliance = SPA enemy = ROOT hostility_reason = asked_to_join }
 						}
 					}
 				}
@@ -1615,9 +1646,6 @@ focus_tree = {
 								infantry = { x = 0 y = 0 }
 								infantry = { x = 0 y = 1 }
 								infantry = { x = 0 y = 2 }
-								infantry = { x = 1 y = 0 }
-								infantry = { x = 1 y = 1 }
-								infantry = { x = 1 y = 2 }
 							}
 						}
 					}
@@ -1776,37 +1804,19 @@ focus_tree = {
 				}
 				add_timed_idea = { idea = ARA_war_with_spr days = 730 }
 			}
-			if = {
-				limit = { SPR = { exists = yes } }
-				every_state = {
-					limit = {
-						OR = {
-							is_core_of = SPR
-							is_core_of = CAT
-							is_core_of = BAS
-							is_core_of = GLC
-							is_core_of = ASU
-							is_core_of = SNT
-						}
+			every_state = {
+				limit = {
+					OR = {
+						is_core_of = SPR
+						is_core_of = SPA
+						is_core_of = CAT
+						is_core_of = BAS
+						is_core_of = GLC
+						is_core_of = ASU
+						is_core_of = SNT
 					}
-					add_core_of = ROOT
 				}
-			}
-			if = {
-				limit = { SPR = { exists = no } }
-				every_state = {
-					limit = {
-						OR = {
-							is_core_of = SPA
-							is_core_of = CAT
-							is_core_of = BAS
-							is_core_of = GLC
-							is_core_of = ASU
-							is_core_of = SNT
-						}
-					}
-					add_core_of = ROOT
-				}
+				add_core_of = ROOT
 			}
 			set_cosmetic_tag = ARA_SPAIN
 		}
