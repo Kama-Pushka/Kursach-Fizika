@@ -7701,6 +7701,9 @@ country_event = {
 			traits = {
 			}
 		}
+		effect_tooltip = {
+			unlock_national_focus = SPR_left_slope
+		}
 	}
 	option = {
 		name = NWspain.70.b
@@ -7721,8 +7724,10 @@ country_event = {
 			expire = "1965.1.1"
 			ideology = right_wing_communism
 			traits = {
-				militant_socialist
 			}
+		}
+		effect_tooltip = {
+			unlock_national_focus = SPR_right_slope
 		}
 	}
 	option = {
@@ -7745,6 +7750,9 @@ country_event = {
 			ideology = right_wing_communism
 			traits = {
 			}
+		}
+		effect_tooltip = {
+			unlock_national_focus = SPR_united_under_socialism
 		}
 	}
 }
@@ -9394,6 +9402,20 @@ country_event = {
 		set_rule = { can_create_factions = yes }
 		create_faction = ARA_iwa
 		add_to_faction = FROM
+		hidden_effect = {
+			add_ai_strategy = {
+				type = alliance
+				id = FROM
+				value = 200
+			}
+			FROM = {
+				add_ai_strategy = {
+					type = alliance
+					id = ROOT
+					value = 200
+				}
+			}
+		}
 	}
 }
 
@@ -9801,7 +9823,7 @@ country_event = {
 				has_government = anarchism
 				has_country_flag = SPR_portuguese_anarchism_flag
 			}
-			SPC = {
+			ROOT = {
 				annex_country = {
 				    target = PREV
 				    transfer_troops = yes
@@ -10759,6 +10781,366 @@ country_event = {
 	
 	option = { # Damn
 		name = lar_spain.76.a
+	}
+}
+
+# End of SCW, Republicans expanded Soviet aid - event for SOV
+country_event = {
+	id = lar_spain.81
+	title = lar_spain.81.t
+	desc = lar_spain.81.desc
+	picture = GFX_report_generic_parliament
+	
+	is_triggered_only = yes
+	
+	option = { # Ok
+		name = lar_spain.81.a
+		effect_tooltip = {
+			puppet = SPR
+		}
+	}
+}
+
+# End of SCW, Republicans expanded Soviet aid - event for SPR
+country_event = {
+	id = lar_spain.82
+	title = lar_spain.82.t
+	desc = lar_spain.82.desc
+	picture = GFX_report_generic_parliament
+	
+	is_triggered_only = yes
+
+	immediate = {
+		hidden_effect = {
+			if = {
+				limit = {
+					has_government = democratic
+				}
+				set_country_flag = SPR_democratic_government_flag
+			}
+			set_temp_variable = {
+				var = soviet_puppet_democratic_var
+				value = party_popularity@democratic
+			}
+			SOV = { puppet = SPR }
+			if = {
+				limit = {
+					has_country_flag = SPR_democratic_government_flag
+				}
+				set_politics = {
+					ruling_party = democratic
+				}
+				clr_country_flag = SPR_democratic_government_flag
+			}
+			set_political_party = {
+			    ideology = communism
+			    popularity = 100
+			}
+			add_popularity = {
+			    ideology = democratic
+			    popularity = soviet_puppet_democratic_var
+			}
+		}
+	}
+	
+	option = { # Ok
+		name = lar_spain.82.a
+		effect_tooltip = {
+			SOV = { puppet = SPR }
+		}
+	}
+}
+
+# Soviets get notification SPR is being disloyal
+country_event = {
+	id = lar_spain.83
+	title = lar_spain.83.t
+	desc = lar_spain.83.desc
+	picture = GFX_report_generic_parliament
+
+	trigger = {
+		tag = SOV
+		any_country = {
+			original_tag = SPR
+			focus_progress = {
+			    focus = SPR_subvert_soviet_control
+			    progress > 0.1
+			}
+		}
+	}
+
+	mean_time_to_happen = {
+		days = 2
+	}
+
+	fire_only_once = yes
+
+	option = { # We must act!
+		name = lar_spain.83.a
+		ai_chance = {
+			base = 100
+			modifier = {
+				factor = 0.33
+				any_country = {
+					is_major = yes
+					has_war_with = ROOT
+				}
+			}
+			modifier = {
+				factor = 0
+				surrender_progress > 0.1
+			}
+		}
+		set_country_flag = SOV_annexed_spanish_land
+		transfer_state = 165
+		transfer_state = 167
+		transfer_state = 794
+		hidden_effect = { SPR = { country_event = { id = lar_spain.84 } } }
+		division_template = {
+			name = "Spanish Loyalist Division"
+			priority = 1
+			division_names_group = SOV_INF_01
+			is_locked = yes
+			regiments = {
+				infantry = { x = 0 y = 0 }
+				infantry = { x = 0 y = 1 }
+				infantry = { x = 0 y = 2 }
+				infantry = { x = 1 y = 0 }
+				infantry = { x = 1 y = 1 }
+				infantry = { x = 1 y = 2 }
+			}
+		}
+		# Catalonia
+		165 = {
+			create_unit = {
+				division = "name = \"1. Spanish Loyalist Division\" division_template = \"Spanish Loyalist Division\" start_experience_factor = 0.1" 
+				owner = ROOT
+			}
+			create_unit = {
+				division = "name = \"2. Spanish Loyalist Division\" division_template = \"Spanish Loyalist Division\" start_experience_factor = 0.1" 
+				owner = ROOT
+			}
+		}
+		# Valencia
+		167 = {
+			create_unit = {
+				division = "name = \"3. Spanish Loyalist Division\" division_template = \"Spanish Loyalist Division\" start_experience_factor = 0.1" 
+				owner = ROOT
+			}
+			create_unit = {
+				division = "name = \"4. Spanish Loyalist Division\" division_template = \"Spanish Loyalist Division\" start_experience_factor = 0.1" 
+				owner = ROOT
+			}
+			create_unit = {
+				division = "name = \"5. Spanish Loyalist Division\" division_template = \"Spanish Loyalist Division\" start_experience_factor = 0.1" 
+				owner = ROOT
+			}
+			create_unit = {
+				division = "name = \"6. Spanish Loyalist Division\" division_template = \"Spanish Loyalist Division\" start_experience_factor = 0.1" 
+				owner = ROOT
+			}
+			create_unit = {
+				division = "name = \"7. Spanish Loyalist Division\" division_template = \"Spanish Loyalist Division\" start_experience_factor = 0.1" 
+				owner = ROOT
+			}
+		}
+		 # Eastern Aragon
+		794 = {
+			create_unit = {
+				division = "name = \"8. Spanish Loyalist Division\" division_template = \"Spanish Loyalist Division\" start_experience_factor = 0.1" 
+				owner = ROOT
+			}
+			create_unit = {
+				division = "name = \"9. Spanish Loyalist Division\" division_template = \"Spanish Loyalist Division\" start_experience_factor = 0.1" 
+				owner = ROOT
+			}
+			create_unit = {
+				division = "name = \"10. Spanish Loyalist Division\" division_template = \"Spanish Loyalist Division\" start_experience_factor = 0.1" 
+				owner = ROOT
+			}
+			create_unit = {
+				division = "name = \"11. Spanish Loyalist Division\" division_template = \"Spanish Loyalist Division\" start_experience_factor = 0.1" 
+				owner = ROOT
+			}
+			create_unit = {
+				division = "name = \"12. Spanish Loyalist Division\" division_template = \"Spanish Loyalist Division\" start_experience_factor = 0.1" 
+				owner = ROOT
+			}
+			create_unit = {
+				division = "name = \"13. Spanish Loyalist Division\" division_template = \"Spanish Loyalist Division\" start_experience_factor = 0.1" 
+				owner = ROOT
+			}
+			create_unit = {
+				division = "name = \"14. Spanish Loyalist Division\" division_template = \"Spanish Loyalist Division\" start_experience_factor = 0.1" 
+				owner = ROOT
+			}
+			create_unit = {
+				division = "name = \"15. Spanish Loyalist Division\" division_template = \"Spanish Loyalist Division\" start_experience_factor = 0.1" 
+				owner = ROOT
+			}
+			create_unit = {
+				division = "name = \"16. Spanish Loyalist Division\" division_template = \"Spanish Loyalist Division\" start_experience_factor = 0.1" 
+				owner = ROOT
+			}
+		}
+	}
+
+	option = { # Everything will be fine
+		name = lar_spain.83.b
+		ai_chance = {
+			base = 0
+			modifier = {
+				add = 100
+				any_country = {
+					is_major = yes
+					has_war_with = ROOT
+				}
+			}
+		}
+		set_country_flag = SOV_give_them_independence_flag
+		add_political_power = -50
+	}
+}
+
+# Event for SPR that Soviets are seizing land
+country_event = {
+	id = lar_spain.84
+	title = lar_spain.84.t
+	desc = lar_spain.84.desc
+	picture = GFX_report_event_soviet_army_greeted
+
+	is_triggered_only = yes
+
+	option = { # Bastards!
+		name = lar_spain.84.a
+		set_country_flag = SOV_took_spanish_states
+		effect_tooltip = {
+			SOV = {
+				transfer_state = 165
+				transfer_state = 167
+				transfer_state = 794
+			}
+		}
+	}
+}
+
+# SPR has Catalonia returned
+country_event = {
+	id = lar_spain.85
+	title = lar_spain.85.t
+	desc = lar_spain.85.desc
+	picture = GFX_report_event_soldiers_marching
+
+	trigger = {
+		original_tag = SPR
+		has_completed_focus = SPR_war_of_independence
+		has_country_flag = SOV_took_spanish_states
+		has_war_with = SOV
+		SOV = { owns_state = 165 }
+		has_full_control_of_state = 165
+	}
+
+	mean_time_to_happen = {
+		days = 2
+	}
+
+	fire_only_once = yes
+
+	immediate = {
+		hidden_effect = {
+			165 = { save_event_target_as = SPR_stolen_state_name }
+		}
+	}
+
+	option = { # Excellent!
+		name = lar_spain.85.a
+		transfer_state = 165
+		hidden_effect = { SOV = { country_event = { id = lar_spain.88 } } }
+	}
+}
+
+# SPR has Valencia returned
+country_event = {
+	id = lar_spain.86
+	title = lar_spain.85.t
+	desc = lar_spain.85.desc
+	picture = GFX_report_event_soldiers_marching
+
+	trigger = {
+		original_tag = SPR
+		has_completed_focus = SPR_war_of_independence
+		has_country_flag = SOV_took_spanish_states
+		has_war_with = SOV
+		SOV = { owns_state = 167 }
+		has_full_control_of_state = 167
+	}
+
+	mean_time_to_happen = {
+		days = 2
+	}
+
+	fire_only_once = yes
+
+	immediate = {
+		hidden_effect = {
+			167 = { save_event_target_as = SPR_stolen_state_name }
+		}
+	}
+
+	option = { # Excellent!
+		name = lar_spain.85.a
+		transfer_state = 167
+		hidden_effect = { SOV = { country_event = { id = lar_spain.88 } } }
+	}
+}
+
+# SPR has Eastern Aragon returned
+country_event = {
+	id = lar_spain.87
+	title = lar_spain.85.t
+	desc = lar_spain.85.desc
+	picture = GFX_report_event_soldiers_marching
+
+	trigger = {
+		original_tag = SPR
+		has_completed_focus = SPR_war_of_independence
+		has_country_flag = SOV_took_spanish_states
+		has_war_with = SOV
+		SOV = { owns_state = 794 }
+		has_full_control_of_state = 794
+	}
+
+	mean_time_to_happen = {
+		days = 2
+	}
+
+	fire_only_once = yes
+
+	immediate = {
+		hidden_effect = {
+			794 = { save_event_target_as = SPR_stolen_state_name }
+		}
+	}
+
+	option = { # Excellent!
+		name = lar_spain.85.a
+		transfer_state = 794
+		hidden_effect = { SOV = { country_event = { id = lar_spain.88 } } }
+	}
+}
+
+# Event for SOV informing them of losing a state to SPR
+country_event = {
+	id = lar_spain.88
+	title = lar_spain.88.t
+	desc = lar_spain.88.desc
+	picture = GFX_report_event_soldiers_marching
+
+	is_triggered_only = yes
+
+	option = { # Excellent!
+		name = lar_spain.88.a
+		effect_tooltip = { FROM = { transfer_state = event_target:SPR_stolen_state_name } }
 	}
 }
 
