@@ -613,22 +613,22 @@ war_with_soviets = {
 	ai_strategy = {
 		type = antagonize
 		id = "SOV"			
-		value = 200
+		value = 500
 	}
 	ai_strategy = {
 		type = conquer
 		id = "SOV"			
-		value = 200
+		value = 500
 	}
 	ai_strategy = {
 		type = contain
 		id = "SOV"			
-		value = 200
+		value = 500
 	}
 	ai_strategy = {
 		type = declare_war
 		id = "SOV"			
-		value = 200
+		value = 500
 	}
 }
 
@@ -1444,7 +1444,10 @@ make_sure_poland_is_ganked_before_we_move = {
 	enable = {
 		tag = GER
 		focus_progress = { focus = GER_around_maginot progress > 0 }
-		date < 1940.05.10
+		OR = {
+			date < 1940.05.10
+			NOT = { has_war_with = event_target:NW_france_scope }
+		}
 		
 		OR = {
 			POL = { has_capitulated = no }
@@ -1517,7 +1520,7 @@ GER_want_to_invade_FRA_without_ITA = {
 	enable = {
 		tag = GER
 		is_historical_focus_on = yes
-		date < 1940.1.1
+		date < 1940.6.1
 		event_target:NW_france_scope = {
 			is_ai = yes
 		}
@@ -1527,7 +1530,7 @@ GER_want_to_invade_FRA_without_ITA = {
 
 	abort = {
 		OR = { 
-			date > 1940.1.1
+			date > 1940.6.1
 			event_target:NW_france_scope = {
 				is_ai = no
 			}
@@ -1866,8 +1869,8 @@ GER_wants_arms_factory = {
 		tag = GER
 		has_government = fascism
 		has_war = no
-		synthetic_refinery > 7
-		arms_factory < 100
+		has_built = { type = synthetic_refinery value > 7 }
+		has_built = { type = arms_factory value < 100 }
 	}
 	abort_when_not_enabled = yes
 	ai_strategy = {
@@ -2186,7 +2189,7 @@ GER_around_the_maginot = {
 	
 	enable = {
 		date < 1941.4.1
-		event_target:NW_france_scope = {
+		FRA = {
 			is_ai = yes
 		}
 		
@@ -2212,7 +2215,7 @@ GER_around_the_maginot = {
 		NOT = { has_war_with = LUX }
 		LUX = {
 			has_capitulated = no
-			NOT = { is_in_faction_with = event_target:NW_france_scope }
+			NOT = { is_in_faction_with = FRA }
 		}
 		
 		# we are ready to declare war on low countries
@@ -2226,7 +2229,7 @@ GER_around_the_maginot = {
 				is_in_array = { potential_and_current_enemies = BEL }
 			}
 		}
-		is_in_array = { potential_and_current_enemies = event_target:NW_france_scope }
+		is_in_array = { potential_and_current_enemies = FRA }
 	}
 	
 	abort_when_not_enabled = yes
@@ -2235,14 +2238,14 @@ GER_around_the_maginot = {
 	ai_strategy = {
 		type = declare_war
 		id = "LUX"			
-		value = -2000 
+		value = -2000
 	}
 	
 	ai_strategy = {
 		type = diplo_action_desire
 		id = "LUX"		
 		target = declare_war		
-		value = -50000 
+		value = -50000
 	}
 	
 	ai_strategy = {
@@ -2254,13 +2257,13 @@ GER_around_the_maginot = {
 	ai_strategy = {
 		type = front_armor_score
 		id = "HOL"			
-		value = 100
+		value = 50
 	}
 	
 	ai_strategy = {
 		type = front_armor_score
 		id = "BEL"			
-		value = 100
+		value = 50
 	}
 	
 	ai_strategy = {
@@ -2277,7 +2280,7 @@ GER_around_the_maginot = {
 }
 
 # lets not invade until we have europe
-GER_around_the_maginot = {
+GER_around_the_maginot_2 = {
 	allowed = {
 		original_tag = GER
 		is_historical_focus_on = yes
@@ -2588,12 +2591,9 @@ NW_GER_prep_for_maginot = {
 	ai_strategy = { type = garrison value = -200 }
 	ai_strategy = {
 		type = front_unit_request
-
 		country_trigger = {
-
 			OR = { tag = BEL tag = HOL tag = LUX }
 		}
-
 		value = 200
 	}
 }
@@ -2653,7 +2653,7 @@ NW_GER_wardec_YUG = {
 	allowed = { tag = GER }
 	enable = {
 		is_historical_focus_on = yes
-		has_completed_focus = GER_demand_slovenia
+		focus_progress = { focus = GER_demand_slovenia progress > 0 }
 	}
 
 	ai_strategy = {
@@ -2661,20 +2661,8 @@ NW_GER_wardec_YUG = {
 		id = "YUG"
 		value = 1000
 	}
-}
-
-NW_invasion_of_yugoslavia = {
-	allowed = { tag = GER }
-	enable = {
-		is_historical_focus_on = yes
-		focus_progress = { focus = GER_demand_slovenia progress > 0 }
-		date < 1942.1.1
-	}
-	abort = {
-		has_completed_focus = GER_demand_slovenia
-	}
-	
 	ai_strategy = { type = conquer id = "YUG" value = 500 }
+	ai_strategy = { type = prepare_for_war id = "YUG" value = 100 }
 }
 
 NW_ignore_SWE = {
