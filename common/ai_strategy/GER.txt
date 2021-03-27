@@ -1444,22 +1444,32 @@ make_sure_poland_is_ganked_before_we_move_1 = {
 	enable = {
 		tag = GER
 		focus_progress = { focus = GER_weserubung progress > 0 }
-		OR = {
-			date < 1940.05.10
-			NOT = { has_war_with = event_target:NW_france_scope }
+		NOT = {
+			has_war_with = BEL
+			has_war_with = HOL
+		}
+		if = {
+			limit = { OR = { has_war_with = BEL has_war_with = HOL } }
+			AND = {
+				if = { limit = { has_war_with = BEL } BEL = { has_capitulated = yes } }
+				if = { limit = { has_war_with = HOL } HOL = { has_capitulated = yes } }
+			}
 		}
 		OR = {
-			POL = { has_capitulated = no }
-			POL = { exists = yes }
-			POL = { is_subject = no }
-			POL = { NOT = { has_government = fascism } }
-			NOT = { is_in_faction_with = POL }
-		}
-		OR = {
-			DNZ = { has_capitulated = no }
-			DNZ = { exists = yes }
-			DNZ = { NOT = { is_subject_of = ROOT } }
-			NOT = { is_in_faction_with = DNZ }
+			date < 1940.04.1
+			OR = {
+				POL = { has_capitulated = no }
+				POL = { exists = yes }
+				POL = { is_subject = no }
+				POL = { NOT = { has_government = fascism } }
+				NOT = { is_in_faction_with = POL }
+			}
+			OR = {
+				DNZ = { has_capitulated = no }
+				DNZ = { exists = yes }
+				DNZ = { NOT = { is_subject_of = ROOT } }
+				NOT = { is_in_faction_with = DNZ }
+			}
 		}
 	}
 	abort_when_not_enabled = yes
@@ -2602,10 +2612,15 @@ NW_GER_prep_for_maginot = {
 	allowed = { tag = GER }
 	enable = {
 		is_historical_focus_on = yes
-		
 		focus_progress = { focus = GER_around_maginot progress > 0 }
-		
 		date < 1941.1.1
+		OR = {
+			DEN = { has_capitulated = no }
+			DEN = { exists = yes }
+			DEN = { is_subject = no }
+			DEN = { NOT = { has_government = fascism } }
+			NOT = { is_in_faction_with = DEN }
+		}
 	}
 
 	abort = {
@@ -2631,6 +2646,53 @@ NW_GER_prep_for_maginot = {
 			OR = { tag = BEL tag = HOL tag = LUX }
 		}
 		value = 200
+	}
+}
+
+NW_GER_prep_for_denmark = {
+	allowed = { tag = GER }
+	enable = {
+		is_historical_focus_on = yes
+		focus_progress = { focus = GER_weserubung progress > 0 }
+		date < 1941.1.1
+		OR = {
+			POL = { has_capitulated = no }
+			POL = { exists = yes }
+			POL = { is_subject = no }
+			POL = { NOT = { has_government = fascism } }
+			NOT = { is_in_faction_with = POL }
+		}
+		OR = {
+			DNZ = { has_capitulated = no }
+			DNZ = { exists = yes }
+			DNZ = { NOT = { is_subject_of = ROOT } }
+			NOT = { is_in_faction_with = DNZ }
+		}
+		NOT = {
+			has_war_with = BEL
+			has_war_with = HOL
+		}
+	}
+
+	abort = {
+		OR = {
+			date > 1941.1.1
+			if = {
+				limit = { has_war_with = DEN }
+				DEN = { has_capitulated = yes }
+				else = { always = no }
+			}
+		}
+	}
+	
+	ai_strategy = { type = conquer id = "DEN" value = 200 }
+	ai_strategy = { type = garrison value = -200 }
+	ai_strategy = {
+		type = front_unit_request
+		country_trigger = {
+			tag = DEN
+		}
+		value = 50
 	}
 }
 
@@ -2924,6 +2986,58 @@ NW_wardec_LUX = {
 	ai_strategy = { type = declare_war id = "LUX" value = 500 }
 	ai_strategy = { type = antagonize id = "LUX" value = 5000 }
 	ai_strategy = { type = ignore_claim id = "LUX" value = -500 }
+}
+
+NW_wardec_DEN = {
+	allowed = { original_tag = GER }
+	enable = {
+		is_historical_focus_on = yes
+		has_wargoal_against = DEN
+		OR = {
+			POL = { has_capitulated = no }
+			POL = { exists = yes }
+			POL = { is_subject = no }
+			POL = { NOT = { has_government = fascism } }
+			NOT = { is_in_faction_with = POL }
+		}
+		OR = {
+			DNZ = { has_capitulated = no }
+			DNZ = { exists = yes }
+			DNZ = { NOT = { is_subject_of = ROOT } }
+			NOT = { is_in_faction_with = DNZ }
+		}
+	}
+	abort_when_not_enabled = yes
+
+	ai_strategy = { type = declare_war id = "DEN" value = 500 }
+	ai_strategy = { type = antagonize id = "DEN" value = 5000 }
+	ai_strategy = { type = ignore_claim id = "DEN" value = -500 }
+}
+
+NW_wardec_NOR = {
+	allowed = { original_tag = GER }
+	enable = {
+		is_historical_focus_on = yes
+		has_wargoal_against = NOR
+		OR = {
+			POL = { has_capitulated = no }
+			POL = { exists = yes }
+			POL = { is_subject = no }
+			POL = { NOT = { has_government = fascism } }
+			NOT = { is_in_faction_with = POL }
+		}
+		OR = {
+			DNZ = { has_capitulated = no }
+			DNZ = { exists = yes }
+			DNZ = { NOT = { is_subject_of = ROOT } }
+			NOT = { is_in_faction_with = DNZ }
+		}
+	}
+	abort_when_not_enabled = yes
+
+	ai_strategy = { type = declare_war id = "NOR" value = 500 }
+	ai_strategy = { type = antagonize id = "NOR" value = 5000 }
+	ai_strategy = { type = ignore_claim id = "NOR" value = -500 }
 }
 
 NW_rush_poland = {
