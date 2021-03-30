@@ -297,6 +297,75 @@ political_actions = {
 
 IOM_search_of_allies_in_middle_east = {
 	
+	IOM_search_of_allies_in_middle_east_fake = {
+		icon = generic_form_nation
+		fire_only_once = yes
+		
+		available = {
+			any_other_country = {
+				OR = {
+					original_tag = SAU
+					original_tag = TUR
+					original_tag = TRK
+					original_tag = PER
+					original_tag = AFG
+					original_tag = IRQ
+					original_tag = SYR
+					original_tag = EGY
+					original_tag = YEM
+					original_tag = BPL
+					original_tag = PAL
+					original_tag = JOR
+				}
+				is_faction_leader = yes
+				exists = yes
+				NOT = { has_war_with = ROOT }
+				has_capitulated = no
+			}
+			has_capitulated = no
+			is_in_faction = no
+			hidden_trigger = { always = no }
+		}
+		
+		visible = {
+			NOT = {
+				any_other_country = {
+					OR = {
+						original_tag = SAU
+						original_tag = TUR
+						original_tag = TRK
+						original_tag = PER
+						original_tag = AFG
+						original_tag = IRQ
+						original_tag = SYR
+						original_tag = EGY
+						original_tag = YEM
+						original_tag = BPL
+						original_tag = PAL
+						original_tag = JOR
+					}
+					is_faction_leader = yes
+					exists = yes
+					NOT = { has_war_with = ROOT }
+				}
+			}
+			has_capitulated = no
+			is_in_faction = no
+		}
+		
+		cost = 10
+		
+		complete_effect = {
+			effect_tooltip = {
+				FROM = { country_event = { id = generic.2 hours = 3 } }
+			}
+		}
+		
+		ai_will_do = {
+			factor = 0
+		}
+	}
+	
 	IOM_search_of_allies_in_middle_east_dec = {
 
 		icon = generic_form_nation
@@ -348,7 +417,7 @@ IOM_search_of_allies_in_middle_east = {
 		cost = 10
 		
 		complete_effect = {
-			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision FRC_triumph_of_revolution (From [From.GetName] [From.GetTag])"
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision IOM_search_of_allies_in_middle_east_dec (From [From.GetName] [From.GetTag])"
 			FROM = { country_event = { id = generic.2 hours = 3 } }
 		}
 		
@@ -405,13 +474,15 @@ IOM_restoration_of_omani_empire_category = {
 	
 	IOM_return_qatar = {
     	icon = hol_exchange_intelligence_data
+		highlight_states = {
+			state = 773
+		}
         available = {
 			if = {
 				limit = { NOT = { owns_state = 773 } }
 				773 = {
 					owner = {
 						NOT = {
-							has_war_with = ROOT
 							is_in_faction_with = ROOT
 						}
 					}
@@ -451,10 +522,46 @@ IOM_restoration_of_omani_empire_category = {
 					value = 100
 				}
 			}
-			else = {
+			else_if = {
+				limit = { NOT = { owns_state = 773 } }
 				if = {
-					limit = { NOT = { owns_state = 773 } }
-					773 = { owner = { country_event = { id = NWoman.23 hours = 6 } } }
+					limit = { 773 = { owner = { controls_state = 773 } } }
+					773 = {
+						owner = {
+							country_event = { id = NWoman.23 hours = 6 }
+							if = {
+								limit = { is_ai = yes }
+								effect_tooltip = {
+									custom_effect_tooltip = chance_tt
+									random_list_chance = yes
+								}
+							}
+						}
+					}
+				}
+				else = {
+					773 = {
+						owner = {
+							ROOT = {
+								create_wargoal = {
+									type = take_state_focus
+									target = PREV
+									generator = { 773 }
+									expire = 0
+								}
+								add_ai_strategy = {
+									type = antagonize
+									id = PREV
+									value = 200
+								}
+								add_ai_strategy = {
+									type = conquer
+									id = PREV 
+									value = 100
+								}
+							}
+						}
+					}
 				}
 			}
 		}
@@ -462,6 +569,12 @@ IOM_restoration_of_omani_empire_category = {
 	
 	IOM_return_pirate_coast = {
     	icon = generic_nationalism
+		highlight_states = {
+			OR = {
+				state = 1119
+				state = 658
+			}
+		}
         available = {
 			if = {
 				limit = {
@@ -473,7 +586,6 @@ IOM_restoration_of_omani_empire_category = {
 				1119 = {
 					owner = {
 						NOT = {
-							has_war_with = ROOT
 							is_in_faction_with = ROOT
 						}
 					}
@@ -481,7 +593,6 @@ IOM_restoration_of_omani_empire_category = {
 				658 = {
 					owner = {
 						NOT = {
-							has_war_with = ROOT
 							is_in_faction_with = ROOT
 						}
 					}
@@ -526,10 +637,17 @@ IOM_restoration_of_omani_empire_category = {
 					value = 100
 				}
 			}
-			else = {
+			else_if = {
+				limit = {
+					OR = {
+						NOT = { owns_state = 1119 }
+						NOT = { owns_state = 658 }
+					}
+				}
 				every_state = {
 					limit = {
 						NOT = { is_owned_by = ROOT }
+						owner = { controls_state = PREV }
 						OR = {
 							state = 1119
 							state = 658
@@ -537,19 +655,115 @@ IOM_restoration_of_omani_empire_category = {
 					}
 					owner = { country_event = { id = NWoman.25 hours = 6 } }
 				}
+				if = {
+					limit = {
+						any_other_country = {
+							AND = {
+								owns_state = 1119
+								owns_state = 658
+								controls_state = 1119
+								controls_state = 658
+							}
+							is_ai = yes
+						}
+					}
+					every_state = {
+						limit = {
+							NOT = { is_owned_by = ROOT }
+							owner = { controls_state = PREV }
+							OR = {
+								state = 1119
+								state = 658
+							}
+						}
+						owner = {
+							effect_tooltip = {
+								custom_effect_tooltip = chance_tt
+								random_list_chance = yes
+							}
+						}
+					}
+					else = {
+						effect_tooltip = {
+							custom_effect_tooltip = chance_tt
+							custom_effect_tooltip = n4_tt
+						}
+						1119 = {
+							owner = {
+								if = {
+									limit = {
+										is_ai = yes
+										controls_state = 1119
+									}
+									effect_tooltip = {
+										custom_effect_tooltip = chance_tt1
+										random_list_chance = yes
+									}
+								}
+							}
+						}
+						custom_effect_tooltip = n4_tt
+						658 = {
+							owner = {
+								if = {
+									limit = {
+										is_ai = yes
+										controls_state = 658
+									}
+									effect_tooltip = {
+										custom_effect_tooltip = chance_tt1
+										random_list_chance2 = yes
+									}
+								}
+							}
+						}
+					}
+				}
+				every_state = {
+					limit = {
+						NOT = { is_owned_by = ROOT }
+						owner = { NOT = { controls_state = PREV } }
+						OR = {
+							state = 1119
+							state = 658
+						}
+					}
+					owner = {
+						ROOT = {
+							create_wargoal = {
+								type = take_state_focus
+								target = PREV
+								generator = { 1119 658 }
+								expire = 0
+							}
+							add_ai_strategy = {
+								type = antagonize
+								id = PREV
+								value = 200
+							}
+							add_ai_strategy = {
+								type = conquer
+								id = PREV 
+								value = 100
+							}
+						}
+					}
+				}
 			}
 		}
     }
 	
 	IOM_return_mahru = {
     	icon = generic_civil_support
+		highlight_states = {
+			state = 1170
+		}
         available = {
 			if = {
 				limit = { NOT = { owns_state = 1170 } }
 				1170 = {
 					owner = {
 						NOT = {
-							has_war_with = ROOT
 							is_in_faction_with = ROOT
 						}
 					}
@@ -573,20 +787,60 @@ IOM_restoration_of_omani_empire_category = {
 			add_state_core = 1170
 			if = {
 				limit = { NOT = { owns_state = 1170 } }
-				1170 = { owner = { country_event = { id = NWoman.26 hours = 6 } } }
+				if = {
+					limit = { 1170 = { owner = { controls_state = 1170 } } }
+					1170 = {
+						owner = {
+							country_event = { id = NWoman.26 hours = 6 }
+							if = {
+								limit = { is_ai = yes }
+								effect_tooltip = {
+									custom_effect_tooltip = chance_tt
+									random_list_chance = yes
+								}
+							}
+						}
+					}
+				}
+				else = {
+					1170 = {
+						owner = {
+							ROOT = {
+								create_wargoal = {
+									type = take_state_focus
+									target = PREV
+									generator = { 1170 }
+									expire = 0
+								}
+								add_ai_strategy = {
+									type = antagonize
+									id = PREV
+									value = 200
+								}
+								add_ai_strategy = {
+									type = conquer
+									id = PREV 
+									value = 100
+								}
+							}
+						}
+					}
+				}
 			}
 		}
     }
 	
 	IOM_integrate_sultanate_of_zanzibar = {
     	icon = generic_operation
+		highlight_states = {
+			state = 831
+		}
         available = {
 			if = {
 				limit = { NOT = { owns_state = 831 } }
 				831 = {
 					owner = {
 						NOT = {
-							has_war_with = ROOT
 							is_in_faction_with = ROOT
 						}
 					}
@@ -626,10 +880,46 @@ IOM_restoration_of_omani_empire_category = {
 					value = 100
 				}
 			}
-			else = {
+			else_if = {
+				limit = { NOT = { owns_state = 831 } }
 				if = {
-					limit = { NOT = { owns_state = 831 } }
-					831 = { owner = { country_event = { id = NWoman.27 hours = 6 } } }
+					limit = { 831 = { owner = { controls_state = 831 } } }
+					831 = {
+						owner = {
+							country_event = { id = NWoman.27 hours = 6 }
+							if = {
+								limit = { is_ai = yes }
+								effect_tooltip = {
+									custom_effect_tooltip = chance_tt
+									random_list_chance = yes
+								}
+							}
+						}
+					}
+				}
+				else = {
+					831 = {
+						owner = {
+							ROOT = {
+								create_wargoal = {
+									type = take_state_focus
+									target = PREV
+									generator = { 831 }
+									expire = 0
+								}
+								add_ai_strategy = {
+									type = antagonize
+									id = PREV
+									value = 200
+								}
+								add_ai_strategy = {
+									type = conquer
+									id = PREV 
+									value = 100
+								}
+							}
+						}
+					}
 				}
 			}
 		}
@@ -637,13 +927,15 @@ IOM_restoration_of_omani_empire_category = {
 	
 	IOM_return_swahili_coast = {
     	icon = hol_draw_up_staff_plans
+		highlight_states = {
+			state = 546
+		}
         available = {
 			if = {
 				limit = { NOT = { owns_state = 546 } }
 				546 = {
 					owner = {
 						NOT = {
-							has_war_with = ROOT
 							is_in_faction_with = ROOT
 						}
 					}
@@ -667,20 +959,60 @@ IOM_restoration_of_omani_empire_category = {
 			add_state_core = 546
 			if = {
 				limit = { NOT = { owns_state = 546 } }
-				546 = { owner = { country_event = { id = NWoman.28 hours = 6 } } }
+				if = {
+					limit = { 546 = { owner = { controls_state = 546 } } }
+					546 = {
+						owner = {
+							country_event = { id = NWoman.28 hours = 6 }
+							if = {
+								limit = { is_ai = yes }
+								effect_tooltip = {
+									custom_effect_tooltip = chance_tt
+									random_list_chance = yes
+								}
+							}
+						}
+					}
+				}
+				else = {
+					546 = {
+						owner = {
+							ROOT = {
+								create_wargoal = {
+									type = take_state_focus
+									target = PREV
+									generator = { 546 }
+									expire = 0
+								}
+								add_ai_strategy = {
+									type = antagonize
+									id = PREV
+									value = 200
+								}
+								add_ai_strategy = {
+									type = conquer
+									id = PREV 
+									value = 100
+								}
+							}
+						}
+					}
+				}
 			}
 		}
     }
 	
 	IOM_return_banadir = {
     	icon = generic_nationalism
+		highlight_states = {
+			state = 559
+		}
         available = {
 			if = {
 				limit = { NOT = { owns_state = 559 } }
 				559 = {
 					owner = {
 						NOT = {
-							has_war_with = ROOT
 							is_in_faction_with = ROOT
 						}
 					}
@@ -720,10 +1052,46 @@ IOM_restoration_of_omani_empire_category = {
 					value = 100
 				}
 			}
-			else = {
+			else_if = {
+				limit = { NOT = { owns_state = 559 } }
 				if = {
-					limit = { NOT = { owns_state = 559 } }
-					559 = { owner = { country_event = { id = NWoman.29 hours = 6 } } }
+					limit = { 559 = { owner = { controls_state = 559 } } }
+					559 = {
+						owner = {
+							country_event = { id = NWoman.29 hours = 6 }
+							if = {
+								limit = { is_ai = yes }
+								effect_tooltip = {
+									custom_effect_tooltip = chance_tt
+									random_list_chance = yes
+								}
+							}
+						}
+					}
+				}
+				else = {
+					559 = {
+						owner = {
+							ROOT = {
+								create_wargoal = {
+									type = take_state_focus
+									target = PREV
+									generator = { 559 }
+									expire = 0
+								}
+								add_ai_strategy = {
+									type = antagonize
+									id = PREV
+									value = 200
+								}
+								add_ai_strategy = {
+									type = conquer
+									id = PREV 
+									value = 100
+								}
+							}
+						}
+					}
 				}
 			}
 		}
@@ -731,6 +1099,12 @@ IOM_restoration_of_omani_empire_category = {
 	
 	IOM_return_mombasa = {
     	icon = generic_civil_support
+		highlight_states = {
+			OR = {
+				state = 1171
+				state = 1172
+			}
+		}
         available = {
 			if = {
 				limit = {
@@ -742,7 +1116,6 @@ IOM_restoration_of_omani_empire_category = {
 				1171 = {
 					owner = {
 						NOT = {
-							has_war_with = ROOT
 							is_in_faction_with = ROOT
 						}
 					}
@@ -750,7 +1123,6 @@ IOM_restoration_of_omani_empire_category = {
 				1172 = {
 					owner = {
 						NOT = {
-							has_war_with = ROOT
 							is_in_faction_with = ROOT
 						}
 					}
@@ -795,16 +1167,115 @@ IOM_restoration_of_omani_empire_category = {
 					value = 100
 				}
 			}
-			else = {
+			else_if = {
+				limit = {
+					OR = {
+						NOT = { owns_state = 1171 }
+						NOT = { owns_state = 1172 }
+					}
+				}
 				every_state = {
 					limit = {
 						NOT = { is_owned_by = ROOT }
+						owner = { controls_state = PREV }
 						OR = {
 							state = 1171
 							state = 1172
 						}
 					}
 					owner = { country_event = { id = NWoman.30 hours = 6 } }
+				}
+				if = {
+					limit = {
+						any_other_country = {
+							AND = {
+								owns_state = 1171
+								owns_state = 1172
+								controls_state = 1171
+								controls_state = 1172
+							}
+							is_ai = yes
+						}
+					}
+					every_state = {
+						limit = {
+							NOT = { is_owned_by = ROOT }
+							owner = { controls_state = PREV }
+							OR = {
+								state = 1171
+								state = 1172
+							}
+						}
+						owner = {
+							effect_tooltip = {
+								custom_effect_tooltip = chance_tt
+								random_list_chance = yes
+							}
+						}
+					}
+					else = {
+						effect_tooltip = {
+							custom_effect_tooltip = chance_tt
+						}
+						1171 = {
+							owner = {
+								if = {
+									limit = {
+										is_ai = yes
+										controls_state = 1171
+									}
+									effect_tooltip = {
+										PREV = { custom_effect_tooltip = chance_tt1 }
+										random_list_chance = yes
+									}
+								}
+							}
+						}
+						1172 = {
+							owner = {
+								if = {
+									limit = {
+										is_ai = yes
+										controls_state = 1172
+									}
+									effect_tooltip = {
+										custom_effect_tooltip = chance_tt1
+										random_list_chance2 = yes
+									}
+								}
+							}
+						}
+					}
+				}
+				every_state = {
+					limit = {
+						NOT = { is_owned_by = ROOT }
+						owner = { NOT = { controls_state = PREV } }
+						OR = {
+							state = 1171
+							state = 1172
+						}
+					}
+					owner = {
+						ROOT = {
+							create_wargoal = {
+								type = take_state_focus
+								target = PREV
+								generator = { 1171 1172 }
+								expire = 0
+							}
+							add_ai_strategy = {
+								type = antagonize
+								id = PREV
+								value = 200
+							}
+							add_ai_strategy = {
+								type = conquer
+								id = PREV 
+								value = 100
+							}
+						}
+					}
 				}
 			}
 		}
