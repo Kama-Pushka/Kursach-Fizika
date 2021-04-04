@@ -41,6 +41,27 @@ focus_tree = {
 		icon = GFX_z_goal_elections
 		x = 50
 		y = 0
+		offset = {
+			x = -37
+			y = 0
+			trigger = {
+				has_completed_focus = SPR_victory_popular_front
+			}
+		}
+		offset = {
+			x = -44
+			y = 0
+			trigger = {
+				has_completed_focus = SPR_victory_liberal_party
+			}
+		}
+		offset = {
+			x = -54
+			y = 0
+			trigger = {
+				has_completed_focus = SPR_victory_national_block
+			}
+		}
 		cost = 7.72
 		
 		cancel_if_invalid = yes
@@ -72,6 +93,13 @@ focus_tree = {
 		mutually_exclusive = { focus = SPR_victory_liberal_party focus = SPR_victory_national_block }
 		x = -37
 		y = 1
+		offset = {
+			x = 37
+			y = 0
+			trigger = {
+				has_completed_focus = SPR_victory_popular_front
+			}
+		}
 		relative_position_id = SPR_elections_second_cortes_republic
 		
 		cost = 10
@@ -82,6 +110,12 @@ focus_tree = {
 
 		ai_will_do = {
 			factor = 5
+		}
+		allow_branch = {
+			NOT = {
+				has_completed_focus = SPR_victory_liberal_party
+				has_completed_focus = SPR_victory_national_block
+			}
 		}
 		available = {
 			hidden_trigger = {
@@ -121,6 +155,7 @@ focus_tree = {
 				#}
 			}
 			custom_effect_tooltip = TUR_focus_autocomplete_tt
+			mark_focus_tree_layout_dirty = yes
 		}
 	}
 	
@@ -4429,6 +4464,7 @@ focus_tree = {
 						trade_unionist
 					}
 				}
+				set_cosmetic_tag = SPR_socialist
 			}
 			set_party_name = { ideology = democratic name = SPR_soc_part long_name = SPR_soc_part_long }
 			custom_effect_tooltip = TUR_focus_autocomplete_tt
@@ -4515,7 +4551,6 @@ focus_tree = {
 		available = {
 		}
 		bypass = {
-			has_global_flag = scw_over
 		}
 
 		completion_reward = {
@@ -5225,6 +5260,13 @@ focus_tree = {
 		ai_will_do = {
 			factor = 10
 		}
+		
+		allow_branch = {
+			NOT = {
+				has_completed_focus = SPR_victory_liberal_party
+				has_completed_focus = SPR_victory_national_block
+			}
+		}
 
 		available_if_capitulated = yes
 		search_filters = {FOCUS_FILTER_INDUSTRY}
@@ -5765,6 +5807,7 @@ focus_tree = {
 				has_country_leader = { name = "Manuel Azana" ruling_only = yes }
 				has_country_leader = { name = "Segismundo Casado" ruling_only = yes }
 				has_country_leader = { name = "Indalecio Prieto Tuero" ruling_only = yes }
+				has_country_leader = { name = "Largo Caballero" ruling_only = yes }
 			}
 		}
 		bypass = {
@@ -5908,6 +5951,7 @@ focus_tree = {
 		available = {
 		}
 		bypass = {
+			is_subject = no
 		}
 		will_lead_to_war_with = SOV
 		prerequisite = { focus = SPR_subvert_soviet_control }
@@ -6428,6 +6472,10 @@ focus_tree = {
 		
 		ai_will_do = {
 			factor = 5
+			modifier = {
+				factor = 30
+				has_country_leader = { name = "Largo Caballero" ruling_only = yes }
+			}
 		}
 
 		available_if_capitulated = yes
@@ -6441,16 +6489,31 @@ focus_tree = {
 					desc = "POLITICS_LARGO_CABALLERO_DESC"
 					picture = "gfx/leaders/SPR/portrait_spr_largo_caballero.dds"
 					expire = "1965.1.1"
-					ideology = marxism
+					ideology = right_wing_communism
 					traits = {
 						short_sighted_politician
 						trade_unionist
 					}
 				}
 			}
+			set_temp_variable = {
+				var = temp1
+				value = party_popularity@democratic
+			}
+			multiply_temp_variable = { temp1 = -0.5 }
+			add_popularity = {
+				ideology = democratic
+				popularity = temp1
+			}
+			multiply_temp_variable = { temp1 = -1 }
+			add_popularity = {
+				ideology = communism
+				popularity = temp1
+			}
 			set_politics = {
 				ruling_party = communism
 			}
+			set_party_name = { ideology = communism name = SPR_soc_part long_name = SPR_soc_part_long }
 			if = {
 				limit = { has_completed_focus = SPR_working_front }
 				swap_ideas = {
@@ -7145,6 +7208,24 @@ focus_tree = {
 				set_faction_name = socialist_international
 			}
 			else = { create_faction = socialist_international }
+			every_other_country = {
+				limit = {
+					NOT = { is_in_faction_with = ROOT }
+					OR = {
+						has_government = communism
+						has_government = democratic
+					}
+					if = {
+						limit = { has_government = communism }
+						is_in_faction = no
+					}
+					if = {
+						limit = { has_government = democratic }
+						has_country_leader_with_trait = socialist_trait
+					}
+				}
+				country_event = { id = NWspain.75 hours = 3 random_hours = 3 }
+			}
 		}
 	}
 	
@@ -8768,6 +8849,12 @@ focus_tree = {
 		ai_will_do = {
 			factor = 5
 		}
+		allow_branch = {
+			NOT = {
+				has_completed_focus = SPR_victory_popular_front
+				has_completed_focus = SPR_victory_national_block
+			}
+		}
 		available = {
 			hidden_trigger = {
 				always = no
@@ -8814,6 +8901,7 @@ focus_tree = {
 				set_variable = { spain_minor = 0 }
 			}
 			custom_effect_tooltip = TUR_focus_autocomplete_tt
+			mark_focus_tree_layout_dirty = yes
 		}
 	}
 	
@@ -9647,6 +9735,13 @@ focus_tree = {
 		mutually_exclusive = { focus = SPR_victory_popular_front focus = SPR_victory_liberal_party }
 		x = 17
 		y = 1
+		offset = {
+			x = -17
+			y = 0
+			trigger = {
+				has_completed_focus = SPR_victory_national_block
+			}
+		}
 		relative_position_id = SPR_elections_second_cortes_republic
 		
 		cost = 10
@@ -9657,6 +9752,12 @@ focus_tree = {
 
 		ai_will_do = {
 			factor = 5
+		}
+		allow_branch = {
+			NOT = {
+				has_completed_focus = SPR_victory_popular_front
+				has_completed_focus = SPR_victory_liberal_party
+			}
 		}
 		available = {
 			hidden_trigger = {
@@ -9678,6 +9779,7 @@ focus_tree = {
 			}
 			clr_country_flag = spain_block_legitimacy_flag
 			custom_effect_tooltip = TUR_focus_autocomplete_tt
+			mark_focus_tree_layout_dirty = yes
 		}
 	}
 	
@@ -11112,6 +11214,27 @@ focus_tree = {
 		icon = GFX_focus_hol_the_foundations_of_defense
 		x = 8
 		y = -3
+		offset = {
+			x = 9
+			y = 2
+			trigger = {
+				has_completed_focus = SPR_victory_popular_front
+			}
+		}
+		offset = {
+			x = -16
+			y = 0
+			trigger = {
+				has_completed_focus = SPR_victory_liberal_party
+			}
+		}
+		offset = {
+			x = 0
+			y = 0
+			trigger = {
+				has_completed_focus = SPR_victory_national_block
+			}
+		}
 		relative_position_id = SPR_ports_barcelona
 		
 		cost = 7.2
