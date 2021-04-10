@@ -5572,38 +5572,23 @@ country_event = {
 		
 		add_political_power = 25
 		add_stability = 0.05
-		
-		if = {
-			limit = {
-				is_faction_leader = yes 
-			}
-			set_faction_name = HBBRG_north_atlantic_treaty
-			add_ai_strategy = {
-				type = alliance
-				id = event_target:old_ally
-				value = 200
-			}
-			add_ai_strategy = {
-				type = alliance
-				id = event_target:SOV_neighbor_democrat
-				value = 200
-			}
-			add_to_faction = USA
-		}
-		else = {
+		effect_tooltip = {
 			if = {
-				limit = { is_in_faction = yes }
-				leave_faction = yes
+				limit = { is_faction_leader = yes }
+				set_faction_name = HBBRG_north_atlantic_treaty
 			}
-			create_faction = "HBBRG_north_atlantic_treaty"
+			else = {
+				if = {
+					limit = { is_in_faction = yes }
+					leave_faction = yes
+				}
+				create_faction = "HBBRG_north_atlantic_treaty"
+			}
 			add_to_faction = USA
-		}
-		hidden_effect = {
-			USA = {
-				add_ai_strategy = {
-					type = alliance
-					id = ROOT
-					value = 200
+			USA = {	custom_effect_tooltip = needs_approval }
+			hidden_effect = {
+				USA = {
+					country_event = { id = NWmonarchy.780 hours = 3 }
 				}
 			}
 		}
@@ -5616,6 +5601,98 @@ country_event = {
 			factor = 10
 		}
 		add_political_power = -25
+	}
+}
+
+#Габсы отказали в землях ордена. Отлучить? // VAT
+country_event = {
+	id = NWmonarchy.780
+	title = NWmonarchy.780.t
+	desc = NWmonarchy.780.desc
+	picture = GFX_report_event_generic_rally_3
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWmonarchy.780" }
+	
+	is_triggered_only = yes
+
+	option = {
+		log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): choose option NWmonarchy.780.a"
+		name = NWmonarchy.780.a
+		ai_chance = {
+			factor = 90
+		}
+		add_ai_strategy = {
+			type = alliance
+			id = FROM
+			value = 200
+		}
+		if = {
+			limit = { is_faction_leader = yes }
+			hidden_effect = {
+				every_other_country = {
+					limit = {
+						is_subject = no
+						is_in_faction_with = ROOT
+					}
+					set_country_flag = old_ally
+				}
+			}
+			dismantle_faction = yes
+		}
+		else_if = {
+			limit = { is_in_faction = yes }
+			leave_faction = yes
+		}
+		FROM = {
+			if = {
+				limit = { is_faction_leader = yes }
+				set_faction_name = HBBRG_north_atlantic_treaty
+			}
+			else = {
+				if = {
+					limit = { is_in_faction = yes }
+					leave_faction = yes
+				}
+				create_faction = "HBBRG_north_atlantic_treaty"
+			}
+			add_to_faction = USA
+		}
+		every_other_country = {
+			limit = {
+				has_country_flag = old_ally
+			}
+			FROM = { add_to_faction = PREV }
+			add_ai_strategy = {
+				type = alliance
+				id = FROM
+				value = 200
+			}
+		}
+	}
+	
+	option = {
+		log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): choose option NWmonarchy.780.b"
+		name = NWmonarchy.780.b
+		ai_chance = {
+			factor = 10
+		}
+		FROM = { country_event = { id = NWmonarchy.781 hours = 3 } }
+	}
+}
+
+#Отказ США
+country_event = {
+	id = NWmonarchy.781
+	title = NWmonarchy.781.t
+	desc = NWmonarchy.781.desc
+	picture = GFX_report_event_generic_rally_3
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWmonarchy.781" }
+	
+	is_triggered_only = yes
+
+	option = {
+		name = NWmonarchy.80.a
 	}
 }
 
@@ -6007,12 +6084,14 @@ country_event = {
 		log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): choose option NWmonarchy.85.a"
 		name = NWmonarchy.85.a
 		if = {
-			limit = { original_tag = ITA }
+			limit = { tag = ITA }
 			add_ideas = HBBRG_cononisations_ital
 		}
-		if = {
-			limit = { NOT = { original_tag = ITA } }
+		else = {
 			add_ideas = HBBRG_cononisations_habsbrg
+		}
+		hidden_effect = {
+			news_event = { hours = 6 id = trworldnews.144 }
 		}
 	}
 }
