@@ -19,6 +19,7 @@ NDefines.NDiplomacy.VERY_GOOD_OPINION = 100									-- Threshold for a country t
 NDefines.NDiplomacy.VERY_BAD_OPINION = -100									-- Threshold for a country that has a very bad opinion of you.
 NDefines.NDiplomacy.IDEOLOGY_JOIN_FACTION_MIN_LEVEL = 0.4					-- ideology limit required to join faction
 NDefines.NDiplomacy.DIPLOMACY_HOURS_BETWEEN_REQUESTS = 0					-- How long a country must wait before sending a new diplomatic request.
+NDefines.NDiplomacy.MIN_TRUST_VALUE = -500									-- max value for embargo, vanilla -100
 
 -- Technology
 NDefines.NTechnology.MAX_SUBTECHS = 4										-- Max number of sub technologies a technology can have.
