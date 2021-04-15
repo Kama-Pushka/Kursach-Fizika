@@ -8026,4 +8026,107 @@ country_event = {
 			add_political_power = 1
 		}
 	}
+	
+	option = {
+		name = LOG3
+		set_temp_variable = { temp1 = 1 }
+		set_temp_variable = { temp2 = 1 }
+		set_temp_variable = { temp3 = 1 }
+		set_temp_variable = { temp4 = 1 }
+		randomize_temp_variable = { var = temp1 distribution = uniform min = 1 max = 3 }
+		randomize_temp_variable = { var = temp2 distribution = uniform min = 1 max = 3 }
+		randomize_temp_variable = { var = temp3 distribution = uniform min = 1 max = 3 }
+		randomize_temp_variable = { var = temp4 distribution = uniform min = 1 max = 3 }
+		set_temp_variable = { temp5 = 0 }
+		add_to_temp_variable = { temp5 = temp1 }
+		add_to_temp_variable = { temp5 = temp2 }
+		add_to_temp_variable = { temp5 = temp3 }
+		add_to_temp_variable = { temp5 = temp4 }
+		divide_temp_variable = { temp5 = 4 }
+		round_temp_variable = temp5
+		clamp_temp_variable = { var = temp5 min = 1 max = 3 }
+		meta_effect = {
+			text = {
+				create_corps_commander = {
+					traits = { anarchist_trait anarchist_timed_trait }
+					skill = [SKILL_VAR]
+					attack_skill = [ATTACK_SKILL_VAR]
+					defense_skill = [DEFENSE_SKILL_VAR]
+					planning_skill = [PLANNING_SKILL_VAR]
+					logistics_skill = [LOGISTICS_SKILL_VAR]
+				}
+			}
+			SKILL_VAR = "[?temp5]"
+			ATTACK_SKILL_VAR = "[?temp1]"
+			DEFENSE_SKILL_VAR = "[?temp2]"
+			PLANNING_SKILL_VAR = "[?temp3]"
+			LOGISTICS_SKILL_VAR = "[?temp4]"
+		}
+		if = {
+			limit = { has_country_flag = guerrilla_war_flag }
+			random_army_leader = {
+				limit = { has_trait = anarchist_timed_trait }
+				remove_unit_leader_trait = guerrilla_war_trait
+			}
+		}
+		if = {
+			limit = { has_country_flag = national_war_flag }
+			random_army_leader = {
+				limit = { has_trait = anarchist_timed_trait }
+				remove_unit_leader_trait = national_war_trait
+			}
+		}
+		set_temp_variable = { temp6 = 1 }
+		if = {
+			limit = { check_variable = { temp5 > 1 } }
+			random_list = {
+				60 = {
+					add_to_temp_variable = { temp6 = 1 }
+				}
+				40 = {
+					modifier = { factor = 0 check_variable = { temp5 > 2 } }
+				}
+			}
+		}
+		
+		log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): skill:  [?temp5]"
+		log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): attack_skill:  [?temp1]"
+		log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): defense_skill:  [?temp2]"
+		log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): planning_skill:  [?temp3]"
+		log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): logistics_skill:  [?temp4]"
+		log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): num_of_traits:  [?temp6]"
+		
+		while_loop_effect = {
+			limit = { check_variable = { temp6 > 0 } }
+			random_army_leader = {
+				limit = { has_trait = anarchist_timed_trait }
+				random_list = {
+					65 = {
+						modifier = { factor = 0 check_variable = { temp6 > 1 } }
+						modifier = { factor = 0.25 check_variable = { temp5 > 1 } }
+					}
+					10 = { add_unit_leader_trait = old_guard }
+					10 = { add_unit_leader_trait = brilliant_strategist }
+					10 = { add_unit_leader_trait = inflexible_strategist }
+					10 = { add_unit_leader_trait = politically_connected }
+					5 = { add_unit_leader_trait = war_hero }
+					10 = { add_unit_leader_trait = career_officer }
+					10 = { add_unit_leader_trait = trait_cautious  modifier = { factor = 0 has_trait = trait_reckless } }
+					10 = { add_unit_leader_trait = trait_reckless  modifier = { factor = 0 has_trait = trait_cautious } }
+					10 = { add_unit_leader_trait = media_personality }
+					10 = { add_unit_leader_trait = harsh_leader }
+					10 = { add_unit_leader_trait = bearer_of_artillery }
+					20 = { add_unit_leader_trait = infantry_officer }
+					20 = { add_unit_leader_trait = cavalry_officer }
+					20 = { add_unit_leader_trait = armor_officer }
+					5 = { add_unit_leader_trait = resistance_leader }
+				}
+			}
+			add_to_temp_variable = { temp6 = -1 }
+		}
+		random_army_leader = {
+			limit = { has_trait = anarchist_timed_trait }
+			remove_unit_leader_trait = anarchist_timed_trait
+		}
+	}
 }
