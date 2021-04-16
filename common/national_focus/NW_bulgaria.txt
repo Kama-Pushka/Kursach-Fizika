@@ -825,17 +825,32 @@ focus_tree = {
 		
 		bypass = {
 			AND = {
-				OR = {
-					106 = { is_owned_by = BUL } 
-					AND = { 106 = { is_owned_by = MAC } MAC = { is_subject_of = BUL } }
+				106 = {
+					owner = {
+						OR = {
+							tag = ROOT
+							is_subject_of = ROOT
+							is_in_faction_with = ROOT
+						}
+					}
 				}
-				OR = {
-					812 = { is_owned_by = BUL } 
-					AND = { 812 = { is_owned_by = MAC } MAC = { is_subject_of = BUL } }
+				812 = {
+					owner = {
+						OR = {
+							tag = ROOT
+							is_subject_of = ROOT
+							is_in_faction_with = ROOT
+						}
+					}
 				}
-				OR = {
-					825 = { is_owned_by = BUL } 
-					AND = { 825 = { is_owned_by = MAC } MAC = { is_subject_of = BUL } }
+				825 = {
+					owner = {
+						OR = {
+							tag = ROOT
+							is_subject_of = ROOT
+							is_in_faction_with = ROOT
+						}
+					}
 				}
 			}
 		}
@@ -847,21 +862,25 @@ focus_tree = {
 					MAC = { exists = no }
 				}
 				if = {
-					limit = { NOT = { 825 = { is_owned_by = BUL } } }
-					MAC = { transfer_state = 825 }
-				}
-				if = {
-					limit = { NOT = { 106 = { is_owned_by = BUL } } }
+					limit = { NOT = { 106 = { is_owned_by = ROOT } } }
 					MAC = { transfer_state = 106 }
+					hidden_effect = {
+						106 = { owner = { set_country_flag = temp_flag_1 } }
+					}
 				}
 				if = {
-					limit = { NOT = { 812 = { is_owned_by = BUL } } }
+					limit = { NOT = { 812 = { is_owned_by = ROOT } } }
 					MAC = { transfer_state = 812 }
+					hidden_effect = {
+						812 = { owner = { set_country_flag = temp_flag_1 } }
+					}
 				}
-				create_wargoal = {
-					type = take_state_focus
-					target = YUG
-					generator = { 106 }
+				if = {
+					limit = { NOT = { 825 = { is_owned_by = ROOT } } }
+					MAC = { transfer_state = 825 }
+					hidden_effect = {
+						825 = { owner = { set_country_flag = temp_flag_1 } }
+					}
 				}
 				hidden_effect = {
 					MAC = {
@@ -877,13 +896,43 @@ focus_tree = {
 							can_create_factions = no
 							can_join_factions = no
 						}
+						ai_strategy = {
+							type = befriend
+							id = ROOT
+							value = 80
+						}
+						add_ai_strategy = {
+							type = protect
+							id = ROOT
+							value = 50
+						}
+						give_military_access = ROOT
+					}
+					ai_strategy = {
+						type = befriend
+						id = "MAC"
+						value = 80
+					}
+					add_ai_strategy = {
+						type = protect
+						id = "MAC"
+						value = 50
+					}
+				}
+				effect_tooltip = {
+					every_other_country = {
+						limit = { has_country_flag = temp_flag_1 }
+						MAC = {
+							declare_war_on = {
+								target = PREV
+								type = annex_everything
+							}
+							add_to_war = { targeted_alliance = ROOT enemy = PREV hostility_reason = asked_to_join }
+						}
 					}
 				}
 			}
-			else_if = {
-				limit = {
-					MAC = { exists = yes }
-				}
+			else = {
 				MAC = { country_event = { id = macedonia.3 hours = 6 } }
 			}
 		}

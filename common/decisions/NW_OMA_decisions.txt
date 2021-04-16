@@ -1,0 +1,185 @@
+IOM_generic_irregular_army_category = {
+	
+	OMA_summon_peoples_militia = {
+		name = IOM_summon_peoples_militia
+	
+		highlight_states = {
+			is_controlled_by = ROOT
+			is_capital = yes
+		}
+		
+		icon = generic_military
+		
+		allowed = {
+            original_tag = OMA
+        }
+		available = {
+			has_war = yes
+			any_state = {
+				is_controlled_by = ROOT
+			}
+			NOT = { has_country_flag = summon_peoples_militia_flag }
+		}
+		visible = {
+		}
+		
+		cost = 20
+		days_remove = 2
+		
+		remove_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): remove decision OMA_summon_peoples_militia"
+			set_variable = { num_of_militia_var = 0 }
+			set_country_flag = summon_peoples_militia_flag
+			hidden_effect = {
+				if = {
+					limit = { NOT = { has_template = "Almilishiat Alqabalia war" } }
+					division_template = {
+						name = "Almilishiat Alqabalia war"
+						division_names_group = OMA_CAV_01
+						regiments = {
+							cavalry = { x = 0 y = 0 }
+							camelry = { x = 0 y = 1 }
+						}
+					}
+				}
+				set_temp_variable = { num_of_cycle = peoples_militia_var }
+				while_loop_effect = {
+					limit = { check_variable = { num_of_cycle > 0 } }
+					add_to_temp_variable = { num_of_cycle = -1 }
+					random_controlled_state = {
+						prioritize = { 294 }
+						create_unit = {
+							division = "name = \"Alfurqat Alfursan\" division_template = \"Almilishiat Alqabalia war\" start_experience_factor = 0.1" 
+							owner = ROOT
+							count = 1
+							allow_spawning_on_enemy_provs = yes
+						}
+						add_to_variable = { ROOT.num_of_militia_var = 1 }
+					}
+				}
+			}
+			custom_effect_tooltip = BHU_summon_peoples_militia_tt3
+		}
+		
+		ai_will_do = {
+			factor = 1
+			modifier = {
+				add = 50
+				ai_wants_divisions > 0
+			}
+			modifier = {
+				add = 50
+				enemies_strength_ratio > 1
+			}
+			modifier = {
+				add = -500
+				has_game_rule = { rule = ai_division_limiter_status option = AI_DIVISION_LIMITER_DYNAMIC }
+				check_variable = { num_divisions > ai_upper_limit }
+			}
+		}
+	}
+	
+	IOM_irregular_army_recovery = {
+		name = irregular_army_recovery
+		allowed = {
+            original_tag = IOM
+        }
+		available = {
+			has_war = no
+			custom_trigger_tooltip = {
+				tooltip = generic_irregular_army_recovery_tt		
+				check_variable = { var = num_divisions value = num_of_militia_var compare = greater_than_or_equals }
+			}
+		}
+		visible = {
+			has_war = yes
+			check_variable = { num_divisions < num_of_militia_var }
+		}
+		cancel_if_not_visible = yes
+		icon = generic_nationalism
+		days_mission_timeout = 40
+		activation = {
+			has_war = yes
+			check_variable = { num_divisions < num_of_militia_var }
+		}
+		is_good = yes
+		
+		timeout_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): timeout decision TIB_communist_uprising_of_tibetans"
+			if = {
+				limit = { has_country_flag = put_pressure_on_chiefs_flag }
+				clr_country_flag = put_pressure_on_chiefs_flag
+			}
+			set_temp_variable = { num_of_spawn = num_of_militia_var }	
+			multiply_temp_variable = { num_of_spawn = 0.1 }
+			round_temp_variable = num_of_spawn
+			add_to_temp_variable = { num_of_spawn = 1 }
+			### ПРОВЕРКА
+			set_temp_variable = { check_num_of_spawn = num_divisions }
+			add_to_temp_variable = { check_num_of_spawn = num_of_spawn }
+			if = {
+				limit = {
+					check_variable = { check_num_of_spawn > num_of_militia_var }
+				}
+				subtract_from_temp_variable = { check_num_of_spawn = num_of_militia_var }
+				subtract_from_temp_variable = { num_of_spawn = check_num_of_spawn }
+			}
+			set_temp_variable = { num_of_cycle = num_of_spawn }
+			while_loop_effect = {
+				limit = { check_variable = { num_of_cycle > 0 } }
+				add_to_temp_variable = { num_of_cycle = -1 }
+				random_controlled_state = {
+					prioritize = { 942 }
+					create_unit = {
+						division = "name = \"Alfurqat Alfursan\" division_template = \"Alfurqat Alfursan war\" start_experience_factor = 0.1" 
+						owner = ROOT
+						count = 1
+						allow_spawning_on_enemy_provs = yes
+					}
+				}
+			}
+			if = {
+				limit = { check_variable = { num_of_spawn = 1 } }
+				custom_effect_tooltip = generic_irregular_army_recovery_tt2
+			}
+			if = {
+				limit = { check_variable = { num_of_spawn > 1 } }
+				custom_effect_tooltip = generic_irregular_army_recovery_tt3
+			}
+		}
+		
+		complete_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision IOM_irregular_army_recovery"
+		}
+	}
+	
+	IOM_put_pressure_on_chiefs = {
+		name = put_pressure_on_chiefs
+    	icon = hol_attract_foreign_investors
+		allowed = {
+            original_tag = IOM
+        }
+        available = {
+			has_active_mission = IOM_irregular_army_recovery
+			NOT = { has_country_flag = put_pressure_on_chiefs_flag }
+        }
+		visible = {
+            has_active_mission = IOM_irregular_army_recovery
+        }
+		cost = 30
+
+        ai_will_do = {
+			factor = 10
+			modifier = {
+				factor = 0
+				check_variable = { days_mission_timeout@IOM_irregular_army_recovery < 20 }
+			}
+		}
+		
+		complete_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision IOM_put_pressure_on_chiefs"
+			add_days_mission_timeout = { mission = IOM_irregular_army_recovery days = -30 }
+			set_country_flag = put_pressure_on_chiefs_flag
+		}
+    }
+}
