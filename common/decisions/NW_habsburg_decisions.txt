@@ -909,6 +909,35 @@ HBBRG_form_USE_puppet_category = {
 				is_in_faction_with = ROOT
 				capital_scope = { is_on_continent = europe }
 			}
+			set_temp_variable = { use_go_puppet_t1 = FROM.num_battalions }
+			divide_temp_variable = { use_go_puppet_t1 = 20 }
+			set_temp_variable = { use_go_puppet_cost = use_go_puppet_t1 }
+			add_to_temp_variable = { use_go_puppet_cost = FROM.num_owned_states }
+			set_temp_variable = { use_go_puppet_t2 = FROM.num_of_factories }
+			add_to_temp_variable = { use_go_puppet_t2 = FROM.num_of_civilian_factories }
+			divide_temp_variable = { use_go_puppet_t2 = 2 }
+			add_to_temp_variable = { use_go_puppet_cost = use_go_puppet_t2 }
+			if = {
+				limit = { FROM = { is_major = yes } }
+				multiply_temp_variable = { use_go_puppet_cost = 1.5 }
+			}
+			if = {
+				limit = { check_variable = { use_go_puppet_cost < 50 } }
+				set_temp_variable = { use_go_puppet_cost = 35 }
+			}
+			else = {
+				if = {
+					limit = { FROM = { is_major = yes } }
+					custom_trigger_tooltip = {
+						tooltip = USE_go_puppet_tt2
+					}
+				}
+				else = {
+					custom_trigger_tooltip = {
+						tooltip = USE_go_puppet_tt1
+					}
+				}
+			}
 		}
 		
 		visible = {
@@ -936,7 +965,7 @@ HBBRG_form_USE_puppet_category = {
 			}
 		}
 		
-		cost = 125
+		cost = var:use_go_puppet_cost
 
 		complete_effect = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision USE_go_puppet_from_ally (From [From.GetTag])"
