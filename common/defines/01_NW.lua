@@ -214,6 +214,22 @@ NDefines.NAI.LAND_DEFENSE_INTERSEPTORS_PER_PLANE = 0.0						-- Amount of air int
 NDefines.NAI.LAND_COMBAT_FIGHTERS_PER_PLANE = 2								-- Amount of air superiority planes requested per enemy plane
 NDefines.NAI.STR_BOMB_MIN_ENEMY_FIGHTERS_IN_AREA = 400						-- If amount of enemy fighters is higher than this mission won't perform
 
+NDefines.NAir.MISSION_COMMAND_POWER_COSTS = {
+	0.0, -- AIR_SUPERIORITY
+	0.0, -- CAS
+	0.0, -- INTERCEPTION
+	0.0, -- STRATEGIC_BOMBER
+	0.0, -- NAVAL_BOMBER
+	0.0, -- DROP_NUKE
+	0.0, -- PARADROP
+	0.0, -- NAVAL_KAMIKAZE
+	0.0, -- PORT_STRIKE
+	0.0, -- AIR_SUPPLY
+	0.0, -- TRAINING
+	0.0, -- NAVAL_MINES_PLANTING
+	0.0, -- NAVAL_MINES_SWEEPING
+	0.0, -- MISSION_RECON
+}
 
 -- VICTORY POINTS
 NDefines.NGraphics.VICTORY_POINT_MAP_ICON_TEXT_CUTOFF = {270, 400, 600}  	-- Vanilla is 100, 250, 500
