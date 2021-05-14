@@ -1,4 +1,4 @@
-version="0.4.0"
+version="0.4.1"
 replace_path="common/national_focus"
 replace_path="common/difficulty_settings"
 replace_path="history/states"
@@ -14,4 +14,4 @@ tags={
 picture="thumbnail.png"
 name="New Ways alpha DEV BUILD"
 supported_version="1.10.*"
-path="R:/Users/my_doc/Paradox Interactive/Hearts of Iron IV/mod/_new_ways"
+path="mod/_new_ways"
