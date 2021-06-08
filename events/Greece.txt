@@ -859,7 +859,7 @@ country_event = {
 				}
 			}
 			if = {
-				limit = { any_state = { is_owned_by = CRE } }
+				limit = { CRE = { check_variable = { num_owned_states > 0 } } }
 				if = {
 					limit = { ROM = { has_guaranteed = GRE } }
 					ROM = {
@@ -968,9 +968,7 @@ country_event = {
 		trigger = {
 			has_idea = GRE_idea_social_crisis
 			has_idea = GRE_idea_asphalia
-			any_state = {
-				is_owned_by = CRE
-			}
+			CRE = { check_variable = { num_owned_states > 0 } }
 		}
 		add_stability = -0.05
 		set_country_flag = CRE_GRE_war
@@ -990,9 +988,7 @@ country_event = {
 		trigger = {
 			has_idea = GRE_idea_social_crisis
 			NOT = { has_idea = GRE_idea_asphalia }
-			any_state = {
-				is_owned_by = CRE
-			}
+			CRE = { check_variable = { num_owned_states > 0 } }
 		}
 		add_stability = -0.1
 		set_country_flag = CRE_GRE_war
@@ -1012,9 +1008,7 @@ country_event = {
 		name = nw_greece.13.e
 		trigger = {
 			is_ai = no
-			any_state = {
-				is_owned_by = CRE
-			}
+			CRE = { check_variable = { num_owned_states > 0 } }
 		}
 
 		set_country_flag = CRE_GRE_war
@@ -1044,11 +1038,7 @@ country_event = {
 	option = { # Бывает
 		name = nw_greece.13.o
 		trigger = {
-			NOT = {
-				any_state = {
-					is_owned_by = CRE
-				}
-			}
+			CRE = { check_variable = { num_owned_states = 0 } }
 		}
 		add_stability = -0.1
 	}
@@ -1127,14 +1117,15 @@ country_event = {
 		if = {
 			limit = {
 				EMA = { exists = no }
-				any_state = {
-					OR = {
-						state = 184
-						state = 782
-						state = 731
-						state = 1028
+				GRE = {
+					any_owned_state = {
+						OR = {
+							state = 184
+							state = 782
+							state = 731
+							state = 1028
+						}
 					}
-					is_owned_by = GRE
 				}
 				has_country_flag = CRE_GRE_war
 				NOT = { has_country_flag = EMA_attack }
@@ -1209,8 +1200,9 @@ country_event = {
 			}
 			if = {
 				limit = {
-					any_state = {
-						is_owned_and_controlled_by = EMA
+					EMA = {
+						check_variable = { num_owned_states > 0 }
+						num_of_controlled_states > 0
 					}
 				}
 				EMA = {
@@ -2874,10 +2866,11 @@ country_event = {
 			factor = 0 
 			modifier = { 
 				factor = 95
-				any_country = {
-					has_war_with = GRE
-					NOT = { has_war_with = ROOT }
-					is_major = yes
+				GRE = {
+					any_enemy_country = {
+						NOT = { has_war_with = ROOT }
+						is_major = yes
+					}
 				}
 			}
 		}
@@ -2905,17 +2898,17 @@ country_event = {
 			modifier = { 
 				factor = 0
 				OR = {
-					any_state = {
-						is_owned_by = GRE
-						OR = {
-							is_core_of = ROOT
-							is_claimed_by = ROOT
+					GRE = {
+						any_owned_state = {
+							OR = {
+								is_core_of = ROOT
+								is_claimed_by = ROOT
+							}
 						}
 					}
 					is_faction_leader = yes
-					any_country = {
+					any_allied_country = {
 						is_major = yes
-						is_in_faction_with = ROOT
 					}
 				}
 			}
@@ -2936,17 +2929,17 @@ country_event = {
 			modifier = { 
 				factor = 100
 				OR = {
-					any_state = {
-						is_owned_by = GRE
-						OR = {
-							is_core_of = ROOT
-							is_claimed_by = ROOT
+					GRE = {
+						any_owned_state = {
+							OR = {
+								is_core_of = ROOT
+								is_claimed_by = ROOT
+							}
 						}
 					}
 					is_faction_leader = yes
-					any_country = {
+					any_allied_country = {
 						is_major = yes
-						is_in_faction_with = ROOT
 					}
 				}
 			}
@@ -3014,9 +3007,8 @@ country_event = {
 					has_government = communism
 					has_government = fascism
 					is_faction_leader = yes
-					any_country = {
+					any_allied_country = {
 						is_major = yes
-						is_in_faction_with = ROOT
 					}
 					is_in_faction_with = PER
 				}
@@ -3058,9 +3050,8 @@ country_event = {
 					has_government = communism
 					has_government = fascism
 					is_faction_leader = yes
-					any_country = {
+					any_allied_country = {
 						is_major = yes
-						is_in_faction_with = ROOT
 					}
 				}
 			}
@@ -3109,25 +3100,26 @@ country_event = {
 					has_government = communism
 					has_government = fascism
 					is_faction_leader = yes
-					any_country = {
+					any_allied_country = {
 						is_major = yes
-						is_in_faction_with = ROOT
 					}
 					AND = {
-						ROM = { is_in_faction_with = GRE }
-						any_state = {
-							is_owned_by = ROM
+						ROM = {
+							is_in_faction_with = GRE
+							any_owned_state = {
+								OR = {
+									is_claimed_by = ROOT
+									is_core_of = ROOT
+								}
+							}
+						}
+					}
+					GRE = {
+						any_owned_state = {
 							OR = {
 								is_claimed_by = ROOT
 								is_core_of = ROOT
 							}
-						}
-					}
-					any_state = {
-						is_owned_by = GRE
-						OR = {
-							is_claimed_by = ROOT
-							is_core_of = ROOT
 						}
 					}
 				}
@@ -3169,25 +3161,26 @@ country_event = {
 					has_government = communism
 					has_government = fascism
 					is_faction_leader = yes
-					any_country = {
+					any_allied_country = {
 						is_major = yes
-						is_in_faction_with = ROOT
 					}
 					AND = {
-						ROM = { is_in_faction_with = GRE }
-						any_state = {
-							is_owned_by = ROM
+						ROM = {
+							is_in_faction_with = GRE
+							any_owned_state = {
+								OR = {
+									is_claimed_by = ROOT
+									is_core_of = ROOT
+								}
+							}
+						}
+					}
+					GRE = {
+						any_owned_state = {
 							OR = {
 								is_claimed_by = ROOT
 								is_core_of = ROOT
 							}
-						}
-					}
-					any_state = {
-						is_owned_by = GRE
-						OR = {
-							is_claimed_by = ROOT
-							is_core_of = ROOT
 						}
 					}
 				}
@@ -3222,9 +3215,8 @@ country_event = {
 			factor = 100
 			modifier = {
 				factor = 0
-				any_country = {
+				any_allied_country = {
 					is_major = yes
-					is_in_faction_with = ROOT
 				}
 			}
 		}
@@ -3255,9 +3247,8 @@ country_event = {
 			factor = 0
 			modifier = {
 				factor = 0
-				any_country = {
+				any_allied_country = {
 					is_major = yes
-					is_in_faction_with = ROOT
 				}
 			}
 		}
@@ -3291,9 +3282,8 @@ country_event = {
 			modifier = {
 				factor = 0
 				OR = {
-					any_country = {
+					any_allied_country = {
 						is_major = yes
-						is_in_faction_with = ROOT
 					}
 					is_faction_leader = yes
 				}
@@ -3327,9 +3317,8 @@ country_event = {
 			modifier = {
 				factor = 0
 				OR = {
-					any_country = {
+					any_allied_country = {
 						is_major = yes
-						is_in_faction_with = ROOT
 					}
 					is_faction_leader = yes
 				}
@@ -3404,9 +3393,8 @@ country_event = {
 			factor = 100
 			modifier = {
 				factor = 0
-				any_country = {
+				any_allied_country = {
 					is_major = yes
-					is_in_faction_with = ROOT
 				}
 			}
 		}
@@ -3447,9 +3435,8 @@ country_event = {
 			factor = 0
 			modifier = {
 				factor = 0
-				any_country = {
+				any_allied_country = {
 					is_major = yes
-					is_in_faction_with = ROOT
 				}
 			}
 		}
@@ -4376,9 +4363,8 @@ country_event = {
 				factor = 0
 				OR = {
 					is_faction_leader = yes
-					any_country = {
+					any_allied_country = {
 						is_major = yes
-						ROOT = { is_in_faction_with = PREV }
 					}
 				}
 			}
