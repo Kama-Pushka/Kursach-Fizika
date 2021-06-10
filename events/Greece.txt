@@ -25,7 +25,7 @@ country_event = {
 					any_other_country = {
 						has_guaranteed = ROOT
 					}
-					any_other_country = {
+					any_allied_country = {
 						is_in_faction_with = ROOT
 					}
 				}
@@ -64,7 +64,7 @@ country_event = {
 						any_other_country = {
 							has_guaranteed = ROOT
 						}
-						any_other_country = {
+						any_allied_country = {
 							is_in_faction_with = ROOT
 						}
 					}
@@ -144,7 +144,7 @@ country_event = {
 					any_other_country = {
 						has_guaranteed = ROOT
 					}
-					any_other_country = {
+					any_allied_country = {
 						is_in_faction_with = ROOT
 					}
 				}
@@ -243,7 +243,7 @@ country_event = {
 						any_other_country = {
 							has_guaranteed = ROOT
 						}
-						any_other_country = {
+						any_allied_country = {
 							is_in_faction_with = ROOT
 						}
 					}
@@ -284,7 +284,7 @@ country_event = {
 					any_other_country = {
 						has_guaranteed = ROOT
 					}
-					any_other_country = {
+					any_allied_country = {
 						is_in_faction_with = ROOT
 					}
 				}
@@ -307,7 +307,7 @@ country_event = {
 						any_other_country = {
 							has_guaranteed = ROOT
 						}
-						any_other_country = {
+						any_allied_country = {
 							is_in_faction_with = ROOT
 						}
 					}
@@ -3644,22 +3644,20 @@ country_event = {
 					GRE = { has_war_with = ITA }
 					CRE = { has_war_with = ITA }
 				}
-				any_country = {
+				any_enemy_country = {
 					NOT = { 
 						original_tag = ITA
 						is_subject_of = ITA
 					}
-					has_war_with = ROOT
 				}
 				ITA = {
-					any_country = {
+					any_enemy_country = {
 						NOT = { 
 							original_tag = GRE
 							is_subject_of = GRE
 							original_tag = CRE
 							is_subject_of = CRE
 						}
-						has_war_with = PREV
 					}
 				}
 			}
@@ -4411,9 +4409,22 @@ country_event = {
 			factor = 50
 		}
 		trigger = {
-			any_country = {
-				has_country_flag = hbbrg_flag
-				has_completed_focus = HBBRG_catholic_empire
+			OR = {
+				any_country_with_original_tag = {
+					original_tag_to_check = AUS
+					has_country_flag = hbbrg_flag
+					has_completed_focus = HBBRG_catholic_empire
+				}
+				any_country_with_original_tag = {
+					original_tag_to_check = HUN
+					has_country_flag = hbbrg_flag
+					has_completed_focus = HBBRG_catholic_empire
+				}
+				any_country_with_original_tag = {
+					original_tag_to_check = CZE
+					has_country_flag = hbbrg_flag
+					has_completed_focus = HBBRG_catholic_empire
+				}
 			}
 		}
 		GRE = { add_to_variable = { target_hbbrg_var = 1 } }
@@ -5015,7 +5026,7 @@ country_event = {
 			limit = { has_war_with = FROM }
 			ROOT = { declare_war_on = { target = PREV type = annex_everything } }
 		}
-		FROM = { set_country_flag = GRE_war_support_taker_flag }
+		FROM = { set_country_flag = GRE_war_support_taker_flag	add_to_array = { global.GRE_war_support_taker = THIS } }
 		set_country_flag = GRE_war_supporter_flag
 	}
 	
@@ -5067,7 +5078,8 @@ country_event = {
 	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event nw_greece.88" }
 	
 	trigger = {
-		any_country = {
+		any_of_scopes = {
+			array = global.GRE_war_support_taker
 			has_country_flag = GRE_war_support_taker_flag
 		}
 		OR = {
@@ -5090,6 +5102,12 @@ country_event = {
 			transfer_state = 341
 			transfer_state = 964
 		}
+		hidden_effect = {
+			random_country = {
+				limit = { has_country_flag = GRE_war_support_taker_flag }
+				remove_from_array = { global.GRE_war_support_taker = THIS }
+			}
+		}
 	}
 	
 	option = {
@@ -5103,6 +5121,12 @@ country_event = {
 			add_state_core = 341
 			add_state_core = 964
 			ROOT = { declare_war_on = { target = PREV type = annex_everything } }
+		}
+		hidden_effect = {
+			random_country = {
+				limit = { has_country_flag = GRE_war_support_taker_flag }
+				remove_from_array = { global.GRE_war_support_taker = THIS }
+			}
 		}
 	}
 }
