@@ -678,17 +678,17 @@ NW_ITA_joins_axis_0 = {
 		is_historical_focus_on = yes
 	}
 	enable = {
-
-		NOT = { 
-			ITA = { is_in_faction = yes }
-			ITA = { has_war_together_with = GER }
+		is_in_faction = no
+		NOT = {
+			has_war_together_with = GER
+			has_completed_focus = ITA_pact_of_steel
 		}
 	}
 	
 	abort_when_not_enabled = yes
 
-	ai_strategy = { type = diplo_action_desire id = GER target = join_faction value = -500 }
-	ai_strategy = { type = diplo_action_acceptance id = GER target = offer_join_faction value = -500 }
+	ai_strategy = { type = diplo_action_desire id = GER target = join_faction value = -400 }
+	ai_strategy = { type = diplo_action_acceptance id = GER target = offer_join_faction value = -400 }
 }
 
 NW_ITA_joins_axis_1 = {
@@ -709,34 +709,28 @@ NW_ITA_joins_axis_1 = {
 		}
 		NOT = { ITA = { is_in_faction_with = GER } }
 		ITA = {
-			GER = { has_government = PREV }
-			NOT = {
-				has_war_with = ETH
-				OR = {
-					has_capitulated = yes
-					exists = no
-					is_subject = yes
-				}
-			}
+			has_government = GER
+			NOT = { has_war_with = ETH }
+			has_capitulated = no
+			is_subject = no
 		}
 		GER = {
-			NOT = {
-				OR = {
-					has_capitulated = yes
-					exists = no
-					is_subject = yes
-				}
-			}
+			has_capitulated = no
+			is_subject = no
 		}
 		OR = {
 			AND = {
 				GER = { has_war_with = FRA }
 				OR = {
-					FRA = { surrender_progress > 0.50 }
-					FRA = { has_capitulated = yes }
+					FRA = {
+						OR = {
+							surrender_progress > 0.50
+							has_capitulated = yes
+						}
+					}
 					BEL = { has_capitulated = yes }
 					HOL = { has_capitulated = yes }
-					FRA = { any_of_scopes = { array = owned_states NOT = { is_fully_controlled_by = FRA } } }
+					any_of_scopes = { array = FRA.owned_states NOT = { is_fully_controlled_by = FRA } }
 					GER = {
 						any_enemy_country = { is_ai = no }
 						OR = {
@@ -774,17 +768,22 @@ NW_ITA_joins_axis_1 = {
 					OVERLORD = { NOT = { has_government = ROOT } }
 				}
 			}
-			ITA = { has_war_together_with = GER }
+			ITA = {
+				OR = {
+					has_war_together_with = GER
+					has_completed_focus = ITA_pact_of_steel
+				}
+			}
 			date > 1940.5.1
 		}
 	}
 	abort_when_not_enabled = yes
 	
-	ai_strategy = { type = diplo_action_desire id = ITA target = offer_join_faction value = 1000 }
-	ai_strategy = { type = diplo_action_acceptance id = GER target = offer_join_faction value = 1000 }
+	ai_strategy = { type = diplo_action_desire id = ITA target = offer_join_faction value = 400 }
+	ai_strategy = { type = diplo_action_acceptance id = GER target = offer_join_faction value = 400 }
 
-	ai_strategy = { type = diplo_action_desire id = GER target = join_faction value = 1000 }
-	ai_strategy = { type = diplo_action_acceptance id = ITA target = join_faction value = 1000 }
+	ai_strategy = { type = diplo_action_desire id = GER target = join_faction value = 400 }
+	ai_strategy = { type = diplo_action_acceptance id = ITA target = join_faction value = 400 }
 }
 
 NW_ITA_warprep_FRA = {
@@ -794,16 +793,14 @@ NW_ITA_warprep_FRA = {
 	enable = {
 		date < 1941.1.1
 		has_government = fascism
-		NOT = { 
-			ITA = { has_capitulated = yes }
-			ITA = { exists = no }
-			ITA = { is_subject = yes }
-		}
+		has_capitulated = no
+		is_subject = no
 		GER = { has_war_with = FRA }
-		NOT = { 
-			FRA = { has_capitulated = yes }
-			FRA = { exists = no }
-			FRA = { is_subject = yes }
+		FRA = { 
+			has_capitulated = no
+			is_subject = no
+		}
+		NOT = {
 			is_in_faction_with = FRA
 			has_war_with = FRA
 		}
@@ -814,7 +811,12 @@ NW_ITA_warprep_FRA = {
 	ai_strategy = {
 		type = conquer
 		id = "FRA"
-		value = 1000
+		value = 200
+	}
+	ai_strategy = {
+		type = prepare_for_war
+		id = "FRA"
+		value = 200
 	}
 }
 
