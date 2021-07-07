@@ -3266,6 +3266,32 @@ country_event = {
 					can_create_factions = no
 					can_join_factions = no
 				}
+				set_country_flag = kurd_focus_tree_flag
+				load_focus_tree = { tree = nw_kurdish_focus keep_completed = no }
+				add_ideas = {
+					KRD_tribal_army
+					KRD_local_uprising
+				}
+				division_template = {
+					name = "Kurdish Cavalry"
+					regiments = {
+						cavalry = { x = 0 y = 0 }
+						cavalry = { x = 0 y = 1 }
+						cavalry = { x = 1 y = 0 }
+						cavalry = { x = 1 y = 1 }
+					}
+				}
+				division_template = {
+					name = "Kurdish Infantry"
+					regiments = {
+						infantry = { x = 0 y = 0 }
+						infantry = { x = 0 y = 1 }
+						infantry = { x = 1 y = 0 }
+						infantry = { x = 1 y = 1 }
+						infantry = { x = 2 y = 0 }
+						infantry = { x = 2 y = 1 }
+					}
+				}
 			}
 		}
 	}
@@ -3275,7 +3301,11 @@ country_event = {
 			factor = 50
 		}
 		add_stability = -0.1
-		
+		set_country_flag = kurd_revolt_flag
+		if = {
+			limit = { has_idea = KRD_rebellion_in_dersim }
+			remove_ideas = KRD_rebellion_in_dersim
+		}
 		hidden_effect = {
 			KRD = {
 				transfer_state = 350
@@ -3285,6 +3315,56 @@ country_event = {
 				set_rule = {
 					can_create_factions = no
 					can_join_factions = no
+				}
+				set_country_flag = kurd_focus_tree_flag
+				set_country_flag = { flag = KRD_offer_peace_turkey_enable_flag days = 30 value = 1 }
+				load_focus_tree = { tree = nw_kurdish_focus keep_completed = no }
+				set_cosmetic_tag = KRD_revolt
+				country_event = { id = NWkurd.9 days = 10 }
+				country_event = { id = NWkurd.9 days = 30 }
+				country_event = { id = NWkurd.9 days = 50 }
+				country_event = { id = NWkurd.10 days = 80 }
+				add_timed_idea = { idea = KRD_liberation_war days = 180 }
+				add_ideas = {
+					KRD_tribal_army
+					KRD_local_uprising
+				}
+				division_template = {
+					name = "Kurdish Cavalry"
+					regiments = {
+						cavalry = { x = 0 y = 0 }
+						cavalry = { x = 0 y = 1 }
+						cavalry = { x = 1 y = 0 }
+						cavalry = { x = 1 y = 1 }
+					}
+				}
+				division_template = {
+					name = "Kurdish Infantry"
+					regiments = {
+						infantry = { x = 0 y = 0 }
+						infantry = { x = 0 y = 1 }
+						infantry = { x = 1 y = 0 }
+						infantry = { x = 1 y = 1 }
+						infantry = { x = 2 y = 0 }
+						infantry = { x = 2 y = 1 }
+					}
+				}
+			}
+			SOV = { country_event = { id = NWkurd.8 hours = 6 } }
+			GER = { country_event = { id = NWkurd.8 hours = 6 } }
+
+			every_state = {
+				limit = {
+					NOT = { is_fully_controlled_by = ROOT }
+					owner = {
+						tag = KRD
+					}
+				}
+				teleport_armies = {
+					limit = {
+						tag = ROOT
+					}
+					to_state_array = owned_controlled_states
 				}
 			}
 		}
@@ -4793,7 +4873,18 @@ country_event = {
 	option = {
 		name = NWturkey.69.a
 		if = {
-			limit = { NOT = { has_completed_focus = TUR_getting_rid_left } }
+			limit = {
+				OR = {
+					AND = {
+						has_global_flag = NW_TUR_OLD_FOCUS_TREE
+						NOT = { has_completed_focus = TUR_getting_rid_left }
+					}
+					AND = {
+						NOT = { has_global_flag = NW_TUR_OLD_FOCUS_TREE }
+						NOT = { has_completed_focus = TUR_start_fighting_left_wing_elements }
+					}
+				}
+			}
 			country_event = { id = NWturkey.70 }
 		}
 	}
@@ -7747,6 +7838,10 @@ country_event = {
 		name = NW_new_turkey.49.a
 		ai_chance = {
 			factor = 50
+			modifier = {
+				factor = 0.5
+				has_completed_focus = TUR_solve_kurdish_question_2
+			}
 		}
 		add_political_power = -50
 		add_ideas = TUR_assimilation_of_kurds
@@ -10721,7 +10816,7 @@ country_event = {
 	}
 }
 
-#Студенты организуют митинг в столице \\ TUR
+#Коммунисты призывают к забастовкам \\ TUR
 country_event = {
 	id = NW_new_turkey.119
 	title = NW_new_turkey.119.t
@@ -10756,7 +10851,7 @@ country_event = {
 		}
 		trigger = { has_idea = TUR_martial_law }
 		add_political_power = -50
-		49 = { add_manpower = -3000 }
+		capital_scope = { add_manpower = -3000 }
 	}
 }
 
@@ -11244,6 +11339,7 @@ country_event = {
 				check_variable = { TUR_loyalty_islamists_var < 1 }
 				check_variable = { TUR_loyalty_pan_turkists_var < 1 }
 				check_variable = { TUR_loyalty_okyar_var < 0 }
+				check_variable = { TUR_loyalty_communists_var < 0 }
 				check_variable = { TUR_loyalty_chakmak_var < 0 }
 				check_variable = { TUR_loyalty_inenu_var < 0 }
 			}
