@@ -3376,6 +3376,86 @@ country_event = {
 			add_civil_war_target = ROOT
 		}
 	}
+	option = {
+		name = NWkurd.5.b
+		trigger = { is_ai = no }
+		add_stability = -0.1
+		set_country_flag = kurd_revolt_flag
+		if = {
+			limit = { has_idea = KRD_rebellion_in_dersim }
+			remove_ideas = KRD_rebellion_in_dersim
+		}
+		hidden_effect = {
+			KRD = {
+				transfer_state = 350
+				transfer_state = 352
+				transfer_state = 353
+				load_oob = "TUR_civil_war_krd"
+				set_rule = {
+					can_create_factions = no
+					can_join_factions = no
+				}
+				set_country_flag = kurd_focus_tree_flag
+				set_country_flag = { flag = KRD_offer_peace_turkey_enable_flag days = 30 value = 1 }
+				load_focus_tree = { tree = nw_kurdish_focus keep_completed = no }
+				set_cosmetic_tag = KRD_revolt
+				country_event = { id = NWkurd.9 days = 10 }
+				country_event = { id = NWkurd.9 days = 30 }
+				country_event = { id = NWkurd.9 days = 50 }
+				country_event = { id = NWkurd.10 days = 80 }
+				add_timed_idea = { idea = KRD_liberation_war days = 180 }
+				add_ideas = {
+					KRD_tribal_army
+					KRD_local_uprising
+				}
+				division_template = {
+					name = "Kurdish Cavalry"
+					regiments = {
+						cavalry = { x = 0 y = 0 }
+						cavalry = { x = 0 y = 1 }
+						cavalry = { x = 1 y = 0 }
+						cavalry = { x = 1 y = 1 }
+					}
+				}
+				division_template = {
+					name = "Kurdish Infantry"
+					regiments = {
+						infantry = { x = 0 y = 0 }
+						infantry = { x = 0 y = 1 }
+						infantry = { x = 1 y = 0 }
+						infantry = { x = 1 y = 1 }
+						infantry = { x = 2 y = 0 }
+						infantry = { x = 2 y = 1 }
+					}
+				}
+			}
+			SOV = { country_event = { id = NWkurd.8 hours = 6 } }
+			GER = { country_event = { id = NWkurd.8 hours = 6 } }
+
+			every_state = {
+				limit = {
+					NOT = { is_fully_controlled_by = ROOT }
+					owner = {
+						tag = KRD
+					}
+				}
+				teleport_armies = {
+					limit = {
+						tag = ROOT
+					}
+					to_state_array = owned_controlled_states
+				}
+			}
+		}
+		KRD = {
+			declare_war_on = {
+				target = ROOT
+				type = civil_war
+			}
+			add_civil_war_target = ROOT
+			change_tag_from = ROOT
+		}
+	}
 }
 
 #Смерть Абдул-Меджида II
@@ -10619,8 +10699,10 @@ country_event = {
 		ai_chance = {
 			factor = 10
 		}
-		transfer_state = 1026
-		add_state_core = 1026
+		FROM = {
+			transfer_state = 1026
+			add_state_core = 1026
+		}
 	}
 	
 	option = {
@@ -10768,8 +10850,15 @@ country_event = {
 
 	option = {
 		name = NW_new_turkey.117.a
+		trigger = {
+			NOT = { has_war_with = FROM }
+		}
 		ai_chance = {
 			factor = 50
+			modifier = {
+				factor = 3
+				is_in_faction_with = FROM
+			}
 		}
 		every_owned_state = {
 			limit = {
@@ -12580,6 +12669,66 @@ country_event = {
 		add_political_power = 100
 		add_popularity = { ideology = communism popularity = 0.2 }
 		add_ideas = TUR_sympathies_of_working_class_for_ataturk
+	}
+}
+
+#Турция предлагает расширить договор о сердечном согласии \\ GRE
+country_event = {
+	id = NW_new_turkey.157
+	title = NW_new_turkey.157.t
+	desc = NW_new_turkey.157.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_new_turkey.157" }
+
+	option = {
+		name = NW_new_turkey.104.a
+		ai_chance = {
+			factor = 90
+			modifier = {
+				factor = 0
+				OR = {
+					has_government = trozkism
+					has_government = communism
+					has_government = anarchism
+				}
+			}
+		}
+		give_guarantee = FROM
+		add_ai_strategy = {
+			type = protect
+			id = FROM
+			value = 100
+		}
+		add_ai_strategy = {
+			type = befriend
+			id = FROM
+			value = 50
+		}
+		FROM = {
+			give_guarantee = ROOT
+			add_ai_strategy = {
+				type = protect
+				id = ROOT
+				value = 100
+			}
+			add_ai_strategy = {
+				type = befriend
+				id = ROOT
+				value = 50
+			}
+		}
+		custom_effect_tooltip = TUR_extension_of_agreement_on_cordial_consent_tt
+		set_global_flag = TUR_extension_of_agreement_on_cordial_consent_flag
+	}
+	
+	option = {
+		name = NW_new_turkey.104.b
+		ai_chance = {
+			factor = 10
+		}
+		FROM = { country_event = { id = NW_new_turkey.105 days = 1 } }
 	}
 }
 
