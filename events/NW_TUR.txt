@@ -1618,13 +1618,10 @@ country_event = {
 		ai_chance = {
 			factor = 50
 		}
-		set_party_name = {
-			ideology = democratic
-			name = TUR_democratic_okyar_party
-			long_name = TUR_democratic_okyar_party_long
+		hidden_effect = {
+			set_party_name = { ideology = democratic name = TUR_democratic_okyar_party long_name = TUR_democratic_okyar_party_long }
 		}
 		set_country_flag = TUR_oppositions_parties_formed_flag
-		
 		country_event = { id = NWturkey.71 days = 15 random_days = 5 } #государственные перевороты
 	}
 }
@@ -1796,7 +1793,6 @@ country_event = {
 				}
 				load_focus_tree = { tree = nw_turkish_focus keep_completed = no }
 				add_timed_idea = { idea = focus_synchronization days = 7 }
-				unlock_national_focus = TUR_president_ismet_inenu
 				complete_national_focus = TUR_dictatorship_cakmak
 			}
 			news_event = { id = trworldnews.56 hours = 6 }
@@ -1863,7 +1859,6 @@ country_event = {
 				spawn_tur_civil_war_cakmak = yes
 				load_focus_tree = { tree = nw_turkish_focus keep_completed = no }
 				add_timed_idea = { idea = focus_synchronization days = 7 }
-				unlock_national_focus = TUR_president_ismet_inenu
 				complete_national_focus = TUR_dictatorship_cakmak
 				declare_war_on = {
 					target = ROOT
@@ -2286,27 +2281,20 @@ country_event = {
 				limit = { is_in_faction = yes }
 				leave_faction = yes
 			}
-			if = {
+			every_other_country = {
 				limit = {
-					any_country = {
-						has_guaranteed = ROOT
-					}
+					has_guaranteed = ROOT
 				}
-				every_other_country = {
-					limit = {
-						has_guaranteed = ROOT
-					}
+				diplomatic_relation = {
+					country = ROOT
+					relation = guarantee
+					active = no
+				}
+				ROOT = {
 					diplomatic_relation = {
-						country = ROOT
+						country = PREV
 						relation = guarantee
 						active = no
-					}
-					ROOT = {
-						diplomatic_relation = {
-							country = PREV
-							relation = guarantee
-							active = no
-						}
 					}
 				}
 			}
@@ -2330,15 +2318,12 @@ country_event = {
 	}
 	option = {
 		name = NWturkey.34.b
+		trigger = { NOT = { has_country_flag = TUR_total_civil_war_flag } }
 		ai_chance = {
 			factor = 50
 			modifier = {
 				factor = 0
 				has_country_flag = NW_TUR_AI_TROZKIST
-			}
-			modifier = {
-				factor = 0
-				has_country_flag = NW_TUR_AI_COMMUNIST
 			}
 		}
 		add_stability = -0.1
@@ -2599,7 +2584,6 @@ country_event = {
 					}
 					load_focus_tree = { tree = nw_turkish_focus keep_completed = no }
 					add_timed_idea = { idea = focus_synchronization days = 7 }
-					unlock_national_focus = TUR_president_ismet_inenu
 					complete_national_focus = TUR_dictatorship_cakmak
 					#add_ideas = TUR_civil_war
 					set_cosmetic_tag = TUR_dictatorship_tag
@@ -2620,7 +2604,6 @@ country_event = {
 						limit = { has_idea = TUR_great_depression }
 						remove_ideas = TUR_great_depression
 					}
-					unlock_national_focus = TUR_president_ismet_inenu
 					complete_national_focus = TUR_dictatorship_cakmak
 				}
 				
@@ -2674,6 +2657,7 @@ country_event = {
 		add_political_power = 50
 		random_owned_controlled_state = {
 			limit = {
+				is_core_of = ROOT
 				arms_factory > 0
 			}
 			remove_building = {
@@ -2683,6 +2667,7 @@ country_event = {
 		}
 		random_owned_controlled_state = {
 			limit = {
+				is_core_of = ROOT
 				arms_factory > 0
 			}
 			remove_building = {
@@ -2694,6 +2679,7 @@ country_event = {
 		FROM = {
 			random_owned_controlled_state = {
 				limit = {
+					is_core_of = FROM
 					free_building_slots = {
 						building = arms_factory
 						size > 2
@@ -2744,6 +2730,7 @@ country_event = {
 		add_political_power = 100
 		random_owned_controlled_state = {
 			limit = {
+				is_core_of = ROOT
 				arms_factory > 0
 			}
 			remove_building = {
@@ -2753,6 +2740,7 @@ country_event = {
 		}
 		random_owned_controlled_state = {
 			limit = {
+				is_core_of = ROOT
 				arms_factory > 0
 			}
 			remove_building = {
@@ -2764,6 +2752,7 @@ country_event = {
 		FROM = {
 			random_owned_controlled_state = {
 				limit = {
+					is_core_of = FROM
 					free_building_slots = {
 						building = arms_factory
 						size > 2
@@ -2778,7 +2767,6 @@ country_event = {
 				}
 			}
 		}
-		
 		send_equipment = {
 			equipment = infantry_equipment
 			amount = 3000
@@ -2794,38 +2782,30 @@ country_event = {
 	option = {
 		name = NWturkey.36.d
 		ai_chance = {
-			factor = 50
+			factor = 25
 		}
 		add_political_power = -50
-		every_country = {
-			limit = {
-				has_war_with = FROM
-				NOT = { tag = FROM }
-				OR = {
-					original_tag = TUR
-					original_tag = TRK
+		FROM = {
+			every_enemy_country = {
+				limit = {
+					OR = {
+						original_tag = TUR
+						original_tag = TRK
+					}
 				}
-			}
-			SOV = {
-				declare_war_on = {
-					target = PREV
-					type = annex_everything
-				}
+				ROOT = { add_to_war = { targeted_alliance = FROM enemy = PREV hostility_reason = asked_to_join } }
 			}
 		}
-		
 	}
 	option = {
 		name = NWturkey.36.e
 		ai_chance = {
-			factor = 50
+			factor = 10
 		}
-		
 		add_opinion_modifier = {
 			target = FROM
 			modifier = diplomatic_affront
 		}
-
 		FROM = {
 			add_opinion_modifier = {
 				target = ROOT
@@ -3206,7 +3186,6 @@ country_event = {
 				}
 				load_focus_tree = { tree = nw_turkish_focus keep_completed = no }
 				add_timed_idea = { idea = focus_synchronization days = 7 }
-				unlock_national_focus = TUR_president_ismet_inenu
 				complete_national_focus = TUR_dictatorship_cakmak
 				#add_ideas = TUR_civil_war
 				set_cosmetic_tag = TUR_dictatorship_tag
@@ -3222,13 +3201,12 @@ country_event = {
 					limit = { has_idea = TUR_great_depression }
 					remove_ideas = TUR_great_depression
 				}
-				unlock_national_focus = TUR_president_ismet_inenu
-				complete_national_focus = TUR_dictatorship_cakmak
 			}
 		}
 	}
 	option = {
 		name = NWturkey.40.b
+		trigger = { NOT = { has_country_flag = TUR_total_civil_war_flag } }
 		ai_chance = {
 			factor = 50
 			modifier = {
@@ -3257,10 +3235,24 @@ country_event = {
 		}
 
 		hidden_effect = {
+			every_state = {
+				limit = {
+					OR = {
+						state = 350
+						state = 352
+						state = 353
+					}
+					controller = {
+						OR = {
+							original_tag = ROOT
+							original_tag = TRK
+							original_tag = KRD
+						}
+					}
+				}
+				KRD = { transfer_state = PREV }
+			}
 			KRD = {
-				transfer_state = 350
-				transfer_state = 352
-				transfer_state = 353
 				load_oob = "TUR_civil_war_krd"
 				set_rule = {
 					can_create_factions = no
@@ -3307,10 +3299,24 @@ country_event = {
 			remove_ideas = KRD_rebellion_in_dersim
 		}
 		hidden_effect = {
+			every_state = {
+				limit = {
+					OR = {
+						state = 350
+						state = 352
+						state = 353
+					}
+					controller = {
+						OR = {
+							original_tag = ROOT
+							original_tag = TRK
+							original_tag = KRD
+						}
+					}
+				}
+				KRD = { transfer_state = PREV }
+			}
 			KRD = {
-				transfer_state = 350
-				transfer_state = 352
-				transfer_state = 353
 				load_oob = "TUR_civil_war_krd"
 				set_rule = {
 					can_create_factions = no
@@ -3367,6 +3373,23 @@ country_event = {
 					to_state_array = owned_controlled_states
 				}
 			}
+			every_other_country = {
+				limit = {
+					OR = {
+						original_tag = ROOT
+						original_tag = TRK
+						original_tag = KRD
+					}
+					NOT = { tag = ROOT }
+				}
+				declare_war_on = {
+					target = KRD
+					type = civil_war
+				}
+				add_civil_war_target = KRD
+				KRD = { add_civil_war_target = PREV }
+			}
+			add_civil_war_target = ROOT
 		}
 		KRD = {
 			declare_war_on = {
@@ -3386,10 +3409,24 @@ country_event = {
 			remove_ideas = KRD_rebellion_in_dersim
 		}
 		hidden_effect = {
+			every_state = {
+				limit = {
+					OR = {
+						state = 350
+						state = 352
+						state = 353
+					}
+					controller = {
+						OR = {
+							original_tag = ROOT
+							original_tag = TRK
+							original_tag = KRD
+						}
+					}
+				}
+				KRD = { transfer_state = PREV }
+			}
 			KRD = {
-				transfer_state = 350
-				transfer_state = 352
-				transfer_state = 353
 				load_oob = "TUR_civil_war_krd"
 				set_rule = {
 					can_create_factions = no
@@ -3446,6 +3483,23 @@ country_event = {
 					to_state_array = owned_controlled_states
 				}
 			}
+			every_other_country = {
+				limit = {
+					OR = {
+						original_tag = ROOT
+						original_tag = TRK
+						original_tag = KRD
+					}
+					NOT = { tag = ROOT }
+				}
+				declare_war_on = {
+					target = KRD
+					type = civil_war
+				}
+				add_civil_war_target = KRD
+				KRD = { add_civil_war_target = PREV }
+			}
+			add_civil_war_target = ROOT
 		}
 		KRD = {
 			declare_war_on = {
@@ -3469,7 +3523,7 @@ country_event = {
 	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWturkey.42" }
 	
 	trigger = {
-		tag = TUR
+		original_tag = TUR
 		date > 1944.01.01
 	}
 
@@ -5033,7 +5087,7 @@ country_event = {
 	
 	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWturkey.71" }
 	
-	#Посадить обоих
+	#Посадить всех
 	option = {
 		name = NWturkey.71.a
 		ai_chance = {
@@ -5067,7 +5121,7 @@ country_event = {
 		add_war_support = -0.1
 	}
 	
-	#Посадить Черкеса
+	#Не трогать Сюлеймана Шефик-пашу
 	option = {
 		name = NWturkey.71.b
 		ai_chance = {
@@ -5101,7 +5155,7 @@ country_event = {
 		}
 	}
 	
-	#Посадить Сулеймана
+	#Не трогать Этхема-черкеса
 	option = {
 		name = NWturkey.71.c
 		ai_chance = {
@@ -5111,7 +5165,7 @@ country_event = {
 				has_country_flag = NW_TUR_AI_TROZKIST
 			}
 			modifier = {
-				add = 500
+				factor = 0
 				has_country_flag = NW_TUR_AI_COMMUNIST
 			}
 			modifier = {
@@ -5135,9 +5189,43 @@ country_event = {
 		}
 	}
 	
-	#Никого не сажать
+	#Не трогать движение Кадро
 	option = {
 		name = NWturkey.71.d
+		ai_chance = {
+			factor = 50
+			modifier = {
+				add = 500
+				has_country_flag = NW_TUR_AI_COMMUNIST
+			}
+			modifier = {
+				factor = 0
+				has_country_flag = NW_TUR_AI_TROZKIST
+			}
+			modifier = {
+				factor = 0
+				has_country_flag = NW_TUR_AI_MONARCHY
+			}
+			modifier = {
+				factor = 0
+				has_country_flag = NW_TUR_AI_DEMOCRATIC
+			}
+			modifier = {
+				factor = 0
+				has_country_flag = NW_TUR_AI_FASCIST
+			}
+		}
+		add_stability = -0.1
+		add_war_support = -0.05
+		
+		hidden_effect = {
+			country_event = { id = NW_new_turkey.158 days = 15 random_days = 5 } #Коммунистический переворот
+		}
+	}
+	
+	#Никого не сажать
+	option = {
+		name = NWturkey.71.e
 		ai_chance = {
 			factor = 50
 			modifier = {
@@ -5165,24 +5253,39 @@ country_event = {
 		add_stability = -0.05
 		
 		hidden_effect = {
-			set_temp_variable = { comm_p = party_popularity@communism }
-			set_temp_variable = { troz_p = party_popularity@trozkism }
-			set_temp_variable = { red = comm_p }
-			add_to_temp_variable = { var = red value = troz_p }
-			set_temp_variable = { king_p = party_popularity@monarchy }
-			
+			country_event = { id = NWturkey.41 days = 25 }
+			set_country_flag = TUR_total_civil_war_flag
+			set_variable = { civil_war_size = 1 }
+			set_variable = { civil_war_side = 1 }
 			if = {
 				limit = { 
-					check_variable = { var = red value = king_p compare = greater_than_or_equals }
+					trozkism > 0.05
 				}
-				country_event = { id = NWturkey.34 days = 15 random_days = 5 }
+				add_to_variable = { civil_war_side = 1 }
+				country_event = { id = NW_new_turkey.160 days = 7 random_days = 5 }
 			}
-			else_if = {
+			if = {
 				limit = {
-					check_variable = { var = king_p value = red compare = greater_than }
+					monarchy > 0.05
 				}
-				country_event = { id = NWturkey.40 days = 15 random_days = 5 }
+				add_to_variable = { civil_war_side = 1 }
+				country_event = { id = NW_new_turkey.161 days = 8 random_days = 5 }
 			}
+			if = {
+				limit = { 
+					communism > 0.05
+				}
+				add_to_variable = { civil_war_side = 1 }
+				country_event = { id = NW_new_turkey.162 days = 9 random_days = 5 }
+			}
+			if = {
+				limit = { 
+					check_variable = { civil_war_side > 2 }
+				}
+				add_to_variable = { civil_war_side = 1 }
+				country_event = { id = NW_new_turkey.163 days = 14 }
+			}
+			divide_variable = { civil_war_size = civil_war_side }
 		}
 	}
 }
@@ -6973,8 +7076,11 @@ country_event = {
 			factor = 50
 		}
 		set_country_flag = NW_new_turkey_34a_flag
-		custom_effect_tooltip = NW_new_turkey_34a_tt
-		effect_tooltip = { unlock_national_focus = TUR_revive_the_green_army }
+		if = {
+			limit = { has_focus_tree = nw_turkish_focus_new }
+			custom_effect_tooltip = NW_new_turkey_34a_tt
+			effect_tooltip = { unlock_national_focus = TUR_revive_the_green_army }
+		}
 		hidden_effect = {
 			country_event = { id = NW_new_turkey.35 days = 5 }
 		}
@@ -7070,14 +7176,17 @@ country_event = {
 		create_country_leader = {
 			name = "Şevket Süreyya Aydemir"
 			desc = "POLITICS_SEVKET_SUREYYA_AYDEMIR_DESC"
-			picture = "gfx/leaders/TUR/Portrait_Sevket_Aydemir.dds"
+			picture = "gfx/leaders/TUR/portrait_tur_sevket_sureyya_aydemir.dds"
 			expire = "1965.1.1"
-			ideology = marxism
+			ideology = kemalism_socialism
 			traits = {
 			    the_academic
 			}
 		}
-		custom_effect_tooltip = NW_new_turkey_36b_tt
+		if = {
+			limit = { has_focus_tree = nw_turkish_focus_new }
+			custom_effect_tooltip = NW_new_turkey_36b_tt
+		}
 	}
 	
 	option = {
@@ -7094,18 +7203,11 @@ country_event = {
 		add_political_power = -30
 		add_stability = 0.05
 		add_timed_idea = { idea = TUR_changing_ideology_of_movement_of_personnel days = 60 }
-		set_party_name = { ideology = trozkism name = TUR_movement_of_personnel_party long_name = TUR_movement_of_personnel_party }
-		create_country_leader = {
-			name = "Şevket Süreyya Aydemir"
-			desc = "POLITICS_SEVKET_SUREYYA_AYDEMIR_DESC"
-			picture = "gfx/leaders/TUR/Portrait_Sevket_Aydemir.dds"
-			expire = "1965.1.1"
-			ideology = marxism
-			traits = {
-			    the_academic
-			}
+		if = {
+			limit = { has_focus_tree = nw_turkish_focus_new }
+			set_party_name = { ideology = trozkism name = TUR_movement_of_personnel_party long_name = TUR_movement_of_personnel_party }
+			custom_effect_tooltip = NW_new_turkey_36c_tt
 		}
-		custom_effect_tooltip = NW_new_turkey_36c_tt
 	}
 }
 
@@ -7141,7 +7243,10 @@ country_event = {
 		add_stability = 0.05
 		add_timed_idea = { idea = TUR_creation_of_pan_turkist_party days = 60 }
 		set_party_name = { ideology = fascism name = TUR_pan_turkist_party long_name = TUR_pan_turkist_party }
-		custom_effect_tooltip = NW_new_turkey_37b_tt
+		if = {
+			limit = { has_focus_tree = nw_turkish_focus_new }
+			custom_effect_tooltip = NW_new_turkey_37b_tt
+		}
 	}
 	
 	option = {
@@ -7153,7 +7258,10 @@ country_event = {
 				is_historical_focus_on = yes
 			}
 		}
-		trigger = { NOT = { check_variable = { TUR_loyalty_chakmak_var < 0 } } }
+		trigger = {
+			has_focus_tree = nw_turkish_focus_new
+			NOT = { check_variable = { TUR_loyalty_chakmak_var < 0 } }
+		}
 		set_country_flag = NW_new_turkey_37c_flag
 		add_political_power = -60
 		add_stability = 0.05
@@ -7205,7 +7313,10 @@ country_event = {
 		add_stability = 0.05
 		add_timed_idea = { idea = TUR_resurgence_of_lrp days = 60 }
 		set_party_name = { ideology = democratic name = TUR_democratic_okyar_party long_name = TUR_democratic_okyar_party_long }
-		custom_effect_tooltip = NW_new_turkey_38b_tt
+		if = {
+			limit = { has_focus_tree = nw_turkish_focus_new }
+			custom_effect_tooltip = NW_new_turkey_38b_tt
+		}
 	}
 	
 	option = {
@@ -7217,7 +7328,10 @@ country_event = {
 				is_historical_focus_on = yes
 			}
 		}
-		trigger = { check_variable = { TUR_loyalty_islamists_var > 0 } }
+		trigger = {
+			has_focus_tree = nw_turkish_focus_new
+			check_variable = { TUR_loyalty_islamists_var > 0 }
+		}
 		set_country_flag = NW_new_turkey_38c_flag
 		add_political_power = -30
 		add_stability = 0.05
@@ -11229,7 +11343,7 @@ country_event = {
 			SOV = { remove_opinion_modifier = { target = ROOT modifier = TUR_communist_party_relegated_background } }
 		}
 		hidden_effect = {
-			country_event = { id = NW_new_turkey.128 days = 10 }
+			country_event = { id = NW_new_turkey.128 days = 8 random_days = 3 }
 		}
 	}
 	
@@ -11237,6 +11351,12 @@ country_event = {
 		name = NW_new_turkey.127.b
 		ai_chance = {
 			factor = 50
+		}
+		effect_tooltip = {
+			unlock_national_focus = TUR_socialist_kemalism_2
+		}
+		hidden_effect = {
+			country_event = { id = NW_new_turkey.159 days = 8 random_days = 3 }
 		}
 	}
 }
@@ -11254,7 +11374,7 @@ country_event = {
 	option = {
 		name = NW_new_turkey.128.a
 		add_political_power = 50
-		set_party_name = { ideology = fascism name = TUR_communism_party long_name = TUR_communism_party_long }
+		set_party_name = { ideology = communism name = TUR_communism_party long_name = TUR_communism_party_long }
 		hidden_effect = { retire_ideology_leader = communism }
 		create_country_leader = {
 			name = "Şefik Hüsnü"
@@ -11265,6 +11385,9 @@ country_event = {
 			traits = {
 			    reluctant_stalinist
 			}
+		}
+		effect_tooltip = {
+			unlock_national_focus = TUR_turkey_communist_party
 		}
 	}
 }
@@ -12504,6 +12627,13 @@ country_event = {
 		tag = TUR
 		has_country_leader = { name = "Mustafa Kemal Atatürk" ruling_only = yes }
 		has_completed_focus = TUR_return_to_islamism
+		OR = {
+			has_completed_focus = TUR_return_to_islamism
+			AND = {
+				has_completed_focus = TUR_nationalism
+				NOT = { has_completed_focus = TUR_secularism }
+			}
+		}
 		set_temp_variable = { t1 = party_popularity@democratic }
 		add_to_temp_variable = { t1 = party_popularity@monarchy }
 		check_variable = { var = t1 value = 0.05 compare = greater_than_or_equals }
@@ -12520,7 +12650,10 @@ country_event = {
 		ai_chance = {
 			factor = 50
 		}
-		add_political_power = 100
+		if = {
+			limit = { NOT = { has_focus_tree = nw_turkish_focus } }
+			add_political_power = 100
+		}
 		add_stability = 0.05
 		add_popularity = { ideology = democratic popularity = 0.1 }
 		add_popularity = { ideology = monarchy popularity = 0.1 }
@@ -12531,7 +12664,10 @@ country_event = {
 		ai_chance = {
 			factor = 50
 		}
-		add_political_power = 50
+		if = {
+			limit = { NOT = { has_focus_tree = nw_turkish_focus } }
+			add_political_power = 50
+		}
 		add_popularity = { ideology = democratic popularity = 0.05 }
 		add_popularity = { ideology = monarchy popularity = 0.05 }
 	}
@@ -12548,7 +12684,13 @@ country_event = {
 	trigger = {
 		tag = TUR
 		has_country_leader = { name = "Mustafa Kemal Atatürk" ruling_only = yes }
-		has_completed_focus = TUR_liberalization_of_political_life
+		OR = {
+			has_completed_focus = TUR_liberalization_of_political_life
+			AND = {
+				has_focus_tree = nw_turkish_focus
+				has_country_flag = NW_new_turkey_38b_flag
+			}
+		}
 		check_variable = { var = party_popularity@democratic value = 0.1 compare = greater_than_or_equals }
 	}
 	
@@ -12560,7 +12702,10 @@ country_event = {
 
 	option = {
 		name = NW_new_turkey.152.a
-		add_political_power = 150
+		if = {
+			limit = { NOT = { has_focus_tree = nw_turkish_focus } }
+			add_political_power = 150
+		}
 		add_popularity = { ideology = democratic popularity = 0.1 }
 		add_ideas = TUR_support_from_intelligentsia_and_entrepreneurs
 	}
@@ -12606,7 +12751,13 @@ country_event = {
 	trigger = {
 		tag = TUR
 		has_country_leader = { name = "Mustafa Kemal Atatürk" ruling_only = yes }
-		has_completed_focus = TUR_support_pan_turkists
+		OR = {
+			has_completed_focus = TUR_support_pan_turkists
+			AND = {
+				has_focus_tree = nw_turkish_focus
+				has_country_flag = NW_new_turkey_37b_flag
+			}
+		}
 		check_variable = { var = party_popularity@fascism value = 0.1 compare = greater_than_or_equals }
 	}
 	
@@ -12625,7 +12776,10 @@ country_event = {
 				is_historical_focus_on = yes
 			}
 		}
-		add_political_power = 100
+		if = {
+			limit = { NOT = { has_focus_tree = nw_turkish_focus } }
+			add_political_power = 100
+		}
 		add_stability = -0.1
 		add_war_support = 0.1
 		add_popularity = { ideology = fascism popularity = 0.15 }
@@ -12636,7 +12790,10 @@ country_event = {
 		ai_chance = {
 			factor = 50
 		}
-		add_political_power = 50
+		if = {
+			limit = { NOT = { has_focus_tree = nw_turkish_focus } }
+			add_political_power = 50
+		}
 		add_popularity = { ideology = fascism popularity = 0.1 }
 	}
 }
@@ -12652,7 +12809,13 @@ country_event = {
 	trigger = {
 		tag = TUR
 		has_country_leader = { name = "Mustafa Kemal Atatürk" ruling_only = yes }
-		has_completed_focus = TUR_support_movement_of_personnel
+		OR = {
+			has_completed_focus = TUR_support_movement_of_personnel
+			AND = {
+				has_focus_tree = nw_turkish_focus
+				has_country_flag = NW_new_turkey_36b_flag
+			}
+		}
 		set_temp_variable = { t2 = party_popularity@communism }
 		add_to_temp_variable = { t2 = party_popularity@trozkism }
 		check_variable = { var = t2 value = 0.15 compare = greater_than_or_equals }
@@ -12666,7 +12829,10 @@ country_event = {
 
 	option = {
 		name = NW_new_turkey.152.a
-		add_political_power = 100
+		if = {
+			limit = { NOT = { has_focus_tree = nw_turkish_focus } }
+			add_political_power = 100
+		}
 		add_popularity = { ideology = communism popularity = 0.2 }
 		add_ideas = TUR_sympathies_of_working_class_for_ataturk
 	}
@@ -12732,6 +12898,858 @@ country_event = {
 	}
 }
 
+#Коммунисты поднимают восстание
+country_event = {
+	id = NW_new_turkey.158
+	title = NW_new_turkey.158.t
+	desc = NW_new_turkey.158.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_new_turkey.158" }
+
+	option = {
+		name = NWturkey.34.a
+		ai_chance = {
+			factor = 50
+		}
+		set_country_flag = troz_focus_block_flag
+		add_stability = 0.05
+		add_political_power = 100
+		effect_tooltip = {
+			set_party_name = { ideology = communism name = TUR_movement_of_personnel_party long_name = TUR_movement_of_personnel_party }
+			create_country_leader = {
+				name = "Şevket Süreyya Aydemir"
+				desc = "POLITICS_SEVKET_SUREYYA_AYDEMIR_DESC"
+				picture = "gfx/leaders/TUR/portrait_tur_sevket_sureyya_aydemir.dds"
+				expire = "1965.1.1"
+				ideology = kemalism_socialism
+				traits = {
+					the_academic
+				}
+			}
+		}
+		add_popularity = {
+			ideology = neutrality
+			popularity = 1
+		}
+		add_popularity = {
+			ideology = communism
+			popularity = 0.15
+		}
+		set_politics = {
+			ruling_party = communism
+			elections_allowed = no
+		}
+		country_event = { id = NWturkey.41 days = 1 }
+		hidden_effect = {
+			#if = {
+			#	limit = { has_war = yes }
+			#	every_enemy_country = {
+			#		limit = {
+			#			is_subject = no
+			#			OR = { is_faction_leader = yes is_in_faction = no }
+			#		}
+			#		white_peace = PREV
+			#	}
+			#}
+			if = {
+				limit = {
+					is_in_faction = yes
+					is_faction_leader = no
+				}
+				leave_faction = yes
+			}
+			if = {
+				limit = { is_faction_leader = yes }
+				dismantle_faction = yes
+			}
+			complete_national_focus = TUR_commust_revolt
+
+			set_capital = 341
+			start_civil_war = {
+				ideology = neutrality
+				size = 0.3
+				states = { 49 356 343 340 347 }
+				states_filter = {
+					owner = {
+						OR = {
+							original_tag = ROOT
+							is_subject_of = ROOT
+						}
+					}
+					if = {
+						limit = {
+							OR = {
+								49 = { controller = { OR = { original_tag = ROOT is_subject_of = ROOT } } }
+								356 = { controller = { OR = { original_tag = ROOT is_subject_of = ROOT } } }
+								343 = { controller = { OR = { original_tag = ROOT is_subject_of = ROOT } } }
+								340 = { controller = { OR = { original_tag = ROOT is_subject_of = ROOT } } }
+								347 = { controller = { OR = { original_tag = ROOT is_subject_of = ROOT } } }
+							}
+						}
+						OR = {
+							state = 49
+							state = 356
+							state = 343
+							state = 340
+							state = 347
+						}
+					}
+				}
+			}
+			random_other_country = {
+				limit = {
+					original_tag = TUR
+					has_government = neutrality
+				}
+				load_focus_tree = { tree = nw_turkish_focus keep_completed = no }
+				add_timed_idea = { idea = focus_synchronization days = 7 }
+				complete_national_focus = TUR_dictatorship_cakmak
+				#add_ideas = TUR_civil_war
+				set_cosmetic_tag = TUR_dictatorship_tag
+				create_country_leader = {
+					name = "Fevzi Çakmak"
+					desc = "POLITICS_FEVZI_CAKMAK_DESC"
+					picture = "gfx/leaders/TUR/portrait_tur_fevzi_cakmak.dds"
+					expire = "1965.1.1"
+					ideology = kemalism
+					traits = { maresal }
+				}
+			}
+		}
+	}
+	option = {
+		name = NWturkey.32.a
+		trigger = { NOT = { has_country_flag = TUR_total_civil_war_flag } }
+		ai_chance = {
+			factor = 10
+			modifier = {
+				factor = 0
+				has_country_flag = NW_TUR_AI_COMMUNIST
+			}
+		}
+		add_political_power = -100
+	}
+}
+
+#Мятеж Компартии
+country_event = {
+	id = NW_new_turkey.159
+	title = NW_new_turkey.159.t
+	desc = NW_new_turkey.159.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_new_turkey.159" }
+
+	option = {
+		name = NW_new_turkey.67.a
+		ai_chance = {
+			factor = 50
+		}
+		effect_tooltip = {
+			start_civil_war = {
+				ideology = communism
+			}
+		}
+		hidden_effect = {
+			create_dynamic_country = {
+				original_tag = ROOT
+				set_country_flag = troz_focus_block_flag
+				set_country_flag = same_ideology_civil_war_flag
+				add_popularity = {
+					ideology = neutrality
+					popularity = 1
+				}
+				add_popularity = {
+					ideology = communism
+					popularity = 0.15
+				}
+				set_politics = {
+					ruling_party = communism
+					elections_allowed = no
+				}
+				every_state = {
+					limit = { is_core_of = ROOT }
+					add_core_of = PREV
+				}
+				every_state = {
+					limit = {
+						OR = {
+							state = 1128
+							state = 1049
+							state = 353
+						}
+						controller = {
+							OR = {
+								original_tag = ROOT
+								original_tag = TRK
+								original_tag = KRD
+							}
+						}
+					}
+					PREV = { transfer_state = PREV }
+				}
+				load_focus_tree = { tree = nw_turkish_focus keep_completed = no }
+				add_timed_idea = { idea = focus_synchronization days = 7 }
+				unlock_national_focus = TUR_commust_revolt
+				add_timed_idea = { idea = TUR_begin_building_of_socialism_idea days = 160 }
+				set_party_name = { ideology = communism name = TUR_communism_party long_name = TUR_communism_party_long }
+				create_country_leader = {
+					name = "Şefik Hüsnü"
+					desc = "POLITICS_SEFIK_HUSNU_DESC"
+					picture = "gfx/leaders/TUR/Portrait_Turkey_Sefik_Husnu.dds"
+					expire = "1965.1.1"
+					ideology = marxism
+					traits = {
+						reluctant_stalinist
+					}
+				}
+				set_cosmetic_tag = TUR_prosoviet_tag
+				ROOT = {
+					set_country_flag = same_ideology_civil_war_flag
+					transfer_units_fraction = {
+						target = PREV
+						size = 0.4
+						stockpile_ratio = 0.4
+						army_ratio = 0.4
+						navy_ratio = 0.3
+						air_ratio = 0.3
+					}
+					declare_war_on = {
+						target = PREV
+						type = civil_war
+					}
+					add_civil_war_target = PREV
+				}
+				every_other_country = {
+					limit = {
+						OR = {
+							original_tag = ROOT
+							original_tag = TRK
+							original_tag = KRD
+						}
+						NOT = { tag = ROOT }
+					}
+					declare_war_on = {
+						target = PREV
+						type = civil_war
+					}
+					add_civil_war_target = PREV
+					PREV = { add_civil_war_target = PREV }
+				}
+				add_civil_war_target = ROOT
+			}
+		}
+	}
+}
+
+
+### ЗАМЕС ###
+
+#Мятеж Зеленой Армии
+country_event = {
+	id = NW_new_turkey.160
+	title = NW_new_turkey.67.t
+	desc = NW_new_turkey.67.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_new_turkey.160" }
+
+	option = {
+		name = NW_new_turkey.67.a
+		effect_tooltip = {
+			start_civil_war = {
+				ideology = trozkism
+			}
+		}
+		every_other_country = {
+			limit = {
+				has_guaranteed = ROOT
+			}
+			diplomatic_relation = {
+				country = ROOT
+				relation = guarantee
+				active = no
+			}
+			ROOT = {
+				diplomatic_relation = {
+					country = PREV
+					relation = guarantee
+					active = no
+				}
+			}
+		}
+		hidden_effect = {
+			create_dynamic_country = {
+				original_tag = ROOT
+				set_country_flag = troz_focus_block_flag
+				set_party_name = {
+					ideology = trozkism
+					name = TUR_trozkism_green_army_party
+					long_name = TUR_trozkism_party_green_army_long
+				}
+				add_popularity = {
+					ideology = neutrality
+					popularity = 1
+				}
+				add_popularity = {
+					ideology = trozkism
+					popularity = 0.15
+				}
+				set_politics = {
+					ruling_party = trozkism
+					elections_allowed = no
+				}
+				every_state = {
+					limit = { is_core_of = ROOT }
+					add_core_of = PREV
+				}
+				every_state = {
+					limit = {
+						OR = {
+							state = 345
+							state = 346
+							state = 348
+							state = 344
+						}
+						controller = {
+							OR = {
+								original_tag = ROOT
+								original_tag = TRK
+								original_tag = KRD
+							}
+						}
+					}
+					PREV = { transfer_state = PREV }
+				}
+				load_focus_tree = { tree = nw_turkish_focus keep_completed = no }
+				add_timed_idea = { idea = focus_synchronization days = 7 }
+				unlock_national_focus = TUR_etchem_circassian_coup
+				
+				create_country_leader = {
+					name = "Ethem Şeftürk"
+					desc = "POLITICS_ETHEM_SEFTURK_DESC"
+					picture = "gfx/leaders/TUR/Portrait_Turkey_Cerkez_Ethem.dds"
+					expire = "1965.1.1"
+					ideology = islamic_socialism
+					traits = {
+						sefturk
+					}
+				}
+				create_field_marshal = {
+					name = "Ethem Şeftürk"
+					portrait_path = "gfx/leaders/TUR/Portrait_Turkey_Cerkez_Ethem.dds"
+					traits = { offensive_doctrine war_hero }
+					skill = 4
+					attack_skill = 4
+					defense_skill = 3
+					planning_skill = 3
+					logistics_skill = 2
+				}
+
+				ROOT = {
+					transfer_units_fraction = {
+						target = PREV
+						size = civil_war_size
+						stockpile_ratio = civil_war_size
+						army_ratio = civil_war_size
+						navy_ratio = civil_war_size
+						air_ratio = civil_war_size
+					}
+					declare_war_on = {
+						target = PREV
+						type = civil_war
+					}
+					add_civil_war_target = PREV
+					set_variable = { civil_war_size = 1 }
+					add_to_variable = { civil_war_side = -1 }
+					divide_variable = { civil_war_size = civil_war_side }
+				}
+				every_other_country = {
+					limit = {
+						OR = {
+							original_tag = ROOT
+							original_tag = TRK
+							original_tag = KRD
+						}
+						NOT = { tag = ROOT }
+					}
+					declare_war_on = {
+						target = PREV
+						type = civil_war
+					}
+					add_civil_war_target = PREV
+					PREV = { add_civil_war_target = PREV }
+				}
+				add_civil_war_target = ROOT
+			}
+			if = {
+				limit = {
+					is_in_faction = yes
+					is_faction_leader = no
+				}
+				leave_faction = yes
+			}
+			if = {
+				limit = { is_faction_leader = yes }
+				dismantle_faction = yes
+			}
+		}
+	}
+}
+
+#Силы порядка устраивают мятеж
+country_event = {
+	id = NW_new_turkey.161
+	title = NW_new_turkey.161.t
+	desc = NW_new_turkey.161.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_new_turkey.161" }
+
+	option = {
+		name = NW_new_turkey.72.a
+		effect_tooltip = {
+			start_civil_war = {
+				ideology = monarchy
+			}
+		}
+		every_other_country = {
+			limit = {
+				has_guaranteed = ROOT
+			}
+			diplomatic_relation = {
+				country = ROOT
+				relation = guarantee
+				active = no
+			}
+			ROOT = {
+				diplomatic_relation = {
+					country = PREV
+					relation = guarantee
+					active = no
+				}
+			}
+		}
+		hidden_effect = {
+			create_dynamic_country = {
+				original_tag = ROOT
+				set_capital = 341
+				set_country_flag = monarch_focus_block_flag
+				set_party_name = { ideology = monarchy name = TUR_monarchy_force_of_order_party long_name = TUR_monarchy_force_of_order_party }
+				add_popularity = {
+					ideology = neutrality
+					popularity = 1
+				}
+				add_popularity = {
+					ideology = monarchy
+					popularity = 0.15
+				}
+				set_politics = {
+					ruling_party = monarchy
+					elections_allowed = no
+				}
+				every_state = {
+					limit = { is_core_of = ROOT }
+					add_core_of = PREV
+				}
+				every_state = {
+					limit = {
+						OR = {
+							state = 356
+							state = 355
+						}
+						controller = {
+							OR = {
+								original_tag = ROOT
+								original_tag = TRK
+								original_tag = KRD
+							}
+						}
+					}
+					PREV = { transfer_state = PREV }
+				}
+				load_focus_tree = { tree = nw_turkish_focus keep_completed = no }
+				add_timed_idea = { idea = focus_synchronization days = 7 }
+				complete_national_focus = TUR_force_of_order
+				
+				create_country_leader = {
+					name = "Süleyman Şefik Paşa"
+					desc = "POLITICS_SULEYMAN_SEFIK_PASA_DESC"
+					picture = "gfx/leaders/TUR/Portrait_Suleyman_Sefik_pasa.dds"
+					expire = "1965.1.1"
+					ideology = absolute_monarchy
+					traits = {
+						keep_of_order
+					}
+				}
+				create_field_marshal = {
+					name = "Süleyman Şefik Paşa"
+					portrait_path = "gfx/leaders/TUR/Portrait_Suleyman_Sefik_pasa.dds"
+					traits = { offensive_doctrine war_hero }
+					id = 1802
+					skill = 4
+					attack_skill = 4
+					defense_skill = 3
+					planning_skill = 3
+					logistics_skill = 2
+				}
+
+				ROOT = {
+					transfer_units_fraction = {
+						target = PREV
+						size = civil_war_size
+						stockpile_ratio = civil_war_size
+						army_ratio = civil_war_size
+						navy_ratio = civil_war_size
+						air_ratio = civil_war_size
+					}
+					declare_war_on = {
+						target = PREV
+						type = civil_war
+					}
+					add_civil_war_target = PREV
+					set_variable = { civil_war_size = 1 }
+					add_to_variable = { civil_war_side = -1 }
+					divide_variable = { civil_war_size = civil_war_side }
+				}
+				every_other_country = {
+					limit = {
+						OR = {
+							original_tag = ROOT
+							original_tag = TRK
+							original_tag = KRD
+						}
+						NOT = { tag = ROOT }
+					}
+					declare_war_on = {
+						target = PREV
+						type = civil_war
+					}
+					add_civil_war_target = PREV
+					PREV = { add_civil_war_target = PREV }
+				}
+				add_civil_war_target = ROOT
+			}
+			if = {
+				limit = {
+					is_in_faction = yes
+					is_faction_leader = no
+				}
+				leave_faction = yes
+			}
+			if = {
+				limit = { is_faction_leader = yes }
+				dismantle_faction = yes
+			}
+		}
+	}
+}
+
+#Движение Кадро поднимает восстание
+country_event = {
+	id = NW_new_turkey.162
+	title = NW_new_turkey.162.t
+	desc = NW_new_turkey.158.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_new_turkey.162" }
+
+	option = {
+		name = NWturkey.32.a
+		effect_tooltip = {
+			start_civil_war = {
+				ideology = communism
+			}
+		}
+		every_other_country = {
+			limit = {
+				has_guaranteed = ROOT
+			}
+			diplomatic_relation = {
+				country = ROOT
+				relation = guarantee
+				active = no
+			}
+			ROOT = {
+				diplomatic_relation = {
+					country = PREV
+					relation = guarantee
+					active = no
+				}
+			}
+		}
+		hidden_effect = {
+			create_dynamic_country = {
+				original_tag = ROOT
+				set_country_flag = troz_focus_block_flag
+				add_popularity = {
+					ideology = neutrality
+					popularity = 1
+				}
+				add_popularity = {
+					ideology = communism
+					popularity = 0.15
+				}
+				set_politics = {
+					ruling_party = communism
+					elections_allowed = no
+				}
+				every_state = {
+					limit = { is_core_of = ROOT }
+					add_core_of = PREV
+				}
+				every_state = {
+					limit = {
+						OR = {
+							state = 349
+							state = 354
+							state = 353
+							state = 1128
+							state = 1049
+						}
+						controller = {
+							OR = {
+								original_tag = ROOT
+								original_tag = TRK
+								original_tag = KRD
+							}
+						}
+					}
+					PREV = { transfer_state = PREV }
+				}
+				load_focus_tree = { tree = nw_turkish_focus keep_completed = no }
+				add_timed_idea = { idea = focus_synchronization days = 7 }
+				complete_national_focus = TUR_commust_revolt
+				
+				set_party_name = { ideology = communism name = TUR_movement_of_personnel_party long_name = TUR_movement_of_personnel_party }
+				create_country_leader = {
+					name = "Şevket Süreyya Aydemir"
+					desc = "POLITICS_SEVKET_SUREYYA_AYDEMIR_DESC"
+					picture = "gfx/leaders/TUR/portrait_tur_sevket_sureyya_aydemir.dds"
+					expire = "1965.1.1"
+					ideology = kemalism_socialism
+					traits = {
+						the_academic
+					}
+				}
+				
+				ROOT = {
+					transfer_units_fraction = {
+						target = PREV
+						size = civil_war_size
+						stockpile_ratio = civil_war_size
+						army_ratio = civil_war_size
+						navy_ratio = civil_war_size
+						air_ratio = civil_war_size
+					}
+					declare_war_on = {
+						target = PREV
+						type = civil_war
+					}
+					add_civil_war_target = PREV
+					set_variable = { civil_war_size = 1 }
+					add_to_variable = { civil_war_side = -1 }
+					divide_variable = { civil_war_size = civil_war_side }
+				}
+				every_other_country = {
+					limit = {
+						OR = {
+							original_tag = ROOT
+							original_tag = TRK
+							original_tag = KRD
+						}
+						NOT = { tag = ROOT }
+					}
+					declare_war_on = {
+						target = PREV
+						type = civil_war
+					}
+					add_civil_war_target = PREV
+					PREV = { add_civil_war_target = PREV }
+				}
+				add_civil_war_target = ROOT
+			}
+			if = {
+				limit = {
+					is_in_faction = yes
+					is_faction_leader = no
+				}
+				leave_faction = yes
+			}
+			if = {
+				limit = { is_faction_leader = yes }
+				dismantle_faction = yes
+			}
+		}
+	}
+}
+
+#Февзи Чакмак берёт ситуацию в свои руки
+country_event = {
+	id = NW_new_turkey.163
+	title = NW_new_turkey.75.t
+	desc = NW_new_turkey.75.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_new_turkey.163" }
+	
+	option = {
+		name = NW_new_turkey.75.a
+		ai_chance = {
+			factor = 50
+		}
+		complete_national_focus = TUR_dictatorship_cakmak
+	}
+
+	option = {
+		name = NW_new_turkey.75.b
+		ai_chance = {
+			factor = 50
+			modifier = {
+				factor = 0.01
+				focus_progress = { focus = TUR_dictatorship_cakmak progress > 0 }
+			}
+		}
+		effect_tooltip = {
+			start_civil_war = {
+				ideology = neutrality
+			}
+		}
+		set_country_flag = same_ideology_civil_war_flag
+		every_other_country = {
+			limit = {
+				has_guaranteed = ROOT
+			}
+			diplomatic_relation = {
+				country = ROOT
+				relation = guarantee
+				active = no
+			}
+			ROOT = {
+				diplomatic_relation = {
+					country = PREV
+					relation = guarantee
+					active = no
+				}
+			}
+		}
+		hidden_effect = {
+			create_dynamic_country = {
+				original_tag = ROOT
+				set_country_flag = same_ideology_civil_war_flag
+				add_popularity = {
+					ideology = democratic
+					popularity = 1
+				}
+				add_popularity = {
+					ideology = fascism
+					popularity = 0.3
+				}
+				add_popularity = {
+					ideology = monarchy
+					popularity = 0.13
+				}
+				add_popularity = {
+					ideology = trozkism
+					popularity = 0.07
+				}
+				add_popularity = {
+					ideology = communism
+					popularity = 0.1
+				}
+				add_popularity = {
+					ideology = neutrality
+					popularity = 0.15
+				}
+				set_politics = {
+					ruling_party = neutrality
+					elections_allowed = no
+				}
+				every_state = {
+					limit = { is_core_of = ROOT }
+					add_core_of = PREV
+				}
+				every_state = {
+					limit = {
+						OR = {
+							state = 843
+							state = 964
+							state = 341
+							state = 340
+							state = 347
+							state = 49
+						}
+						controller = {
+							OR = {
+								original_tag = ROOT
+								original_tag = TRK
+								original_tag = KRD
+							}
+						}
+					}
+					PREV = { transfer_state = PREV }
+				}
+				load_focus_tree = { tree = nw_turkish_focus keep_completed = no }
+				add_timed_idea = { idea = focus_synchronization days = 7 }
+				complete_national_focus = TUR_dictatorship_cakmak
+
+				ROOT = {
+					transfer_units_fraction = {
+						target = PREV
+						size = civil_war_size
+						stockpile_ratio = civil_war_size
+						army_ratio = civil_war_size
+						navy_ratio = civil_war_size
+						air_ratio = civil_war_size
+					}
+					declare_war_on = {
+						target = PREV
+						type = civil_war
+					}
+					add_civil_war_target = PREV
+					set_variable = { civil_war_size = 1 }
+					add_to_variable = { civil_war_side = -1 }
+					divide_variable = { civil_war_size = civil_war_side }
+				}
+				every_other_country = {
+					limit = {
+						OR = {
+							original_tag = ROOT
+							original_tag = TRK
+							original_tag = KRD
+						}
+						NOT = { tag = ROOT }
+					}
+					declare_war_on = {
+						target = PREV
+						type = civil_war
+					}
+					add_civil_war_target = PREV
+					PREV = { add_civil_war_target = PREV }
+				}
+				add_civil_war_target = ROOT
+			}
+			if = {
+				limit = {
+					is_in_faction = yes
+					is_faction_leader = no
+				}
+				leave_faction = yes
+			}
+			if = {
+				limit = { is_faction_leader = yes }
+				dismantle_faction = yes
+			}
+		}
+	}
+}
 
 #TEST \\ TUR
 country_event = {
