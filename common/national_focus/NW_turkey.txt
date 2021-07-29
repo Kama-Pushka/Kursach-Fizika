@@ -13126,7 +13126,13 @@ focus_tree = {
 			custom_effect_tooltip = TUR_focus_autocomplete_tt
 			custom_effect_tooltip = TUR_force_of_order_tt
 			hidden_effect = {
-				set_cosmetic_tag = TUR_force_of_order_tag
+				if = {
+					limit = { has_government = democratic }
+					set_cosmetic_tag = TUR_islamist_tag
+				}
+				else = {
+					set_cosmetic_tag = TUR_force_of_order_tag
+				}
 			}
 		}
 	}
@@ -13156,10 +13162,7 @@ focus_tree = {
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus TUR_restore_rights_mosques"
 			add_political_power = 50
-			add_popularity = {
-				ideology = democratic
-				popularity = -0.05
-			}
+			add_popularity = { ideology = monarchy popularity = 0.05 }
 			add_ideas = TUR_restore_rights_mosques
 		}
 	}
@@ -13189,10 +13192,7 @@ focus_tree = {
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus TUR_guarantee_social_justice"
 			add_political_power = 50
-			add_popularity = {
-				ideology = monarchy
-				popularity = 0.05
-			}
+			add_popularity = { ideology = democratic popularity = 0.05 }
 			add_ideas = TUR_guarantee_social_justice
 		}
 	}
@@ -13212,10 +13212,11 @@ focus_tree = {
 		search_filters = { FOCUS_FILTER_STABILITY }
 		completion_reward = {
 			add_stability = -0.95
-			add_popularity = { ideology = democratic popularity = -0.1 }
 			add_popularity = { ideology = neutrality popularity = -0.1 }
 			add_popularity = { ideology = fascism popularity = -0.1 }
-			add_popularity = { ideology = monarchy popularity = 0.2 }
+			add_popularity = { ideology = communism popularity = -0.1 }
+			add_popularity = { ideology = monarchy popularity = 0.15 }
+			add_popularity = { ideology = democratic popularity = 0.15 }
 		}
 	}
 	
@@ -13348,6 +13349,26 @@ focus_tree = {
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus TUR_turkish_nation"
 			add_threat = -2
+			if = {
+				limit = { has_idea = TUR_restore_monarchy }
+				remove_ideas = TUR_restore_monarchy
+			}
+			if = {
+				limit = {
+					NOT = { has_government = democratic }
+				}
+				set_politics = {
+					ruling_party = democratic
+					elections_allowed = no
+				}
+			}
+			custom_effect_tooltip = ENG_no_further_appeasement_tt
+			hidden_effect = {
+				set_rule = { can_declare_war_on_same_ideology = yes }
+				set_rule = { can_puppet = yes }
+			}
+			set_rule = { can_send_volunteers = yes }
+			add_ideas = TUR_establish_an_islamic_republic_idea
 			every_country = {
 				limit = { has_government = democratic }
 				ROOT = {
@@ -13400,22 +13421,25 @@ focus_tree = {
 					modifier = TUR_righteous_traditionalists
 				}
 			}
+			set_country_flag = TUR_dem_plus_mona_legitimacy_flag
+			custom_effect_tooltip = ALB_apply_the_constitution_of_1928_to_the_rule_of_the_king_tt
 		}
 	}
 	
 	focus = {
-		id = TUR_waiver_territorial_claims
-		icon = GFX_z_goal_london_disagreement
+		id = TUR_get_reputation_back_in_middle_east_2
+		text = TUR_get_reputation_back_in_middle_east
+		icon = GFX_z_goal_muslims_friend
 		prerequisite = { focus = TUR_turkish_nation }
 		x = 1
 		y = 1
 		relative_position_id = TUR_turkish_nation
-
+		
 		cost = 10
 		
-		cancel_if_invalid = yes
-		continue_if_invalid = no
-		available_if_capitulated = yes
+		cancel_if_invalid = no
+		continue_if_invalid = yes
+		available_if_capitulated = no
 
 		ai_will_do = {
 			factor = 10
@@ -13424,20 +13448,63 @@ focus_tree = {
 		}
 		bypass = {
 		}
-
+		
 		completion_reward = {
-			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus TUR_waiver_territorial_claims"
-			add_stability = 0.05
-			add_threat = -5
-			custom_effect_tooltip = TUR_unlock_reconciliation_occupation_law_tt
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus TUR_get_reputation_back_in_middle_east"
+			add_popularity = { ideology = democratic popularity = 0.05 }
+			every_other_country = {
+				limit = {
+					OR = {
+						tag = SAU
+						tag = YEM
+						tag = OMA
+						tag = IOM
+						tag = IRQ
+						tag = EGY
+						tag = SYR
+					}
+				}
+				add_opinion_modifier = { target = ROOT modifier = TUR_get_reputation_back }
+				ROOT = { add_opinion_modifier = { target = PREV modifier = TUR_get_reputation_back } }
+			}
 		}
 	}
+	
+	#focus = {
+	#	id = TUR_waiver_territorial_claims
+	#	icon = GFX_z_goal_london_disagreement
+	#	prerequisite = { focus = TUR_turkish_nation }
+	#	x = 1
+	#	y = 1
+	#	relative_position_id = TUR_turkish_nation
+	#
+	#	cost = 10
+	#
+	#	cancel_if_invalid = yes
+	#	continue_if_invalid = no
+	#	available_if_capitulated = yes
+	#
+	#	ai_will_do = {
+	#		factor = 10
+	#	}
+	#	available = {
+	#	}
+	#	bypass = {
+	#	}
+	#
+	#	completion_reward = {
+	#		log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus TUR_waiver_territorial_claims"
+	#		add_stability = 0.05
+	#		add_threat = -5
+	#		custom_effect_tooltip = TUR_unlock_reconciliation_occupation_law_tt
+	#	}
+	#}
 	
 	focus = {
 		id = TUR_repression_against_communists
 		icon = GFX_z_goal_broken_red_star
 		prerequisite = { focus = TUR_monarchical_kemalism }
-		prerequisite = { focus = TUR_waiver_territorial_claims }
+		prerequisite = { focus = TUR_get_reputation_back_in_middle_east_2 }
 		x = 1
 		y = 1
 		relative_position_id = TUR_monarchical_kemalism
@@ -13509,6 +13576,15 @@ focus_tree = {
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus TUR_ottoman_nation"
 			add_threat = 3
+			if = {
+				limit = {
+					NOT = { has_government = monarchy }
+				}
+				set_politics = {
+					ruling_party = monarchy
+					elections_allowed = no
+				}
+			}
 			every_other_country = {
 				limit = {
 					OR = {
@@ -13960,14 +14036,43 @@ focus_tree = {
 	}
 	
 	focus = {
-		id = TUR_solve_kurdish_question_2
-		text = TUR_solve_kurdish_question
-		icon = GFX_z_goal_kurdish_question
-		prerequisite = { focus = TUR_waiver_territorial_claims }
+		id = TUR_approve_radical_islamism_2
+		text = TUR_approve_radical_islamism
+		icon = GFX_z_goal_muslims_on_fire
 		prerequisite = { focus = TUR_form_federal_republic_of_greater_turkey_2 }
 		x = 0
 		y = 2
-		relative_position_id = TUR_waiver_territorial_claims
+		relative_position_id = TUR_form_federal_republic_of_greater_turkey_2
+		
+		cost = 10
+		
+		cancel_if_invalid = no
+		continue_if_invalid = yes
+		available_if_capitulated = no
+
+		ai_will_do = {
+			factor = 10
+		}
+		available = {
+		}
+		bypass = {
+		}
+		
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus TUR_approve_radical_islamism"
+			add_ideas = TUR_approve_radical_islamism_idea
+		}
+	}
+	
+	focus = {
+		id = TUR_solve_kurdish_question_2
+		text = TUR_solve_kurdish_question
+		icon = GFX_z_goal_kurdish_question
+		prerequisite = { focus = TUR_get_reputation_back_in_middle_east_2 }
+		prerequisite = { focus = TUR_form_federal_republic_of_greater_turkey_2 }
+		x = 0
+		y = 2
+		relative_position_id = TUR_get_reputation_back_in_middle_east_2
 		
 		cost = 10
 		
@@ -13993,52 +14098,10 @@ focus_tree = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus TUR_solve_kurdish_question"
 			add_stability = 0.05
 			country_event = { id = NW_new_turkey.49 }
+			custom_effect_tooltip = TUR_unlock_reconciliation_occupation_law_tt
 		}
 	}
 	
-	focus = {
-		id = TUR_get_reputation_back_in_middle_east_2
-		text = TUR_get_reputation_back_in_middle_east
-		icon = GFX_z_goal_muslims_friend
-		prerequisite = { focus = TUR_form_federal_republic_of_greater_turkey_2 }
-		x = 0
-		y = 2
-		relative_position_id = TUR_form_federal_republic_of_greater_turkey_2
-		
-		cost = 10
-		
-		cancel_if_invalid = no
-		continue_if_invalid = yes
-		available_if_capitulated = no
-
-		ai_will_do = {
-			factor = 10
-		}
-		available = {
-		}
-		bypass = {
-		}
-		
-		completion_reward = {
-			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus TUR_get_reputation_back_in_middle_east"
-			add_popularity = { ideology = democratic popularity = 0.05 }
-			every_other_country = {
-				limit = {
-					OR = {
-						tag = SAU
-						tag = YEM
-						tag = OMA
-						tag = IOM
-						tag = IRQ
-						tag = EGY
-						tag = SYR
-					}
-				}
-				add_opinion_modifier = { target = ROOT modifier = TUR_get_reputation_back }
-				ROOT = { add_opinion_modifier = { target = PREV modifier = TUR_get_reputation_back } }
-			}
-		}
-	}
 	
 	focus = {
 		id = TUR_protect_border_with_soviet_union_2
