@@ -125,7 +125,7 @@ political_actions = {
 KRD_problem_of_dersim_category = {
 
 	KRD_spread_of_uprising_in_dersim = {
-		icon = eng_propaganda_campaigns
+		icon = revolt
 		available = {
 			hidden_trigger = {
 				always = no
@@ -143,10 +143,8 @@ KRD_problem_of_dersim_category = {
 				has_country_flag = NWkurd1_a_flag
 				has_country_flag = NWkurd3_flag
 			}
-			NOT = {
-				has_country_flag = kurd_revolt_flag
-				has_country_flag = kurd_revolt_over_flag
-			}
+			NOT = { has_country_flag = kurd_revolt_flag }
+			NOT = { has_country_flag = kurd_revolt_over_flag }
 		}
 		is_good = no
 		timeout_effect = {
@@ -158,11 +156,19 @@ KRD_problem_of_dersim_category = {
 			hidden_effect = {
 				check_kurdish_threat_level_var = yes
 			}
+			every_controlled_state = {
+				limit = {
+					NOT = { is_core_of = ROOT }
+					is_core_of = KRD
+				}
+				add_compliance = -10
+				add_resistance = 15
+			}
 		}
 	}
 	
 	KRD_send_military_personnel_region = {
-		icon = generic_form_nation
+		icon = generic_military
 		available = {
 		}
 		cancel_trigger = {
@@ -173,7 +179,11 @@ KRD_problem_of_dersim_category = {
 		}
 		cost = 60
 		ai_will_do = {
-			factor = 10
+			factor = 15
+			modifier = {
+				factor = 20
+				is_historical_focus_on = yes
+			}
 		}
 		days_remove = 30
 		remove_effect = {
@@ -186,11 +196,19 @@ KRD_problem_of_dersim_category = {
 			hidden_effect = {
 				check_kurdish_threat_level_var = yes
 			}
+			every_controlled_state = {
+				limit = {
+					NOT = { is_core_of = ROOT }
+					is_core_of = KRD
+				}
+				add_compliance = 5
+				add_resistance = -10
+			}
 		}
 	}
 	
 	KRD_send_air_force_in_dersim = {
-		icon = generic_form_nation
+		icon = generic_air
 		available = {
 		}
 		visible = {
@@ -203,19 +221,33 @@ KRD_problem_of_dersim_category = {
 			}
 		}
 		custom_cost_trigger = {
-			has_equipment = {
-				strat_bomber_equipment > 0
+			OR = {
+				has_equipment = { strat_bomber_equipment > 0 }
+				has_equipment = { tac_bomber_equipment > 0 }
 			}
 		}
 		custom_cost_text = strategic_bomber_cost_tt
 		ai_will_do = {
-			factor = 10
+			factor = 15
+			modifier = {
+				factor = 20
+				is_historical_focus_on = yes
+			}
 		}
 		days_remove = 30
 		complete_effect = {
-			add_equipment_to_stockpile = {
-				type = strat_bomber_equipment
-				amount = -1
+			if = {
+				limit = { has_equipment = { strat_bomber_equipment > 0 } }
+				add_equipment_to_stockpile = {
+					type = strat_bomber_equipment
+					amount = -1
+				}
+			}
+			else = {
+				add_equipment_to_stockpile = {
+					type = tac_bomber_equipment
+					amount = -1
+				}
 			}
 		}
 		remove_effect = {
@@ -227,11 +259,18 @@ KRD_problem_of_dersim_category = {
 			hidden_effect = {
 				check_kurdish_threat_level_var = yes
 			}
+			every_controlled_state = {
+				limit = {
+					NOT = { is_core_of = ROOT }
+					is_core_of = KRD
+				}
+				add_resistance = -20
+			}
 		}
 	}
 	
 	KRD_create_military_checkpoints = {
-		icon = generic_form_nation
+		icon = eng_install_government
 		available = {
 		}
 		cancel_trigger = {
@@ -242,7 +281,11 @@ KRD_problem_of_dersim_category = {
 		}
 		cost = 100
 		ai_will_do = {
-			factor = 10
+			factor = 15
+			modifier = {
+				factor = 20
+				is_historical_focus_on = yes
+			}
 		}
 		fire_only_once = yes
 		days_remove = 100
@@ -255,11 +298,19 @@ KRD_problem_of_dersim_category = {
 			hidden_effect = {
 				check_kurdish_threat_level_var = yes
 			}
+			every_controlled_state = {
+				limit = {
+					NOT = { is_core_of = ROOT }
+					is_core_of = KRD
+				}
+				add_compliance = 10
+				add_resistance = -5
+			}
 		}
 	}
 	
 	KRD_expand_powers_of_local_inspector = {
-		icon = generic_form_nation
+		icon = generic_army_support
 		available = {
 		}
 		cancel_trigger = {
@@ -270,7 +321,11 @@ KRD_problem_of_dersim_category = {
 		}
 		cost = 60
 		ai_will_do = {
-			factor = 10
+			factor = 15
+			modifier = {
+				factor = 20
+				is_historical_focus_on = yes
+			}
 		}
 		fire_only_once = yes
 		days_remove = 100
@@ -282,6 +337,14 @@ KRD_problem_of_dersim_category = {
 			custom_effect_tooltip = kurdish_threat_level_up_tt
 			hidden_effect = {
 				check_kurdish_threat_level_var = yes
+			}
+			every_controlled_state = {
+				limit = {
+					NOT = { is_core_of = ROOT }
+					is_core_of = KRD
+				}
+				add_compliance = 7.5
+				add_resistance = -7.5
 			}
 		}
 	}
@@ -354,10 +417,23 @@ KRD_call_all_kurds_to_war_category = {
 	KRD_raise_kurds_of_mahabad = {
 		icon = generic_speech
 		fire_only_once = yes
+		allowed = {
+			NOT = { original_tag = MHB }
+		}
 		available = {
 			PER = {
 				owns_state = 963
 				owns_state = 421
+			}
+			if = {
+				limit = {
+					OR = {
+						original_tag = ERB
+						original_tag = ROJ
+					}
+				}
+				strength_ratio = { tag = PER ratio > 0.1 }
+				strength_ratio = { tag = PER ratio < 1 }
 			}
 		}
 		visible = {
@@ -370,6 +446,34 @@ KRD_call_all_kurds_to_war_category = {
 		days_remove = 40
 		remove_effect = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): remove decision KRD_raise_kurds_of_mahabad"
+			hidden_effect = {
+				if = {
+					limit = { NOT = { has_template = "Kurdish Cavalry" } }
+					division_template = {
+						name = "Kurdish Cavalry"
+						regiments = {
+							cavalry = { x = 0 y = 0 }
+							cavalry = { x = 0 y = 1 }
+							cavalry = { x = 1 y = 0 }
+							cavalry = { x = 1 y = 1 }
+						}
+					}
+				}
+				if = {
+					limit = { NOT = { has_template = "Kurdish Infantry" } }
+					division_template = {
+						name = "Kurdish Infantry"
+						regiments = {
+							infantry = { x = 0 y = 0 }
+							infantry = { x = 0 y = 1 }
+							infantry = { x = 1 y = 0 }
+							infantry = { x = 1 y = 1 }
+							infantry = { x = 2 y = 0 }
+							infantry = { x = 2 y = 1 }
+						}
+					}
+				}
+			}
 			effect_tooltip = {
 				transfer_state = 963
 				transfer_state = 421
@@ -403,8 +507,21 @@ KRD_call_all_kurds_to_war_category = {
 	KRD_raise_kurds_of_erbil = {
 		icon = generic_speech
 		fire_only_once = yes
+		allowed = {
+			NOT = { original_tag = ERB }
+		}
 		available = {
 			IRQ = { owns_state = 962 }
+			if = {
+				limit = {
+					OR = {
+						original_tag = ROJ
+						original_tag = MHB
+					}
+				}
+				strength_ratio = { tag = IRQ ratio > 0.1 }
+				strength_ratio = { tag = IRQ ratio < 1 }
+			}
 		}
 		visible = {
 			IRQ = { owns_state = 962 }
@@ -413,6 +530,34 @@ KRD_call_all_kurds_to_war_category = {
 		days_remove = 40
 		remove_effect = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): remove decision KRD_raise_kurds_of_erbil"
+			hidden_effect = {
+				if = {
+					limit = { NOT = { has_template = "Kurdish Cavalry" } }
+					division_template = {
+						name = "Kurdish Cavalry"
+						regiments = {
+							cavalry = { x = 0 y = 0 }
+							cavalry = { x = 0 y = 1 }
+							cavalry = { x = 1 y = 0 }
+							cavalry = { x = 1 y = 1 }
+						}
+					}
+				}
+				if = {
+					limit = { NOT = { has_template = "Kurdish Infantry" } }
+					division_template = {
+						name = "Kurdish Infantry"
+						regiments = {
+							infantry = { x = 0 y = 0 }
+							infantry = { x = 0 y = 1 }
+							infantry = { x = 1 y = 0 }
+							infantry = { x = 1 y = 1 }
+							infantry = { x = 2 y = 0 }
+							infantry = { x = 2 y = 1 }
+						}
+					}
+				}
+			}
 			effect_tooltip = {
 				transfer_state = 962
 				962 = {
@@ -443,8 +588,21 @@ KRD_call_all_kurds_to_war_category = {
 	KRD_raise_kurds_of_jazeera = {
 		icon = generic_speech
 		fire_only_once = yes
+		allowed = {
+			NOT = { original_tag = ROJ }
+		}
 		available = {
 			SYR = { owns_state = 961 }
+			if = {
+				limit = {
+					OR = {
+						original_tag = ERB
+						original_tag = MHB
+					}
+				}
+				strength_ratio = { tag = SYR ratio > 0.1 }
+				strength_ratio = { tag = SYR ratio < 1 }
+			}
 		}
 		visible = {
 			SYR = { owns_state = 961 }
@@ -453,6 +611,34 @@ KRD_call_all_kurds_to_war_category = {
 		days_remove = 40
 		remove_effect = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): remove decision KRD_raise_kurds_of_jazeera"
+			hidden_effect = {
+				if = {
+					limit = { NOT = { has_template = "Kurdish Cavalry" } }
+					division_template = {
+						name = "Kurdish Cavalry"
+						regiments = {
+							cavalry = { x = 0 y = 0 }
+							cavalry = { x = 0 y = 1 }
+							cavalry = { x = 1 y = 0 }
+							cavalry = { x = 1 y = 1 }
+						}
+					}
+				}
+				if = {
+					limit = { NOT = { has_template = "Kurdish Infantry" } }
+					division_template = {
+						name = "Kurdish Infantry"
+						regiments = {
+							infantry = { x = 0 y = 0 }
+							infantry = { x = 0 y = 1 }
+							infantry = { x = 1 y = 0 }
+							infantry = { x = 1 y = 1 }
+							infantry = { x = 2 y = 0 }
+							infantry = { x = 2 y = 1 }
+						}
+					}
+				}
+			}
 			effect_tooltip = {
 				transfer_state = 961
 				961 = {
@@ -478,6 +664,110 @@ KRD_call_all_kurds_to_war_category = {
 						custom_effect_tooltip = will_lead_to_war_tt
 					}
 				}
+			}
+		}
+		ai_will_do = {
+			factor = 5
+		}
+	}
+	
+	KRD_raise_kurds_of_tur = {
+		icon = generic_speech
+		fire_only_once = yes
+		allowed = {
+			NOT = { original_tag = KRD }
+		}
+		available = {
+			TUR = {
+				OR = {
+					owns_state = 786
+					owns_state = 350
+					owns_state = 352
+				}
+			}
+			if = {
+				limit = {
+					OR = {
+						original_tag = ERB
+						original_tag = ROJ
+						original_tag = MHB
+					}
+				}
+				strength_ratio = { tag = TUR ratio > 0.1 }
+				strength_ratio = { tag = TUR ratio < 1 }
+			}
+		}
+		visible = {
+			TUR = {
+				OR = {
+					owns_state = 786
+					owns_state = 350
+					owns_state = 352
+				}
+			}
+		}
+		cost = 20
+		days_remove = 40
+		remove_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): remove decision KRD_raise_kurds_of_tur"
+			hidden_effect = {
+				if = {
+					limit = { NOT = { has_template = "Kurdish Cavalry" } }
+					division_template = {
+						name = "Kurdish Cavalry"
+						regiments = {
+							cavalry = { x = 0 y = 0 }
+							cavalry = { x = 0 y = 1 }
+							cavalry = { x = 1 y = 0 }
+							cavalry = { x = 1 y = 1 }
+						}
+					}
+				}
+				if = {
+					limit = { NOT = { has_template = "Kurdish Infantry" } }
+					division_template = {
+						name = "Kurdish Infantry"
+						regiments = {
+							infantry = { x = 0 y = 0 }
+							infantry = { x = 0 y = 1 }
+							infantry = { x = 1 y = 0 }
+							infantry = { x = 1 y = 1 }
+							infantry = { x = 2 y = 0 }
+							infantry = { x = 2 y = 1 }
+						}
+					}
+				}
+			}
+			effect_tooltip = {
+				every_state = {
+					limit = {
+						is_owned_by = TUR
+						OR = {
+							state = 786
+							state = 350
+							state = 352
+						}
+					}
+					ROOT = {
+						transfer_state = PREV
+					}
+					create_unit = {
+						division = "name = \"Kurdish Cavalry\" division_template = \"Kurdish Cavalry\" start_experience_factor = 0.2"
+						owner = ROOT
+						count = 2
+						allow_spawning_on_enemy_provs = yes
+					}
+					create_unit = {
+						division = "name = \"Kurdish Infantry\" division_template = \"Kurdish Infantry\" start_experience_factor = 0.2"
+						owner = ROOT
+						count = 2
+						allow_spawning_on_enemy_provs = yes
+					}
+				}
+			}
+			TUR = {
+				country_event = { id = NWkurd.14 hours = 6 }
+				custom_effect_tooltip = will_lead_to_war_tt
 			}
 		}
 		ai_will_do = {

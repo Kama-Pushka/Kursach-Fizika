@@ -723,14 +723,191 @@ TUR_pasarici_category = {
 }
 
 TUR_create_pact_category = {
+
+	TUR_preliminary_negotiations = {
+		icon = hol_exchange_intelligence_data
+		available = {
+			hidden_trigger = {
+				always = no
+			}
+		}
+		cancel_trigger = {
+		}
+		days_mission_timeout = 365
+		activation = {
+			has_start_date < 1936.1.2
+			NOT = { has_global_flag = TUR_preliminary_negotiations_flag }
+		}
+		is_good = yes
+		timeout_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): timeout decision TUR_preliminary_negotiations"
+			custom_effect_tooltip = TUR_preliminary_negotiations_tt
+			hidden_effect = {
+				if = {
+					limit = { NOT = { has_global_flag = TUR_preliminary_negotiations_flag } }
+					set_global_flag = TUR_preliminary_negotiations_flag
+				}
+				activate_mission = TUR_completion_of_negotiations_on_creation_of_saadabad_pact
+			}
+		}
+	}
+	
+	TUR_completion_of_negotiations_on_creation_of_saadabad_pact = {
+		icon = generic_decision
+		available = {
+			hidden_trigger = {
+				always = no
+			}
+		}
+		cancel_trigger = {
+			hidden_trigger = {
+				has_country_flag = TUR_refuse_to_sign_flag
+			}
+		}
+		days_mission_timeout = 188
+		activation = {
+			always = no
+		}
+		is_good = yes
+		timeout_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): timeout decision TUR_completion_of_negotiations_on_creation_of_saadabad_pact"
+			if = {
+				limit = { has_country_flag = saadabad_accept_flag }
+				every_other_country = {
+					limit = {
+						has_country_flag = saadabad_accept_flag
+						NOT = {
+							has_war_with = ROOT
+							has_non_aggression_pact_with = ROOT
+						}
+					}
+					diplomatic_relation = {
+						country = ROOT
+						relation = non_aggression_pact
+						active = yes
+					}
+					add_opinion_modifier = { target = ROOT modifier = expand_the_sadabat_pact }
+					add_ai_strategy = { type = antagonize id = ROOT value = -75 }
+					ROOT = {
+						add_opinion_modifier = { target = PREV modifier = expand_the_sadabat_pact }
+						add_ai_strategy = { type = antagonize id = PREV value = -75 }
+					}
+					every_state = {
+						limit = {
+							is_owned_by = ROOT
+							is_claimed_by = PREV
+						}
+						PREV = { remove_state_claim = PREV }
+					}
+					every_state = {
+						limit = {
+							is_owned_by = PREV
+							is_claimed_by = ROOT
+						}
+						ROOT = { remove_state_claim = PREV }
+					}
+				}
+				custom_effect_tooltip = TUR_completion_of_negotiations_on_creation_of_saadabad_pact_tt
+			}
+			if = {
+				limit = { NOT = { has_global_flag = TUR_create_pact_final_flag } }
+				set_global_flag = TUR_create_pact_final_flag
+			}
+		}
+	}
+	
+	TUR_sign_non_aggression_pact = {
+		icon = eng_trade_unions_support
+		visible = {
+			has_global_flag = TUR_preliminary_negotiations_flag
+		}
+		fire_only_once = yes
+		cost = 10
+		ai_will_do = {
+			factor = 15
+			modifier = {
+				add = 500
+				is_historical_focus_on = yes
+				OR = {
+					tag = TUR
+					tag = PER
+					tag = AFG
+					tag = IRQ
+				}
+			}
+			modifier = {
+				factor = 0
+				is_historical_focus_on = yes
+				NOT = {
+					tag = TUR
+					tag = PER
+					tag = AFG
+					tag = IRQ
+				}
+			}
+			modifier = {
+				factor = 0
+				OR = {
+					AND = {
+						original_tag = PER
+						has_completed_focus = PER_islamic_revolution
+					}
+					AND = {
+						original_tag = EGY
+						has_completed_focus = EGY_Premier_Hasan
+					}
+				}
+			}
+		}
+		complete_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision TUR_sign_non_aggression_pact"
+			add_to_array = { global.saadabad_pact_country_array = THIS }
+			set_country_flag = saadabad_accept_flag
+		}
+	}
+	
+	TUR_refuse_to_sign = {
+		icon = generic_break_treaty
+		visible = {
+			has_country_flag = saadabad_accept_flag
+		}
+		fire_only_once = yes
+		ai_will_do = {
+			factor = 0
+			modifier = {
+				add = 500
+				OR = {
+					AND = {
+						original_tag = PER
+						has_completed_focus = PER_islamic_revolution
+					}
+					AND = {
+						original_tag = EGY
+						has_completed_focus = EGY_Premier_Hasan
+					}
+				}
+			}
+		}
+		complete_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision TUR_refuse_to_sign"
+			set_country_flag = TUR_refuse_to_sign_flag
+			clr_country_flag = saadabad_accept_flag
+			remove_from_array = { global.saadabad_pact_country_array = THIS }
+		}
+	}
+	
+	
+	
+	## OLD PACT DEC DISABLED
 	
 	#Саадабад. Начало
 	TUR_announce_pact = {
+		
+		allowed = { always = no }
 
 		icon = generic_form_nation
 
 		available = {
-			is_subject = no
 			date > 1937.01.01
 		}
 
@@ -798,6 +975,8 @@ TUR_create_pact_category = {
 	
 	#Не Турция
 	TUR_create_pact = {
+	
+		allowed = { always = no }
 		
 		allowed = {
 			NOT = {
@@ -813,7 +992,6 @@ TUR_create_pact_category = {
 		icon = generic_form_nation
 
 		available = {
-			is_subject = no
 			is_in_faction = no
 		}
 
@@ -852,11 +1030,12 @@ TUR_create_pact_category = {
 	}
 	
 	TUR_invite_member = {
+		
+		allowed = { always = no }
 
 		icon = generic_form_nation
 
 		available = {
-			is_subject = no
 			NOT = { has_war_with = FROM }
 			FROM = {
 				is_in_faction = no
@@ -926,11 +1105,12 @@ TUR_create_pact_category = {
 	}
 	
 	TUR_invite_pakistan = {
+	
+		allowed = { always = no }
 
 		icon = generic_form_nation
 
 		available = {
-			is_subject = no
 			num_faction_members > 4
 			if = {
 				limit = { country_exists = PAK }

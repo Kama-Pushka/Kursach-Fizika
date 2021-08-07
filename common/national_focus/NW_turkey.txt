@@ -58,11 +58,15 @@ focus_tree = {
 			945 = { add_core_of = ROOT }
 			if = {
 				limit = {
-					OR = {
-						event_target:NW_france_scope = { has_full_control_of_state = 945 }
-						SYR = {
-							has_full_control_of_state = 945
-							is_subject_of = event_target:NW_france_scope
+					NOT = { country_exists = HAT }
+					945 = {
+						controller = {
+							has_full_control_of_state = PREV
+							OR = {
+								tag = event_target:NW_france_scope
+								is_subject_of = event_target:NW_france_scope
+								tag = SYR
+							}
 						}
 					}
 				}
@@ -6441,10 +6445,19 @@ focus_tree = {
 				popularity = -0.05
 			}
 			every_controlled_state = {
-				limit = { is_core_of = KRD }
+				limit = {
+					NOT = { is_core_of = ROOT }
+					is_core_of = KRD
+				}
 				add_manpower = -5000
 				force_disable_resistance = ROOT
 				custom_effect_tooltip = TUR_begin_massacres_kurds_tt
+			}
+			if = {
+				limit = {
+					has_active_mission = KRD_spread_of_uprising_in_dersim
+				}
+				country_event = { id = NWkurd.4 }
 			}
 		}
 	}
@@ -6454,7 +6467,7 @@ focus_tree = {
 		text = TUR_evicting_circassians_in_eastern_anatolia
 		icon = GFX_z_goal_rabgosudarstvo
 		prerequisite = { focus = TUR_begin_massacres_kurds }
-		x = 0
+		x = -1
 		y = 1
 		relative_position_id = TUR_begin_massacres_kurds
 		
@@ -7073,7 +7086,7 @@ focus_tree = {
 			focus = TUR_strengthening_ties_with_middle_eastern_countries_2
 			focus = TUR_general_mobilization
 		}
-		x = 3
+		x = 2
 		y = 1
 		relative_position_id = TUR_strengthening_ties_with_middle_eastern_countries_2
 
@@ -7527,12 +7540,35 @@ focus_tree = {
 	}
 	
 	focus = {
+		id = TUR_the_sun_language_theory
+		icon = GFX_focus_TUR_the_sun_language_theory
+		prerequisite = {
+			focus = TUR_repression_anti_turkish_elements
+			focus = TUR_proclaim_panturkism
+		}
+		x = -1
+		y = 1
+		relative_position_id = TUR_repression_anti_turkish_elements
+		cost = 5
+		ai_will_do = {
+			factor = 10
+		}
+
+		search_filters = { FOCUS_FILTER_MANPOWER FOCUS_FILTER_WAR_SUPPORT }
+		completion_reward = {
+			add_war_support = 0.05
+			custom_effect_tooltip = available_political_advisor
+			show_ideas_tooltip = TUR_halide_edib_adivar
+		}
+	}
+	
+	focus = {
 		id = TUR_deify_ataturk_2
 		text = TUR_deify_ataturk
 		icon = GFX_z_goal_deify_ataturk
 		prerequisite = { focus = TUR_purge_government_2 }
 		prerequisite = { focus = TUR_repression_anti_turkish_elements }
-		x = 1
+		x = -1
 		y = 1
 		relative_position_id = TUR_purge_government_2
 		
@@ -7562,6 +7598,7 @@ focus_tree = {
 		text = TUR_unite_turks
 		icon = GFX_z_goal_brutality_is_bringing_people_together
 		prerequisite = { focus = TUR_deify_ataturk_2 }
+		prerequisite = { focus = TUR_the_sun_language_theory }
 		x = 0
 		y = 1
 		relative_position_id = TUR_deify_ataturk_2
@@ -7592,11 +7629,43 @@ focus_tree = {
 	}
 	
 	focus = {
+		id = TUR_general_mobilization
+		icon = GFX_z_goal_elite_troops
+		prerequisite = { focus = TUR_increase_spending_on_army_2 }
+		prerequisite = { focus = TUR_unite_turks_2 }
+		prerequisite = { focus = TUR_reinvigorate_turkish_nationalism }
+		x = 0
+		y = 1
+		relative_position_id = TUR_unite_turks_2
+
+		cost = 10
+		
+		cancel_if_invalid = yes
+		continue_if_invalid = no
+		available_if_capitulated = yes
+
+		ai_will_do = {
+			factor = 10
+		}
+		available = {
+		}
+		bypass = {
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus TUR_general_mobilization"
+			add_ideas = war_economy
+			add_ideas = service_by_requirement
+			add_ideas = TUR_general_mobilization
+		}
+	}
+	
+	focus = {
 		id = TUR_increase_spending_on_army_2
 		text = TUR_increase_spending_on_army
 		icon = GFX_z_goal_conscription
 		prerequisite = { focus = TUR_deify_ataturk_2 }
-		x = -2
+		x = 2
 		y = 1
 		relative_position_id = TUR_deify_ataturk_2
 		
@@ -7656,38 +7725,6 @@ focus_tree = {
 		}
 	}
 	
-	focus = {
-		id = TUR_general_mobilization
-		icon = GFX_z_goal_elite_troops
-		prerequisite = { focus = TUR_increase_spending_on_army_2 }
-		prerequisite = { focus = TUR_unite_turks_2 }
-		prerequisite = { focus = TUR_reinvigorate_turkish_nationalism }
-		x = 0
-		y = 1
-		relative_position_id = TUR_unite_turks_2
-
-		cost = 10
-		
-		cancel_if_invalid = yes
-		continue_if_invalid = no
-		available_if_capitulated = yes
-
-		ai_will_do = {
-			factor = 10
-		}
-		available = {
-		}
-		bypass = {
-		}
-
-		completion_reward = {
-			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus TUR_general_mobilization"
-			add_ideas = war_economy
-			add_ideas = service_by_requirement
-			add_ideas = TUR_general_mobilization
-		}
-	}
-	
 	
 	focus = {
 		id = TUR_claim_turkish_lands_in_thrace_2
@@ -7695,9 +7732,9 @@ focus_tree = {
 		icon = GFX_goal_generic_territory_or_war
 		prerequisite = { focus = TUR_ready_outside }
 		prerequisite = { focus = TUR_general_mobilization }
-		x = 0
-		y = 2
-		relative_position_id = TUR_general_mobilization
+		x = 1
+		y = 1
+		relative_position_id = TUR_ready_outside
 		
 		cost = 10
 		
@@ -7740,7 +7777,7 @@ focus_tree = {
 		text = TUR_demand_haskovo
 		icon = GFX_goal_generic_military_deal
 		prerequisite = { focus = TUR_claim_turkish_lands_in_thrace_2 }
-		x = 0
+		x = 2
 		y = 1
 		relative_position_id = TUR_claim_turkish_lands_in_thrace_2
 		
@@ -8053,22 +8090,52 @@ focus_tree = {
 	}
 	
 	focus = {
-		id = TUR_the_sun_language_theory
-		icon = GFX_focus_TUR_the_sun_language_theory
+		id = TUR_support_AA
+		icon = GFX_z_goal_generic_support_AA
 		prerequisite = { focus = TUR_carry_out_militarization_of_society_2 }
 		x = -1
 		y = 1
 		relative_position_id = TUR_carry_out_militarization_of_society_2
-		cost = 5
+		cost = 14.3
 		ai_will_do = {
-			factor = 10
+			factor = 20
 		}
 
-		search_filters = { FOCUS_FILTER_MANPOWER FOCUS_FILTER_WAR_SUPPORT }
+		search_filters = { FOCUS_FILTER_INDUSTRY }
 		completion_reward = {
-			add_war_support = 0.05
-			custom_effect_tooltip = available_political_advisor
-			show_ideas_tooltip = TUR_halide_edib_adivar
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus TUR_support_AA"
+			add_ideas = TUR_support_AA
+			add_tech_bonus = {
+				name = TUR_support_AA
+				bonus = 1.0
+				uses = 1
+				category = aa_artillery
+			}
+		}
+	}
+	
+	focus = {
+		id = TUR_support_AT
+		icon = GFX_z_goal_generic_support_AT
+		prerequisite = { focus = TUR_carry_out_militarization_of_society_2 }
+		x = -2
+		y = 2
+		relative_position_id = TUR_carry_out_militarization_of_society_2
+		cost = 14.3
+		ai_will_do = {
+			factor = 20
+		}
+
+		search_filters = { FOCUS_FILTER_INDUSTRY }
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus TUR_support_AT"
+			add_ideas = TUR_support_AT
+			add_tech_bonus = {
+				name = TUR_support_AT
+				bonus = 1.0
+				uses = 1
+				category = cat_anti_tank
+			}
 		}
 	}
 	
@@ -9530,6 +9597,30 @@ focus_tree = {
 		}
 	}
 	
+	focus = {
+		id = TUR_support_AT_AA
+		icon = GFX_z_goal_generic_support_AA
+		prerequisite = { focus = TUR_holy_war }
+		x = 0
+		y = 1
+		relative_position_id = TUR_holy_war
+		cost = 14.3
+		ai_will_do = {
+			factor = 20
+		}
+
+		search_filters = { FOCUS_FILTER_INDUSTRY }
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus TUR_support_AT_AA"
+			add_ideas = TUR_support_AT_AA
+			add_tech_bonus = {
+				name = TUR_support_AT_AA
+				bonus = 1.0
+				uses = 1
+				category = aa_artillery
+			}
+		}
+	}
 	
 	focus = {
 		id = TUR_support_iraqs_democrats
@@ -10079,6 +10170,35 @@ focus_tree = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus TUR_kurdish_turkish_science"
 			add_to_tech_sharing_group = TUR_kurdish_turkish_science_group
 			KRD = { add_to_tech_sharing_group = TUR_kurdish_turkish_science_group }
+		}
+	}
+	
+	focus = {
+		id = TUR_recruit_kurds_into_army
+		icon = GFX_z_goal_mountaineers
+		prerequisite = { focus = TUR_support_kurdish_army_2 }
+		x = 0
+		y = 2
+		relative_position_id = TUR_support_kurdish_army_2
+		
+		cost = 10
+		
+		cancel_if_invalid = no
+		continue_if_invalid = yes
+		available_if_capitulated = no
+
+		ai_will_do = {
+			factor = 10
+		}
+		available = {
+			KRD = { is_subject_of = ROOT }
+		}
+		bypass = {
+		}
+		
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus TUR_recruit_kurds_into_army"
+			add_ideas = TUR_recruit_kurds_into_army_idea
 		}
 	}
 	
@@ -13461,9 +13581,9 @@ focus_tree = {
 	}
 	
 	
-	##########################
-	#### MONARCHY SECTION ####
-	##########################
+	##############################
+	#### DEM/MONARCHY SECTION ####
+	##############################
 	
 	focus = {
 		id = TUR_force_of_order
@@ -14048,7 +14168,7 @@ focus_tree = {
 		available_if_capitulated = no
 
 		ai_will_do = {
-			factor = 10
+			factor = 15
 		}
 		available = {
 			any_owned_state = {
@@ -14109,7 +14229,7 @@ focus_tree = {
 		relative_position_id = TUR_protect_border_with_soviet_union_2
 		cost = 10
 		ai_will_do = {
-			factor = 15
+			factor = 20
 		}
 
 		search_filters = { FOCUS_FILTER_INDUSTRY }
@@ -14135,7 +14255,7 @@ focus_tree = {
 		relative_position_id = TUR_protect_border_with_soviet_union_2
 		cost = 10
 		ai_will_do = {
-			factor = 15
+			factor = 20
 		}
 
 		search_filters = { FOCUS_FILTER_INDUSTRY }
@@ -14183,7 +14303,13 @@ focus_tree = {
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus TUR_solve_kurdish_question"
 			add_stability = 0.05
-			country_event = { id = NW_new_turkey.49 }
+			if = {
+				limit = {
+					has_active_mission = KRD_spread_of_uprising_in_dersim
+				}
+				country_event = { id = NWkurd.4 }
+			}
+			country_event = { id = NW_new_turkey.49 hours = 6 }
 			custom_effect_tooltip = TUR_unlock_reconciliation_occupation_law_tt
 		}
 	}
