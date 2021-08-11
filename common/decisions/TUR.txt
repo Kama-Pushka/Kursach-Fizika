@@ -1182,3 +1182,183 @@ economy_decisions = {
 		}
 	}
 }
+
+
+TUR_the_fading_father_category = {
+	TUR_ataturk_health_worsening_crisis = {
+	
+		icon = tur_the_constitutional_arrows
+
+		priority = 10
+
+		available = {
+			NOT = {
+				has_country_leader = {
+					name = "Mustafa Kemal Atatürk"
+					ruling_only = yes
+				}
+			}
+		}
+
+		days_mission_timeout = 90
+
+		fire_only_once = no
+
+		activation = {
+			has_country_flag = TUR_ataturk_getting_sickly
+			has_country_leader = {
+				name = "Mustafa Kemal Atatürk"
+				ruling_only = yes
+			}
+		}
+
+		is_good = no
+
+		complete_effect = {
+			country_event = { id = bftb_turkey.24 }
+			hidden_effect = {
+				clear_variable = TUR_ataturk_sickness_factor_var
+				clr_country_flag = TUR_ataturk_getting_sickly
+			}
+		}
+
+		timeout_effect = {
+			if = {
+				limit = {
+					check_variable = { var = TUR_ataturk_health_bar value = 2 }
+				}
+				add_stability = -0.1
+				custom_effect_tooltip = TUR_ataturk_health_terminal_tt
+				subtract_from_variable = { var = TUR_ataturk_health_bar value = 1 }
+				swap_ruler_traits = { remove = seriously_ill_2 add = seriously_ill_3 }
+			}
+			else_if = {
+				limit = {
+					check_variable = { var = TUR_ataturk_health_bar value = 3 }
+				}
+				add_stability = -0.05
+				custom_effect_tooltip = TUR_ataturk_health_poor_tt
+				subtract_from_variable = { var = TUR_ataturk_health_bar value = 1 }
+				swap_ruler_traits = { remove = seriously_ill add = seriously_ill_2 }
+			}
+			else = {
+				country_event = { id = NWturkey.10 hours = 6 } #bftb_turkey.134
+			}
+		}
+
+		cancel_effect = {
+
+		}
+	}
+
+	TUR_seek_treatment_for_ataturk = {
+	
+		icon = generic_research
+
+		available = {
+			has_country_leader = {
+				name = "Mustafa Kemal Atatürk"
+				ruling_only = yes
+			}
+		}
+
+		cost = TUR_ataturk_treatment_cost_var?125
+
+		days_remove = 60
+
+		visible = {
+			has_active_mission = TUR_ataturk_health_worsening_crisis
+		}
+
+		fire_only_once = no
+
+		cancel_trigger = {
+			NOT = {
+				has_country_leader = {
+					name = "Mustafa Kemal Atatürk"
+					ruling_only = yes
+				}
+			}
+		}
+		complete_effect = {
+			add_country_leader_trait = the_absentee_president
+		}
+
+		remove_effect = {
+			remove_country_leader_trait = the_absentee_president
+			add_days_mission_timeout = {
+				mission = TUR_ataturk_health_worsening_crisis
+				days = 120
+			}
+			if = {
+				limit = {
+					NOT = { has_variable = TUR_ataturk_treatment_cost_var }
+				}
+				set_variable = { var = TUR_ataturk_treatment_cost_var value = 200 }
+			}
+			else = {
+				add_to_variable = { var = TUR_ataturk_treatment_cost_var value = 75 }
+			}
+			if = {
+				limit = {
+					NOT = { has_variable = TUR_ataturk_treatment_effectiveness_var }
+				}
+				set_variable = { var = TUR_ataturk_treatment_effectiveness_var value = 100 }
+			}
+			else_if = {
+				limit = {
+					check_variable = { var = TUR_ataturk_treatment_effectiveness_var value = 30 compare = less_than_or_equals } 
+				}
+				set_variable = { var = TUR_ataturk_treatment_effectiveness_var value = 30 }
+			}
+			else = {
+				subtract_from_variable = { var = TUR_ataturk_treatment_effectiveness_var value = 25 }
+			}
+			if = {
+				limit = {
+					NOT = { has_country_leader_with_trait = infirm }
+				}
+				NW_TUR_worsen_ataturks_health_effect = yes
+			}
+		}
+	}
+
+	TUR_retire_ataturk = {
+	
+		icon = eng_trade_unions_demand
+		
+		allowed = {
+			always = no
+		}
+
+		available = {
+			has_country_leader = {
+				name = "Mustafa Kemal Atatürk"
+				ruling_only = yes
+			}
+		}
+
+		visible = {
+			has_active_mission = TUR_ataturk_health_worsening_crisis
+		}
+
+		fire_only_once = yes
+
+
+		complete_effect = {
+			add_stability = -0.1
+			country_event = { id = bftb_turkey.24 }
+			add_ideas = TUR_mustafa_kemal_ataturk_figurehead
+			hidden_effect = {
+				clr_country_flag = TUR_ataturk_getting_sickly 
+				if = {
+					limit = {
+						has_unit_leader = 59
+					}
+					remove_unit_leader = 59
+				}
+				country_event = { id = NWturkey.10 days = 90 random = 60 }	##bftb_turkey.135
+			}
+		}
+	}
+}
