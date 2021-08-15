@@ -20,7 +20,7 @@
 	focus = {
 		id = DEN_support_by_neighbours
 		icon = GFX_z_goal_DEN_support_by_neighbours
-		x = 6
+		x = 7
 		y = 0
 		cost = 10
 		
@@ -72,7 +72,7 @@
 		icon = GFX_focus_chi_mission_to_germany
 		x = -1
 		y = 1
-		cost = 10
+		cost = 5
 		
 		ai_will_do = {
 			factor = 1
@@ -222,7 +222,7 @@
 		icon = GFX_z_goal_ban_communist_party
 		x = -1
 		y = 2
-		cost = 10
+		cost = 5
 		
 		ai_will_do = {
 			factor = 2
@@ -586,9 +586,128 @@
 	}
 	
 	focus = {
+		id = DEN_prohibit_speculation
+		icon = GFX_z_goal_communication_with_black_market
+		x = -5
+		y = 2
+		cost = 7.2
+		
+		prerequisite = {
+			focus = DEN_totalitarianism
+		}
+		
+		available = {
+		}
+		
+		available_if_capitulated = yes
+		
+		relative_position_id = DEN_nazist_government
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus DEN_prohibit_speculation"
+			add_timed_idea = { idea = DEN_prohibit_speculation_idea_1 days = 90 }
+			custom_effect_tooltip = DEN_prohibit_speculation_tt
+			show_ideas_tooltip = DEN_prohibit_speculation_idea_4
+		}
+	}
+	
+	focus = {
+		id = DEN_emergency_militarization_of_danish_economy
+		icon = GFX_z_goal_ammo_industry
+		x = 0
+		y = 1
+		cost = 10
+		
+		prerequisite = {
+			focus = DEN_prohibit_speculation
+		}
+		
+		available = {
+			has_country_leader = { name = "Cay Lembcke" ruling_only = yes }
+		}
+		
+		available_if_capitulated = yes
+		
+		relative_position_id = DEN_prohibit_speculation
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus DEN_emergency_militarization_of_danish_economy"
+			add_ideas = DEN_emergency_militarization_of_danish_economy
+			random_owned_controlled_state = {
+				limit = {
+					is_core_of = ROOT
+					is_in_home_area = yes
+					free_building_slots = {
+						building = arms_factory
+						size > 0
+						include_locked = yes
+					}
+				}
+				add_extra_state_shared_building_slots = 1
+				add_building_construction = {
+					type = arms_factory
+					level = 1
+					instant_build = yes
+				}
+			}
+			random_owned_controlled_state = {
+				limit = {
+					is_core_of = ROOT
+					is_in_home_area = yes
+					free_building_slots = {
+						building = arms_factory
+						size > 0
+						include_locked = yes
+					}
+				}
+				add_extra_state_shared_building_slots = 1
+				add_building_construction = {
+					type = arms_factory
+					level = 1
+					instant_build = yes
+				}
+			}
+			random_owned_controlled_state = {
+				limit = {
+					is_core_of = ROOT
+					is_in_home_area = yes
+					free_building_slots = {
+						building = arms_factory
+						size > 0
+						include_locked = yes
+					}
+				}
+				add_extra_state_shared_building_slots = 1
+				add_building_construction = {
+					type = arms_factory
+					level = 1
+					instant_build = yes
+				}
+			}
+			random_owned_controlled_state = {
+				limit = {
+					is_core_of = ROOT
+					is_in_home_area = yes
+					free_building_slots = {
+						building = arms_factory
+						size > 0
+						include_locked = yes
+					}
+				}
+				add_extra_state_shared_building_slots = 1
+				add_building_construction = {
+					type = arms_factory
+					level = 1
+					instant_build = yes
+				}
+			}
+		}
+	}
+	
+	focus = {
 		id = DEN_pursue_masons
 		icon = GFX_z_goal_pursue_masons
-		x = -4
+		x = -3
 		y = 2
 		cost = 5
 		
@@ -696,16 +815,16 @@
 					has_capitulated = no
 					is_faction_leader = yes
 				}
-				any_other_country = {
-					is_major = yes
+				any_of_scopes = {
+					array = global.majors
+					tooltip = is_major_tt
 					has_government = fascism
 					is_faction_leader = yes
 				}
 			}
-			NOT = {
-				any_other_country = {
-					is_in_faction_with = GER
-					has_war_with = DEN
+			GER = {
+				any_allied_country = {
+					NOT = { has_war_with = DEN }
 				}
 			}
 			is_in_faction = no
@@ -1295,7 +1414,7 @@
 		icon = GFX_focus_chi_british_cooperation
 		x = 1
 		y = 1
-		cost = 10
+		cost = 5
 		
 		prerequisite = {
 			focus = DEN_support_by_neighbours
@@ -1935,10 +2054,69 @@
 	}
 	
 	focus = {
+		id = DEN_provide_military_support_to_trading_partners
+		icon = GFX_focus_generic_manpower
+		prerequisite = { focus = DEN_support_by_neighbours }
+		relative_position_id = DEN_support_by_neighbours
+		mutually_exclusive = {
+			focus = DEN_confirm_neutrality
+		}
+		x = 3
+		y = 1
+
+		cost = 5
+
+		available = {
+			is_subject = no
+			OR = {
+				AND = {
+					has_completed_focus = DEN_german_support
+					GER = { has_war = yes }
+				}
+				AND = {
+					has_completed_focus = DEN_british_support
+					ENG = { has_war = yes }
+				}
+				threat > 0.2
+				is_in_faction = yes
+			}
+		}
+		
+		bypass = {
+			has_war = yes
+		}
+
+		ai_will_do = {
+			factor = 10
+		}
+
+		cancel_if_invalid = yes
+		continue_if_invalid = no
+		available_if_capitulated = yes
+		
+		select_effect = {
+			if = {
+				limit = { is_in_faction = yes }
+				complete_national_focus = DEN_provide_military_support_to_trading_partners
+			}
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus DEN_provide_military_support_to_trading_partners"
+			if = {
+				limit = { is_in_faction = yes }
+				custom_effect_tooltip = generic_instant_focus_complete_tt
+			}
+			add_stability = -0.1
+			add_ideas = DEN_provide_military_support_to_trading_partners_idea
+		}
+	}
+	
+	focus = {
 		id = DEN_join_to_allies
 		icon = GFX_goal_generic_major_alliance
-		x = 2
-		y = 0
+		x = 0
+		y = 1
 		cost = 10
 		
 		available = {
@@ -1977,19 +2155,17 @@
 			}
 		}
 		
-		mutually_exclusive = { focus = DEN_confirm_neutrality }
-		
 		bypass = {
 			is_in_faction = yes
 		}
 		
 		prerequisite = {
-			focus = DEN_support_by_neighbours
+			focus = DEN_provide_military_support_to_trading_partners
 		}
 
 		available_if_capitulated = yes
 		
-		relative_position_id = DEN_british_support
+		relative_position_id = DEN_provide_military_support_to_trading_partners
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus DEN_join_to_allies"
@@ -2069,7 +2245,7 @@
 			}
 		}
 		
-		mutually_exclusive = { focus = DEN_join_to_allies }
+		mutually_exclusive = { focus = DEN_provide_military_support_to_trading_partners }
 		
 		relative_position_id = DEN_support_by_neighbours
 
@@ -2222,9 +2398,19 @@
 		
 		available = {
 			is_subject = no
-			any_country = {
-				has_idea = DEN_nordic_treaty_idea
-				exists = yes
+			OR = {
+				NOR = {
+					has_idea = DEN_nordic_treaty_idea
+					exists = yes
+				}
+				SWE = {
+					has_idea = DEN_nordic_treaty_idea
+					exists = yes
+				}
+				ICE = {
+					has_idea = DEN_nordic_treaty_idea
+					exists = yes
+				}
 			}
 		}
 
@@ -2254,9 +2440,19 @@
 		
 		available = {
 			is_subject = no
-			any_country = {
-				has_idea = DEN_nordic_treaty_idea
-				exists = yes
+			OR = {
+				NOR = {
+					has_idea = DEN_nordic_treaty_idea
+					exists = yes
+				}
+				SWE = {
+					has_idea = DEN_nordic_treaty_idea
+					exists = yes
+				}
+				ICE = {
+					has_idea = DEN_nordic_treaty_idea
+					exists = yes
+				}
 			}
 		}
 
@@ -2290,9 +2486,19 @@
 		
 		available = {
 			is_subject = no
-			any_country = {
-				has_idea = DEN_nordic_treaty_idea
-				exists = yes
+			OR = {
+				NOR = {
+					has_idea = DEN_nordic_treaty_idea
+					exists = yes
+				}
+				SWE = {
+					has_idea = DEN_nordic_treaty_idea
+					exists = yes
+				}
+				ICE = {
+					has_idea = DEN_nordic_treaty_idea
+					exists = yes
+				}
 			}
 		}
 		
@@ -2308,11 +2514,10 @@
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus DEN_nordic_alliance"
 			set_rule = { can_create_factions = yes }
 			create_faction = DEN_nordic_alliance_alliance
-			every_country = {
+			every_other_country = {
 				limit = {
 					has_idea = DEN_nordic_treaty_idea
 					NOT = { has_war_with = DEN }
-					NOT = { tag = DEN }
 				}
 				country_event = apdenmark.19
 			}
@@ -2519,7 +2724,7 @@
 		
 		prerequisite = {
 			focus = DEN_confirm_neutrality
-			focus = DEN_join_to_allies
+			focus = DEN_provide_military_support_to_trading_partners
 		}
 		
 		available = {
@@ -2538,6 +2743,7 @@
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus DEN_sthengthen_democracy"
+			add_stability = 0.1
 			if = {
 				limit = { has_idea = DEN_support_young_conservatives_idea }
 				remove_ideas = DEN_support_young_conservatives_idea
@@ -2550,7 +2756,7 @@
 				idea = DEN_sthengthen_democracy_idea
 				days = 720 
 			}
-			add_stability = 0.1
+			add_ideas = DEN_post_crisis_economic_growth_idea
 		}
 	}
 	
@@ -4163,36 +4369,35 @@
 			add_popularity = { ideology = democratic popularity = -0.05 }
 			random_owned_controlled_state = {
 				limit = {
+					is_core_of = ROOT
+					is_in_home_area = yes
 					free_building_slots = {
-						building = arms_factory
-						size > 0
+						building = industrial_complex
+						size > 1
 						include_locked = yes
-					}
-					OR = {
-						is_in_home_area = yes
-						NOT = {
-							owner = {
-								any_owned_state = {
-									free_building_slots = {
-										building = arms_factory
-										size > 0
-										include_locked = yes
-									}
-									is_in_home_area = yes
-								}
-							}
-						}
 					}
 				}
 				add_extra_state_shared_building_slots = 2
 				add_building_construction = {
 					type = industrial_complex
-					level = 1
+					level = 2
 					instant_build = yes
 				}
+			}
+			random_owned_controlled_state = {
+				limit = {
+					is_core_of = ROOT
+					is_in_home_area = yes
+					free_building_slots = {
+						building = arms_factory
+						size > 1
+						include_locked = yes
+					}
+				}
+				add_extra_state_shared_building_slots = 2
 				add_building_construction = {
 					type = arms_factory
-					level = 1
+					level = 2
 					instant_build = yes
 				}
 			}
@@ -5085,6 +5290,64 @@
 	}
 	
 	focus = {
+		id = DEN_investments_from_ussr
+		icon = GFX_z_goal_communist_factories
+		x = 0
+		y = 1
+		cost = 10
+		
+		prerequisite = {
+			focus = DEN_communist_advisors
+		}
+		
+		available = {
+			NOT = { has_war_with = SOV }
+		}
+		
+		relative_position_id = DEN_communist_advisors
+
+		available_if_capitulated = yes
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus DEN_investments_from_ussr"
+			random_owned_controlled_state = {
+				limit = {
+					is_core_of = ROOT
+					is_in_home_area = yes
+					free_building_slots = {
+						building = industrial_complex
+						size > 1
+						include_locked = yes
+					}
+				}
+				add_extra_state_shared_building_slots = 2
+				add_building_construction = {
+					type = industrial_complex
+					level = 2
+					instant_build = yes
+				}
+			}
+			random_owned_controlled_state = {
+				limit = {
+					is_core_of = ROOT
+					is_in_home_area = yes
+					free_building_slots = {
+						building = arms_factory
+						size > 1
+						include_locked = yes
+					}
+				}
+				add_extra_state_shared_building_slots = 2
+				add_building_construction = {
+					type = arms_factory
+					level = 2
+					instant_build = yes
+				}
+			}
+		}
+	}
+	
+	focus = {
 		id = DEN_cult_of_a_fisherman
 		icon = GFX_goal_generic_navy_doctrines_tactics
 		x = -3
@@ -5853,6 +6116,40 @@
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus DEN_danish_association_of_blacksmiths_and_mechanics"
 			add_ideas = DEN_danish_association_of_blacksmiths_and_mechanics
 			DEN_great_depression_twice_down = yes
+			random_owned_controlled_state = {
+				limit = {
+					is_core_of = ROOT
+					is_in_home_area = yes
+					free_building_slots = {
+						building = arms_factory
+						size > 0
+						include_locked = yes
+					}
+				}
+				add_extra_state_shared_building_slots = 1
+				add_building_construction = {
+					type = arms_factory
+					level = 1
+					instant_build = yes
+				}
+			}
+			random_owned_controlled_state = {
+				limit = {
+					is_core_of = ROOT
+					is_in_home_area = yes
+					free_building_slots = {
+						building = arms_factory
+						size > 0
+						include_locked = yes
+					}
+				}
+				add_extra_state_shared_building_slots = 1
+				add_building_construction = {
+					type = arms_factory
+					level = 1
+					instant_build = yes
+				}
+			}
 		}
 	}
 	
@@ -6059,8 +6356,9 @@
 	focus = {
 		id = DEN_social_reforms_1
 		icon = GFX_goal_generic_production
-		x = 39
+		x = 13
 		y = 0
+		relative_position_id = DEN_independence_economy
 		cost = 10
 		ai_will_do = {
 			factor = 2

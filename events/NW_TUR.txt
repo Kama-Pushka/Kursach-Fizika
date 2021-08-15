@@ -519,6 +519,23 @@ country_event = {
 	}
 }
 
+#Смерть Ататюрка пульсар // 10 ноября 1938 года
+country_event = {
+	id = NWturkey.1000
+	is_triggered_only = yes
+	hidden = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWturkey.1000" }
+	immediate = {
+		if = {
+			limit = {
+				NOT = { has_global_flag = ataturk_dead }
+			}
+			country_event = { id = NWturkey.10 }
+		}
+	}
+}
+
 #Смерть Ататюрка // 10 ноября 1938 года
 country_event = {
 	id = NWturkey.10
@@ -543,8 +560,12 @@ country_event = {
 					is_ai = yes
 					NOT = {
 						has_completed_focus = TUR_president_ismet_inenu
+						has_completed_focus = TUR_dictatorship_cakmak
+						has_completed_focus = TUR_power_of_special_services
+						has_completed_focus = TUR_recep_peker
 						has_completed_focus = TUR_organize_fair_elections
 						has_completed_focus = TUR_etchem_circassian_coup
+						has_completed_focus = TUR_commust_revolt
 						has_completed_focus = TUR_force_of_order
 					}
 					OR = {
@@ -563,8 +584,12 @@ country_event = {
 					is_ai = yes
 					NOT = {
 						has_completed_focus = TUR_president_ismet_inenu
+						has_completed_focus = TUR_dictatorship_cakmak
+						has_completed_focus = TUR_power_of_special_services
+						has_completed_focus = TUR_recep_peker
 						has_completed_focus = TUR_organize_fair_elections
 						has_completed_focus = TUR_etchem_circassian_coup
+						has_completed_focus = TUR_commust_revolt
 						has_completed_focus = TUR_force_of_order
 					}
 					OR = {
@@ -625,8 +650,12 @@ country_event = {
 				is_subject = no
 				NOT = {
 					has_completed_focus = TUR_president_ismet_inenu
+					has_completed_focus = TUR_dictatorship_cakmak
+					has_completed_focus = TUR_power_of_special_services
+					has_completed_focus = TUR_recep_peker
 					has_completed_focus = TUR_organize_fair_elections
 					has_completed_focus = TUR_etchem_circassian_coup
+					has_completed_focus = TUR_commust_revolt
 					has_completed_focus = TUR_force_of_order
 				}
 				NOT = {
@@ -635,11 +664,48 @@ country_event = {
 				}
 			}
 			if = {
-				limit = { neutrality < 0.4 }
-				country_event = { id = NWturkey.29 days = 2 }
-			}
-			else = {
+				limit = {
+					OR = {
+						has_country_flag = TUR_president_ismet_inenu_flag
+						NOT = {
+							has_country_flag = TUR_dictatorship_cakmak_flag
+							has_country_flag = TUR_policy_liberalization_flag
+							has_country_flag = TUR_power_of_special_services_flag
+							has_country_flag = TUR_recep_peker_flag
+						}
+					}
+				}
 				country_event = { id = NWturkey.30 days = 2 }
+			
+				else_if = {
+					limit = {
+						has_country_flag = TUR_dictatorship_cakmak_flag
+					}
+					country_event = { id = NWturkey.81 days = 2 }
+				}
+				else_if = {
+					limit = {
+						has_country_flag = TUR_policy_liberalization_flag
+					}
+					country_event = { id = NWturkey.82 days = 2 }
+				}
+				else_if = {
+					limit = {
+						has_country_flag = TUR_power_of_special_services_flag
+					}
+					country_event = { id = NWturkey.83 days = 2 }
+				}
+				else_if = {
+					limit = {
+						has_country_flag = TUR_recep_peker_flag
+					}
+					country_event = { id = NWturkey.84 days = 2 }
+				}
+			}
+			
+			if = {
+				limit = { neutrality < 0.4 }
+				country_event = { id = NWturkey.29 days = 3 }
 			}
 		}
 		hidden_effect = { news_event = { id = trworldnews.55 hours = 6 } }
@@ -1967,10 +2033,11 @@ country_event = {
 		create_country_leader = {
 			name = "Celâl Bayar"
 			desc = "POLITICS_CELAL_BAYAR_DESC"
-			picture = "gfx/leaders/Europe/Portrait_Europe_Generic_2.dds"
+			picture = "gfx/leaders/TUR/portrait_tur_celal_bayar.dds"
 			expire = "1965.1.1"
 			ideology = conservatism
 			traits = {
+				liberal_democratic_paragon
 			}
 		}
 	}
@@ -5803,6 +5870,549 @@ country_event = {
 }
 
 
+#Ухудшение здоровья Ататюрка \\ TUR
+country_event = {
+	id = NWturkey.77
+	title = NWturkey.77.t
+	desc = NWturkey.77.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWturkey.77" }
+	
+	option = {
+		name = NWturkey.77.a
+		ai_chance = {
+			factor = 50
+		}
+		set_country_flag = TUR_heir_was_chosen_flag
+		if = {
+			limit = { NOT = { has_idea = TUR_fascist_grand_council } }
+			country_event = { id = NWturkey.78 hours = 3 }
+		}
+		else = {
+			country_event = { id = NWturkey.80 hours = 3 }
+		}
+	}
+	
+	option = {
+		name = NWturkey.77.b
+		ai_chance = {
+			factor = 50
+			modifier = {
+				factor = 0
+				is_historical_focus_on = yes
+			}
+		}
+	}
+}
+
+#Выбор преемника I \\ TUR
+country_event = {
+	id = NWturkey.78
+	title = NWturkey.78.t
+	desc = NWturkey.78.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWturkey.78" }
+	
+	option = {
+		name = bftb_turkey.134.c	#Иненю 
+		ai_chance = {
+			factor = 50
+			modifier = {
+				factor = 0
+				is_historical_focus_on = yes
+			}
+		}
+		set_country_flag = TUR_president_ismet_inenu_flag
+		custom_effect_tooltip = after_death_of_ataturk_tt
+		effect_tooltip = {
+			create_country_leader = {
+                name = "Ismet Inönü"
+                desc = "POLITICS_ISMET_INÖNÜ_DESC"
+                picture = "Portrait_Turkey_Ismet_Inonu.dds"
+                expire = "1965.1.1"
+                ideology = kemalism
+                traits = { millie_chief }
+            }
+			unlock_national_focus = TUR_president_ismet_inenu
+		}
+	}
+	
+	option = {
+		name = bftb_turkey.134.d	#Чакмак
+		ai_chance = {
+			factor = 50
+		}
+		hidden_effect = {
+			if = {
+				limit = {
+					OR = {
+						neutrality > 0.7
+						AND = {
+							is_ai = yes
+							is_historical_focus_on = yes
+						}
+					}
+				}
+				country_event = { id = NWturkey.79 hours = 8 }
+			}
+		}
+		set_country_flag = TUR_dictatorship_cakmak_flag
+		custom_effect_tooltip = after_death_of_ataturk_tt
+		effect_tooltip = {
+			create_country_leader = {
+				name = "Fevzi Çakmak"
+				desc = "POLITICS_FEVZI_CAKMAK_DESC"
+				picture = "gfx/leaders/TUR/portrait_tur_fevzi_cakmak.dds"
+				expire = "1965.1.1"
+				ideology = kemalism
+				traits = { maresal }
+			}
+			unlock_national_focus = TUR_dictatorship_cakmak
+		}
+	}
+	
+	option = {
+		name = bftb_turkey.134.b	#Баяр
+		ai_chance = {
+			factor = 50
+			modifier = {
+				factor = 0
+				is_historical_focus_on = yes
+			}
+		}
+		set_country_flag = TUR_policy_liberalization_flag
+		custom_effect_tooltip = after_death_of_ataturk_tt
+		effect_tooltip = {
+			create_country_leader = {
+				name = "Celâl Bayar"
+				desc = "POLITICS_CELAL_BAYAR_DESC"
+				picture = "GFX_portrait_tur_celal_bayar"
+				expire = "1965.1.1"
+				ideology = kemalism
+				traits = {
+					liberal_democratic_paragon
+				}
+			}
+			unlock_national_focus = TUR_organize_fair_elections
+			unlock_national_focus = TUR_policy_liberalization
+		}
+	}
+	
+	option = {
+		name = NWturkey.78.d	#Шюкрю Кая
+		ai_chance = {
+			factor = 50
+			modifier = {
+				factor = 0
+				is_historical_focus_on = yes
+			}
+		}
+		set_country_flag = TUR_power_of_special_services_flag
+		custom_effect_tooltip = after_death_of_ataturk_tt
+		effect_tooltip = {
+			create_country_leader = {
+                name = "Şükrü Kaya"
+                desc = "POLITICS_SUKRU_KAYA_DESC"
+                picture = "gfx/leaders/TUR/Portrait_Sukru_Kaya.dds"
+                expire = "1965.1.1"
+                ideology = kemalism
+                traits = {
+				}
+			}
+			unlock_national_focus = TUR_power_of_special_services
+		}
+	}
+}
+
+#Чакмак отказывается от президентства \\ TUR
+country_event = {
+	id = NWturkey.79
+	title = NWturkey.79.t
+	desc = NWturkey.79.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWturkey.79" }
+	
+	option = {
+		name = NWturkey.79.a
+		clr_country_flag = TUR_dictatorship_cakmak_flag
+		set_country_flag = TUR_president_ismet_inenu_flag
+		custom_effect_tooltip = after_death_of_ataturk_tt
+		effect_tooltip = {
+			create_country_leader = {
+                name = "Ismet Inönü"
+                desc = "POLITICS_ISMET_INÖNÜ_DESC"
+                picture = "Portrait_Turkey_Ismet_Inonu.dds"
+                expire = "1965.1.1"
+                ideology = kemalism
+                traits = { millie_chief }
+            }
+			unlock_national_focus = TUR_president_ismet_inenu
+		}
+	}
+}
+
+#Выбор преемника II \\ TUR
+country_event = {
+	id = NWturkey.80
+	title = NWturkey.78.t
+	desc = NWturkey.80.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWturkey.80" }
+	
+	option = {
+		name = bftb_turkey.134.c	#Иненю 
+		ai_chance = {
+			factor = 50
+			modifier = {
+				factor = 0
+				is_historical_focus_on = yes
+			}
+		}
+		set_country_flag = TUR_president_ismet_inenu_flag
+		custom_effect_tooltip = after_death_of_ataturk_tt
+		effect_tooltip = {
+			create_country_leader = {
+                name = "Ismet Inönü"
+                desc = "POLITICS_ISMET_INÖNÜ_DESC"
+                picture = "Portrait_Turkey_Ismet_Inonu.dds"
+                expire = "1965.1.1"
+                ideology = kemalism
+                traits = { millie_chief }
+            }
+			unlock_national_focus = TUR_president_ismet_inenu
+		}
+	}
+	
+	option = {
+		name = NWturkey.80.b	#Реджеп
+		ai_chance = {
+			factor = 50
+			modifier = {
+				factor = 0
+				is_historical_focus_on = yes
+			}
+		}
+		set_country_flag = TUR_recep_peker_flag
+		custom_effect_tooltip = after_death_of_ataturk_tt
+		effect_tooltip = {
+			create_country_leader = {
+                name = "Mehmet Recep Peker"
+                desc = "POLITICS_MEHMET_RECEP_PEKER_DESC"
+                picture = "GFX_portrait_tur_recep_peker"
+                expire = "1965.1.1"
+                ideology = kemalism
+                traits = { the_statist }
+            }
+			unlock_national_focus = TUR_recep_peker
+		}
+	}
+	
+	option = {
+		name = bftb_turkey.134.d	#Чакмак
+		ai_chance = {
+			factor = 50
+		}
+		hidden_effect = {
+			if = {
+				limit = {
+					OR = {
+						neutrality > 0.7
+						AND = {
+							is_ai = yes
+							is_historical_focus_on = yes
+						}
+					}
+				}
+				country_event = { id = NWturkey.79 hours = 8 }
+			}
+		}
+		set_country_flag = TUR_dictatorship_cakmak_flag
+		custom_effect_tooltip = after_death_of_ataturk_tt
+		effect_tooltip = {
+			create_country_leader = {
+				name = "Fevzi Çakmak"
+				desc = "POLITICS_FEVZI_CAKMAK_DESC"
+				picture = "gfx/leaders/TUR/portrait_tur_fevzi_cakmak.dds"
+				expire = "1965.1.1"
+				ideology = kemalism
+				traits = { maresal }
+			}
+			unlock_national_focus = TUR_dictatorship_cakmak
+		}
+	}
+	
+	option = {
+		name = NWturkey.78.d	#Шюкрю Кая
+		ai_chance = {
+			factor = 50
+			modifier = {
+				factor = 0
+				is_historical_focus_on = yes
+			}
+		}
+		set_country_flag = TUR_power_of_special_services_flag
+		custom_effect_tooltip = after_death_of_ataturk_tt
+		effect_tooltip = {
+			create_country_leader = {
+                name = "Şükrü Kaya"
+                desc = "POLITICS_SUKRU_KAYA_DESC"
+                picture = "gfx/leaders/TUR/Portrait_Sukru_Kaya.dds"
+                expire = "1965.1.1"
+                ideology = kemalism
+                traits = {
+				}
+			}
+			unlock_national_focus = TUR_power_of_special_services
+		}
+	}
+}
+
+#Февзи Чакмак избран новым президентом \\ TUR
+country_event = {
+	id = NWturkey.81
+	title = NWturkey.81.t
+	desc = NWturkey.81.desc
+	picture = GFX_report_event_tur_81
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWturkey.81" }
+	
+	option = {
+		name = NWturkey.81.a
+		create_country_leader = {
+			name = "Fevzi Çakmak"
+			desc = "POLITICS_FEVZI_CAKMAK_DESC"
+			picture = "gfx/leaders/TUR/Portrait_Fevzi_Cakmak_politic.dds"
+			expire = "1965.1.1"
+			ideology = kemalism
+			traits = { maresal }
+		}
+		effect_tooltip = {
+			unlock_national_focus = TUR_dictatorship_cakmak
+		}
+	}
+}
+
+#Махмуд Джеляль Баяр избран новым президентом \\ TUR
+country_event = {
+	id = NWturkey.82
+	title = NWturkey.82.t
+	desc = NWturkey.82.desc
+	picture = GFX_report_event_tur_82
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWturkey.82" }
+	
+	option = {
+		name = NWturkey.82.a
+		create_country_leader = {
+			name = "Celâl Bayar"
+			desc = "POLITICS_CELAL_BAYAR_DESC"
+			picture = "GFX_portrait_tur_celal_bayar"
+			expire = "1965.1.1"
+			ideology = kemalism
+			traits = {
+				liberal_democratic_paragon
+			}
+		}
+		unlock_national_focus = TUR_organize_fair_elections
+		effect_tooltip = {
+			unlock_national_focus = TUR_policy_liberalization
+		}
+	}
+}
+
+#Шюкрю Кая избран новым президентом \\ TUR
+country_event = {
+	id = NWturkey.83
+	title = NWturkey.83.t
+	desc = NWturkey.83.desc
+	picture = GFX_report_event_tur_83
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWturkey.83" }
+	
+	option = {
+		name = NWturkey.83.a
+		create_country_leader = {
+			name = "Şükrü Kaya"
+			desc = "POLITICS_SUKRU_KAYA_DESC"
+			picture = "gfx/leaders/TUR/Portrait_Sukru_Kaya.dds"
+			expire = "1965.1.1"
+			ideology = kemalism
+			traits = {
+			}
+		}
+		effect_tooltip = {
+			unlock_national_focus = TUR_power_of_special_services
+		}
+	}
+}
+
+#Реджеп Пекер избран новым президентом \\ TUR
+country_event = {
+	id = NWturkey.84
+	title = NWturkey.84.t
+	desc = NWturkey.84.desc
+	picture = GFX_report_event_tur_84
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWturkey.84" }
+	
+	option = {
+		name = NWturkey.84.a
+		create_country_leader = {
+			name = "Mehmet Recep Peker"
+			desc = "POLITICS_MEHMET_RECEP_PEKER_DESC"
+			picture = "GFX_portrait_tur_recep_peker"
+			expire = "1965.1.1"
+			ideology = kemalism
+			traits = { the_statist }
+		}
+		effect_tooltip = {
+			unlock_national_focus = TUR_recep_peker
+		}
+	}
+}
+
+#Военные укрепляются у власти \\ TUR
+country_event = {
+	id = NWturkey.85
+	title = NWturkey.85.t
+	desc = NWturkey.85.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWturkey.85" }
+	
+	option = {
+		name = NWturkey.85.a
+		trigger = { NOT = { has_country_leader = { name = "Fevzi Çakmak" ruling_only = yes } } }
+		create_country_leader = {
+			name = "Fevzi Çakmak"
+			desc = "POLITICS_FEVZI_CAKMAK_DESC"
+			picture = "gfx/leaders/TUR/portrait_tur_fevzi_cakmak.dds"
+			expire = "1965.1.1"
+			ideology = despotism
+			traits = {
+				maresal
+				national_leader
+			}
+		}
+	}
+	
+	option = {
+		name = NWturkey.85.b
+		trigger = { has_country_leader = { name = "Fevzi Çakmak" ruling_only = yes } }
+		set_country_leader_portrait = {
+			portrait = "GFX_portrait_tur_fevzi_cakmak"
+		}
+	}
+}
+
+#Оппозиция побеждает на выборах \\ TUR
+country_event = {
+	id = NWturkey.86
+	title = NWturkey.86.t
+	desc = NWturkey.86.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWturkey.86" }
+	
+	option = {
+		name = NWturkey.86.a
+		set_party_name = {
+			ideology = democratic
+			name = TUR_democratic_1946_party
+			long_name = TUR_democratic_1946_party_long
+		}
+		add_popularity = { ideology = democratic popularity = 0.3 }
+		if = {
+			limit = {
+				NOT = {
+					has_government = democratic
+				}
+			}
+			set_politics = {
+				ruling_party = democratic
+				elections_allowed = yes
+			}
+		}
+		create_country_leader = {
+			name = "Celâl Bayar"
+			desc = "POLITICS_CELAL_BAYAR_DESC"
+			picture = "gfx/leaders/TUR/portrait_tur_celal_bayar.dds"
+			expire = "1965.1.1"
+			ideology = conservatism
+			traits = {
+				liberal_democratic_paragon
+				national_leader
+			}
+		}
+	}
+}
+
+#Закрепление авторитаризма в Турции \\ TUR
+country_event = {
+	id = NWturkey.87
+	title = NWturkey.87.t
+	desc = NWturkey.87.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWturkey.87" }
+	
+	option = {
+		name = NWturkey.87.a
+	}
+}
+
+#Пересмотр военных бюджетови \\ TUR
+country_event = {
+	id = NWturkey.88
+	title = NWturkey.88.t
+	desc = NWturkey.88.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWturkey.88" }
+	
+	option = {
+		name = NWturkey.88.a
+		ai_chance = {
+			factor = 50
+		}
+		set_country_flag = TUR_army_and_avia
+	}
+	
+	option = {
+		name = NWturkey.88.b
+		ai_chance = {
+			factor = 50
+		}
+		set_country_flag = TUR_army_and_navy
+	}
+	
+	option = {
+		name = NWturkey.88.c
+		ai_chance = {
+			factor = 50
+		}
+		set_country_flag = TUR_avia_and_navy
+	}
+}
+
+
+
 #ТЕСТ ГВ
 country_event = {
 	id = NWturkey.999
@@ -5828,6 +6438,10 @@ country_event = {
 		clr_country_flag = kek_2
 	}
 }
+
+
+
+
 
 
 ###########################
