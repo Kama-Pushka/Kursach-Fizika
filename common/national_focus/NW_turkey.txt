@@ -6951,6 +6951,7 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus TUR_create_balance_of_power_system"
+			effect_tooltip = { add_dynamic_modifier = { modifier = TUR_create_balance_of_power_system_dyn } }
 			unlock_decision_category_tooltip = TUR_balance_of_power_system_category
 			custom_effect_tooltip = TUR_create_balance_of_power_system_tt1
 			custom_effect_tooltip = TUR_create_balance_of_power_system_tt2
@@ -6966,11 +6967,40 @@ focus_tree = {
 			else = {
 				custom_effect_tooltip = TUR_create_balance_of_power_system_tt3
 			}
+			## оппозиция
+			set_temp_variable = { var_tur_bp_pp_opposition = influence_opposition_var }
+			multiply_temp_variable = { var_tur_bp_pp_opposition = -0.0025 }
+			set_variable = { var_tur_bp_buildings = influence_opposition_var }
+			multiply_variable = { var_tur_bp_buildings = 0.001 }
+			set_temp_variable = { var_tur_bp_stability_opposition = influence_opposition_var }
+			multiply_temp_variable = { var_tur_bp_stability_opposition = -0.0001 }
+			## партия
+			set_temp_variable = { var_tur_bp_pp_party = influence_party_var }
+			multiply_temp_variable = { var_tur_bp_pp_party = 0.005 }
+			set_temp_variable = { var_tur_bp_stability_party = influence_party_var }
+			multiply_temp_variable = { var_tur_bp_stability_party = 0.0002 }
+			## армия
+			set_temp_variable = { var_tur_bp_pp_army = influence_army_var }
+			multiply_temp_variable = { var_tur_bp_pp_army = -0.0025 }
+			set_variable = { var_tur_bp_command_power = influence_army_var }
+			multiply_variable = { var_tur_bp_command_power = 0.01 }
+			set_variable = { var_tur_bp_war_support = influence_army_var }
+			multiply_variable = { var_tur_bp_war_support = 0.002 }
+			## сумма
+			set_variable = { var_tur_bp_stability = var_tur_bp_stability_opposition }
+			add_to_variable = { var_tur_bp_stability = var_tur_bp_stability_party }
+			set_variable = { var_tur_bp_pp = var_tur_bp_pp_opposition }
+			add_to_variable = { var_tur_bp_pp = var_tur_bp_pp_party }
+			add_to_variable = { var_tur_bp_pp = var_tur_bp_pp_army }
+			hidden_effect = {
+				add_dynamic_modifier = { modifier = TUR_create_balance_of_power_system_dyn }
+				force_update_dynamic_modifier = yes
+			}
 		}
 	}
 	
 	focus = {
-		id = TUR_peace_in_house
+		id = TUR_defense_of_motherland
 		icon = GFX_goal_generic_defence
 		prerequisite = { focus = TUR_create_balance_of_power_system }
 		x = 0
@@ -6987,8 +7017,8 @@ focus_tree = {
 
 		search_filters = { FOCUS_FILTER_STABILITY }
 		completion_reward = {
-			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus TUR_peace_in_house"
-			add_stability = 0.05
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus TUR_defense_of_motherland"
+			add_ideas = TUR_defense_of_motherland
 		}
 	}
 	
@@ -7223,11 +7253,11 @@ focus_tree = {
 	focus = {
 		id = TUR_full_isolation
 		icon = GFX_goal_generic_neutrality_focus
-		prerequisite = { focus = TUR_peace_in_house }
+		prerequisite = { focus = TUR_defense_of_motherland }
 		mutually_exclusive = { focus = TUR_support_active_foreign_policy }
 		x = -1
 		y = 1
-		relative_position_id = TUR_peace_in_house
+		relative_position_id = TUR_defense_of_motherland
 		
 		cost = 10
 		
@@ -7545,11 +7575,11 @@ focus_tree = {
 	focus = {
 		id = TUR_support_active_foreign_policy
 		icon = GFX_goal_generic_propaganda
-		prerequisite = { focus = TUR_peace_in_house }
+		prerequisite = { focus = TUR_defense_of_motherland }
 		mutually_exclusive = { focus = TUR_full_isolation }
 		x = 1
 		y = 1
-		relative_position_id = TUR_peace_in_house
+		relative_position_id = TUR_defense_of_motherland
 		
 		cost = 10
 		
@@ -19094,6 +19124,8 @@ focus_tree = {
 					instant_build = yes
 				}
 			}
+			custom_effect_tooltip = available_high_command
+			show_ideas_tooltip = TUR_sabiha_gokcen_bftb
 		}
 
 		completion_reward = {
@@ -19146,6 +19178,8 @@ focus_tree = {
 					ROOT = { set_country_flag = aviation_effort_AB }
 				}
 			}
+			custom_effect_tooltip = available_chief_of_airforce
+			show_ideas_tooltip = TUR_sabiha_gokcen_bftb
 		}
 	}
 	
@@ -19184,7 +19218,7 @@ focus_tree = {
 			49 = {
 				add_building_construction = {
 					type = air_base
-					level = 1
+					level = 3
 					instant_build = yes
 				}
 			}
@@ -19428,7 +19462,18 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus TUR_continue_modernization_of_army"
-			
+			add_tech_bonus = {
+				name = TUR_continue_modernization_of_army
+				bonus = 1.0
+				uses = 1
+				category = infantry_weapons
+			}
+			add_tech_bonus = {
+				name = TUR_continue_modernization_of_army
+				bonus = 1.0
+				uses = 1
+				category = land_doctrine
+			}
 		}
 	}
 	
@@ -19460,7 +19505,10 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus TUR_increase_ground_army"
-			
+			swap_ideas = {
+				remove_idea = TUR_backwardness_of_army_1
+				add_idea = TUR_backwardness_of_army_1_1
+			}
 		}
 	}
 	
@@ -19491,6 +19539,10 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus TUR_deal_with_transport_logistics"
+			swap_ideas = {
+				remove_idea = TUR_backwardness_of_army_1_1
+				add_idea = TUR_backwardness_of_army_1_2
+			}
 			add_tech_bonus = {
 				name = TUR_modernising_the_cavalry_new
 				bonus = 1.0
@@ -19517,6 +19569,10 @@ focus_tree = {
 
 		ai_will_do = {
 			factor = 10
+			modifier = {
+				factor = 0
+				is_historical_focus_on = yes
+			}
 		}
 		
 		bypass = {
@@ -19528,7 +19584,10 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus TUR_engage_in_qualitative_improvement_of_troops"
-			
+			swap_ideas = {
+				remove_idea = TUR_backwardness_of_army_1
+				add_idea = TUR_backwardness_of_army_2_1
+			}
 		}
 	}
 	
@@ -19559,6 +19618,10 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus TUR_standardize_small_arms"
+			swap_ideas = {
+				remove_idea = TUR_backwardness_of_army_2_1
+				add_idea = TUR_backwardness_of_army_2_2
+			}
 			add_tech_bonus = {
 				name = TUR_standardisation_of_equipment_new
 				bonus = 1.0
