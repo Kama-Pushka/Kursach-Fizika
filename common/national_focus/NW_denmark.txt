@@ -3291,10 +3291,9 @@
 		}
 		
 		available = {
-			has_army_manpower = { size > 149999 }
 			NOR = {
-				is_subject = no
-				exists = yes
+				is_subject_of = ROOT
+				NOT = { is_in_faction_with = ROOT }
 			}
 			has_government = monarchy
 		}
@@ -3302,7 +3301,7 @@
 		bypass = {
 			OR = {
 				has_war_with = NOR
-				NOR = { is_subject_of = DEN }
+				controls_state = 110
 			}
 		}
 		
@@ -3315,13 +3314,33 @@
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus DEN_union_with_norway"
 			if = {
-				limit = { NOT = { NOR = { has_government = communism } } }
+				limit = {
+					NOR = {
+						NOT = {
+							has_government = communism
+							has_government = trozkism
+							has_government = anarchism
+						}
+						is_subject = no
+					}
+				}
 				NOR = { country_event = { id = apdenmark.22 hours = 3 } }
-				else = {
-					create_wargoal = {
-						type = puppet_wargoal_focus
-						target = NOR
-						expire = 0
+			}
+			else = {
+				every_state = {
+					limit = {
+						OR = {
+							is_core_of = NOR
+							is_owned_by = NOR
+						}
+					}
+					add_claim_by = ROOT
+					ROOT = {
+						create_wargoal = {
+							type = annex_everything
+							target = PREV
+							expire = 0
+						}
 					}
 				}
 			}
@@ -3511,9 +3530,9 @@
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus DEN_take_back_schlezwig"
 			807 = {
-				add_claim_by = DEN
+				add_claim_by = ROOT
 				controller = {
-					DEN = {
+					ROOT = {
 						create_wargoal = {
 							type = take_state_focus
 							target = PREV
@@ -3524,7 +3543,7 @@
 				}
 			}
 			58 = {
-				add_claim_by = DEN
+				add_claim_by = ROOT
 			}
 		}
 	}
@@ -3550,12 +3569,21 @@
 				NOT = { has_government = communism }
 				exists = yes
 				is_subject = no
-				NOT = { has_war_with = DEN }
-				NOT = { is_in_faction_with = DEN }
+				NOT = { has_war_with = ROOT }
+				NOT = { is_in_faction_with = ROOT }
 			}
 			is_subject = no
 			is_faction_leader = yes
 			has_government = monarchy
+		}
+		
+		bypass = {
+			NOR = {
+				OR = {
+					is_subject_of = ROOT
+					is_in_faction_with = ROOT
+				}
+			}
 		}
 		
 		mutually_exclusive = { focus = DEN_union_with_norway }
@@ -3793,6 +3821,10 @@
 		
 		available = {
 			NOT = { has_government = anarchism }
+			OR = {
+				has_government = democratic
+				has_government = neutrality
+			}
 		}
 
 		completion_reward = {
@@ -3852,6 +3884,13 @@
 		x = -2
 		y = 1
 		cost = 10
+		
+		available = {
+			OR = {
+				has_government = democratic
+				has_government = neutrality
+			}
+		}
 		
 		prerequisite = {
 			focus = DEN_support_young_conservatives
@@ -3929,6 +3968,13 @@
 		x = -2
 		y = 2
 		cost = 10
+		
+		available = {
+			OR = {
+				has_government = democratic
+				has_government = neutrality
+			}
+		}
 		
 		prerequisite = {
 			focus = DEN_support_home_business
@@ -4447,6 +4493,13 @@
 		y = 1
 		cost = 10
 		
+		available = {
+			OR = {
+				has_government = democratic
+				has_government = communism
+			}
+		}
+		
 		prerequisite = {
 			focus = DEN_support_communist_party
 		}
@@ -4461,7 +4514,6 @@
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus DEN_support_trade_unions"
-			add_popularity = { ideology = communism popularity = 0.1 }
 			add_stability = -0.05
 			DEN_great_depression_twice_down = yes
 		}
@@ -4473,6 +4525,13 @@
 		x = 2
 		y = 1
 		cost = 10
+		
+		available = {
+			OR = {
+				has_government = democratic
+				has_government = communism
+			}
+		}
 		
 		prerequisite = {
 			focus = DEN_support_communist_party
@@ -4488,7 +4547,6 @@
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus DEN_nationalise_industry_1"
-			add_popularity = { ideology = democratic popularity = -0.05 }
 			random_owned_controlled_state = {
 				limit = {
 					is_core_of = ROOT
@@ -4533,6 +4591,13 @@
 		y = 1
 		cost = 10
 		
+		available = {
+			OR = {
+				has_government = democratic
+				has_government = communism
+			}
+		}
+		
 		prerequisite = {
 			focus = DEN_support_communist_party
 		}
@@ -4547,7 +4612,6 @@
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus DEN_nationalise_industry_2"
-			add_popularity = { ideology = democratic popularity = -0.05 }
 			random_owned_controlled_state = {
 				limit = {
 					free_building_slots = {
@@ -4616,6 +4680,10 @@
 				limit = { has_government = anarchism }
 				has_idea = accelerated_industrialization
 			}
+			OR = {
+				has_government = democratic
+				has_government = communism
+			}
 		}
 		
 		relative_position_id = DEN_support_communist_party
@@ -4624,7 +4692,6 @@
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus DEN_force_industrialisation"
-			add_popularity = { ideology = democratic popularity = -0.2 }
 			add_stability = -0.05
 			random_owned_controlled_state = {
 				limit = {
@@ -4717,6 +4784,11 @@
 					has_idea = peoples_police
 					has_idea = peoples_militia
 				}
+			}
+			OR = {
+				has_government = democratic
+				has_government = communism
+				has_government = neutrality
 			}
 		}
 
@@ -6614,6 +6686,7 @@
 				limit = { has_idea = DEN_waiting_for_reforms_idea_2 }
 				remove_ideas = DEN_waiting_for_reforms_idea_2
 			}
+			DEN_great_depression_down = yes
 		}
 	}
 	
