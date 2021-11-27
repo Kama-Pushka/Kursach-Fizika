@@ -13,5 +13,5 @@ tags={
 }
 picture="thumbnail.png"
 name="New Ways alpha DEV BUILD"
-supported_version="1.10.*"
+supported_version="1.11.*"
 path="R:/Users/my_doc/Paradox Interactive/Hearts of Iron IV/mod/_new_ways"

@@ -11,7 +11,7 @@ tags={
 	"Historical"
 	"Events"
 }
-supported_version="1.10.*"
+supported_version="1.11.*"
 picture="thumbnail.png"
 name="New Ways alpha DEV BUILD"
 path="mod/_new_ways"
