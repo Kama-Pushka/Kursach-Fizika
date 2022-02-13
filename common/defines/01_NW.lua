@@ -146,6 +146,10 @@ NDefines.NAI.PLAN_ACTIVATION_PLAYER_WEIGHT_FACTOR = 1						-- AI countries will 
 
 NDefines.NAI.PLAN_MIN_SIZE_FOR_FALLBACK = 5000								-- A country with less provinces than this will not draw fallback plans  but rather station their troops along the front
 
+--посмотрим, как это улучшит деф ИИ
+NDefines.NAI.AREA_DEFENSE_SETTING_VP = true									-- Which settings will AI use for area defense by default
+NDefines.NAI.AREA_DEFENSE_SETTING_PORTS = true								-- Which settings will AI use for area defense by default
+
 
 -- NAVY
 NDefines.NAI.MAX_SCREEN_TASKFORCES_FOR_MINE_SWEEPING = 0.10					-- maximum ratio of screens forces to be used in mine sweeping
@@ -212,6 +216,9 @@ NDefines.NAI.LAND_DEFENSE_INTERSEPTORS_PER_PLANE = 0.0						-- Amount of air int
 
 NDefines.NAI.LAND_COMBAT_FIGHTERS_PER_PLANE = 2								-- Amount of air superiority planes requested per enemy plane
 NDefines.NAI.STR_BOMB_MIN_ENEMY_FIGHTERS_IN_AREA = 400						-- If amount of enemy fighters is higher than this mission won't perform
+--попытка починить раш альянсов
+NDefines.NAI.POTENTIAL_ALLY_JOIN_WAR_FACTOR = 25							-- If amount of enemy fighters is higher than this mission won't perform
+
 
 NDefines.NAir.MISSION_COMMAND_POWER_COSTS = {
 	0.0, -- AIR_SUPERIORITY

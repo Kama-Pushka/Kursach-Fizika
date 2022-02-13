@@ -1,0 +1,1452 @@
+﻿###########################
+# Новые ветки Германии
+###########################
+
+add_namespace = NWgermany
+
+#Судьба Тельмана // GER
+country_event = {
+	id = NWgermany.1
+	title = NWgermany.1.t
+	desc = NWgermany.1.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWgermany.1" }
+	
+	option = {
+		name = NWgermany.1.a
+		ai_chance = {
+			factor = 50
+			modifier = {
+				factor = 0
+				is_historical_focus_on = yes
+			}
+			modifier = {
+				factor = 0.5
+				focus_progress = { focus = GER_rhineland progress > 0 }
+			}
+		}
+		add_popularity = { ideology = communism popularity = 0.01 }
+	}
+	
+	option = {
+		name = NWgermany.1.b
+		ai_chance = {
+			factor = 50
+			modifier = {
+				factor = 2.5
+				focus_progress = { focus = GER_oppose_hitler progress > 0 }
+			}
+		}
+	}
+}
+
+#Раскол в партии // фаше GER
+country_event = {
+	id = NWgermany.2
+	title = NWgermany.2.t
+	desc = NWgermany.2.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWgermany.2" }
+	
+	option = {
+		name = NWgermany.2.a
+		ai_chance = {
+			factor = 50
+		}
+		effect_tooltip = {
+			start_civil_war = {
+				ideology = fascism
+			}
+		}
+		hidden_effect = {
+			create_dynamic_country = {
+				original_tag = ROOT
+				copy_tag = GER
+				
+				NW_generate_all_generic_character = yes
+				NW_generate_all_germany_character = yes
+				set_cosmetic_tag = GER_black_front
+				add_ideas = generic_civil_war
+				set_party_name = { ideology = fascism long_name = GER_black_front_fascism name = GER_black_front_fascism }
+				if = {
+					limit = { ROOT = { has_government = fascism } }
+					set_country_flag = same_ideology_civil_war_flag
+				}
+				add_popularity = {
+					ideology = fascism
+					popularity = 1
+				}
+				add_popularity = {
+					ideology = neutrality
+					popularity = 0.4
+				}
+				set_politics = {
+					ruling_party = fascism
+					elections_allowed = no
+				}
+				recruit_character = GER_otto_strasser
+				add_country_leader_role = {
+					character = GER_otto_strasser
+					country_leader = {
+						ideology = strasserismus
+						traits = {
+						}
+						expire = "1965.1.1"
+					}
+					promote_leader = yes
+				}
+				every_state = {
+					limit = { is_core_of = ROOT }
+					add_core_of = PREV
+				}
+				every_state = {
+					limit = {
+						OR = {
+							state = 53
+							state = 65
+							state = 66
+							state = 68
+							state = 67
+							state = 800
+						}
+						controller = {
+							original_tag = ROOT
+						}
+					}
+					PREV = { transfer_state = PREV }
+				}
+				
+				load_focus_tree = { tree = german_focus keep_completed = no }
+				unlock_national_focus = GER_oppose_hitler
+				
+				ROOT = {
+					if = {
+						limit = { has_government = fascism }
+						set_country_flag = same_ideology_civil_war_flag
+					}
+					transfer_units_fraction = {
+						target = PREV
+						size = 0
+						stockpile_ratio = 0.4
+						army_ratio = 0
+						navy_ratio = 0.35
+						air_ratio = 0.35
+					}
+					declare_war_on = {
+						target = PREV
+						type = civil_war
+					}
+					add_civil_war_target = PREV
+				}
+				every_other_country = {
+					limit = {
+						original_tag = ROOT
+						NOT = { tag = ROOT }
+					}
+					declare_war_on = {
+						target = PREV
+						type = civil_war
+					}
+					add_civil_war_target = PREV
+					PREV = { add_civil_war_target = PREV }
+				}
+				add_civil_war_target = ROOT
+				every_enemy_country = {
+					every_state = {
+						limit = {
+							NOT = { is_fully_controlled_by = PREV }
+							controller = {
+								tag = PREV.PREV
+							}
+						}
+						teleport_armies = {
+							limit = {
+								tag = PREV
+							}
+							to_state_array = controlled_states
+						}
+					}
+				}
+				hidden_effect = {
+					division_template = {
+						name = "Black Infantry"
+						regiments = {
+							infantry = { x = 0 y = 0 }
+							infantry = { x = 0 y = 1 }
+							infantry = { x = 0 y = 2 }
+							infantry = { x = 1 y = 0 }
+						}
+					}
+					division_template = {
+						name = "Black Division"
+						regiments = {
+							infantry = { x = 0 y = 0 }
+							infantry = { x = 0 y = 1 }
+							infantry = { x = 0 y = 2 }
+							infantry = { x = 1 y = 0 }
+							infantry = { x = 1 y = 1 }
+							infantry = { x = 1 y = 2 }
+							infantry = { x = 2 y = 0 }
+							infantry = { x = 2 y = 1 }
+							infantry = { x = 2 y = 2 }
+						}
+					}
+				}
+				every_controlled_state = {
+					create_unit = {
+						division = "name = \"Black Infantry\" division_template = \"Black Infantry\" start_experience_factor = 0.3"
+						owner = PREV
+						count = 3
+					}
+					create_unit = {
+						division = "name = \"Black Division\" division_template = \"Black Division\" start_experience_factor = 0.4"
+						owner = PREV
+						count = 2
+					}
+				}
+				delete_unit_template_and_units = {
+					division_template = "SS-Sturmbrigade"
+					disband = yes
+				}
+			}
+		}
+	}
+	
+	option = {
+		name = NWgermany.2.b
+		ai_chance = {
+			factor = 50
+		}
+		trigger = { is_ai = no }
+		effect_tooltip = {
+			start_civil_war = {
+				ideology = fascism
+			}
+		}
+		hidden_effect = {
+			create_dynamic_country = {
+				original_tag = ROOT
+				copy_tag = GER
+				
+				NW_generate_all_generic_character = yes
+				NW_generate_all_germany_character = yes
+				set_cosmetic_tag = GER_black_front
+				add_ideas = generic_civil_war
+				set_party_name = { ideology = fascism long_name = GER_black_front_fascism name = GER_black_front_fascism }
+				if = {
+					limit = { ROOT = { has_government = fascism } }
+					set_country_flag = same_ideology_civil_war_flag
+				}
+				add_popularity = {
+					ideology = fascism
+					popularity = 1
+				}
+				add_popularity = {
+					ideology = neutrality
+					popularity = 0.4
+				}
+				set_politics = {
+					ruling_party = fascism
+					elections_allowed = no
+				}
+				recruit_character = GER_otto_strasser
+				add_country_leader_role = {
+					character = GER_otto_strasser
+					country_leader = {
+						ideology = strasserismus
+						traits = {
+						}
+						expire = "1965.1.1"
+					}
+					promote_leader = yes
+				}
+				every_state = {
+					limit = { is_core_of = ROOT }
+					add_core_of = PREV
+				}
+				every_state = {
+					limit = {
+						OR = {
+							state = 53
+							state = 65
+							state = 66
+							state = 68
+							state = 67
+							state = 800
+						}
+						controller = {
+							original_tag = ROOT
+						}
+					}
+					PREV = { transfer_state = PREV }
+				}
+				
+				load_focus_tree = { tree = german_focus keep_completed = no }
+				unlock_national_focus = GER_oppose_hitler
+				
+				ROOT = {
+					if = {
+						limit = { has_government = fascism }
+						set_country_flag = same_ideology_civil_war_flag
+					}
+					transfer_units_fraction = {
+						target = PREV
+						size = 0
+						stockpile_ratio = 0.4
+						army_ratio = 0
+						navy_ratio = 0.35
+						air_ratio = 0.35
+					}
+					declare_war_on = {
+						target = PREV
+						type = civil_war
+					}
+					add_civil_war_target = PREV
+				}
+				every_other_country = {
+					limit = {
+						original_tag = ROOT
+						NOT = { tag = ROOT }
+					}
+					declare_war_on = {
+						target = PREV
+						type = civil_war
+					}
+					add_civil_war_target = PREV
+					PREV = { add_civil_war_target = PREV }
+				}
+				add_civil_war_target = ROOT
+				every_enemy_country = {
+					every_state = {
+						limit = {
+							NOT = { is_fully_controlled_by = PREV }
+							controller = {
+								tag = PREV.PREV
+							}
+						}
+						teleport_armies = {
+							limit = {
+								tag = PREV
+							}
+							to_state_array = controlled_states
+						}
+					}
+				}
+				hidden_effect = {
+					division_template = {
+						name = "Black Infantry"
+						regiments = {
+							infantry = { x = 0 y = 0 }
+							infantry = { x = 0 y = 1 }
+							infantry = { x = 0 y = 2 }
+							infantry = { x = 1 y = 0 }
+						}
+					}
+					division_template = {
+						name = "Black Division"
+						regiments = {
+							infantry = { x = 0 y = 0 }
+							infantry = { x = 0 y = 1 }
+							infantry = { x = 0 y = 2 }
+							infantry = { x = 1 y = 0 }
+							infantry = { x = 1 y = 1 }
+							infantry = { x = 1 y = 2 }
+							infantry = { x = 2 y = 0 }
+							infantry = { x = 2 y = 1 }
+							infantry = { x = 2 y = 2 }
+						}
+					}
+				}
+				every_controlled_state = {
+					create_unit = {
+						division = "name = \"Black Infantry\" division_template = \"Black Infantry\" start_experience_factor = 0.3"
+						owner = PREV
+						count = 3
+					}
+					create_unit = {
+						division = "name = \"Black Division\" division_template = \"Black Division\" start_experience_factor = 0.4"
+						owner = PREV
+						count = 2
+					}
+				}
+				delete_unit_template_and_units = {
+					division_template = "SS-Sturmbrigade"
+					disband = yes
+				}
+			}
+		}
+		random_other_country = {
+			limit = {
+				original_tag = ROOT
+				has_government = fascism
+				has_completed_focus = GER_alternative_government_of_nsdap
+			}
+			change_tag_from = ROOT
+		}
+	}
+}
+
+#Восстание Народного фронта // монархо GER
+country_event = {
+	id = NWgermany.3
+	title = NWgermany.3.t
+	desc = NWgermany.3.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWgermany.3" }
+	
+	option = {
+		name = NWgermany.3.a
+		ai_chance = {
+			factor = 50
+		}
+		effect_tooltip = {
+			start_civil_war = {
+				ideology = communism
+			}
+		}
+		hidden_effect = {
+			create_dynamic_country = {
+				original_tag = ROOT
+				copy_tag = GER
+				
+				NW_generate_all_generic_character = yes
+				NW_generate_all_germany_character = yes
+				set_cosmetic_tag = GER_red_front
+				add_ideas = generic_civil_war
+				if = {
+					limit = { ROOT = { has_government = communism } }
+					set_country_flag = same_ideology_civil_war_flag
+				}
+				add_popularity = {
+					ideology = communism
+					popularity = 1
+				}
+				add_popularity = {
+					ideology = democratic
+					popularity = 0.2
+				}
+				add_popularity = {
+					ideology = neutrality
+					popularity = 0.1
+				}
+				add_popularity = {
+					ideology = anarchism
+					popularity = 0.1
+				}
+				set_politics = {
+					ruling_party = communism
+					elections_allowed = no
+				}
+				recruit_character = GER_volksrat
+				add_country_leader_role = {
+					character = GER_volksrat
+					country_leader = {
+						ideology = stalinism
+						traits = {
+						}
+						expire = "1965.1.1"
+					}
+					promote_leader = yes
+				}
+				every_state = {
+					limit = { is_core_of = ROOT }
+					add_core_of = PREV
+				}
+				every_state = {
+					limit = {
+						OR = {
+							state = 56
+							state = 801
+							state = 802
+						}
+						controller = {
+							original_tag = ROOT
+						}
+					}
+					PREV = { transfer_state = PREV }
+				}
+				
+				load_focus_tree = { tree = german_focus keep_completed = no }
+				unlock_national_focus = GER_oppose_hitler
+				
+				ROOT = {
+					if = {
+						limit = { has_government = communism }
+						set_country_flag = same_ideology_civil_war_flag
+					}
+					transfer_units_fraction = {
+						target = PREV
+						size = 0
+						stockpile_ratio = 0.4
+						army_ratio = 0
+						navy_ratio = 0.2
+						air_ratio = 0.2
+					}
+					declare_war_on = {
+						target = PREV
+						type = civil_war
+					}
+					add_civil_war_target = PREV
+				}
+				every_other_country = {
+					limit = {
+						original_tag = ROOT
+						NOT = { tag = ROOT }
+					}
+					declare_war_on = {
+						target = PREV
+						type = civil_war
+					}
+					add_civil_war_target = PREV
+					PREV = { add_civil_war_target = PREV }
+				}
+				add_civil_war_target = ROOT
+				every_enemy_country = {
+					every_state = {
+						limit = {
+							NOT = { is_fully_controlled_by = PREV }
+							controller = {
+								tag = PREV.PREV
+							}
+						}
+						teleport_armies = {
+							limit = {
+								tag = PREV
+							}
+							to_state_array = controlled_states
+						}
+					}
+				}
+				hidden_effect = {
+					division_template = {
+						name = "Rote Miliz"
+						regiments = {
+							infantry = { x = 0 y = 0 }
+							infantry = { x = 0 y = 1 }
+							infantry = { x = 0 y = 2 }
+							infantry = { x = 1 y = 0 }
+						}
+					}
+					division_template = {
+						name = "Rote Division"
+						regiments = {
+							infantry = { x = 0 y = 0 }
+							infantry = { x = 0 y = 1 }
+							infantry = { x = 0 y = 2 }
+							infantry = { x = 1 y = 0 }
+							infantry = { x = 1 y = 1 }
+							infantry = { x = 1 y = 2 }
+							infantry = { x = 2 y = 0 }
+							infantry = { x = 2 y = 1 }
+							infantry = { x = 2 y = 2 }
+						}
+					}
+				}
+				every_controlled_state = {
+					create_unit = {
+						division = "name = \"Rote Miliz\" division_template = \"Rote Miliz\" start_experience_factor = 0.3"
+						owner = PREV
+						count = 3
+					}
+					create_unit = {
+						division = "name = \"Rote Division\" division_template = \"Rote Division\" start_experience_factor = 0.4"
+						owner = PREV
+						count = 1
+					}
+				}
+				delete_unit_template_and_units = {
+					division_template = "Landsturmregiment"
+					disband = yes
+				}
+			}
+		}
+	}
+	
+	option = {
+		name = NWgermany.3.b
+		ai_chance = {
+			factor = 50
+		}
+		trigger = { is_ai = no }
+		effect_tooltip = {
+			start_civil_war = {
+				ideology = fascism
+			}
+		}
+		hidden_effect = {
+			create_dynamic_country = {
+				original_tag = ROOT
+				copy_tag = GER
+				
+				NW_generate_all_generic_character = yes
+				NW_generate_all_germany_character = yes
+				set_cosmetic_tag = GER_red_front
+				add_ideas = generic_civil_war
+				if = {
+					limit = { ROOT = { has_government = communism } }
+					set_country_flag = same_ideology_civil_war_flag
+				}
+				add_popularity = {
+					ideology = communism
+					popularity = 1
+				}
+				add_popularity = {
+					ideology = democratic
+					popularity = 0.2
+				}
+				add_popularity = {
+					ideology = neutrality
+					popularity = 0.1
+				}
+				add_popularity = {
+					ideology = anarchism
+					popularity = 0.1
+				}
+				set_politics = {
+					ruling_party = communism
+					elections_allowed = no
+				}
+				recruit_character = GER_volksrat
+				add_country_leader_role = {
+					character = GER_volksrat
+					country_leader = {
+						ideology = stalinism
+						traits = {
+						}
+						expire = "1965.1.1"
+					}
+					promote_leader = yes
+				}
+				every_state = {
+					limit = { is_core_of = ROOT }
+					add_core_of = PREV
+				}
+				every_state = {
+					limit = {
+						OR = {
+							state = 56
+							state = 801
+							state = 802
+						}
+						controller = {
+							original_tag = ROOT
+						}
+					}
+					PREV = { transfer_state = PREV }
+				}
+				
+				load_focus_tree = { tree = german_focus keep_completed = no }
+				unlock_national_focus = GER_oppose_hitler
+				
+				ROOT = {
+					if = {
+						limit = { has_government = communism }
+						set_country_flag = same_ideology_civil_war_flag
+					}
+					transfer_units_fraction = {
+						target = PREV
+						size = 0
+						stockpile_ratio = 0.4
+						army_ratio = 0
+						navy_ratio = 0.2
+						air_ratio = 0.2
+					}
+					declare_war_on = {
+						target = PREV
+						type = civil_war
+					}
+					add_civil_war_target = PREV
+				}
+				every_other_country = {
+					limit = {
+						original_tag = ROOT
+						NOT = { tag = ROOT }
+					}
+					declare_war_on = {
+						target = PREV
+						type = civil_war
+					}
+					add_civil_war_target = PREV
+					PREV = { add_civil_war_target = PREV }
+				}
+				add_civil_war_target = ROOT
+				every_enemy_country = {
+					every_state = {
+						limit = {
+							NOT = { is_fully_controlled_by = PREV }
+							controller = {
+								tag = PREV.PREV
+							}
+						}
+						teleport_armies = {
+							limit = {
+								tag = PREV
+							}
+							to_state_array = controlled_states
+						}
+					}
+				}
+				hidden_effect = {
+					division_template = {
+						name = "Rote Miliz"
+						regiments = {
+							infantry = { x = 0 y = 0 }
+							infantry = { x = 0 y = 1 }
+							infantry = { x = 0 y = 2 }
+							infantry = { x = 1 y = 0 }
+						}
+					}
+					division_template = {
+						name = "Rote Division"
+						regiments = {
+							infantry = { x = 0 y = 0 }
+							infantry = { x = 0 y = 1 }
+							infantry = { x = 0 y = 2 }
+							infantry = { x = 1 y = 0 }
+							infantry = { x = 1 y = 1 }
+							infantry = { x = 1 y = 2 }
+							infantry = { x = 2 y = 0 }
+							infantry = { x = 2 y = 1 }
+							infantry = { x = 2 y = 2 }
+						}
+					}
+				}
+				every_controlled_state = {
+					create_unit = {
+						division = "name = \"Rote Miliz\" division_template = \"Rote Miliz\" start_experience_factor = 0.3"
+						owner = PREV
+						count = 3
+					}
+					create_unit = {
+						division = "name = \"Rote Division\" division_template = \"Rote Division\" start_experience_factor = 0.4"
+						owner = PREV
+						count = 1
+					}
+				}
+				delete_unit_template_and_units = {
+					division_template = "Landsturmregiment"
+					disband = yes
+				}
+			}
+		}
+		random_other_country = {
+			limit = {
+				original_tag = ROOT
+				has_government = communism
+			}
+			change_tag_from = ROOT
+		}
+	}
+}
+
+#Кандидаты на престол // GER
+country_event = {
+	id = NWgermany.4
+	title = NWgermany.4.t
+	desc = NWgermany.4.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWgermany.4" }
+	
+	option = {
+		name = NWgermany.4.a
+		ai_chance = {
+			factor = 50
+		}
+		trigger = {
+			HOL = { NOT = { has_country_flag = netherlands_refused_return_kaiser } }
+		}
+		HOL = { country_event = { id = wtt_germany.3 } }
+	}
+	
+	option = {
+		name = NWgermany.4.b
+		ai_chance = {
+			factor = 50
+		}
+		add_country_leader_role = {
+			character = GER_wilhelm_iii
+			country_leader = {
+				expire = "1965.1.1"
+				ideology = dual_monarchy
+				traits = {
+					popular_figurehead2
+				}
+			}
+			promote_leader = yes
+		}
+	}
+	
+	option = {
+		name = NWgermany.4.c
+		ai_chance = {
+			factor = 50
+		}
+		add_country_leader_role = {
+			character = GER_wilhelm_iii_friedrich_franz
+			country_leader = {
+				expire = "1965.1.1"
+				ideology = dual_monarchy
+				traits = {
+				}
+			}
+			promote_leader = yes
+		}
+	}
+	
+	option = {
+		name = NWgermany.4.d
+		ai_chance = {
+			factor = 50
+		}
+		add_country_leader_role = {
+			character = GER_oskar_karl_von_preussen
+			country_leader = {
+				expire = "1965.1.1"
+				ideology = dual_monarchy
+				traits = {
+				}
+			}
+			promote_leader = yes
+		}
+	}
+}
+
+#Выбор монарха // GER
+country_event = {
+	id = NWgermany.5
+	title = NWgermany.5.t
+	desc = NWgermany.5.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWgermany.5" }
+	
+	option = {
+		name = NWgermany.4.c
+		ai_chance = {
+			factor = 50
+		}
+		add_ideas = GER_wilhelm_iii_friedrich_franz
+	}
+	
+	option = {
+		name = NWgermany.4.d
+		ai_chance = {
+			factor = 50
+		}
+		add_ideas = GER_oskar_karl_von_preussen
+	}
+	
+	option = {
+		name = NWgermany.5.d
+		ai_chance = {
+			factor = 50
+		}
+		add_ideas = GER_wilhelm_iii
+	}
+}
+
+
+#Восстание Железной гвардии // ROM
+country_event = {
+	id = NWgermany.6
+	title = NWgermany.6.t
+	desc = NWgermany.6.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWgermany.6" }
+	
+	option = {
+		name = NWgermany.6.a
+		ai_chance = {
+			factor = 50
+			modifier = {
+				factor = 0
+				is_historical_focus_on = yes
+			}
+			modifier = {
+				factor = 0
+				OR = {
+					has_government = communism
+					has_government = trozkism
+					has_government = anarchism
+				}
+			}
+		}
+		add_popularity = {
+			ideology = fascism
+			popularity = 0.25
+		}
+		set_politics = {
+			ruling_party = fascism
+			elections_allowed = no
+		}
+		set_party_name = { ideology = fascism long_name = ROM_fascism_party2 name = ROM_fascism_party2 }
+		add_country_leader_role = {
+			character = ROM_horia_sima
+			country_leader = {
+				ideology = nationalism_ideology
+				traits = {
+				}
+				expire = "1965.1.1"
+			}
+			promote_leader = yes
+		}
+		FROM = {
+			set_autonomy = {
+				target = ROOT
+				autonomy_state = autonomy_satellite
+			}
+		}
+	}
+	
+	option = {
+		name = NWgermany.6.b
+		ai_chance = {
+			factor = 50
+			modifier = {
+				factor = 0
+				is_historical_focus_on = yes
+			}
+			modifier = {
+				add = 500
+				OR = {
+					has_government = communism
+					has_government = trozkism
+					has_government = anarchism
+				}
+			}
+		}
+		start_civil_war = {
+			ideology = fascism
+			size = 0.5
+		}
+		hidden_effect = {
+			set_global_flag = ROM_civil_war
+			random_enemy_country = {
+				limit = {
+					original_tag = ROOT
+					has_government = fascism
+				}
+				ROOT = {
+					ROM_horia_sima = {
+						set_nationality = PREV.PREV
+					}
+				}
+				set_party_name = { ideology = fascism long_name = ROM_fascism_party2 name = ROM_fascism_party2 }
+				add_country_leader_role = {
+					character = ROM_horia_sima
+					country_leader = {
+						ideology = nationalism_ideology
+						traits = {
+						}
+						expire = "1965.1.1"
+					}
+					promote_leader = yes
+				}
+				FROM = {
+					add_ai_strategy = { type = send_volunteers_desire id = PREV value = 75 }
+				}
+			}
+		}
+	}
+	
+	option = {
+		name = NWgermany.6.c
+		ai_chance = {
+			factor = 50
+			modifier = {
+				factor = 0
+				OR = {
+					has_government = communism
+					has_government = trozkism
+					has_government = anarchism
+				}
+			}
+		}
+		FROM = { country_event = { id = NWgermany.7 days = 1 } }
+	}
+}
+
+#Обращение румынского лидера // GER
+country_event = {
+	id = NWgermany.7
+	title = NWgermany.7.t
+	desc = NWgermany.7.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWgermany.7" }
+	
+	option = {
+		name = NWgermany.7.a
+		ai_chance = {
+			factor = 50
+		}
+		FROM = { country_event = { id = NWgermany.8 days = 1 } }
+	}
+	
+	option = {
+		name = NWgermany.7.b
+		ai_chance = {
+			factor = 50
+			modifier = {
+				factor = 0
+				is_historical_focus_on = yes
+			}
+		}
+		FROM = { country_event = { id = NWgermany.9 days = 1 } }
+	}
+}
+
+#Компромисс с Германией // ROM
+country_event = {
+	id = NWgermany.8
+	title = NWgermany.8.t
+	desc = NWgermany.8.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWgermany.8" }
+	
+	option = {
+		name = NWgermany.8.a
+		save_party_popularity = yes
+		FROM = {
+			set_autonomy = {
+				target = ROOT
+				autonomy_state = autonomy_satellite
+			}
+		}
+		load_party_popularity = yes
+	}
+}
+
+#Победа Железной гвардии I // ROM
+country_event = {
+	id = NWgermany.9
+	title = NWgermany.9.t
+	desc = NWgermany.9.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWgermany.9" }
+	
+	option = {
+		name = NWgermany.9.a
+		add_popularity = {
+			ideology = fascism
+			popularity = 0.25
+		}
+		set_politics = {
+			ruling_party = fascism
+			elections_allowed = no
+		}
+		set_party_name = { ideology = fascism long_name = ROM_fascism_party2 name = ROM_fascism_party2 }
+		add_country_leader_role = {
+			character = ROM_horia_sima
+			country_leader = {
+				ideology = nationalism_ideology
+				traits = {
+				}
+				expire = "1965.1.1"
+			}
+			promote_leader = yes
+		}
+		FROM = {
+			set_autonomy = {
+				target = ROOT
+				autonomy_state = autonomy_satellite
+			}
+		}
+	}
+}
+
+#Победа Железной гвардии II // ROM		from NW_on_action
+country_event = {
+	id = NWgermany.10
+	title = NWgermany.9.t
+	desc = NWgermany.10.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWgermany.10" }
+	
+	option = {
+		name = NWgermany.10.a
+		clr_global_flag = ROM_civil_war
+		random_other_country = {
+			limit = {
+				original_tag = GER
+				has_government = fascism
+				has_completed_focus = GER_rhineland
+			}
+			set_autonomy = {
+				target = ROOT
+				autonomy_state = autonomy_satellite
+			}
+		}
+	}
+}
+
+#Использование рабского труда // GER
+country_event = {
+	id = NWgermany.11
+	title = NWgermany.11.t
+	desc = NWgermany.11.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWgermany.11" }
+	
+	option = {
+		name = NWgermany.11.a
+		ai_chance = {
+			factor = 50
+		}
+		add_ideas = GER_colonization_of_eastern_lands_idea_1
+	}
+	
+	option = {
+		name = NWgermany.11.b
+		ai_chance = {
+			factor = 50
+			modifier = {
+				factor = 0
+				is_historical_focus_on = yes
+			}
+		}
+		add_ideas = GER_colonization_of_eastern_lands_idea_2
+	}
+}
+
+#Переговоры с Германией // ENG
+country_event = {
+	id = NWgermany.12
+	title = NWgermany.12.t
+	desc = NWgermany.12.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWgermany.12" }
+	
+	option = {
+		name = NWgermany.12.a
+		ai_chance = {
+			factor = 50
+			modifier = {
+				factor = 0
+				is_historical_focus_on = yes
+			}
+		}
+		FROM = { country_event = { id = NWgermany.13 days = 1 } }
+		effect_tooltip = {
+			diplomatic_relation = {
+				country = FROM
+				relation = non_aggression_pact
+				active = yes
+			}
+		}
+	}
+	
+	option = {
+		name = NWgermany.12.b
+		ai_chance = {
+			factor = 50
+		}
+		FROM = { country_event = { id = NWgermany.14 days = 1 } }
+	}
+}
+
+#Подписание пакта с Великобританией // GER
+country_event = {
+	id = NWgermany.13
+	title = NWgermany.13.t
+	desc = NWgermany.13.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWgermany.13" }
+	
+	option = {
+		name = NWgermany.13.a
+		set_global_flag = GER_ENG_non_aggression_pact_flag
+		diplomatic_relation = {
+			country = FROM
+			relation = non_aggression_pact
+			active = yes
+		}
+		hidden_effect = {
+			news_event = { id = trworldnews.155 hours = 6 }
+		}
+	}
+}
+
+#Отказ Великобритании от пакта // GER
+country_event = {
+	id = NWgermany.14
+	title = NWgermany.14.t
+	desc = NWgermany.14.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWgermany.14" }
+	
+	option = {
+		name = NWgermany.14.a
+	}
+}
+
+#Немецкое предложение о союзе // JAP
+country_event = {
+	id = NWgermany.15
+	title = NWgermany.15.t
+	desc = NWgermany.15.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWgermany.15" }
+	immediate = {
+		hidden_effect = {
+			FROM = { save_event_target_as = GER_fascism }
+			save_event_target_as = JAP_initiator
+			random_country = {
+				limit = {
+					original_tag = ITA
+					has_government = fascism
+				}
+				save_event_target_as = ITA_fascism
+			}
+		}
+	}
+	
+	option = {
+		name = NWgermany.15.a
+		ai_chance = {
+			factor = 90
+		}
+		event_target:ITA_fascism = {
+			country_event = { id = wtt_japan.110 hours = 6 }
+		}
+	}
+	
+	option = {
+		name = NWgermany.15.b
+		ai_chance = {
+			factor = 10
+			modifier = {
+				factor = 0
+				is_historical_focus_on = yes
+			}
+		}
+		event_target:GER_fascism = { country_event = { id = wtt_japan.112 hours = 6 } }
+	}
+}
+
+#Предложения немецкой дипломатии // SOV
+country_event = {
+	id = NWgermany.16
+	title = NWgermany.16.t
+	desc = NWgermany.16.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWgermany.16" }
+	
+	option = {
+		name = NWgermany.16.a
+		ai_chance = {
+			factor = 30
+			modifier = {
+				factor = 0
+				is_historical_focus_on = yes
+			}
+		}
+		FROM = { country_event = { id = NWgermany.18 days = 1 } }
+		country_event = { id = NWgermany.19 days = 1 }
+	}
+	
+	option = {
+		name = NWgermany.16.b
+		ai_chance = {
+			factor = 70
+			modifier = {
+				factor = 0.1
+				FROM = { is_ai = no }
+			}
+		}
+		FROM = { country_event = { id = NWgermany.17 days = 1 } }
+	}
+}
+
+#Отказ СССР от переговоров // GER
+country_event = {
+	id = NWgermany.17
+	title = NWgermany.17.t
+	desc = germany.90.d
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWgermany.17" }
+	
+	option = {
+		name = NWgermany.17.a
+	}
+}
+
+#Начало переговоров // GER
+country_event = {
+	id = NWgermany.18
+	title = NWgermany.18.t
+	desc = NWgermany.18.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWgermany.18" }
+	
+	option = {
+		name = NWgermany.18.a
+	}
+}
+
+#Наши условия на переговорах // SOV
+country_event = {
+	id = NWgermany.19
+	title = NWgermany.19.t
+	desc = NWgermany.19.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWgermany.19" }
+	immediate = {
+		hidden_effect = {
+			FROM.FROM = { save_event_target_as = GER_fascism }
+			random_country = {
+				limit = {
+					original_tag = ITA
+					has_government = fascism
+				}
+				save_event_target_as = ITA_fascism
+			}
+			random_country = {
+				limit = {
+					original_tag = JAP
+					has_government = fascism
+				}
+				save_event_target_as = JAP_fascism
+			}
+		}
+	}
+	
+	option = {
+		name = NWgermany.19.a
+		ai_chance = {
+			factor = 70
+		}
+		event_target:GER_fascism = { country_event = { id = NWgermany.20 days = 1 } }
+	}
+	
+	option = {
+		name = NWgermany.19.b
+		ai_chance = {
+			factor = 30
+		}
+		set_country_flag = GER_triple_alliance_flag
+		set_global_flag = GER_berlin_moscow_axis_flag
+		save_global_event_target_as = NW_soviet_ally_ger_scope
+		give_guarantee = event_target:GER_fascism
+		event_target:GER_fascism = { give_guarantee = ROOT }
+		event_target:ITA_fascism = {
+			if = {
+				limit = { is_guaranteed_by = event_target:GER_fascism }
+				give_guarantee = ROOT
+				ROOT = { give_guarantee = PREV }
+			}
+		}
+		event_target:JAP_fascism = {
+			if = {
+				limit = { is_guaranteed_by = event_target:GER_fascism }
+				give_guarantee = ROOT
+				ROOT = { give_guarantee = PREV }
+			}
+		}
+		hidden_effect = {
+			news_event = { id = trworldnews.156 hours = 6 }
+		}
+	}
+}
+
+#Требования СССР // GER
+country_event = {
+	id = NWgermany.20
+	title = NWgermany.20.t
+	desc = NWgermany.20.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWgermany.20" }
+	
+	option = {
+		name = NWgermany.20.a
+		ai_chance = {
+			factor = 100
+		}
+		set_global_flag = GER_berlin_moscow_axis_flag
+		FROM = {
+			save_global_event_target_as = NW_soviet_ally_ger_scope
+			set_country_flag = GER_triple_alliance_flag
+		}
+		
+		give_guarantee = event_target:NW_soviet_ally_ger_scope
+		event_target:NW_soviet_ally_ger_scope = { give_guarantee = ROOT }
+		event_target:ITA_fascism = {
+			if = {
+				limit = { is_guaranteed_by = ROOT }
+				give_guarantee = event_target:NW_soviet_ally_ger_scope
+				event_target:NW_soviet_ally_ger_scope = { give_guarantee = PREV }
+			}
+		}
+		event_target:JAP_fascism = {
+			if = {
+				limit = { is_guaranteed_by = ROOT }
+				give_guarantee = event_target:NW_soviet_ally_ger_scope
+				event_target:NW_soviet_ally_ger_scope = { give_guarantee = PREV }
+			}
+		}
+		hidden_effect = {
+			news_event = { id = trworldnews.156 hours = 6 }
+		}
+	}
+	
+	option = {
+		name = NWgermany.20.b
+		ai_chance = {
+			factor = 0
+		}
+		FROM = { country_event = { id = NWgermany.21 days = 1 } }
+	}
+}
+
+#Отсутствие ответа немецкой стороны // SOV
+country_event = {
+	id = NWgermany.21
+	title = NWgermany.21.t
+	desc = NWgermany.21.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWgermany.21" }
+	
+	option = {
+		name = NWgermany.21.a
+	}
+}
