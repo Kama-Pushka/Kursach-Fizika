@@ -130,9 +130,9 @@ country_event = {
 					}
 					transfer_units_fraction = {
 						target = PREV
-						size = 0
+						size = 0.0
 						stockpile_ratio = 0.4
-						army_ratio = 0
+						army_ratio = 0.0
 						navy_ratio = 0.35
 						air_ratio = 0.35
 					}
@@ -295,9 +295,9 @@ country_event = {
 					}
 					transfer_units_fraction = {
 						target = PREV
-						size = 0
+						size = 0.0
 						stockpile_ratio = 0.4
-						army_ratio = 0
+						army_ratio = 0.0
 						navy_ratio = 0.35
 						air_ratio = 0.35
 					}
@@ -482,9 +482,9 @@ country_event = {
 					}
 					transfer_units_fraction = {
 						target = PREV
-						size = 0
+						size = 0.0
 						stockpile_ratio = 0.4
-						army_ratio = 0
+						army_ratio = 0.0
 						navy_ratio = 0.2
 						air_ratio = 0.2
 					}
@@ -651,9 +651,9 @@ country_event = {
 					}
 					transfer_units_fraction = {
 						target = PREV
-						size = 0
+						size = 0.0
 						stockpile_ratio = 0.4
-						army_ratio = 0
+						army_ratio = 0.0
 						navy_ratio = 0.2
 						air_ratio = 0.2
 					}
@@ -1448,5 +1448,136 @@ country_event = {
 	
 	option = {
 		name = NWgermany.21.a
+	}
+}
+
+#Предложение Германии // 46 owner ROM
+country_event = {
+	id = NWgermany.22
+	title = NWgermany.22.t
+	desc = NWgermany.22.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWgermany.22" }
+	
+	option = {
+		name = NWgermany.22.a
+		ai_chance = {
+			factor = 90
+			modifier = {
+				factor = 0.01
+				is_in_faction = yes
+			}
+			modifier = {
+				factor = 0.05
+				any_of_scopes = {
+					array = global.majors
+					has_guaranteed = ROOT
+				}
+			}
+			modifier = {
+				factor = 0.1
+				OR = {
+					any_home_area_neighbor_country = {
+						has_guaranteed = ROOT
+					}
+					FROM = {
+						any_home_area_neighbor_country = {
+							has_guaranteed = ROOT
+						}
+					}
+				}
+			}
+		}
+		FROM = { country_event = { id = NWgermany.23 days = 1 } }
+		effect_tooltip = {
+			give_resource_rights = { receiver = FROM state = 46 }
+			if = {
+				limit = {
+					NOT = { is_guaranteed_by = FROM }
+				}
+				FROM = { give_guarantee = ROOT }
+			}
+			if = {
+				limit = {
+					is_in_faction = no
+				}
+				FROM = { add_to_faction = ROOT }
+			}
+		}
+	}
+	
+	option = {
+		name = NWgermany.22.b
+		ai_chance = {
+			factor = 10
+		}
+		FROM = { country_event = { id = NWgermany.24 days = 1 } }
+	}
+}
+
+#Согласие 46.owner правительства // GER
+country_event = {
+	id = NWgermany.23
+	title = NWgermany.23.t
+	desc = NWgermany.23.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWgermany.23" }
+	
+	option = {
+		name = NWgermany.23.a
+		FROM = { give_resource_rights = { receiver = ROOT state = 46 } }
+		if = {
+			limit = {
+				NOT = { has_guaranteed = FROM }
+			}
+			give_guarantee = FROM
+		}
+		if = {
+			limit = {
+				FROM = { is_in_faction = no }
+			}
+			FROM = { country_event = { id = generic.5 } }
+		}
+	}
+}
+
+#Отказ 46.owner правительства // GER
+country_event = {
+	id = NWgermany.24
+	title = NWgermany.24.t
+	desc = NWgermany.24.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWgermany.24" }
+	
+	option = {
+		name = NWgermany.24.a
+		if = {
+			limit = {
+				has_guaranteed = FROM
+			}
+			diplomatic_relation = {
+				country = FROM
+				relation = guarantee
+				active = no
+			}
+		}
+		if = {
+			limit = {
+				is_guaranteed_by = FROM
+			}
+			FROM = {
+				diplomatic_relation = {
+					country = ROOT
+					relation = guarantee
+					active = no
+				}
+			}
+		}
 	}
 }
