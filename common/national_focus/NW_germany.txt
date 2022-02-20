@@ -5090,9 +5090,7 @@ focus_tree = {
 				SOU = {
 					NOT = { controls_state = 219 }
 				}
-				AND = {
-					has_completed_focus = GER_mol_rib_pact
-				}
+				has_global_flag = sov_yes_pact
 			}
 		}
 		bypass = {
@@ -7075,7 +7073,6 @@ focus_tree = {
 			}
 		}	
 		completion_reward = {
-			
 			SOV = {
 				country_event = { id = germany.11 days = 1 }
 				custom_effect_tooltip = GER_mol_rib_pact_tt
@@ -8255,6 +8252,7 @@ focus_tree = {
 			1022 = { set_demilitarized_zone = no }
 			1185 = { set_demilitarized_zone = no }
 			add_political_power = 120
+			add_stability = -0.5
 			add_named_threat = { threat = 5 name = GER_oppose_hitler }
 			country_event = { id = wtt_germany.1 }
 			every_other_country = {
@@ -11860,7 +11858,10 @@ focus_tree = {
 		search_filters = {   }
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus GER_imperial_constitution"
-			
+			set_country_leader_ideology = dual_monarchy
+			custom_effect_tooltip = set_country_leader_ideology_dual_monarchy
+			add_popularity = { ideology = neutrality popularity = -0.125 }
+			add_popularity = { ideology = monarchy popularity = 0.125 }
 		}
 	}
 	
@@ -11889,19 +11890,24 @@ focus_tree = {
 		search_filters = {   }
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus GER_allow_parties"
-			custom_effect_tooltip = available_political_advisor
-			show_ideas_tooltip = kurt_schumacher
-			show_ideas_tooltip = GER_julius_leber
-			show_ideas_tooltip = GER_theodor_heuss
+			add_popularity = { ideology = neutrality popularity = -0.1 }
+			add_popularity = { ideology = democratic popularity = 0.1 }
+			country_event = { id = NWgermany.41 hours = 6 }
+			
 		}
 	}
 	
 	focus = {
 		id = GER_reverse_the_brain_drain
-		icon = GFX_focus_research
+		icon = GFX_z_goal_brain
 		prerequisite = { focus = GER_allow_parties }
 		available = {
 			is_subject = no
+			NOT = {
+				has_country_leader = { character = GER_wilhelm_ii ruling_only = yes }
+				has_country_leader = { character = GER_wilhelm_iii ruling_only = yes }
+				has_idea = GER_wilhelm_iii
+			}
 		}
 		x = 1
 		y = 1
@@ -11938,10 +11944,10 @@ focus_tree = {
 		bypass = {
 		}
 		
-		search_filters = {   }
+		search_filters = { FOCUS_FILTER_STABILITY FOCUS_FILTER_INDUSTRY }
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus GER_compensation_program_for_victims"
-			
+			add_timed_idea = { idea = GER_compensation_program_for_victims_idea days = 360 }
 		}
 	}
 	
@@ -11970,7 +11976,12 @@ focus_tree = {
 		search_filters = {   }
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus GER_restore_order_in_army"
-			
+			add_doctrine_cost_reduction = {
+				name = land_doc_bonus
+				cost_reduction = 0.33
+				uses = 2
+				category = land_doctrine
+			}
 		}
 	}
 	
@@ -11996,10 +12007,13 @@ focus_tree = {
 		bypass = {
 		}
 		
-		search_filters = {   }
+		search_filters = { FOCUS_FILTER_POLITICAL }
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus GER_judicial_reform"
-			
+			add_political_power = 75
+			add_popularity = { ideology = democratic popularity = 0.15 }
+			custom_effect_tooltip = available_political_advisor
+			show_ideas_tooltip = GER_helmut_james_von_moltke
 		}
 	}
 
@@ -12258,10 +12272,15 @@ focus_tree = {
 		bypass = {
 		}
 		
-		search_filters = {   }
+		search_filters = { FOCUS_FILTER_POLITICAL }
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus GER_adopt_november_amendments"
-			
+			add_political_power = 75
+			add_stability = 0.03
+			add_war_support = 0.03
+			add_popularity = { ideology = democratic popularity = 0.15 }
+			custom_effect_tooltip = available_political_advisor
+			show_ideas_tooltip = GER_theodor_heuss
 		}
 	}
 	
@@ -12290,7 +12309,23 @@ focus_tree = {
 		search_filters = {   }
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus GER_elections_to_reichstag"
-			
+			if = {
+				limit = { has_country_leader = { character = GER_wilhelm_ii ruling_only = yes } }
+				add_ideas = GER_wilhelm_ii_elections
+			}
+			else_if = {
+				limit = { has_country_leader = { character = GER_wilhelm_iii ruling_only = yes } }
+				add_ideas = GER_wilhelm_iii_elections
+			}
+			else_if = {
+				limit = { has_country_leader = { character = GER_wilhelm_iii_friedrich_franz ruling_only = yes } }
+				add_ideas = GER_wilhelm_iii_friedrich_franz_elections
+			}
+			else_if = {
+				limit = { has_country_leader = { character = GER_oskar_karl_von_preussen ruling_only = yes } }
+				add_ideas = GER_oskar_karl_von_preussen_elections
+			}
+			country_event = NWgermany.44
 		}
 	}
 	
@@ -12615,6 +12650,7 @@ focus_tree = {
 			factor = 10
 		}
 		available = {
+			has_country_leader = { character = GER_otto_wels ruling_only = yes }
 		}
 		bypass = {
 		}
@@ -12622,7 +12658,11 @@ focus_tree = {
 		search_filters = {   }
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus GER_spd_cabinet"
-			
+			custom_effect_tooltip = available_political_advisor
+			show_ideas_tooltip = kurt_schumacher
+			show_ideas_tooltip = GER_julius_leber
+			show_ideas_tooltip = GER_adolf_reichwein
+			show_ideas_tooltip = GER_wilhelm_leuschner
 		}
 	}
 	
@@ -12644,14 +12684,24 @@ focus_tree = {
 			factor = 10
 		}
 		available = {
+			has_completed_focus = GER_social_market_economy
 		}
 		bypass = {
 		}
 		
-		search_filters = {   }
+		search_filters = { FOCUS_FILTER_INDUSTRY FOCUS_FILTER_STABILITY }
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus GER_social_regulation_of_economy"
-			
+			swap_ideas = {
+				remove_idea = GER_social_market_economy
+				add_idea = GER_social_market_economy2
+			}
+			add_tech_bonus = {
+				name = GER_social_regulation_of_economy
+				bonus = 0.5
+				uses = 1
+				category = industry
+			}
 		}
 	}
 	
@@ -12677,10 +12727,73 @@ focus_tree = {
 		bypass = {
 		}
 		
-		search_filters = {   }
+		search_filters = { FOCUS_FILTER_INDUSTRY }
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus GER_nationalize_large_scale_industry"
-			
+			swap_ideas = {
+				remove_idea = GER_social_market_economy2
+				add_idea = GER_social_market_economy3
+			}
+			random_owned_controlled_state = {
+				limit = {
+					free_building_slots = {
+						building = industrial_complex
+						size > 0
+						include_locked = yes
+					}
+				}
+				add_extra_state_shared_building_slots = 1
+				add_building_construction = {
+					type = industrial_complex
+					level = 1
+					instant_build = yes
+				}
+			}
+			random_owned_controlled_state = {
+				limit = {
+					free_building_slots = {
+						building = industrial_complex
+						size > 0
+						include_locked = yes
+					}
+				}
+				add_extra_state_shared_building_slots = 1
+				add_building_construction = {
+					type = industrial_complex
+					level = 1
+					instant_build = yes
+				}
+			}
+			random_owned_controlled_state = {
+				limit = {
+					free_building_slots = {
+						building = arms_factory
+						size > 0
+						include_locked = yes
+					}
+				}
+				add_extra_state_shared_building_slots = 1
+				add_building_construction = {
+					type = arms_factory
+					level = 1
+					instant_build = yes
+				}
+			}
+			random_owned_controlled_state = {
+				limit = {
+					free_building_slots = {
+						building = arms_factory
+						size > 0
+						include_locked = yes
+					}
+				}
+				add_extra_state_shared_building_slots = 1
+				add_building_construction = {
+					type = arms_factory
+					level = 1
+					instant_build = yes
+				}
+			}
 		}
 	}
 	
@@ -12706,10 +12819,11 @@ focus_tree = {
 		bypass = {
 		}
 		
-		search_filters = {   }
+		search_filters = { FOCUS_FILTER_STABILITY }
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus GER_seek_support_from_middle_class"
-			
+			add_stability = 0.1
+			add_popularity = { ideology = democratic popularity = 0.15 }
 		}
 	}
 	
@@ -12735,10 +12849,10 @@ focus_tree = {
 		bypass = {
 		}
 		
-		search_filters = {   }
+		search_filters = { FOCUS_FILTER_POLITICAL }
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus GER_introduce_tradition_of_strict_party_discipline"
-			
+			add_political_power = 150
 		}
 	}
 	
@@ -12765,6 +12879,7 @@ focus_tree = {
 			factor = 10
 		}
 		available = {
+			has_country_leader = { character = GER_helmut_james_von_moltke ruling_only = yes }
 		}
 		bypass = {
 		}
@@ -12772,7 +12887,10 @@ focus_tree = {
 		search_filters = {   }
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus GER_moltkes_office"
-			
+			custom_effect_tooltip = available_political_advisor
+			show_ideas_tooltip = GER_peter_york_von_wartenburg
+			show_ideas_tooltip = GER_adam_von_trott_zu_solz
+			show_ideas_tooltip = GER_carl_dietrich_von_trotha
 		}
 	}
 	
@@ -12798,10 +12916,10 @@ focus_tree = {
 		bypass = {
 		}
 		
-		search_filters = {   }
+		search_filters = { FOCUS_FILTER_RESEARCH }
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus GER_university_reform"
-			
+			add_research_slot = 1
 		}
 	}
 	
@@ -12827,10 +12945,10 @@ focus_tree = {
 		bypass = {
 		}
 		
-		search_filters = {   }
+		search_filters = { FOCUS_FILTER_STABILITY }
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus GER_new_order"
-			
+			add_ideas = GER_new_order
 		}
 	}
 	
@@ -12859,7 +12977,10 @@ focus_tree = {
 		search_filters = {   }
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus GER_development_of_subsidiarity"
-			
+			swap_ideas = {
+				remove_idea = GER_new_order
+				add_idea = GER_new_order2
+			}
 		}
 	}
 	
@@ -12888,7 +13009,52 @@ focus_tree = {
 		search_filters = {   }
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus GER_personality_at_head_of_corner"
-			
+			swap_ideas = {
+				remove_idea = GER_new_order2
+				add_idea = GER_new_order3
+			}
+			if = {
+				limit = { has_idea = scraping_the_barrel }
+				swap_ideas = {
+					remove_idea = scraping_the_barrel
+					add_idea = all_adults_serve
+				}
+			}
+			else_if = {
+				limit = { has_idea = all_adults_serve }
+				swap_ideas = {
+					remove_idea = all_adults_serve
+					add_idea = service_by_requirement
+				}
+			}
+			else_if = {
+				limit = { has_idea = service_by_requirement }
+				swap_ideas = {
+					remove_idea = service_by_requirement
+					add_idea = extensive_conscription
+				}
+			}
+			else_if = {
+				limit = { has_idea = extensive_conscription }
+				swap_ideas = {
+					remove_idea = extensive_conscription
+					add_idea = limited_conscription
+				}
+			}
+			else_if = {
+				limit = { has_idea = limited_conscription }
+				swap_ideas = {
+					remove_idea = limited_conscription
+					add_idea = volunteer_only
+				}
+			}
+			else_if = {
+				limit = { has_idea = volunteer_only }
+				swap_ideas = {
+					remove_idea = volunteer_only
+					add_idea = disarmed_nation
+				}
+			}
 		}
 	}
 	
@@ -12915,6 +13081,7 @@ focus_tree = {
 			factor = 10
 		}
 		available = {
+			has_country_leader = { character = GER_konrad_adenauer ruling_only = yes }
 		}
 		bypass = {
 		}
@@ -12922,7 +13089,11 @@ focus_tree = {
 		search_filters = {   }
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus GER_adenauers_office"
-			
+			custom_effect_tooltip = available_political_advisor
+			show_ideas_tooltip = GER_fritz_schaffer
+			show_ideas_tooltip = GER_hans_lukaschek
+			show_ideas_tooltip = GER_jakob_kaiser
+			show_ideas_tooltip = GER_anton_storch
 		}
 	}
 	
@@ -12944,6 +13115,7 @@ focus_tree = {
 			factor = 10
 		}
 		available = {
+			has_completed_focus = GER_social_market_economy
 		}
 		bypass = {
 		}
@@ -12951,7 +13123,10 @@ focus_tree = {
 		search_filters = {   }
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus GER_law_on_charters_of_enterprises"
-			
+			swap_ideas = {
+				remove_idea = GER_social_market_economy
+				add_idea = GER_social_market_economy4
+			}
 		}
 	}
 	
@@ -12980,7 +13155,31 @@ focus_tree = {
 		search_filters = {   }
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus GER_reducing_power_of_state"
-			
+			swap_ideas = {
+				remove_idea = GER_social_market_economy4
+				add_idea = GER_social_market_economy5
+			}
+			if = {
+				limit = { has_idea = closed_economy }
+				swap_ideas = {
+					remove_idea = closed_economy
+					add_idea = limited_exports
+				}
+			}
+			else_if = {
+				limit = { has_idea = limited_exports }
+				swap_ideas = {
+					remove_idea = limited_exports
+					add_idea = export_focus
+				}
+			}
+			else_if = {
+				limit = { has_idea = export_focus }
+				swap_ideas = {
+					remove_idea = export_focus
+					add_idea = free_trade
+				}
+			}
 		}
 	}
 	
@@ -13002,14 +13201,38 @@ focus_tree = {
 			factor = 10
 		}
 		available = {
+			OR = {
+				controls_state = 57
+				controls_state = 1185
+				controls_state = 51
+			}
 		}
 		bypass = {
 		}
 		
-		search_filters = {   }
+		search_filters = { FOCUS_FILTER_INDUSTRY }
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus GER_redraw_federal_lands"
-			
+			every_controlled_state = {
+				limit = {
+					OR = {
+						state = 57
+						state = 1185
+						state = 51
+					}
+				}
+				add_extra_state_shared_building_slots = 1
+				add_building_construction = {
+					type = infrastructure
+					level = 1
+					instant_build = yes
+				}
+				add_building_construction = {
+					type = industrial_complex
+					level = 1
+					instant_build = yes
+				}
+			}
 		}
 	}
 	
@@ -13038,7 +13261,16 @@ focus_tree = {
 		search_filters = {   }
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus GER_get_rid_of_spirit_of_evil_prussia"
-			
+			add_war_support = -0.05
+			every_other_country = {
+				limit = {
+					capital_scope = { is_on_continent = europe }
+					has_government = democratic
+					NOT = { has_war_with = ROOT }
+				}
+				add_opinion_modifier = { target = ROOT modifier = GER_get_rid_of_spirit_of_evil_prussia_op }
+				ROOT = { add_opinion_modifier = { target = PREV modifier = GER_get_rid_of_spirit_of_evil_prussia_op } }
+			}
 		}
 	}
 	
@@ -13058,17 +13290,24 @@ focus_tree = {
 		available_if_capitulated = no
 
 		ai_will_do = {
-			factor = 10
+			factor = 15
 		}
 		available = {
+			OR = {
+				has_completed_focus = GER_spd_cabinet
+				has_completed_focus = GER_moltkes_office
+				has_completed_focus = GER_adenauers_office
+			}
 		}
 		bypass = {
 		}
 		
-		search_filters = {   }
+		search_filters = { FOCUS_FILTER_INDUSTRY }
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus GER_reforming_economy"
-			
+			add_ideas = GER_reforming_economy_idea
+			custom_effect_tooltip = available_political_advisor
+			show_ideas_tooltip = GER_ludwig_erhard
 		}
 	}
 	
@@ -13094,10 +13333,28 @@ focus_tree = {
 		bypass = {
 		}
 		
-		search_filters = {   }
+		search_filters = { FOCUS_FILTER_INDUSTRY FOCUS_FILTER_STABILITY }
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus GER_issue_of_peoples_shares"
-			
+			swap_ideas = {
+				remove_idea = GER_reforming_economy_idea
+				add_idea = GER_reforming_economy_idea2
+			}
+			random_owned_controlled_state = {
+				limit = {
+					free_building_slots = {
+						building = industrial_complex
+						size > 0
+						include_locked = yes
+					}
+				}
+				add_extra_state_shared_building_slots = 1
+				add_building_construction = {
+					type = industrial_complex
+					level = 1
+					instant_build = yes
+				}
+			}
 		}
 	}
 	
@@ -13126,7 +13383,10 @@ focus_tree = {
 		search_filters = {   }
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus GER_encourage_citizens_savings"
-			
+			swap_ideas = {
+				remove_idea = GER_reforming_economy_idea2
+				add_idea = GER_reforming_economy_idea3
+			}
 		}
 	}
 	
@@ -13155,7 +13415,7 @@ focus_tree = {
 		search_filters = {   }
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus GER_social_housing_construction"
-			
+			add_timed_idea = { idea = GER_social_housing_construction days = 730 }
 		}
 	}
 	
@@ -13184,7 +13444,7 @@ focus_tree = {
 		search_filters = {   }
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus GER_law_on_pensions"
-			
+			add_ideas = GER_law_on_pensions
 		}
 	}
 	
@@ -13214,7 +13474,11 @@ focus_tree = {
 		search_filters = {   }
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus GER_social_market_economy"
-			
+			remove_ideas = {
+				GER_law_on_pensions
+				GER_reforming_economy_idea3
+			}
+			add_ideas = GER_social_market_economy
 		}
 	}
 	
@@ -13264,6 +13528,10 @@ focus_tree = {
 				promote_leader = yes
 			}
 			country_event = NWgermany.5
+			custom_effect_tooltip = available_political_advisor
+			show_ideas_tooltip = GER_helmut_james_von_moltke
+			show_ideas_tooltip = GER_peter_york_von_wartenburg
+			show_ideas_tooltip = GER_adam_von_trott_zu_solz
 		}
 	}
 	
