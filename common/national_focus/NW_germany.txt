@@ -7036,8 +7036,10 @@ focus_tree = {
 			factor = 10
 		}	
 		completion_reward = {
-			remove_ideas = sour_loser
-			add_ideas = triumphant_will
+			swap_ideas = {
+				remove_idea = sour_loser
+				add_idea = triumphant_will
+			}
 		}
 	}
 	
@@ -8461,7 +8463,7 @@ focus_tree = {
 			}
 		}
 		relative_position_id = GER_rhineland
-		cost = 1
+		cost = 8
 		ai_will_do = {
 			factor = 7
 			modifier = {
@@ -15304,7 +15306,7 @@ focus_tree = {
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus GER_where_thalmann"
 			if = {
-				limit = { GER = { has_country_flag = GER_thalmann_exit_flag } }
+				limit = { has_global_flag = GER_thalmann_exit_flag }
 				country_event = { id = NWgermany.45 hours = 3 }
 			}
 			else = {
@@ -15329,7 +15331,7 @@ focus_tree = {
 		available_if_capitulated = no
 
 		ai_will_do = {
-			factor = 10
+			factor = 30
 		}
 		available = {
 		}
@@ -15351,14 +15353,14 @@ focus_tree = {
 		y = 1
 		relative_position_id = GER_where_thalmann
 		
-		cost = 3
+		cost = 5
 		
 		cancel_if_invalid = no
 		continue_if_invalid = yes
 		available_if_capitulated = no
 
 		ai_will_do = {
-			factor = 30
+			factor = 25
 		}
 		available = {
 		}
@@ -15367,12 +15369,21 @@ focus_tree = {
 		}
 		
 		search_filters = {   }
+		select_effect = {
+			if = {
+				limit = {
+					NOT = { has_country_flag = GER_support_from_global_community_first }
+				}
+				country_event = { id = NWgermany.990 days = 21 }
+			}
+		}
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus GER_support_from_global_community"
 			if = {
 				limit = {
 					NOT = { has_country_flag = GER_support_from_global_community_first }
 				}
+				set_country_flag = GER_support_from_global_community_first
 				custom_effect_tooltip = on_first_completion_focus_tt
 				custom_effect_tooltip = GER_support_from_global_community_tt
 				hidden_effect = {
@@ -15408,10 +15419,152 @@ focus_tree = {
 					}
 				}
 				custom_effect_tooltip = on_other_completion_focus_tt
+				effect_tooltip = {
+					random_list = {
+						35 = {
+							modifier = {
+								factor = 0
+								has_stability > 0.98
+							}
+							add_stability = 0.02
+						}
+						35 = {
+							modifier = {
+								factor = 0
+								has_war_support > 0.98
+							}
+							add_war_support = 0.02
+						}
+						50 = {
+							set_temp_variable = { a1 = random }
+							set_temp_variable = { b1 = random }
+							set_temp_variable = { c1 = random }
+							set_temp_variable = { d1 = random }
+							multiply_temp_variable = { a1 = 10000 }
+							multiply_temp_variable = { b1 = 5000 }
+							multiply_temp_variable = { c1 = 1000 }
+							multiply_temp_variable = { d1 = 100 }
+							
+							set_temp_variable = { f1 = a1 }
+							add_to_temp_variable = { f1 = b1 }
+							add_to_temp_variable = { f1 = c1 }
+							add_to_temp_variable = { f1 = d1 }
+							clamp_temp_variable = { var = f1 min = 100 max = 10000 }
+							round_temp_variable = f1
+							
+							add_manpower = f1
+						}
+						25 = {
+							set_temp_variable = { a1 = random }
+							set_temp_variable = { b1 = random }
+							set_temp_variable = { c1 = random }
+							set_temp_variable = { d1 = random }
+							multiply_temp_variable = { a1 = 2000 }
+							multiply_temp_variable = { b1 = 1000 }
+							multiply_temp_variable = { c1 = 500 }
+							multiply_temp_variable = { d1 = 50 }
+							
+							set_temp_variable = { f1 = a1 }
+							add_to_temp_variable = { f1 = b1 }
+							add_to_temp_variable = { f1 = c1 }
+							add_to_temp_variable = { f1 = d1 }
+							clamp_temp_variable = { var = f1 min = 100 max = 3500 }
+							round_temp_variable = f1
+							
+							add_equipment_to_stockpile = {
+								type = infantry_equipment
+								amount = f1
+							}
+						}
+						25 = {
+							modifier = {
+								factor = 0
+								fuel_ratio > 0.5
+							}
+							set_temp_variable = { a1 = random }
+							set_temp_variable = { b1 = random }
+							set_temp_variable = { c1 = random }
+							set_temp_variable = { d1 = random }
+							multiply_temp_variable = { a1 = 2500 }
+							multiply_temp_variable = { b1 = 500 }
+							multiply_temp_variable = { c1 = 250 }
+							multiply_temp_variable = { d1 = 25 }
+							
+							set_temp_variable = { f1 = a1 }
+							add_to_temp_variable = { f1 = b1 }
+							add_to_temp_variable = { f1 = c1 }
+							add_to_temp_variable = { f1 = d1 }
+							clamp_temp_variable = { var = f1 min = 100 max = 7500 }
+							round_temp_variable = f1
+							
+							add_fuel = f1
+						}
+						15 = {
+							if = {
+								limit = { NOT = { has_template = "International Brigade" } }
+								division_template = {
+									name = "International Brigade"
+									is_locked = yes
+									regiments = {
+										infantry = { x = 0 y = 0 }
+										infantry = { x = 0 y = 1 }
+										infantry = { x = 0 y = 2 }
+										infantry = { x = 1 y = 0 }
+										infantry = { x = 1 y = 1 }
+										infantry = { x = 1 y = 2 }
+									}
+								}
+							}
+							capital_scope = {
+								create_unit = {
+									division = "name = \"International Brigade\" division_template = \"International Brigade\" start_experience_factor = 0.4"
+									owner = PREV
+									count = 1
+									allow_spawning_on_enemy_provs = yes
+								}
+							}
+						}
+						25 = {
+							modifier = {
+								factor = 0
+								OR = {
+									has_idea = GER_support_from_global_community_1
+									has_idea = GER_support_from_global_community_2
+									has_idea = GER_support_from_global_community_3
+									has_idea = GER_support_from_global_community_4
+									has_idea = GER_support_from_global_community_5
+									has_idea = GER_support_from_global_community_6
+									has_idea = GER_support_from_global_community_7
+									has_idea = GER_support_from_global_community_8
+								}
+							}
+							country_event = NWgermany.47
+						}
+						25 = {
+							modifier = {
+								add = var:support_from_global_community_fail_chance
+							}
+						}
+					}
+				}
 			}
 
-			#else = {
+			else = {
 				random_list = {
+					35 = {
+						modifier = {
+							factor = 0
+							has_stability > 0.98
+						}
+						add_stability = 0.02
+					}
+					35 = {
+						modifier = {
+							factor = 0
+							has_war_support > 0.98
+						}
+						add_war_support = 0.02
+					}
 					50 = {
 						set_temp_variable = { a1 = random }
 						set_temp_variable = { b1 = random }
@@ -15426,14 +15579,17 @@ focus_tree = {
 						add_to_temp_variable = { f1 = b1 }
 						add_to_temp_variable = { f1 = c1 }
 						add_to_temp_variable = { f1 = d1 }
-						clamp_temp_variable = { var = f1 min = 1 max = 5000 }
+						clamp_temp_variable = { var = f1 min = 100 max = 10000 }
 						round_temp_variable = f1
 						
 						add_manpower = f1
 						
 						if = {
-							limit = { is_debug = yes }
-							custom_effect_tooltip = "==========="
+							limit = {
+								always = no
+								is_debug = yes
+							}
+							custom_effect_tooltip = "===DEBUG INFO==="
 							custom_effect_tooltip = "a=[?a1]"
 							custom_effect_tooltip = "b=[?b1]"
 							custom_effect_tooltip = "c=[?c1]"
@@ -15447,8 +15603,8 @@ focus_tree = {
 						set_temp_variable = { b1 = random }
 						set_temp_variable = { c1 = random }
 						set_temp_variable = { d1 = random }
-						multiply_temp_variable = { a1 = 5000 }
-						multiply_temp_variable = { b1 = 1000 }
+						multiply_temp_variable = { a1 = 2000 }
+						multiply_temp_variable = { b1 = 1500 }
 						multiply_temp_variable = { c1 = 500 }
 						multiply_temp_variable = { d1 = 50 }
 						
@@ -15456,28 +15612,18 @@ focus_tree = {
 						add_to_temp_variable = { f1 = b1 }
 						add_to_temp_variable = { f1 = c1 }
 						add_to_temp_variable = { f1 = d1 }
-						clamp_temp_variable = { var = f1 min = 1 max = 5000 }
+						clamp_temp_variable = { var = f1 min = 100 max = 3500 }
 						round_temp_variable = f1
 						
 						add_equipment_to_stockpile = {
 							type = infantry_equipment
 							amount = f1
 						}
-						if = {
-							limit = { is_debug = yes }
-							custom_effect_tooltip = "==========="
-							custom_effect_tooltip = "a=[?a1]"
-							custom_effect_tooltip = "b=[?b1]"
-							custom_effect_tooltip = "c=[?c1]"
-							custom_effect_tooltip = "d=[?d1]"
-							custom_effect_tooltip = "f=[?f1]"
-							custom_effect_tooltip = "==========="
-						}
 					}
 					25 = {
 						modifier = {
 							factor = 0
-							fuel_ratio > 0.99
+							fuel_ratio > 0.5
 						}
 						set_temp_variable = { a1 = random }
 						set_temp_variable = { b1 = random }
@@ -15492,26 +15638,63 @@ focus_tree = {
 						add_to_temp_variable = { f1 = b1 }
 						add_to_temp_variable = { f1 = c1 }
 						add_to_temp_variable = { f1 = d1 }
-						clamp_temp_variable = { var = f1 min = 1 max = 5000 }
+						clamp_temp_variable = { var = f1 min = 100 max = 7500 }
 						round_temp_variable = f1
 						
 						add_fuel = f1
-						
+					}
+					15 = {
 						if = {
-							limit = { is_debug = yes }
-							custom_effect_tooltip = "==========="
-							custom_effect_tooltip = "a=[?a1]"
-							custom_effect_tooltip = "b=[?b1]"
-							custom_effect_tooltip = "c=[?c1]"
-							custom_effect_tooltip = "d=[?d1]"
-							custom_effect_tooltip = "f=[?f1]"
-							custom_effect_tooltip = "==========="
+							limit = { NOT = { has_template = "International Brigade" } }
+							division_template = {
+								name = "International Brigade"
+								is_locked = yes
+								regiments = {
+									infantry = { x = 0 y = 0 }
+									infantry = { x = 0 y = 1 }
+									infantry = { x = 0 y = 2 }
+									infantry = { x = 1 y = 0 }
+									infantry = { x = 1 y = 1 }
+									infantry = { x = 1 y = 2 }
+								}
+							}
+						}
+						capital_scope = {
+							create_unit = {
+								division = "name = \"International Brigade\" division_template = \"International Brigade\" start_experience_factor = 0.4"
+								owner = PREV
+								count = 1
+								allow_spawning_on_enemy_provs = yes
+							}
 						}
 					}
 					25 = {
+						modifier = {
+							factor = 0
+							OR = {
+								has_idea = GER_support_from_global_community_1
+								has_idea = GER_support_from_global_community_2
+								has_idea = GER_support_from_global_community_3
+								has_idea = GER_support_from_global_community_4
+								has_idea = GER_support_from_global_community_5
+								has_idea = GER_support_from_global_community_6
+								has_idea = GER_support_from_global_community_7
+								has_idea = GER_support_from_global_community_8
+							}
+						}
+						country_event = NWgermany.47
+					}
+					25 = {
+						modifier = {
+							add = var:support_from_global_community_fail_chance
+						}
 					}
 				}
-			#}
+				if = {
+					limit = { check_variable = { support_from_global_community_fail_chance < 299 } }
+					add_to_variable = { support_from_global_community_fail_chance = 10 }
+				}
+			}
 			hidden_effect = {
 				if = {
 					limit = { has_civil_war = yes }
@@ -15536,7 +15719,7 @@ focus_tree = {
 		available_if_capitulated = no
 
 		ai_will_do = {
-			factor = 30
+			factor = 25
 		}
 		available = {
 		}
