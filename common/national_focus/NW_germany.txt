@@ -8676,6 +8676,7 @@ focus_tree = {
 		search_filters = {  }
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus GER_peoples_army"
+			remove_ideas = GER_peoples_army
 			custom_effect_tooltip = GER_volunteer_generals_tt
 			hidden_effect = {
 				set_temp_variable = { num_cucle = 2 }
@@ -8700,34 +8701,8 @@ focus_tree = {
 					divide_temp_variable = { temp5 = 4 }
 					round_temp_variable = temp5
 					clamp_temp_variable = { var = temp5 min = 1 max = 4 }
-					meta_effect = {
-						text = {
-							generate_character = {
-								token_base = [TAG]_generate_corps_commander_[NUM]
-								portraits={
-									army={
-										large="GFX_"
-										small="GFX_"
-									}
-								}
-								corps_commander = {
-									traits = { anarchist_timed_trait }
-									skill = [SKILL_VAR]
-									attack_skill = [ATTACK_SKILL_VAR]
-									defense_skill = [DEFENSE_SKILL_VAR]
-									planning_skill = [PLANNING_SKILL_VAR]
-									logistics_skill = [LOGISTICS_SKILL_VAR]
-								}
-							}
-						}
-						TAG = "[Root.GetTag]"
-						NUM = "[?global.num_of_generate_character]"
-						SKILL_VAR = "[?temp5]"
-						ATTACK_SKILL_VAR = "[?temp1]"
-						DEFENSE_SKILL_VAR = "[?temp2]"
-						PLANNING_SKILL_VAR = "[?temp3]"
-						LOGISTICS_SKILL_VAR = "[?temp4]"
-					}
+					
+					NW_generate_random_corps_commander = yes
 
 					set_temp_variable = { temp6 = 1 }
 					if = {
@@ -8864,7 +8839,7 @@ focus_tree = {
 	
 	focus = {
 		id = GER_strasser_also_betrayed_revolution
-		icon = GFX_focus_spr_masters_of_our_own_fate
+		icon = GFX_z_goal_anarhy_soviet
 		prerequisite = { focus = GER_united_anti_hitler_front }
 		mutually_exclusive = {
 			focus = GER_continue_german_revolution
@@ -8922,38 +8897,7 @@ focus_tree = {
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus GER_ostorientierung"
 			hidden_effect = {
-				generate_character = {
-					token_base = GER_joachim_von_ribbentrop
-					name=GER_joachim_von_ribbentrop
-					portraits={
-						army={
-							small="GFX_idea_joachim_von_ribbentrop"
-						}
-					}
-					advisor={
-						slot = political_advisor
-						idea_token = joachim_von_ribbentrop
-						allowed = {
-							original_tag = GER
-						}
-						available = {
-							OR = {
-								has_government = fascism 
-								has_country_flag = GER_reinstated_nazi_leadership 
-							}
-							OR = {
-								has_completed_focus = GER_eurasian_foreign_policy
-								has_completed_focus = GER_ostorientierung
-							}
-						}
-						traits = {
-							backroom_backstabber 
-						}
-						ai_will_do = {
-							factor = 5.000
-						}
-					}
-				}
+				NW_generate_joachim_von_ribbentrop = yes
 			}
 			custom_effect_tooltip = available_political_advisor
 			show_ideas_tooltip = joachim_von_ribbentrop
@@ -9144,6 +9088,11 @@ focus_tree = {
 			factor = 10
 		}
 		available = {
+			is_subject = no
+			SOU = {
+				NOT = { has_war_with = ROOT }
+				is_subject = no
+			}
 		}
 		bypass = {
 		}
@@ -9151,7 +9100,18 @@ focus_tree = {
 		search_filters = {   }
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus GER_community_of_destinies"
-			
+			SOU = {
+				country_event = { id = NWgermany.50 hours = 3 }
+			}
+			effect_tooltip = {
+				give_guarantee = SOU
+				add_opinion_modifier = { target = SOU modifier = GER_community_of_destinies }
+				SOU = {
+					give_guarantee = ROOT
+					add_opinion_modifier = { target = ROOT modifier = GER_community_of_destinies }
+					custom_effect_tooltip = needs_approval
+				}
+			}
 		}
 	}
 	
@@ -9173,6 +9133,12 @@ focus_tree = {
 			factor = 10
 		}
 		available = {
+			PRC = {
+				exists = yes
+				has_capitulated = no
+				NOT = { has_war_with = ROOT }
+				has_country_leader = { character = PRC_mao_zedong ruling_only = yes }
+			}
 		}
 		bypass = {
 		}
@@ -9180,7 +9146,12 @@ focus_tree = {
 		search_filters = {   }
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus GER_turning_to_asia"
-			
+			PRC = {
+				country_event = { id = NWgermany.53 hours = 8 }
+				effect_tooltip = {
+					unlock_national_focus = CHI_closer_ties_with_germany
+				}
+			}
 		}
 	}
 	
@@ -9202,20 +9173,105 @@ focus_tree = {
 			factor = 10
 		}
 		available = {
+			is_subject = no
+			if = {
+				limit = {
+					any_country_with_original_tag = {
+						original_tag_to_check = event_target:NW_france_scope
+						has_country_leader = { character = FRA_jacques_doriot ruling_only = yes }
+					}
+				}
+				is_faction_leader = yes
+			}
+			else = {
+				has_damaged_buildings = no
+				has_army_manpower = { size > 999999 } #ca 100 div
+			}
 		}
 		bypass = {
+			if = {
+				limit = {
+					any_country_with_original_tag = {
+						original_tag_to_check = event_target:NW_france_scope
+						has_country_leader = { character = FRA_jacques_doriot ruling_only = yes }
+					}
+				}
+				any_country_with_original_tag = {
+					original_tag_to_check = event_target:NW_france_scope
+					has_country_leader = { character = FRA_jacques_doriot ruling_only = yes }
+					is_in_faction_with = ROOT
+					exists = no
+				}
+			}
+			else = {
+				OR = {
+					any_country_with_original_tag = {
+						original_tag_to_check = FRA
+						NOT = { has_country_leader = { character = FRA_jacques_doriot ruling_only = yes } }
+						OR = {
+							exists = no
+							is_subject_of = ROOT
+							has_war_with = ROOT
+						}
+					}
+					any_country_with_original_tag = {
+						original_tag_to_check = FRC
+						NOT = { has_country_leader = { character = FRA_jacques_doriot ruling_only = yes } }
+						OR = {
+							exists = no
+							is_subject_of = ROOT
+							has_war_with = ROOT
+						}
+					}
+					any_country_with_original_tag = {
+						original_tag_to_check = FRF
+						NOT = { has_country_leader = { character = FRA_jacques_doriot ruling_only = yes } }
+						OR = {
+							exists = no
+							is_subject_of = ROOT
+							has_war_with = ROOT
+						}
+					}
+				}
+			}
 		}
 		
 		search_filters = {   }
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus GER_end_french_europe"
-			
+			random_other_country = {
+				limit = {
+					original_tag = event_target:NW_france_scope
+					has_country_leader = { character = FRA_jacques_doriot ruling_only = yes }
+				}
+				country_event = generic.5
+			}
+			every_other_country = {
+				limit = {
+					OR = {
+						original_tag = FRA
+						original_tag = FRC
+						original_tag = FRF
+					}
+					NOT = {
+						has_country_leader = { character = FRA_jacques_doriot ruling_only = yes }
+						has_war_with = ROOT
+					}
+				}
+				ROOT = {
+					create_wargoal = {
+						type = annex_everything
+						target = PREV
+						expire = 0
+					}
+				}
+			}
 		}
 	}
 	
 	focus = {
 		id = GER_germany_is_example_for_east
-		icon = GFX_focus_spr_masters_of_our_own_fate
+		icon = GFX_focus_generic_diplomatic_treaty
 		prerequisite = { focus = GER_end_french_europe }
 		x = 0
 		y = 1
@@ -9238,13 +9294,32 @@ focus_tree = {
 		search_filters = {   }
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus GER_germany_is_example_for_east"
-			
+			add_stability = 0.3
+			add_popularity = { ideology = communism popularity = 0.07 }
+			every_other_country = {
+				limit = {
+					NOT = { has_war_with = ROOT }
+					OR = {
+						original_tag = CZE
+						original_tag = HUN
+						original_tag = POL
+						original_tag = ROM
+						original_tag = LIT
+						original_tag = LAT
+						original_tag = EST
+					}
+				}
+				add_opinion_modifier = { target = ROOT modifier = GER_germany_is_example_for_east }
+				ROOT = {
+					add_opinion_modifier = { target = PREV modifier = GER_germany_is_example_for_east }
+				}
+			}
 		}
 	}
 	
 	focus = {
 		id = GER_nationalization_of_economy
-		icon = GFX_focus_spr_masters_of_our_own_fate
+		icon = GFX_z_goal_industrial_soviet
 		prerequisite = { focus = GER_strasser_also_betrayed_revolution }
 		x = 0
 		y = 1
@@ -9267,13 +9342,13 @@ focus_tree = {
 		search_filters = {   }
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus GER_nationalization_of_economy"
-			
+			add_ideas = GER_nationalization_of_economy
 		}
 	}
 	
 	focus = {
 		id = GER_village_resettlement_program
-		icon = GFX_focus_spr_masters_of_our_own_fate
+		icon = GFX_focus_prc_agrarian_socialism
 		prerequisite = { focus = GER_nationalization_of_economy }
 		x = -1
 		y = 1
@@ -9296,13 +9371,13 @@ focus_tree = {
 		search_filters = {   }
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus GER_village_resettlement_program"
-			
+			add_ideas = GER_village_resettlement_program_idea
 		}
 	}
 	
 	focus = {
 		id = GER_conditions_for_revival_of_peasantry
-		icon = GFX_focus_spr_masters_of_our_own_fate
+		icon = GFX_focus_SOV_breadbasket_of_the_union
 		prerequisite = { focus = GER_village_resettlement_program }
 		x = 0
 		y = 1
@@ -9325,13 +9400,16 @@ focus_tree = {
 		search_filters = {   }
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus GER_conditions_for_revival_of_peasantry"
-			
+			swap_ideas = {
+				remove_idea = GER_village_resettlement_program_idea
+				add_idea = GER_village_resettlement_program_idea2
+			}
 		}
 	}
 	
 	focus = {
 		id = GER_communal_form_of_ownership
-		icon = GFX_focus_spr_masters_of_our_own_fate
+		icon = GFX_z_goal_agrarian_reform
 		prerequisite = { focus = GER_conditions_for_revival_of_peasantry }
 		x = 0
 		y = 1
@@ -9354,13 +9432,16 @@ focus_tree = {
 		search_filters = {   }
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus GER_communal_form_of_ownership"
-			
+			swap_ideas = {
+				remove_idea = GER_village_resettlement_program_idea2
+				add_idea = GER_village_resettlement_program_idea3
+			}
 		}
 	}
 	
 	focus = {
 		id = GER_apply_arplan_experience
-		icon = GFX_focus_spr_masters_of_our_own_fate
+		icon = GFX_z_goal_generic_industrial_production2
 		prerequisite = { focus = GER_nationalization_of_economy }
 		x = 1
 		y = 1
@@ -9383,7 +9464,8 @@ focus_tree = {
 		search_filters = {   }
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus GER_apply_arplan_experience"
-			
+			remove_ideas = GER_nationalization_of_economy
+			add_ideas = GER_state_planning_of_economy_idea
 		}
 	}
 	
@@ -9412,7 +9494,8 @@ focus_tree = {
 		search_filters = {   }
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus GER_military_socialism"
-			
+			remove_ideas = GER_state_planning_of_economy_idea
+			add_ideas = GER_military_socialism
 		}
 	}
 	
@@ -9441,7 +9524,10 @@ focus_tree = {
 		search_filters = {   }
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus GER_peasant_army"
-			
+			swap_ideas = {
+				remove_idea = GER_peoples_army
+				add_idea = GER_peasant_army
+			}
 		}
 	}
 	
@@ -9470,12 +9556,13 @@ focus_tree = {
 		search_filters = {   }
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus GER_six_points_of_german_protest"
-			
+			add_ideas = GER_six_points_of_german_protest
+			custom_effect_tooltip = fash_plus_comm_legitimacy_flag_tt
 		}
 	}
 	
 	focus = {
-		id = GER_war_is_father_of_german_statehood
+		id = GER_war_is_mother_of_german_statehood
 		icon = GFX_focus_spr_masters_of_our_own_fate
 		prerequisite = { focus = GER_six_points_of_german_protest }
 		x = 1
@@ -9498,18 +9585,21 @@ focus_tree = {
 		
 		search_filters = {   }
 		completion_reward = {
-			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus GER_war_is_father_of_german_statehood"
-			
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus GER_war_is_mother_of_german_statehood"
+			swap_ideas = {
+				remove_idea = GER_six_points_of_german_protest
+				add_idea = GER_six_points_of_german_protest2
+			}
 		}
 	}
 	
 	focus = {
 		id = GER_ideology_of_resistance
 		icon = GFX_focus_spr_masters_of_our_own_fate
-		prerequisite = { focus = GER_war_is_father_of_german_statehood }
+		prerequisite = { focus = GER_war_is_mother_of_german_statehood }
 		x = 0
 		y = 1
-		relative_position_id = GER_war_is_father_of_german_statehood
+		relative_position_id = GER_war_is_mother_of_german_statehood
 		
 		cost = 10
 		
@@ -9528,7 +9618,10 @@ focus_tree = {
 		search_filters = {   }
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus GER_ideology_of_resistance"
-			
+			swap_ideas = {
+				remove_idea = GER_six_points_of_german_protest2
+				add_idea = GER_six_points_of_german_protest3
+			}
 		}
 	}
 	
@@ -13837,6 +13930,10 @@ focus_tree = {
 			show_ideas_tooltip = GER_helmut_james_von_moltke
 			show_ideas_tooltip = GER_peter_york_von_wartenburg
 			show_ideas_tooltip = GER_adam_von_trott_zu_solz
+			hidden_effect = {
+				drop_cosmetic_tag = yes
+			}
+			set_cosmetic_tag = GER_german_monarchy		#Переходное правительство Германии
 		}
 	}
 	
@@ -14076,6 +14173,10 @@ focus_tree = {
 				remove_idea = GER_wehrmacht_rules_3_1
 				add_idea = GER_wehrmacht_rules_3_2
 			}
+			hidden_effect = {
+				drop_cosmetic_tag = yes
+			}
+			set_cosmetic_tag = GER_german_empire		#не имеет названия при нейтралитете -> Германия, но будут спавниться нужные портреты
 		}
 	}
 	
@@ -15925,34 +16026,8 @@ focus_tree = {
 					divide_temp_variable = { temp5 = 4 }
 					round_temp_variable = temp5
 					clamp_temp_variable = { var = temp5 min = 1 max = 4 }
-					meta_effect = {
-						text = {
-							generate_character = {
-								token_base = [TAG]_generate_corps_commander_[NUM]
-								portraits={
-									army={
-										large="GFX_"
-										small="GFX_"
-									}
-								}
-								corps_commander = {
-									traits = { anarchist_timed_trait }
-									skill = [SKILL_VAR]
-									attack_skill = [ATTACK_SKILL_VAR]
-									defense_skill = [DEFENSE_SKILL_VAR]
-									planning_skill = [PLANNING_SKILL_VAR]
-									logistics_skill = [LOGISTICS_SKILL_VAR]
-								}
-							}
-						}
-						TAG = "[Root.GetTag]"
-						NUM = "[?global.num_of_generate_character]"
-						SKILL_VAR = "[?temp5]"
-						ATTACK_SKILL_VAR = "[?temp1]"
-						DEFENSE_SKILL_VAR = "[?temp2]"
-						PLANNING_SKILL_VAR = "[?temp3]"
-						LOGISTICS_SKILL_VAR = "[?temp4]"
-					}
+					
+					NW_generate_random_corps_commander = yes
 
 					set_temp_variable = { temp6 = 1 }
 					if = {
@@ -16544,6 +16619,7 @@ focus_tree = {
 				id = 6377
 				name = VICTORY_POINTS_6377_commi
 			}
+			set_capital = { state =  59 }
 			hidden_effect = {
 				1021 = { set_state_flag = renamed_state_red_ger }
 				59 = { set_state_flag = renamed_state_red_ger }
@@ -16868,6 +16944,7 @@ focus_tree = {
 			}
 		}
 		available = {
+			has_army_manpower = { size > 499999 } #ca 90 div
 			SOU = {
 				has_government = ROOT
 				is_faction_leader = yes
