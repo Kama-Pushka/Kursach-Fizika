@@ -8431,28 +8431,28 @@ focus_tree = {
 			is_subject = no
 			has_government = fascism
 		}
-		x = 57
+		x = 61
 		y = 0
 		offset = {
-			x = -29
+			x = -30
 			trigger = {
 				has_completed_focus = GER_oppose_hitler
 			}
 		}
 		offset = {
-			x = -28
+			x = -32
 			trigger = {
 				has_completed_focus = GER_alternative_government_of_nsdap
 			}
 		}
 		offset = {
-			x = -23
+			x = -22
 			trigger = {
 				has_completed_focus = GER_secure_the_new_state
 			}
 		}
 		offset = {
-			x = -35
+			x = -38
 			trigger = {
 				has_completed_focus = GER_where_thalmann
 			}
@@ -8541,10 +8541,10 @@ focus_tree = {
 			focus = GER_secure_the_new_state
 			focus = GER_where_thalmann
 		}
-		x = -28
+		x = -32
 		y = 1
 		offset = {
-			x = 28
+			x = 32
 			trigger = {
 				has_completed_focus = GER_alternative_government_of_nsdap
 			}
@@ -10434,12 +10434,6 @@ focus_tree = {
 	
 	
 	
-	
-	
-	
-	
-	
-	
 	####################################################
 	### MONARCHY / DEMOCRATIC / AUTRORITARIAN BRANCH ###
 	####################################################
@@ -10496,7 +10490,7 @@ focus_tree = {
 	
 	
 	################
-	### MILITARY / KAISER BRANCH
+	### MILITARY / KAISER / DEMOCRATIC BRANCHS
 	################
 
 	focus = {
@@ -10515,7 +10509,7 @@ focus_tree = {
 			is_subject = no
 			has_civil_war = no
 		}
-		x = -6
+		x = -10
 		y = 1
 		relative_position_id = GER_secure_the_new_state
 		cost = 10
@@ -10540,39 +10534,328 @@ focus_tree = {
 		}
 		search_filters = { FOCUS_FILTER_POLITICAL }
 		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus GER_revive_the_kaiserreich"
 			swap_ideas = {
 				remove_idea = GER_wehrmacht_rules
-				add_idea = GER_wehrmacht_rules_2_1
+				add_idea = GER_wehrmacht_rules_2_0
 			}
-			custom_effect_tooltip = GER_revive_the_kaiserreich_tt
-			add_popularity = { ideology = monarchy popularity = 0.25 }
-			set_politics = { ruling_party = monarchy elections_allowed = no }
-			hidden_effect = {
-				drop_cosmetic_tag = yes
-				set_cosmetic_tag = GER_german_empire
-			}
+			#custom_effect_tooltip = GER_revive_the_kaiserreich_tt
 			#set_party_name = { ideology = monarchy long_name = GER_monarchy_party_kaiserreich_long name = GER_monarchy_party_kaiserreich }
 			set_rule = { can_send_volunteers = yes }
-			every_other_country = {
-				limit = {
-					OR = {
-						original_tag = AUS
-						original_tag = HUN
-						original_tag = TUR
-					}
-				}
-				country_event = { id = TRpolitical.101 }
-			}
-			country_event = { id = NWgermany.4 }
 		}
 	}
-
+	
+	
+	################
+	### MILITARY BRANCH
+	################
+	
+	focus = {
+		id = GER_start_implementing_wehrstaat
+		icon = GFX_z_goal_stand_junta
+		prerequisite = { focus = GER_revive_the_kaiserreich }
+		mutually_exclusive = {
+			focus = GER_return_of_the_kaiser
+			focus = GER_imperial_constitution
+		}
+		available = {
+			is_subject = no
+		}
+		bypass = {
+		}
+		x = -8
+		y = 1
+		relative_position_id = GER_revive_the_kaiserreich
+		cost = 10
+		ai_will_do = {
+			factor = 100
+		}
+		
+		search_filters = {}
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus GER_start_implementing_wehrstaat"
+			add_popularity = { ideology = neutrality popularity = 0.1 }
+			add_country_leader_role = {
+				character = GER_werner_von_blomberg
+				country_leader = {
+					ideology = militarism
+					traits = {
+					}
+					expire = "1965.1.1"
+				}
+				promote_leader = yes
+			}
+			if = {
+                limit = {
+					has_dlc = "La Resistance"
+					has_intelligence_agency = no
+				}
+                create_intelligence_agency = {
+					name = "Wehrstaat"
+					icon = "GFX_intelligence_agency_logo_ger_neutrality"
+				}
+            }
+		}
+	}
+	
+	focus = {
+		id = GER_propaganda_of_totalitarianism
+		icon = GFX_z_goal_brutality_is_bringing_people_together
+		prerequisite = { focus = GER_start_implementing_wehrstaat }
+		available = {
+		}
+		bypass = {
+		}
+		x = -1
+		y = 1
+		relative_position_id = GER_start_implementing_wehrstaat
+		cost = 10
+		ai_will_do = {
+			factor = 10
+		}
+		
+		search_filters = {FOCUS_FILTER_POLITICAL FOCUS_FILTER_WAR_SUPPORT}
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus GER_propaganda_of_totalitarianism"
+			add_political_power = 120
+			add_popularity = { ideology = neutrality popularity = 0.15 }
+			add_ideas = GER_wehrstaat_idea
+			
+		}
+	}
+	
+	focus = {
+		id = GER_patriotic_training_of_soldiers
+		icon = GFX_focus_generic_manpower
+		prerequisite = { focus = GER_propaganda_of_totalitarianism }
+		available = {
+		}
+		bypass = {
+		}
+		x = -1
+		y = 1
+		relative_position_id = GER_propaganda_of_totalitarianism
+		cost = 10
+		ai_will_do = {
+			factor = 10
+		}
+		
+		search_filters = {FOCUS_FILTER_WAR_SUPPORT}
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus GER_patriotic_training_of_soldiers"
+			add_war_support = 0.15
+			if = {
+				limit = { NOT = { has_completed_focus = GER_introduce_rigid_vertical_of_power } }
+				swap_ideas = {
+					remove_idea = GER_wehrmacht_rules_2_0
+					add_idea = GER_wehrstaat_rules_1a
+				}
+			}
+			else = {
+				swap_ideas = {
+					remove_idea = GER_wehrstaat_rules_1b
+					add_idea = GER_wehrstaat_rules_2
+				}
+			}
+			swap_ideas = {
+				remove_idea = GER_wehrstaat_idea
+				add_idea = GER_wehrstaat_idea_2
+			}
+		}
+	}
+	
+	focus = {
+		id = GER_introduce_rigid_vertical_of_power
+		icon = GFX_z_goal_lose_democracy
+		prerequisite = { focus = GER_propaganda_of_totalitarianism }
+		available = {
+		}
+		bypass = {
+		}
+		x = 1
+		y = 1
+		relative_position_id = GER_propaganda_of_totalitarianism
+		cost = 10
+		ai_will_do = {
+			factor = 10
+		}
+		
+		search_filters = {FOCUS_FILTER_STABILITY}
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus GER_introduce_rigid_vertical_of_power"
+			add_popularity = { ideology = neutrality popularity = 0.1 }
+			add_stability = 0.15
+			if = {
+				limit = { NOT = { has_completed_focus = GER_patriotic_training_of_soldiers } }
+				swap_ideas = {
+					remove_idea = GER_wehrmacht_rules_2_0
+					add_idea = GER_wehrstaat_rules_1b
+				}
+			}
+			else = {
+				swap_ideas = {
+					remove_idea = GER_wehrstaat_rules_1a
+					add_idea = GER_wehrstaat_rules_2
+				}
+			}
+			custom_effect_tooltip = available_political_advisor
+			show_ideas_tooltip = GER_paul_von_lettow_vorbeck
+		}
+	}
+	
+	focus = {
+		id = GER_implement_technocratic_methods
+		icon = GFX_z_goal_technocracy
+		prerequisite = { focus = GER_start_implementing_wehrstaat }
+		available = {
+		}
+		bypass = {
+		}
+		x = 1
+		y = 1
+		relative_position_id = GER_start_implementing_wehrstaat
+		cost = 10
+		ai_will_do = {
+			factor = 10
+		}
+		
+		search_filters = {}
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus GER_implement_technocratic_methods"
+			custom_effect_tooltip = available_political_advisor
+			#show_ideas_tooltip = hjalmar_schacht
+			show_ideas_tooltip = GER_georg_thomas
+		}
+	}
+	
+	focus = {
+		id = GER_state_planning_of_economy
+		icon = GFX_z_goal_Woodhead_comission
+		prerequisite = { focus = GER_implement_technocratic_methods }
+		available = {
+		}
+		bypass = {
+		}
+		x = 1
+		y = 1
+		relative_position_id = GER_implement_technocratic_methods
+		cost = 10
+		ai_will_do = {
+			factor = 10
+		}
+		
+		search_filters = {}
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus GER_state_planning_of_economy"
+			add_ideas = GER_state_planning_idea
+		}
+	}
+	
+	focus = {
+		id = GER_financing_of_military_developments
+		icon = GFX_z_goal_great_science
+		prerequisite = { focus = GER_patriotic_training_of_soldiers }
+		prerequisite = { focus = GER_introduce_rigid_vertical_of_power }
+		prerequisite = { focus = GER_state_planning_of_economy }
+		available = {
+		}
+		bypass = {
+		}
+		x = -1
+		y = 1
+		relative_position_id = GER_introduce_rigid_vertical_of_power
+		cost = 10
+		ai_will_do = {
+			factor = 10
+		}
+		
+		search_filters = {FOCUS_FILTER_RESEARCH}
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus GER_financing_of_military_developments"
+			add_tech_bonus = {
+				name = GER_financing_of_military_developments
+				bonus = 0.5
+				uses = 3
+				category = radar_tech
+				category = nuclear
+				category = rocketry
+			}
+			swap_ideas = {
+				remove_idea = GER_wehrstaat_idea_2
+				add_idea = GER_wehrstaat_idea_3
+			}
+		}
+	}
+	
+	focus = {
+		id = GER_rationalization_of_public_life
+		icon = GFX_z_goal_stop_east_politic
+		prerequisite = { focus = GER_introduce_rigid_vertical_of_power }
+		prerequisite = { focus = GER_state_planning_of_economy }
+		available = {
+		}
+		bypass = {
+		}
+		x = 1
+		y = 1
+		relative_position_id = GER_introduce_rigid_vertical_of_power
+		cost = 10
+		ai_will_do = {
+			factor = 10
+		}
+		
+		search_filters = {}
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus GER_rationalization_of_public_life"
+			add_stability = -0.15
+			swap_ideas = {
+                remove_idea = GER_state_planning_idea
+                add_idea = GER_state_planning_idea_2
+            }
+		}
+	}
+	
+	focus = {
+		id = GER_german_army_has_state
+		icon = GFX_z_goal_concept_of_technate
+		prerequisite = { focus = GER_financing_of_military_developments }
+		prerequisite = { focus = GER_rationalization_of_public_life }
+		available = {
+		}
+		bypass = {
+		}
+		x = 1
+		y = 1
+		relative_position_id = GER_financing_of_military_developments
+		cost = 10
+		ai_will_do = {
+			factor = 10
+		}
+		
+		search_filters = {}
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus GER_german_army_has_state"
+			swap_ideas = {
+                remove_idea = GER_wehrstaat_rules_2
+                add_idea = GER_wehrstaat_rules_3
+            }
+			add_ideas = GER_german_army_is_state_idea
+		}
+	}
+	
+	
+	################
+	### KAISER BRANCH
+	################
+	
 	focus = {
 		id = GER_return_of_the_kaiser
-		text = GER_fix_bismarcks_mistakes
 		icon = GFX_focus_ger_return_of_the_kaiser
 		prerequisite = { focus = GER_revive_the_kaiserreich }
-		mutually_exclusive = { focus = GER_imperial_constitution }
+		mutually_exclusive = {
+			focus = GER_start_implementing_wehrstaat
+			focus = GER_imperial_constitution
+		}
 		available = {
 			is_subject = no
 			#monarchy > 0.4
@@ -10583,10 +10866,10 @@ focus_tree = {
 			#}
 		}
 		bypass = {
-			has_country_flag = GER_mackensen_dead
-			NOT = { has_government = democratic }
+			#has_country_flag = GER_mackensen_dead
+			#NOT = { has_government = democratic }
 		}
-		x = -5
+		x = 0
 		y = 1
 		relative_position_id = GER_revive_the_kaiserreich
 		cost = 10
@@ -10596,19 +10879,40 @@ focus_tree = {
 		
 		search_filters = {FOCUS_FILTER_POLITICAL}
 		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus GER_return_of_the_kaiser"
+			add_popularity = { ideology = monarchy popularity = 0.25 }
+			set_politics = { ruling_party = monarchy elections_allowed = no }
+			hidden_effect = {
+				drop_cosmetic_tag = yes
+			}
+			set_cosmetic_tag = GER_german_empire
+			country_event = { id = NWgermany.4 }
+			swap_ideas = {
+                remove_idea = GER_wehrmacht_rules_2_0
+                add_idea = GER_wehrmacht_rules_2_1b
+            }
 			add_ideas = GER_revive_the_kaiserreich
 			add_named_threat = { threat = 5 name = GER_revive_the_kaiserreich }
 			set_country_leader_ideology = absolute_monarchy
 			custom_effect_tooltip = set_country_leader_ideology_absolute_monarchy
+			every_other_country = {
+				limit = {
+					OR = {
+						original_tag = AUS
+						original_tag = HUN
+						original_tag = TUR
+					}
+				}
+				country_event = { id = TRpolitical.101 }
+			}
 		}
 	}
-	
 	
 	focus = {
 		id = GER_state_religion
 		icon = GFX_focus_por_concordat
 		prerequisite = { focus = GER_return_of_the_kaiser }
-		x = -3
+		x = -1
 		y = 1
 		relative_position_id = GER_return_of_the_kaiser
 		
@@ -10671,7 +10975,7 @@ focus_tree = {
 		id = GER_prestige_of_army
 		icon = GFX_z_goal_conscription
 		prerequisite = { focus = GER_return_aristocracy_to_power }
-		x = 0
+		x = 1
 		y = 1
 		relative_position_id = GER_return_aristocracy_to_power
 		
@@ -10697,12 +11001,68 @@ focus_tree = {
 	}
 	
 	focus = {
-		id = GER_continue_schacht_plan
-		icon = GFX_z_goal_new_industry_standard
+		id = GER_restore_german_monarchies
+		icon = GFX_z_goal_monarchism_14
 		prerequisite = { focus = GER_state_religion }
 		x = 1
 		y = 1
 		relative_position_id = GER_state_religion
+		
+		cost = 10
+		
+		cancel_if_invalid = no
+		continue_if_invalid = yes
+		available_if_capitulated = no
+
+		ai_will_do = {
+			factor = 10
+		}
+		available = {
+		}
+		bypass = {
+		}
+		
+		search_filters = {}
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus GER_restore_german_monarchies"
+			add_political_power = 75
+			custom_effect_tooltip = available_political_advisor
+			show_ideas_tooltip = GER_rupprecht_von_wittelsbach
+			show_ideas_tooltip = GER_carl_eduard
+		}
+	}
+	
+	focus = {
+		id = GER_fix_bismarcks_mistakes
+		icon = GFX_z_goal_broken_torch
+		prerequisite = { focus = GER_return_of_the_kaiser }
+		available = {
+			is_subject = no
+		}
+		bypass = {
+		}
+		x = 1
+		y = 1
+		relative_position_id = GER_return_of_the_kaiser
+		cost = 10
+		ai_will_do = {
+			factor = 100
+		}
+		
+		search_filters = {}
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus GER_fix_bismarcks_mistakes"
+			
+		}
+	}
+	
+	focus = {
+		id = GER_continue_schacht_plan
+		icon = GFX_z_goal_new_industry_standard
+		prerequisite = { focus = GER_fix_bismarcks_mistakes }
+		x = 1
+		y = 1
+		relative_position_id = GER_fix_bismarcks_mistakes
 		
 		cost = 10
 		
@@ -10745,7 +11105,7 @@ focus_tree = {
 		id = GER_eliminate_excesses_of_nazis
 		icon = GFX_focus_renounce_the_treaty_of_trianon
 		prerequisite = { focus = GER_continue_schacht_plan }
-		x = 0
+		x = -1
 		y = 1
 		relative_position_id = GER_continue_schacht_plan
 		
@@ -10808,13 +11168,15 @@ focus_tree = {
 	focus = {
 		id = GER_focus_on_the_true_enemy
 		icon = GFX_z_goal_Counter_attack
-		prerequisite = { focus = GER_return_of_the_kaiser }
-		#prerequisite = { focus = GER_naval_effort }
+		prerequisite = {
+			focus = GER_start_implementing_wehrstaat
+			focus = GER_return_of_the_kaiser
+		}
 		#mutually_exclusive = { focus = GER_expatriate_the_communists }
 		available = {
 			is_subject = no
 		}
-		x = 0
+		x = -4
 		y = 1
 		relative_position_id = GER_return_of_the_kaiser
 		cost = 10
@@ -10825,20 +11187,23 @@ focus_tree = {
 		completion_reward = {
 			add_war_support = 0.05
 			add_named_threat = { threat = 5 name = GER_focus_on_the_true_enemy }
-			swap_ideas = {
-				remove_idea = GER_revive_the_kaiserreich
-				add_idea = GER_revive_the_kaiserreich2
-			}
-			swap_ideas = {
-				remove_idea = GER_wehrmacht_rules_2_1
-				add_idea = GER_wehrmacht_rules_2_2
+			if = {
+				limit = { NOT = { has_completed_focus = GER_start_implementing_wehrstaat } }
+				swap_ideas = {
+					remove_idea = GER_revive_the_kaiserreich
+					add_idea = GER_revive_the_kaiserreich2
+				}
+				swap_ideas = {
+					remove_idea = GER_wehrmacht_rules_2_1b
+					add_idea = GER_wehrmacht_rules_2_2
+				}
 			}
 		}
 	}
 	
 	focus = {
 		id = GER_fan_the_prussian_militarism
-		icon = GFX_focus_generic_manpower
+		icon = GFX_z_goal_generic_organization_of_the_troops
 		prerequisite = { focus = GER_focus_on_the_true_enemy }
 		available = {
 		}
@@ -10851,10 +11216,14 @@ focus_tree = {
 		}
 		search_filters = { FOCUS_FILTER_MANPOWER }
 		completion_reward = {
-			swap_ideas = {
-				remove_idea = GER_wehrmacht_rules_2_2
-				add_idea = GER_wehrmacht_rules_2_3
+			if = {
+				limit = { NOT = { has_completed_focus = GER_start_implementing_wehrstaat } }
+				swap_ideas = {
+					remove_idea = GER_wehrmacht_rules_2_2
+					add_idea = GER_wehrmacht_rules_2_3
+				}
 			}
+			add_ideas = GER_fan_the_prussian_militarism
 		}
 	}
 
@@ -11292,7 +11661,7 @@ focus_tree = {
 
 
 	################
-	### MONARCHY BRANCH
+	### DEMOCRATIC BRANCH
 	################
 	
 	focus = {
@@ -11300,9 +11669,10 @@ focus_tree = {
 		icon = GFX_focus_ger_revive_kaiserreich
 		prerequisite = { focus = GER_revive_the_kaiserreich }
 		mutually_exclusive = {
+			focus = GER_start_implementing_wehrstaat
 			focus = GER_return_of_the_kaiser
 		}
-		x = 5
+		x = 9
 		y = 1
 		relative_position_id = GER_revive_the_kaiserreich
 		
@@ -11334,16 +11704,19 @@ focus_tree = {
 	focus = {
 		id = GER_expatriate_the_communists
 		icon = GFX_goal_anti_comintern_pact
-		prerequisite = { focus = GER_imperial_constitution }
+		prerequisite = {
+			focus = GER_return_of_the_kaiser
+			focus = GER_imperial_constitution
+		}
 		#mutually_exclusive = { focus = GER_focus_on_the_true_enemy }
 		available = {
 			is_subject = no
 			NOT = { has_war_with = event_target:NW_france_scope }
 		}
 		cancel_if_invalid = yes
-		x = 3
-		y = 2
-		relative_position_id = GER_revive_the_kaiserreich
+		x = -2
+		y = 1
+		relative_position_id = GER_imperial_constitution
 		cost = 10
 		ai_will_do = {
 			factor = 0.5
@@ -11537,7 +11910,7 @@ focus_tree = {
 		bypass = {
 		}
 		cancel_if_invalid = yes
-		x = 5
+		x = 6
 		y = 1
 		relative_position_id = GER_schlieffen_once_more
 		cost = 10
@@ -11572,9 +11945,9 @@ focus_tree = {
 		}
 		available = {
 		}
-		x = 0
-		y = 2
-		relative_position_id = GER_revive_the_kaiserreich
+		x = 4
+		y = 1
+		relative_position_id = GER_return_of_the_kaiser
 		cost = 10
 		ai_will_do = {
 			factor = 9
@@ -11593,7 +11966,7 @@ focus_tree = {
 		available = {
 			has_damaged_buildings = yes
 		}
-		x = -2
+		x = 2
 		y = 1
 		relative_position_id = GER_rebuild_the_nation
 		cost = 5
@@ -12369,7 +12742,7 @@ focus_tree = {
 		search_filters = { FOCUS_FILTER_RESEARCH }
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus GER_restore_order_in_army"
-			remove_ideas = GER_wehrmacht_rules_2_1
+			remove_ideas = GER_wehrmacht_rules_2_0
 			add_doctrine_cost_reduction = {
 				name = land_doc_bonus
 				cost_reduction = 0.33
@@ -12638,13 +13011,6 @@ focus_tree = {
 			custom_effect_tooltip = GER_rekindle_imperial_sentiment_tt
 		}
 	}
-	
-	
-	
-	
-	################
-	### DEMOCRATIC BRANCH
-	################
 	
 	focus = {
 		id = GER_adopt_november_amendments
@@ -16914,6 +17280,10 @@ focus_tree = {
 		search_filters = {   }
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus GER_pick_up_banner_of_communism"
+			hidden_effect = {
+				clear_global_event_target = NW_comintern_leader_scope
+			}
+			save_global_event_target_as = NW_comintern_leader_scope
 			create_faction = Comintern
 		}
 	}
@@ -16988,6 +17358,16 @@ focus_tree = {
 		}
 		available = {
 			is_subject = no
+			any_country_with_original_tag = {
+				original_tag_to_check = POL
+				any_neighbor_country = {
+					OR = {
+						tag = ROOT
+						is_in_faction_with = ROOT
+						is_subject_of = ROOT
+					}
+				}
+			}
 			if = {
 				limit = {
 					any_country_with_original_tag = {
@@ -16999,7 +17379,7 @@ focus_tree = {
 			}
 			else = {
 				has_damaged_buildings = no
-				has_army_manpower = { size > 849999 } #ca 90 div
+				has_army_manpower = { size > 549999 } #ca 60 div
 			}
 		}
 		bypass = {
@@ -17050,7 +17430,7 @@ focus_tree = {
 				}
 				ROOT = {
 					create_wargoal = {
-						type = annex_everything
+						type = puppet_wargoal_focus
 						target = PREV
 						expire = 0
 					}
@@ -17078,6 +17458,16 @@ focus_tree = {
 		}
 		available = {
 			is_subject = no
+			any_country_with_original_tag = {
+				original_tag_to_check = CZE
+				any_neighbor_country = {
+					OR = {
+						tag = ROOT
+						is_in_faction_with = ROOT
+						is_subject_of = ROOT
+					}
+				}
+			}
 			if = {
 				limit = {
 					any_country_with_original_tag = {
@@ -17136,7 +17526,7 @@ focus_tree = {
 				}
 				ROOT = {
 					create_wargoal = {
-						type = annex_everything
+						type = topple_government
 						target = PREV
 						expire = 0
 					}
@@ -17166,7 +17556,13 @@ focus_tree = {
 			is_subject = no
 			any_country_with_original_tag = {
 				original_tag_to_check = HUN
-				is_neighbor_of = ROOT
+				any_neighbor_country = {
+					OR = {
+						tag = ROOT
+						is_in_faction_with = ROOT
+						is_subject_of = ROOT
+					}
+				}
 			}
 			if = {
 				limit = {
@@ -17179,31 +17575,6 @@ focus_tree = {
 			}
 		}
 		bypass = {
-			if = {
-				limit = {
-					any_country_with_original_tag = {
-						original_tag_to_check = HUN
-						has_government = ROOT
-					}
-				}
-				any_country_with_original_tag = {
-					original_tag_to_check = HUN
-					has_government = ROOT
-					is_in_faction_with = ROOT
-					exists = no
-				}
-			}
-			else = {
-				any_country_with_original_tag = {
-					original_tag_to_check = HUN
-					NOT = { has_government = ROOT }
-					OR = {
-						exists = no
-						is_subject_of = ROOT
-						has_war_with = ROOT
-					}
-				}
-			}
 		}
 		
 		search_filters = {   }
@@ -17226,7 +17597,7 @@ focus_tree = {
 				}
 				ROOT = {
 					create_wargoal = {
-						type = annex_everything
+						type = topple_government
 						target = PREV
 						expire = 0
 					}
@@ -17254,6 +17625,16 @@ focus_tree = {
 		}
 		available = {
 			is_subject = no
+			any_country_with_original_tag = {
+				original_tag_to_check = AUS
+				any_neighbor_country = {
+					OR = {
+						tag = ROOT
+						is_in_faction_with = ROOT
+						is_subject_of = ROOT
+					}
+				}
+			}
 			if = {
 				limit = {
 					any_country_with_original_tag = {
@@ -17316,7 +17697,7 @@ focus_tree = {
 				}
 				ROOT = {
 					create_wargoal = {
-						type = annex_everything
+						type = topple_government
 						target = PREV
 						expire = 0
 					}
@@ -17344,46 +17725,49 @@ focus_tree = {
 		}
 		available = {
 			is_subject = no
-			any_country_with_original_tag = {
-				original_tag_to_check = ITA
-				is_neighbor_of = ROOT
+			OR = {
+				any_country_with_original_tag = {
+					original_tag_to_check = ITA
+					any_neighbor_country = {
+						OR = {
+							tag = ROOT
+							is_in_faction_with = ROOT
+							is_subject_of = ROOT
+						}
+					}
+				}
+				any_country_with_original_tag = {
+					original_tag_to_check = RSI
+					any_neighbor_country = {
+						OR = {
+							tag = ROOT
+							is_in_faction_with = ROOT
+							is_subject_of = ROOT
+						}
+					}
+				}
 			}
 			if = {
 				limit = {
-					any_country_with_original_tag = {
-						original_tag_to_check = ITA
-						has_government = ROOT
+					OR = {
+						any_country_with_original_tag = {
+							original_tag_to_check = ITA
+							has_government = ROOT
+						}
+						any_country_with_original_tag = {
+							original_tag_to_check = RSI
+							has_government = ROOT
+						}
 					}
 				}
 				is_faction_leader = yes
 			}
+			else = {
+				has_damaged_buildings = no
+				has_army_manpower = { size > 999999 } #ca 100 div
+			}
 		}
 		bypass = {
-			if = {
-				limit = {
-					any_country_with_original_tag = {
-						original_tag_to_check = ITA
-						has_government = ROOT
-					}
-				}
-				any_country_with_original_tag = {
-					original_tag_to_check = ITA
-					has_government = ROOT
-					is_in_faction_with = ROOT
-					exists = no
-				}
-			}
-			else = {
-				any_country_with_original_tag = {
-					original_tag_to_check = ITA
-					NOT = { has_government = ROOT }
-					OR = {
-						exists = no
-						is_subject_of = ROOT
-						has_war_with = ROOT
-					}
-				}
-			}
 		}
 		
 		search_filters = {   }
@@ -17391,14 +17775,20 @@ focus_tree = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus GER_smash_italian_fascism"
 			random_other_country = {
 				limit = {
-					original_tag = ITA
+					OR = {
+						original_tag = ITA
+						original_tag = RSI
+					}
 					has_government = ROOT
 				}
 				country_event = generic.5
 			}
 			every_other_country = {
 				limit = {
-					original_tag = ITA
+					OR = {
+						original_tag = ITA
+						original_tag = RSI
+					}
 					NOT = {
 						has_government = ROOT
 						has_war_with = ROOT
@@ -17406,7 +17796,7 @@ focus_tree = {
 				}
 				ROOT = {
 					create_wargoal = {
-						type = annex_everything
+						type = topple_government
 						target = PREV
 						expire = 0
 					}
@@ -17434,6 +17824,16 @@ focus_tree = {
 		}
 		available = {
 			is_subject = no
+			any_country_with_original_tag = {
+				original_tag_to_check = event_target:NW_france_scope
+				any_neighbor_country = {
+					OR = {
+						tag = ROOT
+						is_in_faction_with = ROOT
+						is_subject_of = ROOT
+					}
+				}
+			}
 			if = {
 				limit = {
 					any_country_with_original_tag = {
@@ -17496,7 +17896,7 @@ focus_tree = {
 				}
 				ROOT = {
 					create_wargoal = {
-						type = annex_everything
+						type = puppet_wargoal_focus
 						target = PREV
 						expire = 0
 					}
@@ -17527,11 +17927,23 @@ focus_tree = {
 			OR = {
 				any_country_with_original_tag = {
 					original_tag_to_check = SPA
-					is_neighbor_of = ROOT
+					any_neighbor_country = {
+						OR = {
+							tag = ROOT
+							is_in_faction_with = ROOT
+							is_subject_of = ROOT
+						}
+					}
 				}
 				any_country_with_original_tag = {
 					original_tag_to_check = SPR
-					is_neighbor_of = ROOT
+					any_neighbor_country = {
+						OR = {
+							tag = ROOT
+							is_in_faction_with = ROOT
+							is_subject_of = ROOT
+						}
+					}
 				}
 			}
 			if = {
@@ -17551,54 +17963,6 @@ focus_tree = {
 			}
 		}
 		bypass = {
-			if = {
-				limit = {
-					any_country_with_original_tag = {
-						original_tag_to_check = SPR
-						has_government = ROOT
-					}
-				}
-				any_country_with_original_tag = {
-					original_tag_to_check = SPR
-					has_government = ROOT
-					is_in_faction_with = ROOT
-					exists = no
-				}
-			}
-			else_if = {
-				limit = {
-					any_country_with_original_tag = {
-						original_tag_to_check = SPA
-						has_government = ROOT
-					}
-				}
-				any_country_with_original_tag = {
-					original_tag_to_check = SPA
-					has_government = ROOT
-					is_in_faction_with = ROOT
-					exists = no
-				}
-			}
-			else = {
-				any_country_with_original_tag = {
-					original_tag_to_check = SPR
-					NOT = { has_government = ROOT }
-					OR = {
-						exists = no
-						is_subject_of = ROOT
-						has_war_with = ROOT
-					}
-				}
-				any_country_with_original_tag = {
-					original_tag_to_check = SPA
-					NOT = { has_government = ROOT }
-					OR = {
-						exists = no
-						is_subject_of = ROOT
-						has_war_with = ROOT
-					}
-				}
-			}
 		}
 		
 		search_filters = {   }
@@ -17627,7 +17991,7 @@ focus_tree = {
 				}
 				ROOT = {
 					create_wargoal = {
-						type = annex_everything
+						type = puppet_wargoal_focus
 						target = PREV
 						expire = 0
 					}
