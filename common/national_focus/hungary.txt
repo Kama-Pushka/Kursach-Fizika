@@ -2769,35 +2769,31 @@ focus_tree = {
 			factor = 80
 			modifier = {
 				factor = 0
-					SOV = { has_capitulated = yes }
+				SOV = { has_capitulated = yes }
 			}
 		}
 
 		available = {
-			ANY_comintern_joinable = yes
+			communism > 0.5
+			is_subject = no
 			is_in_faction = no
-			NOT = { has_war_with = SOV }
 			any_of_scopes = {
 				array = global.majors
 				tooltip = is_major_tt
-				hidden_trigger = { NOT = { tag = ROOT } }
-				has_government = communism
+				has_government = ROOT
+				is_faction_leader = yes
 				NOT = { has_war_with = ROOT }
 			}
-			if = {
-				limit = { SOV = { has_government = communism } }
-				NOT = {
-					any_enemy_country = {
-						is_in_faction_with = SOV
-					}
-				}
-			}
-			is_subject = no
-			communism > 0.5
 		}
 
 		bypass = {
-
+			any_of_scopes = {
+				array = global.majors
+				tooltip = is_major_tt
+				has_government = ROOT
+				is_faction_leader = yes
+				is_in_faction_with = ROOT
+			}
 		}
 
 		cancel_if_invalid = yes
@@ -2808,20 +2804,20 @@ focus_tree = {
 		completion_reward = {
 			if = {
 				limit = {
-					SOV = {
-						has_government = communism
+					event_target:NW_comintern_leader_scope = {
 						is_faction_leader = yes
-					}
+						has_government = communism
+						NOT = { has_war_with = ROOT }
+					}	
 				}
-				SOV = {
+				event_target:NW_comintern_leader_scope = {
 					country_event = generic.2
 				}
 				if = {
 					limit = {
-						SOV = {
-							NOT = {
-								has_completed_focus = SOV_the_anti_soviet_trotskyist_center
-							}
+						event_target:NW_comintern_leader_scope = { original_tag = SOV }
+						NOT = {
+							has_completed_focus = SOV_the_anti_soviet_trotskyist_center
 						}
 					}
 					retire_country_leader = yes
@@ -2837,11 +2833,11 @@ focus_tree = {
 				}
 			}
 			else = {
-				get_best_alliance_match_communism_effect = yes
-				var:best_leader = {
-					country_event = generic.2
-				}
-			}
+                get_best_alliance_match_communism_effect = yes
+                var:best_leader = {
+                    country_event = generic.2
+                }
+            }
 		}
 	}
 
@@ -2894,17 +2890,23 @@ focus_tree = {
 		}
 
 		available = {
-			ROM = { 
+			ROM = {
 				exists = yes 
-				NOT = { is_in_faction_with = SOV }
-				NOT = { has_war_with = SOV }
+				NOT = { is_in_faction_with = FACTION_LEADER }
+				NOT = { has_war_with = FACTION_LEADER }
 				OR = {
 					owns_state = 76
 					owns_state = 78
 				}
 			}
-			NOT = { has_war_with = SOV }
-			SOV_comintern_joinable = yes
+			FACTION_LEADER = {
+				hidden_trigger = {
+					exists = yes
+					has_capitulated = no
+				}
+				has_government = communism
+				has_civil_war = no
+			}
 		}
 
 		bypass = {
@@ -2916,7 +2918,7 @@ focus_tree = {
 		available_if_capitulated = no
 
 		completion_reward = {
-			SOV = { country_event = DOD_hungary.110 }
+			FACTION_LEADER = { country_event = DOD_hungary.110 }
 		}
 	}
 
@@ -2936,9 +2938,15 @@ focus_tree = {
 
 		available = {
 			CZE = { exists = yes }
-			NOT = { has_war_with = SOV }
-			CZE = { NOT = { is_in_faction_with = SOV } }
-			SOV_comintern_joinable = yes
+			CZE = { NOT = { is_in_faction_with = FACTION_LEADER } }
+			FACTION_LEADER = {
+				hidden_trigger = {
+					exists = yes
+					has_capitulated = no
+				}
+				has_government = communism
+				has_civil_war = no
+			}
 		}
 
 		bypass = {
@@ -2950,7 +2958,7 @@ focus_tree = {
 		available_if_capitulated = no
 
 		completion_reward = {
-			SOV = { country_event = DOD_hungary.120 }
+			FACTION_LEADER = { country_event = DOD_hungary.120 }
 		}
 	}
 

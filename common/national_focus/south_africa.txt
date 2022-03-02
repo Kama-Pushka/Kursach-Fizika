@@ -1771,14 +1771,27 @@
 		}
 
 		available = {
-			NOT = { has_war_with = SOV }
-			SOV = { is_puppet = no }
 			is_subject = no
+			is_in_faction = no
+			has_government = communism
+			any_of_scopes = {
+				array = global.majors
+				tooltip = is_major_tt
+				has_government = communism
+				is_faction_leader = yes
+				NOT = { has_war_with = ROOT }
+			}
 			NOT = { has_country_flag = britain_enforced_our_loyalty }
 		}
 		
 		bypass = {
-			is_in_faction_with = SOV
+			any_of_scopes = {
+				array = global.majors
+				tooltip = is_major_tt
+				has_government = communism
+				is_faction_leader = yes
+				is_in_faction_with = ROOT
+			}
 		}
 
 		cancel_if_invalid = yes
@@ -1791,7 +1804,24 @@
 		}
 
 		completion_reward = {
-			SOV = { country_event = { id = tfv_south_africa.20 } }
+			if = {
+				limit = {
+					event_target:NW_comintern_leader_scope = {
+						is_faction_leader = yes
+						has_government = communism
+						NOT = { has_war_with = ROOT }
+					}	
+				}
+				event_target:NW_comintern_leader_scope = {
+					country_event = tfv_south_africa.20
+				}
+			}
+			else = {
+                get_best_alliance_match_communism_effect = yes
+                var:best_leader = {
+                    country_event = generic.2
+                }
+            }
 		}
 	}
 	
@@ -1841,7 +1871,7 @@
 		}
 
 		available = {
-			SOV = { exists = yes }
+			FACTION_LEADER = { exists = yes }
 			NOT = { has_country_flag = britain_enforced_our_loyalty }
 		}
 		
@@ -1889,10 +1919,7 @@
 		}
 
 		available = {
-			SOV = { 
-				exists = yes
-				is_puppet = no
-			}
+			is_in_faction = yes
 			NOT = { has_country_flag = britain_enforced_our_loyalty }
 		}
 		
@@ -1910,7 +1937,7 @@
 		}
 
 		completion_reward = {
-			SOV = {
+			FACTION_LEADER = {
 				custom_effect_tooltip = needs_approval
 				country_event = { id = tfv_south_africa.40 } #tech sharing
 			}

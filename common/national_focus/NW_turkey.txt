@@ -13472,9 +13472,12 @@ focus_tree = {
 		available = {
 			is_subject = no
 			has_government = communism
-			event_target:NW_comintern_leader_scope = {
-				NOT = { has_war_with = ROOT }
+			any_of_scopes = {
+				array = global.majors
+				tooltip = is_major_tt
 				has_government = communism
+				is_faction_leader = yes
+				NOT = { has_war_with = ROOT }
 			}
 			if = {
 				limit = { event_target:NW_comintern_leader_scope = { original_tag = SOV } }
@@ -13484,23 +13487,37 @@ focus_tree = {
 		bypass = {
 			OR = {
 				has_country_flag = USSR_decline_support
-				is_in_faction_with = event_target:NW_comintern_leader_scope
+				any_of_scopes = {
+					array = global.majors
+					tooltip = is_major_tt
+					has_government = communism
+					is_faction_leader = yes
+					is_in_faction_with = ROOT
+				}
 			}
 		}
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus TUR_join_to_comintern"
-			event_target:NW_comintern_leader_scope = { country_event = { id = generic.2 days = 1 } }
-			hidden_effect = {
+			set_rule = { can_create_factions = yes }
+			if = {
+				limit = {
+					event_target:NW_comintern_leader_scope = {
+						is_faction_leader = yes
+						has_government = communism
+						NOT = { has_war_with = ROOT }
+					}	
+				}
 				event_target:NW_comintern_leader_scope = {
-					add_ai_strategy = {
-						type = alliance
-						id = ROOT
-						value = 200
-					}
+					country_event = generic.2
 				}
 			}
-			set_rule = { can_create_factions = yes }
+			else = {
+                get_best_alliance_match_communism_effect = yes
+                var:best_leader = {
+                    country_event = generic.2
+                }
+            }
 		}
 	}
 	
@@ -13550,7 +13567,14 @@ focus_tree = {
 			factor = 30
 		}
 		available = {
-			is_in_faction_with = SOV
+			any_of_scopes = {
+				array = global.majors
+				tooltip = is_major_tt
+				has_government = communism
+				is_faction_leader = yes
+				NOT = { has_war_with = ROOT }
+				is_in_faction_with = ROOT
+			}
 		}
 		bypass = {
 		}
@@ -13605,10 +13629,10 @@ focus_tree = {
 					instant_build = yes
 				}
 			}
-			SOV = {
+			FACTION_LEADER = {
 				random_owned_controlled_state = {
 					limit = {
-						is_core_of = SOV
+						is_core_of = PREV
 						free_building_slots = {
 							building = industrial_complex
 							size > 0
@@ -13624,7 +13648,7 @@ focus_tree = {
 				}
 				random_owned_controlled_state = {
 					limit = {
-						is_core_of = SOV
+						is_core_of = PREV
 						free_building_slots = {
 							building = industrial_complex
 							size > 0
@@ -13640,7 +13664,7 @@ focus_tree = {
 				}
 				random_owned_controlled_state = {
 					limit = {
-						is_core_of = SOV
+						is_core_of = PREV
 						free_building_slots = {
 							building = industrial_complex
 							size > 0
@@ -13690,9 +13714,9 @@ focus_tree = {
 		id = TUR_soviet_tank_factories
 		icon = GFX_focus_generic_tank_production
 		available = {
-			SOV = {
+			FACTION_LEADER = {
 				has_opinion = {
-					target = TUR
+					target = ROOT
 					value > 74
 				}
 			}
@@ -13826,7 +13850,14 @@ focus_tree = {
 			factor = 10
 		}
 		available = {
-			is_in_faction_with = SOV
+			any_of_scopes = {
+				array = global.majors
+				tooltip = is_major_tt
+				has_government = communism
+				is_faction_leader = yes
+				NOT = { has_war_with = ROOT }
+				is_in_faction_with = ROOT
+			}
 		}
 		bypass = {
 		}
@@ -14074,6 +14105,31 @@ focus_tree = {
 				id = SOV
 				value = -200
 			}
+			add_ai_strategy = {
+				type = alliance
+				id = GRF
+				value = -600
+			}
+			add_ai_strategy = {
+				type = befriend
+				id = GRF
+				value = -200
+			}
+			add_ai_strategy = {
+				type = support
+				id = GRF
+				value = -200
+			}
+			add_ai_strategy = {
+				type = befriend
+				id = GBF
+				value = 200
+			}
+			add_ai_strategy = {
+				type = support
+				id = GBF
+				value = 200
+			}
 			SOV = {
 				add_ai_strategy = {
 					type = alliance
@@ -14100,6 +14156,51 @@ focus_tree = {
 						}
 					}
 					recall_volunteers_from = ROOT
+				}
+            }
+			GRF = {
+				add_ai_strategy = {
+					type = alliance
+					id = ROOT
+					value = -600
+				}
+                add_ai_strategy = {
+					type = befriend
+					id = ROOT
+					value = -200
+				}
+                add_ai_strategy = {
+					type = support
+					id = ROOT
+					value = -200
+				}
+                if = {
+					limit = {
+						ROOT = {
+							has_volunteers_amount_from = {
+								tag = SOV
+								count > 0
+							}
+						}
+					}
+					recall_volunteers_from = ROOT
+				}
+            }
+			GBF = {
+                add_ai_strategy = {
+					type = befriend
+					id = ROOT
+					value = 200
+				}
+                add_ai_strategy = {
+					type = support
+					id = ROOT
+					value = 200
+				}
+                add_ai_strategy = {
+					type = send_volunteers_desire
+					id = ROOT
+					value = 50
 				}
             }
 		}
@@ -14339,39 +14440,38 @@ focus_tree = {
 				limit = {
 					OR = {
 						is_capital = yes
-						infrastructure > 9
 						AND = {
-							infrastructure > 8
+							infrastructure > 4
 							OR = {
-								arms_factory > 1
-								industrial_complex > 2
-							}
-						}
-						AND = {
-							infrastructure > 7
-							OR = {
-								arms_factory > 3
-								industrial_complex > 6
-							}
-						}
-						AND = {
-							infrastructure > 6
-							OR = {
-								arms_factory > 4
+								arms_factory > 6
 								industrial_complex > 8
 							}
 						}
 						AND = {
 							infrastructure > 3
 							OR = {
-								arms_factory > 5
+								arms_factory > 8
 								industrial_complex > 10
+							}
+						}
+						AND = {
+							infrastructure > 2
+							OR = {
+								arms_factory > 10
+								industrial_complex > 12
+							}
+						}
+						AND = {
+							infrastructure > 1
+							OR = {
+								arms_factory > 12
+								industrial_complex > 14
 							}
 						}
 						AND = {
 							infrastructure > 0
 							OR = {
-								arms_factory > 10
+								arms_factory > 14
 								industrial_complex > 16
 							}
 						}
@@ -14421,19 +14521,10 @@ focus_tree = {
 					
 					if = {
 						limit = {
-							infrastructure > 9
-						}
-						add_resource = {
-							type = steel
-							amount = 7
-						}
-					}
-					else_if = {
-						limit = {
-							infrastructure > 8
+							infrastructure > 4
 							OR = {
-								arms_factory > 1
-								industrial_complex > 2
+								arms_factory > 6
+								industrial_complex > 8
 							}
 						}
 						add_resource = {
@@ -14443,10 +14534,10 @@ focus_tree = {
 					}
 					else_if = {
 						limit = {
-							infrastructure > 7
+							infrastructure > 3
 							OR = {
-								arms_factory > 3
-								industrial_complex > 6
+								arms_factory > 8
+								industrial_complex > 10
 							}
 						}
 						add_resource = {
@@ -14456,10 +14547,10 @@ focus_tree = {
 					}
 					else_if = {
 						limit = {
-							infrastructure > 6
+							infrastructure > 2
 							OR = {
-								arms_factory > 4
-								industrial_complex > 8
+								arms_factory > 10
+								industrial_complex > 12
 							}
 						}
 						add_resource = {
@@ -14469,10 +14560,10 @@ focus_tree = {
 					}
 					else_if = {
 						limit = {
-							infrastructure > 3
+							infrastructure > 1
 							OR = {
-								arms_factory > 5
-								industrial_complex > 10
+								arms_factory > 12
+								industrial_complex > 14
 							}
 						}
 						add_resource = {
@@ -14484,7 +14575,7 @@ focus_tree = {
 						limit = {
 							infrastructure > 0
 							OR = {
-								arms_factory > 10
+								arms_factory > 14
 								industrial_complex > 16
 							}
 						}
@@ -14608,7 +14699,11 @@ focus_tree = {
 			SOV = {
 				add_opinion_modifier = { target = ROOT modifier = TUR_traitors_of_the_revolution }
 			}
+			GRF = {
+				add_opinion_modifier = { target = ROOT modifier = TUR_traitors_of_the_revolution }
+			}
 			add_opinion_modifier = { target = SOV modifier = TUR_traitors_of_the_revolution }
+			add_opinion_modifier = { target = GRF modifier = TUR_traitors_of_the_revolution }
 			add_popularity = {
 				ideology = communism
 				popularity = 0.1
@@ -14620,8 +14715,18 @@ focus_tree = {
 				value = 400
 			}
 			add_ai_strategy = {
+				type = antagonize
+				id = GRF
+				value = 400
+			}
+			add_ai_strategy = {
 				type = contain
 				id = SOV
+				value = 200
+			}
+			add_ai_strategy = {
+				type = contain
+				id = GRF
 				value = 200
 			}
 		}
@@ -14638,6 +14743,7 @@ focus_tree = {
 		prerequisite = { focus = TUR_proclaim_aggressive_anti_colonialism_2 }
 		available = {
 			NOT = { is_in_faction_with = SOV }
+			NOT = { is_in_faction_with = GRF }
 		}
 		x = 0
 		y = 1
@@ -14679,6 +14785,18 @@ focus_tree = {
 				}
 				SPA = { country_event = { id = generic.5 } }
 			}
+			if = {
+				limit = {
+					GBF = {
+						exists = yes 
+						is_subject = no
+						NOT = {
+							is_in_faction_with = SOV
+						}
+					}
+				}
+				GBF = { country_event = { id = generic.5 } }
+			}
 		}
 	}
 	
@@ -14701,26 +14819,42 @@ focus_tree = {
 			factor = 10
 		}
 		available = {
-			GRE = { exists = yes }
+			OR = {
+				GRE = { exists = yes }
+				CRE = { exists = yes }
+				HEL = { exists = yes }
+			}
 		}
 		bypass = {
 		}
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus TUR_revolution_in_greece"
-			create_wargoal = {
-				type = annex_everything
-				target = GRE
-			}
-			add_ai_strategy = {
-				type = conquer
-				id = "GRE"
-				value = 200
-			}
-			add_ai_strategy = {
-				type = antagonize
-				id = "GRE"
-				value = 200
+			every_other_country = {
+				limit = {
+					OR = {
+						original_tag = GRE
+						original_tag = CRE
+						original_tag = HEL
+					}
+				}
+				ROOT = {
+					create_wargoal = {
+						type = annex_everything
+						target = PREV
+						expire = 0
+					}
+					add_ai_strategy = {
+						type = conquer
+						id = PREV
+						value = 200
+					}
+					add_ai_strategy = {
+						type = antagonize
+						id = PREV
+						value = 200
+					}
+				}
 			}
 		}
 	}
@@ -14741,7 +14875,7 @@ focus_tree = {
 			add_timed_idea = { idea = TUR_construct_a_red_navy days = 480 }
 			every_country = {
 				limit = {
-					is_in_faction_with = TUR
+					is_in_faction_with = ROOT
 					has_government = communism
 					any_owned_state = {
 						is_coastal = yes
@@ -14839,6 +14973,7 @@ focus_tree = {
 				create_wargoal = {
 					type = annex_everything
 					target = PER
+					expire = 0
 				}
 				add_ai_strategy = {
 					type = conquer
@@ -14859,6 +14994,7 @@ focus_tree = {
 				create_wargoal = {
 					type = annex_everything
 					target = QAS
+					expire = 0
 				}
 				add_ai_strategy = {
 					type = conquer
@@ -15008,7 +15144,8 @@ focus_tree = {
 		completion_reward = {
 			create_wargoal = {
 				type = annex_everything
-				target = SOV
+				target = event_target:NW_comintern_leader_scope
+				expire = 0
 			}
 		}
 	}
