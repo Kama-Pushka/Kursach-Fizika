@@ -68,7 +68,6 @@ country_event = {
 		hidden_effect = {
 			GBF = {
 				#NW_generate_all_generic_character = yes
-				#NW_generate_all_germany_character = yes
 				
 				if = {
 					limit = { ROOT = { has_government = fascism } }
@@ -224,7 +223,6 @@ country_event = {
 		hidden_effect = {
 			GBF = {
 				#NW_generate_all_generic_character = yes
-				#NW_generate_all_germany_character = yes
 				if = {
 					limit = { ROOT = { has_government = fascism } }
 					set_country_flag = same_ideology_civil_war_flag
@@ -391,7 +389,6 @@ country_event = {
 		hidden_effect = {
 			GRF = {
 				#NW_generate_all_generic_character = yes
-				#NW_generate_all_germany_character = yes
 				if = {
 					limit = { ROOT = { has_government = communism } }
 					set_country_flag = same_ideology_civil_war_flag
@@ -571,7 +568,6 @@ country_event = {
 		hidden_effect = {
 			GRF = {
 				#NW_generate_all_generic_character = yes
-				#NW_generate_all_germany_character = yes
 				if = {
 					limit = { ROOT = { has_government = communism } }
 					set_country_flag = same_ideology_civil_war_flag
@@ -2121,6 +2117,8 @@ country_event = {
 				expire = "1965.1.1"
 			}
 			promote_leader = yes
+		}
+		add_field_marshal_role = {
 			field_marshal={
 				traits={ politically_connected infantry_officer media_personality inspirational_leader }
 				skill=2
@@ -2160,27 +2158,17 @@ country_event = {
 					expire = "1965.1.1"
 				}
 				promote_leader = yes
-				field_marshal={
-					traits={ politically_connected infantry_officer media_personality inspirational_leader }
-					skill=1
-					attack_skill=1
-					defense_skill=1
-					planning_skill=1
-					logistics_skill=1
-				}
 			}
 		}
-		hidden_effect = {
-			add_country_leader_role = {
-				character = GER_wilhelm_pieck
-				field_marshal={
-					traits={ politically_connected infantry_officer media_personality inspirational_leader }
-					skill=1
-					attack_skill=1
-					defense_skill=1
-					planning_skill=1
-					logistics_skill=1
-				}
+		add_field_marshal_role = {
+			character = GER_wilhelm_pieck
+			field_marshal={
+				traits={ politically_connected infantry_officer media_personality inspirational_leader }
+				skill=1
+				attack_skill=1
+				defense_skill=1
+				planning_skill=1
+				logistics_skill=1
 			}
 		}
 		add_ideas = GER_where_thalmann
@@ -2488,6 +2476,58 @@ country_event = {
 	}
 }
 
+#Переворот национал-большевиков // GER
+country_event = {
+	id = NWgermany.54
+	title = NWgermany.54.t
+	desc = NWgermany.54.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWgermany.54" }
+	
+	option = {
+		name = NWgermany.54.a
+		set_politics = {
+			ruling_party = communism
+			elections_allowed = no
+		}
+		add_country_leader_role = {
+			character = GER_ernst_niekisch
+			country_leader = {
+				desc = "POLITICS_ERNST_NIEKISCH_DESC"
+				ideology = kemalism_socialism
+				traits = {
+				}
+				expire = "1965.1.1"
+			}
+		}
+	}
+}
+
+#Немецкая революция Штрассера // GER
+country_event = {
+	id = NWgermany.55
+	title = NWgermany.55.t
+	desc = NWgermany.55.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWgermany.55" }
+	immediate = {
+		set_variable = { GER_aggressiveness_of_strasserism = 3 }
+		set_variable = { GER_aggressiveness_of_strasserism_var = GER_aggressiveness_of_strasserism }
+		divide_variable = { GER_aggressiveness_of_strasserism_var = 50 }
+		set_variable = { GER_aggressiveness_of_strasserism_minus_var = GER_aggressiveness_of_strasserism }
+		divide_variable = { GER_aggressiveness_of_strasserism_minus_var = -50 }
+	}
+	
+	option = {
+		name = NWgermany.55.a
+		add_dynamic_modifier = { modifier = GER_formation_of_ideology_dyn }
+		force_update_dynamic_modifier = yes
+	}
+}
 
 
 
@@ -2495,7 +2535,7 @@ country_event = {
 
 
 
-### фокус 21 день
+### фокус 21 день // Переворот национал-большевиков пульсар
 country_event = {
 	id = NWgermany.990
 	hidden = yes
@@ -2504,8 +2544,18 @@ country_event = {
 	immediate = {
 		log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWgermany.46"
 		if = {
-			limit = { has_civil_war = yes }
+			limit = {
+				tag = GRF
+				has_civil_war = yes
+			}
 			complete_national_focus = GER_support_from_global_community
+		}
+		if = {
+			limit = {
+				tag = GBF
+				communism > 0.5
+			}
+			country_event = NWgermany.54
 		}
 	}
 }
