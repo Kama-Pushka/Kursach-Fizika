@@ -8678,7 +8678,7 @@ focus_tree = {
 		search_filters = {  }
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus GER_peoples_army"
-			remove_ideas = GER_peoples_army
+			add_ideas = GER_peoples_army
 			custom_effect_tooltip = GER_volunteer_generals_tt
 			hidden_effect = {
 				set_temp_variable = { num_cucle = 2 }
@@ -10079,7 +10079,7 @@ focus_tree = {
 		bypass = {
 		}
 		
-		search_filters = {   }
+		search_filters = {FOCUS_FILTER_INDUSTRY}
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus GER_democracy_of_professional_councils"
 			set_temp_variable = { GER_aggressiveness_of_strasserism_temp = -3 }
@@ -10123,7 +10123,7 @@ focus_tree = {
 		bypass = {
 		}
 		
-		search_filters = {   }
+		search_filters = {FOCUS_FILTER_INDUSTRY}
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus GER_true_german_socialism"
 			remove_ideas = GER_corporations_idea_2
@@ -10152,10 +10152,10 @@ focus_tree = {
 		bypass = {
 		}
 		
-		search_filters = {   }
+		search_filters = {FOCUS_FILTER_INDUSTRY}
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus GER_national_autarky"
-			add_ideas = GER_autarky_idea
+			add_ideas = GER_national_autarky
 		}
 	}
 	
@@ -10181,7 +10181,7 @@ focus_tree = {
 		bypass = {
 		}
 		
-		search_filters = {   }
+		search_filters = {FOCUS_FILTER_WAR_SUPPORT}
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus GER_swings_of_sword"
 			add_war_support = 0.05
@@ -10223,7 +10223,7 @@ focus_tree = {
 		search_filters = {   }
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus GER_unite_germans_under_one_roof"
-			
+			country_event = NWgermany.56
 		}
 	}
 	
@@ -10252,7 +10252,22 @@ focus_tree = {
 		search_filters = {   }
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus GER_end_civil_war_of_europe"
-			
+			create_faction = federation_of_peoples_of_europe
+			every_other_country = {
+				limit = {
+					capital_scope = { is_on_continent = europe }
+					NOT = {
+						original_tag = ENG
+						original_tag = SOV
+					}
+					has_civil_war = no
+					has_war = no
+				}
+				country_event = generic.5
+			}
+			hidden_effect = {
+				news_event = { id = trworldnews.159 hours = 6 }
+			}
 		}
 	}
 	
@@ -10282,7 +10297,16 @@ focus_tree = {
 		search_filters = {   }
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus GER_european_autarky"
-			
+			swap_ideas = {
+				remove_idea = GER_national_autarky
+				add_idea = GER_european_autarky
+			}
+			every_other_country = {
+				limit = {
+					is_in_faction_with = ROOT
+				}
+				add_ideas = GER_european_autarky
+			}
 		}
 	}
 	
@@ -10311,7 +10335,11 @@ focus_tree = {
 		search_filters = {   }
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus GER_european_academy"
-			
+			add_to_tech_sharing_group = GER_european_academy
+			every_other_country = {
+				limit = { is_in_faction_with = ROOT }
+				add_to_tech_sharing_group = GER_european_academy
+			}
 		}
 	}
 	
@@ -10333,6 +10361,7 @@ focus_tree = {
 			factor = 10
 		}
 		available = {
+			has_idea = GER_european_autarky
 		}
 		bypass = {
 		}
@@ -10340,7 +10369,19 @@ focus_tree = {
 		search_filters = {   }
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus GER_customs_freedom_within_europe"
-			
+			swap_ideas = {
+				remove_idea = GER_european_autarky
+				add_idea = GER_european_autarky_2
+			}
+			every_other_country = {
+				limit = {
+					has_idea = GER_european_autarky
+				}
+				swap_ideas = {
+					remove_idea = GER_european_autarky
+					add_idea = GER_european_autarky_2
+				}
+			}
 		}
 	}
 	
@@ -10363,6 +10404,16 @@ focus_tree = {
 			factor = 10
 		}
 		available = {
+			OR = {
+				any_owned_state = {
+					is_on_continent = africa
+				}
+				any_allied_country = {
+					any_owned_state = {
+						is_on_continent = africa
+					}
+				}
+			}
 		}
 		bypass = {
 		}
@@ -10370,7 +10421,47 @@ focus_tree = {
 		search_filters = {   }
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus GER_european_colonial_company"
-			
+			custom_effect_tooltip = GER_european_colonial_company_tt
+			hidden_effect = {
+				every_state = {
+					limit = {
+						is_on_continent = africa
+						owner = {
+							OR = {
+								tag = ROOT
+								AND = {
+									is_in_faction_with = ROOT
+									is_ai = yes
+								}
+							}
+						}
+					}
+					AFR = {
+						add_state_core = PREV
+						set_state_owner = PREV
+					}
+				}
+				every_state = {
+					limit = {
+						is_on_continent = africa
+						controller = {
+							OR = {
+								tag = ROOT
+								AND = {
+									is_in_faction_with = ROOT
+									is_ai = yes
+								}
+							}
+						}
+					}
+					AFR = {
+						save_party_popularity = yes
+						set_state_controller = PREV
+						ROOT = { puppet = PREV }
+						load_party_popularity = yes
+					}
+				}
+			}
 		}
 	}
 	
@@ -10399,7 +10490,18 @@ focus_tree = {
 		search_filters = {   }
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus GER_religious_question"
-			
+			set_temp_variable = { GER_aggressiveness_of_strasserism_temp = -5 }
+			add_to_variable = { GER_aggressiveness_of_strasserism = GER_aggressiveness_of_strasserism_temp }
+			custom_effect_tooltip = GER_aggressiveness_of_strasserism_tt
+			hidden_effect = {
+				set_variable = { GER_aggressiveness_of_strasserism_var = GER_aggressiveness_of_strasserism }
+				divide_variable = { GER_aggressiveness_of_strasserism_var = 50 }
+				set_variable = { GER_aggressiveness_of_strasserism_minus_var = GER_aggressiveness_of_strasserism }
+				divide_variable = { GER_aggressiveness_of_strasserism_minus_var = -50 }
+				force_update_dynamic_modifier = yes
+			}
+			add_stability = 0.015
+			add_popularity = { ideology = fascism popularity = 0.05 }
 		}
 	}
 	
@@ -10428,7 +10530,7 @@ focus_tree = {
 		search_filters = {   }
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus GER_status_of_jews"
-			
+			country_event = { id = NWgermany.71 hours = 3 }
 		}
 	}
 	
@@ -10457,7 +10559,17 @@ focus_tree = {
 		search_filters = {   }
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus GER_rejection_of_prussian_militarism"
-			
+			add_war_support = -0.15
+			set_temp_variable = { GER_aggressiveness_of_strasserism_temp = -5 }
+			add_to_variable = { GER_aggressiveness_of_strasserism = GER_aggressiveness_of_strasserism_temp }
+			custom_effect_tooltip = GER_aggressiveness_of_strasserism_tt
+			hidden_effect = {
+				set_variable = { GER_aggressiveness_of_strasserism_var = GER_aggressiveness_of_strasserism }
+				divide_variable = { GER_aggressiveness_of_strasserism_var = 50 }
+				set_variable = { GER_aggressiveness_of_strasserism_minus_var = GER_aggressiveness_of_strasserism }
+				divide_variable = { GER_aggressiveness_of_strasserism_minus_var = -50 }
+				force_update_dynamic_modifier = yes
+			}
 		}
 	}
 	
@@ -10487,7 +10599,10 @@ focus_tree = {
 		search_filters = {   }
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus GER_small_professional_army"
-			
+			swap_ideas = {
+				remove_idea = GER_peoples_army
+				add_idea = GER_small_professional_army
+			}
 		}
 	}
 	
@@ -10517,7 +10632,10 @@ focus_tree = {
 		search_filters = {   }
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus GER_militia_army_on_swiss_model"
-			
+			swap_ideas = {
+				remove_idea = GER_peoples_army
+				add_idea = GER_militia_army
+			}
 		}
 	}
 	
@@ -10550,7 +10668,21 @@ focus_tree = {
 		search_filters = {   }
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus GER_european_army_control_center"
-			
+			add_doctrine_cost_reduction = {
+				name = GER_european_army_control_center
+				cost_reduction = 0.5
+				uses = 1
+				category = land_doctrine
+			}
+			every_other_country = {
+				limit = { is_in_faction_with = ROOT }
+				add_doctrine_cost_reduction = {
+					name = GER_european_army_control_center
+					cost_reduction = 0.5
+					uses = 1
+					category = land_doctrine
+				}
+			}
 		}
 	}
 	
@@ -10581,7 +10713,7 @@ focus_tree = {
 		search_filters = {   }
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus GER_revival_of_west"
-			
+			add_ideas = GER_revival_of_west
 		}
 	}
 	
