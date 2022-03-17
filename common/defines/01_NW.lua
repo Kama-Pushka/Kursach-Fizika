@@ -238,11 +238,6 @@ NDefines.NAir.MISSION_COMMAND_POWER_COSTS = {
 	0.0, -- MISSION_RECON
 }
 
--- VICTORY POINTS
-NDefines.NGraphics.VICTORY_POINT_MAP_ICON_TEXT_CUTOFF = {270, 400, 600}  	-- Vanilla is 100, 250, 500
-NDefines.NGraphics.VICTORY_POINTS_DISTANCE_CUTOFF = {300, 500, 1200} 		-- Vanilla is 300, 500, 1500
-
-
 -- Graphics
 NDefines_Graphics.NGraphics.COMMANDGROUP_PRESET_COLORS_HSV = {
 	0.0/360.0, 1.0, 0.75,		--red
