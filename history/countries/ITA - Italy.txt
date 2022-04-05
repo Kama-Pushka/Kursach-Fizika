@@ -1,6 +1,21 @@
 ﻿capital = 2
 
-oob = "ITA_1936"
+if = {
+	limit = {
+		NOT = {
+			has_dlc = "No Step Back"
+		}
+	}
+	set_oob = "ITA_1936"
+}
+if = {
+	limit = {
+		has_dlc = "No Step Back"
+	}
+	set_oob = "ITA_1936_nsb"
+}
+
+starting_train_buffer = 1.5
 
 set_research_slots = 4
 set_stability = 0.6
@@ -54,24 +69,44 @@ set_technology = {
 	motorised_infantry = 1
 	gw_artillery = 1
 	interwar_antiair = 1
-	gwtank = 1
-	basic_light_tank = 1
-	#basic_heavy_tank = 1  # PLACEHOLDER
-	#basic_medium_tank = 1 # PLACEHOLDER
 	early_fighter = 1
 	early_bomber = 1
 	naval_bomber1 = 1
-	strategic_bomber1 = 1
 	CAS1 = 1
 	trench_warfare = 1
 	fleet_in_being = 1
 	fuel_silos = 1
 	fuel_refining = 1
-	camelry = 1
+	basic_train = 1
 	
+	strategic_bomber1 = 1
 	tech_sniper_squad = 1
-	basic_light_fire = 1
 	tech_flamethrower_squad = 1
+}
+if = {
+	limit = {
+		NOT = { has_dlc = "No Step Back" }
+	}
+	set_technology = {
+		gwtank = 1
+		basic_light_tank = 1
+		basic_light_fire = 1
+	}
+}
+if = {
+	limit = {
+		has_dlc = "No Step Back"
+	}
+	set_technology = {
+		gwtank_chassis = 1
+		basic_light_tank_chassis = 1
+	}
+}
+if = {
+	limit = {
+		has_dlc = "Battle for the Bosporus"
+	}
+	set_technology = { camelry = 1 }
 }
 if = {
 	limit = { not = { has_dlc = "Man the Guns" } }
@@ -117,10 +152,7 @@ if = {
 		coastal_defense_ships = 1
 		improved_airplane_launcher = 1
 	}
-	if = {
-		limit = { NOT = { has_game_rule = { rule = ita_fragmentation_status option = ITA_FRAGMENTED } } }
-		set_naval_oob = "ITA_1936_naval_mtg"
-	}
+	set_naval_oob = "ITA_1936_naval_mtg"
 }
 if = {
 	limit = {
@@ -128,6 +160,8 @@ if = {
 	}
 	add_ideas = MTG_naval_treaty_adherent
 }
+
+
 
 # DIPLOMACY / WAR 36
 if = {
@@ -163,6 +197,7 @@ give_guarantee = SMA
 	if = {
 		limit = { date < 1941.12.4 }
 		add_political_power = 1198
+		add_command_power = 100
 		
 		puppet = ALB
 			
@@ -221,7 +256,6 @@ give_guarantee = SMA
 		fighter2 = 1
 		tactical_bomber1 = 1
 		tactical_bomber2 = 1
-		improved_light_tank = 1
 		interwar_artillery = 1
 		interwar_antitank = 1
 		infantry_weapons2 = 1
@@ -264,6 +298,33 @@ give_guarantee = SMA
 		concentrated_industry2 = 1
 		concentrated_industry3 = 1
 	}
+	
+	if = {
+		limit = {
+			NOT = {
+				has_dlc = "No Step Back"
+			}
+		}
+		set_technology = {
+	
+			improved_light_tank = 1
+	
+		}
+		set_oob = "ITA_1939"
+	}
+	if = {
+		limit = {
+			
+			has_dlc = "No Step Back"
+			
+		}
+		set_technology = {
+	
+			improved_light_tank_chassis = 1
+	
+		}
+		set_oob = "ITA_1939_nsb"
+	}
 	if = {
 		limit = { not = { has_dlc = "Man the Guns" } }
 		set_technology = {
@@ -274,22 +335,17 @@ give_guarantee = SMA
 			basic_battleship = 1
 			improved_battleship = 1
 		}
-		if = {
-			limit = { NOT = { has_game_rule = { rule = ita_fragmentation_status option = ITA_FRAGMENTED } } }
-			set_naval_oob = "ITA_1939_naval_legacy"
-		}
+		set_naval_oob = "ITA_1939_naval_legacy"
 	}
 	if = {
 		limit = {
 			has_dlc = "Man the Guns"
 		}
 		set_technology = {
-			improved_airplane_launcher = 1	
+			improved_airplane_launcher = 1
+			
 		}
-		if = {
-			limit = { NOT = { has_game_rule = { rule = ita_fragmentation_status option = ITA_FRAGMENTED } } }
-			set_naval_oob = "ITA_1939_naval_mtg"
-		}
+		set_naval_oob = "ITA_1939_naval_mtg"
 	}
 	
 	set_stability = 0.8
@@ -422,6 +478,7 @@ if = {
 	}
 }
 
+
 ### VARIANTS ###
 # 1936 Start #
 #plane variants
@@ -434,6 +491,45 @@ create_equipment_variant = {
 			plane_engine_upgrade = 2
 			plane_reliability_upgrade = 1
 		}
+}
+if = {
+	limit = {
+		has_dlc = "No Step Back"
+	}
+	create_equipment_variant = {
+		name = "L3/35"
+		type = light_tank_chassis_1
+		parent_version = 0
+		modules = {
+			main_armament_slot = tank_heavy_machine_gun
+			turret_type_slot = tank_light_fixed_superstructure_turret
+			suspension_type_slot = tank_bogie_suspension
+			armor_type_slot = tank_riveted_armor
+			engine_type_slot = tank_gasoline_engine
+		}
+		upgrades = {
+			tank_nsb_engine_upgrade = 1
+			tank_nsb_armor_upgrade = 1
+		}
+		icon = "GFX_ITA_basic_light_tank_medium"
+	}
+	create_equipment_variant = {
+		name = "L6/40 LF"
+		type = light_tank_flame_chassis_1
+		parent_version = 0
+		modules = {
+			main_armament_slot = flamethrower
+			turret_type_slot = tank_light_one_man_tank_turret
+			suspension_type_slot = tank_bogie_suspension
+			armor_type_slot = tank_riveted_armor
+			engine_type_slot = tank_gasoline_engine
+		}
+		upgrades = {
+			tank_nsb_engine_upgrade = 2
+			tank_nsb_armor_upgrade = 4
+		}
+		icon = "GFX_ITA_improved_light_tank_medium"
+	}
 }
 if = {
 	limit = {
@@ -922,7 +1018,49 @@ if = {
 			}
 		}
 	}
+	if = {
+		limit = {
+			has_dlc = "No Step Back"
+		}
+		create_equipment_variant = {
+			name = "L6/40"
+			type = light_tank_chassis_1
+			parent_version = 0
+			modules = {
+				main_armament_slot = tank_auto_cannon
+				turret_type_slot = tank_light_one_man_tank_turret
+				suspension_type_slot = tank_bogie_suspension
+				armor_type_slot = tank_riveted_armor
+				engine_type_slot = tank_gasoline_engine
+			}
+			upgrades = {
+				tank_nsb_engine_upgrade = 2
+				tank_nsb_armor_upgrade = 4
+			}
+			icon = "GFX_ITA_improved_light_tank_medium"
+		}
+
+		create_equipment_variant = {
+			name = "M11/39"
+			type = light_tank_chassis_2
+			parent_version = 0
+			modules = {
+				main_armament_slot = tank_high_velocity_cannon
+				turret_type_slot = tank_light_fixed_superstructure_turret
+				suspension_type_slot = tank_bogie_suspension
+				armor_type_slot = tank_riveted_armor
+				engine_type_slot = tank_gasoline_engine
+				special_type_slot_1 = secondary_turret_hmg
+			}
+			upgrades = {
+				tank_nsb_engine_upgrade = 2
+				tank_nsb_armor_upgrade = 3
+			}
+			icon = "GFX_ITA_basic_medium_tank_medium"
+		}
+	}
 }
+
 
 1940.1.1 = {
 	oob = "OOB_zero"
