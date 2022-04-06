@@ -1589,3 +1589,128 @@ GER_reconstruction_of_berlin_category = {
 		}
 	}
 }
+
+
+GER_civil_war_category = {
+
+	GER_concentrate_on_enemy = {
+
+		icon = generic_prepare_civil_war
+		on_map_mode = map_and_decisions_view
+		
+		highlight_states = {
+			highlight_states_trigger = {
+				is_controlled_by = FROM
+				is_capital = yes
+			}
+		}
+		
+		available = {
+			FROM = {
+				has_war_with = ROOT
+			}
+			NOT = { has_country_flag = { flag = GER_concentrate_on_enemy_flag value > 0 } }
+		}
+		
+		visible = {
+			FROM = {
+				exists = yes
+				has_war_with = ROOT
+				has_capitulated = no
+				original_tag = GER
+			}
+			has_capitulated = no
+		}
+		
+		cancel_trigger = {
+			OR = {
+				FROM = {
+					NOT = { has_war_with = ROOT }
+				}
+				has_capitulated = yes
+			}
+		}
+		
+		target_array = enemies
+		targets = { GER }
+		targets_dynamic = yes
+		
+		target_root_trigger = {
+			OR = {
+				has_completed_focus = GER_final_consolidation_of_power
+				has_completed_focus = GER_united_anti_hitler_front
+				has_completed_focus = GER_secure_the_new_state
+				has_completed_focus = GER_german_red_army
+			}
+			has_capitulated = no
+		}
+		
+		target_trigger = {
+			FROM = {
+				has_war_with = ROOT
+				has_capitulated = no
+				original_tag = GER
+			}
+		}
+		
+		cost = 20
+		days_remove = 90
+		
+		targeted_modifier = {
+			tag = FROM
+			attack_bonus_against = 0.05
+			defense_bonus_against = 0.05
+		}
+		
+		complete_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision GER_concentrate_on_enemy (From [From.GetName] [From.GetTag])"
+			set_country_flag = { flag = GER_concentrate_on_enemy_flag days = 90 value = 1 }
+		}
+		
+		cancel_effect = {
+			clr_country_flag = GER_concentrate_on_enemy_flag
+		}
+		
+		ai_will_do = {
+			factor = 30
+			modifier = {
+				factor = 0
+				FROM = { has_capitulated = yes }
+			}
+			modifier = {
+				factor = 0
+				NOT = { is_neighbor_of = FROM }
+			}
+			modifier = {
+				factor = 3
+				tag = GBF
+				FROM = { tag = GFA }
+			}
+			modifier = {
+				factor = 3
+				tag = GRF
+				FROM = { tag = GER }
+			}
+			modifier = {
+				factor = 3
+				FROM = { surrender_progress > 0.5 }
+			}
+			modifier = {
+				factor = 4
+				FROM = { surrender_progress > 0.6 }
+			}
+			modifier = {
+				factor = 4
+				FROM = { surrender_progress > 0.7 }
+			}
+			modifier = {
+				factor = 5
+				FROM = { surrender_progress > 0.8 }
+			}
+			modifier = {
+				factor = 6
+				FROM = { surrender_progress > 0.9 }
+			}
+		}
+	}
+}
