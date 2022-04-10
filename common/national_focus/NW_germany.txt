@@ -10922,15 +10922,18 @@ focus_tree = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus GER_battle_glory"
 			add_timed_idea = { idea = GER_stabilize_front_idea days = 90 }
 			hidden_effect = {
-				set_variable = { var_battle_glory = num_controlled_states }
-				divide_variable = { var_battle_glory = 1.85 }
-				round_variable = var_battle_glory
-				clamp_variable = { var = var_battle_glory	min = 0	max = 50 }
-				divide_variable = { var_battle_glory = 100 }
+				set_temp_variable = { var_battle_glory_temp = num_controlled_states }
+				divide_temp_variable = { var_battle_glory_temp = 1.85 }
+				round_temp_variable = var_battle_glory_temp
+				clamp_temp_variable = { var = var_battle_glory_temp	min = 0	max = 50 }
+				divide_temp_variable = { var_battle_glory_temp = 100 }
+				set_variable = { var_battle_glory = var_battle_glory_temp }
+				
 				add_dynamic_modifier = { modifier = GER_battle_glory_dyn }
 				force_update_dynamic_modifier = yes
 			}
 			custom_effect_tooltip = GER_battle_glory_tt
+			custom_effect_tooltip = GER_battle_glory_effect
 			custom_effect_tooltip = SPR_seize_public_transport_tt
 		}
 	}
@@ -11132,11 +11135,7 @@ focus_tree = {
 		available = {
 			can_build_railway = {
 				start_province = 9570
-				target_province = 6559
-			}
-			can_build_railway = {
-				start_province = 6559
-				target_province = 3299
+				target_province = 9515
 			}
 		}
 		bypass = {
@@ -11145,13 +11144,16 @@ focus_tree = {
 		search_filters = {  }
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus GER_lay_temporary_railway"
+			set_global_flag = GER_lay_temporary_railway_flag
 			build_railway = {
-				start_province = 9570
-				target_province = 6559
-			}
-			build_railway = {
-				start_province = 6559
-				target_province = 3299
+				path = {
+					9570 3545 6534 11517
+					13213 3514
+					573 514 6559 9471 9441
+					11404
+					586 3571 3541 9515
+				}
+				level = 1
 			}
 			custom_effect_tooltip = GER_lay_temporary_railway_tt
 		}
@@ -19002,19 +19004,25 @@ focus_tree = {
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus GER_cornered"
 			hidden_effect = {
-				set_variable = { var_cornered = num_core_states }
-				subtract_from_variable = { var_cornered = num_controlled_states }
-				divide_variable = { var_cornered = 1.85 }
-				round_variable = var_cornered
-				clamp_variable = { var = var_cornered	min = 0	max = 20 }
-				set_variable = { var_cornered_2 = var_cornered }
-				divide_variable = { var_cornered_2 = 2 }
-				set_variable = { var_cornered_100 = var_cornered_2 }
-				divide_variable = { var_cornered_100 = 50 }
+				set_temp_variable = { var_cornered_temp = num_core_states }
+				subtract_from_temp_variable = { var_cornered_temp = num_controlled_states }
+				divide_temp_variable = { var_cornered_temp = 1.85 }
+				round_temp_variable = var_cornered_temp
+				clamp_temp_variable = { var = var_cornered_temp	min = 0	max = 20 }
+				set_temp_variable = { var_cornered_2_temp = var_cornered_temp }
+				divide_temp_variable = { var_cornered_2_temp = 2 }
+				set_temp_variable = { var_cornered_100_temp = var_cornered_2_temp }
+				divide_temp_variable = { var_cornered_100_temp = 50 }
+				
+				set_variable = { var_cornered = var_cornered_temp }
+				set_variable = { var_cornered_2 = var_cornered_2_temp }
+				set_variable = { var_cornered_100 = var_cornered_100_temp }
+				
 				add_dynamic_modifier = { modifier = GER_cornered_dyn }
 				force_update_dynamic_modifier = yes
 			}
 			custom_effect_tooltip = GER_cornered_tt
+			custom_effect_tooltip = GER_cornered_effect
 			custom_effect_tooltip = SPR_seize_public_transport_tt
 		}
 	}
@@ -19392,6 +19400,20 @@ focus_tree = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus GER_victory_of_real_revolution"
 			unlock_decision_category_tooltip = GER_reorganization_of_germany_category
 			set_variable = { reorganization_of_state = 3 }
+			
+			set_variable = { var_new_germany = reorganization_of_state }
+			divide_variable = { var_new_germany = 100 }
+			set_variable = { var_new_germany_minus = var_new_germany }
+			multiply_variable = { var_new_germany_minus = -1 }
+			set_variable = { var_new_germany_pp = reorganization_of_state }
+			subtract_from_variable = { var_new_germany_pp = 5 }
+			multiply_variable = { var_new_germany_pp = var_new_germany_pp }
+			divide_variable = { var_new_germany_pp = 100 }
+			multiply_variable = { var_new_germany_pp_minus = -1 }
+			
+			add_dynamic_modifier = { modifier = GER_new_germany_dyn }
+			force_update_dynamic_modifier = yes
+			
 			add_political_power = 150
 			add_stability = 0.1
 			add_war_support = 0.05
@@ -19502,6 +19524,22 @@ focus_tree = {
 		search_filters = { FOCUS_FILTER_INDUSTRY }
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus GER_centralization_of_management"
+			set_temp_variable = { temp1 = 2 }
+			add_to_variable = { reorganization_of_state = temp1 }
+			clamp_variable = { var = reorganization_of_state min = 0 max = 10 }
+			custom_effect_tooltip = reorganization_of_state_tt
+			
+			set_variable = { var_new_germany = reorganization_of_state }
+			divide_variable = { var_new_germany = 100 }
+			set_variable = { var_new_germany_minus = var_new_germany }
+			multiply_variable = { var_new_germany_minus = -1 }
+			set_variable = { var_new_germany_pp = reorganization_of_state }
+			subtract_from_variable = { var_new_germany_pp = 5 }
+			multiply_variable = { var_new_germany_pp = var_new_germany_pp }
+			divide_variable = { var_new_germany_pp = 100 }
+			multiply_variable = { var_new_germany_pp_minus = -1 }
+			force_update_dynamic_modifier = yes
+			
 			add_ideas = GER_striving_for_centralization_idea
 			add_tech_bonus = {
 				name = GER_centralization_of_management
@@ -19537,6 +19575,22 @@ focus_tree = {
 		search_filters = { FOCUS_FILTER_INDUSTRY }
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus GER_create_besirkstags"
+			set_temp_variable = { temp1 = 1 }
+			add_to_variable = { reorganization_of_state = temp1 }
+			clamp_variable = { var = reorganization_of_state min = 0 max = 10 }
+			custom_effect_tooltip = reorganization_of_state_tt
+			
+			set_variable = { var_new_germany = reorganization_of_state }
+			divide_variable = { var_new_germany = 100 }
+			set_variable = { var_new_germany_minus = var_new_germany }
+			multiply_variable = { var_new_germany_minus = -1 }
+			set_variable = { var_new_germany_pp = reorganization_of_state }
+			subtract_from_variable = { var_new_germany_pp = 5 }
+			multiply_variable = { var_new_germany_pp = var_new_germany_pp }
+			divide_variable = { var_new_germany_pp = 100 }
+			multiply_variable = { var_new_germany_pp_minus = -1 }
+			force_update_dynamic_modifier = yes
+			
 			swap_ideas = {
 				remove_idea = GER_striving_for_centralization_idea
 				add_idea = GER_striving_for_centralization_idea2
@@ -19575,6 +19629,22 @@ focus_tree = {
 		search_filters = { FOCUS_FILTER_INDUSTRY }
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus GER_chamber_of_commerce_and_industry"
+			set_temp_variable = { temp1 = 1 }
+			add_to_variable = { reorganization_of_state = temp1 }
+			clamp_variable = { var = reorganization_of_state min = 0 max = 10 }
+			custom_effect_tooltip = reorganization_of_state_tt
+			
+			set_variable = { var_new_germany = reorganization_of_state }
+			divide_variable = { var_new_germany = 100 }
+			set_variable = { var_new_germany_minus = var_new_germany }
+			multiply_variable = { var_new_germany_minus = -1 }
+			set_variable = { var_new_germany_pp = reorganization_of_state }
+			subtract_from_variable = { var_new_germany_pp = 5 }
+			multiply_variable = { var_new_germany_pp = var_new_germany_pp }
+			divide_variable = { var_new_germany_pp = 100 }
+			multiply_variable = { var_new_germany_pp_minus = -1 }
+			force_update_dynamic_modifier = yes
+			
 			remove_ideas = GER_striving_for_centralization_idea2
 			add_ideas = GER_state_planning_of_economy_idea
 		}
@@ -19605,6 +19675,22 @@ focus_tree = {
 		search_filters = { FOCUS_FILTER_INDUSTRY }
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus GER_nationalization_of_large_scale_industry_red"
+			set_temp_variable = { temp1 = 3 }
+			add_to_variable = { reorganization_of_state = temp1 }
+			clamp_variable = { var = reorganization_of_state min = 0 max = 10 }
+			custom_effect_tooltip = reorganization_of_state_tt
+			
+			set_variable = { var_new_germany = reorganization_of_state }
+			divide_variable = { var_new_germany = 100 }
+			set_variable = { var_new_germany_minus = var_new_germany }
+			multiply_variable = { var_new_germany_minus = -1 }
+			set_variable = { var_new_germany_pp = reorganization_of_state }
+			subtract_from_variable = { var_new_germany_pp = 5 }
+			multiply_variable = { var_new_germany_pp = var_new_germany_pp }
+			divide_variable = { var_new_germany_pp = 100 }
+			multiply_variable = { var_new_germany_pp_minus = -1 }
+			force_update_dynamic_modifier = yes
+			
 			random_owned_controlled_state = {
 				limit = {
 					free_building_slots = {
@@ -19807,7 +19893,6 @@ focus_tree = {
 			if = {
 				limit = {
 					NOT = {
-						has_completed_focus = GER_enlist_support_of_army
 						has_completed_focus = GER_eliminate_influence_of_army
 					}
 				}
@@ -19835,6 +19920,11 @@ focus_tree = {
 			factor = 10
 		}
 		available = {
+			set_temp_variable = { temp1 = 9 }
+			custom_trigger_tooltip = {
+				check_variable = { reorganization_of_state > temp1 }
+				tooltip = has_more_reorganization_of_state_tt
+			}
 		}
 		bypass = {
 		}
@@ -19842,7 +19932,7 @@ focus_tree = {
 		search_filters = { FOCUS_FILTER_INDUSTRY }
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus GER_proletarian_armies"
-			
+			add_ideas = GER_proletarian_armies
 		}
 	}
 	
@@ -19871,6 +19961,28 @@ focus_tree = {
 		search_filters = { FOCUS_FILTER_INDUSTRY }
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus GER_peoples_estates"
+			if = {
+				limit = { has_completed_focus = GER_offensive_on_private_capital }
+				set_temp_variable = { temp1 = 1 }
+			}
+			else = {
+				set_temp_variable = { temp1 = -2 }
+			}
+			add_to_variable = { reorganization_of_state = temp1 }
+			clamp_variable = { var = reorganization_of_state min = 0 max = 10 }
+			custom_effect_tooltip = reorganization_of_state_tt
+			
+			set_variable = { var_new_germany = reorganization_of_state }
+			divide_variable = { var_new_germany = 100 }
+			set_variable = { var_new_germany_minus = var_new_germany }
+			multiply_variable = { var_new_germany_minus = -1 }
+			set_variable = { var_new_germany_pp = reorganization_of_state }
+			subtract_from_variable = { var_new_germany_pp = 5 }
+			multiply_variable = { var_new_germany_pp = var_new_germany_pp }
+			divide_variable = { var_new_germany_pp = 100 }
+			multiply_variable = { var_new_germany_pp_minus = -1 }
+			force_update_dynamic_modifier = yes
+			
 			add_ideas = GER_peoples_estates
 		}
 	}
@@ -20863,45 +20975,10 @@ focus_tree = {
 	}
 	
 	focus = {
-		id = GER_enlist_support_of_army
-		icon = GFX_z_goal_red_army
-		prerequisite = { focus = GER_victory_of_real_revolution }
-		mutually_exclusive = {
-			focus = GER_eliminate_influence_of_army
-		}
-		x = 8
-		y = 1
-		relative_position_id = GER_victory_of_real_revolution
-		
-		cost = 10
-		
-		cancel_if_invalid = no
-		continue_if_invalid = yes
-		available_if_capitulated = no
-
-		ai_will_do = {
-			factor = 10
-		}
-		available = {
-		}
-		bypass = {
-		}
-		
-		search_filters = {   }
-		completion_reward = {
-			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus GER_enlist_support_of_army"
-			add_ideas = GER_enlist_support_of_army
-		}
-	}
-	
-	focus = {
 		id = GER_eliminate_influence_of_army
 		icon = GFX_focus_SOV_military_purge
 		prerequisite = { focus = GER_victory_of_real_revolution }
-		mutually_exclusive = {
-			focus = GER_enlist_support_of_army
-		}
-		x = 10
+		x = 8
 		y = 1
 		relative_position_id = GER_victory_of_real_revolution
 		
@@ -20923,7 +21000,28 @@ focus_tree = {
 		search_filters = {   }
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus GER_eliminate_influence_of_army"
+			set_temp_variable = { temp1 = 1 }
+			add_to_variable = { reorganization_of_state = temp1 }
+			clamp_variable = { var = reorganization_of_state min = 0 max = 10 }
+			custom_effect_tooltip = reorganization_of_state_tt
 			
+			set_variable = { var_new_germany = reorganization_of_state }
+			divide_variable = { var_new_germany = 100 }
+			set_variable = { var_new_germany_minus = var_new_germany }
+			multiply_variable = { var_new_germany_minus = -1 }
+			set_variable = { var_new_germany_pp = reorganization_of_state }
+			subtract_from_variable = { var_new_germany_pp = 5 }
+			multiply_variable = { var_new_germany_pp = var_new_germany_pp }
+			divide_variable = { var_new_germany_pp = 100 }
+			multiply_variable = { var_new_germany_pp_minus = -1 }
+			force_update_dynamic_modifier = yes
+			
+			GRF_willy_leow = {
+				remove_unit_leader_role = yes
+			}
+			GER_friedrich_paulus = {
+				remove_unit_leader_role = yes
+			}
 		}
 	}
 	
