@@ -4964,6 +4964,7 @@ focus_tree = {
 			factor = 10
 		}
 		available = {
+			has_global_flag = sov_yes_pact
 			NOT = { has_completed_focus = GER_anti_soviet_pact }
 			NOT = { has_completed_focus = GER_the_great_red_menace }
 		}
@@ -4980,6 +4981,11 @@ focus_tree = {
 				effect_tooltip = {
 					# Trade influence with the USSR? Or simply let the opinion mod do the work
 					give_SOV_armor_research_bonuses = yes
+				}
+			}
+			ROOT = {
+				effect_tooltip = {
+					add_ideas = GER_trade_with_ussr
 				}
 			}
 
@@ -9510,6 +9516,7 @@ focus_tree = {
 	
 	focus = {
 		id = GER_soviet_treaty
+		text = GER_soviet_treaty_NW
 		icon = GFX_goal_generic_scientific_exchange
 		prerequisite = { focus = GER_eurasian_foreign_policy }
 		available = {
@@ -9525,7 +9532,7 @@ focus_tree = {
 		#		NOT = { country_exists = SOV }
 		#	} 
 		#}
-		bypass = { 
+		bypass = {
 			OR = {
 				has_war_with = SOV
 				NOT = { country_exists = SOV }
@@ -9541,21 +9548,13 @@ focus_tree = {
 		ai_will_do = {
 			factor = 10
 		}
-		search_filters = { FOCUS_FILTER_RESEARCH }
+		search_filters = {  }
 		completion_reward = {
+			add_opinion_modifier = { target = SOV modifier = GER_soviet_treaty_NW_op }
+			add_opinion_modifier = { target = SOV modifier = GER_soviet_treaty_NW_op_trade }
 			SOV = {
-				country_event = { id = germany.75 days = 1 }
-				custom_effect_tooltip = needs_approval
-				# Actual reward effects added in event if Soviets approve
-				effect_tooltip = {
-					# Trade influence with the USSR? Or simply let the opinion mod do the work
-					give_SOV_armor_research_bonuses = yes
-				}
-			}
-			ROOT = {
-				effect_tooltip = {
-					add_ideas = GER_trade_with_ussr
-				}
+				add_opinion_modifier = { target = ROOT modifier = GER_soviet_treaty_NW_op }
+				add_opinion_modifier = { target = ROOT modifier = GER_soviet_treaty_NW_op_trade }
 			}
 		}
 	}
@@ -13151,6 +13150,7 @@ focus_tree = {
 				remove_idea = GER_political_autonomy_of_wehrmacht
 				add_idea = GER_wehrmacht_rules
 			}
+			custom_effect_tooltip = GER_secure_the_new_state_tt
 			mark_focus_tree_layout_dirty = yes
 		}
 	}
@@ -13159,6 +13159,177 @@ focus_tree = {
 	################
 	### MILITARY / KAISER / DEMOCRATIC BRANCHS
 	################
+	
+	### CIVIL WAR BRANCH
+	
+	focus = {
+		id = GER_military_knows_how_to_fight
+		icon = GFX_goal_generic_small_arms
+		prerequisite = { focus = GER_oppose_hitler }
+		allow_branch = {
+			has_completed_focus = GER_secure_the_new_state
+		}
+		available = {
+		}
+		bypass = {
+		}
+		x = -4
+		y = 1
+		relative_position_id = GER_oppose_hitler
+		cost = 5
+		ai_will_do = {
+			factor = 100
+		}
+		
+		search_filters = {}
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus GER_military_knows_how_to_fight"
+			add_timed_idea = {
+                idea = GER_stabilize_front_idea_military
+                days = 90
+            }
+		}
+	}
+	
+	focus = {
+		id = GER_second_freikorp
+		icon = GFX_focus_generic_manpower
+		prerequisite = { focus = GER_oppose_hitler }
+		allow_branch = {
+			has_completed_focus = GER_secure_the_new_state
+		}
+		available = {
+		}
+		bypass = {
+		}
+		x = -2
+		y = 1
+		relative_position_id = GER_oppose_hitler
+		cost = 5
+		ai_will_do = {
+			factor = 100
+		}
+		
+		search_filters = {}
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus GER_second_freikorp"
+			add_ideas = GER_second_freikorp
+		}
+	}
+	
+	focus = {
+		id = GER_protect_common_people
+		icon = GFX_z_goal_peasents_soldiers
+		prerequisite = { focus = GER_oppose_hitler }
+		allow_branch = {
+			has_completed_focus = GER_secure_the_new_state
+		}
+		available = {
+		}
+		bypass = {
+		}
+		x = 2
+		y = 1
+		relative_position_id = GER_oppose_hitler
+		cost = 5
+		ai_will_do = {
+			factor = 100
+		}
+		
+		search_filters = {}
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus GER_protect_common_people"
+			add_ideas = GER_protect_common_people_idea
+		}
+	}
+	
+	focus = {
+		id = GER_dial_old_cadres
+		icon = GFX_z_goal_conscription
+		prerequisite = { focus = GER_oppose_hitler }
+		allow_branch = {
+			has_completed_focus = GER_secure_the_new_state
+		}
+		available = {
+		}
+		bypass = {
+		}
+		x = 4
+		y = 1
+		relative_position_id = GER_oppose_hitler
+		cost = 5
+		ai_will_do = {
+			factor = 100
+		}
+		
+		search_filters = {}
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus GER_dial_old_cadres"
+			hidden_effect = {
+				if = {
+					limit = { NOT = { has_template = "Veteran Infantry Division" } }
+					division_template = {
+						name = "Veteran Infantry Division"
+						is_locked = no
+						regiments = {
+							infantry = { x = 0 y = 0 }
+							infantry = { x = 0 y = 1 }
+							infantry = { x = 1 y = 0 }
+							infantry = { x = 1 y = 1 }
+						}
+					}
+				}
+			}
+			random_controlled_state = {
+				limit = { is_in_home_area = yes }
+				create_unit = {
+					division = "name = \"Veteran Infantry Division\" division_template = \"Veteran Infantry Division\" start_experience_factor = 0.8"
+					owner = PREV
+					count = 1
+					allow_spawning_on_enemy_provs = yes
+				}
+			}
+			random_controlled_state = {
+				limit = { is_in_home_area = yes }
+				create_unit = {
+					division = "name = \"Veteran Infantry Division\" division_template = \"Veteran Infantry Division\" start_experience_factor = 0.8"
+					owner = PREV
+					count = 1
+					allow_spawning_on_enemy_provs = yes
+				}
+			}
+			random_controlled_state = {
+				limit = { is_in_home_area = yes }
+				create_unit = {
+					division = "name = \"Veteran Infantry Division\" division_template = \"Veteran Infantry Division\" start_experience_factor = 0.8"
+					owner = PREV
+					count = 1
+					allow_spawning_on_enemy_provs = yes
+				}
+			}
+			random_controlled_state = {
+				limit = { is_in_home_area = yes }
+				create_unit = {
+					division = "name = \"Veteran Infantry Division\" division_template = \"Veteran Infantry Division\" start_experience_factor = 0.8"
+					owner = PREV
+					count = 1
+					allow_spawning_on_enemy_provs = yes
+				}
+			}
+			random_controlled_state = {
+				limit = { is_in_home_area = yes }
+				create_unit = {
+					division = "name = \"Veteran Infantry Division\" division_template = \"Veteran Infantry Division\" start_experience_factor = 0.8"
+					owner = PREV
+					count = 1
+					allow_spawning_on_enemy_provs = yes
+				}
+			}
+		}
+	}
+	
+	
+	### CIVIL WAR BRANCH END
 
 	focus = {
 		id = GER_revive_the_kaiserreich
@@ -13564,7 +13735,6 @@ focus_tree = {
                 remove_idea = GER_wehrmacht_rules_2_0
                 add_idea = GER_wehrmacht_rules_2_1b
             }
-			add_ideas = GER_revive_the_kaiserreich
 			add_named_threat = { threat = 5 name = GER_revive_the_kaiserreich }
 			set_country_leader_ideology = absolute_monarchy
 			custom_effect_tooltip = set_country_leader_ideology_absolute_monarchy
@@ -13722,10 +13892,11 @@ focus_tree = {
 			factor = 100
 		}
 		
-		search_filters = {}
+		search_filters = {FOCUS_FILTER_STABILITY}
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus GER_fix_bismarcks_mistakes"
-			
+			add_stability = 0.05
+			add_ideas = GER_revive_the_kaiserreich
 		}
 	}
 	
@@ -19528,6 +19699,7 @@ focus_tree = {
 			add_to_variable = { reorganization_of_state = temp1 }
 			clamp_variable = { var = reorganization_of_state min = 0 max = 10 }
 			custom_effect_tooltip = reorganization_of_state_tt
+			check_reorganization_of_state = yes
 			
 			set_variable = { var_new_germany = reorganization_of_state }
 			divide_variable = { var_new_germany = 100 }
@@ -19579,6 +19751,7 @@ focus_tree = {
 			add_to_variable = { reorganization_of_state = temp1 }
 			clamp_variable = { var = reorganization_of_state min = 0 max = 10 }
 			custom_effect_tooltip = reorganization_of_state_tt
+			check_reorganization_of_state = yes
 			
 			set_variable = { var_new_germany = reorganization_of_state }
 			divide_variable = { var_new_germany = 100 }
@@ -19633,6 +19806,7 @@ focus_tree = {
 			add_to_variable = { reorganization_of_state = temp1 }
 			clamp_variable = { var = reorganization_of_state min = 0 max = 10 }
 			custom_effect_tooltip = reorganization_of_state_tt
+			check_reorganization_of_state = yes
 			
 			set_variable = { var_new_germany = reorganization_of_state }
 			divide_variable = { var_new_germany = 100 }
@@ -19679,6 +19853,7 @@ focus_tree = {
 			add_to_variable = { reorganization_of_state = temp1 }
 			clamp_variable = { var = reorganization_of_state min = 0 max = 10 }
 			custom_effect_tooltip = reorganization_of_state_tt
+			check_reorganization_of_state = yes
 			
 			set_variable = { var_new_germany = reorganization_of_state }
 			divide_variable = { var_new_germany = 100 }
@@ -19971,6 +20146,7 @@ focus_tree = {
 			add_to_variable = { reorganization_of_state = temp1 }
 			clamp_variable = { var = reorganization_of_state min = 0 max = 10 }
 			custom_effect_tooltip = reorganization_of_state_tt
+			check_reorganization_of_state = yes
 			
 			set_variable = { var_new_germany = reorganization_of_state }
 			divide_variable = { var_new_germany = 100 }
@@ -21004,6 +21180,7 @@ focus_tree = {
 			add_to_variable = { reorganization_of_state = temp1 }
 			clamp_variable = { var = reorganization_of_state min = 0 max = 10 }
 			custom_effect_tooltip = reorganization_of_state_tt
+			check_reorganization_of_state = yes
 			
 			set_variable = { var_new_germany = reorganization_of_state }
 			divide_variable = { var_new_germany = 100 }
