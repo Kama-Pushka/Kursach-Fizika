@@ -14,4 +14,4 @@ tags={
 supported_version="1.11.*"
 picture="thumbnail.png"
 name="New Ways alpha DEV BUILD"
-path="mod/_new_ways"
+path="mod/Kursach-Fizika"
