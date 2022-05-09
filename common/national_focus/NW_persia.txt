@@ -3798,6 +3798,7 @@ focus_tree = {
 			create_wargoal = {
 				type = annex_everything
 				target = AFG
+				expire = 0
 			}
 			add_ai_strategy = {
 				type = antagonize
@@ -3846,6 +3847,7 @@ focus_tree = {
 			create_wargoal = {
 				type = annex_everything
 				target = IRQ
+				expire = 0
 			}
 			add_ai_strategy = {
 				type = antagonize
@@ -3953,6 +3955,7 @@ focus_tree = {
 			create_wargoal = {
 				type = annex_everything
 				target = TUR
+				expire = 0
 			}
 			add_ai_strategy = {
 				type = antagonize
@@ -4494,7 +4497,7 @@ focus_tree = {
 	
 	focus = {
 		id = PER_empowerment_women
-		icon = GFX_goal_generic_air_production
+		icon = GFX_z_goal_empower_women
 		prerequisite = { focus = PER_dictatorship_of_reza_shah_pahlavi }
 		mutually_exclusive = { focus = PER_stop_promotion_of_westernization }
 		x = -11
@@ -5290,6 +5293,7 @@ focus_tree = {
 			create_wargoal = {
 				type = annex_everything
 				target = AFG
+				expire = 0
 			}
 			add_ai_strategy = {
 				type = antagonize
@@ -5339,6 +5343,7 @@ focus_tree = {
 			create_wargoal = {
 				type = annex_everything
 				target = TUR
+				expire = 0
 			}
 			add_ai_strategy = {
 				type = antagonize
@@ -5389,6 +5394,7 @@ focus_tree = {
 			create_wargoal = {
 				type = annex_everything
 				target = IRQ
+				expire = 0
 			}
 			add_ai_strategy = {
 				type = antagonize
@@ -5480,6 +5486,7 @@ focus_tree = {
 				create_wargoal = {
 					type = annex_everything
 					target = SAU
+					expire = 0
 				}
 			}
 			add_ai_strategy = {
@@ -5599,6 +5606,7 @@ focus_tree = {
 							create_wargoal = {
 								type = annex_everything
 								target = PREV
+								expire = 0
 							}
 							add_ai_strategy = {
 								type = antagonize
@@ -5663,6 +5671,7 @@ focus_tree = {
 					create_wargoal = {
 						type = annex_everything
 						target = PREV
+						expire = 0
 					}
 					add_ai_strategy = {
 						type = antagonize
@@ -6253,7 +6262,6 @@ focus_tree = {
 			NOT = { has_country_flag = PER_form_prosoviet_government_flag has_country_flag = PER_concessions_for_germanophiles_flag has_country_flag = PER_islamic_revolution_block_flag }
 		}
 		bypass = {
-			
 		}
 		
 		completion_reward = {
@@ -7353,6 +7361,7 @@ focus_tree = {
 			create_wargoal = {
 				type = annex_everything
 				target = SOV
+				expire = 0
 			}
 			every_state = {
 				limit = {
@@ -7590,6 +7599,13 @@ focus_tree = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus PER_empower_women"
 			add_stability = -0.1
 			add_ideas = PER_empower_women_idea
+			hidden_effect = {
+				if = {
+					limit = { NOT = { has_country_flag = PER_islamic_revolution_flag } }
+					country_event = { id = NWpersian.426 hours = 4 }
+				}
+			}
+			custom_effect_tooltip = PER_empower_women_tt
 		}
 	}
 	
@@ -7900,27 +7916,46 @@ focus_tree = {
 		}
 		available = {
 			NOT = { has_country_flag = PER_form_prosoviet_government_flag has_country_flag = PER_concessions_for_germanophiles_flag }
-			TUR = {
+			any_country_with_original_tag = {
+				original_tag_to_check = TUR
 				is_faction_leader = yes
 				has_completed_focus = TUR_socialist_kemalism_2
 				has_civil_war = no
+				NOT = { has_war_with = ROOT }
 			}
 			NOT = {
-				has_war_with = TUR
 				has_country_flag = PER_form_prosoviet_government_flag
 				has_country_flag = PER_concessions_for_germanophiles_flag
 			}
 		}
 		bypass = {
-			OR = {
-				is_in_faction_with = TUR
-				NOT = { country_exists = TUR }
+			any_country_with_original_tag = {
+				original_tag_to_check = TUR
+				has_completed_focus = TUR_socialist_kemalism_2
+				is_in_faction_with = ROOT
 			}
 		}
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus PER_union_with_turkey"
-			TUR = { country_event = { id = generic.2 days = 1 } }
+			if = {
+				limit = {
+					all_country_with_original_tag = {
+						original_tag_to_check = TUR
+						NOT = { has_completed_focus = TUR_socialist_kemalism_2 }
+					}
+				}
+				effect_tooltip = { TUR = { country_event = { id = generic.2 days = 1 } } }
+			}
+			else = {
+				random_country_with_original_tag = {
+					original_tag_to_check = TUR
+					limit = {
+						has_completed_focus = TUR_socialist_kemalism_2
+					}
+					country_event = { id = generic.2 days = 1 }
+				}
+			}
 		}
 	}
 	
@@ -7941,6 +7976,13 @@ focus_tree = {
 
 		ai_will_do = {
 			factor = 10
+			modifier = {
+				factor = 0.1
+				any_country_with_original_tag = {
+					original_tag_to_check = TUR
+					has_completed_focus = TUR_socialist_kemalism_2
+				}
+			}
 		}
 		available = {
 			NOT = { has_country_flag = PER_form_prosoviet_government_flag has_country_flag = PER_concessions_for_germanophiles_flag }
@@ -8041,11 +8083,29 @@ focus_tree = {
 			is_subject = no
 		}
 		bypass = {
+			935 = { is_core_of = ROOT }
 		}
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus PER_return_persians_of_strait_of_hormuz"
-			
+			add_state_core = 935
+			if = {
+				limit = {
+					935 = {
+						owner = {
+							NOT = { has_war_with = ROOT }
+						}
+					}
+				}
+				935 = {
+					owner = {
+						country_event = { id = NWpersian.423 hours = 4 }
+					}
+				}
+			}
+			else = {
+				add_state_claim = 935
+			}
 		}
 	}
 	
@@ -8084,6 +8144,7 @@ focus_tree = {
 			create_wargoal = {
 				type = annex_everything
 				target = AFG
+				expire = 0
 			}
 			add_ai_strategy = {
 				type = antagonize
@@ -8124,7 +8185,26 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus PER_bring_back_kurdish_peoples"
-			
+			every_other_country = {
+				limit = {
+					NOT = { is_subject_of = ROOT }
+					any_owned_state = {
+						OR = {
+							is_core_of = KRD
+							is_core_of = ERB
+							is_core_of = ROJ
+							is_core_of = MHB
+						}
+					}
+				}
+				ROOT = {
+					create_wargoal = {
+						type = annex_everything
+						target = PREV
+						expire = 0
+					}
+				}
+			}
 		}
 	}
 	
@@ -8653,14 +8733,37 @@ focus_tree = {
 			factor = 10
 		}
 		available = {
-			NOT = { has_country_flag = PER_form_prosoviet_government_flag has_country_flag = PER_concessions_for_germanophiles_flag }
+			NOT = { has_country_flag = PER_concessions_for_germanophiles_flag }
 		}
 		bypass = {
+			MHB = {
+				NOT = { is_subject_of = ROOT }
+			}
 		}
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus PER_expand_territory_of_mehabad_peoples_republic"
-			
+			every_state = {
+				limit = {
+					is_core_of = KRD
+					NOT = { is_core_of = MHB }
+				}
+				add_claim_by = MHB
+				add_core_of = MHB
+			}
+			custom_effect_tooltip = PER_expand_territory_of_mehabad_peoples_republic_tt
+			hidden_effect = {
+				every_other_country = {
+					limit = {
+						NOT = { tag = MHB }
+						has_government = ROOT
+						any_owned_state = {
+							is_core_of = KRD
+						}
+					}
+					country_event = { id = NWpersian.424 }
+				}
+			}
 		}
 	}
 	
@@ -8682,14 +8785,37 @@ focus_tree = {
 			factor = 10
 		}
 		available = {
-			NOT = { has_country_flag = PER_form_prosoviet_government_flag has_country_flag = PER_concessions_for_germanophiles_flag }
+			NOT = { has_country_flag = PER_concessions_for_germanophiles_flag }
 		}
 		bypass = {
+			APG = {
+				NOT = { is_subject_of = ROOT }
+			}
 		}
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus PER_unite_peoples_of_azerbaijan"
-			
+			every_state = {
+				limit = {
+					is_core_of = AZR
+					NOT = { is_core_of = APG }
+				}
+				add_claim_by = APG
+				add_core_of = APG
+			}
+			custom_effect_tooltip = PER_unite_peoples_of_azerbaijan_tt
+			hidden_effect = {
+				every_other_country = {
+					limit = {
+						NOT = { tag = APG }
+						has_government = ROOT
+						any_owned_state = {
+							is_core_of = AZR
+						}
+					}
+					country_event = { id = NWpersian.425 }
+				}
+			}
 		}
 	}
 	
@@ -8714,14 +8840,14 @@ focus_tree = {
 			factor = 10
 		}
 		available = {
-			NOT = { has_country_flag = PER_form_prosoviet_government_flag has_country_flag = PER_concessions_for_germanophiles_flag }
+			NOT = { has_country_flag = PER_concessions_for_germanophiles_flag }
 		}
 		bypass = {
 		}
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus PER_buffer_republics_project"
-			
+			unlock_decision_category_tooltip = PER_support_buffer_republics_category
 		}
 	}
 	
@@ -8783,14 +8909,14 @@ focus_tree = {
 			factor = 10
 		}
 		available = {
-			NOT = { has_country_flag = PER_form_prosoviet_government_flag has_country_flag = PER_concessions_for_germanophiles_flag }
+			NOT = { has_country_flag = PER_concessions_for_germanophiles_flag }
 		}
 		bypass = {
 		}
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus PER_expansion_of_party_newspaper_rahbakh"
-			
+			add_ideas = PER_expansion_of_party_newspaper_rahbakh_idea
 		}
 	}
 	
@@ -8812,14 +8938,26 @@ focus_tree = {
 			factor = 10
 		}
 		available = {
-			NOT = { has_country_flag = PER_form_prosoviet_government_flag has_country_flag = PER_concessions_for_germanophiles_flag }
+			NOT = { has_country_flag = PER_concessions_for_germanophiles_flag }
 		}
 		bypass = {
 		}
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus PER_creation_of_military_organization_of_party"
-			
+			if = {
+				limit = { has_intelligence_agency = no }
+				create_intelligence_agency = { name = "Sazman-e Nezami-ye Hezb-e Tudeh-ye Iran" icon = "GFX_intelligence_agency_logo_generic_9" }
+			}
+			create_operative_leader = {
+				bypass_recruitment = yes
+				nationalities = { ROOT }
+			}
+			create_operative_leader = {
+				bypass_recruitment = yes
+				nationalities = { ROOT }
+			}
+			add_ideas = PER_creation_of_military_organization_of_party_idea
 		}
 	}
 	
@@ -8841,14 +8979,17 @@ focus_tree = {
 			factor = 10
 		}
 		available = {
-			NOT = { has_country_flag = PER_form_prosoviet_government_flag has_country_flag = PER_concessions_for_germanophiles_flag }
+			NOT = { has_country_flag = PER_concessions_for_germanophiles_flag }
 		}
 		bypass = {
 		}
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus PER_agrarian_reform_on_land_transfer"
-			
+			every_core_state = {
+				add_extra_state_shared_building_slots = -1
+			}
+			add_ideas = PER_agrarian_reform_idea
 		}
 	}
 	
@@ -8870,14 +9011,14 @@ focus_tree = {
 			factor = 10
 		}
 		available = {
-			NOT = { has_country_flag = PER_form_prosoviet_government_flag has_country_flag = PER_concessions_for_germanophiles_flag }
+			NOT = { has_country_flag = PER_concessions_for_germanophiles_flag }
 		}
 		bypass = {
 		}
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus PER_central_council_of_united_trade_unions"
-			
+			add_ideas = PER_central_council_of_united_trade_unions
 		}
 	}
 	
@@ -8899,14 +9040,14 @@ focus_tree = {
 			factor = 10
 		}
 		available = {
-			NOT = { has_country_flag = PER_form_prosoviet_government_flag has_country_flag = PER_concessions_for_germanophiles_flag }
+			NOT = { has_country_flag = PER_concessions_for_germanophiles_flag }
 		}
 		bypass = {
 		}
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus PER_youth_tude"
-			
+			add_ideas = PER_youth_tude_idea
 		}
 	}
 	
@@ -9051,6 +9192,13 @@ focus_tree = {
 				remove_ideas = PER_significant_clergy
 			}
 			add_ideas = PER_forced_secularization
+			hidden_effect = {
+				if = {
+					limit = { NOT = { has_country_flag = PER_islamic_revolution_flag } }
+					country_event = { id = NWpersian.427 hours = 4 }
+				}
+			}
+			custom_effect_tooltip = PER_forced_secularization_tt
 		}
 	}
 	
@@ -9072,7 +9220,7 @@ focus_tree = {
 		y = 1
 		relative_position_id = PER_forced_secularization
 
-		cost = 10
+		cost = 5
 		
 		cancel_if_invalid = yes
 		continue_if_invalid = no
@@ -9082,14 +9230,17 @@ focus_tree = {
 			factor = 10
 		}
 		available = {
-			NOT = { has_country_flag = PER_form_prosoviet_government_flag has_country_flag = PER_concessions_for_germanophiles_flag }
+			NOT = { has_country_flag = PER_concessions_for_germanophiles_flag }
+			has_government = trozkism
+			has_civil_war = no
 		}
 		bypass = {
 		}
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus PER_socialism_for_glory_of_allah"
-			
+			add_timed_idea = { idea = PER_socialism_for_glory_of_allah_idea days = 180 }
+			custom_effect_tooltip = PER_socialism_for_glory_of_allah_tt
 		}
 	}
 	
@@ -9101,7 +9252,7 @@ focus_tree = {
 		y = 1
 		relative_position_id = PER_socialism_for_glory_of_allah
 
-		cost = 10
+		cost = 5
 		
 		cancel_if_invalid = yes
 		continue_if_invalid = no
@@ -9111,14 +9262,15 @@ focus_tree = {
 			factor = 10
 		}
 		available = {
-			NOT = { has_country_flag = PER_form_prosoviet_government_flag has_country_flag = PER_concessions_for_germanophiles_flag }
+			NOT = { has_country_flag = PER_concessions_for_germanophiles_flag }
 		}
 		bypass = {
 		}
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus PER_synthesis_of_shiism_and_socialism"
-			
+			add_stability = 0.05
+			add_ideas = PER_synthesis_of_shiism_and_socialism
 		}
 	}
 	
@@ -9140,14 +9292,14 @@ focus_tree = {
 			factor = 10
 		}
 		available = {
-			NOT = { has_country_flag = PER_form_prosoviet_government_flag has_country_flag = PER_concessions_for_germanophiles_flag }
+			NOT = { has_country_flag = PER_concessions_for_germanophiles_flag }
 		}
 		bypass = {
 		}
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus PER_land_reforms"
-			
+			add_ideas = PER_land_reforms_idea
 		}
 	}
 	
@@ -9169,7 +9321,7 @@ focus_tree = {
 			factor = 10
 		}
 		available = {
-			NOT = { has_country_flag = PER_form_prosoviet_government_flag has_country_flag = PER_concessions_for_germanophiles_flag }
+			NOT = { has_country_flag = PER_concessions_for_germanophiles_flag }
 		}
 		bypass = {
 		}
@@ -9199,14 +9351,28 @@ focus_tree = {
 			factor = 10
 		}
 		available = {
-			NOT = { has_country_flag = PER_form_prosoviet_government_flag has_country_flag = PER_concessions_for_germanophiles_flag }
+			NOT = { has_country_flag = PER_concessions_for_germanophiles_flag }
 		}
 		bypass = {
 		}
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus PER_achieving_social_equality_and_justice"
-			
+			every_controlled_state = {
+				limit = {
+					ROOT = { has_full_control_of_state = PREV }
+					hospital < 5
+				}
+				add_building_construction = {
+					type = hospital
+					level = 1
+					instant_build = yes
+				}
+			}
+			swap_ideas = {
+				remove_idea = PER_synthesis_of_shiism_and_socialism
+				add_idea = PER_achieving_social_equality_and_justice_idea
+			}
 		}
 	}
 	
@@ -9228,14 +9394,47 @@ focus_tree = {
 			factor = 10
 		}
 		available = {
-			NOT = { has_country_flag = PER_form_prosoviet_government_flag has_country_flag = PER_concessions_for_germanophiles_flag }
+			NOT = { has_country_flag = PER_concessions_for_germanophiles_flag }
 		}
 		bypass = {
 		}
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus PER_dissolution_of_private_ownership_over_production_tools"
-			
+			add_stability = -0.1
+			add_ideas = PER_centralization_of_production_idea
+			random_owned_controlled_state = {
+				limit = {
+					is_core_of = ROOT
+					free_building_slots = {
+						building = industrial_complex
+						size > 0
+						include_locked = yes
+					}
+				}
+				add_extra_state_shared_building_slots = 1
+				add_building_construction = {
+					type = industrial_complex
+					level = 1
+					instant_build = yes
+				}
+			}
+			random_owned_controlled_state = {
+				limit = {
+					is_core_of = ROOT
+					free_building_slots = {
+						building = industrial_complex
+						size > 0
+						include_locked = yes
+					}
+				}
+				add_extra_state_shared_building_slots = 1
+				add_building_construction = {
+					type = industrial_complex
+					level = 1
+					instant_build = yes
+				}
+			}
 		}
 	}
 	
@@ -9258,14 +9457,34 @@ focus_tree = {
 			factor = 10
 		}
 		available = {
-			NOT = { has_country_flag = PER_form_prosoviet_government_flag has_country_flag = PER_concessions_for_germanophiles_flag }
+			NOT = { has_country_flag = PER_concessions_for_germanophiles_flag }
 		}
 		bypass = {
+			OR = {
+				NOT = { country_exists = GIL }
+				GIL = { is_subject_of = ROOT }
+			}
 		}
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus PER_soviet_republic_of_gilan"
-			
+			puppet = GIL
+			hidden_effect = {
+				GIL = {
+					add_autonomy_ratio = {
+						value = -1
+					}
+					add_autonomy_ratio = {
+						value = 0.8
+					}
+				}
+			}
+			every_core_state = {
+				limit = {
+					is_core_of = GIL
+				}
+				remove_core_of = ROOT
+			}
 		}
 	}
 	
@@ -9288,14 +9507,19 @@ focus_tree = {
 			factor = 10
 		}
 		available = {
-			NOT = { has_country_flag = PER_form_prosoviet_government_flag has_country_flag = PER_concessions_for_germanophiles_flag }
+			NOT = { has_country_flag = PER_concessions_for_germanophiles_flag }
 		}
 		bypass = {
+			NOT = { country_exists = GIL }
 		}
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus PER_creation_of_persian_socialist_soviet_republic"
-			
+			annex_country = {
+				target = GIL
+				transfer_troops = yes
+			}
+			set_cosmetic_tag = PER_persian_socialist_soviet_republic
 		}
 	}
 	
@@ -9320,14 +9544,31 @@ focus_tree = {
 			factor = 10
 		}
 		available = {
-			NOT = { has_country_flag = PER_form_prosoviet_government_flag has_country_flag = PER_concessions_for_germanophiles_flag }
+			is_subject = no
+			NOT = { has_country_flag = PER_concessions_for_germanophiles_flag }
 		}
 		bypass = {
 		}
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus PER_ettehad_i_islam"
-			
+			set_rule = { can_create_factions = yes }
+			create_faction = PER_ettehad_i_islam
+			add_to_tech_sharing_group = PER_ettehad_i_islam_group
+			hidden_effect = {
+				set_variable = { global.var_unity_of_islamic_union = 1 }
+				clamp_temp_variable = { var = global.var_unity_of_islamic_union min = 1 max = 10 }
+				set_temp_variable = { var_unity_of_islamic_union_conscription_temp = 0.005 }
+				multiply_temp_variable = { var_unity_of_islamic_union_conscription_temp = global.var_unity_of_islamic_union }
+				set_temp_variable = { var_unity_of_islamic_union_war_support_temp = 0.02 }
+				multiply_temp_variable = { var_unity_of_islamic_union_war_support_temp = global.var_unity_of_islamic_union }
+				set_variable = { global.var_unity_of_islamic_union_conscription = var_unity_of_islamic_union_conscription_temp }
+				set_variable = { global.var_unity_of_islamic_union_war_support = var_unity_of_islamic_union_war_support_temp }
+			}
+			add_dynamic_modifier = { modifier = PER_unity_of_islamic_union_dyn }
+			force_update_dynamic_modifier = yes
+			custom_effect_tooltip = PER_ettehad_i_islam_effect
+			unlock_decision_category_tooltip = PER_unity_of_islamic_union_category
 		}
 	}
 	
@@ -9349,14 +9590,50 @@ focus_tree = {
 			factor = 10
 		}
 		available = {
-			NOT = { has_country_flag = PER_form_prosoviet_government_flag has_country_flag = PER_concessions_for_germanophiles_flag }
+			is_subject = no
+			any_country_with_original_tag = {
+				original_tag_to_check = TUR
+				NOT = {
+					has_government = ROOT
+					is_in_faction_with = ROOT
+					is_subject_of = ROOT
+				}
+				exists = yes
+			}
+			NOT = { has_country_flag = PER_concessions_for_germanophiles_flag }
 		}
 		bypass = {
 		}
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus PER_provide_support_to_ethem"
-			
+			every_other_country = {
+				limit = {
+					original_tag = TUR
+					NOT = {
+						has_government = ROOT
+						is_in_faction_with = ROOT
+						is_subject_of = ROOT
+					}
+				}
+				ROOT = {
+					create_wargoal = {
+						type = puppet_wargoal_focus
+						target = PREV
+						expire = 0
+					}
+					add_ai_strategy = {
+						type = antagonize
+						id = PREV
+						value = 200
+					}
+					add_ai_strategy = {
+						type = conquer
+						id = PREV
+						value = 200
+					}
+				}
+			}
 		}
 	}
 	
@@ -9378,14 +9655,50 @@ focus_tree = {
 			factor = 10
 		}
 		available = {
-			NOT = { has_country_flag = PER_form_prosoviet_government_flag has_country_flag = PER_concessions_for_germanophiles_flag }
+			is_subject = no
+			any_country_with_original_tag = {
+				original_tag_to_check = AFG
+				NOT = {
+					has_government = ROOT
+					is_in_faction_with = ROOT
+					is_subject_of = ROOT
+				}
+				exists = yes
+			}
+			NOT = { has_country_flag = PER_concessions_for_germanophiles_flag }
 		}
 		bypass = {
 		}
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus PER_give_new_teaching_to_afghanistan"
-			
+			every_other_country = {
+				limit = {
+					original_tag = AFG
+					NOT = {
+						has_government = ROOT
+						is_in_faction_with = ROOT
+						is_subject_of = ROOT
+					}
+				}
+				ROOT = {
+					create_wargoal = {
+						type = puppet_wargoal_focus
+						target = PREV
+						expire = 0
+					}
+					add_ai_strategy = {
+						type = antagonize
+						id = PREV
+						value = 200
+					}
+					add_ai_strategy = {
+						type = conquer
+						id = PREV
+						value = 200
+					}
+				}
+			}
 		}
 	}
 	
@@ -9447,14 +9760,104 @@ focus_tree = {
 			factor = 10
 		}
 		available = {
-			NOT = { has_country_flag = PER_form_prosoviet_government_flag has_country_flag = PER_concessions_for_germanophiles_flag }
+			is_subject = no
+			OR = {
+				any_country_with_original_tag = {
+					original_tag_to_check = IRQ
+					NOT = {
+						has_government = ROOT
+						is_in_faction_with = ROOT
+						is_subject_of = ROOT
+					}
+					exists = yes
+				}
+				any_country_with_original_tag = {
+					original_tag_to_check = SYR
+					NOT = {
+						has_government = ROOT
+						is_in_faction_with = ROOT
+						is_subject_of = ROOT
+					}
+					exists = yes
+				}
+				any_country_with_original_tag = {
+					original_tag_to_check = BPL
+					NOT = {
+						has_government = ROOT
+						is_in_faction_with = ROOT
+						is_subject_of = ROOT
+					}
+					exists = yes
+				}
+				any_country_with_original_tag = {
+					original_tag_to_check = JOR
+					NOT = {
+						has_government = ROOT
+						is_in_faction_with = ROOT
+						is_subject_of = ROOT
+					}
+					exists = yes
+				}
+				any_country_with_original_tag = {
+					original_tag_to_check = JEW
+					NOT = {
+						has_government = ROOT
+						is_in_faction_with = ROOT
+						is_subject_of = ROOT
+					}
+					exists = yes
+				}
+				any_country_with_original_tag = {
+					original_tag_to_check = PAL
+					NOT = {
+						has_government = ROOT
+						is_in_faction_with = ROOT
+						is_subject_of = ROOT
+					}
+					exists = yes
+				}
+			}
+			NOT = { has_country_flag = PER_concessions_for_germanophiles_flag }
 		}
 		bypass = {
 		}
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus PER_save_arabs_from_imperialists"
-			
+			every_other_country = {
+				limit = {
+					OR = {
+						original_tag = IRQ
+						original_tag = SYR
+						original_tag = BPL
+						original_tag = JOR
+						original_tag = JEW
+						original_tag = PAL
+					}
+					NOT = {
+						has_government = ROOT
+						is_in_faction_with = ROOT
+						is_subject_of = ROOT
+					}
+				}
+				ROOT = {
+					create_wargoal = {
+						type = puppet_wargoal_focus
+						target = PREV
+						expire = 0
+					}
+					add_ai_strategy = {
+						type = antagonize
+						id = PREV
+						value = 200
+					}
+					add_ai_strategy = {
+						type = conquer
+						id = PREV
+						value = 200
+					}
+				}
+			}
 		}
 	}
 	
@@ -9476,14 +9879,84 @@ focus_tree = {
 			factor = 10
 		}
 		available = {
-			NOT = { has_country_flag = PER_form_prosoviet_government_flag has_country_flag = PER_concessions_for_germanophiles_flag }
+			is_subject = no
+			OR = {
+				any_country_with_original_tag = {
+					original_tag_to_check = SAU
+					NOT = {
+						has_government = ROOT
+						is_in_faction_with = ROOT
+						is_subject_of = ROOT
+					}
+					exists = yes
+				}
+				any_country_with_original_tag = {
+					original_tag_to_check = YEM
+					NOT = {
+						has_government = ROOT
+						is_in_faction_with = ROOT
+						is_subject_of = ROOT
+					}
+					exists = yes
+				}
+				any_country_with_original_tag = {
+					original_tag_to_check = OMA
+					NOT = {
+						has_government = ROOT
+						is_in_faction_with = ROOT
+						is_subject_of = ROOT
+					}
+					exists = yes
+				}
+				any_country_with_original_tag = {
+					original_tag_to_check = IOM
+					NOT = {
+						has_government = ROOT
+						is_in_faction_with = ROOT
+						is_subject_of = ROOT
+					}
+					exists = yes
+				}
+			}
+			NOT = { has_country_flag = PER_concessions_for_germanophiles_flag }
 		}
 		bypass = {
 		}
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus PER_bring_socialism_to_arabs"
-			
+			every_other_country = {
+				limit = {
+					OR = {
+						original_tag = SAU
+						original_tag = YEM
+						original_tag = OMA
+						original_tag = IOM
+					}
+					NOT = {
+						has_government = ROOT
+						is_in_faction_with = ROOT
+						is_subject_of = ROOT
+					}
+				}
+				ROOT = {
+					create_wargoal = {
+						type = puppet_wargoal_focus
+						target = PREV
+						expire = 0
+					}
+					add_ai_strategy = {
+						type = antagonize
+						id = PREV
+						value = 200
+					}
+					add_ai_strategy = {
+						type = conquer
+						id = PREV
+						value = 200
+					}
+				}
+			}
 		}
 	}
 	
@@ -9508,7 +9981,7 @@ focus_tree = {
 			factor = 10
 		}
 		available = {
-			NOT = { has_country_flag = PER_form_prosoviet_government_flag has_country_flag = PER_concessions_for_germanophiles_flag }
+			NOT = { has_country_flag = PER_concessions_for_germanophiles_flag }
 			420 = {
 				owner = {
 					OR = {
@@ -13080,6 +13553,7 @@ focus_tree = {
 			create_wargoal = {
 				type = puppet_wargoal_focus
 				target = AFG
+				expire = 0
 			}
 			add_ai_strategy = {
 				type = antagonize
@@ -14527,6 +15001,7 @@ focus_tree = {
 			create_wargoal = {
 				type = annex_everything
 				target = IRQ
+				expire = 0
 			}
 			add_ai_strategy = {
 				type = antagonize
@@ -14646,6 +15121,7 @@ focus_tree = {
 			create_wargoal = {
 				type = annex_everything
 				target = IRQ
+				expire = 0
 			}
 			add_ai_strategy = {
 				type = antagonize
@@ -14695,6 +15171,7 @@ focus_tree = {
 			create_wargoal = {
 				type = annex_everything
 				target = SAU
+				expire = 0
 			}
 			add_ai_strategy = {
 				type = antagonize
@@ -14745,6 +15222,7 @@ focus_tree = {
 			create_wargoal = {
 				type = annex_everything
 				target = TUR
+				expire = 0
 			}
 			add_ai_strategy = {
 				type = antagonize
