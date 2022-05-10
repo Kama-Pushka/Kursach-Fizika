@@ -2763,10 +2763,12 @@ country_event = {
 			if = {
 				limit = { SPR = { has_full_control_of_state = 177 } }
 				transfer_state = 177
+				177 = { set_state_flag = SPR_sided_with_nationalists_flag }
 			}
 			if = {
 				limit = { SPR = { has_full_control_of_state = 178 } }
 				transfer_state = 178
+				178 = { set_state_flag = SPR_sided_with_nationalists_flag }
 			}
 			if = {
 				limit = { SPR = { has_full_control_of_state = 290 } }
@@ -10081,7 +10083,2460 @@ country_event = {
 }
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 ### VANILA ###
+
+# Spanish Civil War - Carlists rise up
+country_event = {
+	id = lar_spain.7
+	title = lar_spain.7.t
+	desc = {
+		text = lar_spain.7.desc
+		trigger = {
+			NOT = { has_global_flag = scw_early_end }
+		}
+	}
+	desc = {
+		text = lar_spain.7.desc_2
+		trigger = {
+			has_global_flag = scw_early_end
+		}
+	}
+	picture = GFX_report_event_spr_carlists
+	
+	fire_only_once = yes
+
+	is_triggered_only = yes
+
+	immediate = {
+		hidden_effect = {
+			create_dynamic_country = {
+				original_tag = ROOT
+				copy_tag = ROOT
+				
+				set_country_flag = SPR_carlist_spain_flag
+				set_cosmetic_tag = SPR_carlist_spain
+				set_research_slots = 3
+		
+				set_politics = {
+					ruling_party = monarchy
+				}
+				set_popularities = {
+					democratic = 13
+					monarchy = 82
+					fascism = 5
+				}
+				
+				add_ideas = {
+					SPA_carlism_1
+				}
+			}
+			if = { # If SPA owns both of the historical Carlist states
+				limit = {
+					controls_state = 172
+					controls_state = 176
+				}
+				every_state = {
+					limit = {
+						OR = {
+							state = 172
+							state = 176
+						}
+						is_controlled_by = ROOT
+					}
+					SPB = {
+						transfer_state = PREV
+					}
+				}
+				if = {
+					limit = {
+						num_of_controlled_states > 10
+						controls_state = 791
+					}
+					SPB = {
+						transfer_state = 791
+					}
+				}
+				if = {
+					limit = {
+						num_of_controlled_states > 11
+						controls_state = 174
+					}
+					SPB = {
+						transfer_state = 174
+					}
+				}
+				if = {
+					limit = {
+						num_of_controlled_states > 13
+						controls_state = 171
+					}
+					SPB = {
+						transfer_state = 171
+					}
+				}
+				if = {
+					limit = {
+						num_of_controlled_states > 14
+						has_global_flag = scw_early_end
+					}
+					random_owned_state = {
+						limit = {
+							any_neighbor_state = {
+								OR = {
+									state = 171
+									state = 172
+									state = 174
+									state = 176
+									state = 791
+								}
+							}
+							has_state_flag = SPR_core_of_spain_flag
+							is_controlled_by = ROOT
+							is_capital = no
+						}
+						SPB = {
+							transfer_state = PREV
+						}
+					}
+					random_owned_state = {
+						limit = {
+							any_neighbor_state = {
+								OR = {
+									state = 171
+									state = 172
+									state = 174
+									state = 176
+									state = 791
+								}
+							}
+							has_state_flag = SPR_core_of_spain_flag
+							is_controlled_by = ROOT
+							is_capital = no
+						}
+						SPB = {
+							transfer_state = PREV
+						}
+					}
+				}
+			}
+			else_if = { # Fallback if not owning one of the historically Carlist states
+				limit = {
+					OR = {
+						AND = {
+							controls_state = 172
+							NOT = { controls_state = 176 }
+						}
+						AND = {
+							controls_state = 176
+							NOT = { controls_state = 172 }
+						}
+					}
+				}
+				every_state = {
+					limit = {
+						OR = {
+							state = 172
+							state = 176
+						}
+						is_controlled_by = ROOT
+					}
+					SPB = {
+						transfer_state = PREV
+					}
+				}
+			}
+			else_if = { # Fallback if not owning one of the historically Carlist states
+				limit = {
+					OR = {
+						AND = {
+							controls_state = 172
+							NOT = { controls_state = 176 }
+						}
+						AND = {
+							controls_state = 176
+							NOT = { controls_state = 172 }
+						}
+					}
+				}
+				every_state = {
+					limit = {
+						OR = {
+							state = 172
+							state = 176
+						}
+						is_controlled_by = ROOT
+					}
+					SPB = {
+						transfer_state = PREV
+					}
+				}
+				if = {
+					limit = {
+						num_of_controlled_states > 5
+						OR = {
+							controls_state = 171
+							controls_state = 174
+							controls_state = 791
+						}
+					}
+					random_state = {
+						limit = {
+							OR = {
+								state = 171
+								state = 174
+								state = 791
+							}
+							has_state_flag = SPR_core_of_spain_flag
+							is_controlled_by = ROOT
+							is_capital = no
+						}
+						SPB = {
+							transfer_state = PREV
+						}
+					}
+				}
+				else = {
+					random_state = {
+						limit = {
+							NOT = { state = 178 }
+							NOT = { state = 177 }
+							has_state_flag = SPR_core_of_spain_flag
+							is_controlled_by = ROOT
+							is_capital = no
+						}
+						SPB = {
+							transfer_state = PREV
+						}
+					}
+				}
+			}
+			else_if = { # You're not getting out of a civil war by voluntarily giving up the targetable locations, pal!
+				limit = {
+					NOT = {
+						controls_state = 172
+						controls_state = 176
+					}
+					OR = {
+						controls_state = 171
+						controls_state = 174
+						controls_state = 791
+					}
+				}
+				random_state = {
+					limit = {
+						OR = {
+							state = 171
+							state = 174
+							state = 791
+						}
+						has_state_flag = SPR_core_of_spain_flag
+						is_controlled_by = ROOT
+						is_capital = no
+					}
+					SPB = {
+						transfer_state = PREV
+					}
+				}
+				if = {
+					limit = {
+						num_of_controlled_states > 5
+						OR = {
+							controls_state = 171
+							controls_state = 174
+							controls_state = 791
+						}
+					}
+					random_state = {
+						limit = {
+							OR = {
+								state = 171
+								state = 174
+								state = 791
+							}
+							has_state_flag = SPR_core_of_spain_flag
+							is_controlled_by = ROOT
+							is_capital = no
+						}
+						SPB = {
+							transfer_state = PREV
+						}
+					}
+				}
+				else = {
+					random_state = {
+						limit = {
+							NOT = { state = 178 }
+							NOT = { state = 177 }
+							has_state_flag = SPR_core_of_spain_flag
+							is_controlled_by = ROOT
+							is_capital = no
+						}
+						SPB = {
+							transfer_state = PREV
+						}
+					}
+				}
+			}
+			else_if = { # You're not getting out of a civil war by voluntarily giving up the targetable locations, pal!
+				limit = {
+					NOT = {
+						controls_state = 172
+						controls_state = 176
+						controls_state = 171
+						controls_state = 174
+						controls_state = 791
+					}
+				}
+				random_state = {
+					limit = {
+						NOT = { state = 178 }
+						NOT = { state = 177 }
+						has_state_flag = SPR_core_of_spain_flag
+						is_controlled_by = ROOT
+						is_capital = no
+					}
+					SPB = {
+						transfer_state = PREV
+					}
+				}
+				if = {
+					limit = {
+						num_of_controlled_states > 5
+					}
+					random_state = {
+						limit = {
+							NOT = { state = 178 }
+							NOT = { state = 177 }
+							has_state_flag = SPR_core_of_spain_flag
+							is_controlled_by = ROOT
+							is_capital = no
+						}
+						SPB = {
+							transfer_state = PREV
+						}
+					}
+				}
+			}
+			else = {
+				random_state = {
+					limit = {
+						has_state_flag = SPR_core_of_spain_flag
+						is_controlled_by = ROOT
+						is_capital = no
+					}
+					SPB = {
+						transfer_state = PREV
+					}
+				}
+			}
+			SPB = {
+				random_owned_state = {
+					limit = {
+						is_controlled_by = SPB
+						is_core_of = SPB
+						NOT = {
+							state = 177
+							state = 178
+						}
+					}
+					SPB = { set_capital = { state = PREV } }
+				}
+				inherit_technology = SPA
+				set_stability = 0.6
+				set_war_support = 0.5
+				division_template = {
+					name = "Requeté Carlista"
+					template_counter = 8
+					priority = 1
+					division_names_group = SPR_INF_03
+					is_locked = yes
+					regiments = {
+						infantry = { x = 0 y = 0 }
+						infantry = { x = 0 y = 1 }
+						infantry = { x = 0 y = 2 }
+					}
+				}
+				set_division_template_lock = {
+				    division_template = "Requeté Carlista"
+				    is_locked = no
+				}
+				every_owned_state = {
+					create_unit = {
+						division = "division_template = \"Requeté Carlista\" start_experience_factor = 0.3" 
+						owner = SPB
+					}
+					create_unit = {
+						division = "division_template = \"Requeté Carlista\" start_experience_factor = 0.3" 
+						owner = SPB
+					}
+					create_unit = {
+						division = "division_template = \"Requeté Carlista\" start_experience_factor = 0.3" 
+						owner = SPB
+					}
+					create_unit = {
+						division = "division_template = \"Requeté Carlista\" start_experience_factor = 0.3" 
+						owner = SPB
+					}
+				}
+				if = {
+					limit = {
+						NOT = {
+							owns_state = 791
+							owns_state = 174
+							owns_state = 171
+						}
+					}
+					every_owned_state = {
+						create_unit = {
+							division = "division_template = \"Requeté Carlista\" start_experience_factor = 0.3" 
+							owner = SPB
+						}
+						create_unit = {
+							division = "division_template = \"Requeté Carlista\" start_experience_factor = 0.3" 
+							owner = SPB
+						}
+					}
+				}
+				if = {
+					limit = {
+						owns_state = 172
+					}
+					set_capital = { state = 172 }
+				}
+				else = {
+					random_owned_state = {
+						SPB = {
+							set_capital = { state = PREV }
+						}
+					}
+				}
+			}
+			add_popularity = {
+			    ideology = monarchy
+			    popularity = -0.15
+			}
+			add_stability = -0.1
+			delete_unit_template_and_units = {
+				division_template = "Requeté Carlista"
+			}
+			transfer_units_fraction = {
+				target = SPB
+				stockpile_ratio = 0.2
+				army_ratio = 0.1
+				navy_ratio = 0.1
+				air_ratio = 0.1
+				keep_unit_leaders = {
+				    
+				}
+				keep_unit_leaders_trigger = {
+					has_trait = trait_SPA_falangist_loyalties
+				}
+			}
+			every_unit_leader = {
+				limit = {
+					has_trait = trait_SPA_carlist_loyalties
+				}
+				remove_unit_leader_trait = trait_SPA_carlist_loyalties
+				set_nationality = {
+					character = THIS
+					target_country = SPB
+				}
+			}
+			every_unit_leader = {
+				limit = {
+					has_trait = trait_SPA_falangist_loyalties
+				}
+				remove_unit_leader_trait = trait_SPA_falangist_loyalties
+			}
+			set_global_flag = SPR_carlist_uprising_flag
+			set_global_flag = { flag = SPR_civil_war_startup value = 1 days = 3 } # Make AI avoid attacking for a few days
+			SPB = {
+				every_unit_leader = {
+					limit = {
+						has_trait = trait_SPA_nationalist_sympathies
+					}
+					remove_unit_leader_trait = trait_SPA_nationalist_sympathies
+				}
+				declare_war_on = {
+				    target = ROOT
+				    type = civil_war
+				}
+				add_civil_war_target = ROOT
+				add_ai_strategy = {
+					type = antagonize
+					id = SPA
+					value = 200
+				}
+				declare_war_on = {
+				    target = SPD
+				    type = civil_war
+				}
+				add_civil_war_target = SPD
+
+				add_ai_strategy = {
+					type = antagonize
+					id = SPD
+					value = 200
+				}
+				if = {
+					limit = {
+						country_exists = SPC
+					}
+					declare_war_on = {
+					    target = SPC
+					    type = civil_war
+					}
+					add_civil_war_target = SPC
+
+					add_ai_strategy = {
+						type = antagonize
+						id = SPC
+						value = 200
+					}
+				}
+				if = {
+					limit = {
+						country_exists = ARA
+						NOT = { has_war_with = ARA }
+					}
+					declare_war_on = {
+					    target = ARA
+					    type = civil_war
+					}
+					add_civil_war_target = ARA
+
+					add_ai_strategy = {
+						type = antagonize
+						id = ARA
+						value = 200
+					}
+				}
+				if = {
+					limit = {
+						country_exists = CAT
+						NOT = { has_war_with = CAT }
+					}
+					declare_war_on = {
+					    target = CAT
+					    type = civil_war
+					}
+					add_civil_war_target = CAT
+
+					add_ai_strategy = {
+						type = antagonize
+						id = CAT
+						value = 200
+					}
+				}
+			}
+			every_other_country = {
+				limit = { is_subject_of = SPR }
+				add_to_war = { targeted_alliance = SPR enemy = SPB hostility_reason = asked_to_join }
+			}
+			every_other_country = {
+				add_ai_strategy = {
+					type = support
+					id = SPB
+					value = -200
+				}
+				add_ai_strategy = {
+					type = protect
+					id = SPB
+					value = -200
+				}
+				add_ai_strategy = {
+					type = befriend
+					id = SPB
+					value = -200
+				}
+				add_ai_strategy = {
+					type = alliance
+					id = SPB
+					value = -200
+				}
+			}
+			SPB = {
+				load_focus_tree = {
+					tree = national_spain_focus
+					keep_completed = no
+				}
+				complete_national_focus = SPA_create_coordinating_junta
+				complete_national_focus = SPA_supremacy_of_the_communion
+				complete_national_focus = SPA_prepare_the_carlist_insurrection
+				complete_national_focus = SPA_contact_the_union_militar_espanola
+				complete_national_focus = SPA_head_the_junta_nacional
+				complete_national_focus = SPA_unite_the_requetes
+				unlock_national_focus = SPA_no_compromise_on_carlist_ideals
+				add_timed_idea = { idea = SPA_death_before_surrender days = 900 }
+				every_unit_leader = {
+					limit = {
+						has_trait = trait_SPA_carlist_loyalties
+					}
+					remove_unit_leader_trait = trait_SPA_carlist_loyalties
+				}
+			}
+			if = {
+				limit = {
+					has_idea = SPA_carlism_1
+				}
+				remove_ideas = SPA_carlism_1
+			}
+			if = {
+				limit = {
+					has_idea = SPA_carlism_2
+				}
+				remove_ideas = SPA_carlism_2
+			}
+			if = {
+				limit = {
+					has_idea = SPA_carlism_3
+				}
+				remove_ideas = SPA_carlism_3
+			}
+			if = {
+				limit = {
+					has_idea = SPA_carlism_4
+				}
+				remove_ideas = SPA_carlism_4
+			}
+			if = {
+				limit = {
+					has_idea = SPA_carlism_5
+				}
+				remove_ideas = SPA_carlism_5
+			}
+
+			## SPA triggers Carlist Uprising ##
+			# If any country has already joined SCW, it will join the war against SPB as well
+			if = { #Country supporting SPD
+				limit = {
+					any_country = { has_country_flag = supports_SPD_flag }
+				}
+				every_country = {
+					limit = { has_country_flag = supports_SPD_flag }
+					add_to_war = { targeted_alliance = SPD enemy = SPB hostility_reason = asked_to_join }
+				}
+				if = {
+					limit = {
+						any_country = { has_country_flag = POR_non_aligned_portugal_supports_SPA_flag }
+					}
+					random_country = { #Portuguese Non-aligned tag (spawned via Workers of Iberia, Unite! focus) will join war
+						limit = {
+							has_country_flag = POR_non_aligned_portugal_supports_SPA_flag
+						}
+						add_to_war = { targeted_alliance = SPA enemy = SPB hostility_reason = asked_to_join }
+					}
+				}
+			}
+			if = { #Country supporting SPA
+				limit = {
+					any_country = { has_country_flag = supports_SPA_flag }
+				}
+				every_country = {
+					limit = { has_country_flag = supports_SPA_flag }
+					add_to_war = { targeted_alliance = SPA enemy = SPB hostility_reason = asked_to_join }
+				}
+			}
+			every_state = {
+				limit = {
+					has_state_flag = SPR_core_of_spain_flag
+				}
+				add_core_of = SPB
+			}
+			news_event = { id = lar_news.10 days = 1 }
+		}
+	}
+	
+	option = {
+		name = lar_spain.7.a
+		effect_tooltip = {
+			add_popularity = {
+			    ideology = monarchy
+			    popularity = -0.15
+			}
+			add_stability = -0.1
+			delete_unit_template_and_units = {
+				division_template = "Requeté Carlista"
+			}
+			transfer_units_fraction = {
+				target = SPB
+				stockpile_ratio = 0.2
+				army_ratio = 0.1
+				navy_ratio = 0.1
+				air_ratio = 0.1
+				keep_unit_leaders = {
+				    
+				}
+				keep_unit_leaders_trigger = {
+					has_trait = trait_SPA_falangist_loyalties
+				}
+			}
+			every_unit_leader = {
+				limit = {
+					has_trait = trait_SPA_carlist_loyalties
+				}
+				remove_unit_leader_trait = trait_SPA_carlist_loyalties
+				set_nationality = {
+					character = THIS
+					target_country = SPB
+				}
+			}
+			every_unit_leader = {
+				limit = {
+					has_trait = trait_SPA_falangist_loyalties
+				}
+				remove_unit_leader_trait = trait_SPA_falangist_loyalties
+			}
+			SPB = {
+				declare_war_on = {
+				    target = ROOT
+				    type = civil_war
+				}
+				add_civil_war_target = ROOT
+				declare_war_on = {
+				    target = SPD
+				    type = civil_war
+				}
+				add_civil_war_target = SPD
+				if = {
+					limit = {
+						country_exists = SPC
+					}
+					declare_war_on = {
+					    target = SPC
+					    type = civil_war
+					}
+					add_civil_war_target = SPC
+				}
+				if = {
+					limit = {
+						country_exists = ARA
+						NOT = { has_war_with = ARA }
+					}
+					declare_war_on = {
+					    target = ARA
+					    type = civil_war
+					}
+					add_civil_war_target = ARA
+				}
+				if = {
+					limit = {
+						country_exists = CAT
+						NOT = { has_war_with = CAT }
+					}
+					declare_war_on = {
+					    target = CAT
+					    type = civil_war
+					}
+					add_civil_war_target = CAT
+				}
+			}
+			every_other_country = {
+				limit = { is_subject_of = SPR }
+				add_to_war = { targeted_alliance = SPR enemy = SPB hostility_reason = asked_to_join }
+			}
+		}
+	}
+}
+
+
+
+# Spanish Civil War - Fascist Anti-Carlist Crack-down
+country_event = {
+	id = lar_spain.8
+	title = lar_spain.8.t
+	desc = {
+		text = lar_spain.8.desc
+		trigger = {
+			NOT = { has_global_flag = scw_early_end }
+		}
+	}
+	desc = {
+		text = lar_spain.8.desc_2
+		trigger = {
+			has_global_flag = scw_early_end
+		}
+	}
+	picture = GFX_report_event_spr_nationalist_soldiers
+	
+	fire_only_once = yes
+
+	is_triggered_only = yes
+
+	immediate = {
+		hidden_effect = {
+			create_dynamic_country = {
+				original_tag = ROOT
+				copy_tag = ROOT
+				
+				set_country_flag = SPR_nationalist_spain_flag
+				set_cosmetic_tag = SPR_nationalist_spain
+				set_research_slots = 3
+		
+				set_politics = {
+					ruling_party = fascism
+					last_election = "1933.4.26"
+					election_frequency = 48
+					elections_allowed = no
+				}
+				set_popularities = {
+					fascism = 80
+					democratic = 15
+					neutrality = 5
+				}
+				set_stability = 0.6
+				set_war_support = 0.5
+			}
+			every_other_country = {
+				limit = {
+					ROOT = {
+						has_volunteers_amount_from = {
+						    tag = PREV
+						    count > 0
+						}
+					}
+				}
+				recall_volunteers_from = ROOT
+			}
+			set_global_flag = SPR_carlist_uprising_flag
+			set_global_flag = { flag = SPR_civil_war_startup value = 1 days = 3 } # Make AI avoid attacking for a few days
+			
+			clr_country_flag = SPR_nationalist_spain_flag
+			drop_cosmetic_tag = yes
+			set_country_flag = SPR_carlist_spain_flag
+			if = {
+				limit = {
+					has_game_rule = {
+						rule = spr_fragmentation_status
+						option = SPR_EU4
+					}
+				}
+				set_cosmetic_tag = SPR_carlist_castille
+			}
+			else = {
+				set_cosmetic_tag = SPR_carlist_spain
+			}
+			if = {
+				limit = {
+					any_controlled_state = {
+						has_state_flag = SPA_carlist_cell_flag
+					}
+				}
+				every_state = {
+					limit = {
+						NOT = { has_state_flag = SPA_carlist_cell_flag }
+						is_controlled_by = ROOT
+					}
+					SPF = {
+						transfer_state = PREV
+					}
+				}
+			}
+			else_if = {
+				limit = {
+					OR = {
+						controls_state = 172
+						controls_state = 176
+					}
+				}
+				every_state = {
+					limit = {
+						NOT = { state = 172 }
+						NOT = { state = 176 }
+						NOT = { has_state_flag = SPA_carlist_cell_flag }
+						is_controlled_by = ROOT
+					}
+					SPF = {
+						transfer_state = PREV
+					}
+				}
+			}
+			else = {
+				random_owned_state = {
+					limit = {
+						is_controlled_by = ROOT
+					}
+					set_state_flag = SPA_carlist_cell_flag
+				}
+				random_owned_state = {
+					limit = {
+						is_controlled_by = ROOT
+						NOT = { has_state_flag = SPA_carlist_cell_flag }
+					}
+					set_state_flag = SPA_carlist_cell_flag
+				}
+				every_state = {
+					limit = {
+						NOT = { has_state_flag = SPA_carlist_cell_flag }
+						is_controlled_by = ROOT
+					}
+					SPF = {
+						transfer_state = PREV
+					}
+				}
+			}
+			SPF = {
+				inherit_technology = SPB
+				if = {
+					limit = {
+						owns_state = 172
+					}
+					set_capital = { state = 172 }
+				}
+				else = {
+					random_owned_state = {
+						limit = {
+							is_controlled_by = SPF
+							is_core_of = SPF
+							NOT = {
+								state = 177
+								state = 178
+							}
+						}
+						SPF = {
+							set_capital = { state = PREV }
+						}
+					}
+				}
+				delete_unit_template_and_units = {
+					division_template = "Requeté Carlista"
+				}
+			}
+			
+			add_popularity = {
+			    ideology = fascism
+			    popularity = -0.35
+			}
+			add_stability = -0.1
+			transfer_units_fraction = {
+				target = SPF
+				stockpile_ratio = 0.4
+				army_ratio = 0.3
+				navy_ratio = 0.3
+				air_ratio = 0.3
+				keep_unit_leaders = {
+				    
+				}
+				keep_unit_leaders_trigger = {
+					has_trait = trait_SPA_carlist_loyalties
+				}
+			}
+			set_division_template_lock = {
+			    division_template = "Requeté Carlista"
+			    is_locked = no
+			}
+			every_unit_leader = {
+				limit = {
+					has_trait = trait_SPA_falangist_loyalties
+				}
+				remove_unit_leader_trait = trait_SPA_falangist_loyalties
+				set_nationality = {
+					character = THIS
+					target_country = SPF
+				}
+			}
+			every_unit_leader = {
+				limit = {
+					has_trait = trait_SPA_carlist_loyalties
+				}
+				remove_unit_leader_trait = trait_SPA_carlist_loyalties
+			}
+			SPF = {
+				every_unit_leader = {
+					limit = {
+						has_trait = trait_SPA_falangist_loyalties
+					}
+					remove_unit_leader_trait = trait_SPA_falangist_loyalties
+				}
+				every_unit_leader = {
+					limit = {
+						has_trait = trait_SPA_nationalist_sympathies
+					}
+					remove_unit_leader_trait = trait_SPA_nationalist_sympathies
+				}
+				declare_war_on = {
+				    target = ROOT
+				    type = civil_war
+				}
+				add_civil_war_target = ROOT
+				add_ai_strategy = {
+					type = antagonize
+					id = SPB
+					value = 200
+				}
+				declare_war_on = {
+				    target = SPD
+				    type = civil_war
+				}
+				add_civil_war_target = SPD
+
+				add_ai_strategy = {
+					type = antagonize
+					id = SPD
+					value = 200
+				}
+				if = {
+					limit = {
+						country_exists = SPC
+					}
+					declare_war_on = {
+					    target = SPC
+					    type = civil_war
+					}
+					add_civil_war_target = SPC
+
+					add_ai_strategy = {
+						type = antagonize
+						id = SPC
+						value = 200
+					}
+				}
+				if = {
+					limit = {
+						country_exists = ARA
+						NOT = { has_war_with = ARA }
+					}
+					declare_war_on = {
+					    target = ARA
+					    type = civil_war
+					}
+					add_civil_war_target = ARA
+				}
+				if = {
+					limit = {
+						country_exists = CAT
+						NOT = { has_war_with = CAT }
+					}
+					declare_war_on = {
+					    target = CAT
+					    type = civil_war
+					}
+					add_civil_war_target = CAT
+				}
+			}
+			every_other_country = {
+				limit = { is_subject_of = SPR }
+				add_to_war = { targeted_alliance = SPR enemy = SPF hostility_reason = asked_to_join }
+			}
+			every_other_country = {
+				add_ai_strategy = {
+					type = support
+					id = SPB
+					value = -200
+				}
+				add_ai_strategy = {
+					type = protect
+					id = SPB
+					value = -200
+				}
+				add_ai_strategy = {
+					type = befriend
+					id = SPB
+					value = -200
+				}
+				add_ai_strategy = {
+					type = alliance
+					id = SPB
+					value = -200
+				}
+			}
+			SPF = {
+				load_focus_tree = {
+					tree = national_spain_focus
+					keep_completed = no
+				}
+				complete_national_focus = SPA_create_coordinating_junta
+				complete_national_focus = SPA_the_phalanx_ascendant
+				complete_national_focus = SPA_secure_the_national_defense_council
+				complete_national_focus = SPA_suspend_the_constitution
+				unlock_national_focus = SPA_eliminate_the_carlists
+				complete_national_focus = SPA_primo_de_rivera_prisoner_exchange
+				complete_national_focus = SPA_establish_the_directory
+				add_timed_idea = { idea = SPA_death_before_surrender days = 900 }
+			}
+
+			## SPB triggers Carlist Uprising ##
+			### All foreign Aid goes to SPA ###
+			#Portuguese Op. modifier goes to SPA = SPF
+			if = {
+				limit = {
+					has_opinion_modifier = POR_helped_in_civil_war
+				}
+				remove_opinion_modifier = {
+					target = POR
+					modifier = POR_helped_in_civil_war
+				}
+				SPF = {
+					add_opinion_modifier = {
+					    target = POR
+					    modifier = POR_helped_in_civil_war
+					}
+				}
+			}
+			if = {#Country supporting SPA = SPF
+				limit = { 
+					any_country = { has_country_flag = supports_SPA_flag }
+				}
+				every_country = {
+					limit = {
+						 has_country_flag = supports_SPA_flag
+					}
+					diplomatic_relation = {
+						country = SPF
+						relation = military_access
+						active = yes
+					}
+					SPF = {
+						diplomatic_relation = {
+							country = PREV
+							relation = military_access
+							active = yes
+						}
+					}
+					#Join war against all SPA enemies
+					every_country = {
+						limit = { has_war_with = SPF }
+						PREV = {
+							add_to_war = {
+								targeted_alliance = SPF
+								enemy = PREV
+								hostility_reason = asked_to_join
+							}
+						}
+					}
+				}
+			
+				#Transfer troops in territory belonging to SPA allies back home
+				every_state = {
+					limit = {
+						NOT = { is_fully_controlled_by = ROOT }
+						owner = {
+							has_war_together_with = SPF
+						}
+					}
+					teleport_armies = {
+						limit = { 
+							tag = SPB
+						}
+						to_state_array = owned_controlled_states
+					}
+				}
+			}
+			if = {	#Country supporting SPD
+				limit = {
+					any_country = { has_country_flag = supports_SPD_flag }
+				}
+				every_country = {
+					limit = {
+						has_country_flag = supports_SPD_flag
+					}
+					# Country joins war against SPA
+					add_to_war = { targeted_alliance = SPD enemy = SPF hostility_reason = asked_to_join }
+				}
+				if = {
+					limit = {
+						any_country = { has_country_flag = POR_non_aligned_portugal_supports_SPA_flag }
+					}
+					random_country = { #Portuguese Non-aligned tag (spawned via Workers of Iberia, Unite! focus) will join war
+						limit = {
+							has_country_flag = POR_non_aligned_portugal_supports_SPA_flag
+						}
+						add_to_war = { targeted_alliance = SPF enemy = SPB hostility_reason = asked_to_join }
+					}
+				}
+			}
+			every_state = {
+				limit = {
+					has_state_flag = SPR_core_of_spain_flag
+				}
+				add_core_of = SPB
+				add_core_of = SPF
+			}
+			news_event = { id = lar_news.10 days = 1 }
+		}
+	}
+	
+	option = {
+		name = lar_spain.8.a
+		effect_tooltip = {
+			add_popularity = {
+			    ideology = fascism
+			    popularity = -0.35
+			}
+			add_stability = -0.1
+			transfer_units_fraction = {
+				target = SPF
+				stockpile_ratio = 0.4
+				army_ratio = 0.3
+				navy_ratio = 0.3
+				air_ratio = 0.3
+				keep_unit_leaders = {
+				    
+				}
+				keep_unit_leaders_trigger = {
+					has_trait = trait_SPA_carlist_loyalties
+				}
+			}
+			every_unit_leader = {
+				limit = {
+					has_trait = trait_SPA_falangist_loyalties
+				}
+				remove_unit_leader_trait = trait_SPA_falangist_loyalties
+				set_nationality = {
+					character = THIS
+					target_country = SPF
+				}
+			}
+			every_unit_leader = {
+				limit = {
+					has_trait = trait_SPA_carlist_loyalties
+				}
+				remove_unit_leader_trait = trait_SPA_carlist_loyalties
+			}
+			set_division_template_lock = {
+			    division_template = "Requeté Carlista"
+			    is_locked = no
+			}
+			SPF = {
+				declare_war_on = {
+				    target = ROOT
+				    type = civil_war
+				}
+				add_civil_war_target = ROOT
+				declare_war_on = {
+				    target = SPD
+				    type = civil_war
+				}
+				add_civil_war_target = SPD
+				if = {
+					limit = {
+						country_exists = SPC
+					}
+					declare_war_on = {
+					    target = SPC
+					    type = civil_war
+					}
+					add_civil_war_target = SPC
+				}
+				if = {
+					limit = {
+						country_exists = ARA
+						NOT = { has_war_with = ARA }
+					}
+					declare_war_on = {
+					    target = ARA
+					    type = civil_war
+					}
+					add_civil_war_target = ARA
+				}
+				if = {
+					limit = {
+						country_exists = CAT
+						NOT = { has_war_with = CAT }
+					}
+					declare_war_on = {
+					    target = CAT
+					    type = civil_war
+					}
+					add_civil_war_target = CAT
+				}
+			}
+			every_other_country = {
+				limit = { is_subject_of = SPR }
+				add_to_war = { targeted_alliance = SPR enemy = SPF hostility_reason = asked_to_join }
+			}
+		}
+		random_state = {
+			limit = {
+				has_state_flag = SPA_union_militar_flag
+			}
+			create_unit = {
+				division = "division_template = \"Requeté Carlista\" start_experience_factor = 0.3" 
+				owner = SPB
+				allow_spawning_on_enemy_provs = yes
+				count = 5
+			}
+		}
+	}
+}
+
+
+# Portuguese Aid - Event for Portugal
+country_event = {
+	id = lar_spain.22
+	title = lar_spain.22.t
+	desc = lar_spain.22.desc
+	picture = GFX_report_event_generic_read_write
+	
+	is_triggered_only = yes
+	
+	option = { # Accept
+		name = lar_spain.22.a
+		ai_chance = {
+			base = 50
+			modifier = {
+				factor = 0
+				OR = {
+					has_completed_focus = POR_politic_anticrelicarism
+					has_completed_focus = POR_prison_kabo_verde
+				}
+			}
+			modifier = {
+				factor = 0
+				has_completed_focus = POR_rebirth_of_catolic_centre
+				any_country_with_original_tag = {
+					original_tag_to_check = SPA
+					exists = yes
+					has_completed_focus = SPA_supremacy_of_the_communion
+				}
+			}
+		}
+		add_manpower = -20000
+		effect_tooltip = {
+			FROM = { add_manpower = 20000 }
+		}
+		add_timed_idea = { idea = SPA_spanish_civil_war_commitments days = 730 }
+		add_opinion_modifier = { target = ROOT modifier = SPA_spanish_civil_war_commitments }
+		add_ai_strategy = {
+			type = send_volunteers_desire
+			id = SPA
+			value = 200
+		}
+		hidden_effect = {
+			FROM = {
+				country_event = { id = lar_spain.23 hours = 18 random_hours = 6 }
+			}
+		}
+	}
+
+	option = { # Decline
+		name = lar_spain.22.b
+		ai_chance = {
+			base = 50
+			modifier = {
+				factor = 0.5
+				has_opinion = { target = FROM value > 99 }
+			}
+			modifier = {
+				factor = 0.25
+				has_completed_focus = POR_intervention_in_spanish_war
+			}
+			modifier = {
+				factor = 0
+				is_historical_focus_on = yes
+			}
+		}
+		hidden_effect = {
+			FROM = {
+				country_event = { id = lar_spain.24 hours = 18 random_hours = 6 }
+			}
+		}
+	}
+}
+
+# Portuguese Aid - Event for Spain - POR accepted
+country_event = {
+	id = lar_spain.23
+	title = lar_spain.23.t
+	desc = lar_spain.23.desc
+	picture = GFX_report_event_soldiers_marching
+	
+	is_triggered_only = yes
+	
+	option = { # OK
+		name = lar_spain.23.a
+		effect_tooltip = {
+			POR = {
+				add_timed_idea = { idea = SPA_spanish_civil_war_commitments days = 730 }
+				add_opinion_modifier = { target = ROOT modifier = SPA_spanish_civil_war_commitments }
+			}
+		}
+		add_manpower = 20000
+	}
+}
+
+# Portuguese Aid - Event for Spain - POR declined
+country_event = {
+	id = lar_spain.24
+	title = lar_spain.24.t
+	desc = lar_spain.24.desc
+	picture = GFX_report_event_generic_read_write
+	
+	is_triggered_only = yes
+	
+	option = { # OK
+		name = lar_spain.24.a
+	}
+}
+
+
+# Iberian Pact - Event for Portugal
+country_event = {
+	id = lar_spain.25
+	title = lar_spain.25.t
+	desc = lar_spain.25.desc
+	picture = GFX_report_event_generic_parliament
+	
+	is_triggered_only = yes
+	
+	option = { # Accept
+		name = lar_spain.25.a
+		ai_chance = {
+			base = 50
+			modifier = {
+				factor = 0
+				OR = {
+					has_completed_focus = POR_politic_anticrelicarism
+					has_completed_focus = POR_prison_kabo_verde
+				}
+			}
+		}
+		custom_effect_tooltip = SPA_the_iberian_pact_tt
+		hidden_effect = {
+			FROM = {
+				country_event = { id = lar_spain.26 hours = 18 random_hours = 6 }
+			}
+		}
+		if= { #If Portugal is in faction, Spain will join
+			limit = {
+				is_in_faction = yes
+				FROM = { is_in_faction = no }
+			}
+			effect_tooltip = {
+				random_other_country = {
+					limit = {
+						is_in_faction_with = ROOT
+						is_faction_leader = yes
+					}
+					add_to_faction = FROM
+				}
+			}
+		}
+		else_if = { #If Spain is in faction, Portugal will join
+			limit = {
+				is_in_faction = no
+				FROM = { is_in_faction = yes }
+			}
+			random_other_country = {
+				limit = {
+					is_in_faction_with = FROM
+					is_faction_leader = yes
+				}
+				add_to_faction = ROOT
+			}
+		}
+		else_if = { #If Spain and Portugal are in different factions, both will leave their faction
+			limit = {
+				is_in_faction = yes
+				FROM = { is_in_faction = yes }
+				NOT = { is_in_faction_with = FROM }
+			}
+			effect_tooltip = {
+				leave_faction = yes
+				FROM = { leave_faction = yes }
+			}
+		}
+	}
+
+	option = { # Decline
+		name = lar_spain.25.b
+		ai_chance = {
+			base = 50
+			modifier = {
+				factor = 0.5
+				has_opinion = { target = FROM value > 99 }
+			}
+			modifier = {
+				factor = 0.5
+				has_completed_focus = POR_intervention_in_spanish_war
+			}
+			modifier = {
+				factor = 0
+				focus_progress = {
+				    focus = POR_iberian_summit
+				    progress > 0
+				}
+			}
+			modifier = {
+				factor = 0
+				has_completed_focus = POR_intervention_in_spanish_war
+				is_historical_focus_on = yes
+			}
+		}
+		hidden_effect = {
+			FROM = {
+				country_event = { id = lar_spain.27 hours = 18 random_hours = 6 }
+			}
+		}
+	}
+}
+
+# Iberian Pact - Event for Spain - POR accepted
+country_event = {
+	id = lar_spain.26
+	title = lar_spain.25.t
+	desc = lar_spain.26.desc
+	picture = GFX_report_event_generic_sign_treaty1
+	
+	is_triggered_only = yes
+	
+	option = { # OK
+		name = lar_spain.26.a
+		custom_effect_tooltip = SPA_the_iberian_pact_tt
+		if= { #If Spain is in faction, Portugal will join
+			limit = {
+				is_in_faction = yes
+				FROM = { is_in_faction = no }
+			}
+			effect_tooltip = {
+				random_other_country = {
+					limit = {
+						is_in_faction_with = ROOT
+						is_faction_leader = yes
+					}
+					add_to_faction = FROM
+				}
+			}
+		}
+		else_if = { #If Portugal is in faction, Spain will join
+			limit = {
+				is_in_faction = no
+				FROM = { is_in_faction = yes }
+			}
+			random_other_country = {
+				limit = {
+					is_in_faction_with = FROM
+					is_faction_leader = yes
+				}
+				add_to_faction = ROOT
+			}
+		}
+		else_if = { #If Spain and Portugal are in different factions, both will leave their faction
+			limit = {
+				is_in_faction = yes
+				FROM = { is_in_faction = yes }
+				NOT = { is_in_faction_with = FROM }
+			}
+			leave_faction = yes
+			FROM = { leave_faction = yes }
+		}
+		hidden_effect = {
+			FROM = { set_country_flag = SPA_iberian_pact }
+			set_country_flag = SPA_iberian_pact
+		}
+	}
+}
+
+# Iberian Pact - Event for Spain - POR declined
+country_event = {
+	id = lar_spain.27
+	title = lar_spain.25.t
+	desc = lar_spain.27.desc
+	picture = GFX_report_event_generic_sign_treaty1
+	
+	is_triggered_only = yes
+	
+	option = { # OK
+		name = lar_spain.27.a
+	}
+}
+
+# Iberian Pact - Other party has joined a faction, we must uphold our end of the bargain!
+country_event = {
+	id = lar_spain.28
+	title = lar_spain.28.t
+	desc = lar_spain.28.desc
+	picture = GFX_report_event_generic_parliament
+	
+	is_triggered_only = yes
+
+	immediate = {
+		hidden_effect = {
+			random_other_country = {
+				limit = {
+					has_country_flag = SPA_iberian_pact_invitee
+				}
+				save_event_target_as = iberian_pact_invitee
+			}
+			random_other_country = {
+				limit = {
+					has_country_flag = SPA_iberian_pact_faction_leader
+				}
+				add_to_faction = ROOT
+			}
+		}
+	}
+	
+	option = { # OK
+		name = lar_spain.28.a
+		effect_tooltip = {
+			random_other_country = {
+				limit = {
+					is_in_faction_with = event_target:iberian_pact_invitee
+					is_faction_leader = yes
+				}
+				add_to_faction = ROOT
+			}
+		}
+	}
+}
+
+# Iberian Pact - Other party has joined the war, we must uphold our end of the bargain!
+country_event = {
+	id = lar_spain.29
+	title = lar_spain.28.t
+	desc = lar_spain.29.desc
+	picture = GFX_report_event_generic_parliament
+
+	is_triggered_only = yes
+	
+	option = { # OK
+		name = lar_spain.28.a
+		random_other_country = {
+			limit = {
+				has_war_with = event_target:iberian_pact_war_target
+				if = {
+					limit = {
+						any_country = {
+							has_country_flag = SPA_iberian_pact_enemy_flag
+						}
+					}
+					has_country_flag = SPA_iberian_pact_enemy_flag
+				}
+			}
+			random_other_country = {
+				limit = {
+					has_country_flag = SPA_iberian_pact
+					has_war_with = PREV
+				}
+				ROOT = {
+					add_to_war = { 
+					    targeted_alliance = PREV
+					    enemy = PREV.PREV
+					    hostility_reason = asked_to_join
+					}
+				}
+			}
+		}
+	}
+}
+
+
+# Latin Bloc - Event for invitees
+country_event = {
+	id = lar_spain.30
+	title = lar_spain.30.t
+	desc = lar_spain.30.desc
+	picture = GFX_report_event_generic_read_write
+	
+	is_triggered_only = yes
+	
+	option = { # Accept
+		name = lar_spain.30.a
+		ai_chance = {
+			base = 50
+			modifier = {
+				factor = 0
+				has_government = democratic
+				FROM = { has_government = fascism }
+			}
+			modifier = {
+				factor = 0
+				has_government = communism
+			}
+		}
+		effect_tooltip = {
+			FROM = {
+				add_to_faction = ROOT
+			}
+		}
+		hidden_effect = {
+			FROM = {
+				country_event = { id = lar_spain.31 hours = 18 random_hours = 6 }
+			}
+			add_ai_strategy = {
+				type = alliance
+				id = FROM
+				value = 200
+			}
+		}
+	}
+
+	option = { # Decline
+		name = lar_spain.30.b
+		ai_chance = {
+			base = 50
+			modifier = {
+				factor = 0.5
+				has_opinion = { target = FROM value > 99 }
+			}
+			modifier = {
+				factor = 0
+				has_government = FROM
+			}
+		}
+		hidden_effect = {
+			FROM = {
+				country_event = { id = lar_spain.32 hours = 18 random_hours = 6 }
+			}
+		}
+	}
+}
+
+# Latin Bloc - Event for Spain - FROM accepted
+country_event = {
+	id = lar_spain.31
+	title = lar_spain.30.t
+	desc = lar_spain.31.desc
+	picture = GFX_report_event_generic_sign_treaty2
+	
+	is_triggered_only = yes
+	
+	option = { # OK
+		name = lar_spain.31.a
+		add_to_faction = FROM
+	}
+}
+
+# Latin Bloc - Event for Spain - FROM declined
+country_event = {
+	id = lar_spain.32
+	title = lar_spain.30.t
+	desc = lar_spain.32.desc
+	picture = GFX_report_event_generic_read_write
+	
+	is_triggered_only = yes
+	
+	option = { # OK
+		name = lar_spain.32.a
+	}
+}
+
+
+
+# Spain - Contact the Union Militar Espanola
+country_event = {
+	id = lar_spain.33
+	title = lar_spain.33.t
+	desc = lar_spain.33.desc
+	picture = GFX_report_event_spr_carlists2
+	
+	is_triggered_only = yes
+
+	immediate = {
+		hidden_effect = {
+			random_owned_state = {
+				limit = {
+					is_core_of = ROOT
+					is_controlled_by = ROOT
+					NOT = {
+						state = 177
+						state = 178
+					}
+					NOT = { has_state_flag = SPA_carlist_cell_flag }
+				}
+				set_state_flag = union_militar_temp_flag_1
+				save_event_target_as = union_militar_target_state_1
+			}
+			random_owned_state = {
+				limit = {
+					is_core_of = ROOT
+					is_controlled_by = ROOT
+					NOT = {
+						state = 177
+						state = 178
+					}
+					NOT = { has_state_flag = SPA_carlist_cell_flag }
+					NOT = { has_state_flag = union_militar_temp_flag_1 }
+				}
+				set_state_flag = union_militar_temp_flag_2
+				save_event_target_as = union_militar_target_state_2
+			}
+			random_owned_state = {
+				limit = {
+					is_core_of = ROOT
+					is_controlled_by = ROOT
+					NOT = {
+						state = 177
+						state = 178
+					}
+					NOT = { has_state_flag = SPA_carlist_cell_flag }
+					NOT = { has_state_flag = union_militar_temp_flag_1 }
+					NOT = { has_state_flag = union_militar_temp_flag_2 }
+				}
+				set_state_flag = union_militar_temp_flag_3
+				save_event_target_as = union_militar_target_state_3
+			}
+		}
+	}
+	
+	option = { # Choose First State
+		name = lar_spain.33.a
+		trigger = {
+			any_owned_state = {
+				has_state_flag = union_militar_temp_flag_1
+			}
+		}
+		random_owned_state = {
+			limit = {
+				has_state_flag = union_militar_temp_flag_1
+			}
+			custom_effect_tooltip = lar_spain.33_tt
+			hidden_effect = {
+				set_state_flag = SPA_union_militar_flag
+			}
+		}
+	}
+
+	option = { # Choose Second State
+		name = lar_spain.33.b
+		trigger = {
+			any_owned_state = {
+				has_state_flag = union_militar_temp_flag_2
+			}
+		}
+		random_owned_state = {
+			limit = {
+				has_state_flag = union_militar_temp_flag_2
+			}
+			custom_effect_tooltip = lar_spain.33_tt
+			hidden_effect = {
+				set_state_flag = SPA_union_militar_flag
+			}
+		}
+	}
+
+	option = { # Choose Third State
+		name = lar_spain.33.c
+		trigger = {
+			any_owned_state = {
+				has_state_flag = union_militar_temp_flag_3
+			}
+		}
+		random_owned_state = {
+			limit = {
+				has_state_flag = union_militar_temp_flag_3
+			}
+			custom_effect_tooltip = lar_spain.33_tt
+			hidden_effect = {
+				set_state_flag = SPA_union_militar_flag
+			}
+		}
+	}
+}
+
+# Spain - Settle the Succession Question
+country_event = {
+	id = lar_spain.34
+	title = lar_spain.34.t
+	desc = lar_spain.34.desc
+	picture = GFX_report_event_generic_parliament
+	
+	is_triggered_only = yes
+	
+	option = { # Choose first King
+		name = lar_spain.34.a
+		ai_chance = {
+			base = 66
+		}
+		set_country_flag = SPB_xavier_king
+		custom_effect_tooltip = lar_spain.34.a_tt
+	}
+
+	option = { # Choose second King
+		name = lar_spain.34.b
+		ai_chance = {
+			base = 34
+		}
+		custom_effect_tooltip = lar_spain.34.b_tt
+	}
+}
+
+
+# Tangiers Enclave - Event for UK
+country_event = {
+	id = lar_spain.36
+	title = lar_spain.36.t
+	desc = lar_spain.36.desc
+	picture = GFX_report_event_spr_occupation_of_tangiers
+	
+	is_triggered_only = yes
+	
+	option = { # Protest
+		name = lar_spain.36.a
+		ai_chance = {
+			base = 34
+			modifier = {
+				factor = 3
+				has_war = no
+			}
+			modifier = {
+				factor = 2
+				has_government = democratic
+			}
+			modifier = {
+				factor = 5
+				strength_ratio = {
+				    tag = FROM
+				    ratio > 5
+				}
+			}
+			modifier = {
+				factor = 2
+				strength_ratio = {
+				    tag = FROM
+				    ratio > 3
+				}
+			}
+			modifier = {
+				factor = 0.5
+				strength_ratio = {
+				    tag = FROM
+				    ratio < 2
+				}
+			}
+			modifier = {
+				factor = 0.5
+				NOT = { has_political_power > 100 }
+			}
+			modifier = {
+				factor = 0
+				strength_ratio = {
+				    tag = FROM
+				    ratio < 1
+				}
+			}
+			modifier = {
+				factor = 0
+				is_in_faction_with = FROM
+			}
+		}
+		add_political_power = -200
+		custom_effect_tooltip = lar_spain.36_tt
+		effect_tooltip = {
+			create_wargoal = {
+			    type = topple_government
+			    target = FROM
+			}
+		}
+		hidden_effect = {
+			FROM = {
+				country_event = { id = lar_spain.37 hours = 18 random_hours = 6 }
+			}
+		}
+	}
+
+	option = { # Let it slide
+		name = lar_spain.36.b
+		ai_chance = {
+			base = 66
+			modifier = {
+				factor = 10
+				has_war = yes
+			}
+			modifier = {
+				factor = 5
+				has_government = fascism
+			}
+			modifier = {
+				factor = 10
+				surrender_progress > 0.1
+			}
+		}
+		hidden_effect = {
+			FROM = {
+				country_event = { id = lar_spain.38 hours = 18 random_hours = 6 }
+			}
+		}
+	}
+}
+
+
+# Tangiers Enclave - Event for Spain - UK protested
+country_event = {
+	id = lar_spain.37
+	title = lar_spain.36.t
+	desc = lar_spain.37.desc
+	picture = GFX_report_event_spr_occupation_of_tangiers
+	
+	is_triggered_only = yes
+	
+	option = { # OK
+		name = lar_spain.37.a
+		ai_chance = {
+			base = 50
+			modifier = {
+				factor = 0
+				is_historical_focus_on = yes
+			}
+		}
+		FROM = {
+			create_wargoal = {
+			    type = topple_government
+			    target = ROOT
+			}
+		}
+		1042 = {
+			add_extra_state_shared_building_slots = 3
+			add_building_construction = {
+				type = industrial_complex
+				level = 2
+				instant_build = yes
+			}
+		}
+	}
+
+	option = { # We must back down
+		name = lar_spain.37.b
+		ai_chance = {
+			base = 50
+			modifier = {
+				factor = 0.5
+				strength_ratio = {
+				    tag = FROM
+				    ratio > 0.6
+				}
+			}
+		}
+	}
+}
+
+# Tangiers Enclave - Event for Spain - UK let it slide
+country_event = {
+	id = lar_spain.38
+	title = lar_spain.36.t
+	desc = lar_spain.38.desc
+	picture = GFX_report_event_spr_occupation_of_tangiers
+	
+	is_triggered_only = yes
+	
+	option = { # OK
+		name = lar_spain.38.a
+		1042 = {
+			add_extra_state_shared_building_slots = 3
+			add_building_construction = {
+				type = industrial_complex
+				level = 2
+				instant_build = yes
+			}
+		}
+	}
+}
+
+
+# Demand French North Africa - Event for France
+country_event = {
+	id = lar_spain.39
+	title = lar_spain.39.t
+	desc = lar_spain.39.desc
+	picture = GFX_report_event_generic_parliament
+	
+	is_triggered_only = yes
+	
+	option = { # Accept
+		name = lar_spain.39.a
+		ai_chance = {
+			base = 50
+			modifier = {
+				factor = 0
+				strength_ratio = { tag = FROM ratio > 1 }
+			}
+			modifier = {
+				factor = 5
+				NOT = { has_war_with = FROM }
+				has_war = yes
+			}
+		}
+		effect_tooltip = {
+			FROM = {
+				transfer_state = 461
+				transfer_state = 462
+				transfer_state = 459
+				transfer_state = 460
+				transfer_state = 513
+				transfer_state = 514
+				transfer_state = 458
+				transfer_state = 665
+			}
+		}
+		hidden_effect = {
+			set_country_flag = surrendered_french_north_africa
+			FROM = {
+				country_event = { id = lar_spain.40 hours = 18 random_hours = 6 }
+			}
+			news_event = { id = lar_news.14 days = 2 }
+		}
+	}
+
+	option = { # Decline
+		name = lar_spain.39.b
+		ai_chance = {
+			base = 50
+			modifier = {
+				factor = 0.8
+				strength_ratio = { tag = FROM ratio < 0.5 }
+			}
+			modifier = {
+				factor = 0.8
+				has_opinion = { target = FROM value > 99 }
+			}
+			modifier = {
+				factor = 0.8
+				strength_ratio = { tag = FROM ratio < 0.3 }
+			}
+			modifier = {
+				factor = 0.8
+				strength_ratio = { tag = FROM ratio < 0.2 }
+			}
+			modifier = {
+				factor = 0
+				strength_ratio = { tag = FROM ratio < 0.1 }
+			}
+			modifier = {
+				factor = 0
+				has_focus_tree = vichy_french_focus
+				NOT = { has_war_with = GER }
+				FROM = { is_in_faction_with = GER }
+			}
+		}
+		effect_tooltip = {
+			FROM = {
+				add_state_claim = 461
+				add_state_claim = 462
+				add_state_claim = 459
+				add_state_claim = 460
+				add_state_claim = 513
+				add_state_claim = 514
+				add_state_claim = 458
+				add_state_claim = 665
+				create_wargoal = {
+					type = take_state_focus
+					target = ROOT
+					generator = { 461 462 459 460 513 514 458 665 }
+					expire = 0
+				}
+			}
+		}
+		hidden_effect = {
+			FROM = {
+				country_event = { id = lar_spain.41 hours = 18 random_hours = 6 }
+			}
+		}
+	}
+}
+
+# Demand French North Africa - Event for Spain - France accepted
+country_event = {
+	id = lar_spain.40
+	title = lar_spain.40.t
+	desc = lar_spain.40.desc
+	picture = GFX_report_event_generic_sign_treaty3
+	
+	is_triggered_only = yes
+	
+	option = { # Ok
+		name = lar_spain.40.a
+		transfer_state = 461
+		transfer_state = 462
+		transfer_state = 459
+		transfer_state = 460
+		transfer_state = 513
+		transfer_state = 514
+		transfer_state = 458
+		transfer_state = 665
+	}
+}
+
+# Demand French North Africa - Event for Spain - France declined
+country_event = {
+	id = lar_spain.41
+	title = lar_spain.41.t
+	desc = lar_spain.41.desc
+	picture = GFX_report_event_generic_read_write
+	
+	is_triggered_only = yes
+	
+	option = { # Damn
+		name = lar_spain.41.a
+		add_state_claim = 461
+		add_state_claim = 462
+		add_state_claim = 459
+		add_state_claim = 460
+		add_state_claim = 513
+		add_state_claim = 514
+		add_state_claim = 458
+		add_state_claim = 665
+		create_wargoal = {
+			type = take_state_focus
+			target = FROM
+			generator = { 461 462 459 460 513 514 458 665 }
+			expire = 0
+		}
+	}
+}
+
+# Claim the French Throne - Event for France
+country_event = {
+	id = lar_spain.42
+	title = lar_spain.42.t
+	desc = lar_spain.42.desc
+	picture = GFX_report_event_generic_parliament
+	
+	is_triggered_only = yes
+	
+	option = { # Accept
+		name = lar_spain.42.a
+		ai_chance = {
+			base = 5
+			modifier = {
+				factor = 0
+				has_war = no
+				strength_ratio = { tag = FROM ratio > 0.5 }
+			}
+		}
+		effect_tooltip = {
+			FROM = {
+				annex_country = { target = ROOT transfer_troops = yes }
+			}
+		}
+		hidden_effect = {
+			FROM = {
+				country_event = { id = lar_spain.43 hours = 18 random_hours = 6 }
+			}
+			news_event = { id = lar_news.15 days = 2 }
+		}
+		custom_effect_tooltip = GAME_OVER_TT
+	}
+
+	option = { # Decline
+		name = lar_spain.42.b
+		ai_chance = {
+			base = 95
+			modifier = {
+				factor = 0
+				focus_progress = {
+					focus = FRA_the_legitimate_heir
+					progress > 0
+				}
+			}
+			modifier = {
+				factor = 0.8
+				NOT = { has_war_with = FROM }
+				has_war = yes
+				surrender_progress > 0.1
+			}
+			modifier = {
+				factor = 0.5
+				NOT = { has_war_with = FROM }
+				has_war = yes
+				surrender_progress > 0.3
+			}
+			modifier = {
+				factor = 0.5
+				strength_ratio = { tag = FROM ratio < 0.2 }
+			}
+			modifier = {
+				factor = 0.2
+				NOT = { has_war_with = FROM }
+				has_war = yes
+				surrender_progress > 0.5
+			}
+		}
+		effect_tooltip = {
+			FROM = {
+				create_wargoal = {
+					type = annex_everything
+					target = ROOT
+				}
+			}
+		}
+		hidden_effect = {
+			FROM = {
+				country_event = { id = lar_spain.44 hours = 18 random_hours = 6 }
+			}
+		}
+	}
+}
+
+# Claim the French Throne - Event for Spain - France accepted
+country_event = {
+	id = lar_spain.43
+	title = lar_spain.43.t
+	desc = lar_spain.43.desc
+	picture = GFX_report_event_generic_parliament
+	
+	is_triggered_only = yes
+	
+	option = { # Ok
+		name = lar_spain.43.a
+		puppet = FROM
+		custom_effect_tooltip = lar_spain.43_tt
+		hidden_effect = { country_event = { id = lar_spain.79 days = 7 random_days = 7 } }
+	}
+}
+
+# Claim the French Throne - Event for Spain - France declined
+country_event = {
+	id = lar_spain.44
+	title = lar_spain.44.t
+	desc = lar_spain.44.desc
+	picture = GFX_report_event_read_write
+	
+	is_triggered_only = yes
+	
+	option = { # Damn
+		name = lar_spain.44.a
+		create_wargoal = {
+			type = annex_everything
+			target = FROM
+		}
+	}
+}
+
+# Iberian Union - Event for Portugal
+country_event = {
+	id = lar_spain.45
+	title = lar_spain.45.t
+	desc = lar_spain.45.desc
+	picture = GFX_report_event_generic_parliament
+	
+	is_triggered_only = yes
+	
+	option = { # Accept
+		name = lar_spain.45.a
+		ai_chance = {
+			base = 5
+			modifier = {
+				factor = 0
+				has_war = no
+				strength_ratio = { tag = FROM ratio > 0.5 }
+				NOT = { is_puppet_of = FROM }
+			}
+			modifier = {
+				factor = 5
+				has_opinion = { target = FROM value > 99 }
+			}
+		}
+		effect_tooltip = {
+			FROM = {
+				annex_country = { target = ROOT transfer_troops = yes }
+			}
+		}
+		hidden_effect = {
+			FROM = {
+				country_event = { id = lar_spain.46 hours = 18 random_hours = 6 }
+			}
+			news_event = { id = lar_news.16 days = 2 }
+		}
+		custom_effect_tooltip = GAME_OVER_TT
+	}
+
+	option = { # Decline
+		name = lar_spain.45.b
+		ai_chance = {
+			base = 95
+			modifier = {
+				factor = 0.1
+				has_completed_focus = POR_the_royal_iberian_alliance
+			}
+			modifier = {
+				factor = 0.8
+				NOT = { has_war_with = FROM }
+				has_war = yes
+				surrender_progress > 0.1
+			}
+			modifier = {
+				factor = 0.5
+				NOT = { has_war_with = FROM }
+				has_war = yes
+				surrender_progress > 0.3
+			}
+			modifier = {
+				factor = 0.5
+				strength_ratio = { tag = FROM ratio < 0.2 }
+			}
+			modifier = {
+				factor = 0
+				OR = {
+					AND = {
+						NOT = { has_war_with = FROM }
+						has_war = yes
+						surrender_progress > 0.5
+					}
+					is_puppet_of = FROM
+				}
+			}
+		}
+		effect_tooltip = {
+			FROM = {
+				create_wargoal = {
+					type = annex_everything
+					target = ROOT
+				}
+			}
+		}
+		hidden_effect = {
+			FROM = {
+				country_event = { id = lar_spain.47 hours = 18 random_hours = 6 }
+			}
+		}
+	}
+}
+
+# Iberian Union - Event for Spain - Portugal Accepted
+country_event = {
+	id = lar_spain.46
+	title = lar_spain.46.t
+	desc = lar_spain.46.desc
+	picture = GFX_report_event_generic_sign_treaty3
+	
+	is_triggered_only = yes
+	
+	option = { # Ok
+		name = lar_spain.46.a
+		set_cosmetic_tag = ESU_POR_unified
+		every_state = {
+			limit = {
+				is_core_of = POR
+			}
+			add_core_of = ROOT
+		}
+		annex_country = { target = FROM transfer_troops = yes }
+	}
+}
+
+# Iberian Union - Event for Spain - Portugal Declined
+country_event = {
+	id = lar_spain.47
+	title = lar_spain.47.t
+	desc = lar_spain.47.desc
+	picture = GFX_report_event_generic_sign_treaty2
+	
+	is_triggered_only = yes
+	
+	option = { # Damn
+		name = lar_spain.47.a
+		create_wargoal = {
+			type = annex_everything
+			target = FROM
+		}
+	}
+}
 
 # Portuguese Anarchism - Event for Portugal
 country_event = {
