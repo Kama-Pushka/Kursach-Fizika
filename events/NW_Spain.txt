@@ -1752,16 +1752,29 @@ country_event = {
 		add_stability = 0.05
 		add_political_power = -50
 		add_popularity = {
-			ideology = democratic
-			popularity = 0.1
-		}
-		add_popularity = {
 			ideology = communism
 			popularity = -0.05
 		}
 		add_popularity = {
 			ideology = anarchism
 			popularity = -0.05
+		}
+		if = {
+			limit = { trozkism > 0.05 }
+			add_popularity = {
+				ideology = trozkism
+				popularity = -0.05
+			}
+			add_popularity = {
+				ideology = democratic
+				popularity = 0.15
+			}
+		}
+		else = {
+			add_popularity = {
+				ideology = democratic
+				popularity = 0.1
+			}
 		}
 		set_country_flag = democrats_available_second_elections_flag
 	}
@@ -1831,7 +1844,7 @@ country_event = {
 		trigger = {
 			has_country_flag = democrats_available_second_elections_flag
 			check_variable = { var = SPRdemo value = SPRtroz compare = greater_than_or_equals }
-			check_variable = { var = SPRdemo value = SPRanarch compare = greater_than_or_equals }
+			#check_variable = { var = SPRdemo value = SPRanarch compare = greater_than_or_equals }
 		}
 		add_popularity = {
 			ideology = democratic
@@ -1848,11 +1861,11 @@ country_event = {
 				AND = {
 					has_country_flag = democrats_available_second_elections_flag
 					check_variable = { var = SPRtroz value = SPRdemo compare = greater_than_or_equals }
-					check_variable = { var = SPRtroz value = SPRanarch compare = greater_than_or_equals }
+					#check_variable = { var = SPRtroz value = SPRanarch compare = greater_than_or_equals }
 				}
 				AND = {
 					NOT = { has_country_flag = democrats_available_second_elections_flag }
-					check_variable = { var = SPRtroz value = SPRanarch compare = greater_than_or_equals }
+					#check_variable = { var = SPRtroz value = SPRanarch compare = greater_than_or_equals }
 				}
 			}
 		}
@@ -2346,6 +2359,7 @@ country_event = {
 					amount = 10000
 				}
 				add_ideas = SPR_spain_civil_war
+				add_timed_idea = { idea = SPA_death_before_surrender days = 900 }
 			}
 			every_state = {
 				limit = {
@@ -2382,6 +2396,7 @@ country_event = {
 				add_timed_idea = { idea = SPR_patriotic_mood days = 180 }
 				add_ideas = SPR_spain_civil_war
 				add_ideas = SPR_disbanded_army_1
+				add_timed_idea = { idea = SPR_death_before_surrender days = 900 }
 				SPA_jose_sanjurjo = {
 					set_nationality = SPA
 				}
@@ -2547,6 +2562,7 @@ country_event = {
 				set_war_support = 0.5
 				change_tag_from = ROOT
 				add_ideas = SPR_spain_civil_war
+				add_timed_idea = { idea = SPA_death_before_surrender days = 900 }
 			}
 			every_state = {
 				limit = {
@@ -2583,6 +2599,7 @@ country_event = {
 				add_timed_idea = { idea = SPR_patriotic_mood days = 180 }
 				add_ideas = SPR_spain_civil_war
 				add_ideas = SPR_disbanded_army_1
+				add_timed_idea = { idea = SPR_death_before_surrender days = 900 }
 				SPA_jose_sanjurjo = {
 					set_nationality = SPA
 				}
@@ -7932,37 +7949,73 @@ country_event = {
 		ai_chance = {
 			factor = 50
 		}
-		create_country_leader = {
-			name = "Largo Caballero"
-			desc = "POLITICS_LARGO_CABALLERO_DESC"
-			picture = "gfx/leaders/SPR/portrait_spr_largo_caballero.dds"
-			expire = "1965.1.1"
-			ideology = socialism
-			traits = {
-				socialist_trait
-				short_sighted_politician
-				trade_union_leader
-				spanish_lenin
+		if = {
+			limit = {
+				NOT = { has_country_leader = { character = SPR_francisco_largo_caballero ruling_only = yes } }
+			}
+			add_country_leader_role = {
+				character = SPR_francisco_largo_caballero
+				country_leader = {
+					desc = "POLITICS_LARGO_CABALLERO_DESC"
+					ideology = socialism
+					traits = {
+						socialist_trait
+						short_sighted_politician
+						trade_union_leader
+						spanish_lenin
+					}
+					expire = "1965.1.1"
+				}
+				promote_leader = yes
+			}
+		}
+		else = {
+			effect_tooltip = {
+				add_country_leader_role = {
+					character = SPR_francisco_largo_caballero
+					country_leader = {
+						desc = "POLITICS_LARGO_CABALLERO_DESC"
+						ideology = socialism
+						traits = {
+							socialist_trait
+							short_sighted_politician
+							trade_union_leader
+							spanish_lenin
+						}
+						expire = "1965.1.1"
+					}
+					promote_leader = yes
+				}
+			}
+			hidden_effect = {
+				add_country_leader_trait = spanish_lenin
 			}
 		}
 	}
+	
 	option = {
 		name = NWspain.69.b
 		ai_chance = {
 			factor = 50
-		}
-		create_country_leader = {
-			name = "Indalecio Prieto Tuero"
-			desc = "POLITICS_INDALECIO_PRIETO_TUERO_DESC"
-			picture = "gfx/leaders/SPR/Portrait_Indalecio_Prieto.dds"
-			expire = "1965.1.1"
-			ideology = democratic_socialism
-			traits = {
-				socialist_trait
-				voice_of_restraint
-				journalist
-				liberal_socialist
+			modifier = {
+				factor = 0
+				is_historical_focus_on = yes
 			}
+		}
+		add_country_leader_role = {
+			character = SPR_indalecio_prieto
+			country_leader = {
+				desc = "POLITICS_INDALECIO_PRIETO_TUERO_DESC"
+				ideology = democratic_socialism
+				traits = {
+					socialist_trait
+					voice_of_restraint
+					journalist
+					liberal_socialist
+				}
+				expire = "1965.1.1"
+			}
+			promote_leader = yes
 		}
 		custom_effect_tooltip = SPR_end_fascism_at_all_costs_block_tt
 	}
