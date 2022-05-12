@@ -14,7 +14,6 @@ country_event = {
 	is_triggered_only = yes
 	
 	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWspain.1" }
-	
 	immediate = {
 		set_variable = { SPRdemo = party_popularity@democratic }
 		set_variable = { SPRking = party_popularity@monarchy }
@@ -2330,6 +2329,7 @@ country_event = {
 				}
 				SPR = { country_event = { id = NWspain.66 days = 5 } }
 			}
+			set_global_flag = { flag = SPR_civil_war_startup value = 1 days = 3 } # Make AI avoid attacking for a few days
 		}
 	}
 	
@@ -2360,6 +2360,13 @@ country_event = {
 				}
 				add_ideas = SPR_spain_civil_war
 				add_timed_idea = { idea = SPA_death_before_surrender days = 900 }
+				
+				every_unit_leader = {
+					limit = {
+						has_trait = trait_SPR_republican_loyalties
+					}
+					set_nationality = SPR
+				}
 			}
 			every_state = {
 				limit = {
@@ -2471,6 +2478,7 @@ country_event = {
 					}
 					add_unit_leader_trait = trait_SPR_anarchist_loyalties
 				}
+				country_event = { id = NWspain.240 days = 1 }
 			}
 			SPA = {
 				add_country_leader_role = {
@@ -2563,6 +2571,13 @@ country_event = {
 				change_tag_from = ROOT
 				add_ideas = SPR_spain_civil_war
 				add_timed_idea = { idea = SPA_death_before_surrender days = 900 }
+				
+				every_unit_leader = {
+					limit = {
+						has_trait = trait_SPR_republican_loyalties
+					}
+					set_nationality = SPR
+				}
 			}
 			every_state = {
 				limit = {
@@ -2650,6 +2665,7 @@ country_event = {
 					}
 					add_unit_leader_trait = trait_SPR_anarchist_loyalties
 				}
+				country_event = { id = NWspain.240 days = 1 }
 			}
 			SPA = {
 				add_country_leader_role = {
@@ -2973,6 +2989,41 @@ country_event = {
 				}
 			}
 			add_threat = -0.5
+		}
+	}
+}
+
+#Мятеж республиканских генералов // SPR
+country_event = {
+	id = NWspain.240
+	title = NWspain.24.t
+	desc = NWspain.240.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWspain.240" }
+	
+	option = {
+		name = NWspain.240.a
+		add_country_leader_role = {
+			character = SPR_jose_giral_pereyra
+			country_leader = {
+				desc = "POLITICS_JOSE_GIRAL_PEREYRA_DESC"
+				ideology = social_liberalism
+				traits = {
+					chemistry
+					reformator
+					supporter_of_arming_masses
+				}
+				expire = "1965.1.1"
+			}
+			promote_leader = yes
+		}
+		hidden_effect = {
+			if = {
+				limit = { NOT = { country_exists = ARA } }
+				country_event = { id = NWspain.26 days = 12 random_days = 4 }
+			}
 		}
 	}
 }
@@ -3465,22 +3516,10 @@ country_event = {
 	title = NWspain.26.t
 	desc = NWspain.26.desc
 	picture = GFX_report_event_spr_aragon
-	fire_only_once = yes
+	is_triggered_only = yes
 	
 	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWspain.26" }
-	
-	trigger = {
-		tag = SPR
-		SPR = { has_war_with = SPA }
-		NOT = { country_exists = ARA }
-		NOT = {
-			has_global_flag = THE_MOTHER_OF_ORDER_FLAG
-			has_global_flag = WORLD_OF_SPLIT_FLAG
-		}
-	}
-	
-	mean_time_to_happen = { days = 14 }
-	
+
 	option = {
 		name = NWspain.26.a
 		release_puppet = ARA
@@ -3670,18 +3709,19 @@ country_event = {
 			has_war_with = SPA
 			surrender_progress > 0.5
 			OR = {
-				communism > 0.45
-				trozkism > 0.45
-				anarchism > 0.45
-				AND = {
-					has_completed_focus = SPR_support_stalinists
-					NOT = { has_completed_focus = SPR_transformation_people_republic }
-				}
+				has_completed_focus = SPR_support_stalinists
+				has_completed_focus = SPR_communists_in_the_government
 			}
 		}
-		SPA = { controls_state = 41 }
-		date > 1939.02.01
-		date < 1939.04.01
+		41 = {
+			controller = {
+				OR = {
+					tag = SPR
+					tag = SPA
+				}
+				NOT = { has_full_control_of_state = 41 }
+			}
+		}
 		NOT = {
 			has_global_flag = THE_MOTHER_OF_ORDER_FLAG
 			has_global_flag = WORLD_OF_SPLIT_FLAG
@@ -3689,36 +3729,144 @@ country_event = {
 	}
 	
 	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWspain.27" }
+	immediate = {
+		hidden_effect = {
+			set_global_flag = { flag = SPR_civil_war_startup value = 1 days = 3 } # Make AI avoid attacking for a few days
+			create_dynamic_country = {
+				original_tag = ROOT
+				copy_tag = ROOT
+				
+				set_research_slots = 1
+		
+				set_politics = {
+					ruling_party = neutrality
+					elections_allowed = no
+				}
+				set_popularities = {
+					neutrality = 24
+					democratic = 32
+					communism = 15
+					anarchism = 22
+					fascism = 7
+				}
+				
+				set_cosmetic_tag = SPR_junta
+				add_timed_idea = { idea = SPR_death_before_surrender days = 900 }
+				set_party_name = { ideology = neutrality name = SPR_junta_national_defense long_name = SPR_junta_national_defense }
+			}
+		}
+	}
 	
-	mean_time_to_happen = { days = 2 }
+	mean_time_to_happen = { days = 10 }
 	
 	option = {
 		name = NWspain.27.a
-		ai_chance = {
-			factor = 90
-		}
-		set_party_name = { ideology = neutrality name = SPR_junta_national_defense long_name = SPR_junta_national_defense }
-		create_country_leader = {
-			name = "Segismundo Casado"
-			desc = "POLITICS_SEGISMUNDO_CASADO_DESC"
-			picture = "gfx/leaders/SPR/Portrait_Segismundo_Casado.dds"
-			expire = "1965.1.1"
-			ideology = militarism_ideology
-			traits = {
+		SPJ = {
+			hidden_effect = {
+				random_other_country = {
+					limit = { has_character = SPR_segismundo_casado_lopez }
+					SPR_segismundo_casado_lopez = {
+						set_nationality = SPJ
+					}
+				}
+				set_state_owner = 41
+				set_province_controller = 3938
+				load_oob = "SPJ_Civil_War"
+				inherit_technology = ROOT
+				set_stability = 0.4
+				set_war_support = 0.4
+			}
+			add_country_leader_role = {
+				character = SPR_segismundo_casado_lopez
+				country_leader = {
+					desc = "POLITICS_SEGISMUNDO_CASADO_DESC"
+					ideology = authoritarian_democracy
+					traits = {
+					}
+					expire = "1965.1.1"
+				}
+				promote_leader = yes
+			}
+			SPR_segismundo_casado_lopez = {
+				promote_leader = yes
+			}
+			
+			declare_war_on = {
+				target = ROOT
+				type = civil_war
+			}
+			add_civil_war_target = ROOT
+			declare_war_on = {
+				target = SPA
+				type = civil_war
+			}
+			add_civil_war_target = SPA
+			if = {
+				limit = {
+					country_exists = SPB
+				}
+				declare_war_on = {
+					target = SPB
+					type = civil_war
+				}
+				add_civil_war_target = SPB
+			}
+			if = {
+				limit = {
+					country_exists = ARA
+					NOT = { has_war_with = ARA }
+				}
+				declare_war_on = {
+					target = ARA
+					type = civil_war
+				}
+				add_civil_war_target = ARA
+			}
+			if = {
+				limit = {
+					country_exists = CAT
+					NOT = { has_war_with = CAT }
+				}
+				declare_war_on = {
+					target = CAT
+					type = civil_war
+				}
+				add_civil_war_target = CAT
 			}
 		}
-		random_unit_leader = {
-			limit = { has_id = 4719 }
-			promote_leader = yes
+		every_other_country = {
+			limit = { is_subject_of = SPR }
+			add_to_war = { targeted_alliance = SPR enemy = SPJ hostility_reason = asked_to_join }
 		}
-		remove_unit_leader = 4722
-		complete_national_focus = SPR_stand_junta
+		every_other_country = {
+			limit = { is_subject_of = SPA }
+			add_to_war = { targeted_alliance = SPA enemy = SPJ hostility_reason = asked_to_join }
+		}
+		
+		hidden_effect = {
+			transfer_units_fraction = {
+				target = SPJ
+				stockpile_ratio = 0.2
+				army_ratio = 0.0
+				navy_ratio = 0.0
+				air_ratio = 0.0
+				keep_unit_leaders = {
+				    skill > 0
+				}
+				keep_unit_leaders_trigger = {
+					skill > 0
+				}
+			}
+		}
+		
+		#remove_unit_leader = 4722
+		#complete_national_focus = SPR_stand_junta
 	}
 	
 	option = {
 		name = NWspain.27.b
-		ai_chance = {
-			factor = 10
+		trigger = {
+			always = no
 		}
 		remove_unit_leader = 4719
 		add_stability = -0.1
@@ -7712,7 +7860,7 @@ country_event = {
 			name = "Buenaventura Durruti"
 			id = 4712
 			gfx = "GFX_portrait_SPR_buenaventura_durruti"
-			traits = { commando }
+			traits = { commando trait_SPR_anarchist_loyalties }
 			skill = 2
 			attack_skill = 2
 			defense_skill = 2
@@ -7735,7 +7883,7 @@ country_event = {
 			name = "Buenaventura Durruti"
 			id = 4712
 			gfx = "GFX_portrait_SPR_buenaventura_durruti"
-			traits = { infantry_officer offensive_doctrine aggressive_assaulter }
+			traits = { infantry_officer offensive_doctrine aggressive_assaulter trait_SPR_anarchist_loyalties }
 			skill = 3
 			attack_skill = 3
 		    defense_skill = 3
@@ -7746,7 +7894,7 @@ country_event = {
 			name = "Eduardo Medrano Rivas"
 			id = 4738
 			gfx = "GFX_portrait_SPR_eduardo_medrano_rivas"
-			traits = { infantry_leader }
+			traits = { infantry_leader trait_SPR_anarchist_loyalties }
 			skill = 3
 		    attack_skill = 3
 		    defense_skill = 2
@@ -7757,7 +7905,7 @@ country_event = {
 			name = "Lina Ódena"
 			id = 4739
 			gfx = "GFX_portrait_SPR_lina_odena"
-			traits = { adaptable }
+			traits = { adaptable trait_SPR_stalinist_loyalties }
 			female = yes
 			skill = 2
 		    attack_skill = 2
@@ -7771,7 +7919,8 @@ country_event = {
 				owner = ROOT
 			}
 		}
-		add_popularity = { ideology = anarchism popularity = 0.02 }
+		add_popularity = { ideology = anarchism popularity = 0.04 }
+		add_popularity = { ideology = communism popularity = 0.02 }
 	}
 }
 
@@ -10182,7 +10331,8 @@ country_event = {
 	fire_only_once = yes
 
 	is_triggered_only = yes
-
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event lar_spain.7" }
 	immediate = {
 		hidden_effect = {
 			create_dynamic_country = {
@@ -10205,6 +10355,19 @@ country_event = {
 				add_ideas = {
 					SPA_carlism_1
 				}
+				
+				load_focus_tree = {
+					tree = national_spain_focus
+					keep_completed = no
+				}
+				complete_national_focus = SPA_create_coordinating_junta
+				complete_national_focus = SPA_supremacy_of_the_communion
+				complete_national_focus = SPA_prepare_the_carlist_insurrection
+				complete_national_focus = SPA_contact_the_union_militar_espanola
+				complete_national_focus = SPA_head_the_junta_nacional
+				complete_national_focus = SPA_unite_the_requetes
+				unlock_national_focus = SPA_no_compromise_on_carlist_ideals
+				add_timed_idea = { idea = SPA_death_before_surrender days = 900 }
 			}
 			if = { # If SPA owns both of the historical Carlist states
 				limit = {
@@ -10624,6 +10787,12 @@ country_event = {
 				}
 				remove_unit_leader_trait = trait_SPA_falangist_loyalties
 			}
+			every_unit_leader = {
+				limit = {
+					has_trait = trait_SPA_nationalist_sympathies
+				}
+				remove_unit_leader_trait = trait_SPA_nationalist_sympathies
+			}
 			set_global_flag = SPR_carlist_uprising_flag
 			set_global_flag = { flag = SPR_civil_war_startup value = 1 days = 3 } # Make AI avoid attacking for a few days
 			SPB = {
@@ -10632,6 +10801,26 @@ country_event = {
 						has_trait = trait_SPA_nationalist_sympathies
 					}
 					remove_unit_leader_trait = trait_SPA_nationalist_sympathies
+					set_nationality = {
+						character = THIS
+						target_country = ROOT
+					}
+				}
+				every_unit_leader = {
+					limit = {
+						has_trait = trait_SPA_falangist_loyalties
+					}
+					remove_unit_leader_trait = trait_SPA_falangist_loyalties
+					set_nationality = {
+						character = THIS
+						target_country = ROOT
+					}
+				}
+				every_unit_leader = {
+					limit = {
+						has_trait = trait_SPA_carlist_loyalties
+					}
+					remove_unit_leader_trait = trait_SPA_carlist_loyalties
 				}
 				declare_war_on = {
 				    target = ROOT
@@ -10653,22 +10842,6 @@ country_event = {
 					type = antagonize
 					id = SPD
 					value = 200
-				}
-				if = {
-					limit = {
-						country_exists = SPC
-					}
-					declare_war_on = {
-					    target = SPC
-					    type = civil_war
-					}
-					add_civil_war_target = SPC
-
-					add_ai_strategy = {
-						type = antagonize
-						id = SPC
-						value = 200
-					}
 				}
 				if = {
 					limit = {
@@ -10704,6 +10877,69 @@ country_event = {
 						value = 200
 					}
 				}
+				every_other_country = {
+					limit = {
+						OR = {
+							has_character = SPA_luis_hernando_de_larramendi
+							has_character = SPA_martin_de_riquer
+							has_character = SPA_mauricio_de_sivatte
+							has_character = SPA_tomas_dominguez_arevalo
+							
+							has_character = SPA_jose_enrique_varela
+							has_character = SPA_ricardo_rada
+							has_character = SPA_rafael_garcia_valino
+							has_character = SPA_heli_rolando_de_tella
+						}
+					}
+					if = {
+						limit = { has_character = SPA_luis_hernando_de_larramendi }
+						SPA_luis_hernando_de_larramendi = {
+							set_nationality = SPB
+						}
+					}
+					if = {
+						limit = { has_character = SPA_martin_de_riquer }
+						SPA_martin_de_riquer = {
+							set_nationality = SPB
+						}
+					}
+					if = {
+						limit = { has_character = SPA_mauricio_de_sivatte }
+						SPA_mauricio_de_sivatte = {
+							set_nationality = SPB
+						}
+					}
+					if = {
+						limit = { has_character = SPA_tomas_dominguez_arevalo }
+						SPA_tomas_dominguez_arevalo = {
+							set_nationality = SPB
+						}
+					}
+					if = {
+						limit = { has_character = SPA_jose_enrique_varela }
+						SPA_jose_enrique_varela = {
+							set_nationality = SPB
+						}
+					}
+					if = {
+						limit = { has_character = SPA_ricardo_rada }
+						SPA_ricardo_rada = {
+							set_nationality = SPB
+						}
+					}
+					if = {
+						limit = { has_character = SPA_rafael_garcia_valino }
+						SPA_rafael_garcia_valino = {
+							set_nationality = SPB
+						}
+					}
+					if = {
+						limit = { has_character = SPA_heli_rolando_de_tella }
+						SPA_heli_rolando_de_tella = {
+							set_nationality = SPB
+						}
+					}
+				}
 			}
 			every_other_country = {
 				limit = { is_subject_of = SPR }
@@ -10731,26 +10967,7 @@ country_event = {
 					value = -200
 				}
 			}
-			SPB = {
-				load_focus_tree = {
-					tree = national_spain_focus
-					keep_completed = no
-				}
-				complete_national_focus = SPA_create_coordinating_junta
-				complete_national_focus = SPA_supremacy_of_the_communion
-				complete_national_focus = SPA_prepare_the_carlist_insurrection
-				complete_national_focus = SPA_contact_the_union_militar_espanola
-				complete_national_focus = SPA_head_the_junta_nacional
-				complete_national_focus = SPA_unite_the_requetes
-				unlock_national_focus = SPA_no_compromise_on_carlist_ideals
-				add_timed_idea = { idea = SPA_death_before_surrender days = 900 }
-				every_unit_leader = {
-					limit = {
-						has_trait = trait_SPA_carlist_loyalties
-					}
-					remove_unit_leader_trait = trait_SPA_carlist_loyalties
-				}
-			}
+
 			if = {
 				limit = {
 					has_idea = SPA_carlism_1
@@ -10876,16 +11093,6 @@ country_event = {
 				add_civil_war_target = SPD
 				if = {
 					limit = {
-						country_exists = SPC
-					}
-					declare_war_on = {
-					    target = SPC
-					    type = civil_war
-					}
-					add_civil_war_target = SPC
-				}
-				if = {
-					limit = {
 						country_exists = ARA
 						NOT = { has_war_with = ARA }
 					}
@@ -10938,7 +11145,8 @@ country_event = {
 	fire_only_once = yes
 
 	is_triggered_only = yes
-
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event lar_spain.8" }
 	immediate = {
 		hidden_effect = {
 			create_dynamic_country = {
@@ -10962,6 +11170,19 @@ country_event = {
 				}
 				set_stability = 0.6
 				set_war_support = 0.5
+				
+				load_focus_tree = {
+					tree = national_spain_focus
+					keep_completed = no
+				}
+				complete_national_focus = SPA_create_coordinating_junta
+				complete_national_focus = SPA_the_phalanx_ascendant
+				complete_national_focus = SPA_secure_the_national_defense_council
+				complete_national_focus = SPA_suspend_the_constitution
+				unlock_national_focus = SPA_eliminate_the_carlists
+				complete_national_focus = SPA_primo_de_rivera_prisoner_exchange
+				complete_national_focus = SPA_establish_the_directory
+				add_timed_idea = { idea = SPA_death_before_surrender days = 900 }
 			}
 			every_other_country = {
 				limit = {
@@ -11117,7 +11338,23 @@ country_event = {
 				}
 				remove_unit_leader_trait = trait_SPA_carlist_loyalties
 			}
+			every_unit_leader = {
+				limit = {
+					has_trait = trait_SPA_nationalist_sympathies
+				}
+				remove_unit_leader_trait = trait_SPA_nationalist_sympathies
+			}
 			SPF = {
+				every_unit_leader = {
+					limit = {
+						has_trait = trait_SPA_carlist_loyalties
+					}
+					remove_unit_leader_trait = trait_SPA_carlist_loyalties
+					set_nationality = {
+						character = THIS
+						target_country = ROOT
+					}
+				}
 				every_unit_leader = {
 					limit = {
 						has_trait = trait_SPA_falangist_loyalties
@@ -11153,22 +11390,6 @@ country_event = {
 				}
 				if = {
 					limit = {
-						country_exists = SPC
-					}
-					declare_war_on = {
-					    target = SPC
-					    type = civil_war
-					}
-					add_civil_war_target = SPC
-
-					add_ai_strategy = {
-						type = antagonize
-						id = SPC
-						value = 200
-					}
-				}
-				if = {
-					limit = {
 						country_exists = ARA
 						NOT = { has_war_with = ARA }
 					}
@@ -11188,6 +11409,103 @@ country_event = {
 					    type = civil_war
 					}
 					add_civil_war_target = CAT
+				}
+				every_other_country = {
+					limit = {
+						OR = {
+							has_character = SPA_jose_antonio_primo_de_rivera
+							has_character = SPA_wilhelm_ritter_von_thoma
+							has_character = SPA_emilio_mola
+							has_character = SPA_agustin_munoz_grandes
+							has_character = SPA_juan_yague
+							has_character = SPA_jose_antonio_giron
+							has_character = SPA_manuel_hedilla
+							has_character = SPA_raimundo_fernandez_cuesta
+							has_character = SPA_diego_hidalgo_y_duran
+							has_character = SPA_ramon_serrano_suner
+							has_character = SPA_miguel_ponte
+							has_character = SPA_joaquin_garcia_morato
+							has_character = SPA_enrique_canovas_lacruz
+						}
+					}
+					if = {
+						limit = { has_character = SPA_jose_antonio_primo_de_rivera }
+						SPA_jose_antonio_primo_de_rivera = {
+							set_nationality = SPF
+						}
+					}
+					if = {
+						limit = { has_character = SPA_wilhelm_ritter_von_thoma }
+						SPA_wilhelm_ritter_von_thoma = {
+							set_nationality = SPF
+						}
+					}
+					if = {
+						limit = { has_character = SPA_emilio_mola }
+						SPA_emilio_mola = {
+							set_nationality = SPF
+						}
+					}
+					if = {
+						limit = { has_character = SPA_agustin_munoz_grandes }
+						SPA_agustin_munoz_grandes = {
+							set_nationality = SPF
+						}
+					}
+					if = {
+						limit = { has_character = SPA_juan_yague }
+						SPA_juan_yague = {
+							set_nationality = SPF
+						}
+					}
+					if = {
+						limit = { has_character = SPA_jose_antonio_giron }
+						SPA_jose_antonio_giron = {
+							set_nationality = SPF
+						}
+					}
+					if = {
+						limit = { has_character = SPA_manuel_hedilla }
+						SPA_manuel_hedilla = {
+							set_nationality = SPF
+						}
+					}
+					if = {
+						limit = { has_character = SPA_raimundo_fernandez_cuesta }
+						SPA_raimundo_fernandez_cuesta = {
+							set_nationality = SPF
+						}
+					}
+					if = {
+						limit = { has_character = SPA_diego_hidalgo_y_duran }
+						SPA_diego_hidalgo_y_duran = {
+							set_nationality = SPF
+						}
+					}
+					if = {
+						limit = { has_character = SPA_ramon_serrano_suner }
+						SPA_ramon_serrano_suner = {
+							set_nationality = SPF
+						}
+					}
+					if = {
+						limit = { has_character = SPA_miguel_ponte }
+						SPA_miguel_ponte = {
+							set_nationality = SPF
+						}
+					}
+					if = {
+						limit = { has_character = SPA_joaquin_garcia_morato }
+						SPA_joaquin_garcia_morato = {
+							set_nationality = SPF
+						}
+					}
+					if = {
+						limit = { has_character = SPA_enrique_canovas_lacruz }
+						SPA_enrique_canovas_lacruz = {
+							set_nationality = SPF
+						}
+					}
 				}
 			}
 			every_other_country = {
@@ -11216,21 +11534,8 @@ country_event = {
 					value = -200
 				}
 			}
-			SPF = {
-				load_focus_tree = {
-					tree = national_spain_focus
-					keep_completed = no
-				}
-				complete_national_focus = SPA_create_coordinating_junta
-				complete_national_focus = SPA_the_phalanx_ascendant
-				complete_national_focus = SPA_secure_the_national_defense_council
-				complete_national_focus = SPA_suspend_the_constitution
-				unlock_national_focus = SPA_eliminate_the_carlists
-				complete_national_focus = SPA_primo_de_rivera_prisoner_exchange
-				complete_national_focus = SPA_establish_the_directory
-				add_timed_idea = { idea = SPA_death_before_surrender days = 900 }
-			}
 
+	
 			## SPB triggers Carlist Uprising ##
 			### All foreign Aid goes to SPA ###
 			#Portuguese Op. modifier goes to SPA = SPF
@@ -11386,16 +11691,6 @@ country_event = {
 				add_civil_war_target = SPD
 				if = {
 					limit = {
-						country_exists = SPC
-					}
-					declare_war_on = {
-					    target = SPC
-					    type = civil_war
-					}
-					add_civil_war_target = SPC
-				}
-				if = {
-					limit = {
 						country_exists = ARA
 						NOT = { has_war_with = ARA }
 					}
@@ -11443,6 +11738,8 @@ country_event = {
 	title = lar_spain.22.t
 	desc = lar_spain.22.desc
 	picture = GFX_report_event_generic_read_write
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event lar_spain.22" }
 	
 	is_triggered_only = yes
 	
@@ -11519,6 +11816,8 @@ country_event = {
 	
 	is_triggered_only = yes
 	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event lar_spain.23" }
+	
 	option = { # OK
 		name = lar_spain.23.a
 		effect_tooltip = {
@@ -11540,6 +11839,8 @@ country_event = {
 	
 	is_triggered_only = yes
 	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event lar_spain.24" }
+	
 	option = { # OK
 		name = lar_spain.24.a
 	}
@@ -11554,6 +11855,8 @@ country_event = {
 	picture = GFX_report_event_generic_parliament
 	
 	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event lar_spain.25" }
 	
 	option = { # Accept
 		name = lar_spain.25.a
@@ -11656,6 +11959,8 @@ country_event = {
 	
 	is_triggered_only = yes
 	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event lar_spain.26" }
+	
 	option = { # OK
 		name = lar_spain.26.a
 		custom_effect_tooltip = SPA_the_iberian_pact_tt
@@ -11712,6 +12017,8 @@ country_event = {
 	
 	is_triggered_only = yes
 	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event lar_spain.27" }
+	
 	option = { # OK
 		name = lar_spain.27.a
 	}
@@ -11725,7 +12032,8 @@ country_event = {
 	picture = GFX_report_event_generic_parliament
 	
 	is_triggered_only = yes
-
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event lar_spain.28" }
 	immediate = {
 		hidden_effect = {
 			random_other_country = {
@@ -11765,6 +12073,8 @@ country_event = {
 	picture = GFX_report_event_generic_parliament
 
 	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event lar_spain.29" }
 	
 	option = { # OK
 		name = lar_spain.28.a
@@ -11806,6 +12116,8 @@ country_event = {
 	picture = GFX_report_event_generic_read_write
 	
 	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event lar_spain.30" }
 	
 	option = { # Accept
 		name = lar_spain.30.a
@@ -11868,6 +12180,8 @@ country_event = {
 	
 	is_triggered_only = yes
 	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event lar_spain.31" }
+	
 	option = { # OK
 		name = lar_spain.31.a
 		add_to_faction = FROM
@@ -11882,6 +12196,8 @@ country_event = {
 	picture = GFX_report_event_generic_read_write
 	
 	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event lar_spain.32" }
 	
 	option = { # OK
 		name = lar_spain.32.a
@@ -11898,7 +12214,8 @@ country_event = {
 	picture = GFX_report_event_spr_carlists2
 	
 	is_triggered_only = yes
-
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event lar_spain.33" }
 	immediate = {
 		hidden_effect = {
 			random_owned_state = {
@@ -12010,6 +12327,8 @@ country_event = {
 	
 	is_triggered_only = yes
 	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event lar_spain.34" }
+	
 	option = { # Choose first King
 		name = lar_spain.34.a
 		ai_chance = {
@@ -12037,6 +12356,8 @@ country_event = {
 	picture = GFX_report_event_spr_occupation_of_tangiers
 	
 	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event lar_spain.35" }
 	
 	option = { # Protest
 		name = lar_spain.36.a
@@ -12137,6 +12458,8 @@ country_event = {
 	
 	is_triggered_only = yes
 	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event lar_spain.37" }
+	
 	option = { # OK
 		name = lar_spain.37.a
 		ai_chance = {
@@ -12186,6 +12509,8 @@ country_event = {
 	
 	is_triggered_only = yes
 	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event lar_spain.38" }
+	
 	option = { # OK
 		name = lar_spain.38.a
 		1042 = {
@@ -12208,6 +12533,8 @@ country_event = {
 	picture = GFX_report_event_generic_parliament
 	
 	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event lar_spain.39" }
 	
 	option = { # Accept
 		name = lar_spain.39.a
@@ -12310,6 +12637,8 @@ country_event = {
 	
 	is_triggered_only = yes
 	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event lar_spain.40" }
+	
 	option = { # Ok
 		name = lar_spain.40.a
 		transfer_state = 461
@@ -12331,6 +12660,8 @@ country_event = {
 	picture = GFX_report_event_generic_read_write
 	
 	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event lar_spain.41" }
 	
 	option = { # Damn
 		name = lar_spain.41.a
@@ -12359,6 +12690,8 @@ country_event = {
 	picture = GFX_report_event_generic_parliament
 	
 	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event lar_spain.42" }
 	
 	option = { # Accept
 		name = lar_spain.42.a
@@ -12443,6 +12776,8 @@ country_event = {
 	
 	is_triggered_only = yes
 	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event lar_spain.43" }
+	
 	option = { # Ok
 		name = lar_spain.43.a
 		puppet = FROM
@@ -12459,6 +12794,8 @@ country_event = {
 	picture = GFX_report_event_read_write
 	
 	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event lar_spain.44" }
 	
 	option = { # Damn
 		name = lar_spain.44.a
@@ -12477,6 +12814,8 @@ country_event = {
 	picture = GFX_report_event_generic_parliament
 	
 	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event lar_spain.45" }
 	
 	option = { # Accept
 		name = lar_spain.45.a
@@ -12568,6 +12907,8 @@ country_event = {
 	
 	is_triggered_only = yes
 	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event lar_spain.46" }
+	
 	option = { # Ok
 		name = lar_spain.46.a
 		set_cosmetic_tag = ESU_POR_unified
@@ -12590,6 +12931,8 @@ country_event = {
 	
 	is_triggered_only = yes
 	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event lar_spain.47" }
+	
 	option = { # Damn
 		name = lar_spain.47.a
 		create_wargoal = {
@@ -12607,7 +12950,8 @@ country_event = {
 	picture = GFX_report_event_spr_anarchist_uprising
 	
 	is_triggered_only = yes
-
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event lar_spain.48" }
 	immediate = {
 		hidden_effect = {
 			random_owned_state = {
@@ -12675,6 +13019,8 @@ country_event = {
 	
 	is_triggered_only = yes
 	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event lar_spain.49" }
+	
 	option = { # Ok
 		name = lar_spain.49.a
 		random_country = {
@@ -12711,6 +13057,8 @@ country_event = {
 	
 	is_triggered_only = yes
 	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event lar_spain.50" }
+	
 	option = { # Ok
 		name = lar_spain.50.a
 		random_country = {
@@ -12739,7 +13087,8 @@ country_event = {
 	picture = GFX_report_event_generic_read_write
 	
 	is_triggered_only = yes
-
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event lar_spain.51" }
 	immediate = {
 		hidden_effect = {
 			random_other_country = {
@@ -12873,6 +13222,8 @@ country_event = {
 	
 	is_triggered_only = yes
 	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event lar_spain.52" }
+	
 	option = { # Ok
 		name = lar_spain.52.a
 		set_country_flag = { flag = SPR_relocate_the_gold_reserves_timer_flag value = 1 days = 60 }
@@ -12887,6 +13238,8 @@ country_event = {
 	picture = GFX_report_event_generic_read_write
 	
 	fire_only_once = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event lar_spain.53" }
 
 	trigger = {
 		any_country_with_original_tag = {
@@ -12948,7 +13301,8 @@ country_event = {
 	picture = GFX_report_event_generic_read_write
 	
 	is_triggered_only = yes
-
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event lar_spain.54" }
 	immediate = {
 		hidden_effect = {
 			remove_ideas = SPR_relocate_the_gold_reserves
@@ -12971,6 +13325,8 @@ country_event = {
 	picture = GFX_report_event_generic_read_write
 	
 	fire_only_once = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event lar_spain.55" }
 
 	trigger = {
 		original_tag = SPR
@@ -12996,6 +13352,8 @@ country_event = {
 	picture = GFX_report_event_generic_parliament
 	
 	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event lar_spain.56" }
 	
 	option = { # Accept
 		name = lar_spain.56.a
@@ -13029,6 +13387,8 @@ country_event = {
 	
 	is_triggered_only = yes
 	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event lar_spain.57" }
+	
 	option = { # Ok
 		name = lar_spain.57.a
 		effect_tooltip = {
@@ -13046,6 +13406,8 @@ country_event = {
 	
 	is_triggered_only = yes
 	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event lar_spain.58" }
+	
 	option = { # Damn
 		name = lar_spain.58.a
 	}
@@ -13060,6 +13422,8 @@ country_event = {
 	picture = GFX_report_event_generic_parliament
 	
 	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event lar_spain.59" }
 	
 	option = { # Accept
 		name = lar_spain.59.a
@@ -13158,6 +13522,8 @@ country_event = {
 	
 	is_triggered_only = yes
 	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event lar_spain.60" }
+	
 	option = { # Ok
 		name = lar_spain.60.a
 		set_cosmetic_tag = ESU_POR_unified
@@ -13180,6 +13546,8 @@ country_event = {
 	
 	is_triggered_only = yes
 	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event lar_spain.60" }
+	
 	option = { # Damn
 		name = lar_spain.61.a
 		create_wargoal = {
@@ -13198,6 +13566,8 @@ country_event = {
 	picture = GFX_report_event_generic_riot
 	
 	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event lar_spain.62" }
 	
 	option = { # Ok :'(
 		name = lar_spain.62.a
@@ -13251,6 +13621,8 @@ country_event = {
 	
 	is_triggered_only = yes
 	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event lar_spain.63" }
+	
 	option = { # Ok
 		name = lar_spain.63.a
 		random_country = {
@@ -13280,6 +13652,8 @@ country_event = {
 	picture = GFX_report_event_spr_no_pasaran
 	
 	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event lar_spain.64" }
 	
 	option = { # Accept
 		name = lar_spain.64.a
@@ -13341,6 +13715,9 @@ country_event = {
 	picture = GFX_report_event_spr_no_pasaran
 	
 	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event lar_spain.65" }
+	
 	option = { # Ok
 		name = lar_spain.65.a
 		effect_tooltip = { FROM = { add_opinion_modifier = { target = ROOT modifier = SPA_spanish_civil_war_commitments } } }
@@ -13357,6 +13734,8 @@ country_event = {
 	
 	is_triggered_only = yes
 	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event lar_spain.66" }
+	
 	option = { # Damn
 		name = lar_spain.66.a
 	}
@@ -13371,7 +13750,8 @@ country_event = {
 	picture = GFX_report_event_generic_parliament
 	
 	is_triggered_only = yes
-
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event lar_spain.67" }
 	immediate = {
 		end_puppet = FROM
 		remove_from_faction = FROM
@@ -13452,6 +13832,8 @@ country_event = {
 	
 	is_triggered_only = yes
 	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event lar_spain.68" }
+	
 	option = { # Accept
 		name = lar_spain.68.a
 		ai_chance = {
@@ -13496,6 +13878,8 @@ country_event = {
 	
 	is_triggered_only = yes
 	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event lar_spain.69" }
+	
 	option = { # Ok
 		name = lar_spain.69.a
 		effect_tooltip = {
@@ -13513,6 +13897,8 @@ country_event = {
 	
 	is_triggered_only = yes
 	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event lar_spain.70" }
+	
 	option = { # Damn
 		name = lar_spain.70.a
 	}
@@ -13527,6 +13913,8 @@ country_event = {
 	picture = GFX_report_event_generic_parliament
 	
 	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event lar_spain.71" }
 	
 	option = { # Accept
 		name = lar_spain.71.a
@@ -13575,6 +13963,8 @@ country_event = {
 	
 	is_triggered_only = yes
 	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event lar_spain.72" }
+	
 	option = { # Ok
 		name = lar_spain.72.a
 		effect_tooltip = {
@@ -13598,6 +13988,8 @@ country_event = {
 	
 	is_triggered_only = yes
 	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event lar_spain.73" }
+	
 	option = { # Damn
 		name = lar_spain.73.a
 	}
@@ -13611,6 +14003,8 @@ country_event = {
 	picture = GFX_report_event_generic_parliament
 	
 	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event lar_spain.74" }
 	
 	option = { # Accept
 		name = lar_spain.74.a
@@ -13660,6 +14054,8 @@ country_event = {
 	
 	is_triggered_only = yes
 	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event lar_spain.75" }
+	
 	option = { # Ok
 		name = lar_spain.75.a
 		add_timed_idea = { idea = SPR_deal_with_the_devil days = 730 }
@@ -13675,6 +14071,8 @@ country_event = {
 	
 	is_triggered_only = yes
 	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event lar_spain.76" }
+	
 	option = { # Damn
 		name = lar_spain.76.a
 	}
@@ -13688,6 +14086,8 @@ country_event = {
 	picture = GFX_report_generic_parliament
 	
 	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event lar_spain.81" }
 	
 	option = { # Ok
 		name = lar_spain.81.a
@@ -13705,6 +14105,8 @@ country_event = {
 	picture = GFX_report_generic_parliament
 	
 	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event lar_spain.82" }
 
 	immediate = {
 		hidden_effect = {
@@ -13770,6 +14172,8 @@ country_event = {
 	}
 
 	fire_only_once = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event lar_spain.83" }
 
 	option = { # We must act!
 		name = lar_spain.83.a
@@ -13906,6 +14310,8 @@ country_event = {
 	picture = GFX_report_event_soviet_army_greeted
 
 	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event lar_spain.84" }
 
 	option = { # Bastards!
 		name = lar_spain.84.a
@@ -13941,7 +14347,8 @@ country_event = {
 	}
 
 	fire_only_once = yes
-
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event lar_spain.85" }
 	immediate = {
 		hidden_effect = {
 			165 = { save_event_target_as = SPR_stolen_state_name }
@@ -13976,7 +14383,8 @@ country_event = {
 	}
 
 	fire_only_once = yes
-
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event lar_spain.86" }
 	immediate = {
 		hidden_effect = {
 			167 = { save_event_target_as = SPR_stolen_state_name }
@@ -14011,7 +14419,8 @@ country_event = {
 	}
 
 	fire_only_once = yes
-
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event lar_spain.87" }
 	immediate = {
 		hidden_effect = {
 			794 = { save_event_target_as = SPR_stolen_state_name }
@@ -14033,6 +14442,8 @@ country_event = {
 	picture = GFX_report_event_soldiers_marching
 
 	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event lar_spain.88" }
 
 	option = { # Excellent!
 		name = lar_spain.88.a
@@ -14048,6 +14459,8 @@ country_event = {
 	picture = GFX_report_event_soviet_army_greeted
 
 	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event lar_spain.89" }
 
 	option = { # Ok
 		name = lar_spain.89.a
