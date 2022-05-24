@@ -197,6 +197,16 @@ debug_decisions = {
 			}
 		}
 	}
+	
+	add_land_cruiser = {
+
+		complete_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): decision add_land_cruiser"
+			set_technology = {
+				land_cruiser = 1
+			}
+		}
+	}
 }
 
 log_service_categories = {
@@ -1148,6 +1158,103 @@ log_service_categories = {
 			random_list = {
 				1 = { set_global_flag = generic_all_flag }
 				1 = { }
+			}
+		}
+	}
+}
+
+debug_decisions_2 = {
+	all_remove_half_division = {
+		complete_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): decision all_remove_half_division"
+			hidden_effect = {
+				713 = {
+					controller = { save_event_target_as = controller_713 }
+					owner = { save_event_target_as = owner_713 }
+				}
+				SAI = {
+					transfer_state = 713
+				}
+				every_country = {
+					limit = { is_ai = yes }
+					transfer_units_fraction = {
+						target = SAI
+						size = 0.0
+						stockpile_ratio = 0.0
+						army_ratio = 0.5
+						navy_ratio = 0.0
+						air_ratio = 0.0
+					}
+				}
+				event_target:owner_713 = {
+					annex_country = {
+						target = SAI
+						transfer_troops = no
+					}
+					set_state_owner = 713
+				}
+				event_target:owner_713 = { set_state_controller = 713 }
+				random_country = {
+					set_variable = { global.total_division = 0 }
+					every_country = {
+						add_to_variable = { global.total_division = THIS.num_divisions }
+					}
+				}
+			}
+		}
+	}
+	all_remove_half_division_in_peace = {
+		complete_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): all_remove_half_division_in_peace"
+			hidden_effect = {
+				713 = {
+					controller = { save_event_target_as = controller_713 }
+					owner = { save_event_target_as = owner_713 }
+				}
+				SAI = {
+					transfer_state = 713
+				}
+				every_country = {
+					limit = {
+						is_ai = yes
+						has_war = no
+						any_neighbor_country = {
+							OR = {
+								has_wargoal_against = PREV
+								is_justifying_wargoal_against = PREV
+								PREV = {
+									OR = {
+										has_wargoal_against = PREV
+										is_justifying_wargoal_against = PREV
+										
+									}
+								}
+							}
+						}
+					}
+					transfer_units_fraction = {
+						target = SAI
+						size = 0.0
+						stockpile_ratio = 0.0
+						army_ratio = 0.5
+						navy_ratio = 0.0
+						air_ratio = 0.0
+					}
+				}
+				event_target:owner_713 = {
+					annex_country = {
+						target = SAI
+						transfer_troops = no
+					}
+					set_state_owner = 713
+				}
+				event_target:owner_713 = { set_state_controller = 713 }
+				random_country = {
+					set_variable = { global.total_division = 0 }
+					every_country = {
+						add_to_variable = { global.total_division = THIS.num_divisions }
+					}
+				}
 			}
 		}
 	}
