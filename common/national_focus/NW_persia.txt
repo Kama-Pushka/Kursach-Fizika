@@ -5724,7 +5724,6 @@ focus_tree = {
 			has_full_control_of_state = 413
 			has_full_control_of_state = 414
 			has_full_control_of_state = 416
-			has_full_control_of_state = 417
 			has_full_control_of_state = 418
 			has_full_control_of_state = 419
 			has_full_control_of_state = 420
@@ -7124,18 +7123,6 @@ focus_tree = {
 					instant_build = yes
 					province = 5098
 				}
-				add_building_construction = {
-					type = bunker
-					level = 3
-					instant_build = yes
-					province = 829
-				}
-				add_building_construction = {
-					type = bunker
-					level = 3
-					instant_build = yes
-					province = 10774
-				}
 			}
 			413 = {
 				add_building_construction = {
@@ -7569,19 +7556,9 @@ focus_tree = {
 					logistics_skill = 2
 				}
 				custom_effect_tooltip = available_military_high_command
-				show_ideas_tooltip = PER_khosro_roozbeh
 				show_ideas_tooltip = PER_ezatullah_siamak
 				show_ideas_tooltip = PER_gholamhossein_bigdeli
 				show_ideas_tooltip = PER_mohammad_ali_mobashery
-				
-				custom_effect_tooltip = available_chief_of_airforce
-				show_ideas_tooltip = PER_abdulsamad_adl_qajar
-				
-				custom_effect_tooltip = available_theorist
-				show_ideas_tooltip = PER_khosro_roozbeh_theorist
-				
-				custom_effect_tooltip = available_political_advisor
-				show_ideas_tooltip = PER_abdulsamad_adl_qajar_political
 			}
 			unlock_decision_category_tooltip = form_middle_east_union_category
 			custom_effect_tooltip = TUR_focus_autocomplete_tt
@@ -7729,6 +7706,35 @@ focus_tree = {
 				}
 			}
 			custom_effect_tooltip = PER_empower_women_tt
+		}
+	}
+	
+	focus = {
+		id = PER_ban_alcohol
+		icon = GFX_z_goal_anti_alcohol
+		prerequisite = { focus = PER_empower_women }
+		x = -4
+		y = 1
+		relative_position_id = PER_empower_women
+
+		cost = 10
+		
+		cancel_if_invalid = yes
+		continue_if_invalid = no
+		available_if_capitulated = yes
+
+		ai_will_do = {
+			factor = 10
+		}
+		available = {
+			NOT = { has_country_flag = PER_form_prosoviet_government_flag has_country_flag = PER_concessions_for_germanophiles_flag }
+		}
+		bypass = {
+		}
+		
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus PER_ban_alcohol"
+			
 		}
 	}
 	
@@ -8113,7 +8119,6 @@ focus_tree = {
 						state = 413
 						state = 414
 						state = 416
-						state = 417
 						state = 418
 						state = 419
 						state = 420
@@ -12253,7 +12258,7 @@ focus_tree = {
 		id = PER_increase_fleet_with_destroyers
 		icon = GFX_goal_generic_navy_anti_submarine
 		prerequisite = { focus = PER_protection_of_strait_of_hormuz }
-		x = -1
+		x = -2
 		y = 1
 		relative_position_id = PER_protection_of_strait_of_hormuz
 
@@ -12287,10 +12292,79 @@ focus_tree = {
 	}
 	
 	focus = {
+		id = PER_regain_control_of_islands_of_strait_of_hormuz
+		icon = GFX_z_goal_london_disagreement
+		prerequisite = { focus = PER_protection_of_strait_of_hormuz }
+		x = 0
+		y = 1
+		relative_position_id = PER_protection_of_strait_of_hormuz
+
+		cost = 7.2
+		
+		cancel_if_invalid = yes
+		continue_if_invalid = no
+		available_if_capitulated = yes
+
+		ai_will_do = {
+			factor = 10
+			modifier = {
+				factor = 0
+				is_historical_focus_on = yes
+			}
+		}
+		available = {
+			set_temp_variable = { t1 = ROOT.num_ships }
+			multiply_temp_variable = { t1 = 0.5 }
+			round_temp_variable = t1
+			meta_trigger = {
+				text = {
+					ships_in_area = {
+						area = 203
+						size > [SIZE_T1]
+					}
+				}
+				SIZE_T1 = t1
+			}
+			ENG = {
+				meta_trigger = {
+					text = {
+						ships_in_area = {
+							area = 203
+							size < [SIZE_T1]
+						}
+					}
+					SIZE_T1 = t1
+				}
+			}
+			1099 = {
+				controller = {
+					OR = {
+						tag = ENG
+						is_subject_of = ENG
+					}
+				}
+			}
+		}
+		bypass = {
+		}
+		
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus PER_regain_control_of_islands_of_strait_of_hormuz"
+			custom_effect_tooltip = PER_regain_control_of_islands_of_strait_of_hormuz_tt
+			transfer_state = 1099
+			add_state_core = 1099
+			ENG = {
+				effect_tooltip = { add_opinion_modifier = { target = ROOT modifier = PER_occupation_of_strait_of_hormuz_islands_op } }
+				hidden_effect = { country_event = NWpersian.434 }
+			}
+		}
+	}
+	
+	focus = {
 		id = PER_protection_from_landings_in_southern_iran
 		icon = GFX_goal_generic_navy_submarine
 		prerequisite = { focus = PER_protection_of_strait_of_hormuz }
-		x = 1
+		x = 2
 		y = 1
 		relative_position_id = PER_protection_of_strait_of_hormuz
 
@@ -12715,7 +12789,6 @@ focus_tree = {
             }				
 		}
 		bypass = {
-			
 		}
 		
 		completion_reward = {
@@ -13933,6 +14006,7 @@ focus_tree = {
 			}
 		}
 		bypass = {
+			has_completed_focus = PER_mahwani_school
 		}
 		
 		completion_reward = {
@@ -13993,7 +14067,7 @@ focus_tree = {
 	
 	focus = {
 		id = PER_creation_of_fleet_of_destroyers
-		icon = GFX_z_goal_PRE_primacy_of_army
+		icon = GFX_goal_generic_navy_anti_submarine
 		prerequisite = { focus = PER_formation_of_red_fleet }
 		x = -1
 		y = 2
@@ -14015,7 +14089,14 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus PER_creation_of_fleet_of_destroyers"
-			
+			navy_experience = 25
+			add_tech_bonus = {
+				name = dd_bonus
+				bonus = 1.0
+				ahead_reduction = 2
+				uses = 2
+				category = dd_tech
+			}
 		}
 	}
 	
@@ -14043,7 +14124,13 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus PER_nationalize_and_arm_shahs_yacht"
-			
+			if = {
+				limit = { has_dlc = "Man the Guns" }
+				load_oob = PER_shahs_yacht_naval_mtg
+			}
+			else = {
+				load_oob = PER_shahs_yacht_naval_legacy
+			}
 		}
 	}
 	
@@ -14067,11 +14154,51 @@ focus_tree = {
 		available = {
 		}
 		bypass = {
+			OR = {
+				has_tech = advanced_carrier
+				has_tech = advanced_ship_hull_carrier
+			}
 		}
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus PER_experimental_large_tonnage_ships"
-			
+			if = {
+				limit = { has_dlc = "Man the Guns" }
+				if = {
+					limit = { NOT = { has_tech = early_ship_hull_carrier } }
+					set_technology = { early_ship_hull_carrier = 1 }
+				}
+				else_if = {
+					limit = { NOT = { has_tech = basic_ship_hull_carrier } }
+					set_technology = { basic_ship_hull_carrier = 1 }
+				}
+				else_if = {
+					limit = { NOT = { has_tech = improved_ship_hull_carrier } }
+					set_technology = { improved_ship_hull_carrier = 1 }
+				}
+				else_if = {
+					limit = { NOT = { has_tech = advanced_ship_hull_carrier } }
+					set_technology = { advanced_ship_hull_carrier = 1 }
+				}
+			}
+			else = {
+				if = {
+					limit = { NOT = { has_tech = early_carrier } }
+					set_technology = { early_carrier = 1 }
+				}
+				else_if = {
+					limit = { NOT = { has_tech = basic_carrier } }
+					set_technology = { basic_carrier = 1 }
+				}
+				else_if = {
+					limit = { NOT = { has_tech = improved_carrier } }
+					set_technology = { improved_carrier = 1 }
+				}
+				else_if = {
+					limit = { NOT = { has_tech = advanced_carrier } }
+					set_technology = { advanced_carrier = 1 }
+				}
+			}
 		}
 	}
 	
@@ -14093,19 +14220,26 @@ focus_tree = {
 			factor = 10
 		}
 		available = {
+			has_completed_focus = PER_qajar_design_bureau
 		}
 		bypass = {
 		}
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus PER_start_development_of_air_force_in_fleet"
-			
+			add_tech_bonus = {
+				name = PER_start_development_of_air_force_in_fleet
+				bonus = 1.0
+				uses = 1
+				category = naval_air
+			}
 		}
 	}
 	
 	focus = {
-		id = PER_regain_control_of_islands_of_strait_of_hormuz
-		icon = GFX_z_goal_PRE_primacy_of_army
+		id = PER_regain_control_of_islands_of_strait_of_hormuz_red
+		text = PER_regain_control_of_islands_of_strait_of_hormuz
+		icon = GFX_z_goal_london_disagreement
 		prerequisite = { focus = PER_creation_of_fleet_of_destroyers }
 		prerequisite = { focus = PER_mahwani_school_red }
 		prerequisite = { focus = PER_experimental_large_tonnage_ships }
@@ -14123,23 +14257,60 @@ focus_tree = {
 			factor = 10
 		}
 		available = {
+			set_temp_variable = { t1 = ROOT.num_ships }
+			multiply_temp_variable = { t1 = 0.5 }
+			round_temp_variable = t1
+			meta_trigger = {
+				text = {
+					ships_in_area = {
+						area = 203
+						size > [SIZE_T1]
+					}
+				}
+				SIZE_T1 = t1
+			}
+			ENG = {
+				meta_trigger = {
+					text = {
+						ships_in_area = {
+							area = 203
+							size < [SIZE_T1]
+						}
+					}
+					SIZE_T1 = t1
+				}
+			}
+			1099 = {
+				controller = {
+					OR = {
+						tag = ENG
+						is_subject_of = ENG
+					}
+				}
+			}
 		}
 		bypass = {
+			has_completed_focus = PER_regain_control_of_islands_of_strait_of_hormuz
 		}
 		
 		completion_reward = {
-			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus PER_regain_control_of_islands_of_strait_of_hormuz"
-			
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus PER_regain_control_of_islands_of_strait_of_hormuz_red"
+			custom_effect_tooltip = PER_regain_control_of_islands_of_strait_of_hormuz_tt
+			transfer_state = 1099
+			add_state_core = 1099
+			ENG = {
+				country_event = NWpersian.434
+			}
 		}
 	}
 	
 	focus = {
 		id = PER_locate_naval_base_in_strait
 		icon = GFX_z_goal_PRE_primacy_of_army
-		prerequisite = { focus = PER_regain_control_of_islands_of_strait_of_hormuz }
+		prerequisite = { focus = PER_regain_control_of_islands_of_strait_of_hormuz_red }
 		x = -2
 		y = 1
-		relative_position_id = PER_regain_control_of_islands_of_strait_of_hormuz
+		relative_position_id = PER_regain_control_of_islands_of_strait_of_hormuz_red
 
 		cost = 7.2
 		
@@ -14151,23 +14322,37 @@ focus_tree = {
 			factor = 10
 		}
 		available = {
+			controls_state = 1099
 		}
 		bypass = {
 		}
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus PER_locate_naval_base_in_strait"
-			
+			1099 = {
+				add_extra_state_shared_building_slots = 1
+				add_building_construction = {
+					type = dockyard
+					level = 1
+					instant_build = yes
+				}
+				add_building_construction = {
+					type = naval_base
+					level = 1
+					instant_build = yes
+					province = 14549
+				}
+			}
 		}
 	}
 	
 	focus = {
 		id = PER_access_to_indian_ocean
 		icon = GFX_z_goal_PRE_primacy_of_army
-		prerequisite = { focus = PER_regain_control_of_islands_of_strait_of_hormuz }
+		prerequisite = { focus = PER_regain_control_of_islands_of_strait_of_hormuz_red }
 		x = 0
 		y = 1
-		relative_position_id = PER_regain_control_of_islands_of_strait_of_hormuz
+		relative_position_id = PER_regain_control_of_islands_of_strait_of_hormuz_red
 
 		cost = 7.2
 		
@@ -14179,13 +14364,43 @@ focus_tree = {
 			factor = 10
 		}
 		available = {
+			NOT = {
+				281 = {
+					controller = {
+						OR = {
+							is_subject_of = ROOT
+							is_in_faction_with = ROOT
+						}
+					}
+				}
+			}
 		}
 		bypass = {
+			281 = {
+				controller = {
+					OR = {
+						tag = ROOT
+						has_war_with = ROOT
+					}
+				}
+			}
 		}
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus PER_access_to_indian_ocean"
-			
+			add_state_claim = 281
+			281 = {
+				controller = {
+					ROOT = {
+						create_wargoal = {
+							type = take_state_focus
+							target = PREV
+							generator = { 281 }
+							expire = 0
+						}
+					}
+				}
+			}
 		}
 	}
 	
@@ -14221,7 +14436,8 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus PER_creation_of_red_army_of_iran"
-			
+			army_experience = 10
+			unlock_decision_category_tooltip = PER_formation_of_red_army_category
 		}
 	}
 	
@@ -14249,7 +14465,22 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus PER_military_intelligence_department"
-			
+			if = {
+                limit = {
+					has_dlc = "La Resistance"
+					has_intelligence_agency = no
+				}
+                create_intelligence_agency = {
+					name = "Military Intelligence of the KAI"
+					icon = "GFX_intelligence_agency_logo_per"
+				}
+            }
+			add_tech_bonus = {
+				name = PER_military_intelligence_department
+				bonus = 1.0
+				uses = 1
+				category = recon_tech
+			}
 		}
 	}
 	
@@ -14277,7 +14508,19 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus PER_council_of_secretaries_of_red_army_of_iran"
+			add_command_power = 50
+			army_experience = 10
+			add_war_support = 0.05
+			if = {
+				limit = {
+					has_country_flag = PER_lahak_khan_bavand_is_back
+				}
+				custom_effect_tooltip = available_chief_of_army
+				show_ideas_tooltip = PER_lahak_khan_bavand_army_chief
+			}
 			
+			custom_effect_tooltip = available_chief_of_airforce
+			show_ideas_tooltip = PER_abdulsamad_adl_qajar
 		}
 	}
 	
@@ -14301,13 +14544,26 @@ focus_tree = {
 			factor = 10
 		}
 		available = {
+			has_character = PER_khosro_roozbeh
 		}
 		bypass = {
 		}
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus PER_follow_khosro_doctrine"
-			
+			add_doctrine_cost_reduction = {
+				name = PER_follow_khosro_doctrine
+				cost_reduction = 0.5
+				uses = 1
+				category = cat_asymmetric_warfare
+			}
+			PER_khosro_roozbeh = {
+				promote_leader = yes
+			}
+			custom_effect_tooltip = available_military_high_command
+			show_ideas_tooltip = PER_khosro_roozbeh
+			custom_effect_tooltip = available_theorist
+			show_ideas_tooltip = PER_khosro_roozbeh_theorist
 		}
 	}
 	
@@ -14335,7 +14591,20 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus PER_use_army_in_cause_of_revolution"
-			
+			add_ideas = PER_focus_on_intelligence_idea
+			add_doctrine_cost_reduction = {
+				name = PER_follow_khosro_doctrine
+				cost_reduction = 0.5
+				uses = 1
+				category = cat_asymmetric_warfare
+			}
+			custom_effect_tooltip = PER_operative_slot_from_army_idea_tt
+			hidden_effect = {
+				set_variable = { PER_operative_slot_var = num_divisions }
+				divide_variable = { PER_operative_slot_var = 10 }
+				round_variable = PER_operative_slot_var
+				add_dynamic_modifier = { modifier = PER_operative_slot_from_army_idea_dyn }
+			}
 		}
 	}
 	
@@ -14358,13 +14627,26 @@ focus_tree = {
 			factor = 10
 		}
 		available = {
+			has_character = PER_lahak_khan_bavand
 		}
 		bypass = {
 		}
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus PER_modern_red_army"
-			
+			add_doctrine_cost_reduction = {
+				name = PER_modern_red_army
+				cost_reduction = 0.5
+				uses = 1
+				category = cat_grand_battle_plan
+			}
+			PER_lahak_khan_bavand = {
+				promote_leader = yes
+			}
+			custom_effect_tooltip = available_military_high_command
+			show_ideas_tooltip = PER_lahak_khan_bavand
+			custom_effect_tooltip = available_theorist
+			show_ideas_tooltip = PER_lahak_khan_bavand_theorist
 		}
 	}
 	
@@ -14392,7 +14674,13 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus PER_kai_military_academy"
-			
+			add_ideas = PER_kai_military_academy
+			add_doctrine_cost_reduction = {
+				name = PER_kai_military_academy
+				cost_reduction = 0.5
+				uses = 1
+				category = cat_grand_battle_plan
+			}
 		}
 	}
 	
@@ -14423,7 +14711,7 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus PER_peoples_officers"
-			
+			add_ideas = PER_peoples_officers
 		}
 	}
 	
@@ -14515,13 +14803,43 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus PER_revival_of_military_industry"
-			
+			add_timed_idea = { idea = PER_revival_of_military_industry days = 365 }
+			random_owned_controlled_state = {
+				limit = { 
+					free_building_slots = {
+						building = arms_factory
+						size > 1
+						include_locked = yes
+					}
+				}
+				add_extra_state_shared_building_slots = 1
+				add_building_construction = {
+					type = arms_factory
+					level = 1
+					instant_build = yes
+				}
+			}
+			random_owned_controlled_state = {
+				limit = { 
+					free_building_slots = {
+						building = arms_factory
+						size > 1
+						include_locked = yes
+					}
+				}
+				add_extra_state_shared_building_slots = 1
+				add_building_construction = {
+					type = arms_factory
+					level = 1
+					instant_build = yes
+				}
+			}
 		}
 	}
 	
 	focus = {
 		id = PER_motorization_of_cavalry
-		icon = GFX_z_goal_PRE_primacy_of_army
+		icon = GFX_z_goal_elimination_of_cavalry
 		prerequisite = { focus = PER_revival_of_military_industry }
 		mutually_exclusive = { focus = PER_reform_cavalry }
 		x = -1
@@ -14544,7 +14862,18 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus PER_motorization_of_cavalry"
-			
+			add_ideas = PER_motorization_of_cavalry_idea
+			add_equipment_to_stockpile = {
+				type = motorized_equipment
+				amount = 250
+			}
+			add_tech_bonus = {
+				name = PER_motorization_of_cavalry
+				bonus = 1.0
+				uses = 1
+				category = motorized_equipment
+				category = cat_mechanized_equipment
+			}
 		}
 	}
 	
@@ -14575,7 +14904,20 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus PER_reforming_army_logistics"
-			
+			swap_ideas = {
+				remove_idea = PER_motorization_of_cavalry_idea
+				add_idea = PER_motorization_of_cavalry_idea_2
+			}
+			add_equipment_to_stockpile = {
+				type = motorized_equipment
+				amount = 250
+			}
+			add_tech_bonus = {
+				name = PER_reforming_army_logistics
+				bonus = 1.0
+				uses = 1
+				category = logistics_tech
+			}
 		}
 	}
 	
@@ -14605,7 +14947,13 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus PER_creation_of_armored_divisions"
-			
+			add_ideas = PER_creation_of_armored_divisions
+			add_tech_bonus = {
+				name = PER_creation_of_armored_divisions
+				bonus = 1.0
+				uses = 2
+				category = armor
+			}
 		}
 	}
 	
@@ -14634,13 +14982,13 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus PER_reform_cavalry"
-			
+			add_ideas = PER_reform_cavalry_idea
 		}
 	}
 	
 	focus = {
 		id = PER_nationalization_of_military_academy_in_davos
-		icon = GFX_z_goal_PRE_primacy_of_army
+		icon = GFX_z_goal_PER_war_university
 		prerequisite = {
 			focus = PER_motorization_of_cavalry
 			focus = PER_reform_cavalry
@@ -14656,22 +15004,23 @@ focus_tree = {
 		available_if_capitulated = yes
 
 		ai_will_do = {
-			factor = 10
+			factor = 15
 		}
 		available = {
 		}
 		bypass = {
+			has_completed_focus = PER_war_university
 		}
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus PER_nationalization_of_military_academy_in_davos"
-			
+			add_ideas = PER_war_university_idea
 		}
 	}
 	
 	focus = {
 		id = PER_preparing_for_desert_war
-		icon = GFX_z_goal_PRE_primacy_of_army
+		icon = GFX_z_goal_desert_officers
 		prerequisite = {
 			focus = PER_motorization_of_cavalry
 			focus = PER_reform_cavalry
@@ -14696,13 +15045,15 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus PER_preparing_for_desert_war"
-			
+			add_ideas = PER_preparing_for_desert_war
+			custom_effect_tooltip = desert_training_effect
+			hidden_effect = { set_technology = { desert_warfare = 1 } }
 		}
 	}
 	
 	focus = {
 		id = PER_camel_cavalry_training
-		icon = GFX_z_goal_PRE_primacy_of_army
+		icon = GFX_z_goal_camel
 		prerequisite = { focus = PER_reform_cavalry }
 		prerequisite = { focus = PER_preparing_for_desert_war }
 		x = 1
@@ -14725,13 +15076,18 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus PER_camel_cavalry_training"
-			
+			swap_ideas = {
+				remove_idea = PER_reform_cavalry_idea
+				add_idea = PER_reform_cavalry_idea_2
+			}
+			custom_effect_tooltip = TUR_unlock_camelry_effect_tt
+			hidden_effect = { set_technology = { camelry = 1 } } 
 		}
 	}
 	
 	focus = {
 		id = PER_pilots_loyal_to_marx
-		icon = GFX_z_goal_PRE_primacy_of_army
+		icon = GFX_focus_SOV_flying_clubs
 		prerequisite = { focus = PER_creation_of_red_army_of_iran }
 		x = 6
 		y = 1
@@ -14753,7 +15109,13 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus PER_pilots_loyal_to_marx"
-			
+			air_experience = 20
+			add_doctrine_cost_reduction = {
+				name = PER_pilots_loyal_to_marx
+				cost_reduction = 0.5
+				uses = 1
+				category = air_doctrine
+			}
 		}
 	}
 	
@@ -14781,13 +15143,20 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus PER_qajar_design_bureau"
-			
+			custom_effect_tooltip = available_political_advisor
+			show_ideas_tooltip = PER_abdulsamad_adl_qajar_political
+			add_tech_bonus = {
+				name = PER_qajar_design_bureau
+				bonus = 1.0
+				uses = 1
+				category = air_equipment
+			}
 		}
 	}
 	
 	focus = {
 		id = PER_red_earth
-		icon = GFX_z_goal_PRE_primacy_of_army
+		icon = GFX_z_goal_close_air_support
 		prerequisite = { focus = PER_qajar_design_bureau }
 		mutually_exclusive = { focus = PER_red_sky }
 		x = -1
@@ -14810,13 +15179,18 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus PER_red_earth"
-			
+			add_tech_bonus = {
+				name = PER_red_earth
+				bonus = 1.0
+				uses = 2
+				category = cas_bomber
+			}
 		}
 	}
 	
 	focus = {
 		id = PER_red_sky
-		icon = GFX_z_goal_PRE_primacy_of_army
+		icon = GFX_z_goal_generic_air_dominations
 		prerequisite = { focus = PER_qajar_design_bureau }
 		mutually_exclusive = { focus = PER_red_earth }
 		x = 1
@@ -14839,13 +15213,18 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus PER_red_sky"
-			
+			add_tech_bonus = {
+				name = PER_red_earth
+				bonus = 1.0
+				uses = 2
+				category = light_fighter
+			}
 		}
 	}
 	
 	focus = {
 		id = PER_follow_new_air_force_doctrine
-		icon = GFX_z_goal_PRE_primacy_of_army
+		icon = GFX_goal_generic_air_doctrine
 		prerequisite = {
 			focus = PER_red_earth
 			focus = PER_red_sky
@@ -14870,7 +15249,12 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus PER_follow_new_air_force_doctrine"
-			
+			add_doctrine_cost_reduction = {
+				name = PER_follow_new_air_force_doctrine
+				cost_reduction = 0.5
+				uses = 2
+				category = air_doctrine
+			}
 		}
 	}
 	
