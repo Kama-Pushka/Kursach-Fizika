@@ -208,17 +208,70 @@ debug_decisions = {
 					land_cruiser = 1
 				}
 			}
+			if = {
+				limit = { original_tag = SOV }
+				create_equipment_variant = {
+					name = "TG-5"
+					type = land_cruiser_tank_chassis_1
+					parent_version = 0
+					modules = {
+						land_cruiser_main_armament_slot = land_cruiser_double_heavy_cannon
+						layout_type_slot = empty
+						land_cruiser_turret_type_slot = empty
+						suspension_type_slot = tank_bogie_suspension
+						land_cruiser_continuous_track_type_slot = empty
+						land_cruiser_armor_type_slot = empty
+						land_cruiser_engine_type_slot = empty
+						special_type_slot_1 = land_cruiser_double_light_cannon
+						special_type_slot_2 = land_cruiser_double_light_cannon
+						special_type_slot_3 = land_cruiser_double_anti_air_cannon_76
+						special_type_slot_4 = land_cruiser_double_anti_air_cannon_76
+					}
+					upgrades = {
+						tank_nsb_engine_upgrade = 10
+						tank_nsb_armor_upgrade = 8
+					}
+					#icon = "GFX_SOV_improved_medium_art_medium"
+				}
+			}
+			if = {
+				limit = { original_tag = GER }
+				create_equipment_variant = {
+					name = "P. 1000 Ratte"
+					type = land_cruiser_tank_chassis_1
+					parent_version = 0
+					modules = {
+						land_cruiser_main_armament_slot = land_cruiser_double_medium_cannon
+						layout_type_slot = empty
+						land_cruiser_turret_type_slot = empty
+						suspension_type_slot = tank_bogie_suspension
+						land_cruiser_continuous_track_type_slot = empty
+						land_cruiser_armor_type_slot = empty
+						land_cruiser_engine_type_slot = empty
+						special_type_slot_1 = land_cruiser_light_cannon
+						special_type_slot_2 = land_cruiser_double_anti_air_cannon_128
+						special_type_slot_3 = land_cruiser_double_anti_air_cannon_128
+					}
+					upgrades = {
+						tank_nsb_engine_upgrade = 10
+						tank_nsb_armor_upgrade = 8
+					}
+					#icon = "GFX_SOV_improved_medium_art_medium"
+				}
+			}
 			create_equipment_variant = {
-				name = "1500.P Monster"
+				name = "P. 1500 Monster"
 				type = land_cruiser_tank_artillery_chassis_1
 				parent_version = 0
 				modules = {
-					main_armament_slot = tank_heavy_howitzer
-					turret_type_slot = tank_medium_fixed_superstructure_turret
+					land_cruiser_main_armament_slot = empty
+					layout_type_slot = empty
+					land_cruiser_turret_type_slot = empty
 					suspension_type_slot = tank_bogie_suspension
-					armor_type_slot = tank_riveted_armor
-					engine_type_slot = tank_diesel_engine
-					special_type_slot_1 = sloped_armor
+					land_cruiser_continuous_track_type_slot = empty
+					land_cruiser_armor_type_slot = empty
+					land_cruiser_engine_type_slot = empty
+					special_type_slot_1 = empty
 				}
 				upgrades = {
 					tank_nsb_engine_upgrade = 10
@@ -1243,7 +1296,7 @@ debug_decisions_2 = {
 					transfer_state = 713
 				}
 				every_country = {
-					limit = { is_ai = yes }
+					limit = { is_ai = yes NOT = { tag SAI } }
 					transfer_units_fraction = {
 						target = SAI
 						size = 0.0
@@ -1264,6 +1317,7 @@ debug_decisions_2 = {
 				random_country = {
 					set_variable = { global.total_division = 0 }
 					every_country = {
+						limit = { NOT = { tag = SAI } }
 						add_to_variable = { global.total_division = THIS.num_divisions }
 					}
 				}
@@ -1283,6 +1337,7 @@ debug_decisions_2 = {
 				}
 				every_country = {
 					limit = {
+						NOT = { tag SAI }
 						is_ai = yes
 						has_war = no
 						any_neighbor_country = {
@@ -1319,7 +1374,216 @@ debug_decisions_2 = {
 				random_country = {
 					set_variable = { global.total_division = 0 }
 					every_country = {
+						limit = { NOT = { tag = SAI } }
 						add_to_variable = { global.total_division = THIS.num_divisions }
+					}
+				}
+			}
+		}
+	}
+	
+	all_remove_half_navy = {
+		complete_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): decision all_remove_half_navy"
+			hidden_effect = {
+				713 = {
+					controller = { save_event_target_as = controller_713 }
+					owner = { save_event_target_as = owner_713 }
+				}
+				SAI = {
+					transfer_state = 713
+				}
+				every_country = {
+					limit = { is_ai = yes NOT = { tag SAI } }
+					transfer_units_fraction = {
+						target = SAI
+						size = 0.0
+						stockpile_ratio = 0.0
+						army_ratio = 0.0
+						navy_ratio = 0.5
+						air_ratio = 0.0
+					}
+				}
+				event_target:owner_713 = {
+					annex_country = {
+						target = SAI
+						transfer_troops = no
+					}
+					set_state_owner = 713
+				}
+				event_target:owner_713 = { set_state_controller = 713 }
+				random_country = {
+					set_variable = { global.total_ships = 0 }
+					every_country = {
+						limit = { NOT = { tag = SAI } }
+						add_to_variable = { global.total_ships = THIS.num_ships }
+					}
+				}
+			}
+		}
+	}
+	all_remove_half_navy_in_peace = {
+		complete_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): all_remove_half_navy_in_peace"
+			hidden_effect = {
+				713 = {
+					controller = { save_event_target_as = controller_713 }
+					owner = { save_event_target_as = owner_713 }
+				}
+				SAI = {
+					transfer_state = 713
+				}
+				every_country = {
+					limit = {
+						is_ai = yes
+						has_war = no
+						NOT = { tag SAI }
+					}
+					transfer_units_fraction = {
+						target = SAI
+						size = 0.0
+						stockpile_ratio = 0.0
+						army_ratio = 0.0
+						navy_ratio = 0.5
+						air_ratio = 0.0
+					}
+				}
+				event_target:owner_713 = {
+					annex_country = {
+						target = SAI
+						transfer_troops = no
+					}
+					set_state_owner = 713
+				}
+				event_target:owner_713 = { set_state_controller = 713 }
+				random_country = {
+					set_variable = { global.total_ships = 0 }
+					every_country = {
+						limit = { NOT = { tag = SAI } }
+						add_to_variable = { global.total_ships = THIS.num_ships }
+					}
+				}
+			}
+		}
+	}
+	
+	all_remove_half_avia = {
+		complete_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): decision all_remove_half_avia"
+			hidden_effect = {
+				713 = {
+					controller = { save_event_target_as = controller_713 }
+					owner = { save_event_target_as = owner_713 }
+					if = {
+						limit = { air_base < 1 }
+						set_state_flag = add_air_base_flag
+						add_building_construction = {
+							type = air_base
+							level = 1
+							instant_build = yes
+						}
+					}
+				}
+				SAI = {
+					transfer_state = 713
+				}
+				every_country = {
+					limit = { is_ai = yes NOT = { tag SAI } }
+					transfer_units_fraction = {
+						target = SAI
+						size = 0.0
+						stockpile_ratio = 0.0
+						army_ratio = 0.0
+						navy_ratio = 0.0
+						air_ratio = 0.5
+					}
+				}
+				event_target:owner_713 = {
+					annex_country = {
+						target = SAI
+						transfer_troops = no
+					}
+					set_state_owner = 713
+				}
+				event_target:owner_713 = { set_state_controller = 713 }
+				713 = {
+					if = {
+						limit = { has_state_flag = add_air_base_flag }
+						clr_state_flag = add_air_base_flag
+						remove_building = {
+							type = air_base
+							level = 1
+						}
+					}
+				}
+				random_country = {
+					set_variable = { global.total_avia = 0 }
+					every_country = {
+						limit = { NOT = { tag = SAI } }
+						add_to_variable = { global.total_avia = THIS.num_deployed_planes  }
+					}
+				}
+			}
+		}
+	}
+	all_remove_half_avia_in_peace = {
+		complete_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): all_remove_half_avia_in_peace"
+			hidden_effect = {
+				713 = {
+					controller = { save_event_target_as = controller_713 }
+					owner = { save_event_target_as = owner_713 }
+					if = {
+						limit = { air_base < 1 }
+						set_state_flag = add_air_base_flag
+						add_building_construction = {
+							type = air_base
+							level = 1
+							instant_build = yes
+						}
+					}
+				}
+				SAI = {
+					transfer_state = 713
+				}
+				every_country = {
+					limit = {
+						NOT = { tag SAI }
+						is_ai = yes
+						has_war = no
+					}
+					transfer_units_fraction = {
+						target = SAI
+						size = 0.0
+						stockpile_ratio = 0.0
+						army_ratio = 0.0
+						navy_ratio = 0.0
+						air_ratio = 0.5
+					}
+				}
+				event_target:owner_713 = {
+					annex_country = {
+						target = SAI
+						transfer_troops = no
+					}
+					set_state_owner = 713
+				}
+				event_target:owner_713 = { set_state_controller = 713 }
+				713 = {
+					if = {
+						limit = { has_state_flag = add_air_base_flag }
+						clr_state_flag = add_air_base_flag
+						remove_building = {
+							type = air_base
+							level = 1
+						}
+					}
+				}
+				random_country = {
+					set_variable = { global.total_avia = 0 }
+					every_country = {
+						limit = { NOT = { tag = SAI } }
+						add_to_variable = { global.total_avia = THIS.num_deployed_planes  }
 					}
 				}
 			}
