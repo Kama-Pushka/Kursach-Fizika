@@ -1,3 +1,82 @@
+operations = {
+	land_cruiser_chassis_tests_state = {
+		icon = eng_propaganda_campaigns
+		on_map_mode = map_only
+		state_target = yes
+		fire_only_once = yes
+		days_remove = 1
+		available = {
+			FROM = {
+				is_fully_controlled_by = ROOT
+			}
+		}
+		visible = {
+			FROM = {
+				is_fully_controlled_by = ROOT
+			}
+			NOT = {
+				any_owned_state = {
+					has_state_flag = land_cruiser_chassis_tests_flag
+				}
+			}
+		}
+		target_trigger = {
+			FROM = {
+				is_fully_controlled_by = ROOT
+			}
+		}
+		target_array = ROOT.owned_controlled_states
+		target_root_trigger = {
+			has_country_flag = land_cruiser_chassis_tests_flag
+		}
+		cancel_trigger = {
+			NOT = { FROM = { is_fully_controlled_by = ROOT } }
+		}
+		complete_effect = {
+			FROM = {
+				set_state_flag = land_cruiser_chassis_tests_flag
+			}
+			add_to_variable = { global.total_entity_id_var = 1 }
+			set_variable = { ROOT.entity_id_var = global.total_entity_id_var }
+			create_entity = {
+				entity = land_cruiser_armor_entity
+				id = ROOT.entity_id_var
+				x = 1
+				y = 1
+				z = 1
+				state = FROM
+				rotation = 0
+				scale = 1.0
+				min_zoom = 100.0
+			}
+			set_entity_animation = {
+				id = ROOT.entity_id_var
+				animation = "training"
+			}
+			goto_state = FROM
+		}
+		remove_effect = {
+			country_event = NWland_cruiser.8
+			hidden_effect = {
+				add_days_mission_timeout = {
+					mission = land_cruiser_chassis_tests_state
+					days = 30
+				}
+				goto_state = FROM
+			}
+		}
+		cancel_effect = {
+			FROM = {
+				clr_state_flag = land_cruiser_chassis_tests_flag
+			}
+			destroy_entity = ROOT.entity_id_var
+		}
+		ai_will_do = {
+			factor = 25
+		}
+	}
+}
+
 land_cruiser_category = {
 	land_cruiser_investigate_possibility_of_using_naval_guns = {
 		icon = generic_prepare_civil_war
