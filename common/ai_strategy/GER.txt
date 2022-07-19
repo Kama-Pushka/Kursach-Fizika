@@ -330,7 +330,6 @@ GER_stock_up_on_trains_before_poland = {
 	abort_when_not_enabled = yes
 	ai_strategy = { type = min_wanted_supply_trains		value = 150	}
 }
-
 GER_stock_up_on_trains_before_barbarossa = { 
 	allowed = {
 		original_tag = GER
@@ -346,6 +345,111 @@ GER_stock_up_on_trains_before_barbarossa = {
 		date > 1943.1.1
 	}
 	ai_strategy = { type = min_wanted_supply_trains		value = 300 }
+}
+
+
+
+GER_convoys_low = {
+	allowed = { original_tag = GER }
+	enable = {
+		has_war = yes
+		has_equipment = {
+			convoy_1 < 200
+		}
+	}
+	abort = {
+		OR = {
+			has_equipment = {
+				convoy_1 > 450
+			}
+			has_equipment = {	#critical_low strategy now engages
+				convoy_1 < 100
+			}
+			has_war = no
+		}
+	}
+	ai_strategy = {
+		type = equipment_production_min_factories
+		id = convoy
+		value = 10
+	}
+	ai_strategy = {
+		type = equipment_production_factor
+		id = infantry
+		value = -30
+	}
+	ai_strategy = {
+		type = equipment_production_factor
+		id = artillery
+		value = -30
+	}
+}
+GER_convoys_critical = {
+	allowed = { original_tag = GER }
+	enable = {
+		has_war = yes
+		has_equipment = {
+			convoy_1 < 100
+		}
+	}
+	abort = {
+		OR = {
+			has_equipment = {
+				convoy_1 > 200	#production should resume, and low strategy reapplies
+			}
+			has_war = no
+		}
+	}
+	ai_strategy = {
+		type = equipment_production_min_factories
+		id = convoy
+		value = 20
+	}
+	ai_strategy = {
+		type = unit_ratio
+		id = convoy
+		value = 50	#50
+	}
+	ai_strategy = {	
+		type = equipment_production_factor
+		id = infantry
+		value = -120
+	}
+	ai_strategy = {
+		type = role_ratio
+		id = infantry
+		value = -20
+	}
+	ai_strategy = {
+		type = equipment_production_factor
+		id = artillery
+		value = -200
+	}
+	ai_strategy = {
+		type = equipment_production_factor
+		id = armor
+		value = -200
+	}
+	ai_strategy = {
+		type = equipment_production_factor
+		id = motorized
+		value = -200
+	}
+	ai_strategy = {
+		type = template_prio
+		id = light_armor
+		value = -50
+	}
+	ai_strategy = {
+		type = template_prio
+		id = medium_armor
+		value = -50
+	}
+	ai_strategy = {
+		type = template_prio
+		id = heavy_armor
+		value = -50
+	}
 }
 
 
@@ -2570,13 +2674,6 @@ GER_around_the_maginot = {
 			}
 		}
 		
-		# lux somehow joined the fun
-		NOT = { has_war_with = LUX }
-		LUX = {
-			has_capitulated = no
-			NOT = { is_in_faction_with = FRA }
-		}
-		
 		# we are ready to declare war on low countries
 		OR = {
 			focus_progress = {
@@ -2590,11 +2687,15 @@ GER_around_the_maginot = {
 		}
 		is_in_array = { potential_and_current_enemies = FRA }
 		OR = {
-			DEN = { has_capitulated = no }
-			DEN = { exists = yes }
-			DEN = { is_subject = no }
-			DEN = { is_subject_of = ROOT }
-			DEN = { NOT = { has_government = fascism } }
+			DEN = {
+				OR = {
+					has_capitulated = no
+					exists = no
+					is_subject = no
+					is_subject_of = ROOT
+				}
+				NOT = { has_government = fascism }
+			}
 			NOT = { is_in_faction_with = DEN }
 			has_war_with = HOL
 			has_war_with = BEL
@@ -2882,7 +2983,7 @@ GER_blitzkrieg_benelux = {
 	}
 
 	enable = {
-		date < 1940.2.1 #Don't keep pushing wildly if we haven't capitulated benelux in 4 months - we lost anyway
+		date > 1940.5.1
 		OR = {
 			AND = {
 				focus_progress = {
@@ -2909,7 +3010,7 @@ GER_blitzkrieg_benelux = {
 
 		tag = HOL
 
-		ratio = 0.25
+		ratio = 0.5
 
 		priority = 100
 		ordertype = front
@@ -2922,7 +3023,7 @@ GER_blitzkrieg_benelux = {
 
 		tag = BEL
 
-		ratio = 0.25
+		ratio = 0.5
 
 		priority = 100
 		ordertype = front
@@ -2932,18 +3033,32 @@ GER_blitzkrieg_benelux = {
 
 	ai_strategy = {
 		type = front_unit_request
-
 		tag = BEL
-
 		value = 50 # lets put more units, should be safe
 	}
 
 	ai_strategy = {
 		type = front_unit_request
-
 		tag = HOL
-
 		value = 50 # lets put more units, should be safe
+	}
+	
+	ai_strategy = {
+		type = front_armor_score
+		id = "HOL"
+		value = 100
+	}
+	
+	ai_strategy = {
+		type = front_armor_score
+		id = "BEL"
+		value = 100
+	}
+	
+	ai_strategy = {
+		type = front_armor_score
+		id = "FRA"
+		value = -100
 	}
 }
 
