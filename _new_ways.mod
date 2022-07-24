@@ -1,6 +1,7 @@
 version="0.5.1"
 replace_path="common/national_focus"
 replace_path="common/difficulty_settings"
+replace_path="common/countries"
 replace_path="history/states"
 replace_path="map"
 replace_path="map/strategicregions"
