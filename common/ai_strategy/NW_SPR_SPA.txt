@@ -58,14 +58,11 @@ spanish_civil_war_GER_expatriate = {
 	}	
 }
 
-# make italy and germany want to send stuff to the fascist side of SCW
-ITA_and_GER_help_SPA_win_civil_war = {
+# make germany want to send stuff to the fascist side of SCW
+GER_help_SPA_win_civil_war = {
 	reversed = yes
 	allowed = {
-		OR = {
-			original_tag = GER
-			original_tag = ITA
-		}
+		original_tag = GER
 	}
 	enable = {
 		date < 1939.1.1
@@ -73,15 +70,43 @@ ITA_and_GER_help_SPA_win_civil_war = {
 		exists = yes
 		has_war_with = SPR
 		NOT = { has_global_flag = scw_over }
+		GER = {
+			OR = {
+				has_government = fascism
+				has_government = neutrality
+				has_government = monarchy
+			}
+		}
 	}
 	abort_when_not_enabled = yes
-	
 	ai_strategy = {
 		type = send_volunteers_desire
 		id = "GER"
 		value = 75
 	}
-
+}
+# make italy want to send stuff to the fascist side of SCW
+ITA_help_SPA_win_civil_war = {
+	reversed = yes
+	allowed = {
+		original_tag = ITA
+	}
+	enable = {
+		date < 1939.1.1
+		original_tag = SPA
+		exists = yes
+		has_war_with = SPR
+		NOT = { has_global_flag = scw_over }
+		ITA = {
+			has_completed_focus = ITA_spazio_vitale
+			OR = {
+				has_government = fascism
+				has_government = neutrality
+				has_government = monarchy
+			}
+		}
+	}
+	abort_when_not_enabled = yes
 	ai_strategy = {
 		type = send_volunteers_desire
 		id = "ITA"
@@ -104,6 +129,14 @@ SOV_help_SPR_win_civil_war = {
 			#has_completed_focus = SPR_stand_junta
 		}
 		NOT = { has_global_flag = scw_over }
+		SOV = {
+			has_completed_focus = ITA_spazio_vitale
+			NOT = {
+				has_government = fascism
+				has_government = neutrality
+				has_government = monarchy
+			}
+		}
 	}
 	abort_when_not_enabled = yes
 	
@@ -1196,5 +1229,35 @@ SPA_close_up_madrid_after_CAT_ARA_falls = {
 		
 		execution_type = balanced
 		execute_order = yes
+	}
+}
+
+
+SPA_la_division_azul = {
+	reversed = yes
+	allowed = {
+		original_tag = SPA
+	}
+	enable = {
+		date < 1939.1.1
+		OR = {
+			original_tag = GER
+			original_tag = ITA
+		}
+		exists = yes
+		ITA = {
+			has_idea = SPA_la_division_azul
+			OR = {
+				has_government = fascism
+				has_government = neutrality
+				has_government = monarchy
+			}
+		}
+	}
+	abort_when_not_enabled = yes
+	ai_strategy = {
+		type = send_volunteers_desire
+		id = "SPA"
+		value = 75
 	}
 }
