@@ -49,7 +49,7 @@ GER_unit_production = {
 
 	ai_strategy = {
 		type = role_ratio
-		id = cavalry 
+		id = cavalry_role 
 		value = -100
 	}
 
@@ -73,7 +73,7 @@ GER_unit_production = {
 	ai_strategy = {
 		type = role_ratio
 		id = armor
-		value = -17 #because doctrine this = 3
+		value = 5
 	}
 	ai_strategy = {
 		type = unit_ratio
@@ -294,7 +294,7 @@ GER_template_design = {
 	ai_strategy = {
 		type = template_prio
 		id = heavy_armor
-		value = -50
+		value = -25
 	}
 
 	ai_strategy = {
@@ -889,18 +889,18 @@ GER_convoys_critical = {
 GER_build_950k_army = {		#Необходимо для различных фокусов типа Аншлюза и Судетов
 	allowed = { original_tag = GER }
 	enable = {
-		date < 1939.1.1
 		has_war = no
-		has_army_manpower = { size < 950000 }
+		has_army_manpower = { size < 1000000 }
 	}
 	abort_when_not_enabled = yes
 
 	ai_strategy = { type = build_army id = infantry		value = 500 }
-	ai_strategy = { type = build_army id = armor		value = 24 }
+	ai_strategy = { type = build_army id = armor		value = 100 }
 	ai_strategy = { type = build_army id = motorized	value = 24 }
 	ai_strategy = { type = force_build_armies			value = 500 }
 	
 	ai_strategy = { type = equipment_production_min_factories id = infantry		value = 5 }
+	ai_strategy = { type = equipment_production_min_factories id = artillery	value = 4 }
 	ai_strategy = { type = equipment_production_min_factories id = support		value = 8 }
 	ai_strategy = { type = equipment_production_min_factories id = armor		value = 5 }
 	ai_strategy = { type = equipment_production_min_factories id = motorized	value = 5 }
@@ -909,6 +909,7 @@ GER_build_950k_army = {		#Необходимо для различных фок�
 GER_stop_infantry_army = {
 	allowed = { original_tag = GER }
 	enable = {
+		date < 1940.01.01
 		has_army_size = {
 			size > 90
 			type = infantry
@@ -922,6 +923,49 @@ GER_stop_infantry_army = {
 	ai_strategy = { type = build_army id = infantry		value = -500 }
 	ai_strategy = { type = build_army id = motorized	value = 500 }
 	ai_strategy = { type = build_army id = armor		value = 500 }
+}
+
+GER_prepare_barbarossa_infantry = {
+	allowed = { original_tag = GER }
+	enable = {
+		OR = {
+			date > 1940.01.01
+			num_of_military_factories > 100
+		}
+		has_army_manpower = { size < 2250000 }
+	}
+	abort_when_not_enabled = yes
+
+	ai_strategy = { type = build_army id = infantry		value = 500 }
+	ai_strategy = { type = build_army id = motorized	value = 24 }
+	ai_strategy = { type = force_build_armies			value = 250 }
+	
+	ai_strategy = { type = equipment_production_min_factories id = infantry		value = 20 }
+	ai_strategy = { type = equipment_production_min_factories id = artillery	value = 10 }
+	ai_strategy = { type = equipment_production_min_factories id = support		value = 10 }
+	ai_strategy = { type = equipment_production_min_factories id = motorized	value = 5 }
+}
+
+GER_prepare_barbarossa_armor = {
+	allowed = { original_tag = GER }
+	enable = {
+		OR = {
+			date > 1940.01.01
+			num_of_military_factories > 100
+		}
+		OR = {
+			has_army_size = { type = armor size < 50 }
+			has_army_manpower = { type = armor size < 500000 }
+		}
+	}
+	abort_when_not_enabled = yes
+
+	ai_strategy = { type = build_army id = armor		value = 500 }
+	ai_strategy = { type = build_army id = motorized	value = 50 }
+	ai_strategy = { type = force_build_armies			value = 250 }
+	
+	ai_strategy = { type = equipment_production_min_factories id = armor		value = 20 }
+	ai_strategy = { type = equipment_production_min_factories id = motorized	value = 10 }
 }
 
 GER_dont_upgrade_to_weapons_3_too_early = {
@@ -1067,7 +1111,7 @@ NW_GER_you_need_to_actually_produce_tanks_noob = {
 	ai_strategy = {
 		type = role_ratio
 		id = armor
-		value = 25
+		value = 20
 	}
 	ai_strategy = {
 		type = role_ratio
@@ -1175,26 +1219,6 @@ GER_increase_armor_production = {
 	ai_strategy = { type = equipment_production_factor	id = armor	value = 35 }
 }
 
-GER_avoid_light_tank_production = {
-	allowed = { original_tag = GER }
-	enable = {
-		has_army_manpower = { size > 550000 }
-		OR = {
-			has_war = no
-			num_of_military_factories > 50
-		}
-		has_army_size = { type = armor size > 20 }
-		has_army_manpower = { type = armor size > 200000 }
-	}
-	abort_when_not_enabled = yes
-	
-	ai_strategy = {
-		type = equipment_variant_production_factor
-		id = light_tank_chassis
-		value = -50
-	}
-}
-
 GER_halt_light_armor_production_in_transitioning = {
 	allowed = { original_tag = GER }
 	enable = {
@@ -1208,6 +1232,11 @@ GER_halt_light_armor_production_in_transitioning = {
 		type = equipment_variant_production_factor
 		id = light_tank_chassis
 		value = -50
+	}
+	ai_strategy = {
+		type = equipment_variant_production_factor
+		id = medium_tank_chassis
+		value = 50
 	}
 }
 
@@ -1250,7 +1279,7 @@ GER_start_produce_light_artillery_armor = {
 	
 	ai_strategy = { type = unit_ratio							id = armor							value = 10 }
 	ai_strategy = { type = role_ratio							id = light_artillery_armor_role		value = 10 }
-	ai_strategy = { type = build_army							id = light_artillery_armor_role		value = 10 }
+	ai_strategy = { type = build_army							id = light_artillery_armor_role		value = 14 }
 	ai_strategy = { type = role_ratio							id = infantry						value = -5 }
 }
 GER_super_boost_light_artillery_armor = {
@@ -1291,7 +1320,7 @@ GER_start_produce_light_tank_destroyer_armor = {
 	
 	ai_strategy = { type = unit_ratio							id = armor							value = 10 }
 	ai_strategy = { type = role_ratio							id = light_tank_destroyer_role		value = 10 }
-	ai_strategy = { type = build_army							id = light_tank_destroyer_role		value = 10 }
+	ai_strategy = { type = build_army							id = light_tank_destroyer_role		value = 14 }
 	ai_strategy = { type = role_ratio							id = infantry						value = -5 }
 }
 GER_super_boost_light_tank_destroyer_armor = {
@@ -1305,9 +1334,10 @@ GER_super_boost_light_tank_destroyer_armor = {
 			date > 1940.08.01
 			num_of_military_factories > 60
 		}
-		NOT = { has_template_ai_majority_unit = light_tank_destroyer_brigade }
 	}
-	abort_when_not_enabled = yes
+	abort = {
+		has_template_ai_majority_unit = light_tank_destroyer_brigade
+	}
 
 	ai_strategy = { type = land_xp_spend_priority	id = division_template					value = 100 }
 	ai_strategy = { type = template_prio			id = light_tank_destroyer_brigade		value = 250	}

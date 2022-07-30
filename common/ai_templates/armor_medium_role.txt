@@ -6,7 +6,7 @@ medium_armor_generic = {
 		ENG
 		USA
 		#ITA
-		SOV
+		#SOV
 	}
 
 	roles = {
@@ -41,9 +41,11 @@ medium_armor_generic = {
 		modifier = {
 			factor = 100
 			num_of_military_factories > 40
+			OR = {
+				NOT = {	ai_has_role_template = armor }
+				NOT = {	has_design_based_on = medium_tank_chassis }
+			}
 			NOT = {
-				ai_has_role_template = armor
-				has_design_based_on = medium_tank_chassis
 				has_tech = main_battle_tank
 				has_tech = main_battle_tank_chassis
 			}
@@ -129,6 +131,7 @@ medium_armor_generic = {
 			mot_artillery_brigade
 			mot_anti_air_brigade
 			motorized_rocket_brigade 
+			armored_car
 
 			engineer
 			mot_recon
@@ -152,10 +155,110 @@ medium_armor_generic = {
 		target_min_match = 0.5
 	}
 	
-	
+	MEDIUM_ARMOR_TEMPLATE_SOV = {
+		enable = { original_tag = SOV }
+		upgrade_prio = {
+			factor = 2
+			modifier = {
+				factor = 10
+				OR = {
+					has_tech = basic_medium_tank
+					has_tech = basic_medium_tank_chassis
+				}
+				NOT = {
+					has_tech = main_battle_tank
+					has_tech = main_battle_tank_chassis
+				}
+			}
+			modifier = {
+				date > 1938.6.1		# More priority before '39 starts
+				factor = 10 
+			}
+			modifier = {
+				factor = 100
+				num_of_military_factories > 50
+				NOT = {
+					has_design_based_on = medium_tank_chassis
+				}
+			}
+		}
+		production_prio = {
+			factor = 2
+			modifier = {
+				factor = 4
+				OR = {
+					has_tech = basic_medium_tank
+					has_tech = basic_medium_tank_chassis
+				}
+				NOT = {
+					has_tech = main_battle_tank
+					has_tech = main_battle_tank_chassis
+				}
+			}
+			modifier = {
+				date > 1938.6.1		# More priority before '39 starts
+				factor = 10 
+			}
+		}
+		
+		target_width = 30.0
+		width_weight = 1.5
+		column_swap_factor = 0.5
+
+		target_template = {
+			weight = 0.9
+			match_value = 6000.0
+			
+			support = {
+				maintenance_company = 1
+				mot_recon = 1
+				anti_air = 1
+				signal_company = 1
+				logistics_company = 1
+			}
+			
+			regiments = {
+				medium_armor = 5
+				motorized = 5
+			}
+		}
+
+		allowed_types = {
+			modern_armor
+			medium_armor
+			motorized
+			mechanized
+			infantry
+
+			motorized_rocket_brigade 
+			mot_artillery_brigade
+			mot_anti_tank_brigade
+			mot_anti_air_brigade
+			engineer
+			mot_recon
+			armored_car_recon
+			light_tank_recon
+			signal_company
+			maintenance_company
+			logistics_company
+
+			anti_tank
+			military_police
+			artillery
+			anti_air
+			rocket_artillery
+			
+			flamethrower_squad
+			sniper_squad
+		}
+		
+		replace_at_match = 0.6
+		replace_with = MEDIUM_ARMOR_TEMPLATE_3
+		target_min_match = 0.5
+	}
 
 	MEDIUM_ARMOR_TEMPLATE_1 = {
-		enable = { NOT = { original_tag = GER } }
+		enable = { NOT = { original_tag = GER original_tag = SOV } }
 		upgrade_prio = {	# Определяет важность шаблона среди других шаблонов, перечисленных в той же роли.
 			factor = 2
 			modifier = {
@@ -207,6 +310,7 @@ medium_armor_generic = {
 			light_tank_recon
 			artillery
 			anti_tank
+			armored_car
 			
 			flamethrower_squad
 			sniper_squad
@@ -218,10 +322,11 @@ medium_armor_generic = {
 	}
 	
 	MEDIUM_ARMOR_TEMPLATE_2 = {
+		enable = { NOT = { original_tag = SOV } }
 		upgrade_prio = {
-			factor = 2
+			factor = 4
 			modifier = {
-				factor = 5
+				factor = 8
 				OR = {
 					has_tech = improved_medium_tank
 					has_tech = improved_medium_tank_chassis
@@ -234,6 +339,10 @@ medium_armor_generic = {
 			modifier = {
 				factor = 0.1
 				has_design_based_on = heavy_tank_chassis
+			}
+			modifier = {
+				add = 30
+				NOT = { has_design_based_on = medium_tank_chassis }
 			}
 		}
 		
@@ -275,6 +384,93 @@ medium_armor_generic = {
 			light_tank_recon
 			artillery
 			anti_tank
+			armored_car
+			
+			flamethrower_squad
+			sniper_squad
+		}
+		
+		replace_at_match = 0.5
+		replace_with = MEDIUM_ARMOR_TEMPLATE_3
+		target_min_match = 0.7
+	}
+	
+	MEDIUM_ARMOR_TEMPLATE_3 = {
+		upgrade_prio = {
+			factor = 5
+			modifier = {
+				factor = 30
+				OR = {
+					has_tech = improved_medium_tank
+					has_tech = improved_medium_tank_chassis
+				}
+				has_tech = armored_car1
+				NOT = {
+					has_tech = main_battle_tank
+					has_tech = main_battle_tank_chassis
+				}
+				has_equipment = { light_tank_chassis < 50 }
+				has_equipment = { medium_tank_chassis > 25 }
+			}
+			modifier = {
+				factor = 20
+				num_of_military_factories > 78
+			}
+		}
+		production_prio = {
+			factor = 1
+			modifier = {
+				factor = 3
+				num_of_military_factories > 65
+			}
+		}
+
+		target_width = 30.0
+		width_weight = 1.5
+		column_swap_factor = 0.5
+		
+		target_template = {
+			weight = 0.9
+			match_value = 12000.0
+			
+			support = {
+				engineer = 1
+				armored_car_recon = 1
+				maintenance_company = 1
+				logistics_company = 1
+			}
+			
+			regiments = {
+				medium_armor = 4
+				motorized = 4
+				mot_artillery_brigade = 1
+			}
+		}
+		
+		allowed_types = {
+			modern_armor
+			medium_armor
+			motorized
+			mechanized
+			infantry
+
+			motorized_rocket_brigade 
+			mot_artillery_brigade
+			mot_anti_tank_brigade
+			mot_anti_air_brigade
+			engineer
+			mot_recon
+			armored_car_recon
+			light_tank_recon
+			signal_company
+			maintenance_company
+			logistics_company
+
+			anti_tank
+			military_police
+			artillery
+			anti_air
+			rocket_artillery
 			
 			flamethrower_squad
 			sniper_squad
@@ -289,14 +485,41 @@ medium_armor_generic = {
 medium_artillery_armor_generic = {
 
 	roles = {
+		artillery
 		medium_artillery_armor_role
 	}
 	
 	upgrade_prio = {
 		factor = 4
+		modifier = {
+			factor = 5
+			OR = {
+				has_tech = basic_medium_tank
+				has_tech = basic_medium_tank_chassis
+			}
+			NOT = {
+				has_tech = main_battle_tank
+				has_tech = main_battle_tank_chassis
+			}
+		}
+		modifier = {
+			factor = 10
+			OR = {
+				has_tech = improved_medium_tank
+				has_tech = improved_medium_tank_chassis
+			}
+			NOT = {
+				has_tech = main_battle_tank
+				has_tech = main_battle_tank_chassis
+			}
+		}
+		modifier = {
+			factor = 4
+			artillery_role_prioritet = yes
+		}
 	}
 	
-	match_to_count = 0.5
+	match_to_count = 0.7
 
 	MEDIUM_ARTILLERY_ARMOR_TEMPLATE_1 = {
 		upgrade_prio = {
@@ -335,6 +558,7 @@ medium_artillery_armor_generic = {
 			medium_armor
 			medium_sp_artillery_brigade
 			motorized
+			armored_car
 			
 			engineer
 			logistics_company
@@ -392,6 +616,7 @@ medium_artillery_armor_generic = {
 			medium_armor
 			medium_sp_artillery_brigade
 			motorized
+			armored_car
 			
 			engineer
 			logistics_company
@@ -411,14 +636,41 @@ medium_tank_destroyer_generic = {
 
 	roles = {
 		anti_armor
+		anti_tank
 		medium_tank_destroyer_role
 	}
 	
 	upgrade_prio = {
 		factor = 4
+		modifier = {
+			factor = 5
+			OR = {
+				has_tech = basic_medium_tank
+				has_tech = basic_medium_tank_chassis
+			}
+			NOT = {
+				has_tech = main_battle_tank
+				has_tech = main_battle_tank_chassis
+			}
+		}
+		modifier = {
+			factor = 10
+			OR = {
+				has_tech = improved_medium_tank
+				has_tech = improved_medium_tank_chassis
+			}
+			NOT = {
+				has_tech = main_battle_tank
+				has_tech = main_battle_tank_chassis
+			}
+		}
+		modifier = {
+			factor = 4
+			anti_tank_prioritet = yes
+		}
 	}
 	
-	match_to_count = 0.5
+	match_to_count = 0.7
 
 	MEDIUM_TANK_DESTROYER_TEMPLATE_1 = {
 		upgrade_prio = {
@@ -457,6 +709,7 @@ medium_tank_destroyer_generic = {
 			medium_armor
 			medium_tank_destroyer_brigade
 			motorized
+			armored_car
 			
 			engineer
 			logistics_company
@@ -513,6 +766,7 @@ medium_tank_destroyer_generic = {
 			medium_armor
 			medium_tank_destroyer_brigade
 			motorized
+			armored_car
 			
 			engineer
 			logistics_company
