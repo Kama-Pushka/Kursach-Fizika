@@ -2,6 +2,9 @@
 NDefines.NGame.LAG_DAYS_FOR_LOWER_SPEED = 100								-- Days of client lag for decrease of gamespeed
 NDefines.NGame.LAG_DAYS_FOR_PAUSE = 60										-- Days of client lag for pause of gamespeed.
 
+-- Focuses
+NDefines.NFocus.MAX_SAVED_FOCUS_PROGRESS = 5								-- This much progress can be saved while not having a focus selected
+
 -- Country
 NDefines.NCountry.EVENT_PROCESS_OFFSET = 30									-- Events are checked every X day per country or state (1 is ideal, but CPU heavy)
 NDefines.NCountry.SPECIAL_FORCES_CAP_BASE = 0.05							-- Max ammount of special forces battalions is total number of non-special forces battalions multiplied by this and modified by a country modifier
