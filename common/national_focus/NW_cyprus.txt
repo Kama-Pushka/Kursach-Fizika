@@ -1,0 +1,2032 @@
+focus_tree = {
+	id = nw_cyprus_focus
+	country = {
+		factor = 0
+		modifier = {
+			add = 10
+			tag = CYP
+		}
+	}
+	default = no
+	continuous_focus_position = { x = 50 y = 2000 }
+	
+
+################################
+#####    	ВОЕНКА    	   #####
+################################
+
+	focus = { #Бюро призыва в Никосии
+		id = CYP_conscription_bureau
+		icon = GFX_goal_unknown		
+		cost = 7.2
+		x = 4
+		y = 0
+		
+		completion_reward = {
+			add_ideas = CYP_conscription_bureau_idea
+			log = "[GetDateText]: [Root.GetName]: Focus CYP_conscription_bureau_idea"
+		}
+	}
+
+	focus = { #Тщательный отбор
+		id = CYP_careful_selection
+		icon = GFX_goal_unknown		
+		cost = 7.2
+		x = -3
+		y = 1
+		relative_position_id = CYP_conscription_bureau
+		prerequisite = {
+			focus = CYP_conscription_bureau
+		}
+		mutually_exclusive = {
+			focus = CYP_mass_recruitment
+		}
+		
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: Focus CYP_careful_selection"
+			division_template = {
+				name = "Cypriot Division"
+				priority = 1
+				regiments = {
+					infantry = {x = 0 y = 0}
+					infantry = {x = 0 y = 1}
+					infantry = {x = 0 y = 2}
+				}
+			}
+			capital_scope = {
+				create_unit = {
+					division = "name = \"Cypriot Division\" division_template = \"Cypriot Division\" start_experience_factor = 0.3 start_equipment_factor = 1"
+					owner = ROOT
+				}
+			}
+			swap_ideas = {
+				remove_idea = CYP_conscription_bureau_idea
+				add_idea = CYP_careful_selection_of_recruts
+			}
+		}
+	}
+
+	focus = { #Массовый набор
+		id = CYP_mass_recruitment
+		icon = GFX_goal_unknown	
+		cost = 7.2
+		x = -1
+		y = 1
+		relative_position_id = CYP_conscription_bureau
+		prerequisite = {
+			focus = CYP_conscription_bureau
+		}
+		mutually_exclusive = {
+			focus = CYP_careful_selection
+		}
+		cancel_trigger = { has_completed_focus = CYP_careful_selection }
+		
+		
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: Focus CYP_mass_recruitment"
+			if = {
+				limit = { is_subject = yes }
+				OVERLORD = {
+					country_event = { id = NWcyprus.4 }
+					custom_effect_tooltip = need_support_of_overlord
+				}
+			}
+			else = {
+				CYP_increase_greek_support = yes
+				division_template = {
+					name = "Cypriot Division"
+					priority = 1
+					regiments = {
+						infantry = {x = 0 y = 0}
+						infantry = {x = 0 y = 1}
+						infantry = {x = 0 y = 2}
+					}
+				}
+				capital_scope = {
+					create_unit = {
+						division = "name = \"Cypriot Division\" division_template = \"Cypriot Division\" start_experience_factor = 0.3 start_equipment_factor = 1"
+						owner = ROOT
+					}
+					create_unit = {
+						division = "name = \"Cypriot Division\" division_template = \"Cypriot Division\" start_experience_factor = 0.3 start_equipment_factor = 1"
+						owner = ROOT
+					}
+				}
+				swap_ideas = {
+					remove_idea = CYP_conscription_bureau_idea
+					add_idea = CYP_mass_recruitment_idea
+				}
+			}
+		}			
+	}
+
+	focus = { #Окончить реорганизацию полиции Кипра
+		id = CYP_reorganize_the_police
+		icon = GFX_goal_unknown		
+		cost = 7.2
+		x = 3
+		y = 0
+		relative_position_id = CYP_conscription_bureau
+		mutually_exclusive = {
+			focus = CYP_return_military_police
+		}
+		
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: Focus CYP_reorganize_the_police"
+			add_political_power = 100
+		}
+	}
+
+	focus = { #Вернуть Военную полицию
+		id = CYP_return_military_police
+		icon = GFX_goal_unknown
+		cost = 7.2
+		x = 2
+		y = 0
+		relative_position_id = CYP_reorganize_the_police
+		mutually_exclusive = {
+			focus = CYP_reorganize_the_police
+		}
+
+		
+		cancel = {has_completed_focus = CYP_reorganize_the_police}
+		
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: Focus CYP_return_military_police"
+			if = {
+				limit = {is_subject = yes}
+				OVERLORD = {
+					country_event = {id = NWcyprus.7 }
+					custom_effect_tooltip = need_support_of_overlord
+				}
+			}
+			else = {
+				add_ideas = CYP_military_police
+			}
+		}
+	}
+
+	focus = { #Набор офицеров из наиболее достойных 
+		id = CYP_recruit_from_the_most_worthy
+		icon = GFX_goal_unknown
+		cost = 7.2
+		x = 1
+		y = 1
+		relative_position_id = CYP_conscription_bureau
+		prerequisite = {
+			focus = CYP_conscription_bureau
+		}
+		prerequisite = {
+			focus = CYP_reorganize_the_police
+		}
+		mutually_exclusive = {
+			focus = CYP_appoint_non_commissioned_police_officers
+		}
+		
+		cancel = {has_completed_focus = CYP_appoint_non_commissioned_police_officers}
+
+		
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: Focus CYP_recruit_from_the_most_worthy"
+			if = {
+				limit = {is_subject = yes}
+				OVERLORD = {
+					country_event = {id = NWcyprus.10 }
+					custom_effect_tooltip = need_support_of_overlord
+				}
+			}
+			else = {
+				add_ideas = CYP_honored_officers
+			}
+		}
+			
+	}
+
+	focus = { #Назначать унтеров из рядов полиции
+		id = CYP_appoint_non_commissioned_police_officers
+		icon = GFX_goal_unknown
+		cost = 7.2
+		x = 0
+		y = 1
+		relative_position_id = CYP_reorganize_the_police
+		prerequisite = {
+			focus = CYP_conscription_bureau
+		}
+		prerequisite = {
+			focus = CYP_reorganize_the_police
+		}
+		mutually_exclusive = {
+			focus = CYP_recruit_from_the_most_worthy
+		}
+		
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: Focus CYP_appoint_non_commissioned_police_officers"
+			add_ideas = CYP_honored_officers_2
+		}
+	}
+
+	focus = { #Призвать конную полицию из турков
+		id = CYP_call_the_mounted_police_from_the_turks
+		icon = GFX_goal_unknown
+		cost = 7.2
+		x = 0
+		y = 1
+		relative_position_id = CYP_return_military_police
+		prerequisite = {
+			focus = CYP_return_military_police
+		}
+		
+		available = { threat > 0.1 }
+		
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: Focus CYP_call_the_mounted_police_from_the_turks"
+			division_template = {
+				name = "Mounted Police"
+				priority = 1
+				regiments = {
+					cavalry = {x = 0 y = 0}
+					cavalry = {x = 0 y = 1}
+				}
+			}
+			capital_scope = {
+				create_unit = {
+					division = "name = \"Mounted Police\" division_template = \"Mounted Police\" start_experience_factor = 0.3 start_equipment_factor = 1"
+					owner = ROOT
+				}
+			}
+		}
+	}
+
+	focus = { #Завод для вооружения добровольцев
+		id = CYP_volunteer_armament_plant
+		icon = GFX_goal_unknown
+		cost = 7.2
+		x = 0
+		y = 1
+		relative_position_id = CYP_appoint_non_commissioned_police_officers
+		prerequisite = {
+			focus = CYP_recruit_from_the_most_worthy
+			focus = CYP_appoint_non_commissioned_police_officers
+			focus = CYP_call_the_mounted_police_from_the_turks
+		}
+		
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: Focus CYP_volunteer_armament_plant"
+			capital_scope = {
+				add_building_construction = {
+				type = arms_factory
+				level = 1
+				instant_build = yes
+				}
+			add_extra_state_shared_building_slots = 1
+			}
+		}
+	}
+
+	focus = { #Кипрский добровольческий корпус
+		id = CYP_cypriot_volunteer_corps
+		icon = GFX_goal_unknown
+		cost = 7.2
+		x = 1
+		y = 1
+		relative_position_id = CYP_careful_selection
+		prerequisite = {
+			focus = CYP_careful_selection
+		}
+		
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: Focus CYP_cypriot_volunteer_corps"
+			add_ideas = CYP_volunteer_corps
+		}
+		
+
+	}
+
+	focus = { #Основать Кипрский полк
+		id = CYP_found_a_cypriot_regiment
+		icon = GFX_goal_unknown
+		cost = 7.2
+		x = 1
+		y = 1
+		relative_position_id = CYP_mass_recruitment
+		prerequisite = {
+			focus = CYP_careful_selection
+			focus = CYP_mass_recruitment
+			focus = CYP_recruit_from_the_most_worthy
+			focus = CYP_appoint_non_commissioned_police_officers
+			focus = CYP_call_the_mounted_police_from_the_turks
+		}
+		
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: Focus CYP_found_a_cypriot_regiment"
+			army_experience = 10
+			if = {
+				limit = {has_idea = CYP_mass_recruitment_idea}
+				swap_ideas = {
+					remove_idea = CYP_mass_recruitment_idea
+					add_idea = CYP_mass_recruitment_idea_2
+				}
+			}
+			else = {
+				swap_ideas = {
+					remove_idea = CYP_careful_selection_of_recruts
+					add_idea = CYP_careful_selection_of_recruts_2
+				}
+			}
+		}
+	}
+
+	focus = { #Сформировать подразделения погонщиков мулов
+		id = CYP_form_mule_driver_units
+		icon = GFX_goal_unknown
+		cost = 7.2
+		x = 0
+		y = 1
+		relative_position_id = CYP_found_a_cypriot_regiment
+		prerequisite = {
+			focus = CYP_found_a_cypriot_regiment
+		}
+	
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: Focus CYP_form_mule_driver_units"
+			add_ideas = CYP_mule_drivers
+			add_tech_bonus = {
+				bonus = 1
+				uses = 1
+				category = logistics_tech
+			}
+		}
+	}
+
+	focus = { #Сформировать инженерные подразделения
+		id = CYP_form_engineering_units
+		icon = GFX_goal_unknown
+		cost = 7.2
+		x = -2
+		y = 1
+		relative_position_id = CYP_found_a_cypriot_regiment
+		prerequisite = {
+			focus = CYP_found_a_cypriot_regiment
+		}
+		
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: Focus CYP_form_engineering_units"
+			add_tech_bonus = {
+				bonus = 1
+				uses = 1
+				category = engineers_tech
+			}
+		}
+		completion_reward = {
+			add_tech_bonus = {
+				bonus = 1
+				uses = 1
+				category = maintenance_company_tech
+			}
+		}
+	}
+
+	focus = { #Сформировать механизированные подразделения
+		id = CYP_form_mechanized_units
+		icon = GFX_goal_unknown
+		cost = 7.2
+		x = 2
+		y = 1
+		relative_position_id = CYP_found_a_cypriot_regiment
+		prerequisite = {
+			focus = CYP_found_a_cypriot_regiment
+		}
+		
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: Focus CYP_form_mechanized_units"
+			set_technology = { motorised_infantry = 1 }
+			add_equipment_to_stockpile = {
+				type = motorized_equipment
+				amount = 50
+				producer = ENG
+			}
+		}
+	}
+
+################################
+#####    	   ВВС    	   #####
+################################
+
+	focus = { #Королевские ВВС Кипра
+		id = CYP_royal_cypriot_air_force
+		icon = GFX_goal_unknown
+		cost = 7.2
+		x = 4
+		y = 4
+		
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: Focus CYP_royal_cypriot_air_force"
+			air_experience = 15
+		}
+	}
+
+	focus = { #Международный аэропорт Никосии
+		id = CYP_nicosia_international_airport
+		icon = GFX_goal_unknown
+		cost = 7.2
+		x = -2
+		y = 1
+		relative_position_id = CYP_royal_cypriot_air_force
+		prerequisite = {
+			focus = CYP_royal_cypriot_air_force
+		}
+		
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: Focus CYP_nicosia_international_airport"
+			capital_scope = {
+				add_building_construction = {
+					type = air_base
+					level = 2
+					instant_build = yes 
+				}
+			}
+		}
+	}
+
+	focus = { #Обучение пилотов в британских ВВС
+		id = CYP_pilot_training_in_the_british_air_force
+		icon = GFX_goal_unknown
+		cost = 7.2
+		x = 0
+		y = 1
+		relative_position_id = CYP_royal_cypriot_air_force
+		prerequisite = {
+			focus = CYP_royal_cypriot_air_force
+		}
+		available = {
+			country_exists = ENG
+			NOT = { has_war_with = ENG }
+		}
+		
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: Focus CYP_pilot_training_in_the_british_air_force"
+			add_ideas = { CYP_training_in_the_british_air_force }
+		}
+			
+	}
+
+	focus = { #Станция ВВС «Никосия»
+		id = CYP_air_force_station_nicosia
+		icon = GFX_goal_unknown
+		cost = 7.2
+		x = 2
+		y = 1
+		relative_position_id = CYP_royal_cypriot_air_force
+		prerequisite = {
+			focus = CYP_royal_cypriot_air_force
+		}
+		
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: Focus CYP_air_force_station_nicosia"
+			capital_scope = {
+				add_building_construction = {
+					type = air_base
+					level = 2
+					instant_build = yes 
+				}
+			}
+		}
+	}
+
+	focus = { #Женская служба в авиации
+		id = CYP_womens_service_in_aviation
+		icon = GFX_goal_unknown
+		cost = 7.2
+		x = 0
+		y = 1
+		relative_position_id = CYP_pilot_training_in_the_british_air_force
+		prerequisite = {
+			focus = CYP_pilot_training_in_the_british_air_force
+		}
+		
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: Focus CYP_womens_service_in_aviation"
+			add_ideas = CYP_women_in_aviation
+		}
+	}
+
+################################
+#####    ПРОМЫШЛЕННОСТЬ    #####
+################################
+
+	focus = { #План по устранению последствий Великой Депрессии
+		id = CYP_plan_to_deal_with_the_effects_of_the_great_depression
+		icon = GFX_goal_unknown
+		cost = 7.2
+		x = 4
+		y = 7
+		
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: Focus CYP_plan_to_deal_with_the_effects_of_the_great_depression"
+			add_timed_idea = {
+				idea = CYP_anti-crisis_plan
+				days = 730
+			}
+		}
+	}
+
+	focus = { #Восстановление закрытых предприятий
+		id = CYP_restoration_of_closed_enterprises
+		icon = GFX_goal_unknown
+		cost = 7.2
+		x = 3
+		y = 1
+		relative_position_id = CYP_plan_to_deal_with_the_effects_of_the_great_depression
+		prerequisite = {
+			focus = CYP_plan_to_deal_with_the_effects_of_the_great_depression
+		}
+		
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: Focus CYP_restoration_of_closed_enterprises"
+			random_owned_state = {
+				add_building_construction = {
+					type = industrial_complex
+					level = 1
+					instant_build = yes
+				}
+			}
+			random_owned_state = {
+				add_building_construction = {
+					type = industrial_complex
+					level = 1
+					instant_build = yes
+				}
+			}
+			CYP_great_depression_reduce = yes 
+		}
+	}
+
+	focus = { #Нарастить экспорт и импорт товаров в стране
+		id = CYP_increase_the_export_and_import_of_goods
+		icon = GFX_goal_unknown
+		cost = 7.2
+		x = 0
+		y = 1
+		relative_position_id = CYP_restoration_of_closed_enterprises
+		prerequisite = {
+			focus = CYP_restoration_of_closed_enterprises
+		}
+		
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: Focus CYP_increase_the_export_and_import_of_goods"
+			add_political_power = 100
+			CYP_great_depression_reduce = yes
+		}
+	}
+
+	focus = { #Cyprus Mines Corporation
+		id = CYP_cyprus_mines_corporation
+		icon = GFX_goal_unknown
+		cost = 7.2
+		x = -3
+		y = 1
+		relative_position_id = CYP_plan_to_deal_with_the_effects_of_the_great_depression
+		prerequisite = {
+			focus = CYP_plan_to_deal_with_the_effects_of_the_great_depression
+		}
+		
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: Focus CYP_cyprus_mines_corporation"
+			random_owned_state = {
+				add_building_construction = {
+					type = industrial_complex
+					level = 1
+					instant_build = yes
+				}
+			}
+			CYP_great_depression_reduce = yes 
+		}
+	}
+
+	focus = { #Больница общего профиля Никосии
+		id = CYP_nikosia_general_hospital
+		icon = GFX_goal_unknown
+		cost = 7.2
+		x = -2
+		y = 2
+		relative_position_id = CYP_plan_to_deal_with_the_effects_of_the_great_depression
+		prerequisite = {
+			focus = CYP_plan_to_deal_with_the_effects_of_the_great_depression
+		}
+		
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: Focus CYP_nikosia_general_hospital"
+			random_owned_state = {
+				capital_scope = {
+					add_building_construction = {
+						type = hospital
+						level = 3
+						instant_build = yes
+					}
+				}
+			}
+		}
+	}
+
+	focus = { #Социальные вложения кампании
+		id = CYP_social_investments_of_the_company
+		icon = GFX_goal_unknown
+		cost = 7.2
+		x = 0
+		y = 2
+		relative_position_id = CYP_cyprus_mines_corporation
+		prerequisite = {
+			focus = CYP_cyprus_mines_corporation
+		}
+		prerequisite = {
+			focus = CYP_nikosia_general_hospital
+		}
+		
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: Focus CYP_social_investments_of_the_company"
+			capital_scope = {
+				add_building_construction = {
+					type = hospital
+					level = 1
+					instant_build = yes
+				}
+			}
+			772 = {
+				add_building_construction = {
+					type = hospital
+					level = 1
+					instant_build = yes 
+				}
+			}
+			CYP_great_depression_reduce = yes
+		}
+	}
+
+	focus = { #Кипрские винодельни
+		id = CYP_cypriot_wineries
+		icon = GFX_goal_unknown
+		cost = 7.2
+		x = -1
+		y = 1
+		relative_position_id = CYP_plan_to_deal_with_the_effects_of_the_great_depression
+		prerequisite = {
+			focus = CYP_plan_to_deal_with_the_effects_of_the_great_depression
+		}
+		
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: Focus CYP_cypriot_wineries"
+			random_owned_state = {
+				add_building_construction = {
+					type = industrial_complex
+					level = 1
+					instant_build = yes
+				}
+			}
+			CYP_great_depression_reduce = yes 
+		}
+	}
+
+	focus = { #Сельскохозяйственная школа в Морфу
+		id = CYP_agricultural_school_in_morphou
+		icon = GFX_goal_unknown
+		cost = 7.2
+		x = 1
+		y = 1
+		relative_position_id = CYP_plan_to_deal_with_the_effects_of_the_great_depression
+		prerequisite = {
+			focus = CYP_plan_to_deal_with_the_effects_of_the_great_depression
+		}
+		
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: Focus CYP_agricultural_school_in_morphou"
+			add_research_slot = 1
+		}
+	}
+
+	focus = { #Средняя школа Фамагусты Намик Кемаль
+		id = CYP_famagusta_namik_kemal_secondary_school
+		icon = GFX_goal_unknown
+		cost = 7.2
+		x = 1
+		y = 2
+		relative_position_id = CYP_agricultural_school_in_morphou
+		prerequisite = {
+			focus = CYP_agricultural_school_in_morphou
+		}
+		
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: Focus CYP_famagusta_namik_kemal_secondary_school"
+			add_research_slot = 1
+		}
+	}
+
+	focus = { #Увеличение средств Сельскохозяйственного банка
+		id = CYP_increase_in_agricultural_bank_funds
+		icon = GFX_goal_unknown
+		cost = 7.2
+		x = 1
+		y = 1
+		relative_position_id = CYP_cypriot_wineries
+		prerequisite = {
+			focus = CYP_cypriot_wineries
+		}
+		prerequisite = {
+			focus = CYP_agricultural_school_in_morphou
+		}
+		
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: Focus CYP_increase_in_agricultural_bank_funds"
+			add_political_power = -100
+			swap_ideas = {
+				remove_idea = CYP_agricultural_decline
+				add_idea = CYP_agricultural_decline_2
+			}
+		}
+	}
+
+	focus = { #Организация Союза Панагротиков Кипра
+		id = CYP_organization_of_the_panagrotik_union_of_cyprus
+		icon = GFX_goal_unknown
+		cost = 7.2
+		x = 0
+		y = 1
+		relative_position_id = CYP_increase_in_agricultural_bank_funds
+		prerequisite = {
+			focus = CYP_increase_in_agricultural_bank_funds
+		}
+		
+		completion_reward = { 
+			log = "[GetDateText]: [Root.GetName]: Focus CYP_organization_of_the_panagrotik_union_of_cyprus"
+			unlock_decision_category_tooltip = CYP_agricultural_innovations
+		}
+			
+	}
+
+################################
+#####          ВМФ         #####
+################################
+
+	focus = { #Британская ремонтная верфь
+		id = CYP_british_repair_yard
+		icon = GFX_goal_unknown
+		cost = 7.2
+		x = 3
+		y = 11
+		
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: Focus CYP_british_repair_yard"
+			1153 = {
+				add_building_construction = {
+					type = dockyard
+					level = 2
+					instant_build = yes 
+				}
+			}
+		}
+					
+	}
+
+	focus = { #Расширение морских баз Кипра
+		id = CYP_expansion_of_naval_bases_in_cyprus
+		icon = GFX_goal_unknown	
+		cost = 7.2	
+		x = 2
+		y = 0
+		relative_position_id = CYP_british_repair_yard
+		
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: Focus CYP_expansion_of_naval_bases_in_cyprus"
+			11984 = {
+				add_building_construction = {
+					type = naval_base
+					level = 2
+					instant_build = yes 
+				}
+			}
+			13816 = {
+				add_building_construction = {
+					type = dockyard
+					level = 2
+					instant_build = yes 
+				}
+			}
+		}
+	}
+
+	focus = { #Закупить лицензии на эсминцы у Великобритании
+		id = CYP_buy_destroyer_licenses_from_the_uk
+		icon = GFX_goal_unknown
+		cost = 7.2
+		x = 0
+		y = 1
+		relative_position_id = CYP_british_repair_yard
+		prerequisite = {
+			focus = CYP_british_repair_yard
+		}
+		prerequisite = {
+			focus = CYP_expansion_of_naval_bases_in_cyprus
+		}
+		mutually_exclusive = {
+			focus = CYP_buy_licenses_for_destroyers_in_turkey
+		}
+		
+		available = {
+			country_exists = ENG 
+			NOT = { has_war_with = ENG }
+		}
+		
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: Focus CYP_buy_destroyer_licenses_from_the_uk"
+			add_opinion_modifier = {
+				target = ENG
+				modifier = CYP_destroyers_licensions
+			}
+		}
+	}
+
+	focus = { #Закупить лицензии на эсминцы у Турции
+		id = CYP_buy_licenses_for_destroyers_in_turkey
+		icon = GFX_goal_unknown
+		cost = 7.2
+		x = 0
+		y = 1
+		relative_position_id = CYP_expansion_of_naval_bases_in_cyprus
+		prerequisite = {
+			focus = CYP_british_repair_yard
+		}
+		prerequisite = {
+			focus = CYP_expansion_of_naval_bases_in_cyprus
+		}
+		mutually_exclusive = {
+			focus = CYP_buy_destroyer_licenses_from_the_uk
+		}
+		
+		available = {
+			country_exists = TUR 
+			NOT = {
+				is_subject_of = ENG
+				has_war_with = TUR 
+			}
+		}
+		
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: Focus CYP_buy_licenses_for_destroyers_in_turkey"
+			add_opinion_modifier = {
+				target = TUR
+				modifier = CYP_destroyers_licensions
+			}
+		}
+	}
+
+	focus = { #Строительство собственной верфи
+		id = CYP_buy_construction_of_our_own_shipyard
+		icon = GFX_goal_unknown
+		cost = 7.2
+		x = 1
+		y = 1
+		relative_position_id = CYP_buy_destroyer_licenses_from_the_uk
+		prerequisite = {
+			focus = CYP_buy_licenses_for_destroyers_in_turkey
+			focus = CYP_buy_destroyer_licenses_from_the_uk
+		}
+		
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: Focus CYP_buy_construction_of_our_own_shipyard"
+			capital_scope = {
+				add_building_construction = {
+					type = dockyard
+					level = 1
+					instant_build = yes 
+				}
+			}
+		}
+	}
+
+################################
+#####    ОБЩАЯ ПОЛИТИКА    #####
+################################
+
+	focus = { #Разделяй и властвуй!
+		id = CYP_divide_and_rule
+		icon = GFX_goal_unknown
+		cost = 10
+		x = 13
+		y = 0
+		
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: Focus CYP_divide_and_rule"
+			add_political_power = 100
+		}
+	}
+
+	focus = { #Цензура прессы
+		id = CYP_press_censorship
+		icon = GFX_goal_unknown
+		cost = 5
+		x = 0
+		y = 1
+		relative_position_id = CYP_divide_and_rule
+		prerequisite = {
+			focus = CYP_divide_and_rule
+		}
+		
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: Focus CYP_press_censorship"
+			add_ideas = CYP_press_censorship_idea
+		}
+	}
+
+	focus = { #Поддержка греков-киприотов
+		id = CYP_greek_cypriot_support
+		icon = GFX_goal_unknown
+		cost = 10
+		x = -1
+		y = 1
+		relative_position_id = CYP_press_censorship
+		prerequisite = {
+			focus = CYP_press_censorship
+		}
+		mutually_exclusive = {
+			focus = CYP_turk_cypriot_support
+		}
+		
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: Focus CYP_greek_cypriot_support"
+			CYP_increase_greek_support = yes
+		}
+	}
+
+	focus = { #Поддержка турков-киприотов
+		id = CYP_turk_cypriot_support
+		icon = GFX_goal_unknown
+		cost = 10
+		x = 1
+		y = 1
+		relative_position_id = CYP_press_censorship
+		prerequisite = {
+			focus = CYP_press_censorship
+		}
+		mutually_exclusive = {
+			focus = CYP_greek_cypriot_support
+		}
+		
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: Focus CYP_turk_cypriot_support"
+			CYP_increase_turkish_support = yes
+		}
+	}
+
+	focus = { #Отменить закон о запрете массовых собраний
+		id = CYP_repeal_the_law_banning_mass_gatherings
+		icon = GFX_goal_unknown
+		cost = 5
+		x = 1
+		y = 1
+		relative_position_id = CYP_greek_cypriot_support
+		prerequisite = {
+			focus = CYP_greek_cypriot_support
+			focus = CYP_turk_cypriot_support
+		}
+		
+		available = {
+			NOT = {
+				has_idea = CYP_palmerocracy_idea
+			}
+		}
+		
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: Focus CYP_repeal_the_law_banning_mass_gatherings"
+			remove_ideas = CYP_press_censorship_idea
+			add_stability = 0.05
+			add_popularity = {
+				ideology = communism
+				popularity = 0.05
+			}
+			add_popularity = {
+				ideology = fascism
+				popularity = 0.05
+			}
+		}
+	}
+
+	focus = { #Разрешить муниципальные выборы
+		id = CYP_authorize_municipal_elections
+		icon = GFX_goal_unknown
+		cost = 10
+		x = 0
+		y = 1
+		relative_position_id = CYP_repeal_the_law_banning_mass_gatherings
+		prerequisite = {
+			focus = CYP_repeal_the_law_banning_mass_gatherings
+		}
+		
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: Focus CYP_authorize_municipal_elections"
+			unlock_decision_category_tooltip = CYP_municipal_elections
+		}
+	}
+
+	focus = { #Собрать средства для Греции!
+		id = CYP_raise_funds_for_greece
+		icon = GFX_goal_unknown
+		cost = 10
+		x = 0
+		y = 1
+		relative_position_id = CYP_authorize_municipal_elections
+		prerequisite = {
+			focus = CYP_authorize_municipal_elections
+		}
+		
+		available = {
+			country_exists = GRE 
+			NOT = {has_war_with = GRE}
+		}
+		
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: Focus CYP_raise_funds_for_greece"
+			add_political_power = -300
+			GRE = {
+				add_timed_idea = {
+					idea = GRE_cypriots_help
+					days = 365
+				}
+			}
+		}
+					
+	}
+
+################################
+#####    ГРЕЧЕСКАЯ ВЕТКА   #####
+################################
+
+	focus = { #Принять добровольцев от коммунистов
+		id = CYP_accept_volunteers_from_communists
+		icon = GFX_goal_unknown
+		cost = 5
+		x = -4
+		y = 1
+		relative_position_id = CYP_repeal_the_law_banning_mass_gatherings
+		prerequisite = {
+			focus = CYP_repeal_the_law_banning_mass_gatherings
+		}
+		available = { #Греки победили в одних выборах
+			OR = {
+				has_country_flag = greek_victory_in_nicosia
+				has_country_flag = greek_victory_in_limassol
+				has_country_flag = greek_victory_in_famagus
+			}	
+		}
+		
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: Focus CYP_accept_volunteers_from_communists"
+			add_manpower = 1000
+			add_popularity = {
+				ideology = communism
+				popularity = 0.05
+			}
+		}
+				
+	}
+
+	focus = { #Создание панкипрского профсоюза
+		id = CYP_creation_of_the_pancyprian_trade_union
+		icon = GFX_goal_unknown
+		cost = 10
+		x = -2
+		y = 1
+		relative_position_id = CYP_repeal_the_law_banning_mass_gatherings
+		prerequisite = {
+			focus = CYP_repeal_the_law_banning_mass_gatherings
+		}
+		
+		available = {
+			OR = {
+				AND = {
+					has_country_flag = greek_victory_in_nicosia
+					has_country_flag = greek_victory_in_limassol
+				}
+				AND = {
+					has_country_flag = greek_victory_in_nicosia
+					has_country_flag = greek_victory_in_famagus
+				}
+				AND = {
+					has_country_flag = greek_victory_in_limassol
+					has_country_flag = greek_victory_in_famagus
+				}
+			}
+		}
+		
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: Focus CYP_creation_of_the_pancyprian_trade_union"
+			add_ideas = CYP_trade_unions
+			add_popularity = {
+				ideology = communism
+				popularity = 0.05
+			}
+			country_event = {
+				id = NWcyprus.13 # Первая забастовка рабочих
+				days = 90
+			}
+		}
+			
+			
+	}
+
+	focus = { #Создание прогрессивной партии трудового народа Кипра
+		id = CYP_creation_of_a_progressive_party_of_the_working_people
+		icon = GFX_goal_unknown
+		cost = 5
+		x = 0
+		y = 1
+		relative_position_id = CYP_creation_of_the_pancyprian_trade_union
+		prerequisite = {
+			focus = CYP_accept_volunteers_from_communists
+		}
+		prerequisite = {
+			focus = CYP_creation_of_the_pancyprian_trade_union
+		}
+		prerequisite = {
+			focus = CYP_authorize_municipal_elections
+		}
+		
+		available = {
+			has_country_flag = greek_victory_in_nicosia
+			has_country_flag = greek_victory_in_limassol
+			has_country_flag = greek_victory_in_famagus
+			
+			NOT = {
+				has_completed_focus = CYP_cyprus_turkish_minority_association
+			}
+		}
+		
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: Focus CYP_creation_of_a_progressive_party_of_the_working_people"
+			add_political_power = 100
+		}
+	}
+
+	focus = { #Улучшение условий труда
+		id = CYP_improving_working_conditions
+		icon = GFX_goal_unknown
+		cost = 10
+		x = -1
+		y = 1
+		relative_position_id = CYP_creation_of_a_progressive_party_of_the_working_people
+		prerequisite = {
+			focus = CYP_creation_of_a_progressive_party_of_the_working_people
+		}
+		
+		available = {
+			has_country_flag = bad_working_conditions
+		}
+		
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: Focus CYP_improving_working_conditions"
+			add_popularity = {
+				ideology = communism
+				popularity = 0.05
+			}
+			swap_ideas = {
+				remove_idea = CYP_trade_unions_2
+				add_idea = CYP_trade_unions_3
+			}
+		}
+	}
+
+	focus = { #Повышение общего уровня жизни
+		id = CYP_improving_the_overall_standard_of_living
+		icon = GFX_goal_unknown
+		cost = 10
+		x = 1
+		y = 1
+		relative_position_id = CYP_creation_of_a_progressive_party_of_the_working_people
+		prerequisite = {
+			focus = CYP_creation_of_a_progressive_party_of_the_working_people
+		}
+		
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: Focus CYP_improving_the_overall_standard_of_living"
+			add_ideas = CYP_high_living_standart
+		}
+	}
+
+	focus = { #Организация борьбы за освобождение Кипра
+		id = CYP_organization_of_the_struggle_for_the_liberation_of_cyprus
+		icon = GFX_goal_unknown
+		cost = 5
+		x = 1
+		y = 1
+		relative_position_id = CYP_improving_working_conditions
+		prerequisite = {
+			focus = CYP_improving_working_conditions
+		}
+		prerequisite = {
+			focus = CYP_improving_the_overall_standard_of_living
+		}
+		bypass = {
+			is_subject = no
+		}
+		
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: Focus CYP_organization_of_the_struggle_for_the_liberation_of_cyprus"
+			add_ideas = CYP_fighting_for_freedom
+		}
+			
+	}
+
+	focus = { #Присоединиться к Балканской федерации
+		id = CYP_join_the_balkan_federation
+		icon = GFX_goal_unknown
+		cost = 10
+		x = -2
+		y = 1
+		relative_position_id = CYP_organization_of_the_struggle_for_the_liberation_of_cyprus
+		prerequisite = {
+			focus = CYP_organization_of_the_struggle_for_the_liberation_of_cyprus
+		}
+		mutually_exclusive = {
+			focus = CYP_enosis
+			focus = CYP_complete_independence
+		}
+		
+		available = {
+			BUL_is_balkan_nation = yes
+			is_subject = no
+			NOT = {has_war_with = BUL}
+		}
+		
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: Focus CYP_join_the_balkan_federation"
+			country_event = {
+				id = NWcyprus.15
+			}
+		}
+	}
+
+	focus = { #Энозис
+		id = CYP_enosis
+		icon = GFX_goal_unknown
+		cost = 10
+		x = 2
+		y = 1
+		relative_position_id = CYP_organization_of_the_struggle_for_the_liberation_of_cyprus
+		prerequisite = {
+			focus = CYP_organization_of_the_struggle_for_the_liberation_of_cyprus
+		}
+		mutually_exclusive = {
+			focus = CYP_join_the_balkan_federation
+			focus = CYP_complete_independence
+		}
+		
+		available = {
+			country_exists = GRE 
+			is_subject = no 
+			NOT = {
+				OR = {
+					GRE = {
+						has_government = communism
+						has_government = trozkism 
+					}
+					has_war_with = GRE 
+				}
+			}
+		}
+		
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: Focus CYP_enosis"
+			country_event = {
+				id = NWcyprus.16
+			}
+		}
+	}
+
+	focus = { #Полная независимость
+		id = CYP_complete_independence
+		icon = GFX_goal_unknown
+		cost = 5
+		x = 0
+		y = 1
+		relative_position_id = CYP_organization_of_the_struggle_for_the_liberation_of_cyprus
+		prerequisite = {
+			focus = CYP_organization_of_the_struggle_for_the_liberation_of_cyprus
+		}
+		mutually_exclusive = {
+			focus = CYP_join_the_balkan_federation
+			focus = CYP_enosis
+		}
+		
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: Focus CYP_complete_independence"
+			add_political_power = 50 
+			leave_faction = yes 
+			white_peace = every_enemy_country
+		}
+	}
+
+	focus = { #Экономическое возрождение
+		id = CYP_economic_revival
+		icon = GFX_goal_unknown
+		cost = 10
+		x = 0
+		y = 1
+		relative_position_id = CYP_complete_independence
+		prerequisite = {
+			focus = CYP_complete_independence
+		}
+		
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: Focus CYP_economic_revival"
+			add_ideas = CYP_economic_revival_idea 
+		}
+	}
+
+	focus = { #Ликвидация военных баз
+		id = CYP_elimination_of_military_bases
+		icon = GFX_goal_unknown
+		cost = 10
+		x = 2
+		y = 1
+		relative_position_id = CYP_complete_independence
+		
+		will_lead_to_war_with = ENG 
+		
+		prerequisite = {
+			focus = CYP_complete_independence
+			focus = CYP_taksim
+		}
+		
+		available = {
+			183 = {
+				is_controlled_by = CYP 
+			}
+			772 = {
+				is_controlled_by = CYP 
+			}
+			
+		}
+		
+		bypass = {
+			OR = {
+				has_war_with = ENG 
+				1153 = {
+					is_controlled_by = CYP 
+				}
+			}
+		}
+		
+		completion_reward = {
+		log = "[GetDateText]: [Root.GetName]: Focus CYP_elimination_of_military_bases"
+			create_wargoal = {
+				type = take_state_focus 
+				target = ENG
+			}
+		}			
+	}
+
+	focus = { #Переустройство общества на социалистических началах
+		id = CYP_reorganization_of_society_on_a_socialist_basis
+		icon = GFX_goal_unknown
+		cost = 10
+		x = 0
+		y = 1
+		relative_position_id = CYP_economic_revival
+		prerequisite = {
+			focus = CYP_economic_revival
+		}
+		
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: Focus CYP_reorganization_of_society_on_a_socialist_basis"
+			add_ideas = CYP_socialist_society 
+		}
+	}
+
+	focus = { #Объединить Греков под социалистическим началом
+		id = CYP_unite_greeks_under_socialist_leadership
+		icon = GFX_goal_unknown
+		cost = 10
+		x = 0
+		y = 1
+		relative_position_id = CYP_reorganization_of_society_on_a_socialist_basis
+		prerequisite = {
+			focus = CYP_reorganization_of_society_on_a_socialist_basis
+		}
+		will_lead_to_war_with = GRE
+		
+		available = {
+			country_exists = GRE 
+			NOT = {
+				OR = {
+					GRE = { has_government = communism }
+					GRE = { has_government = trozkism } 
+				}
+			}
+		}
+		
+		bypass = {
+			OR = {
+				NOT = {country_exists = GRE }
+				GRE = { has_government = communism }
+				GRE = { has_government = trozkism }
+				has_war_with = GRE
+			}
+		}
+		
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: Focus CYP_unite_greeks_under_socialist_leadership"
+			create_wargoal = {
+				type = annex_everything  
+				target = GRE
+			}
+			every_state = {
+				limit = { is_core_of = GRE }
+				add_core_of = ROOT 
+			}	
+		}
+	}
+
+	focus = { #Забрать земли Греции у Турции
+		id = CYP_take_the_land_of_greece_from_turkey
+		icon = GFX_goal_unknown
+		cost = 10
+		x = -1
+		y = 1
+		relative_position_id = CYP_unite_greeks_under_socialist_leadership
+		prerequisite = {
+			focus = CYP_unite_greeks_under_socialist_leadership
+		}
+		
+		available = {
+			country_exists = TUR
+			OR = {
+				341 = { is_owned_by = TUR }
+				339 = { is_owned_by = TUR }
+				843 = { is_owned_by = TUR }
+				964 = { is_owned_by = TUR }
+			}
+		}
+		
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: Focus CYP_take_the_land_of_greece_from_turkey"
+			341 = { add_core_of = CYP }
+			339 = { add_core_of = CYP }
+			843 = { add_core_of = CYP }
+			964 = { add_core_of = CYP }
+			create_wargoal = {
+				type = take_state_focus
+				target = TUR 
+			}
+		}
+	}
+
+	focus = { #Забрать земли Греции у Италии
+		id = CYP_take_the_land_of_greece_from_italy
+		icon = GFX_goal_unknown
+		cost = 10
+		x = 1
+		y = 1
+		relative_position_id = CYP_unite_greeks_under_socialist_leadership
+		prerequisite = {
+			focus = CYP_unite_greeks_under_socialist_leadership
+		}
+		
+		available = {
+			country_exists = ITA 
+			164 = { is_owned_by = ITA }
+		}
+		
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: Focus CYP_take_the_land_of_greece_from_italy"
+			164 = { add_core_of = CYP }
+			create_wargoal = {
+				type = take_state_focus
+				target = ITA 
+			}
+		}
+	}
+
+################################
+#####    ТУРЕЦКАЯ ВЕТКА    #####
+################################
+
+	focus = { #Газета «Глас Народа»
+		id = CYP_voice_of_the_people_newspaper
+		icon = GFX_goal_unknown
+		cost = 10
+		x = 2
+		y = 1
+		relative_position_id = CYP_repeal_the_law_banning_mass_gatherings
+		prerequisite = {
+			focus = CYP_repeal_the_law_banning_mass_gatherings
+		}
+		
+		available = {
+			OR = {
+				has_country_flag = turkish_victory_in_nicosia
+				has_country_flag = turkish_victory_in_limassol
+				has_country_flag = turkish_victory_in_famagus
+			}
+		}
+		
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: Focus CYP_voice_of_the_people_newspaper"
+			CYP_increase_turkish_support = yes
+			add_ideas = CYP_newspaper
+		}
+	}
+
+	focus = { #Восстановить Великое Медресе
+		id = CYP_restore_the_great_madrasah
+		icon = GFX_goal_unknown
+		cost = 10
+		x = 4
+		y = 1
+		relative_position_id = CYP_repeal_the_law_banning_mass_gatherings
+		prerequisite = {
+			focus = CYP_repeal_the_law_banning_mass_gatherings
+		}
+		
+		available = {
+			OR = {
+				AND = {
+					has_country_flag = turkish_victory_in_nicosia
+					has_country_flag = turkish_victory_in_limassol
+				}
+				AND = {
+					has_country_flag = turkish_victory_in_nicosia
+					has_country_flag = turkish_victory_in_famagus
+				}
+				AND = {
+					has_country_flag = turkish_victory_in_limassol
+					has_country_flag = turkish_victory_in_famagus
+				}
+			}
+		}
+		
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: Focus CYP_restore_the_great_madrasah"
+			add_ideas = CYP_great_madrasah 
+		}
+	}
+
+	focus = { #Ассоциация турецкого меньшинства Кипра
+		id = CYP_cyprus_turkish_minority_association
+		icon = GFX_goal_unknown
+		cost = 5
+		x = 0
+		y = 1
+		relative_position_id = CYP_voice_of_the_people_newspaper
+		prerequisite = {
+			focus = CYP_authorize_municipal_elections
+		}
+		prerequisite = {
+			focus = CYP_voice_of_the_people_newspaper
+		}
+		prerequisite = {
+			focus = CYP_restore_the_great_madrasah
+		}
+		available = {
+			NOT = {
+				has_completed_focus = CYP_creation_of_a_progressive_party_of_the_working_people
+			}
+			has_country_flag = turkish_victory_in_nicosia
+			has_country_flag = turkish_victory_in_limassol
+			has_country_flag = turkish_victory_in_famagus
+		}
+		
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: Focus CYP_cyprus_turkish_minority_association"
+			add_political_power = 100
+			set_party_name = {
+				ideology = democratic 
+				long_name = CYP_turkish_party_long
+				name = CYP_turkish_party
+			}
+		}
+	}
+
+	focus = { #Первый турецкий профсоюз
+		id = CYP_first_turkish_trade_union
+		icon = GFX_goal_unknown
+		cost = 10
+		x = 0
+		y = 1
+		relative_position_id = CYP_cyprus_turkish_minority_association
+		prerequisite = {
+			focus = CYP_cyprus_turkish_minority_association
+		}
+		mutually_exclusive = {
+			focus = CYP_request_help_from_turkey
+		}
+		
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: Focus CYP_first_turkish_trade_union"
+			country_event = {
+				id = NWcyprus.24
+				days = 90
+			}
+		}
+	}
+	
+	focus = { #Создание турецких семейных судов
+		id = CYP_establishment_of_turkish_family_courts
+		icon = GFX_goal_unknown
+		cost = 10
+		x = -2
+		y = 1
+		relative_position_id = CYP_first_turkish_trade_union
+		prerequisite = {
+			focus = CYP_first_turkish_trade_union
+		}
+		
+		available = {
+			has_country_flag = CYP_protesters_are_assumed
+		}
+		
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: Focus CYP_establishment_of_turkish_family_courts"
+			add_political_power = 50
+			add_stability = 0.05
+			add_autonomy_score = {
+				value = 200
+				localisation = CYP_family_courts
+			}
+		}
+	}
+
+	focus = { #Восстановить канцелярию муфтия
+		id = CYP_restore_the_office_of_the_mufti
+		icon = GFX_goal_unknown
+		cost = 10
+		x = 0
+		y = 1
+		relative_position_id = CYP_first_turkish_trade_union
+		prerequisite = {
+			focus = CYP_first_turkish_trade_union
+		}
+		
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: Focus CYP_restore_the_office_of_the_mufti"
+			add_ideas =  CYP_muftis_office
+		}
+	}
+
+	focus = { #Запросить помощи у Турции
+		id = CYP_request_help_from_turkey
+		icon = GFX_goal_unknown
+		cost = 10
+		x = 2
+		y = 1
+		relative_position_id = CYP_cyprus_turkish_minority_association
+		prerequisite = {
+			focus = CYP_cyprus_turkish_minority_association
+		}
+		mutually_exclusive = {
+			focus = CYP_first_turkish_trade_union
+		}
+		
+		cancel = {
+			has_country_flag = turkish_help_skip_focus
+		}
+		
+		available = {
+			country_exists = TUR 
+			is_subject = no 
+			has_opinion = {
+				target = TUR 
+				value > 50
+			}
+		}
+		
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: Focus CYP_request_help_from_turkey"
+			TUR = {
+				country_event = NWcyprus.25
+			}
+		}
+		
+		complete_tooltip = {
+			custom_effect_tooltip = CYP_turkey_must_accept
+			division_template = {
+				name = "Turkish Volunteers"
+				priority = 1
+				regiments = {
+					infantry = { x = 0 y = 0 }
+					infantry = { x = 0 y = 1 }
+				}
+			}
+			capital_scope = {
+				create_unit = {
+					division = "name = \"Turkish Volunteers\" division_template = \"Turkish Volunteers\" start_experience_factor = 0.3 start_equipment_factor = 1"
+					owner = ROOT
+				}
+				create_unit = {
+					division = "name = \"Turkish Volunteers\" division_template = \"Turkish Volunteers\" start_experience_factor = 0.3 start_equipment_factor = 1"
+					owner = ROOT
+				}
+			}
+		}
+			
+	}
+
+	focus = { #Ведение нетрадиционной войны
+		id = CYP_waging_unconventional_warfare
+		icon = GFX_goal_unknown
+		cost = 10
+		x = 0
+		y = 1
+		relative_position_id = CYP_request_help_from_turkey
+		prerequisite = {
+			focus = CYP_request_help_from_turkey
+		}
+		
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: Focus CYP_waging_unconventional_warfare"
+			add_ideas = CYP_undergrounded_war
+		}
+	}
+
+	focus = { #Таксим
+		id = CYP_taksim
+		icon = GFX_goal_unknown
+		cost = 5
+		x = 1
+		y = 1
+		relative_position_id = CYP_restore_the_office_of_the_mufti
+		prerequisite = {
+			focus = CYP_restore_the_office_of_the_mufti
+			focus = CYP_waging_unconventional_warfare
+		}
+		
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: Focus CYP_taksim"
+			NCP = {
+				set_state_owner = 772
+				change_tag_from = ROOT
+				load_focus_tree = { #не работает
+					tree = nw_cyprus_focus 
+					keep_completed = yes 
+				}
+				add_ideas = {
+					CYP_newspaper
+					CYP_great_madrasah
+					CYP_turkish_trade_union
+				}
+				if = {
+					limit = {
+						has_idea = CYP_conscription_bureau_idea
+					}
+					add_ideas = CYP_conscription_bureau_idea
+				}
+				if = {
+					limit = {
+						has_idea = CYP_careful_selection_of_recruts
+					}
+					add_ideas = CYP_careful_selection_of_recruts
+				}
+				if = {
+					limit = {
+						has_idea = CYP_careful_selection_of_recruts_2
+					}
+					add_ideas = CYP_careful_selection_of_recruts_2
+				}
+				if = {
+					limit = {
+						has_idea = CYP_mass_recruitment_idea
+					}
+					add_ideas = CYP_mass_recruitment_idea
+				}
+				if = {
+					limit = {
+						has_idea = CYP_mass_recruitment_idea_2
+					}
+					add_ideas = CYP_mass_recruitment_idea_2
+				}
+				if = {
+					limit = {
+						has_idea = CYP_military_police
+					}
+					add_ideas = CYP_military_police
+				}
+				if = {
+					limit = {
+						has_idea = CYP_honored_officers
+					}
+					add_ideas = CYP_honored_officers
+				}
+				if = {
+					limit = {
+						has_idea = CYP_honored_officers_2
+					}
+					add_ideas = CYP_honored_officers_2
+				}
+				if = {
+					limit = {
+						has_idea = CYP_volunteer_corps
+					}
+					add_ideas = CYP_volunteer_corps
+				}
+				if = {
+					limit = {
+						has_idea = CYP_mule_drivers
+					}
+					add_ideas = CYP_mule_drivers
+				}
+				if = {
+					limit = {
+						has_idea = CYP_women_in_aviation
+					}
+					add_ideas = CYP_women_in_aviation
+				}
+				if = {
+					limit = {
+						has_idea = CYP_anti-crisis_plan
+					}
+					add_ideas = CYP_anti-crisis_plan
+				}
+				if = {
+					limit = {
+						has_idea = CYP_lower_taxes_for_peasants
+					}
+					add_ideas = CYP_lower_taxes_for_peasants
+				}
+				if = {
+					limit = {
+						has_idea = CYP_products_diversity
+					}
+					add_ideas = CYP_products_diversity
+				}
+			}
+			ROOT = {
+				load_focus_tree = {
+					tree = generic_focus
+				}
+				remove_ideas = {
+					CYP_newspaper
+					CYP_great_madrasah
+					CYP_turkish_trade_union
+				}
+			}
+		}
+	}
+
+	focus = { #Присоединиться к Турции
+		id = CYP_join_turkey
+		icon = GFX_goal_unknown
+		cost = 10
+		x = 1
+		y = 1
+		relative_position_id = CYP_taksim
+		prerequisite = {
+			focus = CYP_taksim
+		}
+		mutually_exclusive = {
+			focus = CYP_republic_of_northern_cyprus
+		}
+		
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: Focus CYP_join_turkey"
+			ROOT = {
+				country_event = {
+					id = NWcyprus.28
+				}
+			}
+		}
+	}
+
+	focus = { #Республика Северного Кипра
+		id = CYP_republic_of_northern_cyprus
+		icon = GFX_goal_unknown
+		cost = 10
+		x = -1
+		y = 1
+		relative_position_id = CYP_taksim
+		prerequisite = {
+			focus = CYP_taksim
+		}
+		mutually_exclusive = {
+			focus = CYP_join_turkey
+		}
+		
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: Focus CYP_republic_of_northern_cyprus"
+			add_political_power = 100
+		}
+	}
+
+	focus = { #Создание моджахедов
+		id = CYP_creation_of_the_mujahideen
+		icon = GFX_goal_unknown
+		cost = 10
+		x = -1
+		y = 1
+		relative_position_id = CYP_republic_of_northern_cyprus
+		prerequisite = {
+			focus = CYP_republic_of_northern_cyprus
+		}
+		mutually_exclusive = {
+			focus = CYP_democratic_methods
+		}
+		
+		available = {
+			has_completed_focus = CYP_waging_unconventional_warfare
+		}
+		
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: Focus CYP_creation_of_the_mujahideen"
+			set_party_name = {
+				ideology = fascism
+				long_name = CYP_turkish_party_long
+				name = CYP_turkish_party
+			}
+			add_popularity = {
+				ideology = fascism
+				popularity = 0.4
+			}
+			set_politics = {
+				ruling_party = fascism
+			}
+
+			add_ideas = CYP_mujahideen_country
+		}
+				
+	}
+
+	focus = { #Демократические методы
+		id = CYP_democratic_methods
+		icon = GFX_goal_unknown
+		cost = 10
+		x = 1
+		y = 1
+		relative_position_id = CYP_republic_of_northern_cyprus
+		prerequisite = {
+			focus = CYP_republic_of_northern_cyprus
+		}
+		mutually_exclusive = {
+			focus = CYP_creation_of_the_mujahideen
+		}
+		available = {
+			has_completed_focus = CYP_first_turkish_trade_union
+		}
+		
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: Focus CYP_democratic_methods"
+			add_ideas = CYP_democratic_methods_idea
+		}
+			
+	}
+
+	focus = { #Взять Кипр под свой контроль!
+		id = CYP_take_control_of_cyprus
+		icon = GFX_goal_unknown
+		cost = 10
+		x = 1
+		y = 1
+		relative_position_id = CYP_creation_of_the_mujahideen
+		prerequisite = {
+			focus = CYP_creation_of_the_mujahideen
+			focus = CYP_democratic_methods
+		}
+		
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: Focus CYP_take_control_of_cyprus"
+ 			random_country = {
+	 		 	limit = {
+	     			owns_state = 183
+	  			}
+				ROOT = {
+					create_wargoal = {
+					    type = take_state_focus
+					    target = PREV
+					    generator = { 183 }
+	  				}
+    			}
+    		}
+		}		
+	}
+
+	focus = { #Объединить турков под своим началом!
+		id = CYP_unite_the_turks_under_our_command
+		icon = GFX_goal_unknown
+		cost = 10
+		x = 0
+		y = 1
+		relative_position_id = CYP_take_control_of_cyprus
+		prerequisite = {
+			focus = CYP_take_control_of_cyprus
+		}
+		
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: Focus CYP_unite_the_turks_under_our_command"
+			create_wargoal = {
+				type = annex_everything
+				target = TUR 
+			}
+			every_state = {
+				limit = {
+					is_core_of = TUR 
+				}
+				add_core_of = ROOT 
+			}
+		}
+	}
+}
