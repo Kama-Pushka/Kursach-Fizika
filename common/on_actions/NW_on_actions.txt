@@ -4895,6 +4895,24 @@ on_actions = {
 				SOV = { clr_country_flag = TUR_intervention_in_TCW_flag }
 			}
 		}
+		
+		effect = {
+			#Раздел Югославии
+			if = {
+				limit = {
+					ROOT = { tag = YUG }
+					FROM = {
+						num_faction_members > 1
+						OR = {
+							original_tag = GER
+							is_in_faction_with = GER
+						}
+					}
+					NOT = { has_global_flag = axis_divid_yug_flag }
+				}
+				GER = { country_event = { id = NWYugoslavia.1 days = 1 } }
+			}
+		}
 		# ROOT is capitulated country, FROM is winner
 	}
 	
@@ -6995,25 +7013,21 @@ on_actions = {
 		effect = {#Изменение поддержки
 			if = {
 				limit = {
-					OR = {
-						has_idea = CYP_weak_greek_support 
-						has_idea = CYP_significant_greek_support 
-						has_idea = CYP_comprehensive_greek_support 
-						has_idea = CYP_full_greek_support 
-					}
+					check_variable = { weekly_greek_support > 0 }
 				}
 				add_to_variable = { greek_support_total = modifier@weekly_greek_support }
+				subtract_from_variable = { turkish_support_total = modifier@weekly_greek_support }
+				
+				subtract_from_variable = { greek_turkish_support = modifier@weekly_greek_support }
 			}
 			if = {
 				limit = {
-					OR = {
-						has_idea = CYP_weak_turkish_support 
-						has_idea = CYP_significant_turkish_support 
-						has_idea = CYP_comprehensive_turkish_support 
-						has_idea = CYP_full_turkish_support 
-					}
+					check_variable = { weekly_turkish_support > 0 }
 				}
 				add_to_variable = { turkish_support_total = modifier@weekly_turkish_support }
+				subtract_from_variable = { greek_support_total = modifier@weekly_turkish_support }
+				
+				add_to_variable = { greek_turkish_support = modifier@weekly_turkish_support }
 			}
 			if = {
 				limit = { AND = { has_variable = greek_turkish_support has_variable = greek_support_total } }
@@ -7023,31 +7037,6 @@ on_actions = {
 				limit = { AND = { has_variable = greek_turkish_support has_variable = turkish_support_total } }
 				add_to_variable = { greek_turkish_support = turkish_support_total }
 			}
-		}
-		effect = {#Изменение поддержки
-			if = {
-				limit = {
-					OR = {
-						has_idea = CYP_weak_greek_support 
-						has_idea = CYP_significant_greek_support 
-						has_idea = CYP_comprehensive_greek_support 
-						has_idea = CYP_full_greek_support 
-					}
-				}
-				subtract_from_variable = { greek_turkish_support = modifier@weekly_greek_support }
-			}
-			if = {
-				limit = {
-					OR = {
-						has_idea = CYP_weak_turkish_support 
-						has_idea = CYP_significant_turkish_support 
-						has_idea = CYP_comprehensive_turkish_support 
-						has_idea = CYP_full_turkish_support 
-					}
-				}
-				add_to_variable = { greek_turkish_support = modifier@weekly_turkish_support }
-			}
-
 		}
 	}
 	
