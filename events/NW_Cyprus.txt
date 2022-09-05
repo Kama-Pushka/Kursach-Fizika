@@ -118,7 +118,7 @@ country_event = {
 	}
 }
 
-# Кипр предлагает дополнительный набор // OVERLORD
+# Инициатива массового набора на Кипре // OVERLORD
 country_event = {
 	id = NWcyprus.4
 	title = NWcyprus.4.t 
@@ -128,7 +128,10 @@ country_event = {
 	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWcyprus.4" }
 	
 	option = { #нет
-		name = NWcyprus.4.a 
+		name = NWcyprus.4.a
+		ai_chance = {
+			factor = 50
+		}
 		FROM = {
 			country_event = { id = NWcyprus.5 hours = 6 }
 			effect_tooltip = {
@@ -138,50 +141,81 @@ country_event = {
 		}
 	}
 	option = { #ок
-		name = NWcyprus.4.b 
-		FROM = { country_event = { id = NWcyprus.6 hours = 6 } }
+		name = NWcyprus.4.b
+		ai_chance = {
+			factor = 50
+		}
+		FROM = {
+			country_event = { id = NWcyprus.6 hours = 6 }
+			effect_tooltip = {
+				hidden_effect = {
+					division_template = {
+						name = "Cypriot Division"
+						priority = 1
+						regiments = {
+							infantry = {x = 0 y = 0}
+							infantry = {x = 0 y = 1}
+							infantry = {x = 1 y = 0}
+							infantry = {x = 1 y = 1}
+						}
+					}
+				}
+				capital_scope = {
+					create_unit = {
+						division = "name = \"Cypriot Division\" division_template = \"Cypriot Division\" start_experience_factor = 0.3 start_equipment_factor = 1"
+						owner = ROOT
+						count = 2
+					}
+				}
+				# бафф на призыв 
+				swap_ideas = {
+					remove_idea = CYP_conscription_bureau
+					add_idea = CYP_mass_recruitment_idea
+				}
+				mobilization_laws_up = yes
+				CYP_increase_greek_support = yes
+			}
+		}
 	}
 }
 
+# CYP
 country_event = {
 	id = NWcyprus.5
-	title = NWcyprus.5.t 
+	title = NWcyprus.4.t 
 	desc = NWcyprus.5.desc
 	is_triggered_only = yes
 	
 	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWcyprus.5" }
 	
 	option = {
-		name = NWcyprus.5.a 
+		name = NWcyprus.4.b
 		uncomplete_national_focus = { focus = CYP_mass_recruitment }
 		complete_national_focus = CYP_careful_selection
 	}
 }
 
+# CYP
 country_event = {
 	id = NWcyprus.6
-	title = NWcyprus.6.t 
+	title = NWcyprus.4.t 
 	desc = NWcyprus.6.desc
 	is_triggered_only = yes
 	
 	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWcyprus.6" }
 	
 	option = {
-		name = NWcyprus.6.a 
-		CYP_increase_greek_support = yes
-		# бафф на призыв 
-		swap_ideas = {
-			remove_idea = CYP_conscription_bureau
-			add_idea = CYP_mass_recruitment_idea
-		}
-		division_template = {
-			name = "Cypriot Division"
-			priority = 1
-			regiments = {
-				infantry = {x = 0 y = 0}
-				infantry = {x = 0 y = 1}
-				infantry = {x = 0 y = 2}
-				infantry = {x = 0 y = 3}
+		name = NWcyprus.4.b
+		hidden_effect = {
+			division_template = {
+				name = "Cypriot Division"
+				priority = 1
+				regiments = {
+					infantry = {x = 0 y = 0}
+					infantry = {x = 0 y = 1}
+					infantry = {x = 1 y = 0}
+					infantry = {x = 1 y = 1}
+				}
 			}
 		}
 		capital_scope = {
@@ -191,10 +225,18 @@ country_event = {
 				count = 2
 			}
 		}
+		# бафф на призыв 
+		swap_ideas = {
+			remove_idea = CYP_conscription_bureau
+			add_idea = CYP_mass_recruitment_idea
+		}
+		mobilization_laws_up = yes
+		CYP_increase_greek_support = yes
 	}
 }
 
-country_event = { #кипр предлагает вернуть военную полицию
+# Возвращение военной полиции на Кипре // OVERLORD
+country_event = {
 	id = NWcyprus.7
 	title = NWcyprus.7.t 
 	desc = NWcyprus.7.desc
@@ -203,45 +245,68 @@ country_event = { #кипр предлагает вернуть военную �
 	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWcyprus.7" }
 		
 	option = { #не
-		name = NWcyprus.7.a 
-		CYP = {country_event = {id = NWcyprus.8}}
+		name = NWcyprus.7.a
+		ai_chance = {
+			factor = 50
+		}
+		FROM = {
+			country_event = { id = NWcyprus.8 hours = 6 }
+			effect_tooltip = {
+				uncomplete_national_focus = { focus = CYP_return_military_police }
+				complete_national_focus = CYP_reorganize_the_police
+			}
+		}
 	}
 	
 	option = { #ну ок 
-		name = NWcyprus.7.b 
-		CYP = {country_event = {id = NWcyprus.9}}
+		name = NWcyprus.7.b
+		ai_chance = {
+			factor = 50
+		}
+		FROM = {
+			country_event = { id = NWcyprus.9 hours = 6 }
+			effect_tooltip = {
+				add_ideas = CYP_military_police
+				CYP_increase_turkish_support = yes
+			}
+		}
 	}
 }
 
-country_event = { 
+# CYP Окончить реорганизацию полиции Кипра
+country_event = {
 	id = NWcyprus.8
-	title = NWcyprus.8.t 
+	title = NWcyprus.7.t 
 	desc = NWcyprus.8.desc
 	is_triggered_only = yes 
 	
 	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWcyprus.8" }
 	
 	option = {
-		name = NWcyprus.8.a 
+		name = NWcyprus.4.b
+		uncomplete_national_focus = { focus = CYP_return_military_police }
 		complete_national_focus = CYP_reorganize_the_police
 	}
 }
 
+# CYP +Военная полиция
 country_event = {
 	id = NWcyprus.9
-	title = NWcyprus.9.t 
+	title = NWcyprus.7.t 
 	desc = NWcyprus.9.desc
 	is_triggered_only = yes 
 	
 	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWcyprus.9" }	
 	
 	option = {
-		name = NWcyprus.9.a 
+		name = NWcyprus.7.b
 		add_ideas = CYP_military_police
+		CYP_increase_turkish_support = yes
 	}
 }
 
-country_event = { #кадровая политика кипра
+# Кадровая политика Кипра // OVERLORD
+country_event = {
 	id = NWcyprus.10
 	title = NWcyprus.10.t 
 	desc = NWcyprus.10.desc
@@ -250,42 +315,62 @@ country_event = { #кадровая политика кипра
 	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWcyprus.10" }
 		
 	option = { #не
-		trigger = {CYP = {has_completed_focus = CYP_reorganize_the_police}}
-		name = NWcyprus.10.a 
-		CYP = {country_event = {id = NWcyprus.11}}
+		name = NWcyprus.10.a
+		trigger = { FROM = { has_completed_focus = CYP_reorganize_the_police } }
+		ai_chance = {
+			factor = 50
+		}
+		FROM = {
+			country_event = { id = NWcyprus.11 hours = 6 }
+			effect_tooltip = {
+				uncomplete_national_focus = { focus = CYP_recruit_from_the_most_worthy }
+				complete_national_focus = CYP_appoint_non_commissioned_police_officers
+			}
+		}
 	}
 	
 	option = { #ну ок 
-		name = NWcyprus.10.b 
-		CYP = {country_event = {id = NWcyprus.12}}
+		name = NWcyprus.10.b
+		ai_chance = {
+			factor = 50
+		}
+		FROM = {
+			country_event = { id = NWcyprus.12 hours = 6 }
+			effect_tooltip = {
+				add_ideas = CYP_honored_officers
+				CYP_increase_greek_support = yes
+			}
+		}
 	}
 }
 
 country_event = { 
 	id = NWcyprus.11
-	title = NWcyprus.11.t 
+	title = NWcyprus.10.t 
 	desc = NWcyprus.11.desc
 	is_triggered_only = yes 
 	
 	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWcyprus.11" }
 	
 	option = {
-		name = NWcyprus.11.a 
+		name = NWcyprus.4.b
+		uncomplete_national_focus = { focus = CYP_recruit_from_the_most_worthy }
 		complete_national_focus = CYP_appoint_non_commissioned_police_officers
 	}
 }
 
 country_event = { 
 	id = NWcyprus.12
-	title = NWcyprus.12.t 
+	title = NWcyprus.10.t 
 	desc = NWcyprus.12.desc
 	is_triggered_only = yes 
 	
 	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWcyprus.12" }
 	
 	option = {
-		name = NWcyprus.12.a 
+		name = NWcyprus.10.b
 		add_ideas = CYP_honored_officers
+		CYP_increase_greek_support = yes
 	}
 }
 
