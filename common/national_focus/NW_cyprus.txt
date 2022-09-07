@@ -245,7 +245,7 @@ focus_tree = {
 					CYP_increase_greek_support = yes
 				}
 				OVERLORD = {
-					country_event = {id = NWcyprus.10 }
+					country_event = { id = NWcyprus.10 }
 					custom_effect_tooltip = need_support_of_overlord
 				}
 			}
@@ -1345,14 +1345,8 @@ focus_tree = {
 			log = "[GetDateText]: [Root.GetName]: Focus CYP_repeal_the_law_banning_mass_gatherings"
 			remove_ideas = CYP_press_censorship
 			add_stability = 0.05
-			add_popularity = {
-				ideology = communism
-				popularity = 0.05
-			}
-			add_popularity = {
-				ideology = democratic
-				popularity = 0.05
-			}
+			add_popularity = { ideology = communism popularity = 0.05 }
+			add_popularity = { ideology = democratic popularity = 0.05 }
 		}
 	}
 
@@ -1385,21 +1379,19 @@ focus_tree = {
 		}
 		
 		available = {
-			country_exists = GRE 
-			NOT = {has_war_with = GRE}
+			country_exists = GRE
+			GRE = { has_war = yes }
+			NOT = { has_war_with = GRE }
+			any_allied_country = {
+				NOT = { has_war_with = GRE }
+			}
 		}
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus CYP_raise_funds_for_greece"
 			add_political_power = -300
-			GRE = {
-				add_timed_idea = {
-					idea = GRE_cypriots_help
-					days = 365
-				}
-			}
+			GRE = { add_timed_idea = { idea = GRE_cypriots_help days = 365 } }
 		}
-					
 	}
 
 ################################
@@ -1416,7 +1408,7 @@ focus_tree = {
 		prerequisite = {
 			focus = CYP_repeal_the_law_banning_mass_gatherings
 		}
-		available = { #Греки победили в одних выборах
+		available = {
 			OR = {
 				has_country_flag = greek_victory_in_nicosia
 				has_country_flag = greek_victory_in_limassol
@@ -1427,10 +1419,7 @@ focus_tree = {
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus CYP_accept_volunteers_from_communists"
 			add_manpower = 1000
-			add_popularity = {
-				ideology = communism
-				popularity = 0.05
-			}
+			add_popularity = { ideology = communism popularity = 0.05 }
 		}
 				
 	}
@@ -1447,36 +1436,22 @@ focus_tree = {
 		}
 		
 		available = {
-			OR = {
-				AND = {
-					has_country_flag = greek_victory_in_nicosia
-					has_country_flag = greek_victory_in_limassol
-				}
-				AND = {
-					has_country_flag = greek_victory_in_nicosia
-					has_country_flag = greek_victory_in_famagus
-				}
-				AND = {
-					has_country_flag = greek_victory_in_limassol
-					has_country_flag = greek_victory_in_famagus
-				}
+			count_triggers = {
+				amount = 2
+				has_country_flag = greek_victory_in_nicosia
+				has_country_flag = greek_victory_in_limassol
+				has_country_flag = greek_victory_in_famagus
 			}
 		}
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus CYP_creation_of_the_pancyprian_trade_union"
 			add_ideas = CYP_trade_unions
-			add_popularity = {
-				ideology = communism
-				popularity = 0.05
-			}
-			country_event = {
-				id = NWcyprus.13 # Первая забастовка рабочих
-				days = 90
+			add_popularity = { ideology = communism popularity = 0.05 }
+			hidden_effect = {
+				country_event = { id = NWcyprus.13 days = 90 }
 			}
 		}
-			
-			
 	}
 
 	focus = { #Создание прогрессивной партии трудового народа Кипра
@@ -1497,13 +1472,8 @@ focus_tree = {
 		}
 		
 		available = {
-			has_country_flag = greek_victory_in_nicosia
-			has_country_flag = greek_victory_in_limassol
-			has_country_flag = greek_victory_in_famagus
-			
-			NOT = {
-				has_completed_focus = CYP_cyprus_turkish_minority_association
-			}
+			has_country_flag = CYP_estabilish_greek_government_flag
+			NOT = { has_completed_focus = CYP_cyprus_turkish_minority_association }
 		}
 		
 		completion_reward = {
@@ -1524,15 +1494,12 @@ focus_tree = {
 		}
 		
 		available = {
-			has_country_flag = bad_working_conditions
+			has_country_flag = bad_working_conditions_flag
 		}
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus CYP_improving_working_conditions"
-			add_popularity = {
-				ideology = communism
-				popularity = 0.05
-			}
+			add_popularity = { ideology = communism popularity = 0.05 }
 			swap_ideas = {
 				remove_idea = CYP_trade_unions_2
 				add_idea = CYP_trade_unions_3
@@ -1542,7 +1509,7 @@ focus_tree = {
 
 	focus = { #Повышение общего уровня жизни
 		id = CYP_improving_the_overall_standard_of_living
-		icon = GFX_goal_unknown
+		icon = GFX_z_goal_cleaning_city
 		cost = 10
 		x = 1
 		y = 1
@@ -1597,15 +1564,139 @@ focus_tree = {
 		}
 		
 		available = {
-			BUL_is_balkan_nation = yes
 			is_subject = no
-			NOT = {has_war_with = BUL}
+			any_of_scopes = {
+				array = global.is_balkan_nation
+				BUL_is_balkan_nation = yes
+				has_capitulated = no
+				NOT = { has_war_with = ROOT }
+			}
+			OR = {
+				YUG = {
+					exists = yes
+					has_completed_focus = YUG_pan_balkan_workers_congress
+					has_government = communism
+					has_capitulated = no
+					NOT = { has_war_with = ROOT }
+				}
+				BUL = {
+					exists = yes
+					has_completed_focus = BUL_balkan_alliance
+					has_government = communism
+					has_capitulated = no
+					NOT = { has_war_with = ROOT }
+				}
+				ALB = {
+					exists = yes
+					has_completed_focus = ALB_Balkan_Federal_Republic
+					has_government = communism
+					has_capitulated = no
+					NOT = { has_war_with = ROOT }
+				}
+				any_of_scopes = {
+					array = global.is_balkan_nation
+					BUL_is_balkan_nation = yes
+					has_government = communism
+					has_capitulated = no
+					NOT = { has_war_with = ROOT }
+					custom_trigger_tooltip = {
+						tooltip = is_balcan_tt
+						has_cosmetic_tag = BALCAN
+					}
+				}
+			}
 		}
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus CYP_join_the_balkan_federation"
-			country_event = {
-				id = NWcyprus.15
+			custom_effect_tooltip = GAME_OVER_TT
+			if = {
+				limit = {
+					YUG = {
+						exists = yes
+						has_completed_focus = YUG_pan_balkan_workers_congress
+						has_government = communism
+						has_capitulated = no
+						NOT = { has_war_with = ROOT }
+					}
+				}
+				YUG = {
+					country_event = { id = NWcyprus.15 }
+					effect_tooltip = {
+						if = {
+							limit = { is_ai = no }
+							change_tag_from = ROOT
+						}
+					}
+				}
+			}
+			else_if = {
+				limit = {
+					BUL = {
+						exists = yes
+						has_completed_focus = BUL_balkan_alliance
+						has_government = communism
+						has_capitulated = no
+						NOT = { has_war_with = ROOT }
+					}
+				}
+				BUL = {
+					country_event = { id = NWcyprus.15 }
+					effect_tooltip = {
+						if = {
+							limit = { is_ai = no }
+							change_tag_from = ROOT
+						}
+					}
+				}
+			}
+			else_if = {
+				limit = {
+					ALB = {
+						exists = yes
+						has_completed_focus = ALB_Balkan_Federal_Republic
+						has_government = communism
+						has_capitulated = no
+						NOT = { has_war_with = ROOT }
+					}
+				}
+				ALB = {
+					country_event = { id = NWcyprus.15 }
+					effect_tooltip = {
+						if = {
+							limit = { is_ai = no }
+							change_tag_from = ROOT
+						}
+					}
+				}
+			}
+			else_if = {
+				limit = {
+					any_of_scopes = {
+						array = global.is_balkan_nation
+						BUL_is_balkan_nation = yes
+						has_government = communism
+						has_capitulated = no
+						NOT = { has_war_with = ROOT }
+						has_cosmetic_tag = BALCAN
+					}
+				}
+				random_other_country = {
+					limit = {
+						BUL_is_balkan_nation = yes
+						has_government = communism
+						has_capitulated = no
+						NOT = { has_war_with = ROOT }
+						has_cosmetic_tag = BALCAN
+					}
+					country_event = { id = NWcyprus.15 }
+					effect_tooltip = {
+						if = {
+							limit = { is_ai = no }
+							change_tag_from = ROOT
+						}
+					}
+				}
 			}
 		}
 	}
@@ -1626,23 +1717,28 @@ focus_tree = {
 		}
 		
 		available = {
-			country_exists = GRE 
-			is_subject = no 
-			NOT = {
+			is_subject = no
+			country_exists = GRE
+			GRE = {
 				OR = {
-					GRE = {
-						has_government = communism
-						has_government = trozkism 
-					}
-					has_war_with = GRE 
+					has_government = communism
+					has_government = trozkism 
 				}
+				is_subject = no
+				NOT = { has_war_with = ROOT }
 			}
 		}
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus CYP_enosis"
-			country_event = {
-				id = NWcyprus.16
+			GRE = {
+				country_event = { id = NWcyprus.16 }
+				effect_tooltip = {
+					if = {
+						limit = { is_ai = no }
+						change_tag_from = ROOT
+					}
+				}
 			}
 		}
 	}
@@ -1662,11 +1758,40 @@ focus_tree = {
 			focus = CYP_enosis
 		}
 		
+		available = {
+			is_subject = no
+		}
+		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus CYP_complete_independence"
-			add_political_power = 50 
-			leave_faction = yes 
-			white_peace = every_enemy_country
+			add_political_power = 50
+			if = {
+				limit = { is_in_faction = yes }
+				hidden_effect = {
+					FACTION_LEADER = {
+						add_ai_strategy = {
+							type = alliance
+							id = ROOT
+							value = -600
+						}
+						ROOT = {
+							add_ai_strategy = {
+								type = alliance
+								id = PREV
+								value = -600
+							}
+						}
+					}
+				}
+				leave_faction = yes
+			}
+			every_enemy_country = {
+				limit = {
+					is_subject = no
+					OR = { is_faction_leader = yes is_in_faction = no }
+				}
+				white_peace = ROOT
+			}
 		}
 	}
 
@@ -1683,7 +1808,7 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus CYP_economic_revival"
-			add_ideas = CYP_economic_revival_idea 
+			add_ideas = CYP_economic_revival 
 		}
 	}
 
@@ -1703,29 +1828,25 @@ focus_tree = {
 		}
 		
 		available = {
-			183 = {
-				is_controlled_by = CYP 
-			}
-			772 = {
-				is_controlled_by = CYP 
-			}
-			
+			is_subject = no
+			controls_state = 183
+			controls_state = 772
 		}
 		
 		bypass = {
 			OR = {
-				has_war_with = ENG 
-				1153 = {
-					is_controlled_by = CYP 
-				}
+				has_war_with = ENG
+				owns_state = 1153
 			}
 		}
 		
 		completion_reward = {
-		log = "[GetDateText]: [Root.GetName]: Focus CYP_elimination_of_military_bases"
+			log = "[GetDateText]: [Root.GetName]: Focus CYP_elimination_of_military_bases"
 			create_wargoal = {
 				type = take_state_focus 
 				target = ENG
+				generator = { 1153 }
+				expire = 0
 			}
 		}			
 	}
@@ -1760,34 +1881,64 @@ focus_tree = {
 		will_lead_to_war_with = GRE
 		
 		available = {
-			country_exists = GRE 
-			NOT = {
-				OR = {
-					GRE = { has_government = communism }
-					GRE = { has_government = trozkism } 
+			country_exists = GRE
+			GRE = {
+				NOT = {
+					has_government = communism
+					has_government = trozkism 
 				}
 			}
 		}
 		
 		bypass = {
 			OR = {
-				NOT = {country_exists = GRE }
-				GRE = { has_government = communism }
-				GRE = { has_government = trozkism }
-				has_war_with = GRE
+				NOT = { country_exists = GRE }
+				GRE = {
+					OR = {
+						has_government = communism
+						has_government = trozkism
+						has_war_with = ROOT
+					}
+				}
 			}
 		}
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus CYP_unite_greeks_under_socialist_leadership"
-			create_wargoal = {
-				type = annex_everything  
-				target = GRE
+			every_state = {
+				limit = {
+					is_core_of = GRE
+					NOT = { is_core_of = ROOT }
+					NOT = { is_core_of = TUR }
+				}
+				add_core_of = ROOT 
 			}
 			every_state = {
-				limit = { is_core_of = GRE }
-				add_core_of = ROOT 
-			}	
+				limit = {
+					is_core_of = GRE
+					NOT = { is_owned_by = ROOT }
+					NOT = { is_owned_by = TUR }
+				}
+				owner = {
+					ROOT = {
+						create_wargoal = {
+							type = annex_everything  
+							target = PREV
+							expire = 0
+						}
+						add_ai_strategy = {
+							type = antagonize
+							id = PREV
+							value = 500
+						}
+						add_ai_strategy = {
+							type = conquer
+							id = PREV
+							value = 500
+						}
+					}
+				}
+			}
 		}
 	}
 
@@ -1805,22 +1956,66 @@ focus_tree = {
 		available = {
 			country_exists = TUR
 			OR = {
-				341 = { is_owned_by = TUR }
-				339 = { is_owned_by = TUR }
-				843 = { is_owned_by = TUR }
-				964 = { is_owned_by = TUR }
+				NOT = { owns_state = 341 }
+				NOT = { owns_state = 339 }
+				NOT = { owns_state = 843 }
+				NOT = { owns_state = 964 }
 			}
 		}
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus CYP_take_the_land_of_greece_from_turkey"
-			341 = { add_core_of = CYP }
-			339 = { add_core_of = CYP }
-			843 = { add_core_of = CYP }
-			964 = { add_core_of = CYP }
-			create_wargoal = {
-				type = take_state_focus
-				target = TUR 
+			every_state = {
+				limit = {
+					OR = {
+						AND = {	
+							is_core_of = GRE
+							is_owned_by = TUR
+						}
+						state = 341
+						state = 339
+						state = 843
+						state = 964
+					}
+					NOT = { is_core_of = ROOT }
+					NOT = { is_owned_by = ROOT }
+				}
+				add_core_of = ROOT 
+			}
+			every_state = {
+				limit = {
+					OR = {
+						AND = {	
+							is_core_of = GRE
+							is_owned_by = TUR
+						}
+						state = 341
+						state = 339
+						state = 843
+						state = 964
+					}
+					NOT = { is_owned_by = ROOT }
+				}
+				owner = {
+					ROOT = {
+						create_wargoal = {
+							type = take_state_focus
+							target = PREV
+							generator = { 341 339 843 964 }
+							expire = 0
+						}
+						add_ai_strategy = {
+							type = antagonize
+							id = PREV
+							value = 500
+						}
+						add_ai_strategy = {
+							type = conquer
+							id = PREV
+							value = 500
+						}
+					}
+				}
 			}
 		}
 	}
@@ -1837,16 +2032,57 @@ focus_tree = {
 		}
 		
 		available = {
-			country_exists = ITA 
-			164 = { is_owned_by = ITA }
+			country_exists = ITA
+			NOT = { owns_state = 164 }
 		}
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus CYP_take_the_land_of_greece_from_italy"
-			164 = { add_core_of = CYP }
-			create_wargoal = {
-				type = take_state_focus
-				target = ITA 
+			every_state = {
+				limit = {
+					OR = {
+						AND = {	
+							is_core_of = GRE
+							is_owned_by = ITA
+						}
+						state = 164
+					}
+					NOT = { is_core_of = ROOT }
+					NOT = { is_owned_by = ROOT }
+				}
+				add_core_of = ROOT 
+			}
+			every_state = {
+				limit = {
+					OR = {
+						AND = {	
+							is_core_of = GRE
+							is_owned_by = ITA
+						}
+						state = 164
+					}
+					NOT = { is_owned_by = ROOT }
+				}
+				owner = {
+					ROOT = {
+						create_wargoal = {
+							type = take_state_focus
+							target = PREV
+							generator = { 164 }
+							expire = 0
+						}
+						add_ai_strategy = {
+							type = antagonize
+							id = PREV
+							value = 500
+						}
+						add_ai_strategy = {
+							type = conquer
+							id = PREV
+							value = 500
+						}
+					}
+				}
 			}
 		}
 	}
@@ -1857,7 +2093,7 @@ focus_tree = {
 
 	focus = { #Газета «Глас Народа»
 		id = CYP_voice_of_the_people_newspaper
-		icon = GFX_goal_unknown
+		icon = GFX_z_goal_free_papers
 		cost = 10
 		x = 2
 		y = 1
@@ -1877,7 +2113,7 @@ focus_tree = {
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus CYP_voice_of_the_people_newspaper"
 			CYP_increase_turkish_support = yes
-			add_ideas = CYP_newspaper
+			add_ideas = CYP_voice_of_the_people_newspaper
 		}
 	}
 
@@ -1893,19 +2129,11 @@ focus_tree = {
 		}
 		
 		available = {
-			OR = {
-				AND = {
-					has_country_flag = turkish_victory_in_nicosia
-					has_country_flag = turkish_victory_in_limassol
-				}
-				AND = {
-					has_country_flag = turkish_victory_in_nicosia
-					has_country_flag = turkish_victory_in_famagus
-				}
-				AND = {
-					has_country_flag = turkish_victory_in_limassol
-					has_country_flag = turkish_victory_in_famagus
-				}
+			count_triggers = {
+				amount = 2
+				has_country_flag = turkish_victory_in_nicosia
+				has_country_flag = turkish_victory_in_limassol
+				has_country_flag = turkish_victory_in_famagus
 			}
 		}
 		
@@ -1932,22 +2160,14 @@ focus_tree = {
 			focus = CYP_restore_the_great_madrasah
 		}
 		available = {
-			NOT = {
-				has_completed_focus = CYP_creation_of_a_progressive_party_of_the_working_people
-			}
-			has_country_flag = turkish_victory_in_nicosia
-			has_country_flag = turkish_victory_in_limassol
-			has_country_flag = turkish_victory_in_famagus
+			has_country_flag = CYP_estabilish_turkish_government_flag
+			NOT = { has_completed_focus = CYP_creation_of_a_progressive_party_of_the_working_people }
 		}
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus CYP_cyprus_turkish_minority_association"
 			add_political_power = 100
-			set_party_name = {
-				ideology = democratic 
-				long_name = CYP_turkish_party_long
-				name = CYP_turkish_party
-			}
+			set_party_name = { ideology = democratic long_name = CYP_turkish_party_long name = CYP_turkish_party }
 		}
 	}
 
@@ -1967,9 +2187,9 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus CYP_first_turkish_trade_union"
-			country_event = {
-				id = NWcyprus.24
-				days = 90
+			add_ideas = CYP_turkish_trade_union
+			hidden_effect = {
+				country_event = { id = NWcyprus.24 days = 90 }
 			}
 		}
 	}
@@ -1986,16 +2206,16 @@ focus_tree = {
 		}
 		
 		available = {
-			has_country_flag = CYP_protesters_are_assumed
+			has_country_flag = CYP_protesters_are_assumed_flag
 		}
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus CYP_establishment_of_turkish_family_courts"
 			add_political_power = 50
 			add_stability = 0.05
-			add_autonomy_score = {
-				value = 200
-				localization = CYP_family_courts
+			if = {
+				limit = { is_subject = yes }
+				add_autonomy_score = { value = 200 localization = CYP_establishment_of_turkish_family_courts }
 			}
 		}
 	}
@@ -2013,7 +2233,7 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus CYP_restore_the_office_of_the_mufti"
-			add_ideas =  CYP_muftis_office
+			add_ideas = CYP_muftis_office
 		}
 	}
 
@@ -2031,48 +2251,31 @@ focus_tree = {
 			focus = CYP_first_turkish_trade_union
 		}
 		
-		cancel = {
-			has_country_flag = turkish_help_skip_focus
-		}
-		
 		available = {
 			country_exists = TUR 
-			is_subject = no 
-			has_opinion = {
-				target = TUR 
-				value > 50
+			TUR = {
+				is_subject = no
+				has_opinion = { target = ROOT value > 50 }
 			}
+			NOT = { has_country_flag = this_focus_not_support_flag }
 		}
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus CYP_request_help_from_turkey"
+			effect_tooltip = {
+				capital_scope = {
+					create_unit = {
+						division = "name = \"Turkish Volunteers\" division_template = \"Turkish Volunteers\" start_experience_factor = 0.3 start_equipment_factor = 1"
+						owner = ROOT
+						count = 2
+					}
+				}
+			}
 			TUR = {
 				country_event = NWcyprus.25
+				custom_effect_tooltip = need_support_else_uncomplete
 			}
 		}
-		
-		complete_tooltip = {
-			custom_effect_tooltip = CYP_turkey_must_accept
-			division_template = {
-				name = "Turkish Volunteers"
-				priority = 1
-				regiments = {
-					infantry = { x = 0 y = 0 }
-					infantry = { x = 0 y = 1 }
-				}
-			}
-			capital_scope = {
-				create_unit = {
-					division = "name = \"Turkish Volunteers\" division_template = \"Turkish Volunteers\" start_experience_factor = 0.3 start_equipment_factor = 1"
-					owner = ROOT
-				}
-				create_unit = {
-					division = "name = \"Turkish Volunteers\" division_template = \"Turkish Volunteers\" start_experience_factor = 0.3 start_equipment_factor = 1"
-					owner = ROOT
-				}
-			}
-		}
-			
 	}
 
 	focus = { #Ведение нетрадиционной войны
@@ -2085,6 +2288,15 @@ focus_tree = {
 		prerequisite = {
 			focus = CYP_request_help_from_turkey
 		}
+		
+		available = {
+			country_exists = TUR 
+			hidden_trigger = {
+				NOT = { has_country_flag = this_focus_not_support_flag }
+			}
+		}
+		cancel_if_invalid = yes
+		continue_if_invalid = no
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus CYP_waging_unconventional_warfare"
@@ -2104,113 +2316,80 @@ focus_tree = {
 			focus = CYP_waging_unconventional_warfare
 		}
 		
+		available = {
+			is_subject = no
+		}
+		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus CYP_taksim"
-			NCP = {
-				set_state_owner = 772
-				change_tag_from = ROOT
-				load_focus_tree = { #не работает
-					tree = nw_cyprus_focus 
-					keep_completed = yes 
-				}
-				add_ideas = {
-					CYP_newspaper
-					CYP_great_madrasah
-					CYP_turkish_trade_union
-				}
-				if = {
-					limit = {
-						has_idea = CYP_conscription_bureau
+			custom_effect_tooltip = CYP_taksim_tt
+			hidden_effect = {
+				NCP = {
+					transfer_state = 183
+					hidden_effect = {
+						set_cosmetic_tag = CYP_greek
+						
+						set_politics = { ruling_party = communism elections_allowed = no }
+						add_popularity = { ideology = communism popularity = 0.6 }
+						load_focus_tree = { tree = nw_cyprus_focus keep_completed = yes }
+						unlock_national_focus = CYP_reorganize_the_police
+						complete_national_focus = CYP_conscription_bureau
+						complete_national_focus = CYP_recruit_from_the_most_worthy
+						unlock_national_focus = CYP_divide_and_rule
+						complete_national_focus = CYP_press_censorship
+						unlock_national_focus = CYP_greek_cypriot_support
+						complete_national_focus = CYP_repeal_the_law_banning_mass_gatherings
+						unlock_national_focus = CYP_authorize_municipal_elections
+						
+						set_country_flag = greek_victory_in_nicosia
+						set_country_flag = greek_victory_in_limassol
+						set_country_flag = greek_victory_in_famagus
+						set_country_flag = CYP_estabilish_greek_government_flag
+						
+						add_ideas = {
+							CYP_agricultural_decline
+							CYP_the_aftermath_of_the_great_depression
+						}
+						add_ai_strategy = {
+							type = antagonize
+							id = ROOT
+							value = 500
+						}
+						add_ai_strategy = {
+							type = conquer
+							id = ROOT
+							value = 500
+						}
+						add_ai_strategy = {
+							type = prepare_for_war
+							id = ROOT
+							value = 100
+						}
 					}
-					add_ideas = CYP_conscription_bureau
 				}
-				if = {
-					limit = {
-						has_idea = CYP_careful_selection_of_recruts
+				add_ai_strategy = {
+					type = antagonize
+					id = NCP
+					value = 500
+				}
+				add_ai_strategy = {
+					type = conquer
+					id = NCP
+					value = 500
+				}
+				add_ai_strategy = {
+					type = prepare_for_war
+					id = NCP
+					value = 100
+				}
+				CYP_ploutis_servas = {
+					set_nationality = NCP
+					promote_character = yes
+				}
+				NCP = {
+					CYP_ploutis_servas = {
+						promote_character = yes
 					}
-					add_ideas = CYP_careful_selection_of_recruts
-				}
-				if = {
-					limit = {
-						has_idea = CYP_careful_selection_of_recruts_2
-					}
-					add_ideas = CYP_careful_selection_of_recruts_2
-				}
-				if = {
-					limit = {
-						has_idea = CYP_mass_recruitment_idea
-					}
-					add_ideas = CYP_mass_recruitment_idea
-				}
-				if = {
-					limit = {
-						has_idea = CYP_mass_recruitment_idea_2
-					}
-					add_ideas = CYP_mass_recruitment_idea_2
-				}
-				if = {
-					limit = {
-						has_idea = CYP_military_police
-					}
-					add_ideas = CYP_military_police
-				}
-				if = {
-					limit = {
-						has_idea = CYP_honored_officers
-					}
-					add_ideas = CYP_honored_officers
-				}
-				if = {
-					limit = {
-						has_idea = CYP_honored_officers_2
-					}
-					add_ideas = CYP_honored_officers_2
-				}
-				if = {
-					limit = {
-						has_idea = CYP_volunteer_corps
-					}
-					add_ideas = CYP_volunteer_corps
-				}
-				if = {
-					limit = {
-						has_idea = CYP_mule_drivers
-					}
-					add_ideas = CYP_mule_drivers
-				}
-				if = {
-					limit = {
-						has_idea = CYP_women_in_aviation
-					}
-					add_ideas = CYP_women_in_aviation
-				}
-				if = {
-					limit = {
-						has_idea = CYP_anti_crisis_plan
-					}
-					add_ideas = CYP_anti_crisis_plan
-				}
-				if = {
-					limit = {
-						has_idea = CYP_lower_taxes_for_peasants
-					}
-					add_ideas = CYP_lower_taxes_for_peasants
-				}
-				if = {
-					limit = {
-						has_idea = CYP_products_diversity
-					}
-					add_ideas = CYP_products_diversity
-				}
-			}
-			ROOT = {
-				load_focus_tree = {
-					tree = generic_focus
-				}
-				remove_ideas = {
-					CYP_newspaper
-					CYP_great_madrasah
-					CYP_turkish_trade_union
 				}
 			}
 		}
@@ -2230,11 +2409,28 @@ focus_tree = {
 			focus = CYP_republic_of_northern_cyprus
 		}
 		
+		available = {
+			is_subject = no
+			country_exists = TUR
+			TUR = {
+				NOT = {
+					has_government = communism
+					has_government = trozkism 
+				}
+				is_subject = no
+				NOT = { has_war_with = ROOT }
+			}
+		}
+		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus CYP_join_turkey"
-			ROOT = {
-				country_event = {
-					id = NWcyprus.28
+			TUR = {
+				country_event = { id = NWcyprus.17 }
+				effect_tooltip = {
+					if = {
+						limit = { is_ai = no }
+						change_tag_from = ROOT
+					}
 				}
 			}
 		}
@@ -2280,22 +2476,11 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus CYP_creation_of_the_mujahideen"
-			set_party_name = {
-				ideology = fascism
-				long_name = CYP_turkish_party_long
-				name = CYP_turkish_party
-			}
-			add_popularity = {
-				ideology = fascism
-				popularity = 0.4
-			}
-			set_politics = {
-				ruling_party = fascism
-			}
-
+			set_party_name = { ideology = fascism long_name = CYP_turkish_party_long name = CYP_turkish_party }
+			add_popularity = { ideology = fascism popularity = 0.4 }
+			set_politics = { ruling_party = fascism elections_allowed = no }
 			add_ideas = CYP_mujahideen_country
 		}
-				
 	}
 
 	focus = { #Демократические методы
@@ -2317,9 +2502,8 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus CYP_democratic_methods"
-			add_ideas = CYP_democratic_methods_idea
+			add_ideas = CYP_democratic_methods
 		}
-			
 	}
 
 	focus = { #Взять Кипр под свой контроль!
@@ -2336,17 +2520,17 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus CYP_take_control_of_cyprus"
- 			random_country = {
-	 		 	limit = {
-	     			owns_state = 183
-	  			}
-				ROOT = {
-					create_wargoal = {
-					    type = take_state_focus
-					    target = PREV
-					    generator = { 183 }
-	  				}
-    			}
+ 			183 = {
+	 		 	owner = {
+					ROOT = {
+						create_wargoal = {
+							type = take_state_focus
+							target = PREV
+							generator = { 183 }
+							expire = 0
+						}
+					}
+				}
     		}
 		}		
 	}
@@ -2362,15 +2546,21 @@ focus_tree = {
 			focus = CYP_take_control_of_cyprus
 		}
 		
+		available = {
+			country_exists = TUR
+		}
+		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus CYP_unite_the_turks_under_our_command"
 			create_wargoal = {
 				type = annex_everything
-				target = TUR 
+				target = TUR
+				expire = 0
 			}
 			every_state = {
 				limit = {
-					is_core_of = TUR 
+					is_core_of = TUR
+					NOT = { is_core_of = ROOT }
 				}
 				add_core_of = ROOT 
 			}
