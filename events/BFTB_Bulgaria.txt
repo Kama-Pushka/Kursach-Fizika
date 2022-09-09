@@ -128,18 +128,18 @@ country_event = {
 					add = 30
 					NOT = { has_country_flag = BUL_bs_dissident_event_flag }
 				}
-				modifier = {
-					add = 10
-					check_variable = { BUL_bs_popularity = 25 compare = greater_than_or_equals }
-				}
-				modifier = {
-					add = 20
-					check_variable = { BUL_bs_popularity = 50 compare = greater_than_or_equals }
-				}
-				modifier = {
-					add = 30
-					check_variable = { BUL_bs_popularity = 75 compare = greater_than_or_equals }
-				}
+#				modifier = {
+#					add = 10
+#					check_variable = { BUL_bs_popularity = 25 compare = greater_than_or_equals }
+#				}
+#				modifier = {
+#					add = 20
+#					check_variable = { BUL_bs_popularity = 50 compare = greater_than_or_equals }
+#				}
+#				modifier = {
+#					add = 30
+#					check_variable = { BUL_bs_popularity = 75 compare = greater_than_or_equals }
+#				}
 				modifier = {
 					add = 10
 					has_stability < 0.5
@@ -156,18 +156,18 @@ country_event = {
 					add = 10
 					#has_completed_focus = BUL_crush_the_communists
 				}
-				modifier = {
-					add = -30
-					check_variable = { BUL_bs_loyalty = 75 compare = greater_than_or_equals }	
-				}
-				modifier = {
-					add = -20
-					check_variable = { BUL_bs_loyalty = 50 compare = greater_than_or_equals }	
-				}
-				modifier = {
-					add = -10
-					check_variable = { BUL_bs_loyalty = 25 compare = greater_than_or_equals }	
-				}
+#				modifier = {
+#					add = -30
+#					check_variable = { BUL_bs_loyalty = 75 compare = greater_than_or_equals }	
+#				}
+#				modifier = {
+#					add = -20
+#					check_variable = { BUL_bs_loyalty = 50 compare = greater_than_or_equals }	
+#				}
+#				modifier = {
+#					add = -10
+#					check_variable = { BUL_bs_loyalty = 25 compare = greater_than_or_equals }	
+#				}
 				modifier = {
 					add = -30
 					has_country_flag = { flag = BUL_bs_dissident_event_flag value > 2 }
@@ -175,8 +175,8 @@ country_event = {
 				modifier = {
 					add = -10
 					OR = {
-						#has_completed_focus = BUL_unify_the_bourgeois_movement
-						#has_completed_focus = BUL_form_a_popular_bloc
+						has_completed_focus = BUL_unify_the_bourgeois_movement
+						has_completed_focus = BUL_form_a_popular_bloc
 						#has_completed_focus = BUL_freedom_of_press
 					}
 				}
@@ -1747,6 +1747,7 @@ country_event = {
 	picture = GFX_report_event_albanian_partisans
 
 	is_triggered_only = yes
+	fire_only_once = yes
 
 	option = {
 		name = bftb_bulgaria_imro.2.a
@@ -1863,10 +1864,107 @@ country_event = {
 	picture = GFX_report_event_bul_boris_death
 
 	is_triggered_only = yes
+	fire_only_once = yes
+	
+	trigger = {
+		NOT = { has_country_flag = BUL_tsar_boris_is_dead_flag }
+	}
+	
+	immediate = {
+		hidden_effect = {
+			set_variable = { BUL_date_of_tsars_death = global.date }
+			set_country_flag = BUL_tsar_boris_is_dead_flag
+			unlock_national_focus = BUL_plot_against_boris
+		}
+	}
 
 	option = {
 		name = bftb_bulgaria_tsar_boris.2.a
-
+		if = {
+			limit = {
+				has_country_flag = BUL_foreign_support_for_regicide_flag
+			}
+			add_stability = -0.05
+		}
+		else = {
+			add_stability = -0.15
+		}
+		
+		if = {
+			limit = {
+				has_idea = BUL_tsar_boris_positive_01
+			}
+			remove_ideas = BUL_tsar_boris_positive_01
+		}
+		else_if = {
+			limit = {
+				has_idea = BUL_tsar_boris_positive_02
+			}
+			remove_ideas = BUL_tsar_boris_positive_02
+		}
+		else_if = {
+			limit = {
+				has_idea = BUL_tsar_boris_positive_03
+			}
+			remove_ideas = BUL_tsar_boris_positive_03
+		}
+		else_if = {
+			limit = {
+				has_idea = BUL_tsar_boris_negative_01
+			}
+			remove_ideas = BUL_tsar_boris_negative_01
+		}
+		else_if = {
+			limit = {
+				has_idea = BUL_tsar_boris_negative_02
+			}
+			remove_ideas = BUL_tsar_boris_negative_02
+		}
+		
+		effect_tooltip = {
+			unlock_national_focus = BUL_plot_against_boris
+		}
+		
+		BUL_boris_iii = {
+			retire = yes
+		}
+		
+		if = {
+			limit = {
+				has_completed_focus = BUL_komsomol_tsar
+				has_government = communism
+			}
+			BUL_georgi_dimitrov = {
+				promote_character = yes
+			}
+		}
+		else_if = {
+			limit = { has_idea = BUL_georgi_ivanov_kyoseivanov }
+			BUL_georgi_ivanov_kyoseivanov = {
+				promote_character = { ideology = dual_monarchy }
+				add_country_leader_trait = no_designated_regency
+			}
+			if = {
+				limit = { has_country_leader = { character = BUL_georgi_ivanov_kyoseivanov ruling_only = yes } }
+				set_country_leader_ideology = moderatism
+			}
+		}
+		else = {
+			BUL_bogdan_filov = {
+				promote_character = { ideology = dual_monarchy }
+				add_country_leader_trait = no_designated_regency
+			}
+			if = {
+				limit = { has_country_leader = { character = BUL_bogdan_filov ruling_only = yes } }
+				set_country_leader_ideology = centrism
+			}
+		}
+		
+		hidden_effect = {
+			every_other_country = {
+				news_event = { id = bftb_news.3 hours = 4 }
+			}
+		}
 	}
 }
 
@@ -1878,6 +1976,7 @@ country_event = {
 	picture = GFX_report_event_bul_prince_simeon 
 
 	is_triggered_only = yes
+	fire_only_once = yes
 
 	option = { #Pro-Fascist Regency Council
 		name = bftb_bulgaria_tsar_boris.3.a
@@ -1945,7 +2044,7 @@ country_event = {
 					character = BUL_regency_council
 					country_leader = {
 						expire = "1965.1.1"
-						ideology = fascism_ideology
+						ideology = nationalism_ideology
 						traits = {
 							elected_regency_council_pro_axis hardened_officer_regency_council
 						}
@@ -1977,7 +2076,7 @@ country_event = {
 					character = BUL_regency_council
 					country_leader = {
 						expire = "1965.1.1"
-						ideology = fascism_ideology
+						ideology = nationalism_ideology
 						traits = {
 							elected_regency_council_pro_axis
 						}
@@ -1998,7 +2097,7 @@ country_event = {
 					character = BUL_regency_council
 					country_leader = {
 						expire = "1965.1.1"
-						ideology = fascism_ideology
+						ideology = nationalism_ideology
 						traits = {
 							elected_regency_council_pro_axis political_manipulator_regency_council
 						}
@@ -2021,7 +2120,7 @@ country_event = {
 					character = BUL_regency_council
 					country_leader = {
 						expire = "1965.1.1"
-						ideology = fascism_ideology
+						ideology = nationalism_ideology
 						traits = {
 							elected_regency_council_pro_axis
 						}
@@ -2038,7 +2137,7 @@ country_event = {
 					character = BUL_regency_council
 					country_leader = {
 						expire = "1965.1.1"
-						ideology = fascism_ideology
+						ideology = nationalism_ideology
 						traits = {
 							elected_regency_council_pro_axis
 						}
@@ -2425,8 +2524,7 @@ country_event = {
 	desc = {
 		text = bftb_bulgaria_fatherland_front.1.desc_positive
 		trigger = {
-			#has_completed_focus = BUL_the_fatherland_front
-			has_government = communism
+			has_completed_focus = BUL_the_fatherland_front
 		}
 	}
 
@@ -2434,8 +2532,7 @@ country_event = {
 	desc = {
 		text = bftb_bulgaria_fatherland_front.1.desc_negative
 		trigger = {
-			#NOT = { has_completed_focus = BUL_the_fatherland_front }
-			NOT = { has_government = communism }
+			NOT = { has_completed_focus = BUL_the_fatherland_front }
 		}
 	}
 
@@ -2447,16 +2544,16 @@ country_event = {
 
 	immediate = {
 		hidden_effect = {
-			#if = {
-			#	limit = { 
-			#		NOT = { has_completed_focus = BUL_the_fatherland_front }
-			#	}
+			if = {
+				limit = {
+					NOT = { has_completed_focus = BUL_the_fatherland_front }
+				}
 				add_popularity = {
 					ideology = communism
 					popularity = 0.2
 				}
 				set_country_flag = BUL_fatherland_front_formed_flag
-			#}
+			}
 		}
 	}
 
@@ -2464,8 +2561,7 @@ country_event = {
 		name = bftb_bulgaria_fatherland_front.1.a
 
 		trigger = {
-			#has_completed_focus = BUL_the_fatherland_front
-			has_government = communism
+			has_completed_focus = BUL_the_fatherland_front
 		}
 		add_political_power = 70
 		add_ideas = BUL_fatherland_front_positive
@@ -2475,8 +2571,7 @@ country_event = {
 		name = bftb_bulgaria_fatherland_front.1.b
 
 		trigger = {
-			#NOT = { has_completed_focus = BUL_the_fatherland_front }
-			NOT = { has_government = communism }
+			NOT = { has_completed_focus = BUL_the_fatherland_front }
 		}
 		effect_tooltip = {
 			add_popularity = {
@@ -2490,7 +2585,7 @@ country_event = {
 			name = BUL_fatherland_front_party
 		}
 		add_ideas = BUL_fatherland_front_negative
-		#activate_mission_tooltip = BUL_ff_impending_coup_mission
+		activate_mission_tooltip = BUL_ff_impending_coup_mission
 		random_unit_leader = {
 			limit = {
 				has_id = 1203 #Hadzipetkov
@@ -2527,6 +2622,7 @@ country_event = {
 	picture = GFX_report_event_bul_troops_partisans_boat
 
 	is_triggered_only = yes #on_weekly_BUL handles this
+	fire_only_once = yes
 
 	immediate = {
 		hidden_effect = {
@@ -2668,24 +2764,24 @@ country_event = {
 					}
 				}
 			}
-			#modifier = { #You have good relations with your neighbors, we like that
-			#	factor = 1.5
-			#	BUL = {
-			#		OR = {
-			#			has_completed_focus = BUL_treaty_of_perpetual_friendship
-			#			has_completed_focus = BUL_the_salonika_agreement
-			#		}
-			#	}
-			#}
-			#modifier = { #You approached us, we like that
-			#	factor = 1.5
-			#	BUL = {	has_completed_focus = BUL_approach_the_united_kingdom }
-			#}
-			#modifier = { #You are becoming yet another capitalist country, we like that
-			#	factor = 1.5
-			#	has_government = democratic
-			#	BUL = {	has_completed_focus = BUL_democratic_principles }
-			#}
+			modifier = { #You have good relations with your neighbors, we like that
+				factor = 1.5
+				BUL = {
+					OR = {
+						has_completed_focus = BUL_treaty_of_perpetual_friendship
+						has_completed_focus = BUL_the_salonika_agreement
+					}
+				}
+			}
+			modifier = { #You approached us, we like that
+				factor = 1.5
+				BUL = {	has_completed_focus = BUL_approach_the_united_kingdom }
+			}
+			modifier = { #You are becoming yet another capitalist country, we like that
+				factor = 1.5
+				has_government = democratic
+				BUL = {	has_completed_focus = BUL_democratic_principles }
+			}
 			modifier = { #You think like us, we like that
 				factor = 5
 				BUL = {	has_government = ROOT }
@@ -2830,10 +2926,10 @@ country_event = {
 				factor = 5
 				NOT = { has_government = BUL }
 			}
-			modifier = {
-				factor = 10
-				#BUL = { has_completed_focus = BUL_bulgarian_irredentism }
-			}
+			#modifier = {
+			#	factor = 10
+			#	BUL = { has_completed_focus = BUL_bulgarian_irredentism }
+			#}
 			modifier = {
 				factor = 100
 				BUL = {
@@ -2846,10 +2942,10 @@ country_event = {
 					}
 				}
 			}
-			modifier = { #Support IMRO is not cool bro
-				factor = 10
-				#BUL = { has_completed_focus = BUL_support_macedonian_organizations }
-			}
+			#modifier = { #Support IMRO is not cool bro
+			#	factor = 10
+			#	BUL = { has_completed_focus = BUL_support_macedonian_organizations }
+			#}
 			modifier = { #Your coop with IMRO is just too much
 				factor = 15
 				BUL = { has_idea = BUL_imro_05 }
@@ -2926,24 +3022,24 @@ country_event = {
 					NOT = {	has_idea = BUL_imro_05 }
 				}
 			}
-			#modifier = { #You have good relations with your neighbors, we like that
-			#	factor = 1.5
-			#	BUL = {
-			#		OR = {
-			#			has_completed_focus = BUL_treaty_of_perpetual_friendship
-			#			has_completed_focus = BUL_the_salonika_agreement
-			#		}
-			#	}
-			#}
-			#modifier = { #You approached us, we like that
-			#	factor = 1.5
-			#	BUL = {	has_completed_focus = BUL_approach_the_united_kingdom }
-			#}
-			#modifier = { #You are becoming yet another capitalist country, we like that
-			#	factor = 1.5
-			#	has_government = democratic
-			#	BUL = {	has_completed_focus = BUL_democratic_principles }
-			#}
+			modifier = { #You have good relations with your neighbors, we like that
+				factor = 1.5
+				BUL = {
+					OR = {
+						has_completed_focus = BUL_treaty_of_perpetual_friendship
+						has_completed_focus = BUL_the_salonika_agreement
+					}
+				}
+			}
+			modifier = { #You approached us, we like that
+				factor = 1.5
+				BUL = {	has_completed_focus = BUL_approach_the_united_kingdom }
+			}
+			modifier = { #You are becoming yet another capitalist country, we like that
+				factor = 1.5
+				has_government = democratic
+				BUL = {	has_completed_focus = BUL_democratic_principles }
+			}
 			modifier = { #You think like us, we like that
 				factor = 7
 				BUL = {	has_government = ROOT }
@@ -3012,6 +3108,28 @@ country_event = {
 						is_in_faction_with = ROOT	
 					}
 				}
+			}
+			modifier = { #You have good relations with your neighbors, we like that
+				factor = 1.5
+				BUL = {
+					OR = {
+						has_completed_focus = BUL_treaty_of_perpetual_friendship
+						has_completed_focus = BUL_the_salonika_agreement
+					}
+				}
+			}
+			modifier = { #You approached us, we like that
+				factor = 1.5
+				BUL = {	has_completed_focus = BUL_approach_the_united_kingdom }
+			}
+			modifier = { #You are becoming yet another capitalist country, we like that
+				factor = 1.5
+				has_government = democratic
+				BUL = {	has_completed_focus = BUL_democratic_principles }
+			}
+			modifier = { #You think like us, we like that
+				factor = 1.5
+				BUL = {	has_government = ROOT }
 			}
 		}
 
@@ -3579,6 +3697,7 @@ country_event = {
 	picture = GFX_report_event_generic_sign_treaty1
 
 	is_triggered_only = yes
+	fire_only_once = yes
 
 	option = { #YES
 		name = bftb_bulgarian_claims.1.a
@@ -3873,8 +3992,6 @@ country_event = {
 	picture = GFX_report_event_bul_troops_dobrudja 
 
 	is_triggered_only = yes
-
-	fire_only_once = yes
 
 	option = {
 		name = bftb_bulgarian_claims.6.a
@@ -6310,10 +6427,10 @@ country_event = {
 					value > 50
 				}
 			}
-			modifier = {
-				factor = 2
-				#BUL = { has_completed_focus = BUL_condemn_macedonian_organizations }
-			}
+			#modifier = {
+			#	factor = 2
+			#	BUL = { has_completed_focus = BUL_condemn_macedonian_organizations }
+			#}
 			modifier = {
 				factor = 5
 				strength_ratio = {
@@ -6382,10 +6499,10 @@ country_event = {
 					value < 0
 				}
 			}
-			modifier = {
-				factor = 5
-				#BUL = { has_completed_focus = BUL_support_macedonian_organizations }
-			}
+			#modifier = {
+			#	factor = 5
+			#	BUL = { has_completed_focus = BUL_support_macedonian_organizations }
+			#}
 			modifier = {
 				factor = 2
 				strength_ratio = {
@@ -6532,10 +6649,10 @@ country_event = {
 					value > 50
 				}
 			}
-			modifier = {
-				factor = 2
-				#BUL = { has_completed_focus = BUL_condemn_macedonian_organizations }
-			}
+			#modifier = {
+			#	factor = 2
+			#	BUL = { has_completed_focus = BUL_condemn_macedonian_organizations }
+			#}
 			modifier = { #You have tried
 				factor = 5
 				BUL = { 
@@ -6582,7 +6699,7 @@ country_event = {
 			relation = non_aggression_pact
 			active = yes
 		}
-		add_opinion_modifier = { 
+		add_opinion_modifier = {
 			target = FROM
 			modifier = BUL_strengthened_relations_with_us
 		}
@@ -8769,10 +8886,10 @@ country_event = {
 					value > 50
 				}
 			}
-			modifier = {
-				factor = 2
-				#BUL = { has_completed_focus = BUL_condemn_macedonian_organizations }
-			}
+			#modifier = {
+			#	factor = 2
+			#	BUL = { has_completed_focus = BUL_condemn_macedonian_organizations }
+			#}
 			modifier = { #You have tried
 				factor = 2
 				BUL = { 
