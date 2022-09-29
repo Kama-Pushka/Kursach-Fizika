@@ -138,75 +138,6 @@ political_actions = {
 			}
 		}
 	}
-
-	promises_of_peace = {
-
-		icon = generic_political_discourse
-
-		available = {
-			has_war = no
-			has_war_support > 0.2
-			has_stability < 1.0
-			if = {
-				limit = {
-					tag = SPR
-				}
-				NOT = {
-					has_idea = SPR_political_violence
-				}
-			}
-		}
-
-		visible = {
-			always = yes
-		}
-
-		remove_trigger = {
-			has_war = yes
-			has_war_support < 0.05
-		}
-
-		fire_only_once = no
-
-		modifier = {
-			stability_weekly = 0.005
-			war_support_weekly = -0.01
-			political_power_cost = 0.5
-		}
-
-		days_remove = 90
-		days_re_enable = 360
-
-		cost = 50
-
-		complete_effect = {
-
-		}
-
-		ai_will_do = {
-			base = 0
-			modifier = {
-				add = 1
-				has_stability < 0.4
-			}
-			modifier = {
-				factor = 0
-				original_tag = SPR
-				NOT = { has_global_flag = spanish_civil_war }
-			}
-			modifier = {
-				factor = 0
-				is_historical_focus_on = yes
-				tag = MEX
-				NOT = { has_completed_focus = MEX_focus_institutional_revolution }
-			}
-			modifier = {
-				factor = 0
-				is_historical_focus_on = yes
-				tag = GER
-			}
-		}
-	}
 }
 
 economy_decisions = {
@@ -288,7 +219,8 @@ economy_decisions = {
 	}
 	restructure_supply_system = { #one time boost to get a few cheap supply hubs
 
-
+		icon = GFX_decision_generic_construction
+		
 		visible = { 
 			OR = {
 				is_major = no
@@ -324,7 +256,9 @@ economy_decisions = {
 		}
 	}
 	seize_some_trains_woo = { #repeating train seize
-
+		
+		icon = GFX_decision_hol_draw_up_staff_plans	
+		
 		visible = { 
 			num_of_factories < 60
 		}
@@ -359,6 +293,8 @@ economy_decisions = {
 	}
 	
 	seize_tractors_for_military_production = {
+		
+		icon = generic_trucks	
 
 		visible = {
 			NOT = { has_tech = own_tank_school_tech }
@@ -402,9 +338,7 @@ propaganda_efforts = {
 
 		available = {
 			NOT = { has_country_flag = war_propaganda_campaign_running }
-			threat > 0.5
 			has_war_support < 0.5
-			has_offensive_war = no
 			if = {
 				limit = {
 					original_tag = SPR
@@ -424,7 +358,16 @@ propaganda_efforts = {
 		}
 
 		visible = {
-			
+			OR = {
+				has_war_with_non_exiled_country = yes  
+				any_neighbor_country = {
+					AND = {
+						NOT = { has_government = ROOT }
+						has_offensive_war = yes
+						has_added_tension_amount > 10
+					}
+				}
+			}
 		}
 
 		fire_only_once = no
@@ -435,7 +378,7 @@ propaganda_efforts = {
 		cost = 150
 
 		modifier = {
-			war_support_weekly = 0.01
+			war_support_weekly = 0.005
 		}
 
 		complete_effect = {
@@ -454,205 +397,404 @@ propaganda_efforts = {
 			}
 		}
 	}
-
-	#Propaganda campaign against a country in offensive that has caused a lot of tension and started a war
-	war_propaganda_against_warmonger = {
+	
+		
+	war_propaganda_casualties = { 
 
 		icon = generic_prepare_civil_war
 
 		available = {
-			NOT = { has_country_flag = war_propaganda_campaign_running }
-			FROM = {
-				OR = {
-					has_offensive_war = yes
-					is_justifying_wargoal_against = ROOT
-				}
-			}
-			if = {
-				limit = {
-					is_literally_spain = yes
-				}
-				has_global_flag = scw_over
-			}
+			#NOT = { has_country_flag = war_propaganda_campaign_running }
+			has_casualties_war_support < 0
 		}
 
 		visible = {
-			FROM = {
-				NOT = { 
-					is_neighbor_of = ROOT 
-					has_government = ROOT
-				}
-				OR = {
-					AND = {
-						NOT = { has_government = ROOT }
-						has_offensive_war = yes
-						has_added_tension_amount > 15
-					}
-					is_justifying_wargoal_against = ROOT
-					has_offensive_war_with = ROOT
-				}
-			}
+			# has_war = yes
+			has_war_with_non_exiled_country = yes
 		}
 
-		target_trigger = {
-			FROM = {
-				NOT = { 
-					is_neighbor_of = ROOT 
-					has_government = ROOT
-				}
-				OR = {
-					AND = {
-						NOT = { has_government = ROOT }
-						has_offensive_war = yes
-						has_added_tension_amount > 15
-					}
-					is_justifying_wargoal_against = ROOT
-					has_offensive_war_with = ROOT
-				}
-			}
-		}
+		fire_only_once = no
+
+		days_remove = 180
 		
-		target_array = enemies_of_allies
-		target_array = potential_and_current_enemies
-
-		days_remove = 90
-
-		fire_only_once = yes
-
-		cost = 75
+		remove_trigger = {
+			has_war = no
+        }
+		
+		cost = 100
 
 		modifier = {
-			war_support_weekly = 0.01
+			weekly_casualties_war_support = 0.006
 		}
 
-		complete_effect = {
-			log = "[GetDateText]: [Root.GetName]: Decision war_propaganda_against_warmonger"
-			set_country_flag = war_propaganda_campaign_running
-		}
-		remove_effect = {
-			log = "[GetDateText]: [Root.GetName]: Decision remove war_propaganda_against_warmonger"
-			clr_country_flag = war_propaganda_campaign_running
-		}
+		#complete_effect = {
+		#	set_country_flag = war_propaganda_campaign_running
+		#}
+		#remove_effect = {
+		#	clr_country_flag = war_propaganda_campaign_running
+		#}
 
 		ai_will_do = {
-			factor = 1
+			base = 0
+			modifier = {
+				add = 10 #AI should probably just choose this one for general purposes.
+				has_war = yes
+				has_war_support < 0.7
+			}
+			modifier = {
+				add = 20
+				has_war = yes
+				has_war_support < 0.5
+			}
+			modifier = {
+				add = 30
+				has_war = yes
+				has_war_support < 0.3
+			}
+			modifier = {
+				add = 201 #ie; consider prio idea
+				has_war = yes
+				has_casualties_war_support < -0.25
+			}
 			modifier = {
 				factor = 0
-				has_war_support > 0.9
+				has_manpower < 100000
+				has_political_power < 250
+				OR = {
+					has_idea = volunteer_only
+					has_idea = limited_conscription
+					has_idea = extensive_conscription
+				}
 			}
 		}
 	}
 	
-	#Propaganda campaign against a neighbor
-	war_propaganda_against_warmonger_neighbor = {
-		name = war_propaganda_against_warmonger
+	war_propaganda_convoys = { 
 
-		icon = generic_prepare_civil_war
+		icon = GFX_decision_generic_naval
 
 		available = {
-			NOT = { has_country_flag = war_propaganda_campaign_running }
-			FROM = {
-				OR = {
-					has_offensive_war = yes 
-					is_justifying_wargoal_against = ROOT
-					has_war_with = ROOT
-				}
-			}
-			if = {
-				limit = {
-					is_literally_spain = yes
-				}
-				has_global_flag = scw_over
-			}
+			#NOT = { has_country_flag = war_propaganda_campaign_running }
+			has_convoys_war_support < 0
 		}
 
 		visible = {
-			FROM = {
-				NOT = { 
-					tag = ROOT
-					tag = OVERLORD
-					has_government = ROOT 
-					is_in_faction_with = ROOT
-				} 
-				is_neighbor_of = ROOT
-				if = {
-					limit = {
-						is_puppet = yes 
-					}
-					compare_autonomy_state > autonomy_puppet
-				}
-				OR = {
-					AND = {
-						NOT = { has_government = ROOT }
-						has_offensive_war = yes
-					}
-					is_justifying_wargoal_against = ROOT
-					has_war_with = ROOT
-				}
-				has_added_tension_amount > 5
-			}
+			# has_war = yes
+			has_war_with_non_exiled_country = yes
 		}
 
-		target_trigger = {
-			FROM = {
-				NOT = { 
-					tag = ROOT
-					tag = OVERLORD
-					has_government = ROOT 
-					is_in_faction_with = ROOT
-				} 
-				is_neighbor_of = ROOT
-				if = {
-					limit = {
-						is_puppet = yes 
-					}
-					compare_autonomy_state > autonomy_puppet
-				}
-				OR = {
-					AND = {
-						NOT = { has_government = ROOT }
-						has_offensive_war = yes
-					}
-					is_justifying_wargoal_against = ROOT
-					has_war_with = ROOT
-				}
-				has_added_tension_amount > 5
-			}
-		}
+		fire_only_once = no
+
+		days_remove = 180
 		
-		target_array = enemies_of_allies
-		target_array = potential_and_current_enemies
-		target_array = neighbors
-
-		days_remove = 90
-		days_re_enable = 180
-
-		fire_only_once = yes
-
-		cost = 50
+		remove_trigger = {
+			has_war = no
+        }
+		
+		cost = 100
 
 		modifier = {
-			war_support_weekly = 0.008
+			weekly_convoys_war_support = 0.006
 		}
 
-		complete_effect = {
-			log = "[GetDateText]: [Root.GetName]: Decision war_propaganda_against_warmonger"
-			set_country_flag = war_propaganda_campaign_running
-		}
-		remove_effect = {
-			log = "[GetDateText]: [Root.GetName]: Decision remove war_propaganda_against_warmonger"
-			clr_country_flag = war_propaganda_campaign_running
-		}
+		#complete_effect = {
+		#	set_country_flag = war_propaganda_campaign_running
+		#}
+		#remove_effect = {
+		#	clr_country_flag = war_propaganda_campaign_running
+		#}
 
 		ai_will_do = {
-			factor = 1
+			base = 0
+			modifier = {
+				add = 201 #ie; consider prio idea
+				has_war = yes
+				has_convoys_war_support < -0.29
+			}
 			modifier = {
 				factor = 0
-				has_war_support > 0.9
+				has_manpower < 100000
+				has_political_power < 250
+				OR = {
+					has_idea = volunteer_only
+					has_idea = limited_conscription
+					has_idea = extensive_conscription
+				}
 			}
 		}
 	}
-}
+	
+	war_propaganda_bombing = { 
+
+		icon = GFX_decision_generic_air
+
+		available = {
+		#	NOT = { has_country_flag = war_propaganda_campaign_running }
+			has_bombing_war_support < 0
+		}
+
+		visible = {
+			# has_war = yes
+			has_war_with_non_exiled_country = yes
+		}
+
+		fire_only_once = no
+
+		days_remove = 180
+		
+		remove_trigger = {
+			has_war = no
+        }
+		
+		cost = 100
+
+		modifier = {
+			weekly_bombing_war_support = 0.006
+		}
+
+		#complete_effect = {
+		#	set_country_flag = war_propaganda_campaign_running
+		#}
+		#remove_effect = {
+		#	clr_country_flag = war_propaganda_campaign_running
+		#}
+
+		ai_will_do = {
+			base = 0
+			modifier = {
+				add = 10 #AI should probably just choose this one for general purposes.
+				has_war = yes
+				has_war_support < 0.65
+			}
+			modifier = {
+				add = 20
+				has_war = yes
+				has_war_support < 0.50
+			}
+			modifier = {
+				add = 30
+				has_war = yes
+				has_war_support < 0.35
+			}
+			modifier = {
+				add = 201 #ie; consider prio idea
+				has_war = yes
+				has_bombing_war_support < -0.20
+			}
+			modifier = {
+				factor = 0
+				has_manpower < 100000
+				has_political_power < 250
+				OR = {
+					has_idea = volunteer_only
+					has_idea = limited_conscription
+					has_idea = extensive_conscription
+				}
+			}
+		}
+	}
+	
+	
+#	#Propaganda campaign against a country in offensive that has caused a lot of tension and started a war
+#	war_propaganda_against_warmonger = {
+
+#		icon = generic_prepare_civil_war
+
+#		available = {
+#			NOT = { has_country_flag = war_propaganda_campaign_running }
+#			FROM = {
+#				OR = {
+#					has_offensive_war = yes
+#					is_justifying_wargoal_against = ROOT
+#				}
+#			}
+#			if = {
+#				limit = {
+#					is_literally_spain = yes
+#				}
+#				has_global_flag = scw_over
+#			}
+#		}
+
+#		visible = {
+#			FROM = {
+#				NOT = { 
+#					is_neighbor_of = ROOT 
+#					has_government = ROOT
+#				}
+#				OR = {
+#					AND = {
+#						NOT = { has_government = ROOT }
+#						has_offensive_war = yes
+#						has_added_tension_amount > 15
+#					}
+#					is_justifying_wargoal_against = ROOT
+#					has_offensive_war_with = ROOT
+#				}
+#			}
+#		}
+
+#		target_trigger = {
+#			FROM = {
+#				NOT = { 
+#					is_neighbor_of = ROOT 
+#					has_government = ROOT
+#				}
+#				OR = {
+#					AND = {
+#						NOT = { has_government = ROOT }
+#						has_offensive_war = yes
+#						has_added_tension_amount > 15
+#					}
+#					is_justifying_wargoal_against = ROOT
+#					has_offensive_war_with = ROOT
+#				}
+#			}
+#		}
+#		
+#		target_array = enemies_of_allies
+#		target_array = potential_and_current_enemies
+
+#		days_remove = 90
+
+#		fire_only_once = yes
+
+#		cost = 75
+
+#		modifier = {
+#			war_support_weekly = 0.01
+#		}
+
+#		complete_effect = {
+#			log = "[GetDateText]: [Root.GetName]: Decision war_propaganda_against_warmonger"
+#			set_country_flag = war_propaganda_campaign_running
+#		}
+#		remove_effect = {
+#			log = "[GetDateText]: [Root.GetName]: Decision remove war_propaganda_against_warmonger"
+#			clr_country_flag = war_propaganda_campaign_running
+#		}
+
+#		ai_will_do = {
+#			factor = 1
+#			modifier = {
+#				factor = 0
+#				has_war_support > 0.9
+#			}
+#		}
+#	}
+#	
+#	
+#	
+#	#Propaganda campaign against a neighbor
+#	war_propaganda_against_warmonger_neighbor = {
+#		name = war_propaganda_against_warmonger
+
+#		icon = generic_prepare_civil_war
+
+#		available = {
+#			NOT = { has_country_flag = war_propaganda_campaign_running }
+#			FROM = {
+#				OR = {
+#					has_offensive_war = yes 
+#					is_justifying_wargoal_against = ROOT
+#					has_war_with = ROOT
+#				}
+#			}
+#			if = {
+#				limit = {
+#					is_literally_spain = yes
+#				}
+#				has_global_flag = scw_over
+#			}
+#		}
+
+#		visible = {
+#			FROM = {
+#				NOT = { 
+#					tag = ROOT
+#					tag = OVERLORD
+#					has_government = ROOT 
+#					is_in_faction_with = ROOT
+#				} 
+#				is_neighbor_of = ROOT
+#				if = {
+#					limit = {
+#						is_puppet = yes 
+#					}
+#					compare_autonomy_state > autonomy_puppet
+#				}
+#				OR = {
+#					AND = {
+#						NOT = { has_government = ROOT }
+#						has_offensive_war = yes
+#					}
+#					is_justifying_wargoal_against = ROOT
+#					has_war_with = ROOT
+#				}
+#				has_added_tension_amount > 5
+#			}
+#		}
+
+#		target_trigger = {
+#			FROM = {
+#				NOT = { 
+#					tag = ROOT
+#					tag = OVERLORD
+#					has_government = ROOT 
+#					is_in_faction_with = ROOT
+#				} 
+#				is_neighbor_of = ROOT
+#				if = {
+#					limit = {
+#						is_puppet = yes 
+#					}
+#					compare_autonomy_state > autonomy_puppet
+#				}
+#				OR = {
+#					AND = {
+#						NOT = { has_government = ROOT }
+#						has_offensive_war = yes
+#					}
+#					is_justifying_wargoal_against = ROOT
+#					has_war_with = ROOT
+#				}
+#				has_added_tension_amount > 5
+#			}
+#		}
+#		
+#		target_array = enemies_of_allies
+#		target_array = potential_and_current_enemies
+#		target_array = neighbors
+
+#		days_remove = 90
+#		days_re_enable = 180
+
+#		fire_only_once = yes
+
+#		cost = 50
+
+#		modifier = {
+#			war_support_weekly = 0.008
+#		}
+
+#		complete_effect = {
+#			log = "[GetDateText]: [Root.GetName]: Decision war_propaganda_against_warmonger"
+#			set_country_flag = war_propaganda_campaign_running
+#		}
+#		remove_effect = {
+#			log = "[GetDateText]: [Root.GetName]: Decision remove war_propaganda_against_warmonger"
+#			clr_country_flag = war_propaganda_campaign_running
+#		}
+
+#		ai_will_do = {
+#			factor = 1
+#			modifier = {
+#				factor = 0
+#				has_war_support > 0.9
+#			}
+#		}
+#	}
+#}
 
 operations = {
 	#MTG_TEST_NAVAL_MIXED_VS_MIXED_EARLY = { #MTG_TODO_GABRIEL: remove before launch (no seriously do not ship with this (hehe get it don't SHIP with it)) 
@@ -1996,7 +2138,18 @@ economy_decisions = {
         fire_only_once = no
 
         available = {
-            has_war = yes
+            IF = { 
+				limit = { 
+					OR = { 
+						has_dlc = "Man the Guns" 	
+						has_dlc = "By Blood Alone" 
+					}
+				}
+				has_war_with_non_exiled_country = yes   
+			}
+			ELSE = {
+				has_war = yes
+			}
             any_owned_state = {
             	NOT = { has_state_flag = war_building_slot_flag }
             	is_fully_controlled_by = ROOT
