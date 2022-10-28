@@ -237,7 +237,7 @@ focus_tree = {
 		id = YUG_attract_axis_capital
 		icon = GFX_goal_generic_intelligence_exchange
 		prerequisite = { focus = YUG_friendship_treaty_with_italy focus = YUG_reinforce_old_alliances }
-		x = -1
+		x = -2
 		y = 1
 		relative_position_id = YUG_friendship_treaty_with_italy
 
@@ -274,6 +274,42 @@ focus_tree = {
 	}
 	
 	focus = {
+		id = YUG_brigadistas
+		icon = GFX_goal_generic_military_sphere
+		prerequisite = { focus = YUG_friendship_treaty_with_italy focus = YUG_reinforce_old_alliances }
+		x = 1
+		y = 1
+		relative_position_id = YUG_friendship_treaty_with_italy
+
+		cost = 10
+
+		ai_will_do = {
+			factor = 0
+		}
+
+		available = {
+			has_war = no
+			SPR_scw_in_progress = yes
+		}
+
+		bypass = {
+			OR = {
+				has_global_flag = scw_over
+				has_war = yes
+			}
+		}
+
+		cancel_if_invalid = yes
+		available_if_capitulated = no
+
+		completion_reward = {
+			set_rule = { can_send_volunteers = yes }
+			add_ideas = YUG_brigadistas_idea
+			custom_effect_tooltip = will_be_removed_once_scw_is_over_tt
+		}
+	}
+	
+	focus = { 
 		id = YUG_local_militias
 		icon = GFX_goal_generic_allies_build_infantry
 		prerequisite = { focus = YUG_reinforce_old_alliances focus = YUG_friendship_treaty_with_italy focus = YUG_form_peasant_councils }
@@ -760,7 +796,8 @@ focus_tree = {
 						PREV = {
 							puppet = PREV
 							set_autonomy = { target = PREV autonomy_state = autonomy_integrated_puppet }
-						}
+						    set_country_flag = yug_bosnia_flag	
+						}	
 					}
 				}
 				event_target:released_nation_target = {
@@ -787,21 +824,21 @@ focus_tree = {
 					random_owned_controlled_state = {
 						limit = { PREV = { has_full_control_of_state = PREV } }
 						create_unit = {
-							division = "name = \"Bosnian Division\" division_template = \"Yugoslavian Division\" start_experience_factor = 0.9" 
+							division = "name = \"Bosnian Division\" division_template = \"Bosnian Division\" start_experience_factor = 0.9" 
 							owner = PREV
 						}
 					}
 					random_owned_controlled_state = {
 						limit = { PREV = { has_full_control_of_state = PREV } }
 						create_unit = {
-							division = "name = \"Bosnian Division\" division_template = \"Yugoslavian Division\" start_experience_factor = 0.9" 
+							division = "name = \"Bosnian Division\" division_template = \"Bosnian Division\" start_experience_factor = 0.9" 
 							owner = PREV
 						}
 					}
 					random_owned_controlled_state = {
 						limit = { PREV = { has_full_control_of_state = PREV } }
 						create_unit = {
-							division = "name = \"Bosnian Division\" division_template = \"Yugoslavian Division\" start_experience_factor = 0.9" 
+							division = "name = \"Bosnian Division\" division_template = \"Bosnian Division\" start_experience_factor = 0.9" 
 							owner = PREV
 						}
 					}
@@ -1860,6 +1897,13 @@ focus_tree = {
 
 		ai_will_do = {
 			factor = 40
+			modifier = { #If Bulgaria is really so much committed into getting Macedonian support, then we might just surrender Macedonia
+				factor = 5
+				controls_state = 106
+				106 = {
+					has_dynamic_modifier = { modifier = widespread_bulgarian_sentiment_01 }
+				}
+			}
 		}
 
 		available = {
@@ -1942,6 +1986,15 @@ focus_tree = {
 
 		completion_reward = {
 			remove_ideas = anti_german_military
+			add_tech_bonus = {
+				name = YUG_german_military_mission
+				bonus = 1.0
+				uses = 1
+				technology = basic_medium_tank
+				technology = improved_medium_tank
+				technology = advanced_medium_tank
+				technology = mechanised_infantry
+			}
 		}
 	}
 	
@@ -2076,8 +2129,11 @@ focus_tree = {
 		}
 
 		bypass = {
-			is_in_faction_with = ITA
-			controls_state = 163
+			OR = {
+				is_in_faction_with = ITA
+				is_subject_of = ITA
+				controls_state = 163
+			}
 		}
 
 		cancel_if_invalid = yes
@@ -5399,12 +5455,31 @@ focus_tree = {
 
 
 		completion_reward = {
-			add_tech_bonus = {
-				name = YUG_the_ik_3
-				bonus = 3.0
-				ahead_reduction = 2
-				uses = 1
-				category = light_fighter
+			if = {
+				limit = {
+					NOT = {
+						has_dlc = "By Blood Alone"
+					}
+				}
+				add_tech_bonus = {
+					name = YUG_the_ik_3
+					bonus = 3.0
+					ahead_reduction = 2
+					uses = 1
+					category = light_fighter
+				}
+			}
+			else = {
+				create_equipment_variant = {
+					name = "Ikarus IK-3" #
+					type = small_plane_airframe_1
+					modules = {
+						fixed_main_weapon_slot = light_mg_2x
+						fixed_auxiliary_weapon_slot_1 = aircraft_cannon_1_1x
+						engine_type_slot = engine_2_1x
+						special_type_slot_1 = empty
+					}
+				}
 			}
 		}
 	}
@@ -5926,7 +6001,7 @@ focus_tree = {
 		y = 2
 		relative_position_id = YUG_motorize_the_cavalry
 
-		cost = 10
+		cost = 5
 
 		ai_will_do = {
 			factor = 50
@@ -6447,6 +6522,45 @@ focus_tree = {
 
 		completion_reward = {
 			add_ideas = YUG_artillery_regiments
+		}	
+	}
+	
+	focus = {
+		id = YUG_medal_for_extreme_bravery
+		icon = GFX_goal_generic_build_tank
+		prerequisite = { focus = YUG_artillery_regiments }
+		x = 0
+		y = 3
+		relative_position_id = YUG_army_maneuvers
+
+		cost = 10
+		
+		allow_branch = {
+			has_dlc = "By Blood Alone"
+		}
+		
+		ai_will_do = {
+			factor = 70
+		}
+
+		available = {
+			any_neighbor_country = {
+				is_major = yes
+				has_war_with = ROOT
+			}
+		}
+
+		bypass = {
+
+		}
+
+		continue_if_invalid = yes
+		available_if_capitulated = no
+
+
+
+		completion_reward = {
+			custom_effect_tooltip = yug_extreme_bravery_medal
 		}
 	}
 

@@ -1160,13 +1160,37 @@ focus_tree = {
 		available_if_capitulated = yes
 		search_filters = {FOCUS_FILTER_RESEARCH}
 		completion_reward = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus fighter_command_focus"
-			air_experience = 25
-			add_tech_bonus = {
-				name = fighter_command_focus
-				bonus = 1.0
-				uses = 2
-				category = light_fighter
-				category = cat_heavy_fighter
+			if = {
+				limit = {
+					NOT = { has_dlc = "By Blood Alone" }
+				}
+				air_experience = 25
+				add_tech_bonus = {
+					name = fighter_command_focus
+					bonus = 1.0
+					uses = 2
+					category = light_fighter
+					category = cat_heavy_fighter
+				}
+			}
+			else_if = {
+				limit = {
+					has_dlc = "By Blood Alone"
+				}
+				air_experience = 25
+				add_tech_bonus = {
+					name = fighter_command_focus
+					bonus = 1.0
+					uses = 1
+					category = light_fighter
+					category = cat_heavy_fighter
+				}
+				add_doctrine_cost_reduction = {
+					name = ENG_fighter_command_focus #land_doc_bonus
+					cost_reduction = 0.5
+					uses = 1
+					category = air_doctrine
+				}
 			}
 		}
 	}
@@ -1185,13 +1209,37 @@ focus_tree = {
 		available_if_capitulated = yes
 		search_filters = {FOCUS_FILTER_RESEARCH}
 		completion_reward = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus bomber_command_focus"
-			air_experience = 25
-			add_tech_bonus = {
-				name = bomber_command_focus
-				bonus = 1.0
-				uses = 2
-				category = cat_strategic_bomber
-				category = tactical_bomber
+			if = {
+				limit = {
+					NOT = { has_dlc = "By Blood Alone" }
+				}
+				air_experience = 25
+				add_tech_bonus = {
+					name = bomber_command_focus
+					bonus = 1.0
+					uses = 2
+					category = cat_strategic_bomber
+					category = tactical_bomber
+				}
+			}
+			else_if = {
+				limit = {
+					has_dlc = "By Blood Alone"
+				}
+				air_experience = 25
+				add_tech_bonus = {
+					name = bomber_command_focus
+					bonus = 1.0
+					uses = 1
+					category = cat_strategic_bomber
+					category = tactical_bomber
+				}
+				add_doctrine_cost_reduction = {
+					name = ENG_bomber_command_focus #land_doc_bonus
+					cost_reduction = 0.5
+					uses = 1
+					category = air_doctrine
+				}	
 			}
 		}
 	}
@@ -1210,13 +1258,37 @@ focus_tree = {
 		available_if_capitulated = yes
 		search_filters = {FOCUS_FILTER_RESEARCH}
 		completion_reward = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus coastal_command_focus"
-			air_experience = 25
-			add_tech_bonus = {
-				name = coastal_command_focus
-				bonus = 1.0
-				uses = 2
-				category = naval_bomber
-				category = cas_bomber
+			if = {
+				limit = {
+					NOT = { has_dlc = "By Blood Alone" }
+				}
+				air_experience = 25
+				add_tech_bonus = {
+					name = coastal_command_focus
+					bonus = 1.0
+					uses = 2
+					category = naval_bomber
+					category = cas_bomber
+				}
+			}
+			else_if = {
+				limit = {
+					has_dlc = "By Blood Alone"
+				}
+				air_experience = 25
+				add_tech_bonus = {
+					name = coastal_command_focus
+					bonus = 1.0
+					uses = 1
+					category = naval_bomber
+					category = cas_bomber
+				}
+				add_doctrine_cost_reduction = {
+					name = ENG_coastal_command_focus #land_doc_bonus
+					cost_reduction = 0.5
+					uses = 1
+					category = air_doctrine
+				}
 			}
 		}
 	}
@@ -1710,7 +1782,7 @@ focus_tree = {
 			has_tech = advanced_ship_hull_heavy
 			has_full_control_of_state = 133
 			#has_tech = improved_heavy_battery
-			#has_tech = dp_secondary_battery
+			#has_tech = dp_light_battery_3
 			#has_tech = antiair5
 		}
 
@@ -1728,11 +1800,11 @@ focus_tree = {
 					fixed_ship_fire_control_system_slot = ship_fire_control_system_3
 					fixed_ship_radar_slot = ship_radar_3
 					fixed_ship_engine_slot = heavy_ship_engine_4
-					fixed_ship_secondaries_slot = dp_ship_secondaries
+					fixed_ship_secondaries_slot = dp_ship_secondaries_3
 					fixed_ship_armor_slot = ship_armor_bb_3
 					front_1_custom_slot = ship_heavy_battery_3
 					mid_1_custom_slot = ship_anti_air_4
-					mid_2_custom_slot = dp_ship_secondaries
+					mid_2_custom_slot = dp_ship_secondaries_3
 					mid_3_custom_slot = ship_airplane_launcher_2
 					rear_1_custom_slot = ship_heavy_battery_3
 				}
@@ -9028,10 +9100,8 @@ focus_tree = {
 		available_if_capitulated = yes
 
 		completion_reward = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus ENG_embargo_ussr"
-			SOV = {
-				add_opinion_modifier = { target = ENG modifier = embargo }
-				add_opinion_modifier = { target = ENG modifier = sanctions_relations } 
-			}
+			send_embargo = SOV
+			custom_effect_tooltip = embargo_relation_tt
 		}
 	}
 	focus = {
@@ -9146,10 +9216,8 @@ focus_tree = {
 			factor = 1
 		}	
 		completion_reward = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus ENG_embargo_germany"
-			GER = {
-				add_opinion_modifier = { target = ENG modifier = embargo }
-				add_opinion_modifier = { target = ENG modifier = sanctions_relations }  
-			}
+			send_embargo = GER
+			custom_effect_tooltip = embargo_relation_tt
 		}
 	}
 
@@ -10096,6 +10164,7 @@ focus_tree = {
 			country_exists = ITA
 			NOT = { has_war_together_with = event_target:NW_france_scope }
 			NOT = { has_war_with = ITA }
+			ITA = { is_in_faction = no }	   
 		}
 		bypass = {
 			OR = {
