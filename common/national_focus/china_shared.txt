@@ -997,12 +997,55 @@ shared_focus = {
 					}
 				}
 			}
-			capital_scope = {
-				create_unit = {
-					division = "name = \"200. Mechanised Division\" division_template = \"Experimental Mechanised Division\" start_experience_factor = 1.0" 
-					owner = ROOT
+			if = {
+				limit = { NOT = { has_dlc = "No Step Back" } }
+				if = {
+					limit = {
+						has_completed_focus = CHI_closer_ties_with_germany 
+					}
+					capital_scope = {
+						create_unit = {
+							division = "name = \"200. Mechanised Division\" division_template = \"Experimental Mechanised Division\" start_experience_factor = 1.0 force_equipment_variants = { light_tank_equipment_1 = { creator = \"GER\" } }" 
+							owner = ROOT
+						}
+					}
+				}
+				if = {
+					limit = {
+						has_completed_focus = CHI_rapprochement_with_soviet_union
+					}
+					capital_scope = {
+						create_unit = {
+							division = "name = \"200. Mechanised Division\" division_template = \"Experimental Mechanised Division\" start_experience_factor = 1.0 force_equipment_variants = { light_tank_equipment_1 = { creator = \"SOV\" } }" 
+							owner = ROOT
+						}
+					}
 				}
 			}
+			else = {
+				if = {
+					limit = {
+						has_completed_focus = CHI_closer_ties_with_germany 
+					}
+					capital_scope = {
+						create_unit = {
+							division = "name = \"200. Mechanised Division\" division_template = \"Experimental Mechanised Division\" start_experience_factor = 1.0 force_equipment_variants = { light_tank_chassis_1 = { creator = \"GER\" version_name = \"Panzer I Ausf. A\"} }" 
+							owner = ROOT
+						}
+					}
+				}
+				if = {
+					limit = {
+						has_completed_focus = CHI_rapprochement_with_soviet_union
+					}
+					capital_scope = {
+						create_unit = {
+							division = "name = \"200. Mechanised Division\" division_template = \"Experimental Mechanised Division\" start_experience_factor = 1.0 force_equipment_variants = { light_tank_chassis_1 = { creator = \"SOV\" version_name = \"T-26TU mod. 1933\"} }" 
+							owner = ROOT
+						}
+					}
+				}
+			}			
 		}
 	}
 }
@@ -1089,7 +1132,7 @@ shared_focus = {
 			category = armor
 		}
 		custom_effect_tooltip = available_designer
-		show_ideas_tooltip = morozov_design_bureau
+		show_ideas_tooltip = SOV_morozov_design_bureau
 	}
 }
 
@@ -1137,7 +1180,7 @@ shared_focus = {
 	y = 0
 	relative_position_id = CHI_mission_to_germany
 
-	cost = 7.2
+	cost = 5
 
 	ai_will_do = {
 		factor = 1
@@ -1159,6 +1202,8 @@ shared_focus = {
 		}
 		not = {
 			has_War_with = SOV
+		SOV = {
+			has_capitulated = no
 		}
 	}
 
@@ -2672,8 +2717,9 @@ shared_focus = {
 					controls_state = 286
 					controls_state = 741
 				}
-			}
-			ROOT = {
+			custom_effect_tooltip = CHI_overlordship_over_indochina_tt
+			hidden_effect = {
+				ROOT = {
 				create_wargoal = {
 					type = take_state_focus
 					target = PREV
@@ -2833,6 +2879,8 @@ shared_focus = {
 		}
 		not = {
 			has_War_with = ENG
+		ENG = {
+			has_capitulated = no
 		}
 	}
 
@@ -3091,25 +3139,56 @@ shared_focus = {
 		hidden_effect = {
 			if = {
 				limit = {
-					not = {
-						has_tech = early_fighter
+					NOT = {
+						has_dlc = "By Blood Alone"
 					}
 				}
-				set_technology = { early_fighter = 1 }
-			}
-			if = {
-				limit = {
-					has_completed_focus = CHI_british_cooperation
-					not = { has_war_with = ENG }
+				if = {
+					limit = {
+						not = {
+							has_tech = early_fighter
+						}
+					}
+					set_technology = { early_fighter = 1 }
 				}
-				add_equipment_to_stockpile = { type = fighter_equipment_0 amount = 50 producer = ENG }
-			}
-			if = {
-				limit = {
-					has_completed_focus = CHI_mission_to_the_us
-					not = { has_war_with = USA }
+				if = {
+					limit = {
+						has_completed_focus = CHI_british_cooperation
+						not = { has_war_with = ENG }
+					}
+					add_equipment_to_stockpile = { type = fighter_equipment_0 amount = 50 producer = ENG }
 				}
-				add_equipment_to_stockpile = { type = fighter_equipment_0 amount = 50 producer = USA }
+				if = {
+					limit = {
+						has_completed_focus = CHI_mission_to_the_us
+						not = { has_war_with = USA }
+					}
+					add_equipment_to_stockpile = { type = fighter_equipment_0 amount = 50 producer = USA }
+				}					  
+			}
+			else = {
+				if = {
+					limit = {
+						not = {
+							has_tech = iw_small_airframe
+						}
+					}
+					set_technology = { iw_small_airframe = 1 }
+				}
+				if = {
+					limit = {
+						has_completed_focus = CHI_british_cooperation
+						not = { has_war_with = ENG }
+					}
+					add_equipment_to_stockpile = { type = small_plane_airframe_0 amount = 50 producer = ENG variant_name = "Gloster Gladiator"}
+				}
+				if = {
+					limit = {
+						has_completed_focus = CHI_mission_to_the_us
+						not = { has_war_with = USA }
+					}
+					add_equipment_to_stockpile = { type = small_plane_airframe_1 amount = 50 producer = USA variant_name = "P-36A"}
+				}																  
 			}
 		}
 	}
@@ -3382,10 +3461,22 @@ shared_focus = {
 	available_if_capitulated = no
 
 	completion_reward = {
-		add_tech_bonus = {
-			name = CHI_the_chu_x_po
-			ahead_reduction = 2
-			technology = fighter3				
+		if = {
+			limit = {
+				has_dlc = "By Blood Alone"
+			}
+			add_tech_bonus = {
+				name = CHI_the_chu_x_po
+				ahead_reduction = 2
+				technology = advanced_small_airframe
+			}
+		}
+		else = {
+			add_tech_bonus = {
+				name = CHI_the_chu_x_po
+				ahead_reduction = 2
+				technology = fighter3				
+			}
 		}
 	}
 }
@@ -3414,6 +3505,11 @@ shared_focus = {
 			USA_will_support = yes
 			has_government = neutrality
 			USA = { has_government = ROOT }
+		USA = {
+			has_capitulated = no
+			NOT = {
+				has_War_with = ROOT
+			}
 		}
 	}
 
@@ -3490,7 +3586,7 @@ shared_focus = {
 
 	completion_reward = {
 		custom_effect_tooltip = available_theorist
-		show_ideas_tooltip = CHI_claire_lee_chennault_air_theorist
+		show_ideas_tooltip = CHI_claire_lee_chennault_theorist
 		custom_effect_tooltip = available_chief_of_airforce
 		show_ideas_tooltip = CHI_claire_lee_chennault_air_chief
 	}
@@ -3894,6 +3990,9 @@ shared_focus = {
 		}
 		NOT = { has_wargoal_against = JAP }
 		NOT = { has_war_with = JAP }
+		JAP = {
+			has_capitulated = no
+		}
 	}
 
 	bypass = {
