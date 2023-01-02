@@ -230,7 +230,8 @@ NDefines.NAI.STR_BOMB_MIN_ENEMY_FIGHTERS_IN_AREA = 400						-- If amount of enem
 --попытка починить раш альянсов
 NDefines.NAI.POTENTIAL_ALLY_JOIN_WAR_FACTOR = 25							-- If amount of enemy fighters is higher than this mission won't perform
 NDefines.NAI.AI_UPDATE_ROLES_FREQUENCY_HOURS = 96							-- Update the roles for a country AI this often (affects performance)
-
+--для гибридов
+NDefines.NAI.BUILDING_TARGETS_BUILDING_PRIORITIES = { 'universal_factory', 'industrial_complex', } -- buildings in order of pirority when considering building targets strategies. First has the greatest priority, omitted has the lowest. NOTE: not all buildings are supported by building targets strategies.
 
 NDefines.NAir.MISSION_COMMAND_POWER_COSTS = {
 	0.0, -- AIR_SUPERIORITY
@@ -260,5 +261,5 @@ NDefines_Graphics.NGraphics.COMMANDGROUP_PRESET_COLORS_HSV = {
 	180.0/360.0, 1.0, 0.75,		--turq
 	220.0/360.0, 1.0, 1.0,		--blue
 	260.0/360.0, 0.5, 0.85,		--purple
-	330.0/360.0, 0, 0.75		--white
+	330.0/360.0, 0, 0.75,		--white
 }
