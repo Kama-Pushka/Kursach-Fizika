@@ -65,4 +65,4 @@ tags={
 supported_version="1.12.*"
 picture="thumbnail.png"
 name="New Ways REBOOT DEV BUILD"
-path="mod/Kursach-Fizika"
+path="mod/_new_ways_reboot"
