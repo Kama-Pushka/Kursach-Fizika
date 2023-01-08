@@ -2892,6 +2892,20 @@ on_actions = {
 				}
 			}
 		}
+		
+		effect = {
+			if = {
+				limit = {
+					original_tag = SOV
+					has_focus_tree = generic_focus
+					OR = {
+						has_government = fascism
+						has_government = monarchy
+					}
+				}
+				mark_focus_tree_layout_dirty = yes
+			}
+		}
 	}
 
 	
@@ -5317,6 +5331,73 @@ on_actions = {
 					NOT = { has_global_flag = axis_divid_yug_flag }
 				}
 				GER = { country_event = { id = NWYugoslavia.1 days = 1 } }
+			}
+		}
+		
+		effect = {
+			# Капитуляция Пробританского Ирана = Мир с Союзниками
+			if = {
+				limit = {
+					ROOT = {
+						original_tag = PER
+						is_subject_of = ENG
+					}
+					FROM = {
+						original_tag = PER
+					}
+					NOT = { has_global_flag = PER_peace_with_allies_flag }
+				}
+				set_global_flag = PER_peace_with_allies_flag
+				FROM = {
+					every_enemy_country = {
+						limit = {
+							is_subject = no
+							OR = { has_subject = ROOT is_in_faction_with = ROOT }
+							OR = { is_faction_leader = yes is_in_faction = no }
+							NOT = { original_tag = PREV }
+						}
+						white_peace = {
+							tag = PREV
+							message = PER_peace_with_allies_flag
+						}
+					}
+					annex_country = {
+						target = ROOT
+						transfer_troops = no
+					}
+				}
+			}
+			# Капитуляция Прогерманского Ирана = Мир с Осью
+			if = {
+				limit = {
+					ROOT = {
+						original_tag = PER
+						is_subject_of = GER
+					}
+					FROM = {
+						original_tag = PER
+					}
+					NOT = { has_global_flag = PER_peace_with_axis_flag }
+				}
+				set_global_flag = PER_peace_with_axis_flag
+				FROM = {
+					every_enemy_country = {
+						limit = {
+							is_subject = no
+							OR = { has_subject = ROOT is_in_faction_with = ROOT }
+							OR = { is_faction_leader = yes is_in_faction = no }
+							NOT = { original_tag = PREV }
+						}
+						white_peace = {
+							tag = PREV
+							message = PER_peace_with_axis_flag
+						}
+					}
+					annex_country = {
+						target = ROOT
+						transfer_troops = no
+					}
+				}
 			}
 		}
 		# ROOT is capitulated country, FROM is winner
