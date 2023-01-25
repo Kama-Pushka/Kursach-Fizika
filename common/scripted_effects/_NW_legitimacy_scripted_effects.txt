@@ -1,0 +1,179 @@
+NW_legitimacy_check = {
+	set_variable = { legitimacy_var = party_popularity@ruling_party }
+	
+	### НАЧАЛО ПРОВЕРКИ КОАЛИЦИЙ
+	if = {
+		limit = { is_in_array = { coalition_array = 1 } }
+		add_to_variable = { legitimacy_var = party_popularity@democratic }
+		add_political_power = 100
+	}
+	if = {
+		limit = { is_in_array = { coalition_array = 2 } }
+		add_to_variable = { legitimacy_var = party_popularity@communism }
+	}
+	if = {
+		limit = { is_in_array = { coalition_array = 3 } }
+		add_to_variable = { legitimacy_var = party_popularity@fascism }
+	}
+	if = {
+		limit = { is_in_array = { coalition_array = 4 } }
+		add_to_variable = { legitimacy_var = party_popularity@neutrality }
+	}
+	if = {
+		limit = { is_in_array = { coalition_array = 5 } }
+		add_to_variable = { legitimacy_var = party_popularity@technocracy }
+	}
+	if = {
+		limit = { is_in_array = { coalition_array = 6 } }
+		add_to_variable = { legitimacy_var = party_popularity@trozkism }
+	}
+	if = {
+		limit = { is_in_array = { coalition_array = 7 } }
+		add_to_variable = { legitimacy_var = party_popularity@monarchy }
+	}
+	if = {
+		limit = { is_in_array = { coalition_array = 8 } }
+		add_to_variable = { legitimacy_var = party_popularity@anarchism }
+	}
+	### КОНЕЦ ПРОВЕРКИ КОАЛИЦИЙ
+	
+	if = {
+		limit = {
+			NOT = {
+				has_country_flag = very_good_legitimacy_flag
+				has_country_flag = spain_block_legitimacy_flag
+				has_government = anarchism
+				has_idea = TIB_power_without_power
+				has_idea = KHU_manual_state_management
+				has_idea = IRQ_rejection_of_hashemites
+			}
+			if = {
+				limit = {
+					original_tag = MEN
+					has_variable = MEN_legitimacy_var
+				}
+				always = no
+			}
+			else = {
+				check_variable = { legitimacy_var > 0.849 }
+			}
+		}
+		country_event = TRlegitimacy.1		# Very Good Legitimacy 85% #
+	}
+	else_if = {
+		limit = {
+			NOT = {
+				has_country_flag = good_legitimacy_flag
+				has_country_flag = spain_block_legitimacy_flag
+				has_government = anarchism
+				has_idea = TIB_power_without_power
+				has_idea = KHU_manual_state_management
+				has_idea = IRQ_rejection_of_hashemites
+			}
+			if = {
+				limit = {
+					original_tag = MEN
+					has_variable = MEN_legitimacy_var
+				}
+				always = no
+			}
+			else = {
+				check_variable = { legitimacy_var > 0.649 }
+				check_variable = { legitimacy_var < 0.85 }
+			}
+		}
+		country_event = TRlegitimacy.2		# Good Legitimacy 65 - 84.9% #
+	}
+	else_if = {
+		limit = {
+			NOT = {
+				has_country_flag = normal_legitimacy_flag
+				has_country_flag = spain_block_legitimacy_flag
+				has_idea = IRQ_rejection_of_hashemites
+			}
+			if = {
+				limit = {
+					original_tag = MEN
+					has_variable = MEN_legitimacy_var
+				}
+				check_variable = { var = MEN_legitimacy_var value = 90 compare = less_than_or_equals }
+				check_variable = { MEN_legitimacy_var > 60 }
+			}
+			else = {
+				check_variable = { legitimacy_var > 0.499 }
+				check_variable = { legitimacy_var < 0.65 }
+			}
+		}
+		country_event = TRlegitimacy.3		# Normal Legitimacy 50 - 64.9% #
+	}
+	else_if = {
+		limit = {
+			NOT = {
+				has_country_flag = low_legitimacy_flag
+				has_country_flag = spain_block_legitimacy_flag
+			}
+			if = {
+				limit = {
+					original_tag = MEN
+					has_variable = MEN_legitimacy_var
+				}
+				check_variable = { var = MEN_legitimacy_var value = 60 compare = less_than_or_equals }
+				check_variable = { MEN_legitimacy_var > 30 }
+			}
+			else_if = {
+				limit = {
+					has_idea = IRQ_rejection_of_hashemites
+				}
+				check_variable = { party_popularity@ruling_party > 0.299 }
+			}
+			else = {
+				check_variable = { legitimacy_var > 0.299 }
+				check_variable = { legitimacy_var < 0.50 }
+			}
+		}
+		country_event = TRlegitimacy.4		# Low Legitimacy 30 - 49.9% #
+	}
+	else_if = {
+		limit = {
+			NOT = {
+				has_country_flag = very_low_legitimacy_flag
+				has_country_flag = spain_block_legitimacy_flag
+			}
+			if = {
+				limit = {
+					original_tag = MEN
+					has_variable = MEN_legitimacy_var
+				}
+				check_variable = { var = MEN_legitimacy_var value = 30 compare = less_than_or_equals }
+			}
+			else = {
+				check_variable = { legitimacy_var > 0.099 }
+				check_variable = { legitimacy_var < 0.30 }
+			}
+		}
+		country_event = TRlegitimacy.5		# Very Low Legitimacy 10 - 29.9% #
+	}
+	else_if = {
+		limit = {
+			NOT = {
+				has_country_flag = disaster_legitimacy_flag
+				has_country_flag = spain_block_legitimacy_flag
+				has_country_leader = { character = NFL_david_murray_anderson ruling_only = yes }
+				has_country_leader = { character = NFL_humphrey_t_walwyn ruling_only = yes }
+				has_country_leader = { character = NFL_gordon_macdonald ruling_only = yes }
+				has_country_leader = { character = NFL_john_hope_simpson ruling_only = yes }
+			}
+			if = {
+				limit = {
+					original_tag = MEN
+					has_variable = MEN_legitimacy_var
+				}
+				always = no
+			}
+			else = {
+				check_variable = { legitimacy_var < 0.099 }
+			}
+		}
+		country_event = TRlegitimacy.6		# Disaster Legitimacy 9.9% #
+	}
+}
