@@ -1,44 +1,59 @@
 # 	#(для микрочелов) Создание коалиции:
 # add_to_array = { coalition_array = NUM }	#NUM - номер партии по списку
 # NW_legitimacy_check = yes
-# 	#теперь в легитимность к правящей партии будет также прибавляться указанная партия. и да, в коалицию можно запихнуть хоть все партии
+# 	#теперь в легитимность к правящей партии будет также прибавляться указанная партия. И да, в коалицию можно запихнуть хоть все партии
 
 NW_legitimacy_check = {
 	set_variable = { legitimacy_var = party_popularity_100@ruling_party }
 	
 	### НАЧАЛО ПРОВЕРКИ КОАЛИЦИЙ
 	if = {
-		limit = { is_in_array = { coalition_array = 1 } }
+		limit = { is_in_array = { coalition_array = 1 } NOT = { has_government = democratic } }
 		add_to_variable = { legitimacy_var = party_popularity_100@democratic }
-#		add_political_power = 100 - чисто для теста
 	}
 	if = {
-		limit = { is_in_array = { coalition_array = 2 } }
+		limit = { is_in_array = { coalition_array = 2 } NOT = { has_government = communism } }
 		add_to_variable = { legitimacy_var = party_popularity_100@communism }
 	}
 	if = {
-		limit = { is_in_array = { coalition_array = 3 } }
+		limit = { is_in_array = { coalition_array = 3 } NOT = { has_government = fascism } }
 		add_to_variable = { legitimacy_var = party_popularity_100@fascism }
 	}
 	if = {
-		limit = { is_in_array = { coalition_array = 4 } }
+		limit = { is_in_array = { coalition_array = 4 } NOT = { has_government = neutrality } }
 		add_to_variable = { legitimacy_var = party_popularity_100@neutrality }
 	}
 	if = {
-		limit = { is_in_array = { coalition_array = 5 } }
+		limit = { is_in_array = { coalition_array = 5 } NOT = { has_government = technocracy } }
 		add_to_variable = { legitimacy_var = party_popularity_100@technocracy }
 	}
 	if = {
-		limit = { is_in_array = { coalition_array = 6 } }
+		limit = { is_in_array = { coalition_array = 6 } NOT = { has_government = trozkism } }
 		add_to_variable = { legitimacy_var = party_popularity_100@trozkism }
 	}
 	if = {
-		limit = { is_in_array = { coalition_array = 7 } }
+		limit = { is_in_array = { coalition_array = 7 } NOT = { has_government = monarchy } }
 		add_to_variable = { legitimacy_var = party_popularity_100@monarchy }
 	}
 	if = {
-		limit = { is_in_array = { coalition_array = 8 } }
+		limit = { is_in_array = { coalition_array = 8 } NOT = { has_government = anarchism } }
 		add_to_variable = { legitimacy_var = party_popularity_100@anarchism }
+	}
+	
+	if = {
+		limit = {
+			OR = {
+				AND = { is_in_array = { coalition_array = 1 } has_government = democratic }
+				AND = { is_in_array = { coalition_array = 2 } has_government = communism }
+				AND = { is_in_array = { coalition_array = 3 } has_government = fascism }
+				AND = { is_in_array = { coalition_array = 4 } has_government = neutrality }
+				AND = { is_in_array = { coalition_array = 5 } has_government = technocracy }
+				AND = { is_in_array = { coalition_array = 6 } has_government = trozkism }
+				AND = { is_in_array = { coalition_array = 7 } has_government = monarchy }
+				AND = { is_in_array = { coalition_array = 8 } has_government = anarchism }
+			}
+		}
+		subtract_from_variable = { legitimacy_var = party_popularity_100@ruling_party }
 	}
 	### КОНЕЦ ПРОВЕРКИ КОАЛИЦИЙ
 	
@@ -63,16 +78,14 @@ NW_legitimacy_check = {
 				check_variable = { legitimacy_var > 84.9 }
 			}
 		}
+		# Very Good Legitimacy 85% #
+		set_variable = { num_new_legitimacy_idea_var = token:very_good }
 		if = {
-			limit = { date > 1936.1.1 }
-#			country_event = TRlegitimacy.1		# Very Good Legitimacy 85% #
-			
-			set_variable = { num_new_legitimacy_idea_var = token:very_good }
+			limit = { date > 1936.1.2 }
 			NW_set_legitimacy = yes
 			set_country_flag = { flag = change_legitimacy_flag days = 4 value = 6 } #alert
 		}
 		else = {
-			set_variable = { num_new_legitimacy_idea_var = token:very_good }
 			NW_startup_set_legitimacy = yes
 		}
 	}
@@ -98,16 +111,14 @@ NW_legitimacy_check = {
 				check_variable = { legitimacy_var < 85.0 }
 			}
 		}
+		# Good Legitimacy 65 - 84.9% #
+		set_variable = { num_new_legitimacy_idea_var = token:good }
 		if = {
-			limit = { date > 1936.1.1 }
-#			country_event = TRlegitimacy.2		# Good Legitimacy 65 - 84.9% #
-			
-			set_variable = { num_new_legitimacy_idea_var = token:good }
+			limit = { date > 1936.1.2 }
 			NW_set_legitimacy = yes
 			set_country_flag = { flag = change_legitimacy_flag days = 4 value = 5 } #alert
 		}
 		else = {
-			set_variable = { num_new_legitimacy_idea_var = token:good }
 			NW_startup_set_legitimacy  = yes
 		}
 	}
@@ -131,16 +142,14 @@ NW_legitimacy_check = {
 				check_variable = { legitimacy_var < 65.0 }
 			}
 		}
+		# Normal Legitimacy 50 - 64.9% #
+		set_variable = { num_new_legitimacy_idea_var = token:normal }
 		if = {
-			limit = { date > 1936.1.1 }
-#			country_event = TRlegitimacy.3		# Normal Legitimacy 50 - 64.9% #
-			
-			set_variable = { num_new_legitimacy_idea_var = token:normal }
+			limit = { date > 1936.1.2 }
 			NW_set_legitimacy = yes
 			set_country_flag = { flag = change_legitimacy_flag days = 4 value = 4 } #alert
 		}
 		else = {
-			set_variable = { num_new_legitimacy_idea_var = token:normal }
 			NW_startup_set_legitimacy = yes
 		}
 	}
@@ -169,16 +178,14 @@ NW_legitimacy_check = {
 				check_variable = { legitimacy_var < 50.0 }
 			}
 		}
+		# Low Legitimacy 30 - 49.9% #
+		set_variable = { num_new_legitimacy_idea_var = token:low }
 		if = {
-			limit = { date > 1936.1.1 }
-#			country_event = TRlegitimacy.4		# Low Legitimacy 30 - 49.9% #
-			
-			set_variable = { num_new_legitimacy_idea_var = token:low }
+			limit = { date > 1936.1.2 }
 			NW_set_legitimacy = yes
 			set_country_flag = { flag = change_legitimacy_flag days = 4 value = 3 } #alert
 		}
 		else = {
-			set_variable = { num_new_legitimacy_idea_var = token:low }
 			NW_startup_set_legitimacy = yes
 		}
 	}
@@ -200,16 +207,14 @@ NW_legitimacy_check = {
 				check_variable = { legitimacy_var < 30.0 }
 			}
 		}
+		# Very Low Legitimacy 10 - 29.9% #
+		set_variable = { num_new_legitimacy_idea_var = token:very_low }
 		if = {
-			limit = { date > 1936.1.1 }
-#			country_event = TRlegitimacy.5		# Very Low Legitimacy 10 - 29.9% #
-			
-			set_variable = { num_new_legitimacy_idea_var = token:very_low }
+			limit = { date > 1936.1.2 }
 			NW_set_legitimacy = yes
 			set_country_flag = { flag = change_legitimacy_flag days = 4 value = 2 } #alert
 		}
 		else = {
-			set_variable = { num_new_legitimacy_idea_var = token:very_low }
 			NW_startup_set_legitimacy = yes
 		}
 	}
@@ -234,16 +239,14 @@ NW_legitimacy_check = {
 				check_variable = { legitimacy_var < 9.9 }
 			}
 		}
+		# Disaster Legitimacy 9.9% #
+		set_variable = { num_new_legitimacy_idea_var = token:disaster }
 		if = {
-			limit = { date > 1936.1.1 }
-#			country_event = TRlegitimacy.6		# Disaster Legitimacy 9.9% #
-			
-			set_variable = { num_new_legitimacy_idea_var = token:disaster }
+			limit = { date > 1936.1.2 }
 			NW_set_legitimacy = yes
 			set_country_flag = { flag = change_legitimacy_flag days = 4 value = 1 } #alert
 		}
 		else = {
-			set_variable = { num_new_legitimacy_idea_var = token:disaster }
 			NW_startup_set_legitimacy = yes
 		}
 	}
