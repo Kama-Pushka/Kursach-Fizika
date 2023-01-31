@@ -2,6 +2,7 @@
 # add_to_array = { coalition_array = NUM }	#NUM - номер партии по списку
 # NW_legitimacy_check = yes
 # 	#теперь в легитимность к правящей партии будет также прибавляться указанная партия. И да, в коалицию можно запихнуть хоть все партии
+#   #добавив в массив правящую партию вы уберете её популярность из легитимности!
 
 NW_legitimacy_check = {
 	set_variable = { legitimacy_var = party_popularity_100@ruling_party }
@@ -79,16 +80,19 @@ NW_legitimacy_check = {
 			}
 		}
 		# Very Good Legitimacy 85% #
-		set_variable = { num_new_legitimacy_idea_var = token:very_good }
+		set_variable = { new_legitimacy_idea_var = token:very_good }
+		set_variable = { GUI_new_legitimacy_idea_var_NUM = 1 }
 		if = {
 			limit = { date > 1936.1.2 }
 			NW_set_legitimacy = yes
-			set_country_flag = { flag = change_legitimacy_flag days = 4 value = 6 } #alert
+			clr_country_flag = change_migration_level_flag
+			set_country_flag = { flag = change_legitimacy_flag days = 4 value = 1 } #alert
 		}
 		else = {
 			NW_startup_set_legitimacy = yes
 		}
 	}
+	
 	else_if = {
 		limit = {
 			NOT = {
@@ -112,16 +116,19 @@ NW_legitimacy_check = {
 			}
 		}
 		# Good Legitimacy 65 - 84.9% #
-		set_variable = { num_new_legitimacy_idea_var = token:good }
+		set_variable = { new_legitimacy_idea_var = token:good }
+		set_variable = { GUI_new_legitimacy_idea_var_NUM = 2 }
 		if = {
 			limit = { date > 1936.1.2 }
 			NW_set_legitimacy = yes
-			set_country_flag = { flag = change_legitimacy_flag days = 4 value = 5 } #alert
+			clr_country_flag = change_migration_level_flag
+			set_country_flag = { flag = change_legitimacy_flag days = 4 value = 2 } #alert
 		}
 		else = {
 			NW_startup_set_legitimacy  = yes
 		}
 	}
+	
 	else_if = {
 		limit = {
 			NOT = {
@@ -143,16 +150,19 @@ NW_legitimacy_check = {
 			}
 		}
 		# Normal Legitimacy 50 - 64.9% #
-		set_variable = { num_new_legitimacy_idea_var = token:normal }
+		set_variable = { new_legitimacy_idea_var = token:normal }
+		set_variable = { GUI_new_legitimacy_idea_var_NUM = 3 }
 		if = {
 			limit = { date > 1936.1.2 }
 			NW_set_legitimacy = yes
-			set_country_flag = { flag = change_legitimacy_flag days = 4 value = 4 } #alert
+			clr_country_flag = change_migration_level_flag
+			set_country_flag = { flag = change_legitimacy_flag days = 4 value = 3 } #alert
 		}
 		else = {
 			NW_startup_set_legitimacy = yes
 		}
 	}
+	
 	else_if = {
 		limit = {
 			NOT = {
@@ -179,16 +189,19 @@ NW_legitimacy_check = {
 			}
 		}
 		# Low Legitimacy 30 - 49.9% #
-		set_variable = { num_new_legitimacy_idea_var = token:low }
+		set_variable = { new_legitimacy_idea_var = token:low }
+		set_variable = { GUI_new_legitimacy_idea_var_NUM = 4 }
 		if = {
 			limit = { date > 1936.1.2 }
 			NW_set_legitimacy = yes
-			set_country_flag = { flag = change_legitimacy_flag days = 4 value = 3 } #alert
+			clr_country_flag = change_migration_level_flag
+			set_country_flag = { flag = change_legitimacy_flag days = 4 value = 4 } #alert
 		}
 		else = {
 			NW_startup_set_legitimacy = yes
 		}
 	}
+	
 	else_if = {
 		limit = {
 			NOT = {
@@ -208,16 +221,19 @@ NW_legitimacy_check = {
 			}
 		}
 		# Very Low Legitimacy 10 - 29.9% #
-		set_variable = { num_new_legitimacy_idea_var = token:very_low }
+		set_variable = { new_legitimacy_idea_var = token:very_low }
+		set_variable = { GUI_new_legitimacy_idea_var_NUM = 5 }
 		if = {
 			limit = { date > 1936.1.2 }
 			NW_set_legitimacy = yes
-			set_country_flag = { flag = change_legitimacy_flag days = 4 value = 2 } #alert
+			clr_country_flag = change_migration_level_flag
+			set_country_flag = { flag = change_legitimacy_flag days = 4 value = 5 } #alert
 		}
 		else = {
 			NW_startup_set_legitimacy = yes
 		}
 	}
+	
 	else_if = {
 		limit = {
 			NOT = {
@@ -240,11 +256,13 @@ NW_legitimacy_check = {
 			}
 		}
 		# Disaster Legitimacy 9.9% #
-		set_variable = { num_new_legitimacy_idea_var = token:disaster }
+		set_variable = { new_legitimacy_idea_var = token:disaster }
+		set_variable = { GUI_new_legitimacy_idea_var_NUM = 6 }
 		if = {
 			limit = { date > 1936.1.2 }
 			NW_set_legitimacy = yes
-			set_country_flag = { flag = change_legitimacy_flag days = 4 value = 1 } #alert
+			clr_country_flag = change_migration_level_flag
+			set_country_flag = { flag = change_legitimacy_flag days = 4 value = 6 } #alert
 		}
 		else = {
 			NW_startup_set_legitimacy = yes
@@ -254,110 +272,47 @@ NW_legitimacy_check = {
 
 ###
 
+NW_startup_set_legitimacy = {
+	meta_effect = {
+		text = {
+			add_ideas = [NEW_LEG_IDEA]_legitimacy
+			set_country_flag = [NEW_LEG_IDEA]_legitimacy_flag
+		}
+		NEW_LEG_IDEA = "[?new_legitimacy_idea_var.GetTokenKey]"
+	}
+	set_variable = { current_legitimacy_idea_var = new_legitimacy_idea_var }
+	set_variable = { GUI_current_legitimacy_idea_var_NUM = GUI_new_legitimacy_idea_var_NUM } #GUI
+}
+
 NW_set_legitimacy = {
 	NW_set_GUI_legitimacy = yes
 	meta_effect = {
 		text = {
 			swap_ideas = {
-				remove_idea = [NUM_CURRENT_LEG_IDEA]_legitimacy
-				add_idea = [NUM_NEW_LEG_IDEA]_legitimacy
+				remove_idea = [CURRENT_LEG_IDEA]_legitimacy
+				add_idea = [NEW_LEG_IDEA]_legitimacy
 			}
-			clr_country_flag = [NUM_CURRENT_LEG_IDEA]_legitimacy_flag
-			set_country_flag = [NUM_NEW_LEG_IDEA]_legitimacy_flag
-			
-			set_variable = { num_current_legitimacy_idea_var = token:[NUM_NEW_LEG_IDEA] }
+			clr_country_flag = [CURRENT_LEG_IDEA]_legitimacy_flag
+			set_country_flag = [NEW_LEG_IDEA]_legitimacy_flag
 		}
-		NUM_NEW_LEG_IDEA = "[?num_new_legitimacy_idea_var.GetTokenKey]"
-		NUM_CURRENT_LEG_IDEA = "[?num_current_legitimacy_idea_var.GetTokenKey]"
+		CURRENT_LEG_IDEA = "[?current_legitimacy_idea_var.GetTokenKey]"
+		NEW_LEG_IDEA = "[?new_legitimacy_idea_var.GetTokenKey]"
 	}
-	log = "[GetDateText]: [THIS.GetName] ([THIS.GetTag]): legitimacy_[?THIS.num_current_legitimacy_idea_var] | legitimacy_[?THIS.num_new_legitimacy_idea_var]" 
-#	set_variable = { num_current_legitimacy_idea_var = num_new_legitimacy_idea_var }
+	log = "[GetDateText]: [THIS.GetName] ([THIS.GetTag]): idea legitimacy_[?THIS.current_legitimacy_idea_var.GetTokenKey] | idea legitimacy_[?THIS.new_legitimacy_idea_var.GetTokenKey]" 
+	set_variable = { current_legitimacy_idea_var = new_legitimacy_idea_var }
 }
 
-NW_startup_set_legitimacy = {
-	clr_country_flag = change_legitimacy_flag
-	meta_effect = {
-		text = {
-			add_ideas = [NUM_NEW_LEG_IDEA]_legitimacy
-			set_country_flag = [NUM_NEW_LEG_IDEA]_legitimacy_flag
-			
-			set_variable = { num_current_legitimacy_idea_var = token:[NUM_NEW_LEG_IDEA] }
-		}
-		NUM_NEW_LEG_IDEA = "[?num_new_legitimacy_idea_var.GetTokenKey]"
-	}
-	set_variable = { GUI_num_current_legitimacy_idea_var = num_current_legitimacy_idea_var }
-#	set_variable = { num_current_legitimacy_idea_var = num_new_legitimacy_idea_var }
-}
-
-NW_set_GUI_legitimacy = {
-	### ДЛЯ ГУИ
-	set_variable = { GUI_num_current_legitimacy_idea_var = num_current_legitimacy_idea_var }
-	set_variable = { GUI_num_new_legitimacy_idea_var = num_new_legitimacy_idea_var }
-	
-	set_temp_variable = { disaster_temp_var = token:disaster }
-	set_temp_variable = { very_low_temp_var = token:very_low }
-	set_temp_variable = { low_temp_var = token:low }
-	set_temp_variable = { normal_temp_var = token:normal }
-	set_temp_variable = { good_temp_var = token:good }
-	set_temp_variable = { very_good_temp_var = token:very_good }
+NW_set_GUI_legitimacy = { ### ДЛЯ ГУИ
+	set_variable = { GUI_current_legitimacy_idea_var = current_legitimacy_idea_var }
+	set_variable = { GUI_new_legitimacy_idea_var = new_legitimacy_idea_var }
 	
 	if = {
-		limit = { check_variable = { GUI_num_new_legitimacy_idea_var = disaster_temp_var } }
-		set_variable = { GUI_new_legitimacy_idea_var_NUM = 6 }
-	}
-	else_if = {
-		limit = { check_variable = { GUI_num_new_legitimacy_idea_var = very_low_temp_var } }
-		set_variable = { GUI_new_legitimacy_idea_var_NUM = 5 }
-	}
-	else_if = {
-		limit = { check_variable = { GUI_num_new_legitimacy_idea_var = low_temp_var } }
-		set_variable = { GUI_new_legitimacy_idea_var_NUM = 4 }
-	}
-	else_if = {
-		limit = { check_variable = { GUI_num_new_legitimacy_idea_var = normal_temp_var } }
-		set_variable = { GUI_new_legitimacy_idea_var_NUM = 3 }
-	}
-	else_if = {
-		limit = { check_variable = { GUI_num_new_legitimacy_idea_var = good_temp_var } }
-		set_variable = { GUI_new_legitimacy_idea_var_NUM = 2 }
-	}
-	else_if = {
-		limit = { check_variable = { GUI_num_new_legitimacy_idea_var = very_good_temp_var } }
-		set_variable = { GUI_new_legitimacy_idea_var_NUM = 1 }
-	}
-	
-	
-	if = {
-		limit = { check_variable = { GUI_num_current_legitimacy_idea_var = disaster_temp_var } }
-		set_variable = { GUI_num_current_legitimacy_idea_var_NUM = 6 }
-	}
-	else_if = {
-		limit = { check_variable = { GUI_num_current_legitimacy_idea_var = very_low_temp_var } }
-		set_variable = { GUI_num_current_legitimacy_idea_var_NUM = 5 }
-	}
-	else_if = {
-		limit = { check_variable = { GUI_num_current_legitimacy_idea_var = low_temp_var } }
-		set_variable = { GUI_num_current_legitimacy_idea_var_NUM = 4 }
-	}
-	else_if = {
-		limit = { check_variable = { GUI_num_current_legitimacy_idea_var = normal_temp_var } }
-		set_variable = { GUI_num_current_legitimacy_idea_var_NUM = 3 }
-	}
-	else_if = {
-		limit = { check_variable = { GUI_num_current_legitimacy_idea_var = good_temp_var } }
-		set_variable = { GUI_num_current_legitimacy_idea_var_NUM = 2 }
-	}
-	else_if = {
-		limit = { check_variable = { GUI_num_current_legitimacy_idea_var = very_good_temp_var } }
-		set_variable = { GUI_num_current_legitimacy_idea_var_NUM = 1 }
-	}
-	
-	
-	if = {
-		limit = { check_variable = { GUI_new_legitimacy_idea_var_NUM > GUI_num_current_legitimacy_idea_var_NUM } }
-		set_variable = { GUI_up_or_down_status_var = 1 }	# плохо
+		limit = { check_variable = { GUI_new_legitimacy_idea_var_NUM > GUI_current_legitimacy_idea_var_NUM } }
+		set_variable = { GUI_up_or_down_status_var = 1 }	# Понижение
 	}
 	else = {
-		set_variable = { GUI_up_or_down_status_var = 2 }	# хорошо
+		set_variable = { GUI_up_or_down_status_var = 2 }	# Повышение
 	}
+	
+	set_variable = { GUI_current_legitimacy_idea_var_NUM = GUI_new_legitimacy_idea_var_NUM }
 }
