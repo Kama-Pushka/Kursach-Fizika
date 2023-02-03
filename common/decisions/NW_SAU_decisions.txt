@@ -288,7 +288,10 @@ SAU_irregular_army_category = {
 							add_to_variable = { ROOT.total_num_of_militia_var = 1 }
 						}
 						if = {
-							limit = { has_completed_focus = SAU_remove_objectionable_sheikhs }
+							limit = {
+								has_completed_focus = SAU_remove_objectionable_sheikhs
+								check_variable = { opinion_with_tribes_var > 65 }
+							}
 							random_controlled_state = {
 							prioritize = { 1115 }
 								create_unit = {
@@ -303,16 +306,6 @@ SAU_irregular_army_category = {
 							prioritize = { 991 }
 								create_unit = {
 									division = "name = \"Milishia min Tabuk\" division_template = \"Milishia Qabalia\" start_experience_factor = [IRREGULAR_EXP] start_equipment_factor = 0.6"
-									owner = ROOT
-									count = 1
-								}
-								add_to_variable = { ROOT.num_of_camelry_var = 1 }
-								add_to_variable = { ROOT.total_num_of_militia_var = 1 }
-							}
-							random_controlled_state = {
-							prioritize = { 1116 }
-								create_unit = {
-									division = "name = \"Milishia min Asir\" division_template = \"Milishia Qabalia\" start_experience_factor = [IRREGULAR_EXP] start_equipment_factor = 0.6"
 									owner = ROOT
 									count = 1
 								}
@@ -1285,6 +1278,12 @@ SAU_opinion_with_ulema_category = {
 			factor = 10
 		}
 
+		available = {
+			NOT = {
+				has_active_mission = SAU_relaxation_of_religious_prohibitions_mission
+			}
+		}
+
 		days_remove = 100
 		
 		modifier = {
@@ -1301,6 +1300,69 @@ SAU_opinion_with_ulema_category = {
 			add_to_variable = { opinion_with_ulema_var = 5 }
 			set_opinion_with_ulema_var = yes
 			set_opinion_with_ulema_Value = yes
+		}
+	}
+	
+	SAU_relaxation_of_religious_prohibitions = {
+    	icon = speech
+		
+		cost = 50
+		
+		available = {
+			NOT = {
+				has_decision = SAU_tightening_religious_norms
+			}
+		}
+		
+		visible = {
+			NOT = {
+				has_active_mission = SAU_relaxation_of_religious_prohibitions_mission
+			}
+		}
+		
+		ai_will_do = {
+			factor = -200
+		}
+		
+		complete_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision SAU_relaxation_of_religious_prohibitions"
+			add_research_slot = 1
+			custom_effect_tooltip = SAU_loyalty_of_ulema_minus10
+			add_to_variable = { opinion_with_ulema_var = -10 }
+			set_opinion_with_ulema_Value = yes
+			set_opinion_with_ulema_var = yes
+			custom_effect_tooltip = SAU_relaxation_of_religious_prohibitions_tt
+			hidden_effect = {
+				activate_mission = SAU_relaxation_of_religious_prohibitions_mission
+			}
+		}
+	}
+	
+	SAU_relaxation_of_religious_prohibitions_mission = {
+		activation = {
+			has_decision = SAU_relaxation_of_religious_prohibitions
+		}
+		cancel_trigger = {
+			has_decision = SAU_tightening_religious_norms
+		}
+		icon = muslim_propaganda
+		is_good = yes
+		days_mission_timeout = 150
+		selectable_mission = yes
+		complete_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete mission SAU_relaxation_of_religious_prohibitions_mission"
+			remove_mission = SAU_relaxation_of_religious_prohibitions_mission
+			add_research_slot = -1
+		}
+		timeout_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete mission SAU_relaxation_of_religious_prohibitions_mission"
+			custom_effect_tooltip = SAU_loyalty_of_ulema_minus10
+			add_to_variable = { opinion_with_ulema_var = -10 }
+			set_opinion_with_ulema_Value = yes
+			set_opinion_with_ulema_var = yes
+			hidden_effect = {
+				activate_mission = SAU_relaxation_of_religious_prohibitions_mission
+			}
 		}
 	}
 
