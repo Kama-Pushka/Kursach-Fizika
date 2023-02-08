@@ -11,6 +11,8 @@ add_namespace = BBA_italy_recognize_the_empire
 add_namespace = BBA_italy_council_deposes_duce
 add_namespace = BBA_italy_sends_military_support
 add_namespace = BBA_italy_local_rulers
+add_namespace = BBA_italy_human_torpedo_raid
+add_namespace = BBA_italy_naval_cooperation_programs
 
 
 
@@ -4701,5 +4703,628 @@ unit_leader_event = {
 		}
 
 		custom_effect_tooltip = ITA_ends_event_chain_tt
+	}
+}
+
+
+country_event = {
+	id = BBA_italy_human_torpedo_raid.1
+	title = BBA_italy_human_torpedo_raid.1.t
+	desc = BBA_italy_human_torpedo_raid.1.desc
+	picture = GFX_report_event_ast_navy
+	
+	is_triggered_only = yes
+
+	
+	option = { 
+		name = BBA_italy_human_torpedo_raid.1.a 
+
+		custom_effect_tooltip = ITA_human_torpedo_raid_tt
+		
+		custom_effect_tooltip = ITA_human_torpedo_target_effect_tt
+	}
+}
+
+
+
+
+	 ######   #######   #######  ########  ######## ########     ###    ######## ####  #######  ##    ##    ########  ########   #######   ######   ########     ###    ##     ##  ######  
+	##    ## ##     ## ##     ## ##     ## ##       ##     ##   ## ##      ##     ##  ##     ## ###   ##    ##     ## ##     ## ##     ## ##    ##  ##     ##   ## ##   ###   ### ##    ## 
+	##       ##     ## ##     ## ##     ## ##       ##     ##  ##   ##     ##     ##  ##     ## ####  ##    ##     ## ##     ## ##     ## ##        ##     ##  ##   ##  #### #### ##       
+	##       ##     ## ##     ## ########  ######   ########  ##     ##    ##     ##  ##     ## ## ## ##    ########  ########  ##     ## ##   #### ########  ##     ## ## ### ##  ######  
+	##       ##     ## ##     ## ##        ##       ##   ##   #########    ##     ##  ##     ## ##  ####    ##        ##   ##   ##     ## ##    ##  ##   ##   ######### ##     ##       ## 
+	##    ## ##     ## ##     ## ##        ##       ##    ##  ##     ##    ##     ##  ##     ## ##   ###    ##        ##    ##  ##     ## ##    ##  ##    ##  ##     ## ##     ## ##    ## 
+	 ######   #######   #######  ##        ######## ##     ## ##     ##    ##    ####  #######  ##    ##    ##        ##     ##  #######   ######   ##     ## ##     ## ##     ##  ######  
+
+
+# Offer to join the Naval Cooperation Program - Event for allies
+country_event = {
+	id = BBA_italy_naval_cooperation_programs.01
+	title = BBA_italy_naval_cooperation_programs.01.t
+	desc = BBA_italy_naval_cooperation_programs.01.desc
+	picture = GFX_report_event_ast_navy
+	
+	is_triggered_only = yes
+
+	# Accept
+	option = { 
+		name = BBA_italy_naval_cooperation_programs.01.a
+		ai_chance = {
+			base = 10
+		}
+
+		add_to_tech_sharing_group = ITA_naval_cooperation_program_research_group
+		FROM = { add_to_tech_sharing_group = ITA_naval_cooperation_program_research_group }
+		hidden_effect = {
+			FROM = { country_event = { id = BBA_italy_naval_cooperation_programs.02 hours = 1 } }
+		}
+	}
+
+	# Refuse
+	option = {
+		name = BBA_italy_naval_cooperation_programs.01.b
+		ai_chance = {
+			base = 0 #AI always says 'yes'
+		}
+
+		FROM = {
+			add_opinion_modifier = {
+				target = ROOT
+				modifier = BUL_rejected_our_proposal
+			}
+		}
+		hidden_effect = {
+			FROM = { country_event = { id = BBA_italy_naval_cooperation_programs.03 hours = 1 } }
+		}
+	}
+}
+
+# Country joins the Naval Cooperation Program - Event for ITA
+country_event = {
+	id = BBA_italy_naval_cooperation_programs.02
+	title = BBA_italy_naval_cooperation_programs.02.t
+	desc = BBA_italy_naval_cooperation_programs.02.desc
+	picture = GFX_report_event_ast_navy
+	
+	is_triggered_only = yes
+
+	# Coolio
+	option = { 
+		name = BBA_italy_naval_cooperation_programs.02.a
+
+		effect_tooltip = {
+			add_to_tech_sharing_group = ITA_naval_cooperation_program_research_group
+			FROM = { add_to_tech_sharing_group = ITA_naval_cooperation_program_research_group }
+		}
+	}
+}
+
+# Country refuses to join the Naval Cooperation Program - Event for ITA
+country_event = {
+	id = BBA_italy_naval_cooperation_programs.03
+	title = BBA_italy_naval_cooperation_programs.03.t
+	desc = BBA_italy_naval_cooperation_programs.03.desc
+	picture = GFX_report_event_ast_navy
+	
+	is_triggered_only = yes
+
+	# wtf
+	option = { 
+		name = BBA_italy_naval_cooperation_programs.03.a
+
+		effect_tooltip = {
+			add_opinion_modifier = {
+				target = FROM
+				modifier = BUL_rejected_our_proposal
+			}
+		}
+	}
+}
+
+# Offer to perform joint maneuvers - Event for allies
+country_event = {
+	id = BBA_italy_naval_cooperation_programs.04
+	title = BBA_italy_naval_cooperation_programs.04.t
+	desc = BBA_italy_naval_cooperation_programs.04.desc
+	picture = GFX_report_event_usa_destroyers
+	
+	is_triggered_only = yes
+
+	# Accept
+	option = { 
+		name = BBA_italy_naval_cooperation_programs.04.a
+		ai_chance = {
+			base = 10
+		}
+
+		effect_tooltip = {
+			custom_effect_tooltip = ITA_joint_maneuvers_with_country_remove_effect_tt
+			navy_experience = 50
+			add_doctrine_cost_reduction = {
+				name = ITA_joint_maneuvers_with_country_doctrine_bonus
+				cost_reduction = 0.75
+				uses = 1
+				category = naval_doctrine
+			}
+			FROM = {
+				navy_experience = 50
+				add_doctrine_cost_reduction = {
+					name = ITA_joint_maneuvers_with_country_doctrine_bonus
+					cost_reduction = 0.75
+					uses = 1
+					category = naval_doctrine
+				}
+			}
+		}
+		hidden_effect = {
+			FROM = { country_event = { id = BBA_italy_naval_cooperation_programs.05 hours = 1 } }
+		}
+	}
+
+	# Refuse
+	option = {
+		name = BBA_italy_naval_cooperation_programs.04.b
+		ai_chance = {
+			base = 0 #AI always says 'yes'
+		}
+
+		FROM = {
+			add_opinion_modifier = {
+				target = ROOT
+				modifier = BUL_rejected_our_proposal
+			}
+		}
+		hidden_effect = {
+			set_country_flag = ITA_joint_maneuvers_rejected_flag #Preventing the decision to be taken again by Italy
+			FROM = { country_event = { id = BBA_italy_naval_cooperation_programs.06 hours = 1 } }
+		}
+	}
+}
+
+# Country accepts joint maneuvers - Event for ITA
+country_event = {
+	id = BBA_italy_naval_cooperation_programs.05
+	title = BBA_italy_naval_cooperation_programs.05.t
+	desc = BBA_italy_naval_cooperation_programs.05.desc
+	picture = GFX_report_event_usa_destroyers
+	
+	is_triggered_only = yes
+
+	# Coolio
+	option = { 
+		name = BBA_italy_naval_cooperation_programs.05.a
+
+		effect_tooltip = {
+			custom_effect_tooltip = ITA_joint_maneuvers_with_country_remove_effect_tt
+			navy_experience = 50
+			add_doctrine_cost_reduction = {
+				name = ITA_joint_maneuvers_with_country_doctrine_bonus
+				cost_reduction = 0.75
+				uses = 1
+				category = naval_doctrine
+			}
+			FROM = {
+				navy_experience = 50
+				add_doctrine_cost_reduction = {
+					name = ITA_joint_maneuvers_with_country_doctrine_bonus
+					cost_reduction = 0.75
+					uses = 1
+					category = naval_doctrine
+				}
+			}
+		}
+	}
+}
+
+# Country rejects joint maneuvers - Event for ITA
+country_event = {
+	id = BBA_italy_naval_cooperation_programs.06
+	title = BBA_italy_naval_cooperation_programs.06.t
+	desc = BBA_italy_naval_cooperation_programs.06.desc
+	picture = GFX_report_event_usa_destroyers
+	
+	is_triggered_only = yes
+
+	# wtf
+	option = { 
+		name = BBA_italy_naval_cooperation_programs.06.a
+
+		effect_tooltip = {
+			add_opinion_modifier = {
+				target = FROM
+				modifier = BUL_rejected_our_proposal
+			}
+		}
+	}
+}
+
+# Joint Maneuvers Prgoram finished - Event for ITA and ally
+country_event = {
+	id = BBA_italy_naval_cooperation_programs.07
+	title = BBA_italy_naval_cooperation_programs.07.t
+	desc = BBA_italy_naval_cooperation_programs.07.desc
+	picture = GFX_report_event_usa_destroyers
+	
+	is_triggered_only = yes
+
+	# Awesome
+	option = { 
+		name = BBA_italy_naval_cooperation_programs.07.a
+
+		navy_experience = 50
+		add_doctrine_cost_reduction = {
+			name = ITA_joint_maneuvers_with_country_doctrine_bonus
+			cost_reduction = 0.75
+			uses = 1
+			category = naval_doctrine
+		}
+		effect_tooltip = {
+			FROM = {
+				navy_experience = 50
+				add_doctrine_cost_reduction = {
+					name = ITA_joint_maneuvers_with_country_doctrine_bonus
+					cost_reduction = 0.75
+					uses = 1
+					category = naval_doctrine
+				}
+			}
+		}
+	}
+}
+
+# Offer to sell Italian Escort Ships - Event for SWE / other minors
+country_event = {
+	id = BBA_italy_naval_cooperation_programs.08
+	title = BBA_italy_naval_cooperation_programs.08.t
+	desc = BBA_italy_naval_cooperation_programs.08.desc
+	picture = GFX_report_event_sailors_in_working_rig
+	
+	is_triggered_only = yes
+
+	# Accept
+	option = { 
+		name = BBA_italy_naval_cooperation_programs.08.a
+		ai_chance = {
+			base = 10
+		}
+
+		effect_tooltip = {
+			custom_effect_tooltip = ITA_cooperation_programs_deal_others_tt
+			FROM = {
+				add_timed_idea = {
+					idea = ITA_sold_obsolete_escort_ships_ns
+					days = 365
+				}
+			}
+		}
+
+		hidden_effect = {
+			FROM = {
+				set_country_flag = ITA_sold_obsolete_escort_ships_flag #Cannot sell ships again
+				country_event = { id = BBA_italy_naval_cooperation_programs.09 hours = 1 }
+			}
+		}
+	}
+
+	# Refuse
+	option = {
+		name = BBA_italy_naval_cooperation_programs.08.b
+		ai_chance = {
+			base = 0 #AI always says 'yes'
+		}
+
+		hidden_effect = {
+			if = {
+				limit = {
+					original_tag = SWE
+				}
+				FROM = { set_country_flag = ITA_sweden_refused_to_buy_ships_flag }
+			}
+			set_country_flag = ITA_obsolete_escort_ships_rejected_flag #Preventing the decision to be taken again by Italy
+			FROM = { country_event = { id = BBA_italy_naval_cooperation_programs.10 hours = 1 } }
+		}
+	}
+}
+
+# Country accepts buying Italian Escort Ships - Event for ITA
+country_event = {
+	id = BBA_italy_naval_cooperation_programs.09
+	title = BBA_italy_naval_cooperation_programs.09.t
+	desc = BBA_italy_naval_cooperation_programs.09.desc
+	picture = GFX_report_event_sailors_in_working_rig
+	
+	is_triggered_only = yes
+
+	immediate = {
+		hidden_effect = { #Remove all other decisions for this, we are successful we won't sell any more ships
+			clr_country_flag = ITA_escort_ships_purchase_ongoing_flag
+		}
+	}
+
+	# Coolio
+	option = { 
+		name = BBA_italy_naval_cooperation_programs.09.a
+
+		hidden_effect = { #transfer_ship does not generate any tt
+			transfer_ship = {
+				prefer_name = "RCT Bettino Ricasoli"
+				type = destroyer
+				target = FROM
+				exclude_refitting = yes
+			}
+			transfer_ship = {
+				prefer_name = "RCT Giovanni Nicotera"
+				type = destroyer
+				target = FROM
+				exclude_refitting = yes
+			}
+			transfer_ship = {
+				prefer_name = "RCT Astore"
+				type = destroyer
+				target = FROM
+				exclude_refitting = yes
+			}
+			transfer_ship = {
+				prefer_name = "RCT Spica"
+				type = destroyer
+				target = FROM
+				exclude_refitting = yes
+			}
+		}
+		custom_effect_tooltip = ITA_cooperation_programs_deal_others_tt
+		add_timed_idea = {
+			idea = ITA_sold_obsolete_escort_ships_ns
+			days = 365
+		}
+	}
+}
+
+# Country rejects buying Italian Escort Ships - Event for ITA
+country_event = {
+	id = BBA_italy_naval_cooperation_programs.10
+	title = BBA_italy_naval_cooperation_programs.10.t
+	desc = BBA_italy_naval_cooperation_programs.10.desc
+	picture = GFX_report_event_sailors_in_working_rig 
+	
+	is_triggered_only = yes
+
+	immediate = {
+		hidden_effect = {
+			clr_country_flag = ITA_escort_ships_purchase_ongoing_flag
+		}
+	}
+
+	# Disappointing
+	option = { 
+		name = BBA_italy_naval_cooperation_programs.10.a
+
+	}
+}
+
+# Offer to cede Aquila-Class DDs - Event for Spanish tag
+country_event = {
+	id = BBA_italy_naval_cooperation_programs.11
+	title = BBA_italy_naval_cooperation_programs.11.t
+	desc = BBA_italy_naval_cooperation_programs.11.desc
+	picture = GFX_report_event_destroyers
+	
+	is_triggered_only = yes
+
+	# Accept
+	option = { 
+		name = BBA_italy_naval_cooperation_programs.11.a
+		ai_chance = {
+			base = 10
+		}
+
+		effect_tooltip = {
+			custom_effect_tooltip = ITA_cede_aquila_class_destroyers_tt
+			FROM = {
+				navy_experience = 50
+				add_political_power = 50
+			}
+		}
+
+		hidden_effect = {
+			FROM = {
+				set_country_flag = ITA_ceded_aquila_class_destroyers_flag #Cannot cede ships again
+				country_event = { id = BBA_italy_naval_cooperation_programs.12 hours = 1 }
+			}
+		}
+	}
+
+	# Refuse
+	option = {
+		name = BBA_italy_naval_cooperation_programs.08.b #Intentional
+		ai_chance = {
+			base = 0 #AI always says 'yes'
+		}
+
+		hidden_effect = {
+			FROM = { country_event = { id = BBA_italy_naval_cooperation_programs.13 hours = 1 } }
+		}
+	}
+}
+
+# Country accepts the Aquila-Class DDs - Event for ITA
+country_event = {
+	id = BBA_italy_naval_cooperation_programs.12
+	title = BBA_italy_naval_cooperation_programs.12.t
+	desc = BBA_italy_naval_cooperation_programs.12.desc
+	picture = GFX_report_event_destroyers
+	
+	is_triggered_only = yes
+
+	immediate = {
+		hidden_effect = { #Remove all other decisions for this, we are successful we won't sell any more ships
+			clr_country_flag = ITA_escort_ships_purchase_ongoing_flag
+		}
+	}
+
+	# Coolio
+	option = { 
+		name = BBA_italy_naval_cooperation_programs.12.a
+
+		navy_experience = 50
+		add_political_power = 50
+		custom_effect_tooltip = ITA_cede_aquila_class_destroyers_tt
+		FROM = {
+			add_opinion_modifier = {
+				modifier = ITA_ceded_destroyers
+				target = ROOT
+			}
+		}
+		hidden_effect = {
+			transfer_ship = {
+				prefer_name = "RCT Aquila"
+				type = destroyer
+				target = FROM
+			}
+			transfer_ship = {
+				prefer_name = "RCT Falco"
+				type = destroyer
+				target = FROM
+			}
+		}
+	}
+}
+
+# Country rejects the Aquila-Class DDs - Event for ITA
+country_event = {
+	id = BBA_italy_naval_cooperation_programs.13
+	title = BBA_italy_naval_cooperation_programs.13.t
+	desc = BBA_italy_naval_cooperation_programs.13.desc
+	picture = GFX_report_event_destroyers
+	
+	is_triggered_only = yes
+
+	# you mad bro?
+	option = { 
+		name = BBA_italy_naval_cooperation_programs.03.a #Intentional
+
+	}
+}
+
+# Offer to produce Midget Submarines - Event for minor European ally
+country_event = {
+	id = BBA_italy_naval_cooperation_programs.14
+	title = BBA_italy_naval_cooperation_programs.14.t
+	desc = BBA_italy_naval_cooperation_programs.14.desc
+	picture = GFX_report_event_generic_naval_treaty
+	
+	is_triggered_only = yes
+
+	# Accept
+	option = { 
+		name = BBA_italy_naval_cooperation_programs.14.a
+		ai_chance = {
+			base = 100
+			modifier = {
+				factor = 0
+				OR = {
+					has_navy_size = {
+						size < 1
+						archetype = ship_hull_submarine #SS
+					}
+					NOT = {
+						any_owned_state = {
+							is_coastal = yes
+						}
+					}
+				}
+			}
+		}
+
+		custom_effect_tooltip = ITA_export_midget_submarines_tt
+
+		hidden_effect = {
+			FROM = { country_event = { id = BBA_italy_naval_cooperation_programs.15 hours = 1 } }
+			set_country_flag = ITA_midget_submarines_flag #Cannot sell subss again
+		}
+	}
+
+	# Refuse
+	option = {
+		name = BBA_italy_naval_cooperation_programs.08.b #Intentional
+		ai_chance = {
+			base = 1
+		}
+
+		hidden_effect = {
+			FROM = { country_event = { id = BBA_italy_naval_cooperation_programs.16 hours = 1 } }
+			set_country_flag = ITA_midget_submarines_flag #Cannot sell subss again
+		}
+	}
+}
+
+# Country accepts to buy Midget Submarines - Event for ITA
+country_event = {
+	id = BBA_italy_naval_cooperation_programs.15
+	title = BBA_italy_naval_cooperation_programs.15.t
+	desc = BBA_italy_naval_cooperation_programs.15.desc
+	picture = GFX_report_event_generic_naval_treaty
+	
+	is_triggered_only = yes
+
+	# Coolio
+	option = { 
+		name = BBA_italy_naval_cooperation_programs.15.a
+
+		custom_effect_tooltip = ITA_export_midget_submarines_tt
+		FROM = {
+			add_opinion_modifier = {
+				modifier = POR_sold_ships
+				target = ROOT
+			}
+		}
+	}
+}
+
+# Country rejects the Midget Submarines - Event for ITA
+country_event = {
+	id = BBA_italy_naval_cooperation_programs.16
+	title = BBA_italy_naval_cooperation_programs.16.t
+	desc = BBA_italy_naval_cooperation_programs.16.desc
+	picture = GFX_report_event_generic_naval_treaty
+	
+	is_triggered_only = yes
+
+	# Pfff ok
+	option = { 
+		name = BBA_italy_naval_cooperation_programs.10.a #Intentional
+
+		clr_country_flag = ITA_producing_midget_submarines_for_export_flag
+	}
+}
+
+# Midget Submarines are ready - Event for minor European ally
+country_event = {
+	id = BBA_italy_naval_cooperation_programs.17
+	title = BBA_italy_naval_cooperation_programs.17.t
+	desc = BBA_italy_naval_cooperation_programs.17.desc
+	picture = GFX_report_event_generic_naval_treaty
+	
+	is_triggered_only = yes
+
+	# Accept
+	option = { 
+		name = BBA_italy_naval_cooperation_programs.17.a
+
+		create_equipment_variant = {
+			name = "CB Class"
+			type = ship_hull_midget_submarine
+			name_group = ITA_SS_HISTORICAL
+			parent_version = 0
+			modules = {
+				fixed_ship_torpedo_slot = ship_torpedo_sub_2
+				fixed_ship_engine_slot = sub_ship_engine_2
+			}
+		}
+
+		create_ship = { type = ship_hull_midget_submarine equipment_variant = "CB Class" creator = FROM }
+		create_ship = { type = ship_hull_midget_submarine equipment_variant = "CB Class" creator = FROM }
+		create_ship = { type = ship_hull_midget_submarine equipment_variant = "CB Class" creator = FROM }
+		create_ship = { type = ship_hull_midget_submarine equipment_variant = "CB Class" creator = FROM }
+		create_ship = { type = ship_hull_midget_submarine equipment_variant = "CB Class" creator = FROM }
 	}
 }
