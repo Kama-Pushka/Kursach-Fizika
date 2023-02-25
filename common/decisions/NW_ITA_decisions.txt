@@ -3705,3 +3705,335 @@ ITA_impending_uprising_category = {
 		}
 	}
 }
+
+ITA_anti_fascist_struggle_category = {
+
+	ITA_spread_agitation_against_state = {
+		icon = GFX_decision_eng_propaganda_campaigns
+
+		available = {
+			FROM = {
+				resistance < 50
+			}
+		}
+
+		state_target = yes
+		target_array = ROOT.core_states
+
+		target_trigger = {
+			FROM = {
+				resistance < 50
+				NOT = { is_core_of = controller }
+				controller = {
+					has_war_with = ROOT
+				}
+			}
+		}
+
+		target_root_trigger = {
+			original_tag = ITA
+			has_completed_focus = ITA_anti_fascist_struggle
+		}
+
+		cost = 15
+
+		complete_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision ITA_spread_agitation_against_state"
+			FROM = {
+				add_resistance = 5
+				hidden_effect = {
+					if = {
+						limit = { controller = { NOT = { has_country_flag = ITA_fighting_guerrilla_movement_flag } } }
+						state_event = { id = NWitaly.1 trigger_for = controller }
+					}
+				}
+			}
+		}
+
+		ai_will_do = {
+			base = 25
+		}
+	}
+	
+	ITA_send_equipment_to_partisans_in_state = {
+		icon = GFX_decision_generic_prepare_civil_war
+		
+		available = {
+			FROM = {
+				has_manpower > 6000
+			}
+		}
+		
+		fire_only_once = yes
+		state_target = yes
+		target_array = ROOT.core_states
+
+		target_trigger = {
+			FROM = {
+				has_manpower > 6000
+				NOT = { is_core_of = controller }
+				controller = {
+					has_war_with = ROOT
+				}
+			}
+		}
+
+		target_root_trigger = {
+			original_tag = ITA
+			has_completed_focus = ITA_anti_fascist_struggle
+		}
+		
+		custom_cost_trigger = {
+			set_temp_variable = { infantry_equipment_temp_cost = 300 }
+			has_equipment = { infantry_equipment > infantry_equipment_temp_cost }
+		}
+		custom_cost_text = infantry_equipment_cost
+		days_remove = 7
+		
+		complete_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision ITA_send_equipment_to_partisans_in_state"
+			hidden_effect = {
+				add_equipment_to_stockpile = {
+					type = infantry_equipment
+					amount = -300
+				}
+				if = {
+					limit = { controller = { NOT = { has_country_flag = ITA_fighting_guerrilla_movement_flag } } }
+					state_event = { id = NWitaly.1 trigger_for = controller }
+				}
+			}
+			custom_effect_tooltip = send_equipment_in_state_tt
+		}
+		
+		remove_effect = {
+			FROM = {
+				set_country_flag = send_equipment_in_state_flag
+			}
+		}
+
+		ai_will_do = {
+			base = 30
+		}
+	}
+	
+	ITA_raise_partisans_in_state = {
+		icon = GFX_decision_SWI_consolidate_council_power
+
+		available = {
+			FROM = {
+				has_country_flag = send_equipment_in_state_flag
+				has_manpower > 6000
+				resistance > 50
+			}
+		}
+		
+		fire_only_once = yes
+		state_target = yes
+		target_array = ROOT.core_states
+
+		target_trigger = {
+			FROM = {
+				has_manpower > 6000
+				resistance > 50
+				NOT = { is_core_of = controller }
+				controller = {
+					has_war_with = ROOT
+				}
+				has_country_flag = send_equipment_in_state_flag
+			}
+		}
+
+		target_root_trigger = {
+			original_tag = ITA
+			has_completed_focus = ITA_anti_fascist_struggle
+		}
+		
+		cost = 50
+
+		complete_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision ITA_raise_partisans_in_state"
+			hidden_effect = {
+				if = {
+					limit = { NOT = { has_template = "Anarchist Partisans" } }
+					if = {
+						limit = { NOT = { has_completed_focus = ITA_transform_partisan_detachments } }
+						division_template = {
+							name = "Anarchist Partisans"
+							template_counter = 15
+							regiments = {
+								infantry = { x = 0 y = 0 }
+								infantry = { x = 0 y = 1 }
+								infantry = { x = 0 y = 2 }
+							}
+						}
+					}
+					else = {
+						division_template = {
+							name = "Anarchist Partisans"
+							template_counter = 15
+							regiments = {
+								infantry = { x = 0 y = 0 }
+								infantry = { x = 0 y = 1 }
+								infantry = { x = 0 y = 2 }
+								infantry = { x = 1 y = 0 }
+								infantry = { x = 1 y = 1 }
+								infantry = { x = 1 y = 2 }
+							}
+							support = {
+								recon = 0
+								engineer = 1
+							}
+						}
+					}
+				}
+			}
+			FROM = {
+				controller = { goto_state = FROM }
+				add_manpower = -6000
+				create_unit = {
+					division = "division_template = \"Anarchist Partisans\" start_experience_factor = 0.2 start_equipment_factor = 1.0"
+					owner = ROOT
+					count = 2
+					allow_spawning_on_enemy_provs = yes
+				}
+				hidden_effect = {
+					if = {
+						limit = { has_state_flag = create_punitive_detachments_in_state_flag }
+						controller = {
+							if = {
+								limit = { NOT = { has_template = "Punitive Division" } }
+								division_template = {
+									name = "Punitive Division"
+									template_counter = 14
+									regiments = {
+										infantry = { x = 0 y = 0 }
+										infantry = { x = 0 y = 1 }
+										infantry = { x = 1 y = 0 }
+										infantry = { x = 1 y = 1 }
+									}
+								}
+							}
+						}
+						create_unit = {
+							division = "division_template = \"Punitive Division\" start_experience_factor = 0.4 start_equipment_factor = 1.0"
+							owner = FROM.controller
+							count = 1
+							allow_spawning_on_enemy_provs = yes
+						}
+					}
+				}
+			}
+		}
+
+		ai_will_do = {
+			base = 35
+		}
+	}
+}
+
+ITA_fighting_guerrilla_movement_category = {
+
+	ITA_restore_civil_infrastructure_in_state = {
+		icon = GFX_decision_generic_wreckers
+
+		available = {
+			num_of_civilian_factories_available_for_projects > 0
+			FROM = {
+				compliance < 50
+			}
+		}
+
+		state_target = yes
+		target_array = ITA.core_states
+
+		target_trigger = {
+			FROM = {
+				compliance < 50
+				NOT = { is_core_of = controller }
+				controller = {
+					has_war_with = ROOT
+				}
+			}
+		}
+
+		target_root_trigger = {
+			original_tag = ITA
+			has_completed_focus = ITA_anti_fascist_struggle
+		}
+
+		days_remove = 20
+		
+		modifier = {
+			civilian_factory_use = 1
+		}
+
+		remove_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): remove decision ITA_restore_civil_infrastructure_in_state"
+			FROM = { add_compliance = 5 }
+		}
+
+		ai_will_do = {
+			base = 25
+		}
+	}
+	
+	ITA_create_punitive_detachments_in_state = {
+		icon = GFX_decision_generic_military
+
+		available = {
+			FROM = {
+				compliance > 30
+				resistance > 5
+			}
+		}
+
+		fire_only_once = yes
+		state_target = yes
+		target_array = ITA.core_states
+
+		target_trigger = {
+			FROM = {
+				compliance > 30
+				resistance > 5
+				NOT = { is_core_of = controller }
+				controller = {
+					has_war_with = ROOT
+				}
+			}
+		}
+
+		target_root_trigger = {
+			original_tag = ITA
+			has_completed_focus = ITA_anti_fascist_struggle
+		}
+
+		custom_cost_trigger = {
+			set_temp_variable = { infantry_equipment_temp_cost = 300 }
+			has_equipment = { infantry_equipment > infantry_equipment_temp_cost }
+		}
+		custom_cost_text = infantry_equipment_cost
+		days_remove = 7
+
+		complete_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision ITA_create_punitive_detachments_in_state"
+			hidden_effect = {
+				add_equipment_to_stockpile = {
+					type = infantry_equipment
+					amount = -300
+				}
+			}
+		}
+		
+		remove_effect = {
+			FROM = {
+				add_resistance = -5
+				set_state_flag = create_punitive_detachments_in_state_flag
+			}
+			custom_effect_tooltip = create_punitive_detachments_in_state_tt
+		}
+
+		ai_will_do = {
+			base = 25
+		}
+	}
+}
