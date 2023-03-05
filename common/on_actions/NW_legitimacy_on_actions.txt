@@ -4,6 +4,13 @@ on_actions = {
 		effect = {
 			log = "======================LEGITIMACY START======================"
 			every_possible_country = {
+				meta_effect = { #лучше чтобы стартовая партия была в коалиции, чем нет
+					text = { 
+						add_to_array = { coalition_array = token:[GetRulingParty] }
+						log = "[GetDateText]: add_to_array coalition_array = [GetRulingParty]"
+					}
+					GetRulingParty = "[GetRulingParty_token]"
+				}
 				NW_legitimacy_check = yes
 				log = "[GetDateText]: [THIS.GetName] ([THIS.GetTag]): legitimacy_[?THIS.current_legitimacy_idea_var.GetTokenKey]"
 			}
@@ -21,7 +28,7 @@ on_actions = {
 	on_weekly = {
 		effect = {
 			if = {
-				limit = { is_ai = no }
+				limit = { is_ai = no } # оптимизировать для мультиплеера ?
 				NW_legitimacy_check = yes
 				NW_migration_check = yes
 			}
@@ -56,6 +63,17 @@ on_actions = {
 	
 	on_government_change = {
 		effect = {
+			if = { 
+				limit = { 
+					meta_trigger = {
+						text = { 
+							NOT = { is_in_array = { coalition_array = token:[GetRulingParty] } }
+						}
+						GetRulingParty = "[GetRulingParty_token]"
+					}
+				}
+				clear_array = coalition_array
+			}
 			NW_legitimacy_check = yes
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): NW_legitimacy_check, on_government_change"
 		}
