@@ -116,7 +116,7 @@ NDefines.NAI.WANTED_MAX_FUEL_BUFFER_IN_DAYS_FOR_AIR_MAX_CONSUMPTION  = 365  -- A
 NDefines.NAI.WANTED_MAX_FUEL_BUFFER_IN_DAYS_FOR_NAVY_MAX_CONSUMPTION = 365  -- AI will try to buffer at least this amount of days on max consumption, will trade if necesarry and will go into fuel saving mode/aggresive mode using this buffer
 NDefines.NAI.FUEL_RATIO_TO_EXIST_FUEL_SAVING_MODE = 0.40					-- countries will exit fuel saving mode if they have more fuel ratio than this
 
-NDefines.NAI.GENERATE_WARGOAL_THREAT_BASELINE = 0.6							-- The baseline for what the AI considers the world is getting dangerous and we want to generate wargoals with no antagonize value	
+--NDefines.NAI.GENERATE_WARGOAL_THREAT_BASELINE = 0.6							-- The baseline for what the AI considers the world is getting dangerous and we want to generate wargoals with no antagonize value	
 
 NDefines.NAI.TRADEABLE_FACTORIES_FRACTION = 1								-- Will at most trade away this fraction of factories.
 --NDefines.NAI.WAIT_YEARS_BEFORE_FREER_BUILDING = 1							-- The AI will skip considering certain buildings during the buildup phase, after htese many years it starts building them regardless of threat.

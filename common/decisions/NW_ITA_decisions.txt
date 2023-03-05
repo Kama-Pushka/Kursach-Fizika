@@ -3880,8 +3880,8 @@ ITA_anti_fascist_struggle_category = {
 								infantry = { x = 1 y = 2 }
 							}
 							support = {
-								recon = 0
-								engineer = 1
+								recon = { x = 0 y = 0 }
+								engineer = { x = 0 y = 1 }
 							}
 						}
 					}
@@ -4034,6 +4034,454 @@ ITA_fighting_guerrilla_movement_category = {
 
 		ai_will_do = {
 			base = 25
+		}
+	}
+}
+
+ITA_anarchist_revolution_category = {
+
+	ITA_violence_during_anarchist_revolution = {
+		icon = GFX_decision_revolt
+		
+		activation = {
+			always = no
+		}
+		available = {
+			hidden_trigger = {
+				AND = {
+					has_country_flag = ITA_create_peoples_squads_to_restore_order_flag
+					OR = {
+						has_country_flag = ITA_destroy_last_sprouts_of_banditry_flag
+						has_country_flag = ITA_establish_partnerships_with_organized_crime_flag
+					}
+					has_country_flag = ITA_raise_qualifications_of_local_government_employees_flag
+				}
+			}
+		}
+		is_good = no
+		days_mission_timeout = 40
+		fire_only_once = yes
+		
+		timeout_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): timeout decision ITA_violence_during_anarchist_revolution"
+			random_list = {
+				25 = {
+					modifier = {
+						factor = 0
+						has_country_flag = ITA_create_peoples_squads_to_restore_order_flag
+					}
+					random_core_state = {
+						limit = {
+							is_controlled_by = ROOT
+							OR = {
+								universal_factory > 0
+								industrial_complex > 0
+								arms_factory > 0
+							}
+						}
+						state_event = { id = NWitaly.4 trigger_for = ROOT }
+					}
+				}
+				25 = {
+					modifier = {
+						factor = 0
+						OR = {
+							AND = {
+								country_exists = IB1
+								country_exists = IB2
+								country_exists = IB3
+								country_exists = IB4
+								country_exists = IB5
+							}
+							NOT = {
+								controls_state = 157	# ЮГ
+								controls_state = 117
+								controls_state = 156
+								controls_state = 115
+								controls_state = 116	# Мальта
+								controls_state = 114 # Сардиния
+							}
+							has_country_flag = ITA_destroy_last_sprouts_of_banditry_flag
+							has_country_flag = ITA_establish_partnerships_with_organized_crime_flag
+						}
+					}
+					random_core_state = {
+						limit = {
+							is_controlled_by = ROOT
+							OR = {
+								state = 157	# ЮГ
+								state = 117
+								state = 156
+								state = 115
+								state = 116	# Мальта
+								state = 114 # Сардиния
+							}
+						}
+						state_event = { id = NWitaly.5 trigger_for = ROOT }
+					}
+				}
+				25 = {
+					modifier = {
+						factor = 0
+						has_country_flag = ITA_raise_qualifications_of_local_government_employees_flag
+					}
+					random_core_state = {
+						limit = {
+							is_controlled_by = ROOT
+							hospital > 0
+						}
+						state_event = { id = NWitaly.6 trigger_for = ROOT }
+					}
+					hidden_effect = {
+						random_list = {
+							50 = { set_country_flag = NWitaly_6_a_flag }
+							50 = { set_country_flag = NWitaly_6_b_flag }
+						}
+					}
+				}
+			}
+			hidden_effect = { activate_mission = ITA_violence_during_anarchist_revolution }
+		}
+	}
+	
+	ITA_direct_violent_tendencies_towards_bourgeoisie = {
+		icon = GFX_decision_hol_war_on_pacifism
+
+		available = {
+		}
+		days_remove = 7
+		cost = 30
+		
+		remove_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): remove decision ITA_direct_violent_tendencies_towards_bourgeoisie"
+			set_temp_variable = { anarchism_tendency_sense_of_danger_pool_temp = 10 }
+			add_to_variable = { anarchism_tendency_sense_of_danger_pool_var = anarchism_tendency_sense_of_danger_pool_temp }
+			custom_effect_tooltip = anarchism_tendency_sense_of_danger_pool_tt
+			hidden_effect = {
+				set_var_generic_anarchism_tendency = yes
+			}
+		}
+		
+		ai_will_do = {
+			base = 30
+		}
+	}
+	
+	ITA_direct_violent_tendencies_to_form_partisan_units = {
+		icon = GFX_decision_SWI_swiss_military_tradition_campaign
+
+		available = {
+		}
+		days_remove = 7
+		cost = 30
+		
+		remove_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): remove decision ITA_direct_violent_tendencies_to_form_partisan_units"
+			hidden_effect = {
+				if = {
+					limit = { NOT = { has_template = "Anarchist Partisans" } }
+					if = {
+						limit = { NOT = { has_completed_focus = ITA_transform_partisan_detachments } }
+						division_template = {
+							name = "Anarchist Partisans"
+							template_counter = 15
+							regiments = {
+								infantry = { x = 0 y = 0 }
+								infantry = { x = 0 y = 1 }
+								infantry = { x = 0 y = 2 }
+							}
+						}
+					}
+					else = {
+						division_template = {
+							name = "Anarchist Partisans"
+							template_counter = 15
+							regiments = {
+								infantry = { x = 0 y = 0 }
+								infantry = { x = 0 y = 1 }
+								infantry = { x = 0 y = 2 }
+								infantry = { x = 1 y = 0 }
+								infantry = { x = 1 y = 1 }
+								infantry = { x = 1 y = 2 }
+							}
+							support = {
+								recon = { x = 0 y = 0 }
+								engineer = { x = 0 y = 1 }
+							}
+						}
+					}
+				}
+			}
+			random_core_state = {
+				limit = { is_controlled_by = ROOT }
+				create_unit = {
+					division = "division_template = \"Anarchist Partisans\" start_experience_factor = 0.2 start_equipment_factor = 1.0"
+					owner = ROOT
+					count = 1
+					allow_spawning_on_enemy_provs = yes
+				}
+			}
+		}
+		
+		ai_will_do = {
+			base = 35
+		}
+	}
+	
+	ITA_create_peoples_squads_to_restore_order = {
+		icon = GFX_decision_eng_blackshirt_march
+
+		available = {
+			has_completed_focus = ITA_prevent_violence
+			has_manpower > 10000
+		}
+		visible = {
+			has_completed_focus = ITA_prevent_violence
+		}
+		days_remove = 20
+		cost = 20
+		
+		remove_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): remove decision ITA_create_peoples_squads_to_restore_order"
+			add_manpower = -10000
+			set_country_flag = ITA_create_peoples_squads_to_restore_order_flag
+			custom_effect_tooltip = ITA_create_peoples_squads_to_restore_order_tt
+			if = {
+				limit = {
+					has_completed_focus = ITA_adaptation_of_italian_society_to_libertarian_socialism
+					NOT = { has_active_mission = ITA_italian_anarchism }
+				}
+				activate_mission = ITA_italian_anarchism
+			}
+		}
+		
+		ai_will_do = {
+			base = 30
+		}
+	}
+	
+	ITA_destroy_last_sprouts_of_banditry = {
+		icon = GFX_decision_oppression
+
+		available = {
+			has_completed_focus = ITA_prevent_violence
+			NOT = { has_country_flag = ITA_establish_partnerships_with_organized_crime_flag }
+		}
+		visible = {
+			has_completed_focus = ITA_prevent_violence
+			NOT = { has_country_flag = ITA_establish_partnerships_with_organized_crime_flag }
+		}
+		
+		custom_cost_trigger = {
+			set_temp_variable = { infantry_equipment_temp_cost = 1000 }
+			has_equipment = { infantry_equipment > infantry_equipment_temp_cost }
+		}
+		custom_cost_text = infantry_equipment_cost
+		days_remove = 20
+		
+		complete_effect = {
+			hidden_effect = {
+				add_equipment_to_stockpile = {
+					type = infantry_equipment
+					amount = -1000
+				}
+			}
+		}
+		
+		remove_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): remove decision ITA_destroy_last_sprouts_of_banditry"
+			set_country_flag = ITA_destroy_last_sprouts_of_banditry_flag
+			custom_effect_tooltip = ITA_destroy_last_sprouts_of_banditry_tt
+			if = {
+				limit = {
+					has_completed_focus = ITA_adaptation_of_italian_society_to_libertarian_socialism
+					NOT = { has_active_mission = ITA_italian_anarchism }
+				}
+				activate_mission = ITA_italian_anarchism
+			}
+		}
+		
+		ai_will_do = {
+			base = 30
+		}
+	}
+	
+	ITA_establish_partnerships_with_organized_crime = {
+		icon = GFX_decision_hol_exchange_intelligence_data
+
+		available = {
+			has_completed_focus = ITA_prevent_violence
+			NOT = { has_country_flag = ITA_destroy_last_sprouts_of_banditry_flag }
+		}
+		visible = {
+			has_completed_focus = ITA_prevent_violence
+			NOT = { has_country_flag = ITA_destroy_last_sprouts_of_banditry_flag }
+		}
+		
+		custom_cost_trigger = {
+			set_temp_variable = { custom_cost_pp = 50 }
+			set_temp_variable = { custom_cost = 15 }
+			check_variable = { anarchism_unity_var > custom_cost }
+			has_political_power > custom_cost_pp
+		}
+		custom_cost_text = custom_cost_anarcho_unity_and_pp
+		days_remove = 20
+		
+		complete_effect = {
+			hidden_effect = {
+				set_temp_variable = { custom_cost_pp_zero = -50 }
+				add_political_power = custom_cost_pp_zero
+				add_to_variable = { anarchism_unity_var = -15 }
+				clamp_variable = { var = anarchism_unity_var min = 0 max = 100 }
+			}
+		}
+		
+		remove_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): remove decision ITA_establish_partnerships_with_organized_crime"
+			add_ideas = ITA_italian_crime
+			set_country_flag = ITA_establish_partnerships_with_organized_crime_flag
+			custom_effect_tooltip = ITA_destroy_last_sprouts_of_banditry_tt
+			if = {
+				limit = {
+					has_completed_focus = ITA_adaptation_of_italian_society_to_libertarian_socialism
+					NOT = { has_active_mission = ITA_italian_anarchism }
+				}
+				activate_mission = ITA_italian_anarchism
+			}
+		}
+		
+		ai_will_do = {
+			base = 30
+		}
+	}
+	
+	ITA_raise_qualifications_of_local_government_employees = {
+		icon = GFX_decision_gre_paying_ifc_debt
+
+		available = {
+			OR = {
+				has_completed_focus = ITA_revolutionary_italy
+				has_completed_focus = ITA_adaptation_of_italian_society_to_libertarian_socialism
+			}
+		}
+		visible = {
+			OR = {
+				has_completed_focus = ITA_revolutionary_italy
+				has_completed_focus = ITA_adaptation_of_italian_society_to_libertarian_socialism
+			}
+		}
+		
+		custom_cost_trigger = {
+			set_temp_variable = { custom_cost_pp = 75 }
+			set_temp_variable = { custom_cost = 25 }
+			check_variable = { anarchism_unity_var > custom_cost }
+			has_political_power > custom_cost_pp
+		}
+		custom_cost_text = custom_cost_anarcho_unity_and_pp
+		days_remove = 40
+		
+		modifier = {
+			custom_modifier_tooltip = munis_1_research_slot_tt
+		}
+		
+		complete_effect = {
+			hidden_effect = {
+				add_research_slot = -1
+		
+				set_temp_variable = { custom_cost_pp_zero = -75 }
+				add_political_power = custom_cost_pp_zero
+				add_to_variable = { anarchism_unity_var = -25 }
+				clamp_variable = { var = anarchism_unity_var min = 0 max = 100 }
+			}
+		}
+		
+		remove_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): remove decision ITA_raise_qualifications_of_local_government_employees"
+			hidden_effect = {
+				add_research_slot = 1
+			}
+			set_country_flag = ITA_raise_qualifications_of_local_government_employees_flag
+			custom_effect_tooltip = ITA_raise_qualifications_of_local_government_employees_tt
+			if = {
+				limit = {
+					NOT = { has_active_mission = ITA_italian_anarchism }
+				}
+				activate_mission = ITA_italian_anarchism
+			}
+		}
+		
+		ai_will_do = {
+			base = 30
+		}
+	}
+	
+	ITA_italian_anarchism = {
+		icon = GFX_decision_SOV_the_workers_dictatorship
+		
+		activation = {
+			always = no
+		}
+		available = {
+			hidden_trigger = { always = no }
+		}
+		is_good = yes
+		days_mission_timeout = 70
+		fire_only_once = yes
+		
+		timeout_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): timeout decision ITA_italian_anarchism"
+			random_list = {
+				25 = {
+					modifier = {
+						factor = 0
+						NOT = { has_country_flag = ITA_create_peoples_squads_to_restore_order_flag }
+					}
+					random_core_state = {
+						limit = {
+							is_controlled_by = ROOT
+						}
+						state_event = { id = NWitaly.7 trigger_for = ROOT }
+					}
+				}
+				25 = {
+					modifier = {
+						factor = 0
+						NOT = { has_country_flag = ITA_destroy_last_sprouts_of_banditry_flag }
+					}
+					random_core_state = {
+						limit = {
+							is_controlled_by = ROOT
+						}
+						state_event = { id = NWitaly.8 trigger_for = ROOT }
+					}
+				}
+				25 = {
+					modifier = {
+						factor = 0
+						NOT = { has_country_flag = ITA_establish_partnerships_with_organized_crime_flag }
+					}
+					random_core_state = {
+						limit = {
+							is_controlled_by = ROOT
+						}
+						state_event = { id = NWitaly.9 trigger_for = ROOT }
+					}
+				}
+				25 = {
+					modifier = {
+						factor = 0
+						NOT = { has_country_flag = ITA_raise_qualifications_of_local_government_employees_flag }
+					}
+					random_core_state = {
+						limit = {
+							is_controlled_by = ROOT
+							hospital > 0
+						}
+						state_event = { id = NWitaly.10 trigger_for = ROOT }
+					}
+				}
+			}
+			hidden_effect = { activate_mission = ITA_italian_anarchism }
 		}
 	}
 }
