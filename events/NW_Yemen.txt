@@ -72,6 +72,7 @@ country_event = {
 		date > 1937.05.02
 	}
 	mean_time_to_happen = { days = 7 }
+	fire_only_once = yes
 	
 	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event yem.3" }
 	
@@ -115,6 +116,7 @@ country_event = {
 		add_political_power = -30
 		add_stability = -0.03
 		set_country_flag = YEM_ali_disfavor
+		custom_effect_tooltip = YEM_ali_disfavor_tt
 		ai_chance = {
 			factor = 1
 			modifier = {
@@ -309,11 +311,11 @@ country_event = {
 		    }
 		}
 		ai_chance = {
-		   factor = 10
-		   modifier = {
-		      is_historical_focus_on = yes
-			  factor = 0
-		   }
+		    factor = 10
+		    modifier = {
+		        is_historical_focus_on = yes
+			    factor = 0
+		    }
 		}
 	}
 }
@@ -339,8 +341,8 @@ country_event = {
 		complete_national_focus = YEM_strengthening_imam_power
 		complete_national_focus = YEM_assasination_of_imam_yahya
 		hidden_effect = {
-		  country_event = {id = yem.14 days = 5}
-		  add_to_variable = {
+		    country_event = {id = yem.14 days = 5}
+		    add_to_variable = {
 				var = YEM_vam_pizda
 				value = 1
 			}
@@ -351,7 +353,7 @@ country_event = {
 		name = yem.10.b
 		custom_effect_tooltip = YEM_confirm_death_imama_tt
 		hidden_effect = {
-		  country_event = { id = yem.15 days = 2 }
+		    country_event = { id = yem.15 days = 2 }
 		}
 	}
 }
@@ -430,24 +432,13 @@ country_event = {
 	option = {
 		name = yem.13.a
 		hidden_effect = {
-		    kill_country_leader = yes
 		    country_event = { id = yem.17 days = 1 }
 		    news_event = { id = trworldnews.168 days = 2 }
 		}
-		set_cosmetic_tag = YEM_IBR
-		add_country_leader_role = {
-			character = YEM_ibrahim_bin_yahya_hamididdin
-			promote_leader = yes
-			country_leader = {
-				desc = ""
-				expire = "1965.1.1"
-				ideology = dual_monarchy
-				traits = {
-				    rumors_of_insanity
-				    sayyid
-				}
-			}
+		YEM_ibrahim_bin_yahya_hamididdin = {
+			promote_character = yes
 		}
+		set_cosmetic_tag = YEM_IBR	
         custom_effect_tooltip = YEM_ibrahim_imam_tt		
 	}
 }
@@ -513,20 +504,11 @@ country_event = {
 	option = {
 		name = yem.16.a
 		hidden_effect = {
-		    kill_country_leader = yes
 		    country_event = { id = yem.17 days = 1 }
             news_event = { id = trworldnews.168 days = 2 }
 		}
-		add_country_leader_role = {
-			character = YEM_abdullah_bin_ahmad_al_wazir
-			promote_leader = yes
-			country_leader={
-				expire="1965.1.1.1"
-				ideology = dual_monarchy
-				traits = {
-				    bloody_past
-				}
-			}
+		YEM_abdullah_bin_ahmad_al_wazir = {
+			promote_character = yes
 		}
 		if = {
 			limit = { has_cosmetic_tag = YEM_ARA }
@@ -696,17 +678,32 @@ country_event = {
 	
 	option = {
 		name = yem.21.a
-		start_civil_war = {
-			ruling_party = monarchy
-			ideology = monarchy
-			size = 0.4
-			capital = 1118
-			states = { 
-				1118
-			}
-			keep_political_leader = yes
-       }
-	   hidden_effect = {
+		effect_tooltip = { 
+			start_civil_war = {
+				ruling_party = monarchy
+				ideology = monarchy
+				size = 0.4
+				capital = 1118
+				states = { 
+					1118
+				}
+				keep_political_leader = yes
+        	}
+		}
+	    hidden_effect = {
+			start_civil_war = {
+				ruling_party = monarchy
+				ideology = democratic
+				size = 0.4
+				capital = 1118
+				states = { 
+					1118
+				}
+				keep_political_leader = yes
+				keep_unit_leaders_trigger = {
+					always = yes
+				}
+        	}
 			retire_character = YEM_imam_yahya_hamididdin
 			set_country_flag = same_ideology_civil_war_flag
 			set_political_party = {
@@ -721,8 +718,29 @@ country_event = {
 				}	
 				complete_national_focus = YEM_proclaim_imam_ibrahim
 			}	
+			else_if = {
+				limit = {
+					YEM_ibrahim_bin_yahya_hamididdin = {
+						is_country_leader = no
+					}	
+					YEM_abdullah_bin_ahmad_al_wazir = {
+						is_country_leader = no
+					}	
+				}
+				YEM_abdullah_bin_ahmad_al_wazir = {
+					promote_character = yes
+				}	
+				complete_national_focus = YEM_proclaim_imam_abdullah_al_wazir
+			}
 			else = {
 				complete_national_focus = YEM_proclaim_imam_abdullah_al_wazir
+			}
+			if = {
+				limit = { has_completed_focus = YEM_proclaim_imam_ahmed }
+				uncomplete_national_focus = {
+					focus = YEM_proclaim_imam_ahmed
+					uncomplete_children = yes
+				}
 			}
 		    country_event = { id = yem.44 hours = 35 }	
 			random_other_country = {
@@ -732,11 +750,14 @@ country_event = {
 						tag = YEM
 					}
 				}
-				save_event_target_as = royalist_yemen_civil_war
 				set_country_flag = same_ideology_civil_war_flag
 				set_political_party = {
 					ideology = monarchy
 					popularity = 100
+				}
+				set_politics = {
+					ruling_party = monarchy
+					elections_allowed = no
 				}
 				load_focus_tree = { tree = NW_yemen keep_completed = no }
 			    set_cosmetic_tag = YEM_AHM
@@ -746,63 +767,115 @@ country_event = {
 					name = YEM_monarchy_party 
 				}
 				complete_national_focus = YEM_proclaim_imam_ahmed
+				if = {
+					limit = { has_completed_focus = YEM_proclaim_imam_abdullah_al_wazir }
+					uncomplete_national_focus = {
+						focus = YEM_proclaim_imam_abdullah_al_wazir
+						uncomplete_children = yes
+					}
+				}
+				if = {
+					limit = { has_completed_focus = YEM_proclaim_imam_ibrahim }
+					uncomplete_national_focus = {
+						focus = YEM_proclaim_imam_ibrahim
+						uncomplete_children = yes
+					}
+				}
 			}
 			YEM_ahmad_bin_yahya_hamididdin = {
-				set_nationality = event_target:royalist_yemen_civil_war
+				set_nationality = YEA
+				promote_character = yes
 			}
 			YEM_hassan_bin_yahya_hamididdin = {
-				set_nationality = event_target:royalist_yemen_civil_war
+				set_nationality = YEA
 			}
-			event_target:royalist_yemen_civil_war = {
-				YEM_ahmad_bin_yahya_hamididdin = { set_character_name = YEM_ahmad_bin_yahya_hamididdin }
-				YEM_hassan_bin_yahya_hamididdin = { set_character_name = YEM_hassan_bin_yahya_hamididdin }
-				if = {
-					limit = { ROOT = { has_character = YEM_ahmad_bin_yahya_hamididdin } }
-					add_country_leader_role = {
-						character = YEM_ahmad_bin_yahya_hamididdin
-						promote_leader = yes
-						country_leader = {
-							expire = "1965.1.1"
-							ideology = theocratic_monarchy
-							traits = {
-								changeable_character
-								addiction_to_morphin
-								sayyid
-							}
-						}
-					}
-				}	
-			}	
 		}
 	}
 	
 	option = {
 		name = yem.21.b
-		start_civil_war = {
-			ruling_party = monarchy
-			ideology = monarchy
-			size = 0.4
-			capital = 293
-			states = { 
-				293
+		effect_tooltip = {
+			start_civil_war = {
+				ruling_party = monarchy
+				ideology = monarchy
+				size = 0.4
+				capital = 293
+				states = { 
+					293
+				}
+				keep_political_leader = yes
+        	}
+		}
+	    custom_effect_tooltip = YEM_play_ahmed_tt
+	    hidden_effect = {
+			start_civil_war = {
+				ruling_party = monarchy
+				ideology = democratic
+				size = 0.4
+				capital = 293
+				states = { 
+					293
+				}
+				keep_political_leader = yes
+				keep_unit_leaders_trigger = {
+					always = yes
+				}
 			}
-			keep_political_leader = no
-       }
-	   custom_effect_tooltip = YEM_play_ahmed_tt
-	   hidden_effect = {
 			set_country_flag = same_ideology_civil_war_flag
-			add_country_leader_role = {
-				character = YEM_ahmad_bin_yahya_hamididdin
-				promote_leader = yes
-				country_leader = {
-					expire = "1965.1.1"
-					ideology = theocratic_monarchy
-					traits = {
-						changeable_character
-						addiction_to_morphin
-						sayyid
+			random_other_country = {
+				limit = {
+					original_tag = ROOT
+					NOT = {
+						tag = YEM
+					}		
+				}
+				set_country_flag = same_ideology_civil_war_flag
+		    	set_cosmetic_tag = YEM_REV
+				set_political_party = {
+					ideology = monarchy
+					popularity = 100
+				}
+				set_politics = {
+					ruling_party = monarchy
+					elections_allowed = no
+				}
+				load_focus_tree = { tree = NW_yemen keep_completed = no }
+			}
+			if = {
+				limit = {
+					YEM_ibrahim_bin_yahya_hamididdin = {
+						is_country_leader = yes
 					}
 				}
+				YER = { set_cosmetic_tag = YEM_IBR }
+				YEM_ibrahim_bin_yahya_hamididdin = {
+					set_nationality = YER
+					promote_character = yes
+				}
+				YER = { complete_national_focus = YEM_proclaim_imam_ibrahim }
+				else = {
+					YEM_abdullah_bin_ahmad_al_wazir = {
+						set_nationality = YER
+						promote_character = yes
+					}
+					YER = {
+					    complete_national_focus = YEM_proclaim_imam_abdullah_al_wazir
+				        set_cosmetic_tag = YEM_WAS
+					}	
+				}	
+			}
+			YER = {
+				if = {
+					limit = { has_completed_focus = YEM_proclaim_imam_ibrahim }
+					uncomplete_national_focus = {
+						focus = YEM_proclaim_imam_ibrahim
+						uncomplete_children = yes
+					}
+				}
+			}
+			retire_character = YEM_imam_yahya_hamididdin
+			YEM_ahmad_bin_yahya_hamididdin = {
+				promote_character = yes
 			}
 		    country_event = { id = yem.44 hours = 35 }
 			drop_cosmetic_tag = yes
@@ -817,54 +890,42 @@ country_event = {
 				popularity = 100
 			}
 			complete_national_focus = YEM_proclaim_imam_ahmed
-			random_other_country = {
-				limit = {
-					original_tag = ROOT
-					NOT = {
-						has_cosmetic_tag = YEM_AHM
-					}			
+			if = {
+				limit = { has_completed_focus = YEM_proclaim_imam_abdullah_al_wazir }
+				uncomplete_national_focus = {
+					focus = YEM_proclaim_imam_abdullah_al_wazir
+					uncomplete_children = yes
 				}
-				save_event_target_as = revolutionary_yemen_civil_war
-				set_country_flag = same_ideology_civil_war_flag
-				load_focus_tree = { tree = NW_yemen keep_completed = no }
-				set_political_party = {
-					ideology = monarchy
-					popularity = 100
-				}
-				if = {
-					limit = {
-						YEM_ibrahim_bin_yahya_hamididdin = {
-							is_country_leader = yes
-						}
-					}		
-					complete_national_focus = YEM_proclaim_imam_ibrahim
-					else = {
-						complete_national_focus = YEM_proclaim_imam_abdullah_al_wazir
-					}	
+			}
+			if = {
+				limit = { has_completed_focus = YEM_proclaim_imam_ibrahim }
+				uncomplete_national_focus = {
+					focus = YEM_proclaim_imam_ibrahim
+					uncomplete_children = yes
 				}
 			}
 			YEM_hassan_tahsin_alfaqir = {
-				set_nationality = event_target:revolutionary_yemen_civil_war
+				set_nationality = YER
 			}
 			YEM_ahmad_muhammad_numan = {
-				set_nationality = event_target:revolutionary_yemen_civil_war
+				set_nationality = YER
 			}
 			if = {
 				limit = { has_country_flag = YEM_military_comeback_of_iraq }
 			    YEM_jamal_jamil = {
-				    set_nationality = event_target:revolutionary_yemen_civil_war
+				    set_nationality = YER
 			    }
 			    YEM_abdullah_assallal = {
-				    set_nationality = event_target:revolutionary_yemen_civil_war
+				    set_nationality = YER
 			    }
 			    YEM_hassan_alamri = {
-				    set_nationality = event_target:revolutionary_yemen_civil_war
+				    set_nationality = YER
 			    }
 			    YEM_ahmed_yahya_al_thalaya = {
-				    set_nationality = event_target:revolutionary_yemen_civil_war
+				    set_nationality = YER
 			    }
             }
-	   }
+	    }
 	}
 }
 
@@ -908,7 +969,8 @@ country_event = {
 		controls_state = 1118
 		NOT = {
 			has_completed_focus = YEM_repress_shabab
-			has_completed_focus = YEM_assasination_of_imam_yahya
+			has_completed_focus = YEM_proclaim_imam_abdullah_al_wazir
+			has_completed_focus = YEM_proclaim_imam_ibrahim
 		}
 	}
 	mean_time_to_happen = { days = 7 }
@@ -987,15 +1049,15 @@ country_event = {
 			country_event = { id = yem.27	days = 5 }
 		}
 		ai_chance = {
-		   factor = 1
-		   modifier = {
-		      is_historical_focus_on = yes
-			  factor = 100
-		   }
-		   modifier = {
-		      is_subject = yes
-			  factor = 100
-		   }
+		    factor = 1
+		    modifier = {
+		        is_historical_focus_on = yes
+			    factor = 100
+		    }
+		    modifier = {
+		        is_subject = yes
+			    factor = 100
+		    }
 		}
 	}
 }
@@ -1035,6 +1097,7 @@ country_event = {
 			ideology = neutrality
 			popularity = -0.05
 		}
+		complete_national_focus = YEM_repress_shabab
 	}
 }
 
@@ -1050,14 +1113,14 @@ country_event = {
 	option = {
 		name = yem.28.a
 		hidden_effect = {
-			country_event = {id = yem.30	days = 2}
+			country_event = { id = yem.30 days = 2}
 		}
 		ai_chance = {
-		   factor = 1
-		   modifier = {
-		      is_subject = yes
-			  factor = 0
-		   }
+		    factor = 1
+		    modifier = {
+		        is_subject = yes
+			    factor = 0
+		    }
 		}
 	}
 	
@@ -1067,11 +1130,11 @@ country_event = {
 			country_event = { id = yem.31	days = 2 }
 		}
 		ai_chance = {
-		   factor = 1
-		   modifier = {
-		      is_subject = yes
-			  factor = 100
-		   }
+		    factor = 1
+		    modifier = {
+		        is_subject = yes
+			    factor = 100
+		    }
 		}
 	}
 }
@@ -1101,7 +1164,9 @@ country_event = {
 			states = { 
 				293
 			}
-			keep_political_leader = yes
+			keep_unit_leaders_trigger = {
+				always = yes
+			}
         }
         hidden_effect = {
 			set_capital = { state = 293 }
@@ -1111,7 +1176,8 @@ country_event = {
 					NOT = {
 					    tag = YEM
 					}
-				}	
+				}
+		    	set_cosmetic_tag = YEM_YAH
 				save_event_target_as = royalist_yemen_civil_war	
 				load_focus_tree = { tree = NW_yemen keep_completed = no }
 				complete_national_focus = YEM_secret_police_of_imam
@@ -1121,17 +1187,26 @@ country_event = {
 		    country_event = { id = yem.44 hours = 35 }
             complete_national_focus = YEM_declare_islam_republic
             add_ideas = YEM_imam_ibrahim
+		    set_cosmetic_tag = YEM_REV
+			set_popularities = {
+				neutrality = 96
+				monarchy = 4
+			}
 			YEM_imam_yahya_hamididdin = {
-				set_nationality = event_target:royalist_yemen_civil_war
+				set_nationality = YEA
+				promote_character = yes
+			}
+			YEM_ibrahim_bin_yahya_hamididdin = {
+				promote_character = yes
 			}
 			YEM_ahmad_bin_yahya_hamididdin = {
-				set_nationality = event_target:royalist_yemen_civil_war
+				set_nationality = YEA
 			}
 			YEM_ali_bin_yahya_hamididdin = {
-				set_nationality = event_target:royalist_yemen_civil_war
+				set_nationality = YEA
 			}
 			YEM_hassan_bin_yahya_hamididdin = {
-				set_nationality = event_target:royalist_yemen_civil_war
+				set_nationality = YEA
 			}	
         }
     }   
@@ -1149,7 +1224,9 @@ country_event = {
 			states = { 
 				1118
 			}
-			keep_political_leader = yes
+			keep_unit_leaders_trigger = {
+				always = yes
+			}
 		}
 		hidden_effect = {
 			random_other_country = {
@@ -1159,30 +1236,40 @@ country_event = {
 						tag = YEM
 					}
 				}
-				save_event_target_as = revolutionary_yemen_civil_war
+		    	set_cosmetic_tag = YEM_REV
 				load_focus_tree = { tree = NW_yemen keep_completed = no }
 				complete_national_focus = YEM_declare_islam_republic
 				add_ideas = YEM_imam_ibrahim
-			}	
+			}
+			set_popularities = {
+				monarchy = 96
+				neutrality = 4
+			}
+		    set_cosmetic_tag = YEM_YAH
 			YEM_hassan_tahsin_alfaqir = {
-				set_nationality = event_target:revolutionary_yemen_civil_war
+				set_nationality = YER
+			}
+			YEM_ibrahim_bin_yahya_hamididdin = {
+				set_nationality = YER
+				promote_character = yes
 			}
 			YEM_ahmad_muhammad_numan = {
-				set_nationality = event_target:revolutionary_yemen_civil_war
+				set_nationality = YER
+				promote_character = yes
 			}
 			if = {
 				limit = { has_country_flag = YEM_military_comeback_of_iraq }
 			    YEM_jamal_jamil = {
-				    set_nationality = event_target:revolutionary_yemen_civil_war
+				    set_nationality = YER
 			    }
 			    YEM_abdullah_assallal = {
-				    set_nationality = event_target:revolutionary_yemen_civil_war
+				    set_nationality = YER
 			    }
 			    YEM_hassan_alamri = {
-				    set_nationality = event_target:revolutionary_yemen_civil_war
+				    set_nationality = YER
 			    }
 			    YEM_ahmed_yahya_al_thalaya = {
-				    set_nationality = event_target:revolutionary_yemen_civil_war
+				    set_nationality = YER
 			    }
             }
 		    complete_national_focus = YEM_secret_police_of_imam
@@ -1537,7 +1624,23 @@ country_event = {
 			transfer_state = 944
 			transfer_state = 803
 		}
-		white_peace = YEM
+		if = {
+			limit = {
+				803 = {
+					owner = {
+						OR = {
+							original_tag = ENG
+							is_in_faction_with = ENG
+							is_subject_of = ENG
+						}
+					}
+				}
+			}
+			YEM = {
+				transfer_state = 803
+			}	
+		}
+		ROOT = { white_peace = YEM }
 		add_stability = -0.05
 		add_political_power = -50
 		ai_chance = {
@@ -1586,6 +1689,22 @@ country_event = {
 				transfer_state = 1170
 				transfer_state = 944
 				transfer_state = 803
+			}
+			if = {
+				limit = {
+					803 = {
+						owner = {
+							OR = {
+								original_tag = ENG
+								is_in_faction_with = ENG
+								is_subject_of = ENG
+							}
+						}
+					}
+				}
+				YEM = {
+					transfer_state = 803
+				}	
 			}
 			white_peace = ENG
 		}
@@ -1679,26 +1798,10 @@ country_event = {
 			factor = 99
 		}	
 		hidden_effect = {
-		    random_other_country = {
-				limit = {
-					original_tag = YEM
-					NOT = {
-						OR = {
-							has_cosmetic_tag = YEM_AHM
-							has_cosmetic_tag = YEM_IBR
-						}
-					}
-				}
+		    YER = {
 				load_oob = "YEM_Yemeni_Civil_War_Revolutionary"
 			}
-		    random_other_country = {
-				limit = {
-					original_tag = YEM
-					OR = {
-						has_cosmetic_tag = YEM_AHM
-						has_cosmetic_tag = YEM_IBR
-					}
-				}
+		    YEA = {
 				load_oob = "YEM_Yemeni_Civil_War_Royalist"
 			}
 		}	

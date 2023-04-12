@@ -46,7 +46,8 @@ country_event = {
 		}
 	}
 }
-#tribal uprising
+
+#Tribal Uprising
 country_event = {
 	id = NWsaudi.1
 	title = NWsaudi.1.t
@@ -58,17 +59,402 @@ country_event = {
 	fire_only_once = yes
 	
 	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWsaudi.1" }
-	immediate = { set_country_flag = sau_uprising }
+	immediate = {
+		hidden_effect = {
+			set_global_flag = sau_uprising
+			set_variable = { opinion_with_tribes_var = 35 }
+			set_opinion_with_tribes_var = yes
+			set_opinion_with_tribes_Value = yes
+			news_event = { id = trworldnews.170 days = 1 }
+		}
+	}
 	
 	option = {
 		name = NWsaudi.1.a
-		## тут был код, но он нихуя не работал ##
+		effect_tooltip = {
+			start_civil_war = {
+				ideology = monarchy #SPLITTING TAG
+			}
+		}
+		hidden_effect = {
+			if = {
+				limit = {
+					OR = {
+						has_cosmetic_tag = SAU_caliphate
+						has_cosmetic_tag = SAU_new
+					}
+				}
+				drop_cosmetic_tag = yes
+			}
+			start_civil_war = {
+				ideology = neutrality #SPLITTING TAG
+				capital = 769
+				states = all
+				states_filter = {
+					OR = {
+						state = 769
+						state = 1116
+						state = 797
+						state = 851
+						state = 959
+						state = 960
+						state = 991
+					}
+				}
+				keep_all_characters = yes
+				size = 0.4
+				
+				
+				### RASHIDS EFFECTS ###
+				
+				load_focus_tree = saud_focus_tree
+				complete_national_focus = SAU_bedouin_uprising
+				
+				set_capital = { state = 769 }
+				add_popularity = {
+					ideology = monarchy
+					popularity = 0.7
+				}
+				set_politics = {
+					ruling_party = monarchy
+					elections_allowed = no
+				}
+				set_cosmetic_tag = SAU_Rashid
+				set_country_flag = SAU_Rashid
+				set_party_name = { ideology = monarchy long_name = SAU_monarchy_party_rashids_long name = SAU_monarchy_party_rashids }
+				ROOT = {
+					SAU_abdullah_bin_mutaib_al_rashid = { set_nationality = JBS }
+					SAU_muhammad_bin_talal_al_rashid = { set_nationality = JBS }
+					SAU_ukab_bin_ajl = { set_nationality = JBS }
+					SAU_nuri_al_faisal_al_jarba = { set_nationality = JBS }
+					SAU_ali_al_janaa_al_khatrabi = { set_nationality = JBS }
+					SAU_ajil_al_yaver = { set_nationality = JBS }
+				}
+				add_country_leader_role = {
+					character = SAU_abdullah_bin_mutaib_al_rashid
+					promote_leader = yes
+					country_leader = {
+						ideology = tribal_monarchy
+						expire = 1965.1.1
+						traits = { }
+					}
+				}
+				add_field_marshal_role = {
+					character = SAU_abdullah_bin_mutaib_al_rashid
+					traits = { cavalry_officer trait_cautious }
+					skill = 2
+					attack_skill = 2
+					defense_skill = 2
+					planning_skill = 2
+					logistics_skill = 1
+				}
+				
+				add_field_marshal_role = {
+					character = SAU_muhammad_bin_talal_al_rashid
+					traits = { cavalry_officer inflexible_strategist }
+					skill = 2
+					attack_skill = 1
+					defense_skill = 2
+					planning_skill = 2
+					logistics_skill = 1
+				}
+				
+				add_corps_commander_role = {
+					character = SAU_ukab_bin_ajl
+					traits = { war_hero old_guard }
+					skill = 3
+					attack_skill = 2
+					defense_skill = 3
+					planning_skill = 2
+					logistics_skill = 2
+				}
+				
+				add_corps_commander_role = {
+					character = SAU_nuri_al_faisal_al_jarba
+					traits = { engineer_officer }
+					skill = 2
+					attack_skill = 2
+					defense_skill = 1
+					planning_skill = 1
+					logistics_skill = 2
+				}
+				
+				add_corps_commander_role = {
+					character = SAU_ajil_al_yaver
+					traits = { harsh_leader }
+					skill = 2
+					attack_skill = 1
+					defense_skill = 1
+					planning_skill = 2
+					logistics_skill = 2
+				}
+				
+				set_variable = { opinion_with_tribes_var = 70 }
+				set_opinion_with_tribes_var = yes
+				set_opinion_with_tribes_Value = yes
+				
+				set_variable = { opinion_with_ulema_var = 30 }
+				set_opinion_with_ulema_var = yes
+				set_opinion_with_ulema_Value = yes
+				
+				if = {
+					limit = {
+						has_idea = irregular_army
+					}
+					country_lock_all_division_template = yes
+				}
+				
+				clear_variable = concession_owner ## да.
+				remove_ideas = SAU_concession_in_el_hasa
+				
+				random_other_country = {
+					limit = {
+						has_country_flag = concession_owner_flag
+					}
+					clr_country_flag = concession_owner_flag
+				}
+				add_dynamic_modifier = { modifier = SAU_loyalty_of_tribes_modifier }
+				add_dynamic_modifier = { modifier = SAU_loyalty_of_ulema_modifier }
+				
+				#Ирега
+				set_variable = { peoples_militia_var = 14 }											#общее доступное число ополчения (иррегулярка + регулярное ополчение)
+				set_variable = { num_of_regular_camelry_var = 2 }									#стартовые горбы. Должно быть установлено на 0 при удалении шаблона "Milishia Badawia" или актуализированно
+				set_variable = { num_of_camelry_var = num_of_regular_camelry_var }					#всего ополченских горбов
+				set_variable = { total_num_of_militia_var = num_of_camelry_var }					#сумма всех ополченцев
+				set_variable = { start_experience_factor_irregular = 0.0 }							#стартовый опыт ирреги
+				set_variable = { jihad_cost = 120 }													#джихад кост
+				set_variable = { days_jihad = 40 }													#время джихада		
+				set_variable = { num_irregular_jihad_summon = 1 }									#стартовая пихота 4 tt	
+				set_variable = { num_irregular_division_summon = 2 }								#стартовая иррега 4 tt	
+				set_variable = { num_irregular_division_of_jihad_plus = 0 }		
+				
+				#ПЛЕМЕНА
+				set_variable = { opinion_with_tribes_var = 40 }
+				set_variable = { start_barrow_x = -6 }
+				set_variable = { start_barrow_text_x = 2 }
+				set_variable = { min_barrow_x = 24 }
+
+				set_opinion_with_tribes_var = yes
+				set_opinion_with_tribes_Value = yes
+				#УЛЕМЫ
+				set_variable = { opinion_with_ulema_var = 55 }
+				set_variable = { start_barrow_x_ulema = -6 }
+				set_variable = { start_barrow_text_x_ulema = 2 }
+				set_variable = { min_barrow_x_ulema = 24 }
+
+				set_opinion_with_ulema_var = yes
+				set_opinion_with_ulema_Value = yes
+				
+				if = {
+					limit = {
+						amount_research_slots < 1
+					}
+					add_research_slot = 1
+				}
+			}
+		}
 	}
 
 	option = {
 		name = NWsaudi.1.b
+		effect_tooltip = {
+			start_civil_war = {
+				ideology = monarchy #SPLITTING TAG
+			}
+		}
+		hidden_effect = {
+			if = {
+				limit = {
+					OR = {
+						has_cosmetic_tag = SAU_caliphate
+						has_cosmetic_tag = SAU_new
+					}
+				}
+				drop_cosmetic_tag = yes
+			}
+			start_civil_war = {
+				ideology = neutrality #SPLITTING TAG
+				capital = 769
+				states = all
+				states_filter = {
+					OR = {
+						state = 769
+						state = 1116
+						state = 797
+						state = 851
+						state = 959
+						state = 960
+						state = 991
+					}
+				}
+				keep_all_characters = yes
+				size = 0.4
+				
+				
+				### RASHIDS EFFECTS ###
+				
+				load_focus_tree = saud_focus_tree
+				complete_national_focus = SAU_bedouin_uprising
+				
+				set_capital = { state = 769 }
+				add_popularity = {
+					ideology = monarchy
+					popularity = 0.7
+				}
+				set_politics = {
+					ruling_party = monarchy
+					elections_allowed = no
+				}
+				set_cosmetic_tag = SAU_Rashid
+				set_country_flag = SAU_Rashid
+				set_party_name = { ideology = monarchy long_name = SAU_monarchy_party_rashids_long name = SAU_monarchy_party_rashids }
+				ROOT = {
+					SAU_abdullah_bin_mutaib_al_rashid = { set_nationality = JBS }
+					SAU_omar_bin_hassan_al_sheikh = { set_nationality = JBS }
+					SAU_abdullah_bin_mutaib_al_rashid = { set_nationality = JBS }
+					SAU_mohammed_bin_abdulaziz_alshuhail = { set_nationality = JBS }
+					SAU_muhammad_bin_abdul_rahman_al_saud = { set_nationality = JBS }
+					SAU_abdul_mohsen_al_faram = { set_nationality = JBS }
+					SAU_said_kurdi = { set_nationality = JBS }
+					SAU_hassan_bin_ali_al_asiri = { set_nationality = JBS }
+					SAU_ibrahim_al_tasan = { set_nationality = JBS }
+					SAU_abdullah_bin_suleiman = { set_nationality = JBS }
+					SAU_mohammed_suroor_sabban = { set_nationality = JBS }
+					SAU_john_philby = { set_nationality = JBS }
+					SAU_mohammed_bin_laden = { set_nationality = JBS }
+					SAU_khalid_al_hakim = { set_nationality = JBS }
+					SAU_suleiman_al_naniyah = { set_nationality = JBS }
+					SAU_khamis_bin_ramthan = { set_nationality = JBS }
+					SAU_muhammad_ali_al_omari = { set_nationality = JBS }
+					SAU_mohamed_saleh_nassif = { set_nationality = JBS }
+					SAU_max_steineke = { set_nationality = JBS }
+					SAU_muhammad_bin_talal_al_rashid = { set_nationality = JBS }
+					SAU_ukab_bin_ajl = { set_nationality = JBS }
+					SAU_nuri_al_faisal_al_jarba = { set_nationality = JBS }
+					SAU_ali_al_janaa_al_khatrabi = { set_nationality = JBS }
+					SAU_ajil_al_yaver = { set_nationality = JBS }
+				}
+				add_country_leader_role = {
+					character = SAU_abdullah_bin_mutaib_al_rashid
+					promote_leader = yes
+					country_leader = {
+						ideology = tribal_monarchy
+						expire = 1965.1.1
+						traits = { }
+					}
+				}
+				add_field_marshal_role = {
+					character = SAU_abdullah_bin_mutaib_al_rashid
+					traits = { cavalry_officer trait_cautious }
+					skill = 2
+					attack_skill = 2
+					defense_skill = 2
+					planning_skill = 2
+					logistics_skill = 1
+				}
+				
+				add_field_marshal_role = {
+					character = SAU_muhammad_bin_talal_al_rashid
+					traits = { cavalry_officer inflexible_strategist }
+					skill = 2
+					attack_skill = 1
+					defense_skill = 2
+					planning_skill = 2
+					logistics_skill = 1
+				}
+				
+				add_corps_commander_role = {
+					character = SAU_nuri_al_faisal_al_jarba
+					traits = { engineer_officer }
+					skill = 2
+					attack_skill = 2
+					defense_skill = 1
+					planning_skill = 1
+					logistics_skill = 2
+				}
+				
+				add_corps_commander_role = {
+					character = SAU_ajil_al_yaver
+					traits = { harsh_leader }
+					skill = 2
+					attack_skill = 1
+					defense_skill = 1
+					planning_skill = 2
+					logistics_skill = 2
+				}
+				
+				set_variable = { opinion_with_tribes_var = 70 }
+				set_opinion_with_tribes_var = yes
+				set_opinion_with_tribes_Value = yes
+				
+				set_variable = { opinion_with_ulema_var = 30 }
+				set_opinion_with_ulema_var = yes
+				set_opinion_with_ulema_Value = yes
+				if = {
+					limit = {
+						has_idea = irregular_army
+					}
+					country_lock_all_division_template = yes
+				}
+				
+				clear_variable = concession_owner ## да.
+				remove_ideas = SAU_concession_in_el_hasa
+				
+				random_other_country = {
+					limit = {
+						has_country_flag = concession_owner_flag
+					}
+					clr_country_flag = concession_owner_flag
+				}
+				
+				add_dynamic_modifier = { modifier = SAU_loyalty_of_tribes_modifier }
+				add_dynamic_modifier = { modifier = SAU_loyalty_of_ulema_modifier }
+				
+				country_event = { id = NWsaudi.500 days = 14 } #рандомы
+				
+				#Ирега
+				set_variable = { peoples_militia_var = 14 }											#общее доступное число ополчения (иррегулярка + регулярное ополчение)
+				set_variable = { num_of_regular_camelry_var = 2 }									#стартовые горбы. Должно быть установлено на 0 при удалении шаблона "Milishia Badawia" или актуализированно
+				set_variable = { num_of_camelry_var = num_of_regular_camelry_var }					#всего ополченских горбов
+				set_variable = { total_num_of_militia_var = num_of_camelry_var }					#сумма всех ополченцев
+				set_variable = { start_experience_factor_irregular = 0.0 }							#стартовый опыт ирреги
+				set_variable = { jihad_cost = 120 }													#джихад кост
+				set_variable = { days_jihad = 40 }													#время джихада		
+				set_variable = { num_irregular_jihad_summon = 1 }									#стартовая пихота 4 tt	
+				set_variable = { num_irregular_division_summon = 2 }								#стартовая иррега 4 tt	
+				set_variable = { num_irregular_division_of_jihad_plus = 0 }		
+				
+				#ПЛЕМЕНА
+				set_variable = { opinion_with_tribes_var = 70 }
+				set_variable = { start_barrow_x = -6 }
+				set_variable = { start_barrow_text_x = 2 }
+				set_variable = { min_barrow_x = 24 }
+
+				set_opinion_with_tribes_var = yes
+				set_opinion_with_tribes_Value = yes
+				#УЛЕМЫ
+				set_variable = { opinion_with_ulema_var = 55 }
+				set_variable = { start_barrow_x_ulema = -6 }
+				set_variable = { start_barrow_text_x_ulema = 2 }
+				set_variable = { min_barrow_x_ulema = 24 }
+
+				set_opinion_with_ulema_var = yes
+				set_opinion_with_ulema_Value = yes
+				if = {
+					limit = {
+						amount_research_slots < 1
+					}
+					add_research_slot = 1
+				}
+			}
+		}
+		random_enemy_country = {
+			limit = { original_tag = ROOT }
+			change_tag_from = ROOT
+		}
 	}
 }
+
 ## Palace coup ##
 country_event = {
 	id = NWsaudi.3
@@ -80,7 +466,7 @@ country_event = {
 	
 	
 	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWsaudi.3" }
-	immediate = { set_country_flag = sau_uprising }
+	immediate = { set_global_flag = sau_uprising }
 	
 	option = {
 		name = NWsaudi.3.a
@@ -90,7 +476,6 @@ country_event = {
 				desc = "POLITICS_RAHMAN_DESC"
 				ideology = wahhabism_monarchy
 				traits = {
-					#
 				}
 				expire = "1965.1.1"
 			}
@@ -121,57 +506,21 @@ country_event = {
 		}
 		add_stability = -0.1
 		complete_national_focus = SAU_accuse_abdulaziz_of_religious_licentiousness
-		hidden_effect = {
+		set_country_flag = SAU_Palace_coup
+		hidden_effect = {	
+			mark_focus_tree_layout_dirty = yes
 			retire_character = SAU_abdulaziz_ibn_saud
 			set_variable = { opinion_with_ulema_var = 55 }
 			set_opinion_with_ulema_var = yes
 			set_opinion_with_ulema_Value = yes
 			country_event = { id = NWsaudi.5 days = 20 }
-			news_event = { id = NWsaudi.4 days = 1 }
+			country_event = { id = NWsaudi.65 days = 31 }
+			news_event = { id = trworldnews.172 days = 1 }
 		}
 	}
 }
-## Palace coup ##
-news_event = {
-	id = NWsaudi.4
-	title = NWsaudi.4.t
-	desc = NWsaudi.4.d
-	picture = GFX_news_event_SAU_palace_coup
-	
-	is_triggered_only = yes
-	
-	
-	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWsaudi.4" }
-	immediate = { set_country_flag = sau_uprising }
-	
-	option = {
-		name = NWsaudi.4.a
-		trigger = {
-			is_major = yes
-			NOT = { original_tag = SOV original_tag = SAU }
-		}
-	}
 
-	option = {
-		name = NWsaudi.4.b
-		trigger = {
-			original_tag = SAU
-		}
-	}
 
-	option = {
-		name = NWsaudi.4.c
-		trigger = {
-			NOT = {
-				OR = {
-					is_major = yes
-					NOT = { original_tag = SOV }
-					tag = SAU 
-				}
-			}
-		}
-	}
-}
 ## New Power ##
 country_event = {
 	id = NWsaudi.5
@@ -183,7 +532,6 @@ country_event = {
 	
 	
 	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWsaudi.5" }
-	immediate = { set_country_flag = sau_uprising }
 	
 	option = {
 		name = NWsaudi.5.a
@@ -1190,12 +1538,13 @@ country_event = {
 		create_wargoal = {
 			type = puppet_wargoal_focus
 			target = FROM
+			expire = 0
 		}
 		ai_chance = {
 			factor = 3
 			modifier = {
-				ROOT = { has_war = yes }
-				factor = 1
+				has_war = yes
+				factor = 0.3
 			}
 			modifier = {
 				OR = {
@@ -1203,17 +1552,11 @@ country_event = {
 						is_in_faction = yes
 						is_faction_leader = no
 					}
-					ROOT = {
-						NOT = {
-							OR = {
-								any_neighbor_state = {
-									is_controlled_by = FROM
-								}
-								any_country = {
-									any_neighbor_state = {
-										is_controlled_by = FROM
-									}
-								}
+					NOT = {
+						OR = {
+							is_neighbor_of = FROM
+							any_allied_country = {
+								is_neighbor_of = FROM
 							}
 						}
 					}
@@ -1759,6 +2102,13 @@ country_event = {
 	option = { 
 		name = NWsaudi.47.a
 		add_war_support = -0.03
+		hidden_effect = {
+			UAE = { clr_country_flag = liberation_saud_flag }
+			QAT = { clr_country_flag = liberation_saud_flag }
+			BHR = { clr_country_flag = liberation_saud_flag }
+			QUA = { clr_country_flag = liberation_saud_flag }
+			KUW = { clr_country_flag = liberation_saud_flag }
+		}
 	}
 }
 ## [SAU.GetAdj] troops are driven back ##
@@ -1916,6 +2266,1258 @@ country_event = {
 		clamp_variable = { var = BPL_arab_tensions_total min = 0 max = 100 }
 	}
 }
+
+## Kathiri Support ##
+country_event = {
+	id = NWsaudi.50
+	title = NWsaudi.50.t
+	desc = NWsaudi.50.d
+	picture = GFX_report_event_sau_20
+	
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWsaudi.50" }
+	
+	option = { 
+		name = NWsaudi.50.a
+		ai_chance = {
+			factor = 1
+		}
+	}
+	
+	option = { 
+		name = NWsaudi.50.b
+		add_political_power = -60
+		add_equipment_to_stockpile = {
+			type = infantry_equipment
+			amount = -200
+		}
+		KTH = {
+			country_event = { id = NWsaudi.51 hours = 12 }
+		}
+		if = { 
+			limit = {
+				tag = SAU
+			}
+			effect_tooltip = {
+				KTH = {
+					add_ideas = KTH_sau_support
+				}
+			}
+		}
+		else = { 
+			effect_tooltip = {
+				KTH = {
+					add_ideas = KTH_yem_support
+				}
+			}
+		}
+		ai_chance = {
+			factor = 1
+			modifier = {
+				is_historical_focus_on = yes
+				factor = 0
+			}
+		}
+	}
+}
+
+## KTH | we have guns! ##
+country_event = {
+	id = NWsaudi.51
+	title = NWsaudi.51.t
+	desc = NWsaudi.51.d
+	picture = GFX_report_event_sau_20
+	
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWsaudi.51" }
+	
+	option = { 
+		name = NWsaudi.51.a
+		if = {
+			limit = {
+				FROM = {
+					tag = SAU
+				}
+			}
+			add_ideas = KTH_sau_support
+		}
+		else = {
+			add_ideas = KTH_yem_support
+		}
+	}
+}
+
+## RASHID RASKOL
+country_event = {
+	id = NWsaudi.52
+	title = NWsaudi.52.t
+	desc = NWsaudi.52.d
+	is_triggered_only = yes
+	picture = GFX_report_event_oma_3
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWsaudi.52" }
+	
+	option = {
+		name = NWsaudi.52.a
+		custom_effect_tooltip = NWsaudi52a_tt
+		custom_effect_tooltip = NWsaudi52a_tt2
+		set_country_flag = rashidi_posralis
+		hidden_effect = {
+			country_event = { id = NWsaudi.53 days = 20 }
+			set_variable = {
+				var = rashidi_posralis_var
+				value = 0
+			}
+		}
+	}
+}
+
+#Jamalnye spory
+country_event = {
+	id = NWsaudi.53
+	title = NWsaudi.53.t
+	desc = NWsaudi.53.d
+	is_triggered_only = yes
+	fire_only_once = yes
+	picture = GFX_report_event_oma_8
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWsaudi.53" }
+	immediate = { hidden_effect = { country_event = { id = NWsaudi.56 days = 20 } } }
+	
+	option = {
+		name = NWsaudi.53.a
+		country_event = { id = NWsaudi.54 days = 10 }
+	}
+	
+	option = {
+		name = NWsaudi.53.b
+		country_event = { id = NWsaudi.55 days = 10 }
+	}
+}
+
+#itog1
+country_event = {
+	id = NWsaudi.54
+	title = NWsaudi.54.t
+	desc = NWsaudi.54.d
+	is_triggered_only = yes
+	fire_only_once = yes
+	picture = GFX_report_event_sau_2
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWsaudi.54" }
+	
+	option = {
+		name = NWsaudi.54.a
+		custom_effect_tooltip = SAU_loyalty_of_tribes_minus10
+		subtract_from_variable = { opinion_with_tribes_var = 10 }
+		set_opinion_with_tribes_var = yes
+		set_opinion_with_tribes_Value = yes
+	}
+}
+
+#itog2
+country_event = {
+	id = NWsaudi.55
+	title = NWsaudi.54.t
+	desc = NWsaudi.55.d
+	is_triggered_only = yes
+	fire_only_once = yes
+	picture = GFX_report_event_iom_3
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWsaudi.55" }
+	
+	option = {
+		name = NWsaudi.55.a
+	}
+}
+## Dogs Heart
+country_event = {
+	id = NWsaudi.56
+	title = NWsaudi.56.t
+	desc = NWsaudi.56.d
+	is_triggered_only = yes
+	fire_only_once = yes
+	picture = GFX_report_event_per_islam_generic
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWsaudi.56" }
+	immediate = { hidden_effect = { set_country_flag = SAU_40_days } }
+	
+	option = {
+		name = NWsaudi.56.a
+		custom_effect_tooltip = SAU_loyalty_of_tribes_plus10
+		add_to_variable = { opinion_with_tribes_var = 10 }
+		set_opinion_with_tribes_var = yes
+		set_opinion_with_tribes_Value = yes
+		
+		custom_effect_tooltip = SAU_loyalty_of_ulema_minus5
+		subtract_from_variable = { opinion_with_ulema_var = 5 }
+		set_opinion_with_ulema_var = yes
+		set_opinion_with_ulema_Value = yes
+	
+		add_timed_idea = {
+			idea = SAU_tribe_peredel_idea
+			days = 80
+		}
+	}
+	
+	option = {
+		name = NWsaudi.56.b
+		custom_effect_tooltip = SAU_loyalty_of_tribes_minus10
+		subtract_from_variable = { opinion_with_tribes_var = 10 }
+		set_opinion_with_tribes_var = yes
+		set_opinion_with_tribes_Value = yes
+	}
+}
+
+##Tribe 
+
+country_event = {
+	id = NWsaudi.57
+	title = NWsaudi.57.t
+	desc = NWsaudi.57.d
+	is_triggered_only = yes
+	fire_only_once = yes
+	picture = GFX_report_event_sau_10
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWsaudi.57" }
+	immediate = { hidden_effect = { country_event = { id = NWsaudi.58 days = 70 } } }
+	
+	option = {
+		name = NWsaudi.57.a
+		custom_effect_tooltip = SAU_loyalty_of_tribes_plus5
+		add_to_variable = { opinion_with_tribes_var = 5 }
+		set_opinion_with_tribes_var = yes
+		set_opinion_with_tribes_Value = yes
+		
+		add_timed_idea = {
+			idea = depletion_of_the_treasury
+			days = 70
+		}
+	}
+	
+	option = {
+		name = NWsaudi.57.b
+		custom_effect_tooltip = SAU_loyalty_of_tribes_minus5
+		subtract_from_variable = { opinion_with_tribes_var = 5 }
+		set_opinion_with_tribes_var = yes
+		set_opinion_with_tribes_Value = yes
+	}
+}
+##WAHHABI
+country_event = {
+	id = NWsaudi.58
+	title = NWsaudi.58.t
+	desc = NWsaudi.58.d
+	is_triggered_only = yes
+	fire_only_once = yes
+	picture = GFX_report_event_per_96_152
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWsaudi.58" }
+	
+	option = {
+		name = NWsaudi.58.a
+		hidden_effect = {
+			country_event = {
+				id = NWsaudi.59
+				days = 15
+			}
+		}
+	}
+	
+	option = {
+		name = NWsaudi.58.b
+		hidden_effect = {
+			country_event = {
+				id = NWsaudi.60
+				days = 30
+			}
+		}
+	}
+}
+
+##FAST
+
+country_event = {
+	id = NWsaudi.59
+	title = NWsaudi.59.t
+	desc = NWsaudi.59.d
+	is_triggered_only = yes
+	fire_only_once = yes
+	picture = GFX_report_event_sau_2
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWsaudi.59" }
+	
+	option = {
+		name = NWsaudi.59.a
+		add_war_support = -0.03
+		add_manpower = -324
+	}
+}
+
+##Slow
+
+country_event = {
+	id = NWsaudi.60
+	title = NWsaudi.60.t
+	desc = NWsaudi.60.d
+	is_triggered_only = yes
+	fire_only_once = yes
+	picture = GFX_report_event_sau_18
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWsaudi.60" }
+	
+	option = {
+		name = NWsaudi.60.a
+		custom_effect_tooltip = SAU_loyalty_of_tribes_minus5
+		subtract_from_variable = { opinion_with_tribes_var = 5 }
+		set_opinion_with_tribes_var = yes
+		set_opinion_with_tribes_Value = yes
+		add_manpower = -56
+	}
+}
+
+##Rashid Coup
+
+country_event = {
+	id = NWsaudi.61
+	title = NWsaudi.61.t
+	desc = NWsaudi.61.d
+	is_triggered_only = yes
+	picture = GFX_report_event_sau_4
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWsaudi.61" }
+	
+	option = {
+		name = NWsaudi.61.a
+		if = {
+			limit = {
+				SAU_abdullah_bin_mutaib_al_rashid = {
+					is_country_leader = yes
+				}
+			}
+			uncomplete_national_focus = {
+				  focus = SAU_sultan_abdullah_ibn_mitab
+				  uncomplete_children = yes
+				  refund_political_power = no
+			}
+			set_cosmetic_tag = RASHID_MUH
+			remove_ideas = SAU_bet_on_tribes
+			add_country_leader_role = {
+				character = SAU_muhammad_bin_talal_al_rashid
+				promote_leader = yes
+				country_leader = {
+					ideology = tribal_monarchy
+					expire = 1965.1.1
+					traits = { }
+				}
+			}
+		}
+		else_if = {
+			limit = {
+				SAU_muhammad_bin_talal_al_rashid = {
+					is_country_leader = yes
+				}
+			}
+			uncomplete_national_focus = {
+				  focus = SAU_sultan_muhammad_ibn_talal
+				  uncomplete_children = yes
+				  refund_political_power = no
+			}
+			set_cosmetic_tag = SAU_Rashid
+			remove_country_leader_role = {
+				character = SAU_muhammad_bin_talal_al_rashid
+				ideology = tribal_monarchy 
+			}
+			add_country_leader_role = {
+				character = SAU_abdullah_bin_mutaib_al_rashid
+				promote_leader = yes
+				country_leader = {
+					ideology = tribal_monarchy
+					expire = 1965.1.1
+					traits = { }
+				}
+			}
+		}
+		add_stability = -0.1
+		add_to_variable = { rashidi_posralis_var = 1 }
+		set_variable = { opinion_with_tribes_var = 70 }
+		set_opinion_with_tribes_var = yes
+		set_opinion_with_tribes_Value = yes
+		if = {
+			limit = {
+				check_variable = { rashidi_posralis_var > 0 }
+			}
+			custom_effect_tooltip = rashidi_posralis_var_tt
+		}
+	}
+}
+
+# Civil War Two
+country_event = {
+	id = NWsaudi.62
+	title = NWsaudi.62.t
+	desc = NWsaudi.62.d
+	is_triggered_only = yes
+	picture = GFX_report_event_sau_2
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWsaudi.62" }
+	immediate = {
+		hidden_effect = { 
+			clr_country_flag = rashidi_posralis
+			add_to_variable = { opinion_with_tribes_var = 10 }
+			set_opinion_with_tribes_var = yes
+			set_opinion_with_tribes_Value = yes
+		}
+	}
+	
+	option = {
+		name = NWsaudi.62.a
+		trigger = {
+			SAU_abdullah_bin_mutaib_al_rashid = {
+				is_country_leader = yes
+			}
+		}
+		effect_tooltip = {
+			start_civil_war = {
+				ideology = monarchy #SPLITTING TAG
+			}
+		}
+		uncomplete_national_focus = {
+			focus = SAU_sultan_muhammad_ibn_talal
+			uncomplete_children = yes
+			refund_political_power = no
+		}
+		hidden_effect = {
+			start_civil_war = {
+				ideology = neutrality #SPLITTING TAG
+				capital = 1073
+				states = all
+				states_filter = {
+					OR = {
+						state = 991
+						state = 1073
+						state = 679
+					}
+				}
+				keep_all_characters = yes
+				size = 0.1
+				
+				## MUHAMMAD EFFECT ##
+				add_popularity = {
+					ideology = monarchy
+					popularity = 0.7
+				}
+				set_politics = {
+					ruling_party = monarchy
+					elections_allowed = no
+				}
+				set_cosmetic_tag = RASHID_MUH
+				
+				set_party_name = { ideology = monarchy long_name = SAU_monarchy_party_rashids_long name = SAU_monarchy_party_rashids }
+				ROOT = {
+					SAU_muhammad_bin_talal_al_rashid = { set_nationality = PREV.PREV }
+				}
+				add_country_leader_role = {
+					character = SAU_muhammad_bin_talal_al_rashid
+					promote_leader = yes
+					country_leader = {
+						ideology = tribal_monarchy
+						expire = 1965.1.1
+						traits = { }
+					}
+				}
+				
+				add_dynamic_modifier = { modifier = SAU_loyalty_of_tribes_modifier }
+				add_dynamic_modifier = { modifier = SAU_loyalty_of_ulema_modifier }
+				
+				set_variable = { opinion_with_tribes_var = 35 }
+				set_opinion_with_tribes_var = yes
+				set_opinion_with_tribes_Value = yes
+				
+				set_variable = { opinion_with_ulema_var = 30 }
+				set_opinion_with_ulema_var = yes
+				set_opinion_with_ulema_Value = yes
+				
+				if = {
+					limit = {
+						has_idea = irregular_army
+					}
+					country_lock_all_division_template = yes
+				}
+				
+				clear_variable = concession_owner ## да.
+				remove_ideas = SAU_concession_in_el_hasa
+				
+				random_other_country = {
+					limit = {
+						has_country_flag = concession_owner_flag
+					}
+					clr_country_flag = concession_owner_flag
+				}
+				remove_ideas = SAU_bet_on_tribes
+				#Ирега
+				set_variable = { peoples_militia_var = 14 }											#общее доступное число ополчения (иррегулярка + регулярное ополчение)
+				set_variable = { num_of_regular_camelry_var = 2 }									#стартовые горбы. Должно быть установлено на 0 при удалении шаблона "Milishia Badawia" или актуализированно
+				set_variable = { num_of_camelry_var = num_of_regular_camelry_var }					#всего ополченских горбов
+				set_variable = { total_num_of_militia_var = num_of_camelry_var }					#сумма всех ополченцев
+				set_variable = { start_experience_factor_irregular = 0.0 }							#стартовый опыт ирреги
+				set_variable = { jihad_cost = 120 }													#джихад кост
+				set_variable = { days_jihad = 40 }													#время джихада		
+				set_variable = { num_irregular_jihad_summon = 1 }									#стартовая пихота 4 tt	
+				set_variable = { num_irregular_division_summon = 2 }								#стартовая иррега 4 tt	
+				set_variable = { num_irregular_division_of_jihad_plus = 0 }		
+				
+				#ПЛЕМЕНА
+				set_variable = { opinion_with_tribes_var = 10 }
+				set_variable = { start_barrow_x = -6 }
+				set_variable = { start_barrow_text_x = 2 }
+				set_variable = { min_barrow_x = 24 }
+
+				set_opinion_with_tribes_var = yes
+				set_opinion_with_tribes_Value = yes
+				#УЛЕМЫ
+				set_variable = { opinion_with_ulema_var = 20 }
+				set_variable = { start_barrow_x_ulema = -6 }
+				set_variable = { start_barrow_text_x_ulema = 2 }
+				set_variable = { min_barrow_x_ulema = 24 }
+
+				set_opinion_with_ulema_var = yes
+				set_opinion_with_ulema_Value = yes
+			}
+		}
+	}
+	
+	option = {
+		name = NWsaudi.62.b
+		trigger = {
+			SAU_muhammad_bin_talal_al_rashid = {
+				is_country_leader = yes
+			}
+		}
+		effect_tooltip = {
+			start_civil_war = {
+				ideology = monarchy #SPLITTING TAG
+			}
+		}
+		uncomplete_national_focus = {
+			focus = SAU_sultan_abdullah_ibn_mitab
+			uncomplete_children = yes
+			refund_political_power = no
+		}
+		hidden_effect = {
+			start_civil_war = {
+				ideology = neutrality #SPLITTING TAG
+				capital = 292
+				states = all
+				states_filter = {
+					NOT = {
+						OR = {
+							state = 991
+							state = 1073
+							state = 679
+						}
+					}
+				}
+				keep_all_characters = yes
+				size = 0.1
+				
+				## ABDULLA EFFECT ##
+				add_popularity = {
+					ideology = monarchy
+					popularity = 0.7
+				}
+				set_politics = {
+					ruling_party = monarchy
+					elections_allowed = no
+				}
+				set_cosmetic_tag = SAU_Rashid
+				set_party_name = { ideology = monarchy long_name = SAU_monarchy_party_rashids_long name = SAU_monarchy_party_rashids }
+				ROOT = {
+					SAU_abdullah_bin_mutaib_al_rashid = { set_nationality = PREV.PREV }
+				}
+				add_country_leader_role = {
+					character = SAU_abdullah_bin_mutaib_al_rashid
+					promote_leader = yes
+					country_leader = {
+						ideology = tribal_monarchy
+						expire = 1965.1.1
+						traits = { }
+					}
+				}
+				
+				add_dynamic_modifier = { modifier = SAU_loyalty_of_tribes_modifier }
+				add_dynamic_modifier = { modifier = SAU_loyalty_of_ulema_modifier }
+				
+				set_variable = { opinion_with_tribes_var = 35 }
+				set_opinion_with_tribes_var = yes
+				set_opinion_with_tribes_Value = yes
+				
+				set_variable = { opinion_with_ulema_var = 30 }
+				set_opinion_with_ulema_var = yes
+				set_opinion_with_ulema_Value = yes
+				
+				if = {
+					limit = {
+						has_idea = irregular_army
+					}
+					country_lock_all_division_template = yes
+				}
+				
+				clear_variable = concession_owner ## да.
+				remove_ideas = SAU_concession_in_el_hasa
+				
+				random_other_country = {
+					limit = {
+						has_country_flag = concession_owner_flag
+					}
+					clr_country_flag = concession_owner_flag
+				}
+				
+				#Ирега
+				set_variable = { peoples_militia_var = 14 }											#общее доступное число ополчения (иррегулярка + регулярное ополчение)
+				set_variable = { num_of_regular_camelry_var = 2 }									#стартовые горбы. Должно быть установлено на 0 при удалении шаблона "Milishia Badawia" или актуализированно
+				set_variable = { num_of_camelry_var = num_of_regular_camelry_var }					#всего ополченских горбов
+				set_variable = { total_num_of_militia_var = num_of_camelry_var }					#сумма всех ополченцев
+				set_variable = { start_experience_factor_irregular = 0.0 }							#стартовый опыт ирреги
+				set_variable = { jihad_cost = 120 }													#джихад кост
+				set_variable = { days_jihad = 40 }													#время джихада		
+				set_variable = { num_irregular_jihad_summon = 1 }									#стартовая пихота 4 tt	
+				set_variable = { num_irregular_division_summon = 2 }								#стартовая иррега 4 tt	
+				set_variable = { num_irregular_division_of_jihad_plus = 0 }		
+				
+				#ПЛЕМЕНА
+				set_variable = { opinion_with_tribes_var = 10 }
+				set_variable = { start_barrow_x = -6 }
+				set_variable = { start_barrow_text_x = 2 }
+				set_variable = { min_barrow_x = 24 }
+
+				set_opinion_with_tribes_var = yes
+				set_opinion_with_tribes_Value = yes
+				#УЛЕМЫ
+				set_variable = { opinion_with_ulema_var = 20 }
+				set_variable = { start_barrow_x_ulema = -6 }
+				set_variable = { start_barrow_text_x_ulema = 2 }
+				set_variable = { min_barrow_x_ulema = 24 }
+
+				set_opinion_with_ulema_var = yes
+				set_opinion_with_ulema_Value = yes
+			}
+		}
+	}
+}
+## KILL ABDULLA 
+
+country_event = {
+	id = NWsaudi.63
+	title = NWsaudi.63.t
+	desc = NWsaudi.63.d
+	is_triggered_only = yes
+	fire_only_once = yes
+	picture = GFX_report_event_iom_6
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWsaudi.63" }
+	
+	option = {
+		name = NWsaudi.63.a
+		add_stability = 0.1
+		custom_effect_tooltip = SAU_loyalty_of_tribes_plus5
+		add_to_variable = { opinion_with_tribes_var = 5 }
+		set_opinion_with_tribes_var = yes
+		set_opinion_with_tribes_Value = yes
+		retire_character = SAU_abdullah_bin_mutaib_al_rashid
+		clr_country_flag = rashidi_posralis
+	}
+}
+## KILL MUHAMMAD 
+
+country_event = {
+	id = NWsaudi.64
+	title = NWsaudi.64.t
+	desc = NWsaudi.64.d
+	is_triggered_only = yes
+	fire_only_once = yes
+	picture = GFX_report_event_iom_6
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWsaudi.64" }
+	
+	option = {
+		name = NWsaudi.63.a
+		add_stability = 0.1
+		custom_effect_tooltip = SAU_loyalty_of_tribes_plus5
+		add_to_variable = { opinion_with_tribes_var = 5 }
+		set_opinion_with_tribes_var = yes
+		set_opinion_with_tribes_Value = yes
+		retire_character = SAU_muhammad_bin_talal_al_rashid
+		clr_country_flag = rashidi_posralis
+	}
+}
+## SAU_breaking_ungodly_treaties 
+
+country_event = {
+	id = NWsaudi.65
+	title = NWsaudi.65.t
+	desc = NWsaudi.65.d
+	is_triggered_only = yes
+	fire_only_once = yes
+	picture = GFX_report_event_per_islam_1
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWsaudi.65" }
+	
+	option = {
+		name = NWsaudi.65.a
+		complete_national_focus = SAU_breaking_ungodly_treaties
+		if = {
+			limit = {
+				is_in_faction = yes
+				is_faction_leader = no
+			}
+			faction_leader = {
+				country_event = NWsaudi.66
+			}
+		}
+		else_if = {
+			limit = {
+				is_faction_leader = yes
+			}
+			every_other_country = {
+				limit = {
+					is_in_faction_with = ROOT
+				}
+				country_event = NWsaudi.67
+				leave_faction = yes
+			}
+		}
+			var:concession_owner = {
+				remove_resource_rights = 1115
+				clr_country_flag = concession_owner_flag
+				country_event = { id = NWsaudi.33 }
+				add_opinion_modifier = {
+					target = ROOT
+					modifier = NWsaudi.33.t
+				}
+			}
+			clear_variable = concession_owner
+			if = {
+				limit = { has_idea = SAU_concession_in_el_hasa }
+				remove_ideas = SAU_concession_in_el_hasa
+			}
+			if = {
+				limit = { has_idea = SAU_Revenues_from_oil_concession }
+				remove_ideas = SAU_Revenues_from_oil_concession
+			}
+			if = {
+				limit = { has_idea = SAU_high_revenues_from_oil_concession }
+				remove_ideas = SAU_high_revenues_from_oil_concession
+			}
+			custom_effect_tooltip = SAU_Liquidate_the_concession_in_Al_Has_tt		
+	}
+}
+
+## SAU_breaking_ungodly_treaties  1
+
+country_event = {
+	id = NWsaudi.66
+	title = NWsaudi.66.t
+	desc = NWsaudi.66.d
+	is_triggered_only = yes
+	fire_only_once = yes
+	picture = GFX_report_event_sau_17
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWsaudi.66" }
+	
+	option = {
+		name = NWsaudi.66.a
+	}
+}
+## SAU_breaking_ungodly_treaties  2
+
+country_event = {
+	id = NWsaudi.67
+	title = NWsaudi.67.t
+	desc = NWsaudi.66.d
+	is_triggered_only = yes
+	fire_only_once = yes
+	picture = GFX_report_event_sau_17
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWsaudi.67" }
+	
+	option = {
+		name = NWsaudi.66.a
+	}
+}
+
+#Tribal Uprising
+country_event = {
+	id = NWsaudi.68
+	title = NWsaudi.68.t
+	desc = NWsaudi.68.d
+	picture = GFX_report_event_sau_20
+	
+	is_triggered_only = yes
+	
+	fire_only_once = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWsaudi.68" }
+	immediate = {
+		hidden_effect = {
+			set_global_flag = sau_saud_uprising
+			set_variable = { opinion_with_tribes_var = 35 }
+			set_opinion_with_tribes_var = yes
+			set_opinion_with_tribes_Value = yes
+			news_event = { id = trworldnews.170 days = 1 }
+		}
+	}
+	
+	option = {
+		name = NWsaudi.68.a
+		effect_tooltip = {
+			start_civil_war = {
+				ideology = monarchy #SPLITTING TAG
+			}
+		}
+		hidden_effect = {
+			if = {
+				limit = {
+					OR = {
+						has_cosmetic_tag = SAU_caliphate
+						has_cosmetic_tag = SAU_new
+					}
+				}
+				drop_cosmetic_tag = yes
+			}
+			start_civil_war = {
+				ideology = neutrality #SPLITTING TAG
+				capital = 292
+				states = all
+				states_filter = {
+					OR = {
+						state = 292
+						state = 1115
+						state = 938
+						state = 797
+						state = 959
+						state = 960
+					}
+				}
+				keep_all_characters = yes
+				size = 0.4
+			}
+			set_country_flag = same_ideology_civil_war_flag
+			random_other_country = {
+				limit = {
+					original_tag = ROOT
+					NOT = {
+						tag = JBS
+					}		
+				}
+				set_country_flag = same_ideology_civil_war_flag
+		    	set_cosmetic_tag = SAU_Sultanat_Nejd
+				add_popularity = {
+					ideology = monarchy
+					popularity = 0.7
+				}
+				set_politics = {
+					ruling_party = monarchy
+					elections_allowed = no
+				}
+				### SAUDI EFFECTS ###
+				
+				load_focus_tree = saud_focus_tree
+				complete_national_focus = SAU_strengthening_the_authority_of_abdul_aziz
+				
+				set_capital = { state = 292 }
+				set_party_name = { ideology = monarchy long_name = SAU_monarchy_party name = SAU_monarchy_party }
+				set_variable = { opinion_with_tribes_var = 70 }
+				set_opinion_with_tribes_var = yes
+				set_opinion_with_tribes_Value = yes
+				
+				set_variable = { opinion_with_ulema_var = 50 }
+				set_opinion_with_ulema_var = yes
+				set_opinion_with_ulema_Value = yes
+				if = {
+					limit = {
+						has_idea = irregular_army
+					}
+					country_lock_all_division_template = yes
+				}
+				
+				clear_variable = concession_owner ## да.
+				remove_ideas = SAU_concession_in_el_hasa
+				
+				random_other_country = {
+					limit = {
+						has_country_flag = concession_owner_flag
+					}
+					clr_country_flag = concession_owner_flag
+				}
+				
+				add_dynamic_modifier = { modifier = SAU_loyalty_of_tribes_modifier }
+				add_dynamic_modifier = { modifier = SAU_loyalty_of_ulema_modifier }
+				
+				country_event = { id = NWsaudi.500 days = 14 } #рандомы
+				
+				#Ирега
+				set_variable = { peoples_militia_var = 14 }											#общее доступное число ополчения (иррегулярка + регулярное ополчение)
+				set_variable = { num_of_regular_camelry_var = 2 }									#стартовые горбы. Должно быть установлено на 0 при удалении шаблона "Milishia Badawia" или актуализированно
+				set_variable = { num_of_camelry_var = num_of_regular_camelry_var }					#всего ополченских горбов
+				set_variable = { total_num_of_militia_var = num_of_camelry_var }					#сумма всех ополченцев
+				set_variable = { start_experience_factor_irregular = 0.0 }							#стартовый опыт ирреги
+				set_variable = { jihad_cost = 120 }													#джихад кост
+				set_variable = { days_jihad = 40 }													#время джихада		
+				set_variable = { num_irregular_jihad_summon = 1 }									#стартовая пихота 4 tt	
+				set_variable = { num_irregular_division_summon = 2 }								#стартовая иррега 4 tt	
+				set_variable = { num_irregular_division_of_jihad_plus = 0 }		
+				
+				#ПЛЕМЕНА
+				set_variable = { opinion_with_tribes_var = 70 }
+				set_variable = { start_barrow_x = -6 }
+				set_variable = { start_barrow_text_x = 2 }
+				set_variable = { min_barrow_x = 24 }
+
+				set_opinion_with_tribes_var = yes
+				set_opinion_with_tribes_Value = yes
+				#УЛЕМЫ
+				set_variable = { opinion_with_ulema_var = 55 }
+				set_variable = { start_barrow_x_ulema = -6 }
+				set_variable = { start_barrow_text_x_ulema = 2 }
+				set_variable = { min_barrow_x_ulema = 24 }
+
+				set_opinion_with_ulema_var = yes
+				set_opinion_with_ulema_Value = yes
+				if = {
+					limit = {
+						amount_research_slots < 1
+					}
+					add_research_slot = 1
+				}
+			}
+            ROOT = {	
+				if = {
+					limit = {
+						has_character = SAU_saud_bin_abdulaziz_al_saud
+					}
+					SAU_saud_bin_abdulaziz_al_saud = {
+						set_nationality = NEJ
+					}
+				}
+				if = {
+					limit = {
+						has_character = SAU_muhammad_bin_abdulaziz_al_saud
+					}
+					SAU_muhammad_bin_abdulaziz_al_saud = {
+						set_nationality = NEJ
+					}
+				}
+				if = {
+					limit = {
+						has_character = SAU_abdulaziz_ibn_saud
+					}
+					SAU_abdulaziz_ibn_saud = {
+						set_nationality = NEJ
+					}
+				}
+				if = {
+					limit = {
+						has_character = SAU_faisal_bin_abdulaziz_al_saud
+					}
+					SAU_faisal_bin_abdulaziz_al_saud = {
+						set_nationality = NEJ
+					}
+				}
+				if = {
+					limit = {
+						has_character = SAU_mansour_bin_abdulaziz_al_saud
+					}
+					SAU_mansour_bin_abdulaziz_al_saud = {
+						set_nationality = NEJ
+					}
+				}
+				if = {
+					limit = {
+						has_character = SAU_noura_bint_abdul_rahman_al_saud
+					}
+					SAU_noura_bint_abdul_rahman_al_saud = {
+						set_nationality = NEJ
+					}
+				}
+				if = {
+					limit = {
+						has_character = SAU_saud_bin_jiluwi_al_saud
+					}
+					SAU_saud_bin_jiluwi_al_saud = {
+						set_nationality = NEJ
+					}
+				}
+				if = {
+					limit = {
+						has_character = SAU_saud_al_kabeer_bin_abdulaziz_al_saud
+					}
+					SAU_saud_al_kabeer_bin_abdulaziz_al_saud = {
+						set_nationality = NEJ
+					}
+				}	
+				SAU_omar_bin_hassan_al_sheikh = { set_nationality = NEJ }
+				SAU_mohammed_bin_abdulaziz_alshuhail = { set_nationality = NEJ }
+				SAU_abdul_mohsen_al_faram = { set_nationality = NEJ }
+				SAU_said_kurdi = { set_nationality = NEJ }
+				SAU_hassan_bin_ali_al_asiri = { set_nationality = NEJ }
+				SAU_ibrahim_al_tasan = { set_nationality = NEJ }
+				SAU_abdullah_bin_suleiman = { set_nationality = NEJ }
+				SAU_mohammed_suroor_sabban = { set_nationality = NEJ }
+				SAU_john_philby = { set_nationality = NEJ }
+				SAU_mohammed_bin_laden = { set_nationality = NEJ }
+				SAU_khalid_al_hakim = { set_nationality = NEJ }
+				SAU_suleiman_al_naniyah = { set_nationality = NEJ }
+				SAU_khamis_bin_ramthan = { set_nationality = NEJ }
+				SAU_muhammad_ali_al_omari = { set_nationality = NEJ }
+				SAU_mohamed_saleh_nassif = { set_nationality = NEJ }
+				SAU_max_steineke = { set_nationality = NEJ }
+			}
+			NEJ = {
+				add_country_leader_role = {
+					character = SAU_saud_bin_abdulaziz_al_saud
+					country_leader = {
+						desc = ""
+						ideology = wahhabism_monarchy
+						traits = {
+						}
+						expire = "1965.1.1"
+					}
+					promote_leader = yes
+				}	
+			}
+		}
+	}
+
+	option = {
+		name = NWsaudi.68.b
+		effect_tooltip = {
+			start_civil_war = {
+				ideology = monarchy #SPLITTING TAG
+			}
+		}
+		hidden_effect = {
+			if = {
+				limit = {
+					OR = {
+						has_cosmetic_tag = SAU_caliphate
+						has_cosmetic_tag = SAU_new
+					}
+				}
+				drop_cosmetic_tag = yes
+			}
+			start_civil_war = {
+				ideology = neutrality #SPLITTING TAG
+				capital = 292
+				states = all
+				states_filter = {
+					OR = {
+						state = 292
+						state = 1115
+						state = 938
+						state = 797
+						state = 959
+						state = 960
+					}
+				}
+				keep_all_characters = yes
+				size = 0.4
+			}
+			set_country_flag = same_ideology_civil_war_flag
+			random_other_country = {
+				limit = {
+					original_tag = ROOT
+					NOT = {
+						tag = JBS
+					}		
+				}
+				set_country_flag = same_ideology_civil_war_flag
+		    	set_cosmetic_tag = SAU_Sultanat_Nejd
+				add_popularity = {
+					ideology = monarchy
+					popularity = 0.7
+				}
+				set_politics = {
+					ruling_party = monarchy
+					elections_allowed = no
+				}
+				### SAUDI EFFECTS ###
+				
+				load_focus_tree = saud_focus_tree
+				complete_national_focus = SAU_strengthening_the_authority_of_abdul_aziz
+				
+				set_capital = { state = 292 }
+				set_party_name = { ideology = monarchy long_name = SAU_monarchy_party name = SAU_monarchy_party }
+				set_variable = { opinion_with_tribes_var = 70 }
+				set_opinion_with_tribes_var = yes
+				set_opinion_with_tribes_Value = yes
+				
+				set_variable = { opinion_with_ulema_var = 50 }
+				set_opinion_with_ulema_var = yes
+				set_opinion_with_ulema_Value = yes
+				if = {
+					limit = {
+						has_idea = irregular_army
+					}
+					country_lock_all_division_template = yes
+				}
+				
+				clear_variable = concession_owner ## да.
+				remove_ideas = SAU_concession_in_el_hasa
+				
+				random_other_country = {
+					limit = {
+						has_country_flag = concession_owner_flag
+					}
+					clr_country_flag = concession_owner_flag
+				}
+				
+				add_dynamic_modifier = { modifier = SAU_loyalty_of_tribes_modifier }
+				add_dynamic_modifier = { modifier = SAU_loyalty_of_ulema_modifier }
+				
+				country_event = { id = NWsaudi.500 days = 14 } #рандомы
+				
+				#Ирега
+				set_variable = { peoples_militia_var = 14 }											#общее доступное число ополчения (иррегулярка + регулярное ополчение)
+				set_variable = { num_of_regular_camelry_var = 2 }									#стартовые горбы. Должно быть установлено на 0 при удалении шаблона "Milishia Badawia" или актуализированно
+				set_variable = { num_of_camelry_var = num_of_regular_camelry_var }					#всего ополченских горбов
+				set_variable = { total_num_of_militia_var = num_of_camelry_var }					#сумма всех ополченцев
+				set_variable = { start_experience_factor_irregular = 0.0 }							#стартовый опыт ирреги
+				set_variable = { jihad_cost = 120 }													#джихад кост
+				set_variable = { days_jihad = 40 }													#время джихада		
+				set_variable = { num_irregular_jihad_summon = 1 }									#стартовая пихота 4 tt	
+				set_variable = { num_irregular_division_summon = 2 }								#стартовая иррега 4 tt	
+				set_variable = { num_irregular_division_of_jihad_plus = 0 }		
+				
+				#ПЛЕМЕНА
+				set_variable = { opinion_with_tribes_var = 70 }
+				set_variable = { start_barrow_x = -6 }
+				set_variable = { start_barrow_text_x = 2 }
+				set_variable = { min_barrow_x = 24 }
+
+				set_opinion_with_tribes_var = yes
+				set_opinion_with_tribes_Value = yes
+				#УЛЕМЫ
+				set_variable = { opinion_with_ulema_var = 55 }
+				set_variable = { start_barrow_x_ulema = -6 }
+				set_variable = { start_barrow_text_x_ulema = 2 }
+				set_variable = { min_barrow_x_ulema = 24 }
+
+				set_opinion_with_ulema_var = yes
+				set_opinion_with_ulema_Value = yes
+				if = {
+					limit = {
+						amount_research_slots < 1
+					}
+					add_research_slot = 1
+				}
+			}
+            ROOT = {	
+				if = {
+					limit = {
+						has_character = SAU_saud_bin_abdulaziz_al_saud
+					}
+					SAU_saud_bin_abdulaziz_al_saud = {
+						set_nationality = NEJ
+					}
+				}
+				if = {
+					limit = {
+						has_character = SAU_muhammad_bin_abdulaziz_al_saud
+					}
+					SAU_muhammad_bin_abdulaziz_al_saud = {
+						set_nationality = NEJ
+					}
+				}
+				if = {
+					limit = {
+						has_character = SAU_abdulaziz_ibn_saud
+					}
+					SAU_abdulaziz_ibn_saud = {
+						set_nationality = NEJ
+					}
+				}
+				if = {
+					limit = {
+						has_character = SAU_faisal_bin_abdulaziz_al_saud
+					}
+					SAU_faisal_bin_abdulaziz_al_saud = {
+						set_nationality = NEJ
+					}
+				}
+				if = {
+					limit = {
+						has_character = SAU_mansour_bin_abdulaziz_al_saud
+					}
+					SAU_mansour_bin_abdulaziz_al_saud = {
+						set_nationality = NEJ
+					}
+				}
+				if = {
+					limit = {
+						has_character = SAU_noura_bint_abdul_rahman_al_saud
+					}
+					SAU_noura_bint_abdul_rahman_al_saud = {
+						set_nationality = NEJ
+					}
+				}
+				if = {
+					limit = {
+						has_character = SAU_saud_bin_jiluwi_al_saud
+					}
+					SAU_saud_bin_jiluwi_al_saud = {
+						set_nationality = NEJ
+					}
+				}
+				if = {
+					limit = {
+						has_character = SAU_saud_al_kabeer_bin_abdulaziz_al_saud
+					}
+					SAU_saud_al_kabeer_bin_abdulaziz_al_saud = {
+						set_nationality = NEJ
+					}
+				}	
+				SAU_omar_bin_hassan_al_sheikh = { set_nationality = NEJ }
+				SAU_mohammed_bin_abdulaziz_alshuhail = { set_nationality = NEJ }
+				SAU_abdul_mohsen_al_faram = { set_nationality = NEJ }
+				SAU_said_kurdi = { set_nationality = NEJ }
+				SAU_hassan_bin_ali_al_asiri = { set_nationality = NEJ }
+				SAU_ibrahim_al_tasan = { set_nationality = NEJ }
+				SAU_abdullah_bin_suleiman = { set_nationality = NEJ }
+				SAU_mohammed_suroor_sabban = { set_nationality = NEJ }
+				SAU_john_philby = { set_nationality = NEJ }
+				SAU_mohammed_bin_laden = { set_nationality = NEJ }
+				SAU_khalid_al_hakim = { set_nationality = NEJ }
+				SAU_suleiman_al_naniyah = { set_nationality = NEJ }
+				SAU_khamis_bin_ramthan = { set_nationality = NEJ }
+				SAU_muhammad_ali_al_omari = { set_nationality = NEJ }
+				SAU_mohamed_saleh_nassif = { set_nationality = NEJ }
+				SAU_max_steineke = { set_nationality = NEJ }
+			}
+			NEJ = {
+				add_country_leader_role = {
+					character = SAU_saud_bin_abdulaziz_al_saud
+					country_leader = {
+						desc = ""
+						ideology = wahhabism_monarchy
+						traits = {
+						}
+						expire = "1965.1.1"
+					}
+					promote_leader = yes
+				}	
+			}
+		}
+		random_enemy_country = {
+			limit = { original_tag = ROOT }
+			change_tag_from = ROOT
+		}
+	}
+}
+
+
 ## START OF RANDOM EVENTS##
 country_event = {
 	hidden = yes
@@ -1929,7 +3531,6 @@ country_event = {
 		random_events_saud = yes
 	}
 }
-
 
 ## tribal conflict ##
 country_event = {
@@ -1962,6 +3563,10 @@ country_event = {
 			damage_building = {
 				type = infrastructure
 				damage = 0.7
+			}
+			add_dynamic_modifier = {
+				modifier = SAU_tribal_conflict_dyn
+				days = 80
 			}
 			add_manpower = -35
 		}
@@ -2019,6 +3624,10 @@ country_event = {
 			damage_building = {
 				type = infrastructure
 				damage = 0.5
+			}
+			add_dynamic_modifier = {
+				modifier = SAU_tribal_conflict_dyn
+				days = 80
 			}
 			add_manpower = -20
 		}
@@ -2539,3 +4148,4 @@ country_event = {
 		}
 	}
 }
+

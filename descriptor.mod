@@ -1,4 +1,4 @@
-version="0.5.1"
+version="0.6.0"
 replace_path="common/abilities"
 replace_path="common/ai_areas"
 replace_path="common/ai_equipment"
@@ -65,4 +65,4 @@ tags={
 supported_version="1.12.*"
 picture="thumbnail.png"
 name="New Ways REBOOT DEV BUILD"
-path="mod/_new_ways_reboot"
+path="mod/Kursach-Fizika"

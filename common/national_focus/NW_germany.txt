@@ -101,6 +101,47 @@ focus_tree = {
 					add_idea = scraping_the_barrel
 				}
 			}
+			
+			if = {
+				limit = { has_tech = advanced_infantry_weapons }
+				create_equipment_variant = {
+					type = infantry_equipment_3
+					parent_version = 1
+					upgrades = {
+						inf_prom_upgrade = 5
+					}
+				}
+			}
+			else_if = {
+				limit = { has_tech = improved_infantry_weapons }
+				create_equipment_variant = {
+					type = infantry_equipment_2
+					parent_version = 1
+					upgrades = {
+						inf_prom_upgrade = 5
+					}
+				}
+			}
+			else_if = {
+				limit = { has_tech = infantry_weapons1 }
+				create_equipment_variant = {
+					type = infantry_equipment_1
+					parent_version = 1
+					upgrades = {
+						inf_prom_upgrade = 5
+					}
+				}
+			}
+			else = {
+				create_equipment_variant = {
+					type = infantry_equipment_0
+					parent_version = 1
+					upgrades = {
+						inf_prom_upgrade = 5
+					}
+				}
+			}
+			
 			if = {
 				limit = { tag = GFA }
 				custom_effect_tooltip = GER_continue_expansion_of_wehrmacht_tt
@@ -2181,7 +2222,10 @@ focus_tree = {
 		available = {
 		}
 		bypass = {
-			has_tech = fighter1
+			OR = {
+				has_tech = fighter1
+				has_tech = improved_small_airframe
+			}
 		}
 		
 		search_filters = {  }
@@ -2189,8 +2233,16 @@ focus_tree = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus GER_start_modern_fighter_into_series"
 			custom_effect_tooltip = GER_start_modern_fighter_into_series_tt
 			hidden_effect = {
-				set_technology = {
-					fighter1 = 1
+				if = {
+					limit = { has_dlc = "By Blood Alone" }
+					set_technology = {
+						improved_small_airframe = 1
+					}
+				}
+				else = {
+					set_technology = {
+						fighter1 = 1
+					}
 				}
 			}
 		}
@@ -2454,17 +2506,32 @@ focus_tree = {
 		available = {
 		}
 		bypass = {
-			has_tech = jet_tactical_bomber1
+			OR = {
+				has_tech = jet_tactical_bomber1
+				has_tech = modern_large_airframe
+			}
 		}
 		
 		search_filters = {  }
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus GER_jet_bomber"
-			add_tech_bonus = {
-				name = GER_competition_for_heavy_fighter
-				ahead_reduction = 1
-				uses = 1
-				technology = jet_tactical_bomber1
+			if = {
+				limit = { has_dlc = "By Blood Alone" }
+				add_tech_bonus = {
+					name = GER_jet_bomber
+					ahead_reduction = 1
+					uses = 1
+					technology = jet_engines
+					technology = modern_large_airframe
+				}
+			}
+			else = {
+				add_tech_bonus = {
+					name = GER_jet_bomber
+					ahead_reduction = 1
+					uses = 1
+					technology = jet_tactical_bomber1
+				}
 			}
 		}
 	}
@@ -2489,17 +2556,32 @@ focus_tree = {
 		available = {
 		}
 		bypass = {
-			has_tech = jet_fighter1
+			OR = {
+				has_tech = jet_fighter1
+				has_tech = modern_small_airframe
+			}
 		}
 		
 		search_filters = {  }
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus GER_high_speed_fighter"
-			add_tech_bonus = {
-				name = GER_competition_for_heavy_fighter
-				ahead_reduction = 1
-				uses = 1
-				technology = jet_fighter1
+			if = {
+				limit = { has_dlc = "By Blood Alone" }
+				add_tech_bonus = {
+					name = GER_high_speed_fighter
+					ahead_reduction = 1
+					uses = 1
+					technology = jet_engines
+					technology = modern_small_airframe
+				}
+			}
+			else = {
+				add_tech_bonus = {
+					name = GER_high_speed_fighter
+					ahead_reduction = 1
+					uses = 1
+					technology = jet_fighter1
+				}
 			}
 		}
 	}
@@ -7032,8 +7114,12 @@ focus_tree = {
 			add_political_power = 100
 			add_popularity = { ideology = fascism popularity = -0.05 }
 			add_popularity = { ideology = neutrality popularity = 0.05 }
-			set_country_flag = fash_plus_autoritarian_legitimacy_flag
-			custom_effect_tooltip = fash_plus_autoritarian_legitimacy_flag_tt
+			
+			add_to_array = { coalition_array = token:fascism } # в legitimacy ивентах была проверка на has_government. че с ней делать ?
+			add_to_array = { coalition_array = token:monarchy }
+			custom_effect_tooltip = fasc_mon_coalition
+			
+			#custom_effect_tooltip = fash_plus_autoritarian_legitimacy_flag_tt
 		}
 	}
 	
@@ -8264,7 +8350,7 @@ focus_tree = {
 					NOT = { CZE = { controls_state = 69 } }
 					NOT = {
 						69 = { is_controlled_by = HUN }
-						#HUN = { has_completed_focus = HUN_protect_czechoslovakia }
+#						HUN = { has_completed_focus = HUN_protect_czechoslovakia }
 					}
 					69 = {
 						controller = {
@@ -10215,12 +10301,19 @@ focus_tree = {
 			is_subject = no
 			any_country_with_original_tag = {
 				original_tag_to_check = ITA
-				has_government = fascism
+				OR = {
+					has_government = fascism
+					has_government = monarchy
+				}
 				NOT = { has_war_with = ROOT }
 			}
 			any_country_with_original_tag = {
 				original_tag_to_check = JAP
-				has_government = fascism
+				OR = {
+					has_government = fascism
+					has_government = monarchy
+					has_government = neutrality
+				}
 				NOT = { has_war_with = ROOT }
 			}
 		}
@@ -10232,7 +10325,11 @@ focus_tree = {
 			random_other_country = {
 				limit = {
 					original_tag = JAP
-					has_government = fascism
+					OR = {
+						has_government = fascism
+						has_government = monarchy
+						has_government = neutrality
+					}
 				}
 				country_event = { id = NWgermany.15 days = 1 }
 			}
@@ -10531,6 +10628,14 @@ focus_tree = {
 				is_in_faction_with = ITA
 				has_war_with = ITA
 				NOT = { country_exists = ITA }
+				NOT = {
+					ITA = {
+						OR = {
+							has_government = fascism
+							has_government = monarchy
+						}
+					}
+				}
 			}
 		}
 
@@ -12406,8 +12511,11 @@ focus_tree = {
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus GER_six_points_of_german_protest"
 			remove_ideas = GER_racial_laws
-			add_ideas = GER_six_points_of_german_protest
-			custom_effect_tooltip = fash_plus_comm_legitimacy_flag_tt
+			add_to_array = { coalition_array = token:fascism }
+			add_to_array = { coalition_array = token:communism }
+			NW_legitimacy_check = yes
+			custom_effect_tooltip = fasc_com_coalition
+			#custom_effect_tooltip = fash_plus_comm_legitimacy_flag_tt
 		}
 	}
 	
@@ -21868,7 +21976,7 @@ focus_tree = {
 					}
 				}
 				NOT = {
-					tag = GFB
+					tag = GBF
 					tag = GFA
 					has_country_leader = { character = GER_ludwig_beck ruling_only = yes }
 					has_completed_focus = GER_rhineland
@@ -23962,7 +24070,8 @@ focus_tree = {
 		bypass = {
 			HUN = {
 				is_in_faction_with = ROOT
-				has_completed_focus = HUN_invite_the_habsburg_prince
+#				has_completed_focus = HUN_invite_the_habsburg_prince
+				has_completed_focus = generic_AUS_restore_habsburg_empire
 			}
 		}
 		cancel_if_invalid = yes
