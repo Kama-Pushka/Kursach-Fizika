@@ -22,10 +22,11 @@ focus_tree = {
 		icon = GFX_z_goal_cult_truhilio 
 		mutually_exclusive = { focus = DOM_death_Truhilio }
 		available = {
-		DOM = {
-			has_government = fascism
-			owns_state = 319
+			DOM = {
+				has_government = fascism
+				owns_state = 319
 			}
+			has_global_flag = parsley_massacre_happened
 		}
 		x = 9
 		y = 0
@@ -101,7 +102,7 @@ focus_tree = {
 		icon = GFX_goal_support_fascism 
 		prerequisite = { focus = DOM_statue_truhilio }
 		prerequisite = { focus = DOM_truhilio_god }
-		x = 7
+		x = 6
 		y = 3
 		cost = 10
 		completion_reward = {
@@ -115,7 +116,7 @@ focus_tree = {
 		id = DOM_general_truhilio
 		icon = GFX_goal_generic_army_doctrines 
 		prerequisite = { focus = DOM_era_truhilio }
-		x = 7
+		x = 6
 		y = 4
 		cost = 10
 		completion_reward = {
@@ -132,39 +133,10 @@ focus_tree = {
 	}
 	
 	focus = {
-		id = DOM_claim_haiti
-		icon = GFX_goal_generic_political_pressure 
-		prerequisite = { focus = DOM_cult_Truhilio }
-		x = 10
-		y = 1
-		cost = 10
-		completion_reward = {
-			add_war_support = 0.05
-			318 = {
-				add_claim_by = DOM
-			}
-		}
-	}
-	
-	focus = {
-		id = DOM_petrushka_rezna
-		icon = GFX_goal_generic_forceful_treaty 
-		prerequisite = { focus = DOM_claim_haiti }
-		x = 10
-		y = 2
-		cost = 10
-		completion_reward = {
-			country_event = {
-				id = dominican.1
-			}
-		}
-	}
-	
-	focus = {
 		id = DOM_anti_haiti
 		icon = GFX_goal_generic_propaganda 
-		prerequisite = { focus = DOM_claim_haiti }
-		x = 12
+		prerequisite = { focus = DOM_cult_Truhilio }
+		x = 13
 		y = 2
 		cost = 10
 		completion_reward = {
@@ -185,7 +157,7 @@ focus_tree = {
 		ai_will_do = {
 			factor = 40
 			modifier = {
-				factor = 0
+				factor = -40
 				is_historical_focus_on = yes
 			}
 		}
@@ -198,10 +170,16 @@ focus_tree = {
 	focus = {
 		id = DOM_pro_american
 		icon = GFX_goal_generic_improve_relations 
-		prerequisite = { focus = DOM_anti_haiti focus = DOM_investition }
+		prerequisite = { focus = DOM_anti_haiti focus = DOM_investition focus = DOM_anticommunism }
 		mutually_exclusive = { focus = DOM_agressive_politic} 
-		mutually_exclusive = { focus = DOM_alliance_democratic}
-		x = 13
+		ai_will_do = {
+			factor = 1
+			modifier = {
+				factor = 20
+				is_historical_focus_on = yes
+			}
+		}
+		x = 15
 		y = 3
 		cost = 10
 		ai_will_do = {
@@ -241,6 +219,80 @@ focus_tree = {
 		}
 	}
 	
+	focus = { 
+		id = DOM_friend_germans
+		icon = GFX_z_goal_nazi_germany
+		prerequisite = { focus = DOM_agressive_politic }
+		prerequisite = { focus = DOM_petrushka_rezna }
+		available = {
+			country_exists = GER
+			NOT = { has_war_with = GER }
+			GER = { has_government = fascism }
+		}
+		x = 8
+		y = 4
+		cost = 5
+		completion_reward = {
+			GER = { add_opinion_modifier = { target = DOM modifier = USA_special_relationship }}
+			DOM = { add_opinion_modifier = { target = GER modifier = USA_special_relationship }}
+		}
+	}
+	
+	focus = { 
+		id = DOM_ally_germans
+		icon = GFX_z_goal_clearing_with_germany
+		prerequisite = { focus = DOM_friend_germans }
+		mutually_exclusive = { focus = DOM_locked_by_enemies }
+		available = {
+			country_exists = GER
+			NOT = { has_war_with = GER }
+			GER = { has_government = fascism }
+		}
+		x = 8
+		y = 5
+		cost = 10
+		completion_reward = { 
+			GER = { country_event = { id = generic.2 days = 3 } }
+		}
+	}
+	
+	focus = { 
+		id = DOM_locked_by_enemies
+		icon = GFX_z_goal_generic_military_lobby
+		prerequisite = { focus = DOM_friend_germans }
+		mutually_exclusive = { focus = DOM_ally_germans }
+		available = {
+		}
+		x = 6
+		y = 5
+		cost = 10
+		completion_reward = {
+			add_ideas = primacy_of_nation
+		}
+	}
+	
+	focus = { 
+		id = DOM_defend_capital
+		icon = GFX_z_goal_irragitional_building
+		prerequisite = { focus = DOM_locked_by_enemies focus = DOM_ally_germans }
+		available = {
+			319 = { is_fully_controlled_by = DOM }
+		}
+		x = 7
+		y = 6
+		cost = 10
+		completion_reward = {
+			319 = {
+				add_building_construction = {
+					type = coastal_bunker
+					level = 3
+					instant_build = yes
+					province = 7660
+				}
+			}
+		}
+	}
+	
 	focus = {
 		id = DOM_american_support
 		icon = GFX_focus_chi_mission_to_the_us
@@ -259,11 +311,8 @@ focus_tree = {
 		prerequisite = { focus = DOM_american_support }
 		available = {
 			threat > 0.50
-			country_exists = GER
-			GER = { has_war_with = USA }
-			OR = {
-				is_in_faction_with = USA
-				is_in_faction = no
+			any_country = {
+				has_war_with = USA
 			}
 		}
 		ai_will_do = {
@@ -284,10 +333,15 @@ focus_tree = {
 				limit = { has_idea = neutrality_idea }
 				remove_ideas = neutrality_idea
 			}	
-			DOM = { 
-				declare_war_on = {
-					target = GER
-					type = annex_everything
+			every_country = {
+				limit = {
+					has_war_with = USA
+				}
+				DOM = { 
+					declare_war_on = {
+						target = PREV
+						type = annex_everything
+					}
 				}
 			}
 		}
@@ -316,34 +370,7 @@ focus_tree = {
 		completion_reward = {
 			319 = { add_manpower = 100000 }
 			add_popularity = { ideology = communism popularity = 0.05 }
-		}
-	}
-	
-	focus = {
-		id = DOM_vensan_remove
-		icon = GFX_goal_generic_dangerous_deal 
-		prerequisite = { focus = DOM_spanish_bezentsy }
-		ai_will_do = {
-			factor = 1
-			modifier = {
-				factor = 0
-				is_historical_focus_on = yes
-			}
-		}
-		available = {
-			AND = {
-				country_exists = HAI
-			}
-		}
-		x = 12
-		y = 5
-		cost = 10
-		completion_reward = {
-			random_list = {
-				30 = { HAI = { country_event = { id = dominican.5 } } }
-				30 = { HAI = { country_event = { id = dominican.4 } } }
-				40 = { }
-			}
+			add_stability = -0.05
 		}
 	}
 	
@@ -351,7 +378,7 @@ focus_tree = {
 		id = DOM_ugroza_cuba
 		icon = GFX_goal_generic_political_pressure 
 		prerequisite = { focus = DOM_unite_island }
-		x = 10
+		x = 12
 		y = 5
 		cost = 10
 		completion_reward = {
@@ -366,7 +393,7 @@ focus_tree = {
 		id = DOM_white_haiti
 		icon = GFX_goal_generic_secret_weapon 
 		prerequisite = { focus = DOM_unite_island }
-		x = 8
+		x = 10
 		y = 5
 		cost = 10
 		available = { 
@@ -407,7 +434,7 @@ focus_tree = {
 				has_war_with = CUB 
 			}  
 		}
-		x = 9
+		x = 11
 		y = 6
 		cost = 10
 		completion_reward = {
@@ -427,7 +454,9 @@ focus_tree = {
 		x = 20
 		y = 0
 		cost = 10
-		
+		available = {
+			has_global_flag = parsley_massacre_happened
+		}
 		ai_will_do = {
 			factor = 40
 			modifier = {
@@ -522,7 +551,12 @@ focus_tree = {
 		x = 20
 		y = 2
 		cost = 10
-
+		available = {
+			OR = {
+				has_government = democratic
+				has_government = communism
+			}
+		}
 		ai_will_do = {
 			factor = 30
 		}
@@ -541,7 +575,9 @@ focus_tree = {
 		x = 18
 		y = 2
 		cost = 10
-
+		available = {
+			has_government = democratic
+		}
 		ai_will_do = {
 			factor = 30
 		}
@@ -558,7 +594,9 @@ focus_tree = {
 		x = 22
 		y = 2
 		cost = 10
-
+		available = {
+			has_government = communism
+		}
 		ai_will_do = {
 			factor = 30
 		}
@@ -577,67 +615,6 @@ focus_tree = {
 					days = 420
 				}
 			}
-		}
-	}
-	
-	focus = {
-		id = DOM_alliance_democratic
-		icon = GFX_goal_tripartite_pact
-		prerequisite = { focus = DOM_investition }
-		mutually_exclusive = { focus = DOM_pro_american	 }
-		available = {
-		
-			NOT = { has_war_with = HAI has_war_with = CUB }
-			
-			DOM = {
-				has_government = democratic
-				is_in_faction = no
-				is_puppet = no
-			}
-			HAI = {
-				has_government = democratic
-				is_in_faction = no
-				is_puppet = no
-			}
-			CUB = {
-				has_government = democratic
-				is_in_faction = no
-				is_puppet = no
-			}
-					}
-		cancel = {
-			is_in_faction = yes
-		}
-		x = 16
-		y = 3
-		cost = 10
-
-		ai_will_do = {
-			factor = 30
-		}
-
-		completion_reward = {
-			add_political_power = 100
-			create_faction = "DOM_caribean_faction"
-			CUB = { country_event = { id = dominican.11 } }
-			HAI = { country_event = { id = dominican.14 } }
-		}
-	}
-	
-	focus = {
-		id = DOM_alliance_training
-		icon = GFX_goal_generic_military_sphere
-		prerequisite = { focus = DOM_alliance_democratic }
-		x = 16
-		y = 4
-		cost = 10
-		ai_will_do = {
-			factor = 20
-		}	
-		completion_reward = {
-		army_experience = 25
-		HAI = { army_experience = 25 }
-		CUB = { army_experience = 25 }
 		}
 	}
 	
@@ -679,7 +656,7 @@ focus_tree = {
 		id = DOM_liberty_info
 		icon = GFX_z_goal_big_news
 		prerequisite = { focus = DOM_liberty_word }
-		x = 18
+		x = 20
 		y = 4
 		cost = 10
 
@@ -903,9 +880,18 @@ focus_tree = {
 	focus = {
 		id = DOM_Jamaika_liberty
 		icon = GFX_goal_generic_improve_relations
-		prerequisite = { focus = DOM_alliance_training focus = DOM_liberty_info }
-		x = 17
-		y = 5
+		prerequisite = { focus = DOM_liberty_word }
+		prerequisite = { focus = DOM_pro_american }
+		mutually_exclusive = { focus = DOM_befriend_ENG }
+		ai_will_do = {
+			factor = 1
+			modifier = {
+				factor = 0
+				is_historical_focus_on = yes
+			}
+		}
+		x = 18
+		y = 4
 		cost = 10
 		ai_will_do = {
 			factor = 0
@@ -914,24 +900,61 @@ focus_tree = {
 			ENG = { country_event = {  hours = 6 id = dominican.23 } }
 		}
 	}
-	
+
 	focus = {
-		id = DOM_jamaica_ally
-		icon = GFX_goal_generic_dangerous_deal 
-		prerequisite = { focus = DOM_Jamaika_liberty }
-		available = { is_faction_leader = yes }
-		x = 17
-		y = 6
+		id = DOM_befriend_ENG
+		icon = GFX_z_goal_ally_with_eng
+		prerequisite = { focus = DOM_liberty_word }
+		mutually_exclusive = { focus = DOM_Jamaika_liberty }
+		available = {
+			ENG = { has_government = democratic }
+		}
+		x = 16
+		y = 4
 		cost = 10
 		ai_will_do = {
 			factor = 0
 		}
-		completion_reward = {		
-			JAM = { country_event = {  hours = 6 id = dominican.24 } }
+		completion_reward = {
+			ENG = { add_opinion_modifier = { target = DOM modifier = USA_special_relationship }}
+			DOM = { add_opinion_modifier = { target = ENG modifier = USA_special_relationship }}
 		}
 	}
 
+	focus = {
+		id = DOM_ally_ENG
+		icon = GFX_z_goal_generic_treaty_with_england
+		prerequisite = { focus = DOM_befriend_ENG }
 
+		x = 16
+		y = 5
+		cost = 5
+		ai_will_do = {
+			factor = 20
+		}
+		completion_reward = {
+			ENG = {	country_event = { id = generic.2 days = 1 } }
+		}
+	}
+	
+
+	focus = {
+		id = DOM_alliance_democratic
+		icon = GFX_z_goal_diplomacy_1
+		prerequisite = { focus = DOM_Jamaika_liberty }
+
+		x = 18
+		y = 5
+		cost = 10
+		ai_will_do = {
+			factor = 20
+		}
+		completion_reward = {
+			create_faction = DOM_democratic_faction
+			HAI = {	country_event = { id = generic.5 days = 1 } }
+			CUB = {	country_event = { id = generic.5 days = 1 } }
+		}
+	}
 	
 ############################################
 ###################INDUSTRY##################
