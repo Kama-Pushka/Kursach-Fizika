@@ -1,3 +1,8 @@
+#	THIS FILE IS FOR decisions SPECIFICALLY FOR THE chinese TAGs
+
+# увеличение стоимости/времени интеграции (country): добавляем скрытый динамический модификатор china_integration_of_province_dyn и изменяем переменные china_integration_of_province_cost_var/china_integration_of_province_time_var на нужный процент (0.25, 0.75 etc.)
+# увеличение стоимости интеграции (state): внутри scope стейта изменяем переменную china_integration_of_province_cost_local на нужный процент (0.25, 0.75 etc.)
+
 chinese_reunification = { 
 	
 	# set_country_flag = chinese_integration_of_province_flag - интеграция провинций
@@ -5,40 +10,34 @@ chinese_reunification = {
 	
 	china_integrate_province = {
 		icon = generic_nationalism
+		allowed = { always = no } # Activated by scripted effect
 		
 		visible = {
 			has_country_flag = chinese_integration_of_province_flag
 		}
-		
-		cancel_trigger = {
-			#потом
+		available = {
+			custom_trigger_tooltip = {
+				tooltip = china_integrate_province_trigger_tt
+				set_temp_variable = { cost = FROM.china_integration_of_province_cost }
+				
+				set_temp_variable = { multiplier = 1 }
+				add_to_temp_variable = { multiplier = modifier@china_integration_of_province_cost_modifier }
+				multiply_temp_variable = { cost = multiplier }
+				if = {
+					limit = { FROM = { has_variable = china_integration_of_province_cost_local } } # format: 1.x
+					multiply_temp_variable = { cost = FROM.china_integration_of_province_cost_local }
+				}
+				check_variable = { has_political_power > cost }
+			}
 		}
 
 		on_map_mode = map_and_decisions_view #map_only
 
 		state_target = yes
-		target_array = global.chinese_integrate_province_state_map 
-		target_trigger = {
-			meta_trigger = {
-				text = {
-					any_of = {
-						array = global.[PROVINCE]
-						value = state
-						var:state = { NOT = { is_core_of = ROOT } }
-					}
-					all_of = {
-						array = global.[PROVINCE]
-						value = state
-						var:state = { is_controlled_by = ROOT }
-					}
-				}
-				PROVINCE = "[?FROM.china_name_of_province.GetTokenKey]"
-			}
-		}
 		
 		#cost = FROM.china_integration_of_province_cost
 
-		days_remove = china_integration_of_province_days?120
+		days_remove = china_integration_of_province_time?120 # ?
 		
 		fire_only_once = yes
 		
@@ -54,12 +53,12 @@ chinese_reunification = {
 		complete_effect = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision china_integrate_province target: [From.GetName]"
 			set_temp_variable = { cost = FROM.china_integration_of_province_cost }
+			
+			set_temp_variable = { multiplier = 1 }
+			add_to_temp_variable = { multiplier = modifier@china_integration_of_province_cost_modifier }
+			multiply_temp_variable = { cost = multiplier }
 			if = {
-				limit = { has_variable = china_integration_of_province_cost_increased } # format: 1.x
-				multiply_temp_variable = { cost = china_integration_of_province_cost_increased }
-			}
-			if = {
-				limit = { FROM = { has_variable = china_integration_of_province_cost_local } }
+				limit = { FROM = { has_variable = china_integration_of_province_cost_local } } # format: 1.x
 				multiply_temp_variable = { cost = FROM.china_integration_of_province_cost_local }
 			}
 			multiply_temp_variable = { cost = -1 }
@@ -68,14 +67,17 @@ chinese_reunification = {
 
 		remove_effect = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): remove decision china_integrate_province target: [From.GetName]"
-			meta_effect = { 
-				text = {
-					every_state = {
-						limit = { is_in_array = { global.[PROVINCE] = THIS } NOT = { is_core_of = ROOT } }
-						add_core_of = ROOT
-					}
+			every_controlled_state = {
+				limit = { 
+					#is_in_array = { global.chinese_state = THIS }
+					check_variable = { china_capital_of_province = FROM.china_capital_of_province }
+					NOT = { is_core_of = ROOT }
 				}
-				PROVINCE = "[?FROM.china_name_of_province.GetTokenKey]"
+				add_core_of = ROOT
+			}
+			if = {
+				limit = { is_in_array = { chinese_integrate_province_state_map = FROM } }
+				remove_from_array = { chinese_integrate_province_state_map = FROM }
 			}
 		}
 	}
