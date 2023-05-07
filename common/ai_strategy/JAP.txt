@@ -46,6 +46,11 @@ less_trucks_4_u_JAP = {
 		id = infantry
 		value = 80
 	}
+	ai_strategy = {
+		type = role_ratio
+		id = marines
+		value = 20
+	}
 	
 	ai_strategy = { 
 		type = role_ratio
@@ -135,6 +140,11 @@ JAP_build_some_factories_jeez = {
 		type = role_ratio
 		id = infantry
 		value = 80
+	}
+	ai_strategy = {
+		type = role_ratio
+		id = marines
+		value = 30
 	}
 	ai_strategy = {
 		type = role_ratio
@@ -263,7 +273,7 @@ JAP_glorious_nippon_steel_has_triumphed = {
 	ai_strategy = {
 		type = role_ratio
 		id = marines
-		value = 15
+		value = 40
 	}
 
 	ai_strategy = {
@@ -618,11 +628,56 @@ JAP_naval_role_ratios_historical_late = {
 }
 
 
+JAP_build_950k_army = {		#Необходимо для, блять, Китая
+	allowed = { original_tag = JAP }
+	enable = {
+		has_war = no
+		has_army_manpower = { size < 1000000 }
+	}
+	abort_when_not_enabled = yes
+
+	ai_strategy = { type = build_army id = infantry		value = 500 }
+	ai_strategy = { type = build_army id = marines		value = 20 }
+	ai_strategy = { type = build_army id = armor		value = 100 }
+	ai_strategy = { type = build_army id = motorized	value = 24 }
+	ai_strategy = { type = force_build_armies			value = 500 }
+	
+	ai_strategy = { type = equipment_production_min_factories id = infantry		value = 10 }
+	ai_strategy = { type = equipment_production_min_factories id = artillery	value = 4 }
+	ai_strategy = { type = equipment_production_min_factories id = support		value = 4 }
+	ai_strategy = { type = equipment_production_min_factories id = armor		value = 3 }
+	ai_strategy = { type = equipment_production_min_factories id = motorized	value = 5 }
+}
+
+JAP_stop_infantry_army = {
+	allowed = { original_tag = JAP }
+	enable = {
+		date < 1940.01.01
+		has_army_size = {
+			size > 90
+			type = infantry
+		}
+		has_army_size = {
+			size < 40
+			type = armor
+		}
+	}
+	abort_when_not_enabled = yes
+	ai_strategy = { type = build_army id = infantry		value = -500 }
+	ai_strategy = { type = build_army id = motorized	value = 500 }
+	ai_strategy = { type = build_army id = armor		value = 500 }
+}
+
+
 # Япония: на старте должны быть легкие танки и средние танки
 JAP_start_produce_armor = {
 	allowed = { original_tag = JAP }
 	enable = {
 		num_of_military_factories > 19
+		has_army_size = {
+			size > 50
+			type = infantry
+		}
 	}
 	abort = {
 		OR = {
@@ -647,6 +702,10 @@ JAP_produce_medium_armor = {
 	allowed = { original_tag = JAP }
 	enable = {
 		num_of_military_factories > 19
+		has_army_size = {
+			size > 50
+			type = infantry
+		}
 	}
 	abort_when_not_enabled = yes
 	ai_strategy = { type = equipment_variant_production_factor	id = medium_tank_chassis	value = 200 }
@@ -830,12 +889,12 @@ chinese_war = {
 	
 	ai_strategy = {
 		type = antagonize
-		id = "CHI"			
+		id = "CHI"
 		value = 1000
 	}
 	ai_strategy = {
 		type = prepare_for_war
-		id = "CHI"			
+		id = "CHI"
 		value = 200
 	}
 	ai_strategy = {
@@ -873,13 +932,13 @@ strike_usa = {
 	
 	ai_strategy = {
 		type = antagonize
-		id = "USA"			
+		id = "USA"
 		value = 200
 	}
 
 	ai_strategy = {
 		type = antagonize
-		id = "PHI"			
+		id = "PHI"
 		value = 200
 	}	
 }
@@ -919,12 +978,12 @@ war_usa = {
 	
 	ai_strategy = {
 		type = antagonize
-		id = "USA"			
+		id = "USA"
 		value = 1000
 	}
 	ai_strategy = {
 		type = prepare_for_war
-		id = "USA"			
+		id = "USA"
 		value = 200
 	}
 	ai_strategy = {
@@ -2047,7 +2106,7 @@ jap_invasions_of_gxc_are_super_tough_and_waste_manpower = {
 
 	ai_strategy = {
 		type = invade
-		id = "GXC"			
+		id = "GXC"
 		value = -500
 	}
 }
@@ -2057,17 +2116,200 @@ jap_early_invasions_are_risky_and_best_wait_for_later = {
 		original_tag = JAP
 	}
 	enable = {
-		date < 1939.1.1
-		has_war_with = CHI
-		CHI = { is_ai = yes }
+		date < 1938.1.1
+		OR = {
+			has_war_with = CHI
+			has_war_with = SHA
+		}
 	}
 	
 	abort_when_not_enabled = yes
 
 	ai_strategy = {
 		type = invade
-		id = "CHI"			
+		id = "CHI"
 		value = -500
+	}
+	ai_strategy = {
+		type = invade
+		id = "SHA"
+		value = -500
+	}
+}
+JAP_enable_invasion_of_CHI_SHA = {
+	allowed = {
+		OR = {
+			has_war_with = CHI
+			has_war_with = SHA
+		}
+	}
+	enable = {
+		date > 1938.1.1
+		has_war_with = CHI
+	}
+	abort_when_not_enabled = yes
+	
+	ai_strategy = {
+		type = invade
+		id = "CHI"
+		value = 150
+	}
+	ai_strategy = {
+		type = invade
+		id = "SHA"
+		value = 200
+	}
+	ai_strategy = {
+		type = naval_invasion_focus
+		value = 150
+	}
+	
+	
+	### ONE INVASION
+	
+	ai_strategy = {
+		type = front_control
+		state_trigger = {
+			state = 597
+		}
+		
+		priority = 200
+		ordertype = invasion
+		execute_order = yes
+	}
+	ai_strategy = {
+		type = front_control
+		state_trigger = {
+			state = 598
+		}
+		
+		priority = 175
+		ordertype = invasion
+		execute_order = yes
+	}
+	ai_strategy = {
+		type = front_control
+		state_trigger = {
+			state = 613
+		}
+		
+		priority = 175
+		ordertype = invasion
+		execute_order = yes
+	}
+	ai_strategy = {
+		type = front_control
+		state_trigger = {
+			state = 1031
+		}
+		
+		priority = 150
+		ordertype = invasion
+		execute_order = yes
+	}
+	ai_strategy = {
+		type = front_control
+		state_trigger = {
+			state = 596
+		}
+		
+		priority = 150
+		ordertype = invasion
+		execute_order = yes
+	}
+	ai_strategy = {
+		type = front_control
+		state_trigger = {
+			state = 595
+		}
+		
+		priority = 125
+		ordertype = invasion
+		execute_order = yes
+	}
+	ai_strategy = {
+		type = front_control
+		state_trigger = {
+			state = 593
+		}
+		
+		priority = 125
+		ordertype = invasion
+		execute_order = yes
+	}
+	
+	
+	### TWICE INVASION
+	
+	ai_strategy = {
+		type = front_control
+		state_trigger = {
+			state = 597
+		}
+		
+		priority = 200
+		ordertype = invasion
+		execute_order = yes
+	}
+	ai_strategy = {
+		type = front_control
+		state_trigger = {
+			state = 598
+		}
+		
+		priority = 175
+		ordertype = invasion
+		execute_order = yes
+	}
+	ai_strategy = {
+		type = front_control
+		state_trigger = {
+			state = 613
+		}
+		
+		priority = 175
+		ordertype = invasion
+		execute_order = yes
+	}
+	ai_strategy = {
+		type = front_control
+		state_trigger = {
+			state = 1031
+		}
+		
+		priority = 150
+		ordertype = invasion
+		execute_order = yes
+	}
+	ai_strategy = {
+		type = front_control
+		state_trigger = {
+			state = 596
+		}
+		
+		priority = 150
+		ordertype = invasion
+		execute_order = yes
+	}
+	ai_strategy = {
+		type = front_control
+		state_trigger = {
+			state = 595
+		}
+		
+		priority = 125
+		ordertype = invasion
+		execute_order = yes
+	}
+	ai_strategy = {
+		type = front_control
+		state_trigger = {
+			state = 593
+		}
+		
+		priority = 125
+		ordertype = invasion
+		execute_order = yes
 	}
 }
 
@@ -2470,29 +2712,29 @@ NW_JAP_focus_on_army_2 = {
 
 	abort_when_not_enabled = yes
 	
-	ai_strategy = { type = equipment_variant_production_factor id = support_equipment value = 25 }
+	ai_strategy = { type = equipment_variant_production_factor id = support_equipment					value = 25 }
 	
-	ai_strategy = { type = equipment_variant_production_factor id = cv_small_plane_airframe         value = -100 }
-	ai_strategy = { type = equipment_variant_production_factor id = jet_fighter_equipment        value = -100 }
+	ai_strategy = { type = equipment_variant_production_factor id = cv_small_plane_airframe				value = -100 }
+	ai_strategy = { type = equipment_variant_production_factor id = jet_fighter_equipment				value = -100 }
 
-	ai_strategy = { type = equipment_variant_production_factor id = medium_plane_fighter_airframe      value = -100 }
+	ai_strategy = { type = equipment_variant_production_factor id = medium_plane_fighter_airframe		value = -100 }
 
-	ai_strategy = { type = equipment_variant_production_factor id = small_plane_cas_airframe                value = -100 }
-	ai_strategy = { type = equipment_variant_production_factor id = cv_small_plane_cas_airframe             value = -100 }
+	ai_strategy = { type = equipment_variant_production_factor id = small_plane_cas_airframe			value = -100 }
+	ai_strategy = { type = equipment_variant_production_factor id = cv_small_plane_cas_airframe			value = -100 }
 
-	ai_strategy = { type = equipment_variant_production_factor id = small_plane_naval_bomber_airframe         value = -100 }
+	ai_strategy = { type = equipment_variant_production_factor id = small_plane_naval_bomber_airframe	value = -100 }
 
-	ai_strategy = { type = equipment_variant_production_factor id = rocket_interceptor_equipment value = -100 }
+	ai_strategy = { type = equipment_variant_production_factor id = rocket_interceptor_equipment		value = -100 }
 
-	ai_strategy = { type = equipment_variant_production_factor id = medium_plane_airframe         value = -100 }
-	ai_strategy = { type = equipment_variant_production_factor id = jet_tac_bomber_equipment     value = -100 }
+	ai_strategy = { type = equipment_variant_production_factor id = medium_plane_airframe				value = -100 }
+	ai_strategy = { type = equipment_variant_production_factor id = jet_tac_bomber_equipment			value = -100 }
 
-	ai_strategy = { type = equipment_variant_production_factor id = large_plane_airframe       value = -100 }
-	ai_strategy = { type = equipment_variant_production_factor id = jet_strat_bomber_equipment   value = -100 }
+	ai_strategy = { type = equipment_variant_production_factor id = large_plane_airframe				value = -100 }
+	ai_strategy = { type = equipment_variant_production_factor id = jet_strat_bomber_equipment			value = -100 }
 
-	ai_strategy = { type = equipment_variant_production_factor id = transport_plane_equipment    value = -100 }
+	ai_strategy = { type = equipment_variant_production_factor id = transport_plane_equipment			value = -100 }
 	
-	ai_strategy = { type = equipment_variant_production_factor id = rocket_interceptor_equipment value = -100 }
+	ai_strategy = { type = equipment_variant_production_factor id = rocket_interceptor_equipment		value = -100 }
 }
 
 NW_JAP_increase_artillery_production = {

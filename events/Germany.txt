@@ -484,7 +484,7 @@ country_event = {
 								controls_state = 1023
 								controls_state = 1029
 							}
-						}		
+						}
 					}
 				}
 			}
@@ -7223,7 +7223,7 @@ country_event = {
 	}
 
 	mean_time_to_happen = {
-		days = 15
+		days = 10
 	}
 
 	immediate = {
@@ -7244,6 +7244,13 @@ country_event = {
 			}
 		}
 		effect_tooltip = {
+			every_state = {
+				limit = {
+					is_core_of = AUS
+					is_core_of = GER
+				}
+				remove_core_of = GER
+			}
 			WGR = {
 				add_state_core = 42
 				add_state_core = 50
@@ -7337,6 +7344,13 @@ country_event = {
 
 	option = {
 		name = germany.119.a
+		every_state = {
+			limit = {
+				is_core_of = AUS
+				is_core_of = GER
+			}
+			remove_core_of = GER
+		}
 		WGR = {
 			add_state_core = 42
 			add_state_core = 50
@@ -7462,16 +7476,14 @@ country_event = {
 	picture = GFX_report_event_generic_sign_treaty2
 	
 	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event germany.121" }
+	immediate = {
+		set_global_flag = yalta_conference_is_over
+	}
 
 	fire_only_once = yes
 
 	trigger = {
 		#Fires for one of the new German states to transfer old German territory.
-		country_exists = GER
-		OR = {
-			country_exists = WGR
-			country_exists = DDR
-		}
 		OR = {
 			tag = WGR
 			tag = DDR
@@ -7479,7 +7491,7 @@ country_event = {
 	}
 
 	mean_time_to_happen = {
-		days = 0
+		days = 15
 	}
 
 	option ={
@@ -7492,11 +7504,26 @@ country_event = {
 			every_state = {
 				limit = {
 					is_core_of = POL
-					is_owned_and_controlled_by = GER
+					controller = {
+						OR = {
+							original_tag = GER
+							is_in_faction_with = POL
+						}
+						NOT = { original_tag = SOV }
+					}
 				}
 				POL = {
 					transfer_state = PREV
 				}
+			}
+		}
+		every_state = {
+			limit = {
+				is_core_of = AUS
+				controller = { original_tag = GER }
+			}
+			AUS = {
+				transfer_state = PREV
 			}
 		}
 		if = {
@@ -7509,7 +7536,7 @@ country_event = {
 			every_state = {
 				limit = {
 					is_core_of = POL
-					is_owned_and_controlled_by = GER
+					controller = { original_tag = GER }
 				}
 				SOV = {
 					transfer_state = PREV
@@ -7523,7 +7550,13 @@ country_event = {
 			#Give WGR their cores
 			every_state = {
 				limit = {
-					is_owned_and_controlled_by = GER
+					controller = {
+						OR = {
+							original_tag = GER
+							is_in_faction_with = WGR
+							is_in_faction_with = SOV
+						}
+					}
 					is_core_of = WGR
 				}
 				WGR = {
@@ -7538,7 +7571,14 @@ country_event = {
 			#Give East Germany their cores
 			every_state = {
 				limit = {
-					is_owned_and_controlled_by = GER
+					controller = {
+						OR = {
+							original_tag = GER
+							is_in_faction_with = DDR
+							is_in_faction_with = ENG
+						}
+						NOT = { original_tag = SOV }
+					}
 					is_core_of = DDR
 				}
 				DDR = {
@@ -7561,7 +7601,7 @@ country_event = {
 			limit = {
 				any_of_scopes = {
 					array = CZE.core_states
-					is_owned_and_controlled_by = GER
+					controller = { original_tag = GER }
 					NOT = {
 						OR = {
 							is_core_of = DDR
@@ -7575,7 +7615,7 @@ country_event = {
 			every_state = {
 				limit = {
 					is_core_of = CZE
-					is_owned_and_controlled_by = GER
+					controller = { original_tag = GER }
 					NOT = {
 						OR = {
 							is_core_of = DDR
@@ -7593,7 +7633,14 @@ country_event = {
 			limit = {
 				any_of_scopes = {
 					array = YUG.core_states
-					is_owned_and_controlled_by = GER
+					controller = {
+						OR = {
+							original_tag = GER
+							original_tag = ITA
+							original_tag = SER
+							original_tag = SLV
+						}
+					}
 					NOT = {
 						OR = {
 							is_core_of = DDR
@@ -7607,7 +7654,14 @@ country_event = {
 			every_state = {
 				limit = {
 					is_core_of = YUG
-					is_owned_and_controlled_by = GER
+					controller = {
+						OR = {
+							original_tag = GER
+							original_tag = ITA
+							original_tag = SER
+							original_tag = SLV
+						}
+					}
 					NOT = {
 						OR = {
 							is_core_of = DDR
@@ -7626,7 +7680,7 @@ country_event = {
 				country_exists = LIT
 				any_of_scopes = {
 					array = LIT.core_states
-					is_owned_and_controlled_by = GER
+					controller = { original_tag = GER }
 					NOT = {
 						OR = {
 							is_core_of = DDR
@@ -7640,7 +7694,7 @@ country_event = {
 			every_state = {
 				limit = {
 					is_core_of = LIT
-					is_owned_and_controlled_by = GER
+					controller = { original_tag = GER }
 					NOT = {
 						OR = {
 							is_core_of = DDR
@@ -7661,7 +7715,7 @@ country_event = {
 				}
 				any_of_scopes = {
 					array = LIT.core_states
-					is_owned_and_controlled_by = GER
+					controller = { original_tag = GER }
 					NOT = {
 						OR = {
 							is_core_of = DDR
@@ -7675,7 +7729,7 @@ country_event = {
 			every_state = {
 				limit = {
 					is_core_of = LIT
-					is_owned_and_controlled_by = GER
+					controller = { original_tag = GER }
 					NOT = {
 						OR = {
 							is_core_of = DDR
@@ -7700,7 +7754,7 @@ country_event = {
 			#If GER has changed government, remaining territory is passed to the corresponding new state (WGR or DDR)
 			every_state = {
 				limit = {
-					is_owned_and_controlled_by = GER
+					controller = { original_tag = GER }
 					NOT = {
 						OR = {
 							is_core_of = DDR
@@ -7725,7 +7779,7 @@ country_event = {
 			#See above
 			every_state = {
 				limit = {
-					is_owned_and_controlled_by = GER
+					controller = { original_tag = GER }
 					NOT = {
 						OR = {
 							is_core_of = DDR
@@ -7756,7 +7810,7 @@ country_event = {
 			#Any remaining cores go to WGR, because democracy is fun
 			every_state = {
 				limit = {
-					is_owned_and_controlled_by = GER
+					controller = { original_tag = GER }
 					NOT = {
 						OR = {
 							is_core_of = WGR
