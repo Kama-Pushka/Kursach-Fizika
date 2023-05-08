@@ -1,7 +1,8 @@
 #	THIS FILE IS FOR decisions SPECIFICALLY FOR THE chinese TAGs
 
-# увеличение стоимости/времени интеграции (country): добавляем скрытый динамический модификатор china_integration_of_province_dyn и изменяем переменные china_integration_of_province_cost_var/china_integration_of_province_time_var на нужный процент (0.25, 0.75 etc.)
-# увеличение стоимости интеграции (state): внутри scope стейта изменяем переменную china_integration_of_province_cost_local на нужный процент (0.25, 0.75 etc.)
+# (перед созданием флага chinese_integration_of_province_flag необходимо применить этот эффект: china_integrate_province_set_cost_array = yes, иначе не будет стоимости интеграции) !!!
+# увеличение стоимости/времени интеграции (для country): добавляем скрытый динамический модификатор china_integration_of_province_dyn и изменяем переменные china_integration_of_province_cost_var/china_integration_of_province_time_var на нужный процент (0.25, 0.75 etc.)
+# увеличение стоимости интеграции (для state): умножаем переменную china_integrate_province_cost_array^NUM на нужный процент + 1 (1.25, 1.75 etc.), где NUM - индекс китайской провинции в данном массиве (его можно узнать в NW_china_scripted_effects.txt)
 
 chinese_reunification = { 
 	
@@ -18,15 +19,15 @@ chinese_reunification = {
 		available = {
 			custom_trigger_tooltip = {
 				tooltip = china_integrate_province_trigger_tt
-				set_temp_variable = { cost = FROM.china_integration_of_province_cost }
-				
+				# state
+				set_temp_variable = { index = FROM.china_capital_of_province_index }
+				set_temp_variable = { cost = china_integrate_province_cost_array^index }
+
+				# country
 				set_temp_variable = { multiplier = 1 }
 				add_to_temp_variable = { multiplier = modifier@china_integration_of_province_cost_modifier }
 				multiply_temp_variable = { cost = multiplier }
-				if = {
-					limit = { FROM = { has_variable = china_integration_of_province_cost_local } } # format: 1.x
-					multiply_temp_variable = { cost = FROM.china_integration_of_province_cost_local }
-				}
+
 				check_variable = { has_political_power > cost }
 			}
 		}
@@ -52,23 +53,24 @@ chinese_reunification = {
 
 		complete_effect = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision china_integrate_province target: [From.GetName]"
-			set_temp_variable = { cost = FROM.china_integration_of_province_cost }
 			
+			# state
+			set_temp_variable = { index = FROM.china_capital_of_province_index }
+			set_temp_variable = { cost = china_integrate_province_cost_array^index }
+			
+			# country
 			set_temp_variable = { multiplier = 1 }
 			add_to_temp_variable = { multiplier = modifier@china_integration_of_province_cost_modifier }
 			multiply_temp_variable = { cost = multiplier }
-			if = {
-				limit = { FROM = { has_variable = china_integration_of_province_cost_local } } # format: 1.x
-				multiply_temp_variable = { cost = FROM.china_integration_of_province_cost_local }
-			}
+			
 			multiply_temp_variable = { cost = -1 }
-			add_political_power = cost 
+			add_political_power = cost
 		}
 
 		remove_effect = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): remove decision china_integrate_province target: [From.GetName]"
 			every_controlled_state = {
-				limit = { 
+				limit = {
 					#is_in_array = { global.chinese_state = THIS }
 					check_variable = { china_capital_of_province = FROM.china_capital_of_province }
 					NOT = { is_core_of = ROOT }
