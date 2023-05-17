@@ -3,6 +3,9 @@
 ###########################
 
 add_namespace = lar_portugal_navy_mutiny
+add_namespace = lar_portugal_iberian_workers_united
+add_namespace = lar_portugal_naval_blockade
+add_namespace = lar_portugal_royal_iberian_alliance
 
 
 # Event for POR: Spain sends ships back in compensation after SCW
@@ -97,5 +100,162 @@ country_event = {
 			clr_country_flag = POR_got_portuguese_mutineers_flag
 		}
 		#custom_effect_tooltip = lar_portugal_navy_mutiny.6_tt
+	}
+}
+
+
+
+###### IBERIAN WORKERS UNITED #####
+# Iberian Workers United
+country_event = {
+	id = lar_portugal_iberian_workers_united.1
+	title = lar_portugal_iberian_workers_united.1.t
+	desc = lar_portugal_iberian_workers_united.1.desc
+	picture = GFX_report_event_generic_rifles
+
+	is_triggered_only = yes
+
+	option = {
+		name = lar_portugal_iberian_workers_united.1.a
+		hidden_effect = { add_timed_idea = { idea = POR_iberian_workers_united days = 730 } }
+		effect_tooltip = {
+			POR = { add_timed_idea = { idea = POR_iberian_workers_united days = 730 } }
+			SPD = { add_timed_idea = { idea = POR_iberian_workers_united days = 730 } }
+		}
+	}
+}
+
+
+
+######## REFUSE NAVAL BLOCKADE ########
+# Event for Major countries at war with ENG
+country_event = {
+	id = lar_portugal_naval_blockade.1
+	title = lar_portugal_naval_blockade.1.t
+	desc = lar_portugal_naval_blockade.1.desc
+	picture = GFX_report_event_merchant_ship_01
+
+	is_triggered_only = yes
+
+	option = {
+		name = lar_portugal_naval_blockade.1.a
+		custom_effect_tooltip = lar_portugal_naval_blockade.1_tt
+		every_country = {
+			limit = { has_war_with = ENG }
+			unlock_decision_tooltip = POR_evade_blockade_with_portuguese_convoys
+		}
+	}
+}
+
+# Event for POR when a Major country activates decision
+country_event = {
+	id = lar_portugal_naval_blockade.2
+	title = lar_portugal_naval_blockade.2.t
+	desc = lar_portugal_naval_blockade.2.desc
+	picture = GFX_report_event_merchant_ship_01
+
+	is_triggered_only = yes
+
+	option = {
+		name = lar_portugal_naval_blockade.2.a
+		add_equipment_to_stockpile = {
+            type = convoy_1
+            amount = -50
+        }
+		add_offsite_building = { type = industrial_complex  level = 1 }
+		FROM = {
+			effect_tooltip = { add_war_support = 0.1 }
+		}
+	}
+}
+
+# Event for ENG when POR completes Refuse Naval Blockade focus
+country_event = {
+	id = lar_portugal_naval_blockade.3
+	title = lar_portugal_naval_blockade.3.t
+	desc = lar_portugal_naval_blockade.3.desc
+	picture = GFX_report_event_merchant_ship_01
+
+	is_triggered_only = yes
+
+	option = {
+		name = lar_portugal_naval_blockade.3.a
+		custom_effect_tooltip = lar_portugal_naval_blockade.1_tt
+		every_country = {
+			limit = { has_war_with = ENG }
+			unlock_decision_tooltip = POR_evade_blockade_with_portuguese_convoys
+		}
+		effect_tooltip = {
+			remove_opinion_modifier = {
+				target = POR
+				modifier = POR_anglo_portuguese_alliance
+			}
+			POR= {
+				remove_opinion_modifier = {
+					target = ENG
+					modifier = POR_anglo_portuguese_alliance
+				}
+			}
+		}
+	}
+}
+
+
+# Event for SPB, when Portugal completes focus "The Royal Iberian Alliance" and invites SPB to join faction 
+country_event = {
+	id = lar_portugal_royal_iberian_alliance.1
+	title = lar_portugal_royal_iberian_alliance.1.t
+	desc = lar_portugal_royal_iberian_alliance.1.desc
+	picture = GFX_report_event_por_president_military_inspection
+
+	is_triggered_only = yes
+
+	option = { #Accept
+		name = lar_portugal_royal_iberian_alliance.1.a
+
+		ai_chance = {
+			base = 60
+			modifier = {
+				factor = 0
+				OR = {
+					strength_ratio = { tag = FROM ratio > 2 }
+					is_in_faction = yes
+					has_war_with = FROM
+				}
+				
+			}
+			modifier = {
+				factor = 0.5
+				strength_ratio = { tag = FROM ratio > 1 }
+			}
+			modifier = {
+				factor = 5
+				has_opinion = { target = FROM value > 99 }
+			}
+		}
+
+		POR = {
+			create_faction = POR_royal_iberian_alliance
+			add_to_faction = ROOT
+		}
+	}
+
+	option = { #Refuse
+		name = lar_portugal_royal_iberian_alliance.1.b
+
+		ai_chance = {
+			base = 40
+			modifier = {
+				factor = 0.2
+				has_completed_focus = SPA_restore_the_iberian_union
+			}
+		}
+
+		POR = {
+			add_opinion_modifier = {
+				target = ROOT
+				modifier = POR_rejected_the_royal_iberian_alliance
+			}
+		}
 	}
 }
