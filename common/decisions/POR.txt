@@ -1962,13 +1962,329 @@ POR_naval_blockade = {
 
 }
 
+
+
+POR_iberian_summit = {
+	POR_iberian_summit_pro_axis = {
+		icon = eng_trade_unions_support
+
+		allowed = {
+			OR = {
+				original_tag = POR
+				original_tag = SPA
+			}
+		}
+
+		available = {
+			POR = { has_war = no }
+			SPA = { has_war = no }
+			NOT = { has_global_flag = POR_iberian_summit_in_progress_flag }
+		}
+
+		visible = {
+			NOT = { has_global_flag = POR_iberian_summit_pro_axis_flag }
+			country_exists = POR
+			POR = {
+				is_in_faction = no
+				has_completed_focus = POR_iberian_neutrality_pact
+				NOT = { has_government = communism }
+				NOT = { has_government = democratic }
+			}
+			country_exists = SPA
+			SPA = {
+				is_in_faction = no
+				OR = {
+					has_completed_focus = SPA_the_phalanx_ascendant
+					AND = {
+						has_completed_focus = SPA_unify_the_nationalist_front
+						NOT = { has_completed_focus = SPA_the_iberian_pact }
+					}
+				}
+			}
+			GER = {
+				is_faction_leader = yes 
+				has_government = fascism
+				has_capitulated = no
+			}
+		}
+
+		cost = 50
+		fire_only_once = yes
+		days_remove = 1
+		ai_will_do = {
+			base = 0
+			modifier = {
+				add = 1
+#				has_completed_focus = POR_send_assistance
+				OR = {
+					GER = {
+						has_war = yes 
+						OR = {
+							alliance_strength_ratio > 0.75
+							any_war_score > 40
+						}
+					}
+					has_opinion = { target = GER value > 0 }
+				}
+			}
+			modifier = {
+				factor = 0
+				is_historical_focus_on = yes
+			}
+		}
+
+		complete_effect = {
+			set_global_flag = POR_iberian_summit_pro_axis_flag
+			set_global_flag = POR_iberian_summit_in_progress_flag
+			set_country_flag = POR_iberian_summit_initiator_flag
+			set_variable = { global.POR_iberian_summit_target = GER } 
+			set_variable = { global.POR_iberian_summit_spanish_tag = SPA }
+			if = {
+				limit = {
+					original_tag = POR
+				}
+				SPA = { 
+					country_event = { id = lar_portugal_iberian_summit.1 hours = 18 random_hours = 6 }
+				}
+			}
+			else = {
+				POR = { 
+					country_event = { id = lar_portugal_iberian_summit.1 hours = 18 random_hours = 6 } 
+				}
+			}
+		}	
+	}
+
+	POR_iberian_summit_pro_allies = {
+		icon = eng_trade_unions_support
+
+		allowed = {
+			OR = {
+				original_tag = POR
+				original_tag = SPA
+				original_tag = SPR
+			}
+		}
+
+		available = {		
+			POR = { has_war = no }
+			if = {
+				limit = {
+					country_exists = SPA #This is the prio
+				}
+				SPA = { has_war = no }
+			}
+			else = {
+				SPD = { has_war = no }
+			}
+			NOT = { has_global_flag = POR_iberian_summit_in_progress_flag }
+		}
+
+		visible = {
+			NOT = { has_global_flag = POR_iberian_summit_pro_allies_flag }
+			country_exists = POR
+			POR = {
+				is_in_faction = no
+				has_completed_focus = POR_iberian_neutrality_pact
+				NOT = { has_government = fascism }
+				NOT = { has_government = communism }
+			}
+			if = {
+				limit = {
+					country_exists = SPA #This is the prio
+				}
+				SPA = {
+					is_in_faction = no
+					has_completed_focus = SPA_unify_the_nationalist_front
+					NOT = { has_completed_focus = SPA_the_iberian_pact }
+				}
+			}
+			else = {
+				country_exists = SPD
+				SPD = {
+					is_in_faction = no
+					has_completed_focus = SPR_victory_socialists
+					has_government = democratic
+				}
+			}
+			ENG = { 
+				is_faction_leader = yes 
+				has_government = democratic
+				has_capitulated = no
+			}
+		}
+
+		cost = 50
+		fire_only_once = yes
+		days_remove = 1
+		ai_will_do = { 
+			base = 0
+			modifier = {
+				add = 1
+				POR = {
+					has_completed_focus = POR_holding_free_elections
+				}
+				OR = {
+					ENG = {
+						has_war = yes 
+						OR = {
+							alliance_strength_ratio > 0.75
+							any_war_score > 40
+						}
+					}
+					has_opinion = { target = ENG value > 0 }
+				}
+			}
+			modifier = {
+				factor = 0
+				is_historical_focus_on = yes
+			}
+		}
+
+		complete_effect = {
+			set_global_flag = POR_iberian_summit_pro_allies_flag
+			set_global_flag = POR_iberian_summit_in_progress_flag
+			set_country_flag = POR_iberian_summit_initiator_flag
+			set_variable = { global.POR_iberian_summit_target = ENG }
+			if = {
+				limit = { country_exists = SPA }
+				set_variable = { global.POR_iberian_summit_spanish_tag = SPA }
+			} 
+			else = {
+				set_variable = { global.POR_iberian_summit_spanish_tag = SPD }
+			}
+			if = {
+				limit = { tag = POR }
+				41 = {
+					owner = { country_event = { id = lar_portugal_iberian_summit.5 hours = 18 random_hours = 6 } }
+				}
+			}
+			else = {
+				POR = { 
+					country_event = { id = lar_portugal_iberian_summit.5 hours = 18 random_hours = 6 }
+				}
+			}
+		}	
+	}
+	#Timed Decision for delaying proposal
+	POR_iberian_summit_proposal_delayed = {
+		icon = generic_political_discourse
+		
+		allowed = {
+			OR = {
+				original_tag = POR
+				original_tag = SPA
+				original_tag = SPR
+			}
+		}
+
+		visible = {
+			has_global_flag = POR_iberian_summit_proposal_delayed_flag 
+		}
+
+		fire_only_once = no
+
+		days_remove = 180
+
+		modifier = {
+			political_power_gain = -0.2
+		}
+
+		cancel_trigger = {
+			OR = {
+				NOT = { country_exists = global.POR_iberian_summit_target }
+				var:global.POR_iberian_summit_target = { is_faction_leader = no }
+				NOT = { country_exists = POR }
+				POR = {
+					OR = { 
+						has_war = yes 
+						is_in_faction = yes
+					}
+				}
+				NOT = { country_exists = global.POR_iberian_summit_spanish_tag }
+				var:global.POR_iberian_summit_spanish_tag = {
+					OR = {
+						has_war = yes
+						is_in_faction = yes
+					}
+				}
+			}
+		}
+
+		#On Activation
+		complete_effect = {
+			var:global.POR_iberian_summit_target = {
+				add_opinion_modifier = {
+					target = ROOT
+					modifier = POR_iberian_summit_diplomatic_approach
+				}
+			}
+		}
+
+		#Fail
+		cancel_effect = {
+			remove_opinion_modifier = {	target = POR modifier = POR_iberian_summit_working_together	}
+			var:global.POR_iberian_summit_target = {
+				remove_opinion_modifier = { target = POR modifier = POR_iberian_summit_diplomatic_approach }
+			}
+			if = { 
+				limit = { country_exists = SPA }
+				remove_opinion_modifier = {	target = SPA modifier = POR_iberian_summit_working_together	}
+				var:global.POR_iberian_summit_target = {
+					remove_opinion_modifier = { target = SPA modifier = POR_iberian_summit_diplomatic_approach }
+				}
+			}
+			else = {
+				remove_opinion_modifier = {	target = SPD modifier = POR_iberian_summit_working_together	}
+				var:global.POR_iberian_summit_target = {
+					remove_opinion_modifier = { target = SPA modifier = POR_iberian_summit_diplomatic_approach }
+				}
+			}
+			
+			clr_global_flag = POR_iberian_summit_in_progress_flag
+			clr_global_flag = POR_iberian_summit_proposal_delayed_flag
+			clr_country_flag = POR_iberian_summit_initiator_flag  
+			clear_variable = global.POR_iberian_summit_target
+		}
+
+		#Success
+		remove_effect = {
+			if = {
+				limit = {
+					has_country_flag = POR_iberian_summit_initiator_flag
+				}
+				if = {
+					limit = {
+						check_variable = {
+						    var = global.POR_iberian_summit_target
+						    value = GER
+						    compare = equals
+						}
+					}
+					var:global.POR_iberian_summit_target = { 
+						country_event = { id = lar_portugal_iberian_summit.4 hours = 8 random_hours = 4 }
+					}
+				}
+				else = {
+					var:global.POR_iberian_summit_target = { 
+						country_event = { id = lar_portugal_iberian_summit.8 hours = 8 random_hours = 4 }
+					}
+				}
+			}
+			clr_global_flag = POR_iberian_summit_in_progress_flag
+			clr_global_flag = POR_iberian_summit_proposal_delayed_flag
+			clr_country_flag = POR_iberian_summit_initiator_flag
+		}
+	}
+}
+
+
 POR_monarchist_cause = {
 
 	POR_stir_monarchist_sentiment_in_brazil = {
 		icon = generic_political_discourse
 
 		allowed = {
-			has_dlc = "La Resistance"
 			original_tag = POR
 		}
 
@@ -1982,17 +2298,20 @@ POR_monarchist_cause = {
 		fire_only_once = no
 
 		ai_will_do = {
-			base = 1
+			base = 10
 		}
 		visible = {
-			has_completed_focus = POR_new_empire
-			#NOT = { has_completed_focus = POR_the_empire_of_brazil }
+			OR = {
+				has_completed_focus = POR_new_empire
+				has_completed_focus = POR_support_for_brazilian_monarchists
+			}
+			NOT = { has_completed_focus = POR_unification_of_kingdoms }
 			country_exists = BRA
 		}
 
 		cancel_trigger = {
 			OR = {
-				#has_completed_focus = POR_the_empire_of_brazil
+				has_completed_focus = POR_unification_of_kingdoms
 				has_war_with = BRA
 				BRA = { monarchy < -0.15 }
 			}
@@ -2032,7 +2351,6 @@ POR_monarchist_cause = {
 		icon = generic_civil_support
 
 		allowed = {
-			has_dlc = "La Resistance"
 			original_tag = BRA
 		}
 
@@ -2043,7 +2361,7 @@ POR_monarchist_cause = {
 		cancel_trigger = {
 			OR = {
 				NOT = { has_country_flag = POR_portugal_stirring_brazilian_monarchists_flag }
-				#POR = { has_completed_focus = POR_the_empire_of_brazil }
+				POR = { has_completed_focus = POR_unification_of_kingdoms }
 				monarchy < -0.15
 				has_war_with = POR
 			}
@@ -2064,7 +2382,6 @@ POR_monarchist_cause = {
 		icon = oppression
 
 		allowed = {
-			has_dlc = "La Resistance"
 			original_tag = BRA
 		}
 
@@ -2084,11 +2401,11 @@ POR_monarchist_cause = {
 				has_country_flag = POR_brazilian_monarchists_stirred_flag
 			}
 			country_exists = POR
-			#POR = { NOT = { has_completed_focus = POR_the_empire_of_brazil } }		
+			POR = { NOT = { has_completed_focus = POR_unification_of_kingdoms } }		
 		}
 
 		cancel_trigger = {
-			#POR = { has_completed_focus = POR_the_empire_of_brazil }
+			POR = { has_completed_focus = POR_unification_of_kingdoms }
 		}
 
 		modifier = {
@@ -2109,7 +2426,6 @@ POR_monarchist_cause = {
 		icon = generic_political_discourse
 
 		allowed = {
-			has_dlc = "La Resistance"
 			original_tag = POR
 		}
 
@@ -2121,10 +2437,13 @@ POR_monarchist_cause = {
 		fire_only_once = no
 
 		ai_will_do = {
-			base = 1
+			base = 10
 		}
 		visible = {
-			has_completed_focus = POR_return_monarchism
+			OR = {
+				has_completed_focus = POR_return_monarchism
+				has_completed_focus = POR_support_for_brazilian_monarchists
+			}
 			NOT = { has_government = monarchy }
 		}
 
@@ -2274,6 +2593,75 @@ POR_prospect_for_resources = {
 					check_variable = { var = POR_santarem_chromium_duration value = 30 compare = less_than }
 				}
 				set_variable = { var = POR_santarem_chromium_duration value = 15 }
+			}
+		}
+	}
+}
+
+POR_the_spanish_civil_war = {
+	
+	POR_fight_alongside_the_carlists = {
+		icon = generic_prepare_civil_war
+
+		available = {
+			has_manpower > 10000
+			has_stability > 0.5
+			SPB = {
+				any_enemy_country = {
+					is_literally_spain = yes
+					NOT = { has_war_with = ROOT }
+				}
+			}
+		}
+
+		cost = 0
+		fire_only_once = yes
+
+		ai_will_do = {
+			factor = 1
+			modifier = {
+				OR = {
+					has_stability < 0.3
+					has_manpower < 50000
+				}
+				factor = 0
+			}
+		}
+
+		visible = {
+			SPR_scw_in_progress = yes
+			country_exists = SPB
+			NOT = { has_war_with = SPB }
+		}
+		complete_effect = {
+			hidden_effect = {
+				set_country_flag = supports_SPB_flag
+			}
+			every_other_country = {
+				limit = {
+					is_literally_spain = yes
+					has_war_with = SPB
+					NOT = { has_war_with = ROOT }
+				}
+				ROOT = { add_to_war = { targeted_alliance = SPB enemy = PREV hostility_reason = asked_to_join } }
+			}
+			effect_tooltip = {
+				give_military_access = SPB
+				SPB = { give_military_access = ROOT }
+			}
+			hidden_effect = {
+				diplomatic_relation = {
+					country = SPB
+					relation = military_access
+					active = yes
+				}
+				SPB = {
+					diplomatic_relation = {
+						country = ROOT
+						relation = military_access
+						active = yes
+					}
+				}
 			}
 		}
 	}
