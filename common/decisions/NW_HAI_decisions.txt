@@ -1,0 +1,309 @@
+economy_decisions = {
+
+	HAI_program_of_reorganization_of_transport_routes = {
+		allowed = {
+			original_tag = HAI
+		}
+		icon = generic_decision
+		activation = {
+			always = no
+		}
+		available = {	 #GOAL
+			318 = { infrastructure > 3 }
+			869 = { infrastructure > 3 }
+			num_of_civilian_factories > 4
+		}
+		is_good = no
+		days_mission_timeout = 340
+		fire_only_once = yes
+		
+		timeout_effect = {		#MISSION FAILS
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): timeout decision HAI_program_of_reorganization_of_transport_routes"
+			add_political_power = -95
+			add_popularity = { ideology = neutrality popularity = -0.1 }
+		}
+		complete_effect = {		#MISSION SUCCEEDS
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision HAI_program_of_reorganization_of_transport_routes"
+			add_stability = 0.07
+			318 = {
+				add_extra_state_shared_building_slots = 2
+				add_building_construction = {
+					type = industrial_complex
+					level = 1
+					instant_build = yes
+				}
+			}
+		}
+	}
+	HAI_shada_program = {
+		icon = generic_decision
+		allowed = {
+			original_tag = HAI
+		}
+		activation = {
+			always = no
+		}
+		available = {	 #GOAL
+			869 = { synthetic_refinery > synthetic_refinery_goal }
+		}
+		is_good = no
+		days_mission_timeout = 450
+		fire_only_once = yes
+		
+		timeout_effect = {		#MISSION FAILS
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): timeout decision HAI_shada_program"
+			remove_ideas = HAI_consequences_of_the_shada_program_idea
+			add_timed_idea = { idea = HAI_failure_of_the_shada_program_idea days = 510 }
+			set_country_flag = HAI_failure_of_the_shada_program_flag
+			custom_effect_tooltip = remove_political_advisor
+			show_ideas_tooltip = HAI_thomas_fennell
+			clear_variable = synthetic_refinery_goal
+		}
+		complete_effect = {		#MISSION SUCCEEDS
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision HAI_shada_program"
+			remove_ideas = HAI_consequences_of_the_shada_program_idea
+			add_ideas = HAI_success_of_the_shada_program_idea
+			869 = {
+				add_resource = {
+					type = rubber
+					amount = 20
+				}
+			}
+			capital_scope = {
+				add_resource = {
+					type = rubber
+					amount = 22
+				}
+				add_extra_state_shared_building_slots = 3
+				add_building_construction = {
+					type = industrial_complex
+					level = 2
+					instant_build = yes
+				}
+			}
+			clear_variable = synthetic_refinery_goal
+		}
+	}
+	HAI_pay_off_government_debts = {
+		icon = generic_decision
+		available = {
+		}
+		visible = {
+			has_completed_focus = HAI_extend_terms_of_payment_of_state_debt
+		}
+		
+		cost = 20
+		days_remove = 215
+		ai_will_do = {
+			factor = 15
+		}
+		
+		modifier = {
+			consumer_goods_factor = 0.07
+			political_power_factor = -0.2
+			production_speed_buildings_factor = -0.15
+		}
+		
+		remove_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): remove decisions HAI_pay_off_government_debts"
+			remove_ideas = HAI_haitian_national_debt_idea
+		}
+	}
+}
+
+HAI_dominican_haitian_border_category = {
+
+	HAI_escalation_on_dominican_haitian_border = {
+		icon = revolt
+		activation = {
+			always = no
+		}
+		available = {	 #GOAL
+			DOM = { NOT = { has_country_leader = { character = DOM_rafael_trujillo ruling_only = yes } } }
+		}
+		is_good = no
+		days_mission_timeout = 640
+		fire_only_once = yes
+		
+		timeout_effect = {		#MISSION FAILS
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): timeout decision HAI_escalation_on_dominican_haitian_border"
+			if = {
+				limit = { original_tag = DOM }
+				set_global_flag = parsley_massacre_happened
+				set_global_flag = { flag = parsley_massacre_happened_timer days = 365 }
+				country_event = dominican.1
+			}
+			else = {
+				country_event = NWhaiti.1
+			}
+		}
+		complete_effect = {		#MISSION SUCCEEDS
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision HAI_escalation_on_dominican_haitian_border"
+			
+		}
+	}
+}
+
+HAI_consequences_of_petrushka_massacre_category = {
+
+	HAI_calixtas_coup_miss = {
+		icon = revolt
+		activation = {
+			always = no
+		}
+		available = {	 #GOAL
+			OR = {
+				has_completed_focus = HAI_deploy_border_force
+				has_completed_focus = HAI_american_defense_of_regime
+				has_completed_focus = HAI_arrest_of_calixta
+			}
+		}
+		is_good = no
+		days_mission_timeout = 270
+		fire_only_once = yes
+		
+		timeout_effect = {		#MISSION FAILS
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): timeout decision HAI_calixtas_coup_miss"
+			country_event = NWhaiti.2
+		}
+		complete_effect = {		#MISSION SUCCEEDS
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision HAI_calixtas_coup_miss"
+			add_stability = 0.045
+			add_war_support = 0.045
+			set_country_flag = HAI_calixtas_coup_fail_flag
+		}
+	}
+
+	HAI_vincents_reaction = {
+		icon = SWI_no_elected_president
+		activation = {
+			always = no
+		}
+		available = {	 #GOAL
+			OR = {
+				has_completed_focus = HAI_restrict_press
+				has_completed_focus = HAI_propaganda_against_trujillo
+			}
+		}
+		is_good = no
+		days_mission_timeout = 16
+		fire_only_once = yes
+		
+		timeout_effect = {		#MISSION FAILS
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): timeout decision HAI_vincents_reaction"
+			add_stability = -0.045
+			add_political_power = -60
+			add_days_mission_timeout = { mission = HAI_calixtas_coup_miss days = -25 }
+		}
+		complete_effect = {		#MISSION SUCCEEDS
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision HAI_vincents_reaction"
+			
+		}
+	}
+
+	HAI_government_actions = {
+		icon = SOV_place_hq
+		activation = {
+			always = no
+		}
+		available = {	 #GOAL
+			has_completed_focus = HAI_dominican_compensation
+		}
+		is_good = no
+		days_mission_timeout = 16
+		fire_only_once = yes
+		
+		timeout_effect = {		#MISSION FAILS
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): timeout decision HAI_government_actions"
+			add_stability = -0.045
+			add_political_power = -60
+			add_days_mission_timeout = { mission = HAI_calixtas_coup_miss days = -25 }
+		}
+		complete_effect = {		#MISSION SUCCEEDS
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision HAI_government_actions"
+			
+		}
+	}
+
+	HAI_government_actions_2 = {
+		icon = SOV_place_hq
+		activation = {
+			always = no
+		}
+		available = {	 #GOAL
+			has_completed_focus = HAI_deploy_border_force
+		}
+		is_good = no
+		days_mission_timeout = 16
+		fire_only_once = yes
+		
+		timeout_effect = {		#MISSION FAILS
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): timeout decision HAI_government_actions"
+			add_stability = -0.045
+			add_political_power = -60
+			add_days_mission_timeout = { mission = HAI_calixtas_coup_miss days = -25 }
+		}
+		complete_effect = {		#MISSION SUCCEEDS
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision HAI_government_actions"
+			
+		}
+	}
+
+	HAI_eliminate_the_consequences_of_the_massacre = {
+		icon = SOV_place_hq
+		available = {
+			custom_trigger_tooltip = {
+				tooltip = parsley_massacre_passed_year_tt
+				has_global_flag = parsley_massacre_happened
+				NOT = { has_global_flag = parsley_massacre_happened_timer }
+			}
+		}
+		visible = {
+			OR = {
+				has_completed_focus = HAI_dominican_compensation
+				has_completed_focus = HAI_deploy_border_force
+			}
+		}
+		cost = 165
+		fire_only_once = yes
+		ai_will_do = {
+			factor = 15
+		}
+		complete_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decisions HAI_eliminate_the_consequences_of_the_massacre"
+			add_stability = 0.065
+			if = {
+				limit = { has_idea = HAI_consequences_of_petrushka_massacre_idea_1_1 }
+				remove_ideas = HAI_consequences_of_petrushka_massacre_idea_1_1
+			}
+			if = {
+				limit = { has_idea = HAI_consequences_of_petrushka_massacre_idea_2_1 }
+				remove_ideas = HAI_consequences_of_petrushka_massacre_idea_2_1
+			}
+		}
+	}
+	
+	HAI_border_conflict = {
+		icon = border_war
+		activation = {
+			always = no
+		}
+		available = {	 #GOAL
+			has_completed_focus = HAI_cancellation_of_the_haitian_concession
+		}
+		is_good = no
+		days_mission_timeout = 70
+		fire_only_once = yes
+		
+		timeout_effect = {		#MISSION FAILS
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): timeout decision HAI_escalation_on_dominican_haitian_border"
+			add_stability = -0.045
+			add_war_support = 0.08
+			add_political_power = -60
+		}
+		complete_effect = {		#MISSION SUCCEEDS
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision HAI_escalation_on_dominican_haitian_border"
+			
+		}
+	}
+}
