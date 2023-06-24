@@ -136,7 +136,7 @@ focus_tree = {
 	
 	focus = {
 		id = POR_creation_of_the_fascist_militia
-		icon = GFX_z_goal_POR_portuguese_scout_corps
+		icon = GFX_focus_generic_fascist_troops
 		prerequisite = { focus = POR_blue_shirts }
 		x = -1
 		y = 1
@@ -178,7 +178,7 @@ focus_tree = {
 	
 	focus = {
 		id = POR_national_defense_army
-		icon = GFX_z_goal_POR_portuguese_scout_corps
+		icon = GFX_z_goal_elite_troops
 		prerequisite = { focus = POR_creation_of_the_fascist_militia }
 		x = 0
 		y = 1
@@ -252,7 +252,7 @@ focus_tree = {
 	
 	focus = {
 		id = POR_cult_of_the_leader
-		icon = GFX_z_goal_POR_portuguese_scout_corps
+		icon = GFX_z_focus_propaganda_fascism
 		prerequisite = { focus = POR_blue_shirts }
 		x = 0
 		y = 3
@@ -1045,14 +1045,15 @@ focus_tree = {
 			is_subject = no
 		}
 		bypass = {
-			hidden_trigger = {
-				all_of_scopes = {
-					array = global.spain_cores
-					owner = {
-						OR = {
-							tag = ROOT
-							is_in_faction_with = ROOT
-						}
+			all_of_scopes = {
+				array = global.spain_cores
+				tooltip = all_of_core_states_SPAIN_tt
+				owner = {
+					OR = {
+						tag = ROOT
+						is_subject_of = ROOT
+						is_in_faction_with = ROOT
+						has_war_with = ROOT
 					}
 				}
 			}
@@ -1163,6 +1164,7 @@ focus_tree = {
 		available = {
 			is_subject = no
 			BRA = {
+				exists = yes
 				NOT = {
 					has_war_with = ROOT
 					is_in_faction_with = ROOT
@@ -1170,7 +1172,14 @@ focus_tree = {
 			}
 		}
 		bypass = {
-			has_war_with = BRA
+			BRA = {
+				OR = {
+					exists = no
+					is_subject_of = ROOT
+					is_in_faction_with = ROOT
+					has_war_with = ROOT
+				}
+			}
 		}
 		
 		will_lead_to_war_with = BRA
@@ -1198,7 +1207,7 @@ focus_tree = {
 	
 	focus = {
 		id = POR_elimination_of_the_communist_threat
-		icon = GFX_focus_por_recover_brazil
+		icon = GFX_z_goal_broken_red_star
 		prerequisite = {
 			focus = POR_unite_iberia
 			focus = POR_return_brazil
@@ -1230,7 +1239,7 @@ focus_tree = {
 	
 	focus = {
 		id = POR_imperial_revival
-		icon = GFX_focus_por_recover_brazil
+		icon = GFX_z_goal_all_portugal
 		prerequisite = {
 			focus = POR_unite_iberia
 			focus = POR_return_brazil
@@ -2571,7 +2580,7 @@ focus_tree = {
 	
 	focus = {
 		id = POR_united_iberian_kingdom
-		icon = GFX_z_goal_Armored_control
+		icon = GFX_focus_generic_free_iberia
 		prerequisite = { focus = POR_remember_olivenca }
 		x = 0
 		y = 1
@@ -4065,19 +4074,7 @@ focus_tree = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus POR_support_the_spanish_republic"
 			custom_effect_tooltip = available_designer
 			show_ideas_tooltip = fma
-			if = {
-				limit = {
-					NOT = { has_global_flag = spanish_civil_war }
-				}
-				custom_effect_tooltip = POR_spanish_republic_tt
-			} 	
-			SPD = {
-				add_opinion_modifier = {
-				    target = ROOT
-				    modifier = POR_helped_in_civil_war
-				}
-				add_manpower = 10000
-			}			
+				
 			add_ideas = POR_volunteers_in_the_war_republican
 			add_manpower = -10000
 			hidden_effect = {
@@ -4093,6 +4090,20 @@ focus_tree = {
 			}
 			custom_effect_tooltip = POR_support_the_spanish_republic_effect_tooltip_tt
 			set_rule = { can_send_volunteers = yes }
+			if = {
+				limit = {
+					NOT = { has_global_flag = spanish_civil_war }
+				}
+				custom_effect_tooltip = n4_tt
+				custom_effect_tooltip = POR_spanish_republic_tt
+			} 
+			SPD = {
+				add_opinion_modifier = {
+				    target = ROOT
+				    modifier = POR_helped_in_civil_war
+				}
+				add_manpower = 10000
+			}
 		}
 	}
 	
@@ -4529,7 +4540,7 @@ focus_tree = {
 	
 	focus = {
 		id = POR_union_of_republics_of_iberian_soviets
-		icon = GFX_z_goal_one_party_system
+		icon = GFX_focus_ger_great_red_menace
 		prerequisite = { focus = POR_invasion_of_spain }
 		x = 0
 		y = 1
@@ -4745,7 +4756,7 @@ focus_tree = {
 	
 	focus = {
 		id = POR_socialization_of_all_means_of_production
-		icon = GFX_z_goal_red_continuous_production_concept
+		icon = GFX_focus_SOV_organize_wreckers
 		prerequisite = { focus = POR_start_fight_against_bourgeoisie_in_country }
 		x = -3
 		y = 1
@@ -4809,13 +4820,16 @@ focus_tree = {
 				uses = 1
 				category = industry
 			}
-			unlock_decision_category_tooltip = POR_continuous_production_concept_category
+			if = {
+				limit = { has_completed_focus = POR_victory_of_portuguese_communist_party }
+				custom_effect_tooltip = POR_continuous_production_concept_category
+			}
 		}
 	}
 	
 	focus = {
 		id = POR_collectivization_of_private_property
-		icon = GFX_z_goal_nationalisation_crunch_lands
+		icon = GFX_z_goal_abolition_of_private_property
 		prerequisite = { focus = POR_start_fight_against_bourgeoisie_in_country }
 		x = -1
 		y = 1
@@ -4847,7 +4861,10 @@ focus_tree = {
 				}
 				add_extra_state_shared_building_slots = 1
 			}
-			custom_effect_tooltip = POR_unlock_elimination_of_bourgeois_elements_tt
+			if = {
+				limit = { has_completed_focus = POR_victory_of_portuguese_communist_party }
+				custom_effect_tooltip = POR_unlock_elimination_of_bourgeois_elements_tt
+			}
 		}
 	}
 	
@@ -6816,6 +6833,12 @@ focus_tree = {
 					}
 				}
 				release = ANG
+				ANG = {
+					if = {
+						limit = { NOT = { has_focus_tree = nw_portugal_redcol } }
+						load_focus_tree = { tree = nw_portugal_redcol keep_completed = no }
+					}
+				}
 			}
 			if = {
 				limit = {
@@ -6825,6 +6848,12 @@ focus_tree = {
 					}
 				}
 				release = MZB
+				MZB = {
+					if = {
+						limit = { NOT = { has_focus_tree = nw_portugal_redcol } }
+						load_focus_tree = { tree = nw_portugal_redcol keep_completed = no }
+					}
+				}
 			}
 		}
 	}
@@ -7577,7 +7606,7 @@ focus_tree = {
 	
 	focus = {
 		id = POR_second_portuguese_republic
-		icon = GFX_z_goal_Armored_control
+		icon = GFX_z_national_liber
 		prerequisite = { focus = POR_holding_free_elections }
 		x = 0
 		y = 1
@@ -8458,7 +8487,7 @@ focus_tree = {
 	
 	focus = {
 		id = POR_oblige_foreigners_to_comply_with_labor_standards_of_angolan_workers
-		icon = GFX_z_goal_Armored_control
+		icon = GFX_goal_generic_production
 		prerequisite = { focus = POR_enric_galvaos_soft_politics }
 		x = -2
 		y = 1
@@ -8545,7 +8574,7 @@ focus_tree = {
 	
 	focus = {
 		id = POR_concept_of_increase_living_standards_and_incomes
-		icon = GFX_z_goal_Armored_control
+		icon = GFX_goal_generic_consumer_goods
 		prerequisite = { focus = POR_oblige_foreigners_to_comply_with_labor_standards_of_angolan_workers }
 		x = 0
 		y = 1
@@ -9075,7 +9104,7 @@ focus_tree = {
 	
 	focus = {
 		id = POR_create_jobs_for_blacks
-		icon = GFX_z_goal_Armored_control
+		icon = GFX_z_goal_black_workers
 		prerequisite = { focus = POR_deepening_policy_of_lusotropicalism }
 		x = -1
 		y = 1
@@ -9140,7 +9169,7 @@ focus_tree = {
 	
 	focus = {
 		id = POR_reduce_requirements_for_assimilados
-		icon = GFX_z_goal_Armored_control
+		icon = GFX_z_goal_trade_unions_for_black
 		prerequisite = { focus = POR_deepening_policy_of_lusotropicalism }
 		x = 1
 		y = 1
@@ -9612,7 +9641,7 @@ focus_tree = {
 	
 	focus = {
 		id = POR_improving_working_conditions_in_colonies
-		icon = GFX_z_goal_Armored_control
+		icon = GFX_z_goal_artisanal_production_of_weapons2
 		prerequisite = {
 			focus = POR_enric_galvaos_soft_politics
 			focus = POR_anarchist_rallies
@@ -9676,7 +9705,7 @@ focus_tree = {
 	
 	focus = {
 		id = POR_open_schools_for_blacks
-		icon = GFX_z_goal_Armored_control
+		icon = GFX_z_goal_Opening_of_the_school_of_Princes
 		prerequisite = { focus = POR_improving_working_conditions_in_colonies }
 		x = 0
 		y = 1
@@ -9956,7 +9985,7 @@ focus_tree = {
 	
 	focus = {
 		id = POR_social_reorganization_program
-		icon = GFX_z_goal_Armored_control
+		icon = GFX_z_goal_mutual_aid
 		prerequisite = { focus = POR_anarchist_rallies }
 		x = 0
 		y = 1
@@ -10067,7 +10096,7 @@ focus_tree = {
 	
 	focus = {
 		id = POR_assistance_to_anarchist_trade_unions
-		icon = GFX_z_goal_Armored_control
+		icon = GFX_z_goal_council_anarchism
 		prerequisite = { focus = POR_elimination_of_wage_and_patronage_system }
 		x = -1
 		y = 1
@@ -10102,7 +10131,7 @@ focus_tree = {
 	
 	focus = {
 		id = POR_collectivization_of_factorys
-		icon = GFX_z_goal_Armored_control
+		icon = GFX_z_goal_federation_anarchists
 		prerequisite = { focus = POR_elimination_of_wage_and_patronage_system }
 		x = 1
 		y = 1
@@ -10179,7 +10208,7 @@ focus_tree = {
 	
 	focus = {
 		id = POR_foreign_propaganda
-		icon = GFX_z_goal_Armored_control
+		icon = GFX_z_focus_propaganda_anarchist
 		prerequisite = { focus = POR_syndicalist_youth }
 		prerequisite = { focus = POR_election_of_new_cgt_chairman }
 		mutually_exclusive = {
@@ -10219,7 +10248,7 @@ focus_tree = {
 	
 	focus = {
 		id = POR_training_of_anarchist_militants
-		icon = GFX_z_goal_Armored_control
+		icon = GFX_z_goal_peoples_army_anarch
 		prerequisite = { focus = POR_election_of_new_cgt_chairman }
 		mutually_exclusive = {
 			focus = POR_foreign_propaganda
@@ -10255,7 +10284,7 @@ focus_tree = {
 	
 	focus = {
 		id = POR_liga_operaria_de_expropriacao_economica
-		icon = GFX_z_goal_Armored_control
+		icon = GFX_z_goal_prom_fabric
 		prerequisite = { focus = POR_election_of_new_cgt_chairman }
 		prerequisite = { focus = POR_collectivization_of_factorys }
 		mutually_exclusive = {
@@ -10291,7 +10320,7 @@ focus_tree = {
 	
 	focus = {
 		id = POR_achieving_mutualism
-		icon = GFX_z_goal_Armored_control
+		icon = GFX_z_goal_mutualism
 		prerequisite = { focus = POR_election_of_new_cgt_chairman }
 		prerequisite = { focus = POR_collectivization_of_factorys }
 		x = 0
@@ -10322,7 +10351,7 @@ focus_tree = {
 	
 	focus = {
 		id = POR_industrialization_of_society
-		icon = GFX_z_goal_Armored_control
+		icon = GFX_z_goal_industry_work
 		prerequisite = { focus = POR_assistance_to_anarchist_trade_unions }
 		prerequisite = { focus = POR_collectivization_of_factorys }
 		x = -1
@@ -10699,7 +10728,7 @@ focus_tree = {
 	
 	focus = {
 		id = POR_general_workers_union_of_northern_region
-		icon = GFX_z_goal_Armored_control
+		icon = GFX_z_goal_voluntary_creation_of_collective
 		prerequisite = { focus = POR_elimination_of_wage_and_patronage_system }
 		x = 3
 		y = 1
@@ -10741,7 +10770,7 @@ focus_tree = {
 	
 	focus = {
 		id = POR_industrialize_artisanal_production_of_shoes_in_port
-		icon = GFX_z_goal_Armored_control
+		icon = GFX_z_goal_prom_country
 		prerequisite = { focus = POR_general_workers_union_of_northern_region }
 		x = -1
 		y = 2
@@ -12242,6 +12271,8 @@ focus_tree = {
 			}
 			custom_effect_tooltip = available_political_advisor
 			show_ideas_tooltip = POR_francisco_craveiro_lopes
+			custom_effect_tooltip = available_military_high_command
+			show_ideas_tooltip = POR_francisco_craveiro_lopes_high_command
 		}
 	}
 	
@@ -16101,7 +16132,7 @@ focus_tree = {
 	
 	focus = {
 		id = POR_trade_in_chinese_workers
-		icon = GFX_z_goal_profsoyuzy_dlya_chyornykh
+		icon = GFX_z_goal_trade_unions_for_black
 		prerequisite = { focus = POR_western_line_of_qiguan_highway }
 		x = -1
 		y = 1
