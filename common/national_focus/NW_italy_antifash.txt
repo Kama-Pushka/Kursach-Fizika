@@ -1605,8 +1605,9 @@ focus_tree = {
 			custom_effect_tooltip = ITA_defend_the_land_invite_tt
 			if = {
 				limit = {
-					any_other_country = {
-						has_government = communism
+					any_of_scopes = {
+						array = global.is_communism
+						NOT = { tag = ROOT }
 						is_in_faction = no
 						is_subject = no
 						NOT = {
@@ -2318,7 +2319,11 @@ focus_tree = {
 		available = {
 			is_subject = no
 			OR = {
-				any_other_country = {
+				any_of_scopes = {
+					array = global.is_democratic
+					tooltip = is_democratic_tt
+					NOT = { tag = ROOT }
+					is_subject = no
 					capital_scope = {
 						is_on_continent = europe
 					}
@@ -2326,12 +2331,8 @@ focus_tree = {
 						is_in_faction = no
 						is_in_faction_with = ROOT
 					}
-					has_government = democratic
-					is_subject = no
 				}
-				any_other_country = {
-					is_in_faction_with = ROOT
-				}
+				num_faction_members > 1
 			}
 		}
 
@@ -2423,9 +2424,7 @@ focus_tree = {
 				add_to_tech_sharing_group = ITA_program_for_scientific_cooperation
 				if = {
 					limit = {
-						any_other_country = {
-							is_in_faction_with = ROOT
-						}
+						num_faction_members > 1
 					}
 					every_other_country = {
 						limit = {
@@ -2442,9 +2441,7 @@ focus_tree = {
 			custom_effect_tooltip = ITA_scientific_cooperation_allies_ns_tt
 			if = {
 				limit = {
-					any_other_country = {
-						is_in_faction_with = ROOT
-					}
+					num_faction_members > 1
 				}
 				custom_effect_tooltip = generic_current_effects
 				add_ideas = ITA_scientific_cooperation_ns
@@ -2552,8 +2549,9 @@ focus_tree = {
 			custom_effect_tooltip = ITA_bring_down_fascist_strongholds_tt
 			if = {
 				limit = {
-					any_other_country = {
-						has_government = fascism
+					any_of_scopes = {
+						array = global.is_fascism
+						NOT = { tag = ROOT }
 						capital_scope = {
 							is_on_continent = europe
 						}
@@ -2603,31 +2601,34 @@ focus_tree = {
 		available = {
 			is_in_faction = no
 			is_subject = no
-			any_other_country = {
-				OR = {
-					tag = event_target:NW_france_scope
-					tag = ENG
-				}
-				NOT = { has_government = fascism }
-				is_faction_leader = yes
-				is_subject = no
-				has_civil_war = no
-				NOT = { is_justifying_wargoal_against = ROOT }
-				NOT = { has_war_with = ROOT }
-				NOT = { 
-					any_allied_country = {
-						has_war_with = ROOT
+			OR = {
+				ENG = {
+					NOT = { has_government = fascism }
+					is_faction_leader = yes
+					is_subject = no
+					has_civil_war = no
+					NOT = { is_justifying_wargoal_against = ROOT }
+					NOT = { has_war_with = ROOT }
+					NOT = { 
+						any_allied_country = {
+							has_war_with = ROOT
+						}
 					}
+					has_opinion	= { target = ROOT value > 50 }
 				}
-			}
-			any_other_country = { #Split for easier visualization in the tooltip
-				OR = {
-					tag = event_target:NW_france_scope
-					tag = ENG
-				}
-				has_opinion	= {
-					target = ROOT
-					value > 50
+				event_target:NW_france_scope = {
+					NOT = { has_government = fascism }
+					is_faction_leader = yes
+					is_subject = no
+					has_civil_war = no
+					NOT = { is_justifying_wargoal_against = ROOT }
+					NOT = { has_war_with = ROOT }
+					NOT = { 
+						any_allied_country = {
+							has_war_with = ROOT
+						}
+					}
+					has_opinion	= { target = ROOT value > 50 }
 				}
 			}
 		}
@@ -2961,15 +2962,19 @@ focus_tree = {
 
 			if = {
 				limit = {
-					any_other_country = {
-						capital_scope = {
-							NOT = { is_on_continent = africa }
+					any_of_scopes = {
+						array = global.africa
+						owner = {
+							NOT = { tag = ROOT }
+							capital_scope = {
+								NOT = { is_on_continent = africa }
+							}
+							any_owned_state = {
+								is_on_continent = africa
+								NOT = { is_core_of = owner }
+							}
+							NOT = { is_in_faction_with = ROOT }
 						}
-						any_owned_state = {
-							is_on_continent = africa
-							NOT = { is_core_of = owner }
-						}
-						NOT = { is_in_faction_with = ROOT }
 					}
 				}
 				custom_effect_tooltip = generic_current_effects
