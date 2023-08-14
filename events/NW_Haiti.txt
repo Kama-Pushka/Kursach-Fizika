@@ -804,7 +804,6 @@ country_event = {
 	is_triggered_only = yes
 	
 	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWhaiti.32" }
-	immediate = { set_country_flag = NWhaiti_15_flag }
 	
 	option = {
 		name = NWhaiti.32.a
@@ -850,5 +849,154 @@ country_event = {
 	option = {
 		name = NWhaiti.33.a
 		add_war_support = 0.025
+	}
+}
+
+# Вопрос партийного лидерства // HAI
+country_event = {
+	id = NWhaiti.34
+	title = NWhaiti.34.t
+	desc = NWhaiti.34.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWhaiti.34" }
+	
+	option = {
+		name = NWhaiti.34.a
+		ai_chance = {
+			factor = 50
+		}
+		add_popularity = { ideology = democratic popularity = -0.02 }
+	}
+	
+	option = {
+		name = NWhaiti.34.b
+		ai_chance = {
+			factor = 50
+		}
+		send_embargo = FROM
+		FROM = { country_event = { id = NWhaiti.33 hours = 3 } }
+	}
+}
+
+
+
+
+
+
+
+# Подсчет бункеров и приморских укрепов
+country_event = {
+	id = NWhaiti.998
+	hidden = yes
+	is_triggered_only = yes
+	
+	trigger = {
+		has_active_mission = HAI_caribbean_bastion_mission
+	}
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWhaiti.998" }
+	immediate = {
+		hidden_effect = {
+			clear_variable = total_num_of_bunker
+			while_loop_effect = {
+				limit = {
+					bunker > var:num_of_bunker
+				}
+				add_to_temp_variable = { num_of_bunker = 1 }
+			}
+			while_loop_effect = {
+				limit = {
+					coastal_bunker > var:num_of_coastal_bunker
+				}
+				add_to_temp_variable = { num_of_coastal_bunker = 1 }
+			}
+			add_to_variable = { total_num_of_bunker = num_of_bunker }
+			add_to_variable = { total_num_of_bunker = num_of_coastal_bunker }
+			
+			set_variable = { delta_num_of_bunker = target_num_of_bunker }
+			subtract_from_variable = { delta_num_of_bunker = total_num_of_bunker }
+			subtract_from_variable = { delta_num_of_bunker = start_num_of_bunker }
+			
+			country_event = { id = NWhaiti.998 days = 14 }
+		}
+	}
+}
+
+# ТЕСТ
+country_event = {
+	id = NWhaiti.999
+	hidden = yes
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWhaiti.999" }
+	immediate = {
+		hidden_effect = {
+			set_variable = { num_of_bunker = 0 }
+			set_variable = { num_of_coastal_bunker = 0 }
+			set_variable = { target_num_of_bunker = 0 }
+			while_loop_effect = {
+				limit = {
+					bunker > var:num_of_bunker
+				}
+				add_to_variable = { num_of_bunker = 1 }
+			}
+			while_loop_effect = {
+				limit = {
+					coastal_bunker > var:num_of_coastal_bunker
+				}
+				add_to_variable = { num_of_coastal_bunker = 1 }
+			}
+			set_variable = { target_num_of_bunker = num_of_bunker }
+			add_to_variable = { target_num_of_bunker = num_of_coastal_bunker }
+			set_variable = { start_num_of_bunker = target_num_of_bunker }
+			add_to_variable = { target_num_of_bunker = 18 }
+			
+			set_variable = { delta_num_of_bunker = target_num_of_bunker }
+			subtract_from_variable = { delta_num_of_bunker = total_num_of_bunker }
+			subtract_from_variable = { delta_num_of_bunker = start_num_of_bunker }
+		}
+	}
+	
+	option = {
+		name = "1"
+		custom_effect_tooltip = xxxxxx_tt
+	}
+	
+	option = {
+		name = "2"
+		every_controlled_state = {
+			limit = {
+				OR = {
+					is_core_of = ROOT
+					is_core_of = CUB
+					is_core_of = DOM
+				}
+			}
+			add_building_construction = {
+				type = coastal_bunker
+				level = 3
+				province = {
+					all_provinces = yes
+					limit_to_naval_base = yes
+				}
+				instant_build = yes
+			}
+			add_building_construction = {
+				type = naval_base
+				level = 1
+				province = {
+					all_provinces = yes
+					limit_to_naval_base = yes
+				}
+				instant_build = yes
+			}
+			add_building_construction = {
+				type = air_base
+				level = 1
+				instant_build = yes
+			}
+		}
 	}
 }
