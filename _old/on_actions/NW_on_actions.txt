@@ -4707,6 +4707,52 @@ on_actions = {
 					set_country_flag = { flag = LIB_usa_white_peace_flag days = 120 }
 				}
 			}
+			#Разрыв экономических связей // AFG
+			if = {
+				limit = {
+					AFG = {
+						has_idea = AFG_addiction_foreign_trade
+						NOT = { has_idea = AFG_failed_trade_system }
+					}
+					OR = {
+						FROM = {
+							tag = AFG
+						}
+						ROOT = {
+							OR = {
+								tag = SOV
+								if = {
+									limit = {
+										NOT = { country_exists = RAJ }
+										439 = { is_controlled_by = ENG }
+									}
+									tag = ENG
+								}
+								else = { tag = RAJ }
+							}
+						}
+					}
+					OR = {
+						FROM = {
+							OR = {
+								tag = SOV
+								if = {
+									limit = {
+										NOT = { country_exists = RAJ }
+										439 = { is_controlled_by = ENG }
+									}
+									tag = ENG
+								}
+								else = { tag = RAJ }
+							}
+						}
+						ROOT = {
+							tag = AFG
+						}
+					}
+				}
+				AFG = { country_event = { id = afg.4 days = 1 } }
+			}
 			FROM = {
 				set_country_flag = is_war_target_of_@ROOT
 				log = "[GetDateText]: [This.GetName] ([This.GetTag]): is war target of [Root.GetName] ([Root.GetTag])"
@@ -7742,6 +7788,92 @@ on_actions = {
 		#ROOT is winner #FROM gets annexed - This will also fire on_annex
 	}
 	
+	on_monthly = {
+		effect = {
+			if = {
+				limit = {
+					NOT = { has_game_rule = { rule = ai_division_total_limiter_status option = DEFAULT } }
+				}
+				random_country = {
+					set_variable = { global.total_division = 0 }
+					set_variable = { global.total_ships = 0 }
+					set_variable = { global.total_avia = 0 }
+					set_variable = { global.total_no_ai_player = 0 }
+					every_country = {
+						add_to_variable = { global.total_division = THIS.num_divisions }
+						add_to_variable = { global.total_ships = THIS.num_ships }
+						add_to_variable = { global.total_avia = THIS.num_deployed_planes }
+					}
+					every_country = {
+						limit = { is_ai = no }
+						add_to_variable = { global.total_no_ai_player = 1 }
+					}
+				}
+			}
+		}
+		effect = {
+			if = {
+				limit = {
+					has_completed_focus = private_tribunals_focus
+					NOT = { has_country_flag = { flag = fabricate_goal_against_process_flag value > 0 } }
+				}
+				clear_global_event_target = fabricate_goal_against_target_@ROOT
+				random_neighbor_country = {
+					limit = {
+						NOT = { has_war_with = ROOT }
+						NOT = {
+							ROOT = {
+								has_wargoal_against = PREV
+							}
+						}
+					}
+					save_global_event_target_as = fabricate_goal_against_target_@ROOT
+					log = "[GetDateText]: [This.GetName] ([This.GetTag]): Новая цель судов [Root.GetName] ([Root.GetTag])"
+				}
+			}
+			if = {
+				limit = {
+					has_game_rule = {
+						rule = trade_weapons
+						option = DEFAULT
+					}
+					check_variable = { global.total_infantry_weapons > 0 }
+				}
+				SAI = {
+					#log = "[GetDateText]: [This.GetName] ([This.GetTag]): РАСЧЕТ ПЕХОТКИ ЧЕРНОГО РЫНКА: [?global.total_infantry_weapons]"
+					set_temp_variable = { inflation_rifles = global.total_infantry_weapons }
+					divide_temp_variable = { inflation_rifles = 10 }
+					subtract_from_variable = { global.total_infantry_weapons = inflation_rifles }
+					round_variable = global.total_infantry_weapons
+				}
+			}
+		}
+		effect = {		### Agency upgrades
+			every_country = {
+				if = {
+					limit = { is_ai = yes }
+					set_variable = { NW_max_agency_upgrades = global.num_days }
+					subtract_from_variable = { NW_max_agency_upgrades = 706640 }
+					divide_variable = { NW_max_agency_upgrades = 30.41 }
+					if = {
+						limit = { is_major = yes }
+						divide_variable = { NW_max_agency_upgrades = 6 }
+					}
+					else = {
+						divide_variable = { NW_max_agency_upgrades = 12 }
+					}
+					if = {
+						limit = { has_capitulated = yes }
+						multiply_variable = { NW_max_agency_upgrades = 5 }
+					}
+					set_temp_variable = { industry_factor = num_of_factories }
+					divide_temp_variable = { industry_factor = 1000 }
+					add_to_temp_variable = { industry_factor = 1 }
+					multiply_variable = { NW_max_agency_upgrades = industry_factor }
+				}
+			}
+		}
+	}
 	
 	on_monthly_FRF = {
 		effect = {
@@ -7766,6 +7898,224 @@ on_actions = {
 		}
 	}
 
+	on_weekly = {
+		effect = {
+			#if = {
+			#	limit = {
+			#		has_country_flag = timer_timer_flag
+			#		country_exists = ROOT
+			#	}
+			#	log = "[GetDateText]: [This.GetName] ([This.GetTag]): Новая неделя"
+			#}
+			#else_if = {
+			#	limit = {
+			#		any_country = {
+			#			has_country_flag = timer_timer_flag
+			#			NOT = { country_exists = THIS }
+			#		}
+			#	}
+			#	every_country = { clr_country_flag = timer_timer_flag }
+			#	random_country = { set_country_flag = timer_timer_flag }
+			#	log = "[GetDateText]: [This.GetName] ([This.GetTag]): Теперь крикун"
+			#}
+			
+			#AFG#
+			every_country_with_original_tag = {
+				original_tag_to_check = AFG 
+				set_variable = { var = AFG_number_of_divisions_to_be_created value = AFG_maximum_number_of_divisions_to_be_created }	#Число дивизий от максимального доступного числа дивизий#
+				divide_variable = { has_war_support = 100 }																				#Поддержка войны в сотых долях#
+				multiply_variable = { AFG_number_of_divisions_to_be_created = has_war_support }											#Число дивизий от поддержки войны#
+				round_variable = AFG_number_of_divisions_to_be_created																	#Округление до целого#
+			}
+			
+			#Голод // Нацдух ETH / LIB
+			if = {
+				limit = {
+					OR = {
+						has_idea = ETH_hunger
+						has_idea = LIB_hunger
+					}
+				}
+				every_owned_state = {
+					limit = { is_core_of = ROOT }
+					add_manpower = -5000
+				}
+				log = "[GetDateText]: [This.GetName] ([This.GetTag]): минус 5000 менпавера"
+			}
+			#Промышленность 1 // Нацдух китайцев
+			if = {
+				limit = {
+					has_idea = CHI_backward_industry
+					num_of_civilian_factories > 25
+				}
+				swap_ideas = {
+					remove_idea = CHI_backward_industry
+					add_idea = CHI_backward_industry1
+				}
+				log = "[GetDateText]: [This.GetName] ([This.GetTag]): промка 2 уровня"
+			}
+			#Промышленность 2 // Нацдух китайцев
+			if = {
+				limit = {
+					has_idea = CHI_backward_industry1
+					num_of_civilian_factories > 50
+				}
+				swap_ideas = {
+					remove_idea = CHI_backward_industry1
+					add_idea = CHI_backward_industry2
+				}
+				log = "[GetDateText]: [This.GetName] ([This.GetTag]): промка 3 уровня"
+			}
+			#Промышленность 3 // Нацдух китайцев
+			if = {
+				limit = {
+					has_idea = CHI_backward_industry2
+					num_of_civilian_factories > 75
+				}
+				swap_ideas = {
+					remove_idea = CHI_backward_industry2
+					add_idea = CHI_backward_industry3
+				}
+				log = "[GetDateText]: [This.GetName] ([This.GetTag]): промка 4 уровня"
+			}
+			#ETH_ethiopism_trait_1500 // Еженедельный прирост населения: §R-1500§!
+			if = {
+				limit = {
+					has_idea = ETH_ethiopism
+				}
+				random_owned_state = {
+					add_manpower = -1500
+				}
+				log = "[GetDateText]: [This.GetName] ([This.GetTag]): минус 1500 менпавера"
+			}
+			#ETH_ethiopism_trait_1000 // Еженедельный прирост населения: §R-1000§!
+			if = {
+				limit = {
+					OR = {
+						has_idea = ETH_ethiopism_2
+						has_idea = ETH_american_blacks_3
+					}
+				}
+				random_owned_state = {
+					add_manpower = -1000
+				}
+				log = "[GetDateText]: [This.GetName] ([This.GetTag]): минус 1000 менпавера"
+			}
+			#ETH_american_blacks_trait_1000 // Еженедельный прирост населения: §G1000§!
+			if = {
+				limit = {
+					OR = {
+						has_idea = ETH_ethiopism_3
+						has_idea = ETH_american_blacks_2
+					}
+				}
+				random_owned_state = {
+					add_manpower = 1000
+				}
+				log = "[GetDateText]: [This.GetName] ([This.GetTag]): плус 1000 менпавера"
+			}
+			#ETH_american_blacks_trait_1500 // Еженедельный прирост населения: §G1500§!
+			if = {
+				limit = {
+					has_idea = ETH_american_blacks
+				}
+				random_owned_state = {
+					add_manpower = 1500
+				}
+				log = "[GetDateText]: [This.GetName] ([This.GetTag]): плус 1500 менпавера"
+			}
+			#Нац.дух на слонов
+			if = {
+				limit = {
+					OR = {
+						has_idea = LIB_elephants
+						has_idea = ETH_elephants
+						has_idea = ETH_elephants_2
+						has_idea = ETH_elephants_3
+						has_idea = ETH_elephants_4
+						has_idea = ETH_elephants_5
+					}
+				}
+				set_temp_variable = { total_elephant_equipment = ETH_elephants_trait_var }
+				set_temp_variable = { num_elephant_states = 0 }
+				every_controlled_state = {
+					limit = { has_state_flag = elephant_spawn_state_flag }
+					add_to_temp_variable = { num_elephant_states = 1 }
+				}
+				multiply_temp_variable = { total_elephant_equipment = num_elephant_states }
+				add_equipment_to_stockpile = {
+					type = elephant_equipment
+					amount = total_elephant_equipment
+				}
+				log = "[GetDateText]: [This.GetName] ([This.GetTag]): плус [?total_elephant_equipment] слонов"
+			}
+			#административная эффективность // anarchism
+			if = {
+				limit = {
+					has_variable = administrative_efficiency_var_total
+					has_country_flag = generic_attracting_public_attention_to_our_company_flag
+				}
+				add_to_variable = { administrative_efficiency_var_total = 0.015 }
+			}
+			if = {
+				limit = {
+					has_government = anarchism
+				}
+				set_var_generic_anarchism_tendency = yes
+			}
+			#call_for_international_cooperation // generic anarchism
+			if = {
+				limit = {
+					has_country_flag = call_for_international_cooperation_flag_2
+				}
+				add_named_threat = { threat = -0.15 name = call_for_international_cooperation }
+				log = "[GetDateText]: [This.GetName] ([This.GetTag]): минус 0.15 напряги"
+			}
+			#AI_DIVISION_LIMITER_DYNAMIC
+			if = {
+				limit = {
+					has_game_rule = { rule = ai_division_limiter_status option = AI_DIVISION_LIMITER_DYNAMIC }
+				}
+				set_variable = { ai_upper_limit = num_of_factories }
+				multiply_variable = { ai_upper_limit = 1.15 }
+				if = {
+					limit = { is_major = yes }
+					multiply_variable = { ai_upper_limit = 1.15 }
+				}
+				if = {
+					limit = { has_war = yes }
+					multiply_variable = { ai_upper_limit = 1.2 }
+				}
+				if = {
+					limit = { threat > 0.74 }
+					multiply_variable = { ai_upper_limit = 1.05 }
+				}
+				round_variable = ai_upper_limit
+			}
+			#operative_slot_idea_dyn
+			if = {
+				limit = {
+					has_intelligence_agency = yes
+					NOT = { has_game_rule = { rule = num_of_operative_slot_status option = PER_0 } }
+				}
+				if = {
+					limit = { NOT = { has_dynamic_modifier = { modifier = operative_slot_idea_dyn } } }
+					add_dynamic_modifier = { modifier = operative_slot_idea_dyn }
+				}
+				set_temp_variable = { operative_slot_temp = num_of_factories }
+				divide_temp_variable = { operative_slot_temp = global.global_setup_operative }
+				set_variable = { operative_slot_var = operative_slot_temp }
+				round_variable = operative_slot_var
+				if = {
+					limit = {
+						NOT = { has_game_rule = { rule = num_of_maximum_operative_status option = DEFAULT } }
+						check_variable = { operative_slot_var > global.global_setup_maximum_operative }
+					}
+					set_variable = { operative_slot_var = global.global_setup_maximum_operative }
+				}
+			}
+		}
+	}
 	
 	#AFG#
 	on_weekly_AFG = {
@@ -7813,8 +8163,23 @@ on_actions = {
 		}
 	}
 	
+	on_weekly_PER = {
+		effect = {
+			#PER_operative_slot_from_army_idea_dyn
+			if = {
+				limit = {
+					has_intelligence_agency = yes
+					has_dynamic_modifier = { modifier = PER_operative_slot_from_army_idea_dyn }
+				}
+				set_variable = { PER_operative_slot_var = num_divisions }
+				divide_variable = { PER_operative_slot_var = 10 }
+				round_variable = PER_operative_slot_var
+			}
+		}
+	}
+	
 	on_weekly_CYP = {
-		effect = { #Изменение поддержки
+		effect = {#Изменение поддержки
 			if = {
 				limit = {
 					check_variable = { modifier@weekly_greek_support > 0 }
@@ -7946,8 +8311,130 @@ on_actions = {
 			}
 		}
 	}
-
-
+	
+	on_weekly_TUR = {
+		effect = {
+			## Государственный сектор экономики
+			if = {
+				limit = {
+					has_dynamic_modifier = { modifier = private_state_dyn }
+				}
+				if = {
+					limit = { num_of_factories < 31 }
+					set_temp_variable = { temp1 = 0.05 }
+					set_temp_variable = { temp2 = 0.03 }
+					set_temp_variable = { temp3 = 0 }
+				}
+				else_if = {
+					limit = {
+						num_of_factories > 30
+						num_of_factories < 61
+					}
+					set_temp_variable = { temp1 = 0.03 }
+					set_temp_variable = { temp2 = -0.05 }
+					set_temp_variable = { temp3 = temp2 }
+				}
+				else_if = {
+					limit = { num_of_factories > 60 }
+					set_temp_variable = { temp1 = 0.01 }
+					set_temp_variable = { temp2 = -0.1 }
+					set_temp_variable = { temp3 = temp2 }
+				}
+				set_variable = { var_tur_gr_buildings = temp1 }
+				set_variable = { var_tur_gr_max_efficiency = temp2 }
+				set_variable = { var_tur_gr_efficiency_gain = temp3 }
+				force_update_dynamic_modifier = yes
+			}
+		}
+	}
+	
+	on_daily = {
+		effect = {
+			#volunteer_only
+			if = {
+				limit = { has_idea = volunteer_only }
+				if = {
+					limit = { NOT = { has_dynamic_modifier = { modifier = volunteer_only_dyn } } }
+					add_dynamic_modifier = { modifier = volunteer_only_dyn }
+				}
+				set_variable = { volunteer_only_var = party_popularity@ruling_party }
+				multiply_variable = { volunteer_only_var = has_war_support }
+				multiply_variable = { volunteer_only_var = 0.0045 }
+				subtract_from_variable = { volunteer_only_var = 0.015 }
+			}
+			#Таймер недели
+			#if = {
+			#	limit = { NOT = { check_variable = { counter_days = 7 } } }
+			#	add_to_variable = { counter_days = 1 }
+			#}
+			
+			#ФИКСАЦИЯ ВЛИЯНИЯ И ОТНОШЕНИЯ ДУХОВЕНСТВА PER
+			if = {
+				limit = {
+					original_tag = PER
+					has_completed_focus = PER_islamic_revolution
+					has_government = fascism
+				}
+				set_variable = { opinion_with_clergy_var = 10 }
+				set_variable = { influence_of_clergy_var = 10 }
+			}
+			
+			#communication_with_black_market_focus // generic
+			if = {
+				limit = {
+					has_idea = communication_with_black_market_focus
+					check_variable = { anarchism_tendency_need_trade_var > 0 }
+				}
+				add_equipment_to_stockpile = {
+					type = infantry_equipment
+					amount = anarchism_tendency_need_trade_var
+				}
+			}
+			
+			#ANARCHISM UNITY
+			#СБРОС ПРИРОСТА ЕДИНСТВА
+			if = {
+				limit = {
+					has_government = anarchism
+					has_variable = anarchism_unity_daily_var
+				}
+				add_to_variable = { anarchism_unity_var = modifier@anarchist_unity_bonus }
+				clamp_variable = { var = anarchism_unity_var min = 0 max = 100 }
+			}
+			
+			#peoples_police // АНАРХИ
+			if = {
+				limit = {
+					has_idea = peoples_police
+				}
+				add_equipment_to_stockpile = {
+					type = infantry_equipment
+					amount = 2
+				}
+			}
+			#peoples_militia // АНАРХИ
+			if = {
+				limit = {
+					has_idea = peoples_militia
+				}
+				add_equipment_to_stockpile = {
+					type = infantry_equipment
+					amount = 3
+				}
+			}
+			
+			if = {
+				limit = {
+					has_government = anarchism
+				}
+				set_var_for_anarchism_tendency_sense_of_danger_dyn = yes
+				set_var_for_anarchism_tendency_interest_industry_dyn = yes
+				set_var_for_anarchism_tendency_need_trade_dyn = yes
+				update_anarchism_tendency_pool = yes
+			}
+		}
+	}
+	
 	on_daily_KRD = {
 		effect = {
 			#KRD_colonization_neighboring_territories_kurds_category // Ежедневная численность населения в регионе
