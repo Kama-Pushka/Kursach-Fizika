@@ -73,7 +73,7 @@ economy_decisions = {
 			}
 		}
 	}
-	HAI_shada_program = {
+	HAI_shada_program_mission = {
 		icon = generic_decision
 		allowed = {
 			always = no
@@ -89,7 +89,7 @@ economy_decisions = {
 		fire_only_once = yes
 		
 		timeout_effect = {		#MISSION FAILS
-			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): timeout decision HAI_shada_program"
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): timeout decision HAI_shada_program_mission"
 			remove_ideas = HAI_consequences_of_the_shada_program_idea
 			add_timed_idea = { idea = HAI_failure_of_the_shada_program_idea days = 510 }
 			set_country_flag = HAI_failure_of_the_shada_program_flag
@@ -98,7 +98,7 @@ economy_decisions = {
 			clear_variable = synthetic_refinery_goal
 		}
 		complete_effect = {		#MISSION SUCCEEDS
-			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision HAI_shada_program"
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision HAI_shada_program_mission"
 			remove_ideas = HAI_consequences_of_the_shada_program_idea
 			add_ideas = HAI_success_of_the_shada_program_idea
 			869 = {
@@ -146,6 +146,90 @@ economy_decisions = {
 		remove_effect = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): remove decisions HAI_pay_off_government_debts"
 			remove_ideas = HAI_haitian_national_debt_idea
+		}
+	}
+	HAI_construction_of_peligr_dam = {
+		icon = generic_decision
+		fire_only_once = yes
+		available = {
+			num_of_civilian_factories_available_for_projects > 3
+		}
+		visible = {
+			has_completed_focus = HAI_construction_of_power_plants
+		}
+		
+		cost = 175
+		days_remove = 120
+		ai_will_do = {
+			factor = 15
+		}
+		
+		modifier = {
+			civilian_factory_use = 3
+			production_speed_buildings_factor = -0.45
+		}
+		
+		remove_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): remove decisions HAI_construction_of_peligr_dam"
+			add_ideas = HAI_peligr_dam_idea
+		}
+	}
+	HAI_development_of_artibonite_valley_mission = {
+		icon = generic_decision
+		allowed = {
+			always = no
+		}
+		activation = {
+			always = no
+		}
+		available = {	 #GOAL
+			869 = {
+				industrial_complex > target_num_of_industrial_complex
+				infrastructure > 4
+			}
+		}
+		is_good = yes
+		days_mission_timeout = 195
+		fire_only_once = yes
+		
+		timeout_effect = {		#MISSION FAILS
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): timeout decision HAI_development_of_artibonite_valley_mission"
+			add_stability = -0.1
+			add_popularity = { ideology = var:current_party_ideology_group popularity = 0.1 }
+			clear_variable = target_num_of_industrial_complex
+		}
+		complete_effect = {		#MISSION SUCCEEDS
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision HAI_development_of_artibonite_valley_mission"
+			add_stability = 0.135
+			869 = {
+				add_extra_state_shared_building_slots = 2
+				add_building_construction = {
+					type = industrial_complex
+					level = 1
+					instant_build = yes
+				}
+				add_building_construction = {
+					type = arms_factory
+					level = 1
+					instant_build = yes
+				}
+			}
+			add_tech_bonus = {
+				name = HAI_development_of_artibonite_valley_mission
+				bonus = 0.65
+				uses = 3
+				category = synth_rubber_res
+				category = synth_oil_res
+			}
+			if = {
+				limit = { has_idea = HAI_pernicious_situation_of_agriculture_idea_10_1 }
+				remove_ideas = HAI_pernicious_situation_of_agriculture_idea_10_1
+			}
+			else_if = {
+				limit = { has_idea = HAI_pernicious_situation_of_agriculture_idea_10_2 }
+				remove_ideas = HAI_pernicious_situation_of_agriculture_idea_10_2
+			}
+			clear_variable = target_num_of_industrial_complex
 		}
 	}
 }

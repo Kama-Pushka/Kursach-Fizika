@@ -2006,7 +2006,7 @@ focus_tree = {
 				add_to_variable = { synthetic_refinery_goal = 3 }
 			}
 			add_ideas = HAI_consequences_of_the_shada_program_idea
-			activate_mission = HAI_shada_program
+			activate_mission = HAI_shada_program_mission
 			if = {
 				limit = {
 					country_exists = USA
@@ -3733,7 +3733,7 @@ focus_tree = {
 	
 	focus = {
 		id = HAI_nationalize_sfc
-		icon = GFX_z_goal_Armored_control
+		icon = GFX_z_goal_authoritarian_democracy_focus
 		prerequisite = { focus = HAI_preparing_for_economic_liberation }
 		x = -1
 		y = 1
@@ -3839,14 +3839,14 @@ focus_tree = {
 	
 	focus = {
 		id = HAI_construction_of_power_plants
-		icon = GFX_z_goal_Armored_control
+		icon = GFX_z_goal_authoritarian_democracy_focus
 		prerequisite = { focus = HAI_national_defense_plan }
 		prerequisite = { focus = HAI_nationalize_sfc }
 		x = 2
 		y = 1
 		relative_position_id = HAI_national_defense_plan
 		
-		cost = 10
+		cost = 7
 		
 		cancel_if_invalid = no
 		continue_if_invalid = yes
@@ -3864,20 +3864,33 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus HAI_construction_of_power_plants"
-			
+			if = {
+				limit = { has_idea = HAI_pernicious_situation_of_agriculture_idea_8_1 }
+				swap_ideas = {
+					remove_idea = HAI_pernicious_situation_of_agriculture_idea_9_1
+					add_idea = HAI_pernicious_situation_of_agriculture_idea_9_1
+				}
+			}
+			else = {
+				swap_ideas = {
+					remove_idea = HAI_pernicious_situation_of_agriculture_idea_8_2
+					add_idea = HAI_pernicious_situation_of_agriculture_idea_9_2
+				}
+			}
+			unlock_decision_tooltip = HAI_construction_of_peligr_dam
 		}
 	}
 	
 	focus = {
 		id = HAI_purchase_foreign_equipment
-		icon = GFX_z_goal_Armored_control
+		icon = GFX_z_goal_authoritarian_democracy_focus
 		prerequisite = { focus = HAI_construction_of_power_plants }
 		prerequisite = { focus = HAI_attract_public_donations }
 		x = -1
 		y = 1
 		relative_position_id = HAI_construction_of_power_plants
 		
-		cost = 10
+		cost = 5
 		
 		cancel_if_invalid = no
 		continue_if_invalid = yes
@@ -3887,6 +3900,8 @@ focus_tree = {
 			factor = 10
 		}
 		available = {
+			has_idea = free_trade
+			USA = { has_opinion = { target = ROOT value > 60 } }
 		}
 		bypass = {
 		}
@@ -3895,7 +3910,19 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus HAI_purchase_foreign_equipment"
-			
+			if = {
+				limit = { has_idea = HAI_pernicious_situation_of_agriculture_idea_9_1 }
+				swap_ideas = {
+					remove_idea = HAI_pernicious_situation_of_agriculture_idea_9_1
+					add_idea = HAI_pernicious_situation_of_agriculture_idea_10_1
+				}
+			}
+			else = {
+				swap_ideas = {
+					remove_idea = HAI_pernicious_situation_of_agriculture_idea_9_2
+					add_idea = HAI_pernicious_situation_of_agriculture_idea_10_2
+				}
+			}
 		}
 	}
 	
@@ -3908,7 +3935,7 @@ focus_tree = {
 		y = 1
 		relative_position_id = HAI_construction_of_power_plants
 		
-		cost = 10
+		cost = 5
 		
 		cancel_if_invalid = no
 		continue_if_invalid = yes
@@ -3918,6 +3945,7 @@ focus_tree = {
 			factor = 10
 		}
 		available = {
+			NOT = { has_idea = HAI_internal_credit_idea }
 		}
 		bypass = {
 		}
@@ -3926,7 +3954,10 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus HAI_pay_off_external_debt"
-			
+			swap_ideas = {
+				remove_idea = HAI_military_economic_dependence_on_united_states_idea_liberal_front_1
+				add_idea = HAI_military_economic_dependence_on_united_states_idea_liberal_front_2
+			}
 		}
 	}
 	
@@ -3939,7 +3970,7 @@ focus_tree = {
 		y = 1
 		relative_position_id = HAI_purchase_foreign_equipment
 		
-		cost = 10
+		cost = 9
 		
 		cancel_if_invalid = no
 		continue_if_invalid = yes
@@ -3949,6 +3980,7 @@ focus_tree = {
 			factor = 10
 		}
 		available = {
+			controls_state = 869
 		}
 		bypass = {
 		}
@@ -3957,7 +3989,15 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus HAI_development_of_artibonite_valley"
-			
+			869 = {
+				add_extra_state_shared_building_slots = 3
+			}
+			add_timed_idea = { idea = HAI_artibonite_valley_development_program_idea days = 180 }
+			hidden_effect = {
+				set_variable = { target_num_of_industrial_complex = 869.industrial_complex_level }
+				add_to_variable = { target_num_of_industrial_complex = 2 }
+			}
+			activate_mission = HAI_development_of_artibonite_valley_mission
 		}
 	}
 	
@@ -3969,7 +4009,7 @@ focus_tree = {
 		y = 1
 		relative_position_id = HAI_development_of_artibonite_valley
 		
-		cost = 10
+		cost = 7
 		
 		cancel_if_invalid = no
 		continue_if_invalid = yes
@@ -3979,6 +4019,17 @@ focus_tree = {
 			factor = 10
 		}
 		available = {
+			custom_trigger_tooltip = {
+				tooltip = HAI_backward_transport_and_social_infrastructure_idea__NOT_tt
+				NOT = {
+					has_idea = HAI_backward_transport_and_social_infrastructure_idea_1
+					has_idea = HAI_backward_transport_and_social_infrastructure_idea_2
+					has_idea = HAI_backward_transport_and_social_infrastructure_idea_3
+					has_idea = HAI_backward_transport_and_social_infrastructure_idea_4
+					has_idea = HAI_backward_transport_and_social_infrastructure_idea_5
+					has_idea = HAI_backward_transport_and_social_infrastructure_idea_6
+				}
+			}
 		}
 		bypass = {
 		}
@@ -3987,7 +4038,7 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus HAI_financing_of_tourism_industry"
-			
+			add_ideas = HAI_development_of_tourism_industry_idea
 		}
 	}
 	
@@ -3999,7 +4050,7 @@ focus_tree = {
 		y = 1
 		relative_position_id = HAI_financing_of_tourism_industry
 		
-		cost = 10
+		cost = 7
 		
 		cancel_if_invalid = no
 		continue_if_invalid = yes
@@ -4017,7 +4068,7 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus HAI_international_exhibition_in_porto_au_prince"
-			
+			country_event = { id = NWhaiti.35 hours = 3 }
 		}
 	}
 	
@@ -6411,7 +6462,7 @@ focus_tree = {
 	
 	focus = {
 		id = HAI_nationalization_of_coffee_plantations
-		icon = GFX_z_goal_Armored_control
+		icon = GFX_z_goal_american_machines
 		prerequisite = { focus = HAI_expansion_of_black_militia }
 		x = -1
 		y = 1
