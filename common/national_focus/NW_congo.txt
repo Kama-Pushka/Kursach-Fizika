@@ -1,589 +1,461 @@
 focus_tree = {
-	id = NW_congo
+	id = nw_COG_focus
+	
 	country = {
 		factor = 0
 		modifier = {
-			add = 10
-			tag = COG
+			add = 11
+			original_tag = COG
 		}
 	}
+	continuous_focus_position = { x = 100 y = 1800 }
+	
 	default = no
 	
-	continuous_focus_position = { x = 50 y = 1100 }
-	
-	
-	##############################
-	##### INDUSTRIAL SECTION #####
-	##############################
+	#reset_on_civil_war = no
 	
 	focus = {
-		id = COG_nat_univer_agro_research
-		icon = GFX_z_goal_agrarian_reform
-		cost = 7.15
-		x = 3
+		id = COG_create_a_new_social_class # COG_create_a_new_social_class
+		icon = GFX_goal_generic_demand_territory
+		cost = 10
+		x = 23
 		y = 0
-		available = {
-			295 = {
-				owner = {
-					OR = {
-						tag = ROOT
-						is_subject_of = ROOT
-					}
-				}
-			}
-		}
-		ai_will_do = {
-			factor = 1
-		}
 		completion_reward = {
-			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus COG_nat_univer_agro_research"
-			295 = {
-				add_extra_state_shared_building_slots = 2
-			}
+			set_temp_variable = { COG_evolues_gain_var = 1 }
+			add_ideas = COG_assimilation_of_congolese
+			custom_effect_tooltip = COG_create_a_new_social_class_tt
+			unlock_decision_category_tooltip = COG_create_new_social_class_category
 		}
 	}
 	
+	# Промышленность и Военка [
+	
 	focus = {
-		id = COG_labor_earth_research
-		icon = GFX_z_goal_agriculture3
+		id = COG_INEAC_focus
+		icon = GFX_goal_generic_production
+		cost = 7.15
+		x = 8
+		y = 0
+		completion_reward = {
+			swap_ideas = {
+				remove_idea = COG_poor_education_of_congolese
+				add_idea = COG_poor_education_of_congolese_1
+			}
+			custom_effect_tooltip = available_designer
+			show_ideas_tooltip = COG_INEAC
+			if = {
+				limit = { has_character = COG_auguste_tilkens }
+				custom_effect_tooltip = available_political_advisor
+				show_ideas_tooltip = COG_auguste_tilkens
+			}
+		}
+	}
+	focus = {
+		id = COG_modernization_of_agriculture
+		icon = GFX_goal_generic_production
 		cost = 7.15
 		prerequisite = {
-			focus = COG_nat_univer_agro_research
+			focus = COG_take_unused_lands
+		}
+		prerequisite = {
+			focus = COG_INEAC_focus
 		}
 		x = 0
 		y = 1
-		relative_position_id = COG_nat_univer_agro_research
-		available = {
-			295 = {
-				owner = {
-					OR = {
-						tag = ROOT
-						is_subject_of = ROOT
-					}
-				}
-			}
-		}
-		ai_will_do = {
-			factor = 1
-		}
+		relative_position_id = COG_INEAC_focus
 		completion_reward = {
-			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus COG_labor_earth_research"
-			295 = {
-				add_extra_state_shared_building_slots = 1
+			unlock_decision_category_tooltip = COG_agricultural_reform
+		}
+	}
+	focus = {
+		id = COG_take_unused_lands
+		icon = GFX_goal_generic_production
+		cost = 7.15
+		x = 5
+		y = 0
+		completion_reward = {
+			every_controlled_state = {
+				limit = { is_original_congo_state = yes }
+				#unlock_decision_tooltip = COG_take_land_from_tribes !
+				custom_effect_tooltip = unlock_decision_COG_take_land_from_tribes_tt
 			}
 		}
 	}
-	
 	focus = {
-		id = COG_soya_production
-		icon = GFX_goal_agrarian
+		id = COG_rubber_mining
+		icon = GFX_goal_generic_production
 		cost = 7.15
 		prerequisite = {
-			focus = COG_labor_earth_research
+			focus = COG_take_unused_lands
 		}
 		x = -2
 		y = 1
-		relative_position_id = COG_labor_earth_research
 		available = {
-			718 = {
-				owner = {
-					OR = {
-						tag = ROOT
-						is_subject_of = ROOT
-					}
-				}
-			}
+			has_completed_focus = COG_modernization_of_agriculture
 		}
-		ai_will_do = {
-			factor = 1
-		}
+		relative_position_id = COG_INEAC_focus
 		completion_reward = {
-			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus COG_soya_production"
-			718 = {
-				add_extra_state_shared_building_slots = 1
-			}
-		}
-	}
-	
-	focus = {
-		id = COG_oils_palms
-		icon = GFX_goal_generic_oil_refinery
-		cost = 7.15
-		prerequisite = {
-			focus = COG_labor_earth_research
-		}
-		x = 0
-		y = 1
-		relative_position_id = COG_labor_earth_research
-		available = {
-			538 = {
-				owner = {
-					OR = {
-						tag = ROOT
-						is_subject_of = ROOT
-					}
-				}
-			}
-		}
-		ai_will_do = {
-			factor = 1
-		}
-		completion_reward = {
-			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus COG_oils_palms"
 			add_tech_bonus = {
-				name = COG_oils_palms
-				bonus = 1.0
+				#name = MAN_purchase_german_licenses
+				bonus = 1
 				uses = 1
-				category = synth_resources
+				category = synth_resources # synth_resources cat_synth_oil synth_oil_res
 			}
-			538 = {
-				add_extra_state_shared_building_slots = 2
+			random_owned_controlled_state = { #?
+				add_extra_state_shared_building_slots = 1
 				add_building_construction = {
 					type = synthetic_refinery
 					level = 1
 					instant_build = yes
 				}
-		   }
-		}
-	}
-	
-	focus = {
-		id = COG_mining_business_in_katanga
-		icon = GFX_z_goal_excavations
-		cost = 7.15
-		prerequisite = {
-			focus = COG_oils_palms
-		}
-		x = 0
-		y = 1
-		relative_position_id = COG_oils_palms
-		cancel_if_invalid = yes
-		continue_if_invalid = no
-		available_if_capitulated = yes
-		ai_will_do = {
-			factor = 1
-		}
-		available = {
-			1065 = {
-				owner = {
-					OR = {
-						tag = ROOT
-						is_subject_of = ROOT
-					}
-				}
+			}
+			every_controlled_state = {
+				limit = { is_original_congo_state = yes }
+				#unlock_decision_tooltip = COG_expand_plantations_of_lianas !
+				custom_effect_tooltip = unlock_decision_COG_expand_plantations_of_lianas_tt
 			}
 		}
+	}
+	focus = {
+		id = COG_palm_oil_extraction
+		icon = GFX_goal_generic_production
+		cost = 7.15
+		prerequisite = {
+			focus = COG_take_unused_lands
+		}
+		x = -4
+		y = 1
+		available = {
+			has_completed_focus = COG_modernization_of_agriculture
+		}
+		relative_position_id = COG_INEAC_focus
 		completion_reward = {
-			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus COG_mining_business_in_katanga"
-			1065 = {
-				add_extra_state_shared_building_slots = 2
+			add_tech_bonus = {
+				#name = MAN_purchase_german_licenses
+				bonus = 1
+				uses = 1
+				category = synth_resources # synth_resources cat_synth_oil synth_oil_res
+			}
+			random_owned_controlled_state = { #?
+				add_extra_state_shared_building_slots = 1
 				add_building_construction = {
-					type = industrial_complex
+					type = synthetic_refinery
 					level = 1
 					instant_build = yes
 				}
-				add_resource = {
-					type = steel
-					amount = 36
+			}
+			every_controlled_state = {
+				limit = { is_original_congo_state = yes }
+				#unlock_decision_tooltip = COG_plant_new_palm_trees !
+				custom_effect_tooltip = unlock_decision_COG_plant_new_palm_trees_tt
+			}
+		}
+	}
+	focus = {
+		id = COG_cotton_extraction #COG_cotton_extraction
+		icon = GFX_goal_generic_production
+		cost = 7.15
+		prerequisite = {
+			focus = COG_take_unused_lands
+		}
+		x = -6
+		y = 1
+		available = {
+			has_completed_focus = COG_modernization_of_agriculture
+		}
+		relative_position_id = COG_INEAC_focus
+		completion_reward = {
+			custom_effect_tooltip = COG_cotton_extraction_tt
+			every_controlled_state = {
+				limit = { is_original_congo_state = yes }
+				#unlock_decision_tooltip = COG_expand_cotton_plantations !
+				custom_effect_tooltip = unlock_decision_COG_expand_cotton_plantations_tt
+			}
+			#hidden_effect = {
+				country_event = { id = congo.14 days = 70 }
+				country_event = { id = congo.15 days = 280 }
+			#}
+		}
+	}
+	focus = {
+		id = COG_cotton_roads #COG_cotton_roads
+		icon = GFX_goal_generic_production
+		cost = 7.15
+		prerequisite = {
+			focus = COG_cotton_extraction
+		}
+		x = -7
+		y = 3
+		relative_position_id = COG_INEAC_focus
+		completion_reward = {
+			custom_effect_tooltip = COG_cotton_roads_tt
+			# Решение: «Расширить хлопковые плантации» получит дополнительный эффект: в очередь строительства ЭТОГО стейта будет добавлена дорога, прогресс которой будет сразу же добавится до середины, если же эта дорога уже есть в очереди, очки прогресса строительства добавятся к ней. +
+			#hidden_effect = {
+				if = {
+					limit = { NOT = { has_completed_focus = COG_abolition_of_taxes } }
+					country_event = { id = congo.16 days = 30 }
+				}
+			#}
+		}
+	}
+	focus = {
+		id = COG_local_farmers_program #COG_local_farmers_program
+		icon = GFX_goal_generic_production
+		cost = 7.15
+		prerequisite = {
+			focus = COG_modernization_of_agriculture
+		}
+		x = 0
+		y = 2
+		relative_position_id = COG_INEAC_focus
+		completion_reward = {
+			custom_effect_tooltip = COG_local_farmers_program_tt
+			every_controlled_state = {
+				limit = { is_original_congo_state = yes }
+				custom_effect_tooltip = unlock_decision_COG_local_farmers_program_tt
+			}
+			unlock_decision_tooltip = COG_introduce_rules_of_agriculture #?
+		}
+	}
+	focus = {
+		id = COG_plant_new_soybean_varieties #COG_plant_new_soybean_varieties
+		icon = GFX_goal_generic_production
+		cost = 7.15
+		prerequisite = {
+			focus = COG_modernization_of_agriculture
+		}
+		x = -2
+		y = 2
+		relative_position_id = COG_INEAC_focus
+		completion_reward = {
+			custom_effect_tooltip = COG_plant_new_soybean_varieties_tt
+			activate_mission_tooltip = COG_plant_new_soybean_varieties_mission
+			#hidden_effect = {
+				random_controlled_state = {
+					limit = { 
+						is_original_congo_state = yes
+						has_state_flag = COG_local_farmers_program_flag
+						NOT = { has_dynamic_modifier = { modifier = COG_new_varieties_of_soybeans } }
+					}
+					ROOT = { 
+						activate_targeted_decision = { target = PREV decision = COG_plant_new_soybean_varieties_mission }
+						set_country_flag = COG_plant_new_soybean_varieties_flag
+					}
+				}
+			#}
+		}
+	}
+	focus = {
+		id = COG_coffee_cultivation #COG_coffee_cultivation
+		icon = GFX_goal_generic_production
+		cost = 7.15
+		prerequisite = {
+			focus = COG_modernization_of_agriculture
+		}
+		x = -4
+		y = 2
+		relative_position_id = COG_INEAC_focus
+		completion_reward = {
+			custom_effect_tooltip = COG_coffee_cultivation_tt
+			add_dynamic_modifier = { modifier = COG_congolese_coffee }
+			unlock_decision_tooltip = COG_coffee_for_army
+			unlock_decision_tooltip = COG_coffee_for_export
+			unlock_decision_tooltip = COG_coffee_for_workers
+		}
+	}
+	focus = {
+		id = COG_expand_export_of_domestic_products #COG_expand_export_of_domestic_products
+		icon = GFX_goal_generic_production
+		cost = 7.15
+		prerequisite = {
+			focus = COG_expansion_of_the_port_of_Matadi
+		}
+		prerequisite = {
+			focus = COG_coffee_cultivation
+		}
+		x = -5
+		y = 3
+		relative_position_id = COG_INEAC_focus
+		completion_reward = {
+			custom_effect_tooltip = COG_expand_export_of_domestic_products_tt
+			add_dynamic_modifier = { modifier = COG_export_of_domestic_products }
+			add_to_variable = { COG_edp_political_power_factor = 0.05 tooltip = political_power_factor_tooltip }
+			add_to_variable = { COG_edp_min_export = 0.05 tooltip = min_export_tooltip }
+			unlock_decision_category_tooltip = COG_export_of_domestic_products_category
+		}
+	}
+	focus = {
+		id = COG_expansion_of_the_port_of_Matadi
+		icon = GFX_goal_generic_production
+		cost = 7.15
+		x = -6
+		y = 2
+		relative_position_id = COG_INEAC_focus
+		completion_reward = {
+			295 = {
+				add_building_construction = {
+					type = naval_base
+					level = 2
+					instant_build = yes
+					province = 10968
 				}
 			}
 		}
 	}
-	
 	focus = {
-		id = COG_educate_our_people
-		icon = GFX_focus_research
-		cost = 7.15
+		id = COG_expand_school_education
+		icon = GFX_goal_generic_production
+		cost = 7.15 #10?
 		prerequisite = {
-			focus = COG_mining_business_in_katanga
+			focus = COG_INEAC_focus
 		}
-		x = 0
-		y = 1
-		relative_position_id = COG_mining_business_in_katanga
-		cancel_if_invalid = yes
-		continue_if_invalid = no
-		available_if_capitulated = yes
-		ai_will_do = {
-			factor = 10
-		}
-	    available = {
-    		num_of_factories > 10
-		}
-		completion_reward = {
-			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus COG_educate_our_people"
-			if = {
-				limit = {
-					has_idea = COG_low_skill_iq
-				}
-				remove_ideas = COG_low_skill_iq
-			}
-			add_research_slot = 1
-		}
-	}
-	
-	focus = {
-		id = COG_our_analogue_of_mbp
-		icon = GFX_z_goal_great_science
-		cost = 7.15
-		prerequisite = {
-			focus = COG_educate_our_people
-		}
-		x = 0
-		y = 1
-		relative_position_id = COG_educate_our_people
-		cancel_if_invalid = yes
-		continue_if_invalid = no
-		available_if_capitulated = yes
-		ai_will_do = {
-			factor = 10
-		}
-	    available = {
-    		num_of_factories > 25
-		}
-		completion_reward = {
-			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus COG_our_analogue_of_mbp"
-			add_research_slot = 1
-		}
-	}
-	
-	focus = {
-		id = COG_up_money_ruanda
-		icon = GFX_focus_mex_privatisation
-		cost = 7.15
-		prerequisite = {
-			focus = COG_nat_univer_agro_research
+		select_effect = {
+			add_ideas = COG_expand_school_education_idea
 		}
 		x = 2
 		y = 1
-		relative_position_id = COG_nat_univer_agro_research
-		ai_will_do = {
-			factor = 1
-		}
+		relative_position_id = COG_INEAC_focus
 		completion_reward = {
-			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus COG_up_money_ruanda"
-			1001 = {
-				add_building_construction = {
-					type = infrastructure
-					level = 1
-					instant_build = yes
-					}
-				add_resource = {
-					type = aluminium
-					amount = 22
-				}
+			#Tooltip purposes (Select Effect)
+			custom_effect_tooltip = COG_focus_select_effect_tt #? SOV_focus_select_effect_tt
+			effect_tooltip = {
+				add_ideas = COG_expand_school_education_idea
 			}
-        }
-	}
-	
-	focus = {
-		id = COG_up_money_burundi
-		icon = GFX_focus_usa_reestablish_the_gold_standard
-		cost = 7.15
-		prerequisite = {
-			focus = COG_up_money_ruanda
-		}
-		x = 0
-		y = 1
-		relative_position_id = COG_up_money_ruanda
-		ai_will_do = {
-			factor = 1
-		}
-		completion_reward = {
-			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus COG_up_money_burundi"
-			1002 = {
+
+			#(Complete Effect)
+			custom_effect_tooltip = COG_focus_complete_effect_tt #? SOV_focus_complete_effect_tt
+			hidden_effect = { remove_ideas = COG_expand_school_education_idea }
+			swap_ideas = {
+				remove_idea = COG_poor_education_of_congolese_1
+				add_idea = COG_poor_education_of_congolese_2
+			}
+			custom_effect_tooltip = COG_assimilation_of_congolese_update
+			add_to_variable = { COG_evolues_gain_var = 1 tooltip = COG_evolues_gain_tooltip }
+			custom_effect_tooltip = empty_line_tooltip
+			
+			every_core_state = {
+				limit = { is_controlled_by = COG }
 				add_building_construction = {
-					type = infrastructure
+					type = hospital
 					level = 1
 					instant_build = yes
 				}
-				add_resource = {
-					type = tungsten
-					amount = 22
+			}
+			
+			#effect_tooltip = {
+			#	set_variable = { timer = 90 tooltip = timer_tootip } #custom_effect_tooltip = ETH_domestication_of_warthogs_tt OR in_n_days_tt !
+			#}
+		}
+	}
+	focus = {
+		id = COG_creation_of_a_medical_faculty
+		icon = GFX_goal_generic_production
+		cost = 7.15 #10?
+		prerequisite = {
+			focus = COG_expand_school_education
+		}
+		x = 2
+		y = 2
+		relative_position_id = COG_INEAC_focus
+		completion_reward = {
+			add_research_slot = 1
+			295 = {
+				add_building_construction = {
+					type = hospital
+					level = 1
+					instant_build = yes
 				}
+			}
+			swap_ideas = {
+				remove_idea = COG_poor_education_of_congolese_2
+				add_idea = COG_poor_education_of_congolese_3
+			}
+			if = {
+				limit = { has_dynamic_modifier = { modifier = COG_tropical_diseases } }
+				custom_effect_tooltip = COG_tropical_diseases_tooltip
+				add_to_variable = { COG_td_monthly_population = 0.1 tooltip = monthly_population_tooltip }
+				add_to_variable = { COG_td_stability_factor = 0.025 tooltip = stability_factor_tooltip }
+				#custom_effect_tooltip = empty_line_tooltip
 			}
 		}
 	}
-	
 	focus = {
-		id = COG_build_iron_road
-		icon = GFX_goal_generic_construct_infrastructure
+		id = COG_creation_of_hospitals # COG_creation_of_hospitals name ?
+		icon = GFX_goal_generic_production
 		cost = 7.15
 		prerequisite = {
-			focus = COG_up_money_burundi
+			focus = COG_take_unused_lands
 		}
-		x = 0
-		y = 1
-		relative_position_id = COG_up_money_burundi
-		ai_will_do = {
-			factor = 5
+		prerequisite = {
+			focus = COG_creation_of_a_medical_faculty
 		}
+		x = -3
+		y = 3
+		relative_position_id = COG_INEAC_focus
 		completion_reward = {
-			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus COG_build_iron_road"
-			capital_scope = {
+			custom_effect_tooltip = COG_creation_of_hospitals_tt
+			every_controlled_state = {
+				limit = { is_original_congo_state = yes }
+				custom_effect_tooltip = unlock_decision_COG_build_hospital_tt
+			}
+		}
+	}
+	focus = {
+		id = COG_banana_naval_shipyard
+		icon = GFX_goal_generic_production
+		cost = 7.15
+		prerequisite = {
+			focus = COG_expansion_of_the_port_of_Matadi
+		}
+		x = -6
+		y = 4
+		relative_position_id = COG_INEAC_focus
+		completion_reward = {
+			295 = {
 				add_building_construction = {
-					type = infrastructure
+					type = dockyard
 					level = 2
 					instant_build = yes
 				}
-				every_neighbor_state = {
-					limit = { is_controlled_by = ROOT }
-					add_building_construction = {
-						type = infrastructure
-						level = 1
-						instant_build = yes
-					}
-				}
 			}
 		}
 	}
-	
-	focus = {
-		id = COG_african_urbanization
-		icon = GFX_focus_spa_the_spanish_miracle
-		cost = 7.15
-		prerequisite = {
-			focus = COG_build_iron_road
-		}
-		x = 0
-		y = 1
-		relative_position_id = COG_build_iron_road
-		ai_will_do = {
-			factor = 10
-		}
-		completion_reward = {
-			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus COG_african_urbanization"
-			custom_effect_tooltip = state_urbanization_tt
-		}
-	}
-	
-	
-	########################
-	##### ARMY SECTION #####
-	########################
-	
-	focus = {
-		id = COG_force_publique
-		icon = GFX_goal_generic_allies_build_infantry
-		cost = 5
-		x = 4
-		y = 0
-		relative_position_id = COG_nat_univer_agro_research
-		ai_will_do = {
-			factor = 1
-		}
-		completion_reward = {
-			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus COG_force_publique"
-			army_experience = 10
-		}
-	}
-	
-	focus = {
-		id = COG_exp_great_war
-		icon = GFX_focus_generic_commonwealth_build_infantry
-		cost = 7.15
-		prerequisite = {
-			focus = COG_force_publique
-		}
-		x = 2
-		y = 1
-		relative_position_id = COG_force_publique
-		ai_will_do = {
-		    factor = 1
-		}
-		completion_reward = {
-    		log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus COG_exp_great_war"
-			army_experience = 15
-			add_doctrine_cost_reduction = {
-				name = COG_exp_great_war
-				cost_reduction = 0.5
-				uses = 1
-				category = land_doctrine
-			}
-		}
-	}
-	
-	focus = {
-		id = COG_belgium_weapon
-		icon = GFX_goal_generic_small_arms
-		cost = 7.15
-		prerequisite = {
-			focus = COG_exp_great_war
-		}
-		x = 0
-		y = 1
-		relative_position_id = COG_exp_great_war
-		ai_will_do = {
-			factor = 1
-		}
-		completion_reward = {
-    		log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus COG_belgium_weapon"
-			add_tech_bonus = {
-				bonus = 1
-				uses = 1
-				category = infantry_weapons
-				name = COG_belgium_weapon
-			}
-		}
-	}
-	
-	focus = {
-		id = COG_infantry_support
-		icon = GFX_focus_secret_rearmament
-		cost = 7.15
-		prerequisite = {
-			focus = COG_belgium_weapon
-		}
-		x = 0
-		y = 1
-		relative_position_id = COG_belgium_weapon
-		cancel_if_invalid = yes
-		continue_if_invalid = no
-		available_if_capitulated = yes
-		ai_will_do = {
-			factor = 1
-		}
-		completion_reward = {
-			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus COG_infantry_support"
-			add_tech_bonus = {
-				name = COG_infantry_support
-				bonus = 1.0
-				uses = 1
-				category = artillery
-				category = support_tech
-			}
-		}
-	}
-	
-	focus = {
-		id = COG_arm_troops_with_transport
-		icon = GFX_goal_generic_army_motorized
-		cost = 7.15
-		prerequisite = {
-			focus = COG_infantry_support
-		}
-		x = 0
-		y = 1
-		relative_position_id = COG_infantry_support
-		cancel_if_invalid = yes
-		continue_if_invalid = no
-		available_if_capitulated = yes
-		ai_will_do = {
-			factor = 1
-		}
-		
-		completion_reward = {
-			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus COG_arm_troops_with_transport"
-			add_tech_bonus = {
-				name = COG_arm_troops_with_transport
-				bonus = 1.0
-				uses = 1
-				category = motorized_equipment
-			}
-		}
-	}
-	
-	focus = {
-		id = COG_intelligence_assessment
-		icon = GFX_goal_generic_radar
-		cost = 7.15
-		prerequisite = {
-			focus = COG_force_publique
-		}
-		x = 0
-		y = 1
-		relative_position_id = COG_force_publique
-		ai_will_do = {
-			factor = 1
-		}
-		completion_reward = {
-			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus COG_intelligence_assessment"
-			add_tech_bonus = {
-				bonus = 1
-				uses = 1
-				category = logistics_tech
-				name = COG_intelligence_assessment
-			}
-		}
-	}
-	
-	focus = {
-		id = COG_war_in_africa
-		icon = GFX_z_goal_desert_officers
-		cost = 7.15
-		prerequisite = {
-			focus = COG_intelligence_assessment
-		}
-		x = 0
-		y = 1
-		relative_position_id = COG_intelligence_assessment
-		ai_will_do = {
-			factor = 1
-		}
-		completion_reward = {
-			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus COG_war_in_africa"
-			add_ideas = COG_war_in_africa
-			custom_effect_tooltip = RAJ_jungle_training_effect
-			hidden_effect = { set_technology = { jungle_warfare = 1 } }
-			custom_effect_tooltip = nn_tt
-			custom_effect_tooltip = desert_training_effect
-			hidden_effect = { set_technology = { desert_warfare = 1 } }
-			custom_effect_tooltip = nn_tt
-			add_tech_bonus = {
-				bonus = 1
-				uses = 1
-				category = special_forces_tech
-				name = COG_war_in_africa
-			}
-		}
-	}
-	
 	focus = {
 		id = COG_war_in_sea
 		icon = GFX_goal_generic_amphibious_assault
 		cost = 7.15
-		prerequisite = {
-			focus = COG_war_in_africa
-		}
-		x = 0
-		y = 1
-		relative_position_id = COG_war_in_africa
-		ai_will_do = {
-			factor = 1
-		}
-		available = {
-			any_owned_state = {
-				is_coastal = yes
-			}
-		}
+		x = -4
+		y = 4
+		relative_position_id = COG_INEAC_focus
+		#available = {
+		#	any_owned_state = {
+		#		is_coastal = yes
+		#	}
+		#}
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus COG_war_in_sea"
 			navy_experience = 15
 			add_doctrine_cost_reduction = {
-				cost_reduction = 0.5
 				uses = 1
+				cost_reduction = 0.5
 				category = naval_doctrine
 				name = COG_war_in_sea
 			}
 		}
 	}
-	
 	focus = {
 		id = COG_small_fleet_development
 		icon = GFX_focus_generic_destroyer
 		cost = 7.15
 		prerequisite = {
+			focus = COG_banana_naval_shipyard
+		}
+		prerequisite = {
 			focus = COG_war_in_sea
 		}
-		x = 0
-		y = 1
-		relative_position_id = COG_war_in_sea
-		cancel_if_invalid = yes
-		continue_if_invalid = no
-		available_if_capitulated = yes
-		ai_will_do = {
-			factor = 1
-		}
-	    
+		x = -7
+		y = 5
+		relative_position_id = COG_INEAC_focus
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus COG_small_fleet_development"
 			add_tech_bonus = {
@@ -594,24 +466,19 @@ focus_tree = {
 			}
 		}
 	}
-	
 	focus = {
 		id = COG_expansion_merchant_fleet
 		icon = GFX_goal_generic_navy_cruiser
 		cost = 7.15
 		prerequisite = {
-			focus = COG_small_fleet_development
+			focus = COG_banana_naval_shipyard
 		}
-		x = 0
-		y = 1
-		relative_position_id = COG_small_fleet_development
-		cancel_if_invalid = yes
-		continue_if_invalid = no
-		available_if_capitulated = yes
-		ai_will_do = {
-			factor = 1
+		prerequisite = {
+			focus = COG_war_in_sea
 		}
-		
+		x = -5
+		y = 5
+		relative_position_id = COG_INEAC_focus
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus COG_expansion_merchant_fleet"
 			add_equipment_to_stockpile = {
@@ -620,52 +487,19 @@ focus_tree = {
 		    }
 	    }
 	}
-	
-	focus = {
-		id = COG_stalking_other_convoys
-		icon = GFX_goal_generic_navy_submarine
-		cost = 7.15
-		prerequisite = {
-			focus = COG_expansion_merchant_fleet
-		}
-		x = -2
-		y = 1
-		relative_position_id = COG_expansion_merchant_fleet
-		cancel_if_invalid = yes
-		continue_if_invalid = no
-		available_if_capitulated = yes
-		ai_will_do = {
-			factor = 1
-		}
-		
-		completion_reward = {
-			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus COG_stalking_other_convoys"
-			add_tech_bonus = {
-				name = COG_stalking_other_convoys
-				bonus = 1.0
-				uses = 1
-				category = ss_tech
-			}
-		}
-	}
-	
 	focus = {
 		id = COG_development_large_fleet
 		icon = GFX_focus_generic_navy_battleship2
 		cost = 7.15
 		prerequisite = {
-			focus = COG_expansion_merchant_fleet
+			focus = COG_war_in_sea
 		}
-		x = 0
-		y = 1
-		relative_position_id = COG_expansion_merchant_fleet
-		cancel_if_invalid = yes
-		continue_if_invalid = no
-		available_if_capitulated = yes
-		ai_will_do = {
-			factor = 1
+		prerequisite = {
+			focus = COG_banana_naval_shipyard
 		}
-		
+		x = -3
+		y = 5
+		relative_position_id = COG_INEAC_focus
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus COG_development_large_fleet"
 			add_tech_bonus = {
@@ -678,65 +512,589 @@ focus_tree = {
 			}
 		}
 	}
-	
-	
-	#######################
-	##### AIR SECTION #####
-	#######################
-	
 	focus = {
-		id = COG_airport_leopoldville
-		icon = GFX_goal_generic_build_airforce
-		cost = 5
-		x = 4
-		y = 0
-		relative_position_id = COG_force_publique
-		cancel_if_invalid = yes
-		continue_if_invalid = no
-		available_if_capitulated = yes
-		ai_will_do = {
-			factor = 1
+		id = COG_stalking_other_convoys
+		icon = GFX_goal_generic_navy_submarine
+		cost = 7.15
+		prerequisite = {
+			focus = COG_small_fleet_development
+			focus = COG_expansion_merchant_fleet
 		}
-		available = {
-			295 = {
-				owner = {
-					OR = {
-						tag = ROOT
-						is_subject_of = ROOT
-					}
-				}
-			}
-	    }
-	
+		x = -6
+		y = 6
+		relative_position_id = COG_INEAC_focus
 		completion_reward = {
-			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus COG_airport_leopoldville"
-			295 = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus COG_stalking_other_convoys"
+			add_tech_bonus = {
+				name = COG_stalking_other_convoys
+				bonus = 1.0
+				uses = 1
+				category = ss_tech
+			}
+		}
+	}
+	focus = {
+		id = COG_union_miniere_du_haut_katanga
+		icon = GFX_goal_generic_production
+		cost = 7.15
+		x = 8
+		y = 4
+		completion_reward = {
+			#if = { #?
+			#	limit = { is_left_ideology = no } #?
+				custom_effect_tooltip = COG_union_miniere_du_haut_katanga_tt
+				#hidden_effect = {
+					country_event = { id = congo.17 days = 35 }
+				#}
+			#}
+			random_owned_controlled_state = { #?
+				add_extra_state_shared_building_slots = 1
 				add_building_construction = {
-					type = air_base
+					type = industrial_complex
 					level = 1
 					instant_build = yes
 				}
 			}
 		}
 	}
+	focus = {
+		id = COG_copper_belt_mining_industry
+		icon = GFX_goal_generic_production
+		cost = 7.15
+		prerequisite = {
+			focus = COG_union_miniere_du_haut_katanga
+		}
+		available = {
+			has_tech = excavation1
+		}
+		x = -1
+		y = 1
+		relative_position_id = COG_union_miniere_du_haut_katanga
+		completion_reward = {
+			add_tech_bonus = {
+				#name = MAN_increase_rice_plantations
+				bonus = 1
+				uses = 2
+				category = excavation_tech
+			}
+			1065 = {
+				add_resource = {
+					type = steel
+					amount = 26
+				}
+			}
+		}
+	}
+	focus = {
+		id = COG_vichikongo_railway_line
+		icon = GFX_goal_generic_production
+		cost = 7.15
+		prerequisite = {
+			focus = COG_copper_belt_mining_industry
+		}
+		x = -3
+		y = 2
+		relative_position_id = COG_union_miniere_du_haut_katanga
+		completion_reward = {
+		    # убрать текущ дорогу на карте ? !(да)
+			build_railway = {
+				level = 1
+				fallback = yes #?
+				path = { 2154 6027 12808 2073 11934 }
+				start_province = 2154 # 6027
+				target_province = 11934
+				# start_state = 1065
+				# target_state = 886
+			}
+			718 = {
+				add_building_construction = {
+					type = supply_node
+					level = 1
+					instant_build = yes
+					province = 2073 # 2154
+				}
+			}
+			add_equipment_to_stockpile = {
+				type = train_equipment_1
+				amount = 25
+			}
+		}
+	}
+	focus = { # !
+		id = COG_african_urbanization #Африканская_урбанизация_НАШЕ
+		icon = GFX_goal_generic_production
+		cost = 7.15
+		prerequisite = {
+			focus = COG_vichikongo_railway_line
+		}
+		x = -3
+		y = 3
+		relative_position_id = COG_union_miniere_du_haut_katanga
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus COG_african_urbanization"
+			custom_effect_tooltip = state_urbanization_tt #?
+			#hidden_effect = {
+				add_dynamic_modifier = { modifier = COG_state_urbanization_idea }
+			#}
+		}
+	}
+	focus = {
+		id = COG_increase_production_in_katanga_mines # COG_increase_production_in_katanga_mines
+		icon = GFX_goal_generic_production
+		cost = 7.15
+		prerequisite = {
+			focus = COG_copper_belt_mining_industry
+		}
+		available = {
+			has_tech = excavation2
+		}
+		x = -1
+		y = 2
+		relative_position_id = COG_union_miniere_du_haut_katanga
+		completion_reward = { #??
+			# custom_effect_tooltip = COG_increase_production_in_katanga_mines_tt !
+			add_ideas = COG_accelerated_mining
+		}
+	}
+	focus = {
+		id = COG_institute_of_central_african_studies
+		icon = GFX_goal_generic_production
+		cost = 7.15
+		prerequisite = {
+			focus = COG_increase_production_in_katanga_mines
+		}
+		available = {
+			has_completed_focus = COG_creation_of_a_medical_faculty
+			num_of_civilian_factories > 14
+		}
+		x = -1
+		y = 3
+		relative_position_id = COG_union_miniere_du_haut_katanga
+		completion_reward = {
+			add_research_slot = 1
+			remove_ideas = COG_poor_education_of_congolese_3 #?
+			custom_effect_tooltip = COG_assimilation_of_congolese_update
+			add_to_variable = { COG_evolues_gain_var = 1 tooltip = COG_evolues_gain_tooltip }
+			#custom_effect_tooltip = empty_line_tooltip
+		}
+	}
+	focus = {
+		id = COG_mechanization_of_mine_production # COG_mechanization_of_mine_production
+		icon = GFX_goal_generic_production
+		cost = 7.15
+		prerequisite = {
+			focus = COG_copper_belt_mining_industry
+		}
+		x = 1
+		y = 2
+		relative_position_id = COG_union_miniere_du_haut_katanga
+		completion_reward = {
+			custom_effect_tooltip = COG_mechanization_of_mine_production_tt
+			add_tech_bonus = {
+				#name = MAN_purchase_german_licenses
+				bonus = 1
+				uses = 1
+				category = cat_production # ?
+			}
+			unlock_decision_category_tooltip = COG_mechanization_of_mines
+		}
+	}
+	focus = {
+		id = COG_foundation_of_musonoi_principal
+		icon = GFX_goal_generic_production
+		cost = 7.15
+		prerequisite = {
+			focus = COG_mechanization_of_mine_production
+		}
+		available = {
+			has_tech = excavation3
+		}
+		x = 1
+		y = 3
+		relative_position_id = COG_union_miniere_du_haut_katanga
+		completion_reward = {
+			1065 = {
+				add_building_construction = {
+					type = industrial_complex
+					level = 1
+					instant_build = yes
+				}
+				add_resource = {
+					type = tungsten
+					amount = 18
+				}
+				add_resource = {
+					type = chromium
+					amount = 18
+				}
+				add_resource = {
+					type = aluminium
+					amount = 24
+				}
+			}
+		}
+	}
+	focus = {
+		id = COG_build_inga_dams # COG_build_inga_dams
+		icon = GFX_goal_generic_production
+		cost = 7.15
+		prerequisite = {
+			focus = COG_union_miniere_du_haut_katanga
+		}
+		x = 1
+		y = 1
+		relative_position_id = COG_union_miniere_du_haut_katanga
+		completion_reward = {
+			custom_effect_tooltip = COG_build_inga_dams_tt
+			#unlock_decision_category_tooltip = COG_construction_of_dams
+			unlock_decision_tooltip = COG_build_inga_dam
+		}
+	}
+	focus = {
+		id = COG_build_of_hpps # COG_build_of_hpps name ?
+		icon = GFX_goal_generic_production
+		cost = 7.15
+		prerequisite = {
+			focus = COG_build_inga_dams
+		}
+		x = 2
+		y = 4
+		relative_position_id = COG_union_miniere_du_haut_katanga
+		completion_reward = {
+			custom_effect_tooltip = COG_build_of_hpps_tt
+			unlock_decision_tooltip = COG_build_power_plant_on_inga_dam
+		}
+	}
 	
+	focus = {
+		id = COG_force_publique
+		icon = GFX_goal_generic_allies_build_infantry
+		cost = 7.15
+		x = 5
+		y = 8
+		completion_reward = {
+			army_experience = 10
+			add_ideas = COG_force_publique
+		}
+	}
+	focus = {
+		id = COG_transport_production
+		icon = GFX_goal_generic_allies_build_infantry
+		cost = 7.15
+		prerequisite = {
+			focus = COG_force_publique
+		}
+		x = -4
+		y = 2
+		relative_position_id = COG_force_publique
+		completion_reward = {
+			random_owned_controlled_state = { #?
+				add_extra_state_shared_building_slots = 1
+				add_building_construction = {
+					type = arms_factory
+					level = 1
+					instant_build = yes
+				}
+			}
+			add_equipment_production = { #if ??
+				equipment = {
+					type = motorized_equipment_1
+					creator = "BEL"
+				}
+				requested_factories = 1
+				progress = 0.4
+				efficiency = 50
+			}
+		}
+	}
+	focus = {
+		id = COG_war_in_africa
+		icon = GFX_z_goal_desert_officers
+		cost = 7.15
+		prerequisite = {
+			focus = COG_force_publique
+		}
+		x = -3
+		y = 1
+		relative_position_id = COG_force_publique
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus COG_war_in_africa"
+			add_ideas = COG_war_in_africa
+			custom_effect_tooltip = RAJ_jungle_training_effect
+			hidden_effect = { set_technology = { jungle_warfare = 1 } }
+			custom_effect_tooltip = nn_tt #empty_line_tooltip ?? !
+			custom_effect_tooltip = desert_training_effect
+			hidden_effect = { set_technology = { desert_warfare = 1 } }
+			custom_effect_tooltip = nn_tt
+			add_tech_bonus = {
+				bonus = 1
+				uses = 1
+				category = special_forces_tech
+				name = COG_war_in_africa
+			}
+		}
+	}
+	focus = {
+		id = COG_save_white_officers
+		icon = GFX_goal_generic_allies_build_infantry
+		cost = 7.15
+		prerequisite = {
+			focus = COG_force_publique
+		}
+		mutually_exclusive = {
+			focus = COG_recruit_black_officers
+		}
+		available = {
+			NOT = { has_completed_focus = COG_dominate_to_serve }
+			is_left_ideology = no
+		}
+		x = -1
+		y = 1
+		relative_position_id = COG_force_publique
+		completion_reward = {
+			swap_ideas = {
+				remove_idea = COG_force_publique
+				add_idea = COG_force_publique_1
+			}
+		}
+	}
+	focus = {
+		id = COG_recruit_black_officers
+		icon = GFX_goal_generic_allies_build_infantry
+		cost = 7.15
+		prerequisite = {
+			focus = COG_force_publique
+		}
+		mutually_exclusive = {
+			focus = COG_save_white_officers
+		}
+		available = {
+			OR = {
+				has_completed_focus = COG_dominate_to_serve
+				is_left_ideology = yes
+			}
+		}
+		x = 1
+		y = 1
+		relative_position_id = COG_force_publique
+		completion_reward = {
+			swap_ideas = {
+				remove_idea = COG_force_publique
+				add_idea = COG_force_publique_2
+			}
+		}
+	}
+	focus = {
+		id = COG_use_radar_systems_in_army
+		icon = GFX_goal_generic_allies_build_infantry
+		cost = 7.15
+		prerequisite = {
+			focus = COG_force_publique
+		}
+		x = 3
+		y = 1
+		relative_position_id = COG_force_publique
+		completion_reward = {
+			if = {
+				limit = {
+					has_tech = radio
+				}
+				add_tech_bonus = {
+					bonus = 1
+					uses = 1
+					category = electronics
+					#name = COG_war_in_africa
+				}
+			}
+			else = {
+				set_technology = { radio = 1 }
+			}
+			add_tech_bonus = {
+				bonus = 1
+				uses = 1
+				category = radar_tech
+				#name = COG_war_in_africa
+			}
+		}
+	}
+	focus = {
+		id = COG_aviation_militaire_de_la_COG_force_publique
+		icon = GFX_goal_generic_allies_build_infantry
+		cost = 7.15
+		prerequisite = {
+			focus = COG_force_publique
+		}
+		x = 5
+		y = 1
+		relative_position_id = COG_force_publique
+		bypass = {
+			NOT = { has_dlc = "La Resistance" } #??
+		}
+		completion_reward = {
+			if = { #?? !
+				limit = {
+					capital_scope = {
+						NOT = {
+							free_building_slots = {
+								building = air_base
+								size > 0
+							}
+						}
+					}
+				}
+				random_owned_controlled_state = {
+					limit = {
+						free_building_slots = {
+							building = air_base
+							size > 0
+						}
+					}
+					add_building_construction = {
+						type = air_base #5117 провинции (столице) !!
+						level = 1
+						instant_build = yes
+					}
+				}
+			}
+			if = {
+				limit = {
+					capital_scope = {
+						free_building_slots = {
+							building = air_base
+							size > 0
+						}
+					}
+				}
+				capital_scope = {
+					add_building_construction = {
+						type = air_base
+						level = 1
+						instant_build = yes
+					}
+				}
+			}
+			
+			if = {
+				limit = { has_dlc = "By Blood Alone" }
+				set_technology = {
+					iw_medium_airframe = 1
+					photo_reconnaisance = 1
+				}
+				create_equipment_variant = { #?
+					name = "Type 91" #name ?
+					type = medium_plane_scout_plane_airframe_0
+					allow_without_tech = yes
+					modules = {
+						fixed_main_weapon_slot = recon_camera
+						engine_type_slot = engine_1_2x
+						special_type_slot_1 = fuel_tanks_medium
+					}
+				}
+				add_equipment_to_stockpile = { 
+					type = medium_plane_scout_plane_airframe_0 
+					amount = 10
+				}
+			}
+			else = {
+				set_technology = {
+					scout_plane1 = 1
+				}
+				add_equipment_to_stockpile = {
+					type = scout_plane_equipment_1 #?
+					amount = 10 
+				}
+			}
+		}
+	}
+	focus = {
+		id = COG_air_supply
+		icon = GFX_goal_generic_allies_build_infantry
+		cost = 7.15
+		prerequisite = {
+			focus = COG_use_radar_systems_in_army
+		}
+		prerequisite = {
+			focus = COG_aviation_militaire_de_la_COG_force_publique
+		}
+		x = 4
+		y = 2
+		relative_position_id = COG_force_publique
+		completion_reward = {
+			#set_technology = {
+			#	scout_plane1 = 1
+			#}
+			add_equipment_to_stockpile = {
+				type = transport_plane_equipment_1 #?
+				amount = 10
+			}
+			add_ideas = COG_avimil
+		}
+	}
+	focus = {
+		id = COG_expand_leopoldville_airport
+		icon = GFX_goal_generic_allies_build_infantry
+		cost = 7.15
+		prerequisite = {
+			focus = COG_aviation_militaire_de_la_COG_force_publique
+		}
+		x = 6
+		y = 2
+		relative_position_id = COG_force_publique
+		completion_reward = {
+			if = { #?? !
+				limit = {
+					capital_scope = {
+						NOT = {
+							free_building_slots = {
+								building = air_base
+								size > 1
+							}
+						}
+					}
+				}
+				random_owned_controlled_state = {
+					limit = {
+						free_building_slots = {
+							building = air_base
+							size > 1
+						}
+					}
+					add_building_construction = {
+						type = air_base #5117 провинции (столице) !!
+						level = 2
+						instant_build = yes
+					}
+				}
+			}
+			if = {
+				limit = {
+					capital_scope = {
+						free_building_slots = {
+							building = air_base
+							size > 1
+						}
+					}
+				}
+				capital_scope = {
+					add_building_construction = {
+						type = air_base
+						level = 2
+						instant_build = yes
+					}
+				}
+			}
+		}
+	}
 	focus = {
 		id = COG_train_civilian_pilots
 		icon = GFX_focus_generic_military_academy
 		cost = 7.15
 		prerequisite = {
-			focus = COG_airport_leopoldville
+			focus = COG_aviation_militaire_de_la_COG_force_publique
 		}
-		x = 0
-		y = 1
-		relative_position_id = COG_airport_leopoldville
-		cancel_if_invalid = yes
-		continue_if_invalid = no
-		available_if_capitulated = yes
-		ai_will_do = {
-			factor = 1
-		}
-		
+		x = 5
+		y = 3
+		relative_position_id = COG_force_publique
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus COG_train_civilian_pilots"
 			air_experience = 5
@@ -748,46 +1106,16 @@ focus_tree = {
 			}
 		}
 	}
-	
-	focus = {
-		id = COG_org_air_force
-		icon = GFX_goal_generic_air_doctrine
-		cost = 7.15
-		prerequisite = {
-			focus = COG_train_civilian_pilots
-			focus = COG_avia_training_ground
-		}
-		x = 0
-		y = 1
-		relative_position_id = COG_train_civilian_pilots
-		ai_will_do = {
-			factor = 1
-		}
-		completion_reward = {
-			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus COG_org_air_force"
-			air_experience = 10
-			add_doctrine_cost_reduction = {
-				name = COG_org_air_force
-				cost_reduction = 0.5
-				uses = 1
-				category = air_doctrine
-			}
-		}
-	}
-	
 	focus = {
 		id = COG_dh85_leopard_moth
 		icon = GFX_focus_chi_flying_tigers
 		cost = 7.15
 		prerequisite = {
-			focus = COG_org_air_force
+			focus = COG_train_civilian_pilots
 		}
-		x = 0
-		y = 1
-		relative_position_id = COG_org_air_force
-		ai_will_do = {
-			factor = 1
-		}
+		x = 4
+		y = 4
+		relative_position_id = COG_force_publique
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus COG_dh85_leopard_moth"
 			add_tech_bonus = {
@@ -798,125 +1126,2105 @@ focus_tree = {
 			}
 		}
 	}
-	
 	focus = {
-		id = COG_bomber
-		icon = GFX_goal_generic_air_bomber
-		cost = 7.15
-		prerequisite = {
-			focus = COG_dh85_leopard_moth
-		}
-		x = 0
-		y = 1
-		relative_position_id = COG_dh85_leopard_moth
-		cancel_if_invalid = yes
-		continue_if_invalid = no
-		available_if_capitulated = yes
-		ai_will_do = {
-			factor = 1
-		}
-		
-		completion_reward = {
-			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus COG_bomber"
-			add_tech_bonus = {
-				name = COG_bomber
-				bonus = 1.0
-				uses = 1
-				technology = strategic_bomber1
-				technology = strategic_bomber2
-				technology = strategic_bomber3
-				category = tactical_bomber
-			}
-		}
-	}
-	
-	focus = {
-		id = COG_auto_in_army
-		icon = GFX_goal_generic_army_motorized
+		id = COG_development_of_lake_aviation
+		icon = GFX_goal_generic_allies_build_infantry
 		cost = 7.15
 		prerequisite = {
 			focus = COG_train_civilian_pilots
-			focus = COG_avia_training_ground
 		}
-		x = 2
-		y = 1
-		relative_position_id = COG_dh85_leopard_moth
-		ai_will_do = {
-			factor = 1
-		}
+		x = 6
+		y = 4
+		relative_position_id = COG_force_publique
 		completion_reward = {
-			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus COG_auto_in_army"
-			add_tech_bonus = {
-				bonus = 1
-				uses = 1
-				category = motorized_equipment
-				name = COG_auto_in_army
+			if = {
+				limit = { has_dlc = "By Blood Alone" }
+				if = {
+					limit = { NOT = { has_tech = iw_small_airframe } }
+					set_technology = {
+						iw_small_airframe = 1
+					}
+				}
+				else = {
+					add_tech_bonus = {
+						bonus = 1
+						uses = 1
+						category = light_fighter
+						#name = COG_dh85_leopard_moth
+					}
+				}
+				if = {
+					limit = { NOT = { has_tech = iw_medium_airframe } }
+					set_technology = {
+						iw_medium_airframe = 1
+					}
+				}
+				else = {
+					add_tech_bonus = {
+						bonus = 1
+						uses = 1
+						category = tactical_bomber
+						#name = COG_dh85_leopard_moth
+					}
+				}
+				create_equipment_variant = { #?
+					name = "Type 91" #name ?
+					type = small_plane_airframe_0
+					allow_without_tech = yes
+					modules = {
+						fixed_main_weapon_slot = light_mg_4x
+						engine_type_slot = engine_1_1x
+					}
+				}
+				create_equipment_variant = { #?
+					name = "Type 91" #name ?
+					type = medium_plane_airframe_0
+					allow_without_tech = yes
+					modules = {
+						fixed_main_weapon_slot = medium_bomb_bay
+						engine_type_slot = engine_1_2x
+					}
+				}
+				add_equipment_to_stockpile = { 
+					type = small_plane_airframe_0 
+					amount = 5
+				}
+				add_equipment_to_stockpile = { 
+					type = medium_plane_airframe_0 
+					amount = 5
+				}
+			}
+			else = {
+				if = {
+					limit = { NOT = { has_tech = early_fighter } }
+					set_technology = {
+						early_fighter = 1
+					}
+				}
+				else = {
+					add_tech_bonus = {
+						bonus = 1
+						uses = 1
+						category = light_fighter
+						#name = COG_dh85_leopard_moth
+					}
+				}
+				if = {
+					limit = { NOT = { has_tech = early_bomber } }
+					set_technology = {
+						early_bomber = 1
+					}
+				}
+				else = {
+					add_tech_bonus = {
+						bonus = 1
+						uses = 1
+						category = tactical_bomber
+						#name = COG_dh85_leopard_moth
+					}
+				}
+				add_equipment_to_stockpile = {
+					type = fighter_equipment_0
+					amount = 5
+				}
+				add_equipment_to_stockpile = {
+					type = tac_bomber_equipment_0
+					amount = 5
+				}
 			}
 		}
 	}
-	
 	focus = {
-		id = COG_new_auto_in_army
-		icon = GFX_focus_NZL_bob_semple_tank
+		id = COG_compagnie_d_artillerie_et_de_genie
+		icon = GFX_goal_generic_allies_build_infantry
 		cost = 7.15
 		prerequisite = {
-			focus = COG_auto_in_army
+			focus = COG_force_publique
 		}
+		x = -2
+		y = 2
+		relative_position_id = COG_force_publique
+		completion_reward = {
+			add_tech_bonus = {
+				bonus = 1
+				uses = 1
+				category = artillery
+				#name = COG_dh85_leopard_moth
+			}
+			add_tech_bonus = {
+				bonus = 1
+				uses = 1
+				category = maintenance_company_tech
+				#name = COG_dh85_leopard_moth
+			}
+		}
+	}
+	focus = {
+		id = COG_station_for_the_assistance_of_the_wounded
+		icon = GFX_goal_generic_allies_build_infantry
+		cost = 7.15
+		prerequisite = {
+			focus = COG_force_publique
+		}
+		x = 2
+		y = 2
+		relative_position_id = COG_force_publique
+		completion_reward = {
+			add_tech_bonus = {
+				bonus = 1
+				uses = 2
+				category = hospital_tech
+				#name = COG_dh85_leopard_moth
+			}
+			# technology !
+		}
+	}
+	focus = {
+		id = COG_belgium_weapon
+		icon = GFX_goal_generic_allies_build_infantry
+		cost = 7.15
+		prerequisite = {
+			focus = COG_force_publique
+		}
+		x = 0
+		y = 2
+		relative_position_id = COG_force_publique
+		completion_reward = {
+    		log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus COG_belgium_weapon"
+			add_tech_bonus = {
+				bonus = 1
+				uses = 1
+				category = infantry_weapons
+				name = COG_belgium_weapon
+			}
+			add_equipment_to_stockpile = {
+				type = infantry_equipment
+				amount = 1200
+				producer = BEL
+			}
+		}
+	}
+	focus = {
+		id = COG_troupes_de_katanga
+		icon = GFX_goal_generic_allies_build_infantry
+		cost = 7.15
 		prerequisite = {
 			focus = COG_belgium_weapon
 		}
+		x = 0
+		y = 3
+		relative_position_id = COG_force_publique
+		completion_reward = {
+			set_technology = { bicycle_infantry = 1 }
+			division_template = {
+				name = "Troupes de Katanga"
+				priority = 1
+				template_counter = 3
+				regiments = {
+					bicycle_battalion = { x = 0 y = 0 }
+					bicycle_battalion = { x = 0 y = 1 }
+				}
+			}
+			1065 = {
+				create_unit = {
+					division = "name = \"Troupes de Katanga\" division_template = \"Troupes de Katanga\" start_experience_factor = 0.1 start_equipment_factor = 0.95" owner = PREV count = 1
+				}
+			}
+		}
+	}
+	focus = {
+		id = COG_territorial_forces
+		icon = GFX_goal_generic_allies_build_infantry
+		cost = 7.15
+		prerequisite = {
+			focus = COG_belgium_weapon
+		}
+		x = -2
+		y = 3
+		relative_position_id = COG_force_publique
+		completion_reward = {
+			if = {
+				limit = { has_idea = COG_volunteer_divisions }
+				swap_ideas = {
+					remove_idea = COG_volunteer_divisions
+					add_idea = COG_territorial_and_volunteer_divisions
+				}
+			}
+			else = {
+				add_ideas = COG_territorial_forces #?
+			}
+		}
+	}
+	focus = {
+		id = COG_volunteer_divisions
+		icon = GFX_goal_generic_allies_build_infantry
+		cost = 7.15
+		prerequisite = {
+			focus = COG_belgium_weapon
+		}
+		x = 2
+		y = 3
+		relative_position_id = COG_force_publique
+		completion_reward = {
+			if = {
+				limit = { has_idea = COG_territorial_forces }
+				swap_ideas = {
+					remove_idea = COG_territorial_forces
+					add_idea = COG_territorial_and_volunteer_divisions
+				}
+			}
+			else = {
+				add_ideas = COG_volunteer_divisions #?
+			}
+		}
+	}
+	focus = {
+		id = COG_transfer_part_of_the_BEL_military_industry
+		icon = GFX_goal_generic_allies_build_infantry
+		cost = 7.15
+		prerequisite = {
+			focus = COG_belgium_weapon
+		}
+		available = {
+			BEL = { has_capitulated = yes }
+			is_subject_of = BEL
+		}
+		x = -1
+		y = 4
+		relative_position_id = COG_force_publique
+		completion_reward = {
+			random_owned_controlled_state = { #??
+				add_extra_state_shared_building_slots = 3
+				add_building_construction = {
+					type = arms_factory
+					level = 3
+					instant_build = yes
+				}
+			}
+		}
+	}
+	focus = {
+		id = COG_create_military_industry
+		icon = GFX_goal_generic_allies_build_infantry
+		cost = 7.15
+		prerequisite = {
+			focus = COG_belgium_weapon
+		}
+		available = {
+			is_subject = no
+		}
+		x = 1
+		y = 4
+		relative_position_id = COG_force_publique
+		completion_reward = {
+			random_owned_controlled_state = { #??
+				add_extra_state_shared_building_slots = 1
+				add_building_construction = {
+					type = arms_factory
+					level = 1
+					instant_build = yes
+				}
+			}
+		}
+	}
+	
+	# ]
+	
+	# Исторические Фокусы [
+	
+	focus = {
+		id = COG_creating_unions_for_whites
+		icon = GFX_goal_generic_demand_territory
+		cost = 10
+		prerequisite = {
+			focus = COG_create_a_new_social_class
+		}
+		mutually_exclusive = {
+			focus = COG_dominate_to_serve
+		}
+		available = {
+			custom_trigger_tooltip = {
+				tooltip = COG_evolues_var_less_than_3000 #??
+				check_variable = { COG_evolues_var < 3000 }
+			}
+		}
+		x = -2
+		y = 1
+		relative_position_id = COG_create_a_new_social_class
+		completion_reward = {
+			add_ideas = COG_white_unions
+			if = {
+				limit = { has_character = COG_georges_livens }
+				custom_effect_tooltip = available_political_advisor
+				show_ideas_tooltip = COG_georges_livens
+			}
+		}
+	}
+	focus = {
+		id = COG_return_forced_labor
+		icon = GFX_goal_generic_demand_territory
+		cost = 10
+		prerequisite = {
+			focus = COG_creating_unions_for_whites
+		}
+		available = {
+			is_left_ideology = no
+		}
+		x = -6
+		y = 2
+		relative_position_id = COG_create_a_new_social_class
+		completion_reward = {
+			add_ideas = COG_forced_labor
+		}
+	}
+	focus = {
+		id = COG_involve_peasants_in_forced_labor
+		icon = GFX_goal_generic_demand_territory
+		cost = 10
+		prerequisite = {
+			focus = COG_creating_unions_for_whites
+		}
+		available = {
+			is_left_ideology = no
+		}
+		x = -4
+		y = 2
+		relative_position_id = COG_create_a_new_social_class
+		completion_reward = {
+			every_core_state = {
+				limit = { is_controlled_by = COG }
+				add_resource = {
+					type = rubber
+					amount = 5
+				}
+			}
+			add_ideas = COG_forced_labor_for_peasants
+		}
+	}
+	focus = {
+		id = COG_increase_war_tax
+		icon = GFX_goal_generic_demand_territory
+		cost = 5
+		prerequisite = {
+			focus = COG_creating_unions_for_whites
+		}
+		available = {
+			OR = {
+				if = { #?
+					limit = { is_subject = yes }
+					OVERLORD = { has_war = yes }
+				}
+				has_war = yes
+			}
+		}
+		x = -2
+		y = 2
+		relative_position_id = COG_create_a_new_social_class
+		completion_reward = {
+			add_ideas = COG_high_military_tax
+		}
+	}
+	focus = {
+		id = COG_loyalty_to_BEL_government
+		icon = GFX_goal_generic_demand_territory
+		cost = 5
+		prerequisite = {
+			focus = COG_increase_war_tax
+		}
+		mutually_exclusive = {
+			focus = COG_submit_to_new_brussels_government
+			focus = COG_proclaim_a_workers_state
+		}
+		x = -10
+		y = 3
+		relative_position_id = COG_create_a_new_social_class
+		completion_reward = {
+			add_country_leader_trait = special_powers
+		}
+	}
+	focus = {
+		id = COG_desire_liberate_ethiopia
+		icon = GFX_z_goal_cog_liberate_ethiopia
+		cost = 10
+		prerequisite = {
+			focus = COG_economic_agreement_with_ENG
+		}
+		x = 2
+		y = 3
+		relative_position_id = COG_loyalty_to_BEL_government
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus COG_desire_liberate_ethiopia"
+			add_ideas = COG_desire_liberate_ethiopia
+			add_ai_strategy = { #??
+				type = protect
+				id = "ETH"
+				value = 200
+			}
+		}
+	}
+	focus = {
+		id = COG_restructurization
+		icon = GFX_goal_generic_demand_territory
+		cost = 10
+		prerequisite = {
+			focus = COG_loyalty_to_BEL_government
+			focus = COG_submit_to_new_brussels_government
+		}
+		x = 2
+		y = 1
+		relative_position_id = COG_loyalty_to_BEL_government
+		completion_reward = {
+			#+10% текущей эффективности производства.
+			add_ideas = COG_restructurization #?
+		}
+	}
+	focus = {
+		id = COG_belgium_research_group
+		icon = GFX_goal_generic_scientific_exchange
+		cost = 10
+		prerequisite = {
+			focus = COG_restructurization
+		}
+		available = {
+			is_in_faction = yes
+		}
+		x = 2
+		y = 2
+		relative_position_id = COG_loyalty_to_BEL_government
+		completion_reward = {
+    		log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus COG_belgium_research_group"
+			add_to_tech_sharing_group = COG_research_group #?
+			var:faction_leader = { add_to_tech_sharing_group = COG_research_group } #??
+			add_research_slot = 1 #?
+		}
+	}
+	focus = {
+		id = COG_sell_uranium_in_USA #COG_sell_uranium_in_USA
+		icon = GFX_goal_generic_demand_territory
+		cost = 10
+		prerequisite = {
+			focus = COG_loyalty_to_BEL_government
+		}
+		available = {
+			USA = {
+				exists = yes #?
+				has_government = democratic
+			}
+		}
+		x = -2
+		y = 1
+		relative_position_id = COG_loyalty_to_BEL_government
+		completion_reward = { #?
+			add_political_power = 200
+			USA = { country_event = congo.29 }
+		}
+	}
+	focus = {
+		id = COG_railways_to_ports
+		icon = GFX_goal_generic_demand_territory
+		cost = 10
+		prerequisite = {
+			focus = COG_sell_uranium_in_USA
+		}
+		available = {
+			#?
+			USA = {
+				exists = yes #?
+				has_government = democratic
+			}
+		}
+		x = -2
+		y = 2
+		relative_position_id = COG_loyalty_to_BEL_government
+		completion_reward = {
+			build_railway = { #???
+				level = 1
+				#fallback = yes #?
+				start_state = 1065
+				target_state = 295
+			}
+		}
+	}
+	focus = {
+		id = COG_expansion_of_air_traffic
+		icon = GFX_goal_generic_demand_territory
+		cost = 10
+		prerequisite = {
+			focus = COG_railways_to_ports
+		}
+		available = {
+			#?
+			USA = {
+				exists = yes #?
+				has_government = democratic
+			}
+		}
+		x = -2
+		y = 3
+		relative_position_id = COG_loyalty_to_BEL_government
+		completion_reward = {
+			if = {
+				limit = {
+					295 = { #capital_scope
+						free_building_slots = {
+							building = air_base
+							size > 0
+						}
+					}
+				}
+				295 = {
+					add_building_construction = {
+						type = air_base
+						level = 1
+						instant_build = yes
+					}
+				}
+			}
+			if = {
+				limit = {
+					1065 = {
+						free_building_slots = {
+							building = air_base
+							size > 0
+						}
+					}
+				}
+				1065 = { #аэропорт в элизабетвиль !
+					add_building_construction = {
+						type = air_base
+						level = 1
+						instant_build = yes
+					}
+				}
+			}
+			#else ?
+		}
+	}
+	focus = {
+		id = COG_devaluation_of_congolese_franc
+		icon = GFX_goal_generic_demand_territory
+		cost = 10
+		prerequisite = {
+			focus = COG_loyalty_to_BEL_government
+		}
+		x = 0
+		y = 1
+		relative_position_id = COG_loyalty_to_BEL_government
+		completion_reward = {
+			add_timed_idea = { idea = COG_devaluation_of_currency days = 1460 }
+		}
+	}
+	focus = {
+		id = COG_economic_agreement_with_ENG
+		icon = GFX_goal_generic_demand_territory
+		cost = 10
+		prerequisite = {
+			focus = COG_devaluation_of_congolese_franc
+		}
+		available = {
+			is_in_faction_with = ENG
+			is_subject_of = BEL #?
+		}
+		x = 0
+		y = 2
+		relative_position_id = COG_loyalty_to_BEL_government
+		completion_reward = {
+			swap_ideas = { #изменить цвета ?
+				remove_idea = COG_all_benefits_to_metropolis
+				add_idea = COG_all_benefits_to_metropolis_ENG
+			}
+			add_ideas = COG_economic_agreement_with_ENG #?
+		}
+	}
+	focus = {
+		id = COG_entry_of_the_economy_in_the_field_of_sterling
+		icon = GFX_goal_generic_demand_territory
+		cost = 10
+		prerequisite = {
+			focus = COG_economic_agreement_with_ENG
+		}
+		available = {
+			is_in_faction_with = ENG
+			is_subject_of = BEL #?
+		}
+		x = 0
+		y = 3
+		relative_position_id = COG_loyalty_to_BEL_government
+		completion_reward = {
+			swap_ideas = {
+				remove_idea = COG_economic_agreement_with_ENG
+				add_idea = COG_economic_agreement_with_ENG_1
+			}
+		}
+	}
+	
+	#
+	
+	focus = {
+		id = COG_submit_to_new_brussels_government #COG_submit_to_new_brussels_government
+		icon = GFX_goal_support_fascism
+		cost = 5
+		prerequisite = {
+			focus = COG_increase_war_tax
+		}
+		mutually_exclusive = {
+			focus = COG_loyalty_to_BEL_government
+			focus = COG_proclaim_a_workers_state
+		}
+		available = { #?
+			BEL = { #?? !
+				is_subject_of = GER
+			}
+		}
+		x = -6
+		y = 3
+		relative_position_id = COG_create_a_new_social_class
+		completion_reward = {
+			BEL = { #?
+				set_autonomy = {
+					target = ROOT
+					autonomous_state = autonomy_puppet
+				}
+			}
+			custom_effect_tooltip = COG_submit_to_new_brussels_government_tt
+			#hidden_effect = {
+				ENG = {
+					if = {
+						limit = { has_war_with = GER } #?
+						country_event = { id = congo.30 days = 10 }
+					}
+				}
+			#}
+		}
+	}
+	focus = {
+		id = COG_create_SS_from_congolese
+		icon = GFX_goal_support_fascism
+		cost = 10
+		prerequisite = {
+			focus = COG_submit_to_new_brussels_government
+		}
+		available = {
+			is_in_faction_with = GER #??
+		}
+		x = 0
+		y = 1
+		relative_position_id = COG_submit_to_new_brussels_government
+		completion_reward = {
+			division_template = {
+				name = "SS" #??
+				priority = 1
+				#template_counter = 3
+				regiments = {
+					infantry = { x = 0 y = 0 }
+					infantry = { x = 0 y = 1 }
+					infantry = { x = 0 y = 2 }
+					infantry = { x = 1 y = 0 }
+					infantry = { x = 1 y = 1 }
+					infantry = { x = 1 y = 2 }
+				}
+			}
+			capital_scope = {
+				create_unit = {
+					division = "name = \"SS\" division_template = \"SS\" start_experience_factor = 0.1 start_equipment_factor = 0.95" owner = PREV count = 3
+				}
+			}
+		}
+	}
+	focus = {
+		id = COG_reclaim_french_congo
+		icon = GFX_goal_support_fascism
+		cost = 10
+		prerequisite = {
+			focus = COG_create_SS_from_congolese
+		}
+		x = 1
+		y = 3
+		relative_position_id = COG_submit_to_new_brussels_government
+		completion_reward = {
+			add_state_claim = 1005
+			add_state_core = 1005
+		}
+	}
+	focus = {
+		id = COG_reclaim_portuguese_congo
+		icon = GFX_goal_support_fascism
+		cost = 10
+		prerequisite = {
+			focus = COG_create_SS_from_congolese
+		}
+		x = 2
+		y = 2
+		relative_position_id = COG_submit_to_new_brussels_government
+		completion_reward = {
+			every_state = {
+				limit = {
+					OR = {
+						state = 1056
+						state = 540
+						state = 1045
+						state = 1044
+					}
+				}
+				add_claim_by = ROOT
+				add_core_of = ROOT
+			}
+		}
+	}
+	focus = {
+		id = COG_german_rubber_research
+		icon = GFX_goal_support_fascism
+		cost = 10
+		prerequisite = {
+			focus = COG_create_SS_from_congolese
+		}
+		available = {
+			is_in_faction_with = GER #??
+		}
+		x = 0
+		y = 2
+		relative_position_id = COG_submit_to_new_brussels_government
+		completion_reward = {
+			add_tech_bonus = {
+				#name = MAN_purchase_german_licenses
+				bonus = 1
+				uses = 2
+				category = synth_resources # synth_resources cat_synth_oil synth_oil_res ?
+			}
+		}
+	}
+	# focus = { # !
+		# id = Подпустить_Рейх_к_разработке_Урана_СКРЫТЬ
+		# icon = GFX_goal_unknown
+		# cost = 0
+		# prerequisite = {
+			# focus = COG_submit_to_new_brussels_government
+		# }
+		# x = 2
+		# y = 1
+		# relative_position_id = COG_submit_to_new_brussels_government
+
+	# }
+	
+	# ]
+	
+	# Восстание Рабочих [
+	
+	focus = {
+		id = COG_proclaim_a_workers_state #COG_proclaim_workers_state
+		icon = GFX_goal_support_communism
+		cost = 10
+		prerequisite = {
+			focus = COG_increase_war_tax
+		}
+		mutually_exclusive = {
+			focus = COG_loyalty_to_BEL_government
+			focus = COG_submit_to_new_brussels_government
+		}
+		available = {
+			custom_trigger_tooltip = {
+				tooltip = COG_proclaim_workers_state_tt
+				has_completed_focus = COG_proclaim_a_workers_state
+			}
+		}
+		x = -2
+		y = 3
+		relative_position_id = COG_create_a_new_social_class
+		completion_reward = {
+			custom_effect_tooltip = COG_proclaim_workers_state_tooltip
+			add_popularity = {
+				ideology = communism
+				popularity = 0.1
+			}
+			add_popularity = {
+				ideology = trozkism
+				popularity = 0.1
+			}
+			add_popularity = {
+				ideology = anarchism
+				popularity = 0.1
+			}
+			unlock_decision_tooltip = COG_demand_independence #?
+		}
+	}
+	focus = {
+		id = COG_raising_workers_salaries
+		icon = GFX_goal_support_communism
+		cost = 10
+		prerequisite = {
+			focus = COG_proclaim_a_workers_state
+		}
+		x = 0
+		y = 1
+		relative_position_id = COG_proclaim_a_workers_state
+		completion_reward = {
+			remove_ideas = COG_forced_labor #??
+			remove_ideas = COG_forced_labor_for_peasants
+			remove_ideas = COG_high_military_tax
+			remove_ideas = COG_general_strike
+			add_stability = 0.1
+			add_ideas = COG_increased_salaries_of_workers_communist
+		}
+	}
+	focus = {
+		id = COG_end_racial_segregation
+		icon = GFX_goal_support_communism
+		cost = 10
+		prerequisite = {
+			focus = COG_raising_workers_salaries
+		}
+		x = 0
+		y = 2
+		relative_position_id = COG_proclaim_a_workers_state
+		completion_reward = {
+			remove_ideas = COG_racial_segregation
+			add_stability = 0.05
+		}
+	}
+	focus = {
+		id = COG_establish_relationship_with_communists
+		icon = GFX_goal_support_communism
+		cost = 10
+		prerequisite = {
+			focus = COG_raising_workers_salaries
+		}
+		x = 2
+		y = 2
+		relative_position_id = COG_proclaim_a_workers_state
+		completion_reward = {
+			every_other_country = { #?
+				limit = { is_left_ideology = yes }
+				add_opinion_modifier = { #торговые отношения тоже !
+					target = ROOT
+					modifier = COG_workers_solidarity
+				}
+				reverse_add_opinion_modifier = { #?
+					target = ROOT
+					modifier = COG_workers_solidarity
+				}
+			}
+		}
+	}
+	focus = {
+		id = COG_nationalize_foreign_business #COG_nationalize_foreign_business
+		icon = GFX_goal_support_communism
+		cost = 10
+		prerequisite = {
+			focus = COG_end_racial_segregation
+		}
+		x = -1
+		y = 3
+		relative_position_id = COG_proclaim_a_workers_state
+		#complete_tooltip = {} ?
+		completion_reward = {
+			# if = { #??
+				# limit = { is_left_ideology = yes } #?
+				# custom_effect_tooltip = COG_union_miniere_du_haut_katanga_tt
+				# country_event = congo.17 #?
+			# }
+			custom_effect_tooltip = COG_nationalize_foreign_business_tt
+			random_owned_controlled_state = { #??
+				add_extra_state_shared_building_slots = 1
+				add_building_construction = {
+					type = industrial_complex
+					level = 1
+					instant_build = yes
+				}
+			}
+			random_owned_controlled_state = { #??
+				add_extra_state_shared_building_slots = 1
+				add_building_construction = {
+					type = industrial_complex
+					level = 1
+					instant_build = yes
+				}
+			}
+			random_owned_controlled_state = { #??
+				add_extra_state_shared_building_slots = 1
+				add_building_construction = {
+					type = industrial_complex
+					level = 1
+					instant_build = yes
+				}
+			}
+			random_owned_controlled_state = { #??
+				add_extra_state_shared_building_slots = 1
+				add_building_construction = {
+					type = industrial_complex
+					level = 1
+					instant_build = yes
+				}
+			}
+			#hidden_effect = {
+				country_event = { id = congo.34 days = 30 }
+			#}
+		}
+	}
+	focus = {
+		id = COG_creating_unions_for_blacks
+		icon = GFX_goal_support_communism
+		cost = 10
+		prerequisite = {
+			focus = COG_creating_unions_for_whites
+			focus = COG_dominate_to_serve
+		}
+		available = {
+			custom_trigger_tooltip = {
+				tooltip = COG_evolues_var_more_than_2000 #??
+				check_variable = { COG_evolues_var > 1999 }
+			}
+			OR = {
+				has_completed_focus = COG_dominate_to_serve
+				is_left_ideology = yes
+			}
+		}
+		x = 0
+		y = 2
+		relative_position_id = COG_create_a_new_social_class
+		completion_reward = {
+			add_to_variable = { COG_evolues_var = -2000 tooltip = COG_evolues_var_tooltip }
+			1065 = { #?
+				add_manpower = 2000
+			}
+			if = {
+				limit = { has_idea = COG_white_unions }
+				swap_ideas = {
+					remove_idea = COG_white_unions
+					add_idea = COG_white_and_black_unions
+				}
+			}
+			else = {
+				add_ideas = COG_black_unions
+			}
+			if = {
+				limit = { has_idea = COG_incompetent_production_managers }
+				swap_ideas = {
+					remove_idea = COG_incompetent_production_managers
+					add_idea = COG_incompetent_production_managers_1
+				}
+			}
+			if = {
+				limit = { has_completed_focus = COG_dominate_to_serve has_character = COG_leonard_mpoyi }
+				custom_effect_tooltip = available_political_advisor
+				show_ideas_tooltip = COG_leonard_mpoyi
+			}
+		}
+	}
+	focus = {
+		id = COG_equalize_the_rights_of_white_and_black_workers
+		icon = GFX_goal_support_communism
+		cost = 10
+		prerequisite = {
+			focus = COG_nationalize_foreign_business
+		}
+		available = {
+			custom_trigger_tooltip = {
+				tooltip = COG_evolues_var_more_than_2000 #??
+				check_variable = { COG_evolues_var > 1999 }
+			}
+			has_completed_focus = COG_creating_unions_for_blacks
+		}
+		x = -3
+		y = 4
+		relative_position_id = COG_proclaim_a_workers_state
+		completion_reward = {
+			add_to_variable = { COG_evolues_var = -2000 tooltip = COG_evolues_var_tooltip }
+			1065 = { #?
+				add_manpower = 2000
+			}
+			remove_ideas = COG_incompetent_production_managers_1 #?
+			add_timed_idea = { idea = COG_conflicts_at_work days = 365 }
+		}
+	}
+	focus = {
+		id = COG_creation_of_youth_organizations #Создание молодёжных организаций
+		icon = GFX_goal_support_communism
+		cost = 10
+		prerequisite = {
+			focus = COG_nationalize_foreign_business
+		}
+		x = -1
+		y = 4
+		relative_position_id = COG_proclaim_a_workers_state
+		completion_reward = {
+			add_ideas = COG_youth_clubs
+			# рост со временем как в манчжурии ? !
+		}
+	}
+	focus = { #объединить фокусы ?
+		id = COG_restoration_of_administration #COG_restoration_of_administration
+		icon = GFX_goal_support_communism
+		cost = 10
+		prerequisite = {
+			focus = COG_end_racial_segregation
+		}
+		x = 1
+		y = 3
+		relative_position_id = COG_proclaim_a_workers_state
+		completion_reward = {
+			custom_effect_tooltip = COG_restoration_of_administration_tt
+			unlock_decision_category_tooltip = COG_restoration_of_administration_category
+		}
+	}
+	focus = { #объединить фокусы ?
+		id = COG_organize_a_workers_party
+		icon = GFX_goal_support_communism
+		cost = 5
+		prerequisite = {
+			focus = COG_restoration_of_administration
+		}
+		x = 1
+		y = 4
+		relative_position_id = COG_proclaim_a_workers_state
+		completion_reward = {
+			country_event = congo.35
+		}
+	}
+	focus = {
+		id = COG_congolese_soviet_republic
+		icon = GFX_goal_support_communism
+		cost = 10
+		prerequisite = {
+			focus = COG_accept_help_from_SAF_trade_unions
+			focus = COG_advisors_from_moscow
+		}
+		x = -2
+		y = 6
+		relative_position_id = COG_proclaim_a_workers_state
+		completion_reward = {
+			if = {
+				limit = { has_government = communism }
+				add_ideas = COG_congolese_soviet_republic_comm
+			}
+			else_if = {
+				limit = { has_government = trozkism }
+				add_ideas = COG_congolese_soviet_republic_troz
+			}
+			# еще чего нить добавить (в идеи)?
+		}
+	}
+	focus = {
+		id = COG_stop_ethnic_struggle #COG_stop_ethnic_struggle name ?
+		icon = GFX_goal_support_communism
+		cost = 5
+		prerequisite = {
+			focus = COG_congolese_soviet_republic
+		}
+		mutually_exclusive = {
+			focus = COG_tribal_socialism
+		}
 		x = 1
 		y = 1
-		relative_position_id = COG_arm_troops_with_transport
-		ai_will_do = {
-			factor = 1
+		relative_position_id = COG_congolese_soviet_republic
+		completion_reward = { #?? !!
+			add_stability = -0.1
+			custom_effect_tooltip = COG_stop_ethnic_struggle_tt
+			# еще один custom_effect_tooltip ?
+			#hidden_effect = {
+				every_controlled_state = { #?
+					limit = { is_original_congo_state = yes }
+					set_variable = { COG_loyalty_lvl_var = 6 } #-1?
+				}
+				remove_ideas = COG_faithful_administration_of_tribal_leaders
+				remove_ideas = COG_loyal_administration_of_tribal_leaders
+				remove_ideas = COG_disloyal_administration_of_tribal_leaders
+			#}
 		}
+	}
+	focus = {
+		id = COG_cult_of_personality
+		icon = GFX_goal_support_communism
+		cost = 10
+		prerequisite = {
+			focus = COG_stop_ethnic_struggle
+		}
+		x = 1
+		y = 2
+		relative_position_id = COG_congolese_soviet_republic
 		completion_reward = {
-			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus COG_new_auto_in_army"
-			add_tech_bonus = {
-				bonus = 1
-				uses = 1
-				category = motorized_equipment
-				name = COG_new_auto_in_army
+			add_ideas = COG_cult_of_personality # ? в виде трейта !
+		}
+	}
+	focus = {
+		id = COG_tribal_socialism #COG_tribal_socialism
+		icon = GFX_goal_support_communism
+		cost = 10
+		prerequisite = {
+			focus = COG_congolese_soviet_republic
+		}
+		mutually_exclusive = {
+			focus = COG_stop_ethnic_struggle
+		}
+		x = -1
+		y = 1
+		relative_position_id = COG_congolese_soviet_republic
+		completion_reward = {
+			add_stability = 0.1
+			custom_effect_tooltip = COG_tribal_socialism_tt
+			every_controlled_state = {
+				limit = { is_original_congo_state = yes }
+				set_temp_variable = { lvl = COG_loyalty_lvl_var } # ?
+				add_to_temp_variable = { lvl = 1 }
+				clamp_temp_variable = { var = lvl min = 1 max = 5 }
+				custom_effect_tooltip = COG_increase_loyalty_lvl
+				
+				add_to_variable = { COG_loyalty_lvl_var = 1 }
+				clamp_variable = { var = COG_loyalty_lvl_var min = 1 max = 5 }
 			}
+			#hidden_effect = {
+				COG_update_administration_of_tribal_leaders_idea = yes
+			#}
+		}
+	}
+	focus = {
+		id = COG_revolutionary_militia # Революционное_ополчение ? COG_revolutionary_militia
+		icon = GFX_goal_support_communism
+		cost = 10
+		prerequisite = {
+			focus = COG_tribal_socialism
+		}
+		x = -1
+		y = 2
+		relative_position_id = COG_congolese_soviet_republic
+		completion_reward = {
+			custom_effect_tooltip = COG_revolutionary_militia_tt
+			unlock_decision_category_tooltip = COG_generic_irregular_army_category #!!
+			# еще один custom_effect_tooltip ?
 		}
 	}
 	
+	# # Подветка тро [
+	
 	focus = {
-		id = COG_our_tank
-		icon = GFX_focus_generic_tank_production
-		cost = 7.15
+		id = COG_accept_help_from_SAF_trade_unions
+		icon = GFX_goal_support_communism
+		cost = 10
 		prerequisite = {
-			focus = COG_new_auto_in_army
+			focus = COG_organize_a_workers_party
+		}
+		mutually_exclusive = {
+			focus = COG_advisors_from_moscow
+		}
+		available = {
+			#Вы приняли советников из ЮАС
+			has_government = trozkism
+		}
+		x = -5
+		y = 5
+		relative_position_id = COG_proclaim_a_workers_state
+		completion_reward = {
+			add_stability = 0.05
+			# Будут доступны советники троцкисты из ЮАС, при условии, что ЮАС сами не наняли их, опять же они заблокируются для ЮАС если их взяло Конго !!
+		}
+	}
+	focus = {
+		id = COG_fourth_international
+		icon = GFX_goal_support_communism
+		cost = 10
+		prerequisite = {
+			focus = COG_accept_help_from_SAF_trade_unions
+		}
+		x = 1
+		y = 1
+		relative_position_id = COG_accept_help_from_SAF_trade_unions
+		completion_reward = {
+			set_rule = { can_create_factions = yes }
+			create_faction = COG_section_fourth_international
+		}
+	}
+	focus = {
+		id = COG_the_theory_of_permanent_revolution_for_peasants
+		icon = GFX_goal_support_communism
+		cost = 10
+		prerequisite = {
+			focus = COG_accept_help_from_SAF_trade_unions
+		}
+		x = -3
+		y = 1
+		relative_position_id = COG_accept_help_from_SAF_trade_unions
+		completion_reward = {
+			if = {
+				limit = { has_government = trozkism }
+				add_to_variable = { global.troz_threat_var = 1 tooltip = troz_threat_tt }
+				set_var_for_troz_threat_dyn = yes
+			}
+			add_ideas = COG_theory_of_revolution_for_peasants
+		}
+	}
+	focus = {
+		id = COG_agrarian_trade_unions
+		icon = GFX_goal_support_communism
+		cost = 10
+		prerequisite = {
+			focus = COG_the_theory_of_permanent_revolution_for_peasants
+		}
+		x = -3
+		y = 2
+		relative_position_id = COG_accept_help_from_SAF_trade_unions
+		completion_reward = {
+			every_core_state = {
+				limit = { is_controlled_by = ROOT }
+				add_extra_state_shared_building_slots = 1
+			}
+		}
+	}
+	focus = {
+		id = COG_black_nationalism
+		icon = GFX_goal_support_communism
+		cost = 10
+		prerequisite = {
+			focus = COG_accept_help_from_SAF_trade_unions
+		}
+		x = -1
+		y = 1
+		relative_position_id = COG_accept_help_from_SAF_trade_unions
+		completion_reward = {
+			add_ideas = COG_black_nationalism
+			# еще чего нить добавить (в идеи)?
+			unlock_decision_category_tooltip = COG_african_pannationalism #!!
+			# еще один custom_effect_tooltip ?
+		}
+	}
+	focus = {
+		id = COG_capture_angola
+		icon = GFX_goal_support_communism
+		cost = 10
+		prerequisite = {
+			focus = COG_black_nationalism
+		}
+		available = { #!(надо везде)
+			is_subject = no
+		}
+		x = -1
+		y = 2
+		relative_position_id = COG_accept_help_from_SAF_trade_unions
+		completion_reward = {
+			every_state = { #?
+				limit = {
+					OR = {
+						state = 1056
+						state = 540
+						state = 1044
+						state = 1045
+					}
+				}
+				controller = {
+					ROOT = {
+						create_wargoal = {
+							type = take_state_focus
+							target = PREV
+							generator = { 1056 540 1044 1045 } #?
+						}
+						add_ai_strategy = { #?
+							type = antagonize
+							id = PREV
+							value = 200
+						}
+						add_ai_strategy = {
+							type = conquer
+							id = PREV
+							value = 100
+						}
+						add_ai_strategy = {
+							type = declare_war
+							id = PREV
+							value = 100
+						}
+					}
+				}
+			}
+		}
+	}
+	focus = {
+		id = COG_capture_NMB
+		icon = GFX_goal_support_communism
+		cost = 10
+		prerequisite = {
+			focus = COG_capture_angola
+		}
+		available = {
+			is_subject = no
+			NMB = { is_left_ideology = no }
+			# ЮЗА марионетка ?
+		}
+		bypass = {
+			NMB = { 
+				exists = no 
+				is_left_ideology = yes 
+			}
+		}
+		x = -2
+		y = 3
+		relative_position_id = COG_accept_help_from_SAF_trade_unions
+		completion_reward = {
+			create_wargoal = {
+				type = puppet_wargoal_focus
+				target = NMB
+			}
+			add_ai_strategy = { #?
+				type = antagonize
+				id = NMB
+				value = 200
+			}
+			add_ai_strategy = {
+				type = conquer
+				id = NMB
+				value = 100
+			}
+			add_ai_strategy = {
+				type = declare_war
+				id = NMB
+				value = 100
+			}
+		}
+	}
+	focus = {
+		id = COG_capture_SAF
+		icon = GFX_goal_support_communism
+		cost = 10
+		prerequisite = {
+			focus = COG_capture_angola
+		}
+		available = {
+			is_subject = no
+			SAF = { is_left_ideology = no }
+			# ЮАС марионетка ИЛИ свободна, но не троцкистская ?
+		}
+		bypass = {
+			SAF = { 
+				exists = no 
+				is_left_ideology = yes 
+			}
 		}
 		x = 0
-		y = 1
-		relative_position_id = COG_new_auto_in_army
-		ai_will_do = {
-			factor = 1
-		}
+		y = 3
+		relative_position_id = COG_accept_help_from_SAF_trade_unions
 		completion_reward = {
-			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus COG_our_tank"
-			add_tech_bonus = {
-				bonus = 1
-				uses = 1
-				category = armor
-				name = COG_our_tank
+			create_wargoal = {
+				type = puppet_wargoal_focus
+				target = SAF
+			}
+			add_ai_strategy = { #?
+				type = antagonize
+				id = SAF
+				value = 200
+			}
+			add_ai_strategy = {
+				type = conquer
+				id = SAF
+				value = 100
+			}
+			add_ai_strategy = {
+				type = declare_war
+				id = SAF
+				value = 100
+			}
+		}
+	}
+	focus = {
+		id = COG_capture_mozambique
+		icon = GFX_goal_support_communism
+		cost = 10
+		prerequisite = {
+			focus = COG_capture_NMB
+		}
+		x = -2
+		y = 4
+		relative_position_id = COG_accept_help_from_SAF_trade_unions
+		completion_reward = {
+			every_state = { #?
+				limit = {
+					OR = {
+						state = 544
+						state = 983
+					}
+				}
+				controller = {
+					ROOT = {
+						create_wargoal = {
+							type = take_state_focus
+							target = PREV
+							generator = { 544 983 }
+						}
+						add_ai_strategy = { #?
+							type = antagonize
+							id = PREV
+							value = 200
+						}
+						add_ai_strategy = {
+							type = conquer
+							id = PREV
+							value = 100
+						}
+						add_ai_strategy = {
+							type = declare_war
+							id = PREV
+							value = 100
+						}
+					}
+				}
+			}
+		}
+	}
+	focus = {
+		id = COG_save_rhodesian_workers
+		icon = GFX_goal_support_communism
+		cost = 10
+		prerequisite = {
+			focus = COG_capture_SAF
+		}
+		x = 0
+		y = 4
+		relative_position_id = COG_accept_help_from_SAF_trade_unions
+		completion_reward = {
+			every_state = { #??
+				limit = {
+					OR = {
+						state = 545
+						state = 1110
+					}
+				}
+				controller = {
+					ROOT = {
+						create_wargoal = {
+							type = take_state_focus
+							target = PREV
+							generator = { 545 1110 }
+						}
+						add_ai_strategy = { #?
+							type = antagonize
+							id = PREV
+							value = 200
+						}
+						add_ai_strategy = {
+							type = conquer
+							id = PREV
+							value = 100
+						}
+						add_ai_strategy = {
+							type = declare_war
+							id = PREV
+							value = 100
+						}
+					}
+				}
 			}
 		}
 	}
 	
+	# # ]
+	
+	# # Подветка комми [
+	
 	focus = {
-		id = COG_level_up_belg_weapon
+		id = COG_advisors_from_moscow
+		icon = GFX_goal_support_communism
+		cost = 10
+		prerequisite = {
+			focus = COG_organize_a_workers_party
+		}
+		mutually_exclusive = {
+			focus = COG_accept_help_from_SAF_trade_unions
+		}
+		available = {
+			#Вы приняли советников из СССР ?
+			has_government = communism
+		}
+		x = 1
+		y = 5
+		relative_position_id = COG_proclaim_a_workers_state
+		completion_reward = {
+			add_stability = 0.05
+			# Будут доступны советники коммунисты из СССР, при условии, что СССР сами не наняли их, опять же они заблокируются для СССР если их взяло Конго !!
+		}
+	}
+	focus = { #!
+		id = Социализм_в_одной_стране_ГЕНЕРИК
+		icon = GFX_goal_unknown
+		cost = 0
+		prerequisite = {
+			focus = COG_advisors_from_moscow
+		}
+		x = -1
+		y = 1
+		relative_position_id = COG_advisors_from_moscow
+
+	}
+	focus = {
+		id = COG_collectivization
+		text = collectivization_focus
+		icon = GFX_z_goal_voluntary_creation_of_collective
+		cost = 5
+		prerequisite = {
+			focus = COG_advisors_from_moscow
+		}
+		x = 1
+		y = 1
+		relative_position_id = COG_advisors_from_moscow
+		completion_reward = {
+			add_ideas = collectivization_focus
+		}
+	}
+	focus = {
+		id = COG_join_the_comintern
+		icon = GFX_goal_support_communism
+		cost = 10
+		prerequisite = {
+			focus = COG_advisors_from_moscow
+		}
+		mutually_exclusive = {
+			focus = COG_renounce_the_politics_of_moscow
+		}
+		available = {
+			SOV = { is_faction_leader = yes }
+		}
+		x = 0
+		y = 2
+		relative_position_id = COG_advisors_from_moscow
+		completion_reward = {
+			SOV = {
+				country_event = generic.2
+			}
+		}
+	}
+	focus = {
+		id = COG_assistance_in_the_industrialization_of_the_country
+		icon = GFX_goal_support_communism
+		cost = 10
+		prerequisite = {
+			focus = COG_join_the_comintern
+		}
+		available = {
+			SOV = { is_faction_leader = yes }
+		}
+		x = 0
+		y = 4
+		relative_position_id = COG_advisors_from_moscow
+		completion_reward = {
+			random_owned_controlled_state = { #??
+				add_extra_state_shared_building_slots = 1
+				add_building_construction = {
+					type = industrial_complex
+					level = 1
+					instant_build = yes
+				}
+			}
+			random_owned_controlled_state = { #??
+				add_extra_state_shared_building_slots = 1
+				add_building_construction = {
+					type = arms_factory
+					level = 1
+					instant_build = yes
+				}
+			}
+			add_timed_idea = { idea = COG_assistance_in_industrialization days = 730 }
+		}
+	}
+	focus = {
+		id = COG_ethics_of_war
+		text = generic_ethics_for_war
+		icon = GFX_goal_generic_forceful_treaty
+		cost = 10
+		prerequisite = {
+			focus = COG_assistance_in_the_industrialization_of_the_country
+		}
+		available = {
+			has_war = yes
+		}
+		x = -1
+		y = 5
+		relative_position_id = COG_advisors_from_moscow
+		completion_reward = {
+			add_ideas = generic_ethics_for_war
+		}
+	}
+	focus = { #!
+		id = Военные_советники_из_СССР
+		icon = GFX_goal_unknown
+		cost = 0
+		prerequisite = {
+			focus = COG_ethics_of_war
+		}
+		available = {
+			has_war = yes
+		}
+		x = -1
+		y = 6
+		relative_position_id = COG_advisors_from_moscow
+
+	}
+	focus = {
+		id = COG_renounce_the_politics_of_moscow
+		icon = GFX_goal_support_communism
+		cost = 10
+		prerequisite = {
+			focus = COG_advisors_from_moscow
+		}
+		mutually_exclusive = {
+			focus = COG_join_the_comintern
+		}
+		x = 2
+		y = 2
+		relative_position_id = COG_advisors_from_moscow
+		completion_reward = {
+			add_political_power = 100
+			# вы потеряете возможность набирать советников СССР
+			SOV = {
+				remove_opinion_modifier = {
+					target = ROOT
+					modifier = COG_advisors_from_moscow
+				}
+				add_opinion_modifier = {
+					target = ROOT
+					modifier = COG_deviation_from_course_of_moscow
+				}
+				reverse_add_opinion_modifier = {
+					target = ROOT
+					modifier = COG_deviation_from_course_of_moscow
+				}
+			}
+		}
+	}
+	focus = {
+		id = COG_african_international
+		icon = GFX_goal_support_communism
+		cost = 10
+		prerequisite = {
+			focus = COG_renounce_the_politics_of_moscow
+		}
+		x = 2
+		y = 4
+		relative_position_id = COG_advisors_from_moscow
+		completion_reward = {
+			set_rule = { can_create_factions = yes }
+			create_faction = COG_african_international
+		}
+	}
+	focus = {
+		id = COG_invite_ideological_allies
+		icon = GFX_goal_support_communism
+		cost = 10
+		prerequisite = {
+			focus = COG_african_international
+		}
+		x = 3
+		y = 5
+		relative_position_id = COG_advisors_from_moscow
+		completion_reward = {
+			unlock_decision_category_tooltip = COG_formation_of_african_international #??
+		}
+	}
+	focus = {
+		id = COG_communist_african_research_block
+		icon = GFX_goal_support_communism
+		cost = 10
+		prerequisite = {
+			focus = COG_invite_ideological_allies
+		}
+		x = 3
+		y = 6
+		relative_position_id = COG_advisors_from_moscow
+		completion_reward = {
+			add_to_tech_sharing_group = COG_communist_african_research_block
+			every_country = { #? (в on_action надо тоже !)
+				limit = { is_in_faction_with = COG }
+				add_to_tech_sharing_group = COG_communist_african_research_block
+			}
+			add_research_slot = 1 #?
+		}
+	}
+	focus = {
+		id = COG_determine_the_course_of_the_party
+		icon = GFX_goal_support_communism
+		cost = 10
+		prerequisite = {
+			focus = COG_join_the_comintern
+			focus = COG_renounce_the_politics_of_moscow
+		}
+		x = 1
+		y = 3
+		relative_position_id = COG_advisors_from_moscow
+		completion_reward = {
+			country_event = congo.36
+		}
+	}
+	focus = { # !
+		id = Переход_на_плановую_экономику
+		icon = GFX_goal_unknown
+		cost = 0
+		prerequisite = {
+			focus = COG_determine_the_course_of_the_party
+		}
+		x = 1
+		y = 5
+		relative_position_id = COG_advisors_from_moscow
+
+	}
+	focus = {
+		id = COG_start_first_five_year_plan # COG_start_first_five_year_plan
+		#name = ALB_Start_the_first_five_year_plan #?
+		#desc = ALB_Start_the_first_five_year_plan_desc #?
+		icon = GFX_z_goal_Start_the_first_five_year_plan
+		cost = 10
+		prerequisite = {
+			focus = Переход_на_плановую_экономику
+		}
+		x = 1
+		y = 6
+		relative_position_id = COG_advisors_from_moscow
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus COG_start_first_five_year_plan"
+			set_country_flag = { flag = COG_five_year_plan_flag days = 1835 value = 1 }
+			activate_mission = COG_five_year_plan_ending
+		}
+	}
+	
+	# # ]
+	
+	# ]
+	
+	# Ветка Реформ Рикманса [
+	
+	focus = {
+		id = COG_dominate_to_serve
+		icon = GFX_goal_generic_demand_territory
+		cost = 10
+		prerequisite = {
+			focus = COG_create_a_new_social_class
+		}
+		mutually_exclusive = {
+			focus = COG_creating_unions_for_whites
+		}
+		available = {
+			custom_trigger_tooltip = {
+				tooltip = COG_evolues_var_more_than_3000 #??
+				check_variable = { COG_evolues_var > 2999 }
+			}
+		}
+		x = 2
+		y = 1
+		relative_position_id = COG_create_a_new_social_class
+		completion_reward = {
+			add_to_variable = { COG_evolues_var = -3000 tooltip = COG_evolues_var_tooltip }
+			every_controlled_state = {
+				limit = { is_original_congo_state = yes }
+				add_manpower = 500
+			}
+			add_stability = 0.05
+			add_ideas = COG_dominate_to_serve #?
+		}
+	}
+	focus = {
+		id = COG_support_for_protestant_churches
+		icon = GFX_goal_generic_demand_territory
+		cost = 10
+		prerequisite = {
+			focus = COG_dominate_to_serve
+		}
+		x = 2
+		y = 2
+		relative_position_id = COG_create_a_new_social_class
+		completion_reward = {
+			add_ideas = COG_support_for_protestant_churches
+			# еще чего нить добавить (в идеи)?
+		}
+	}
+	focus = {
+		id = COG_rights_for_evolues
+		icon = GFX_goal_generic_demand_territory
+		cost = 10
+		prerequisite = {
+			focus = COG_dominate_to_serve
+		}
+		x = 19
+		y = 2
+		relative_position_id = COG_create_a_new_social_class
+		completion_reward = {
+			remove_ideas = COG_racial_segregation
+		}
+	}
+	focus = {
+		id = COG_reduce_dependence_on_brussels
+		icon = GFX_goal_generic_demand_territory
+		cost = 10
+		prerequisite = {
+			focus = COG_dominate_to_serve
+		}
+		x = 17
+		y = 2
+		relative_position_id = COG_create_a_new_social_class
+		completion_reward = {
+			add_autonomy_score = { value = 250 }
+			# add_autonomy_score={
+				# value = 150
+				# #localization="LOC_KEY"
+			# }
+			swap_ideas = {
+				remove_idea = COG_all_benefits_to_metropolis
+				add_idea = COG_all_benefits_to_metropolis_1
+			}
+			swap_ideas = {
+				remove_idea = COG_dominate_to_serve
+				add_idea = COG_dominate_to_serve_1
+			}
+		}
+	}
+	focus = {
+		id = COG_recruitment_of_people_to_administration
+		icon = GFX_goal_generic_demand_territory
+		cost = 10
+		prerequisite = {
+			focus = COG_reduce_dependence_on_brussels
+		}
+		prerequisite = {
+			focus = COG_rights_for_evolues
+		}
+		x = 18
+		y = 3
+		relative_position_id = COG_create_a_new_social_class
+		completion_reward = {
+			unlock_decision_category_tooltip = COG_creating_administration_from_locals
+		}
+	}
+	focus = {
+		id = COG_belgian_dominion # COG_belgian_dominion
+		icon = GFX_goal_generic_demand_territory
+		cost = 10
+		prerequisite = {
+			focus = COG_recruitment_of_people_to_administration
+		}
+		mutually_exclusive = {
+			focus = COG_banish_the_white_man
+		}
+		available = {
+			has_autonomy_state = autonomy_dominion #?
+		}
+		x = 18
+		y = 4
+		relative_position_id = COG_create_a_new_social_class
+		completion_reward = {
+			remove_ideas = COG_dominate_to_serve_1
+			swap_ideas = {
+				remove_idea = COG_all_benefits_to_metropolis_1
+				add_idea = COG_all_benefits_to_metropolis_2
+			}
+			custom_effect_tooltip = COG_belgian_dominion_tt
+		}
+	}
+	
+	# ]
+	
+	# Ветка Республики [
+	
+	focus = {
+		id = COG_create_a_congo_republic
+		icon = GFX_goal_generic_demand_territory
+		cost = 10
+		prerequisite = {
+			focus = COG_belgian_dominion
+		}
+		mutually_exclusive = {
+			focus = COG_pierre_VIII_du_Kongo
+		}
+		available = {
+			always = no # ?
+		}
+		x = -6
+		y = 1
+		relative_position_id = COG_belgian_dominion
+		completion_reward = {
+			add_stability = 0.1
+		}
+	}
+	focus = {
+		id = COG_maintain_economic_ties_with_BEL
+		icon = GFX_goal_generic_demand_territory
+		cost = 10
+		prerequisite = {
+			focus = COG_create_a_congo_republic
+		}
+		mutually_exclusive = {
+			focus = COG_independent_economy
+		}
+		available = {
+			has_country_flag = COG_congo_chose_loyalty_to_belgium
+		}
+		x = 2
+		y = 1
+		relative_position_id = COG_create_a_congo_republic
+		completion_reward = {
+			add_ideas = COG_economic_relations_with_brussels
+		}
+	}
+	focus = {
+		id = COG_joint_development_of_katanga_mines
+		icon = GFX_goal_generic_demand_territory
+		cost = 10
+		prerequisite = {
+			focus = COG_maintain_economic_ties_with_BEL
+		}
+		x = 2
+		y = 2
+		relative_position_id = COG_create_a_congo_republic
+		completion_reward = {
+			1065 = { #?
+				add_extra_state_shared_building_slots = 1
+				add_building_construction = {
+					type = industrial_complex
+					level = 1
+					instant_build = yes
+				}
+			}
+			BEL = { #?
+				add_offsite_building = { type = industrial_complex level = 1 } #?(добавит по дефолту?) !!
+			}
+		}
+	}
+	focus = {
+		id = COG_independent_economy
+		icon = GFX_goal_generic_demand_territory
+		cost = 10
+		prerequisite = {
+			focus = COG_create_a_congo_republic
+			focus = COG_pierre_VIII_du_Kongo
+		}
+		mutually_exclusive = {
+			focus = COG_maintain_economic_ties_with_BEL
+		}
+		available = {
+			is_subject = no
+		}
+		x = -2
+		y = 2
+		relative_position_id = COG_belgian_dominion
+		completion_reward = {
+			add_timed_idea = { idea = COG_creating_an_independent_economy days = 730 } #?
+		}
+	}
+	focus = {
+		id = COG_nationalise_katanga_industries
+		icon = GFX_goal_generic_demand_territory
+		cost = 10
+		prerequisite = {
+			focus = COG_independent_economy
+		}
+		x = -2
+		y = 3
+		relative_position_id = COG_belgian_dominion
+		completion_reward = {
+			1065 = { #?
+				add_extra_state_shared_building_slots = 2
+				add_building_construction = {
+					type = industrial_complex
+					level = 2
+					instant_build = yes
+				}
+			}
+		}
+	}
+	focus = {
+		id = COG_civilian_to_work_earth
+		icon = GFX_goal_generic_construct_civilian
+		cost = 10
+		prerequisite = {
+			focus = COG_pierre_VIII_du_Kongo
+			focus = COG_create_a_congo_republic
+		}
+		available = {
+			295 = { #??
+				owner = {
+					OR = {
+						tag = ROOT
+						is_subject_of = ROOT
+					}
+				}
+			}
+		}
+		x = 0
+		y = 2
+		relative_position_id = COG_belgian_dominion
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus COG_civilian_to_work_earth"
+			295 = {
+				add_extra_state_shared_building_slots = 2
+			}
+		}
+	}
+	focus = {
+		id = COG_our_develop_economic
+		icon = GFX_focus_generic_self_management
+		cost = 10
+		prerequisite = {
+			focus = COG_civilian_to_work_earth
+		}
+		available = {
+			538 = {
+			    owner = {
+					OR = {
+						tag = ROOT
+						is_subject_of = ROOT
+					}
+				}
+			}
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		x = 0
+		y = 3
+		relative_position_id = COG_belgian_dominion
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus COG_our_develop_economic"
+			538 = {
+				add_extra_state_shared_building_slots = 2
+				add_building_construction = {
+					type = arms_factory
+					level = 1
+					instant_build = yes
+				}
+			}
+		}
+	}
+	focus = {
+		id = COG_independent_development_of_uranium #COG_independent_development_of_uranium name ?
+		icon = GFX_goal_generic_demand_territory
+		cost = 10
+		prerequisite = {
+			focus = COG_nationalise_katanga_industries
+		}
+		prerequisite = {
+			focus = COG_our_develop_economic
+		}
+		mutually_exclusive = {
+			focus = COG_joint_development_of_uranium
+		}
+		available = {
+			NOT = { has_completed_focus = COG_investments_in_exchange_for_uranium } #?
+		}
+		x = 0
+		y = 5
+		relative_position_id = COG_belgian_dominion
+		completion_reward = {
+			add_political_power = -200
+			add_tech_bonus = {
+				#name = MAN_purchase_german_licenses
+				bonus = 1
+				uses = 2
+				category = nuclear
+			}
+			# уран вновь появится в стейте Конго.
+		}
+	}
+	focus = {
+		id = COG_union_with_military_org
 		icon = GFX_z_goal_upgrade_belg_weapon
-		cost = 7.15
+		cost = 10
 		prerequisite = {
-			focus = COG_auto_in_army
-			focus = COG_union_with_military_org
+			focus = COG_create_a_congo_republic
 		}
 		x = 0
 		y = 1
-		relative_position_id = COG_auto_in_army
+		relative_position_id = COG_create_a_congo_republic
 		ai_will_do = {
 			factor = 1
 		}
@@ -931,585 +3239,6 @@ focus_tree = {
 			}
 		}
 	}
-	
-	focus = {
-		id = COG_our_howitzer
-		icon = GFX_goal_generic_army_artillery2
-		cost = 7.15
-		prerequisite = {
-			focus = COG_level_up_belg_weapon
-		}
-		x = 0
-		y = 1
-		relative_position_id = COG_level_up_belg_weapon
-		ai_will_do = {
-		    factor = 1
-		}
-		completion_reward = {
-			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus COG_our_howitzer"
-			add_tech_bonus = {
-				bonus = 1
-				uses = 1
-				category = artillery
-				name = COG_our_howitzer
-			}
-		}
-	}
-	
-	
-	##############################
-	##### HISTORICAL SECTION #####
-	##############################
-	
-	focus = {
-		id = COG_colonial_three
-		icon = GFX_z_goal_colonial_three
-		cost = 10
-		mutually_exclusive = {
-			focus = COG_repatriation_time
-		}
-		x = 4
-		y = 0
-		relative_position_id = COG_airport_leopoldville
-		ai_will_do = {
-			factor = 10
-			modifier = {
-				factor = 0
-				OR = {
-					has_country_flag = NW_COG_AI_NEUTRAL_ALTERNATE
-					has_country_flag = NW_COG_AI_FASCIST
-				}
-			}
-		}
-		completion_reward = {
-			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus COG_colonial_three"
-			add_political_power = 100
-		}
-	}
-	
-	focus = {
-		id = COG_joint_development_uranium
-		icon = GFX_focus_wonderweapons
-		cost = 10
-		prerequisite = {
-			focus = COG_colonial_three
-		}
-		x = 2
-		y = 1
-		relative_position_id = COG_colonial_three
-		cancel_if_invalid = yes
-		continue_if_invalid = no
-		available_if_capitulated = yes
-		ai_will_do = {
-			factor = 1
-		}
-
-		completion_reward = {
-    		log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus COG_joint_development_uranium"
-			every_owned_state = {
-				add_extra_state_shared_building_slots = 1
-			}
-		}
-	}
-	
-	focus = {
-		id = COG_creation_bases_for_allied_army
-		icon = GFX_goal_generic_fortify_city
-		cost = 10
-		prerequisite = {
-			focus = COG_joint_development_uranium
-		}
-		x = 0
-		y = 1
-		relative_position_id = COG_joint_development_uranium
-		cancel_if_invalid = yes
-		continue_if_invalid = no
-		available_if_capitulated = yes
-		ai_will_do = {
-			factor = 1
-		}
-		completion_reward = {
-			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus COG_creation_bases_for_allied_army"
-			add_ideas = COG_creation_bases_for_allied_army
-			add_doctrine_cost_reduction = {
-				name = COG_creation_bases_for_allied_army
-				cost_reduction = 0.5
-				uses = 1
-				category = air_doctrine
-			}
-		}
-	}
-	
-	focus = {
-		id = COG_desire_liberate_ethiopia
-		icon = GFX_z_goal_cog_liberate_ethiopia
-		cost = 10
-		prerequisite = {
-			focus = COG_creation_bases_for_allied_army
-		}
-		x = 0
-		y = 1
-		relative_position_id = COG_creation_bases_for_allied_army
-		cancel_if_invalid = yes
-		continue_if_invalid = no
-		available_if_capitulated = yes
-		ai_will_do = {
-			factor = 1
-		}
-		completion_reward = {
-			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus COG_desire_liberate_ethiopia"
-			add_ideas = COG_desire_liberate_ethiopia
-			add_ai_strategy = {
-				type = protect
-				id = "ETH"
-				value = 200
-			}
-		}
-	}
-	
-	focus = {
-		id = COG_avia_training_ground
-		icon = GFX_goal_generic_construction
-		cost = 5
-		prerequisite = {
-			focus = COG_colonial_three
-		}
-		x = -2
-		y = 1
-		relative_position_id = COG_colonial_three
-		available = {
-			295 = {
-				owner = {
-					OR = {
-						tag = ROOT
-						is_subject_of = ROOT
-					}
-				}
-			}
-		}
-		ai_will_do = {
-			factor = 1
-		}
-		completion_reward = {
-			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus COG_avia_training_ground"
-			295 = {
-				add_building_construction = {
-					type = air_base
-					level = 1
-					instant_build = yes
-				}
-			}
-		}
-	}
-	
-	focus = {
-		id = COG_belgium_research_group
-		icon = GFX_goal_generic_scientific_exchange
-		cost = 10
-		prerequisite = {
-			focus = COG_avia_training_ground
-		}
-		x = 0
-		y = 1
-		relative_position_id = COG_avia_training_ground
-		cancel_if_invalid = yes
-		continue_if_invalid = no
-		available_if_capitulated = yes
-		ai_will_do = {
-			factor = 1
-		}
-		
-		available = {
-			is_in_faction_with = BEL
-		}
-
-		completion_reward = {
-    		log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus COG_belgium_research_group"
-			add_to_tech_sharing_group = COG_cog_bel_group
-			BEL = { add_to_tech_sharing_group = COG_cog_bel_group }
-			add_research_slot = 1
-		}
-	}
-	
-	focus = {
-		id = COG_black_go_to_work
-		icon = GFX_goal_generic_dangerous_deal
-		cost = 10
-		prerequisite = {
-			focus = COG_colonial_three
-		}
-		x = 0
-		y = 1
-		relative_position_id = COG_colonial_three
-		ai_will_do = {
-			factor = 1
-		}
-		completion_reward = {
-			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus COG_black_go_to_work"
-	    	295 = {
-				add_building_construction = {
-					type = industrial_complex
-					level = 1
-					instant_build = yes
-				}
-			}
-		}
-	}
-	
-	focus = {
-		id = COG_up_mines_katanga
-		icon = GFX_goal_generic_construction2
-		cost = 10
-		prerequisite = {
-			focus = COG_black_go_to_work
-		}
-		x = 0
-		y = 1
-		relative_position_id = COG_black_go_to_work
-		available = {
-			295 = {
-				owner = {
-					OR = {
-						tag = ROOT
-						is_subject_of = ROOT
-					}
-				}
-			}
-		}
-		ai_will_do = {
-			factor = 1
-		}
-		completion_reward = {
-			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus COG_up_mines_katanga"
-			1065 = {
-				add_building_construction = {
-    				type = industrial_complex
-					level = 1
-					instant_build = yes
-				}
-				add_extra_state_shared_building_slots = 2
-				add_resource = {
-					type = chromium
-					amount = 18
-				}
-				add_resource = {
-					type = aluminium
-					amount = 16
-				}
-				add_resource = {
-					type = steel
-					amount = 24
-				}
-			}
-		}
-	}
-	
-	focus = {
-		id = COG_production_level_up
-		icon = GFX_goal_generic_consumer_goods
-		cost = 10
-		prerequisite = {
-			focus = COG_up_mines_katanga
-		}
-		x = 0
-		y = 1
-		relative_position_id = COG_up_mines_katanga
-		ai_will_do = {
-			factor = 1
-		}
-		completion_reward = {
-    		log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus COG_production_level_up"
-			add_ideas = COG_production_level_up_idea
-			add_stability = -0.05
-		}
-	}
-	
-	focus = {
-		id = COG_fast_product_ore
-		icon = GFX_focus_generic_steel
-		cost = 10
-		prerequisite = {
-			focus = COG_production_level_up
-		}
-		x = 0
-		y = 1
-		relative_position_id = COG_production_level_up
-		available = {
-			295 = {
-				owner = {
-					OR = {
-						tag = ROOT
-						is_subject_of = ROOT
-					}
-				}
-			}
-		}
-		ai_will_do = {
-			factor = 1
-		}
-		completion_reward = {
-			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus COG_fast_product_ore"
-			295 = {
-				add_building_construction = {
-					type = industrial_complex
-					level = 1
-					instant_build = yes
-				}
-				add_extra_state_shared_building_slots = 2
-			   	add_resource = {
-					type = steel
-					amount = 26
-				}
-			}
-			add_stability = -0.05
-		}
-	}
-	
-	
-	################################
-	##### INDEPENDENCE SECTION #####
-	################################
-	
-	focus = {
-		id = COG_repatriation_time
-		icon = GFX_goal_tfv_sever_ties_with_uk
-		cost = 10
-		mutually_exclusive = {
-			focus = COG_colonial_three
-		}
-		x = 5
-		y = 0
-		relative_position_id = COG_colonial_three
-		ai_will_do = {
-			factor = 10
-			modifier = {
-				factor = 0
-				OR = {
-					is_historical_focus_on = yes
-					has_country_flag = NW_COG_AI_NEUTRAL
-				}
-			}
-		}
-		completion_reward = {
-			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus COG_repatriation_time"
-			add_autonomy_score = {
-				value = 100
-			}
-	    	add_ideas = COG_repatriation_time_idea
-		}
-	}
-	
-	focus = {
-		id = COG_trade_unions_for_white
-		icon = GFX_z_goal_trade_unions_for_white
-		cost = 10
-		prerequisite = {
-			focus = COG_repatriation_time
-		}
-		x = 0
-		y = 1
-		relative_position_id = COG_repatriation_time
-		available = {
-			295 = {
-				owner = {
-					OR = {
-						tag = ROOT
-						is_subject_of = ROOT
-					}
-				}
-			}
-		}
-		ai_will_do = {
-			factor = 1
-		}
-		completion_reward = {
-			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus COG_trade_unions_for_white"
-			295 = {
-				add_building_construction = {
-					type = industrial_complex
-					level = 1
-					instant_build = yes
-				}
-	    		add_extra_state_shared_building_slots = 2
-			}	
-		}
-	}
-	
-	focus = {
-		id = COG_trade_unions_for_black
-		icon = GFX_z_goal_trade_unions_for_black
-		cost = 10
-		prerequisite = {
-			focus = COG_trade_unions_for_white
-		}
-		x = 0
-		y = 1
-		relative_position_id = COG_trade_unions_for_white
-		available = {
-			295 = {
-				owner = {
-					OR = {
-    					tag = ROOT
-						is_subject_of = ROOT
-					}
-				}
-			}
-		}
-		ai_will_do = {
-			factor = 1
-		}
-		completion_reward = {
-			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus COG_trade_unions_for_black"
-			295 = {
-		    	add_building_construction = {
-			     	type = arms_factory
-					level = 1
-					instant_build = yes
-				}
-				add_extra_state_shared_building_slots = 2
-			}
-		}
-	}
-	
-	focus = {
-		id = COG_set_of_local_magistrates
-		icon = GFX_focus_generic_military_academy
-		cost = 10
-		prerequisite = {
-			focus = COG_trade_unions_for_black
-		}
-		x = 0
-		y = 1
-		relative_position_id = COG_trade_unions_for_black
-		ai_will_do = {
-			factor = 1
-		}
-		completion_reward = {
-			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus COG_set_of_local_magistrates"
-			add_political_power = 100
-			add_stability = 0.1
-			add_war_support = 0.05
-			add_autonomy_score = {
-				value = 100
-			}
-			country_event = { id = cog.4 }
-		}
-	}
-	
-	focus = {
-		id = COG_our_develop_economic
-		icon = GFX_focus_generic_self_management
-		cost = 10
-		prerequisite = {
-			focus = COG_set_of_local_magistrates
-		}
-		x = 0
-		y = 2
-		relative_position_id = COG_set_of_local_magistrates
-		available = {
-			538 = {
-			    owner = {
-					OR = {
-						tag = ROOT
-						is_subject_of = ROOT
-					}
-				}
-			}
-		}
-		ai_will_do = {
-			factor = 1
-		}
-		completion_reward = {
-			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus COG_our_develop_economic"
-			538 = {
-				add_building_construction = {
-					type = arms_factory
-					level = 1
-					instant_build = yes
-				}
-				add_extra_state_shared_building_slots = 2
-			}
-		}
-	}
-	
-	focus = {
-		id = COG_civilian_to_work_earth
-		icon = GFX_goal_generic_construct_civilian
-		cost = 10
-		prerequisite = {
-			focus = COG_our_develop_economic
-		}
-		x = 0
-		y = 1
-		relative_position_id = COG_our_develop_economic
-		available = {
-			295 = {
-				owner = {
-					OR = {
-						tag = ROOT
-						is_subject_of = ROOT
-					}
-				}
-			}
-		}
-		ai_will_do = {
-			factor = 1
-		}
-		completion_reward = {
-			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus COG_civilian_to_work_earth"
-			295 = {
-				add_extra_state_shared_building_slots = 2
-			}
-		}
-	}
-	
-	
-	####################################
-	##### AUTHORITARIANISM SECTION #####
-	####################################
-	
-	focus = {
-		id = COG_union_with_military_org
-		icon = GFX_z_goal_Shield_Laurels
-		cost = 10
-		prerequisite = {
-			focus = COG_set_of_local_magistrates
-		}
-		mutually_exclusive = {
-			focus = COG_end_of_rasism
-		}
-		x = -2
-		y = 1
-		relative_position_id = COG_set_of_local_magistrates
-		ai_will_do = {
-			factor = 1
-			modifier = {
-				factor = 0
-				has_country_flag = NW_COG_AI_FASCIST
-			}
-		}
-		available = {
-			hidden_trigger = {
-				NOT = { has_country_flag = cog.4.a_flag }
-			}
-		}
-		completion_reward = {
-			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus COG_union_with_military_org"
-			army_experience = 20
-			if = {
-				limit = { NOT = { has_government = neutrality } }
-				add_popularity = {
-					ideology = neutrality
-					popularity = 0.25
-				}
-				set_politics = {	
-					ruling_party = neutrality
-					elections_allowed = no
-				}
-			}
-		}
-	}
-	
 	focus = {
 		id = COG_military_in_civ_lives
 		icon = GFX_focus_generic_military_mission
@@ -1517,319 +3246,88 @@ focus_tree = {
 		prerequisite = {
 			focus = COG_union_with_military_org
 		}
-		x = -2
-		y = 1
-		relative_position_id = COG_union_with_military_org
-		ai_will_do = {
-			factor = 1
-		}
+		x = 0
+		y = 2
+		relative_position_id = COG_create_a_congo_republic
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus COG_military_in_civ_lives"
 			add_ideas = COG_freedomloving_generals
 		}
 	}
-	
 	focus = {
-		id = COG_stronges_aparteid
-		icon = GFX_focus_CZE_german_puppet
-		cost = 10
-		prerequisite = {
-			focus = COG_union_with_military_org
-		}
-		x = 0
-		y = 1
-		relative_position_id = COG_union_with_military_org
-		ai_will_do = {
-			factor = 1
-		}
-		completion_reward = {
-			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus COG_stronges_aparteid"
-			add_stability = 0.1
-			if = {
-				limit = {
-					has_idea = COG_low_skill_iq
-				}
-				swap_ideas = {
-					remove_idea = COG_low_skill_iq
-					add_idea = COG_cheap_labor
-				}
-			}
-			else = { add_ideas = COG_cheap_labor }
-		}
-	}
-	
-	focus = {
-		id = COG_create_a_congo_republic
-		icon = GFX_z_goal_create_a_congo_republic
-		cost = 10
-		prerequisite = {
-			focus = COG_stronges_aparteid
-		}
-		prerequisite = {
-			focus = COG_military_in_civ_lives
-		}
-		x = 1
-		y = 1
-		relative_position_id = COG_military_in_civ_lives
-		ai_will_do = {
-			factor = 1
-		}
-		completion_reward = {
-	    	log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus COG_create_a_congo_republic"
-			add_ideas = COG_create_a_congo_republic_idea
-			if = {
-				limit = {
-					is_puppet = yes
-				}
-				OVERLORD = {
-					country_event = {
-						id = cog.20
-					}
-				}
-			}
-		}
-	}
-	
-	focus = {
-		id = COG_independent_economy
-		icon = GFX_z_goal_gold_up
+		id = COG_recognize_dialects
+		icon = GFX_goal_generic_demand_territory
 		cost = 10
 		prerequisite = {
 			focus = COG_create_a_congo_republic
 		}
-		x = -7
+		x = -2
 		y = 1
 		relative_position_id = COG_create_a_congo_republic
-		cancel_if_invalid = yes
-		continue_if_invalid = no
-		available_if_capitulated = yes
-		ai_will_do = {
-			factor = 1
-		}
-		
 		completion_reward = {
-			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus COG_independent_economy"
-			add_ideas = COG_independent_economy
-		}
-	}
-	
-	focus = {
-		id = COG_nationalise_katanga_industries
-		icon = GFX_goal_generic_construct_civ_factory
-		cost = 10
-		prerequisite = {
-			focus = COG_independent_economy
-		}
-		x = 0
-		y = 1
-		relative_position_id = COG_independent_economy
-		ai_will_do = {
-			factor = 1
-		}
-		cancel_if_invalid = yes
-		continue_if_invalid = no
-		available_if_capitulated = yes
-		completion_reward = {
-			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus COG_nationalise_katanga_industries"
-			1065 = {
-				add_extra_state_shared_building_slots = 1
-				add_building_construction = {
-					type = industrial_complex
-					level = 1
-					instant_build = yes
-				}
+			every_controlled_state = {
+				limit = { is_original_congo_state = yes }
+				set_temp_variable = { lvl = COG_loyalty_lvl_var } # ?
+				add_to_temp_variable = { lvl = 1 }
+				clamp_temp_variable = { var = lvl min = 1 max = 5 }
+				custom_effect_tooltip = COG_increase_loyalty_lvl
+				
+				add_to_variable = { COG_loyalty_lvl_var = 1 }
+				clamp_variable = { var = COG_loyalty_lvl_var min = 1 max = 5 }
 			}
+			#hidden_effect = {
+				COG_update_administration_of_tribal_leaders_idea = yes
+			#}
 		}
 	}
-	
 	focus = {
-		id = COG_militarise_katanga_industries
-		icon = GFX_goal_generic_construct_mil_factory
+		id = COG_acquire_cabinda
+		icon = GFX_goal_generic_dangerous_deal
 		cost = 10
 		prerequisite = {
-			focus = COG_nationalise_katanga_industries
+			focus = COG_recognize_dialects
 		}
-		x = 0
-		y = 1
-		relative_position_id = COG_nationalise_katanga_industries
-		ai_will_do = {
-			factor = 1
-		}
-		cancel_if_invalid = yes
-		continue_if_invalid = no
-		available_if_capitulated = yes
-		completion_reward = {
-			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus COG_militarise_katanga_industries"
-			1065 = {
-				add_extra_state_shared_building_slots = 2
-				add_building_construction = {
-					type = arms_factory
-					level = 2
-					instant_build = yes
-				}
-			}
-		}
-	}
-	
-	focus = {
-		id = COG_independent_army
-		icon = GFX_z_goal_new_army
-		cost = 10
-		prerequisite = {
-			focus = COG_create_a_congo_republic
-		}
-		x = -5
-		y = 1
+		x = -2
+		y = 2
 		relative_position_id = COG_create_a_congo_republic
-		cancel_if_invalid = yes
-		continue_if_invalid = no
-		available_if_capitulated = yes
-		ai_will_do = {
-			factor = 1
-		}
-		completion_reward = {
-			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus COG_independent_army"
-			add_ideas = COG_independent_army
-		}
-	}
-	
-	focus = {
-		id = COG_self_development_of_uranium
-		icon = GFX_goal_generic_construction2
-		cost = 10
-		prerequisite = {
-			focus = COG_independent_army
-		}
-		x = 0
-		y = 1
-		relative_position_id = COG_independent_army
-		cancel_if_invalid = yes
-		continue_if_invalid = no
-		available_if_capitulated = yes
-		ai_will_do = {
-			factor = 1
-		}
-		
-		completion_reward = {
-			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus COG_self_development_of_uranium"
-			add_tech_bonus = {
-				name = COG_self_development_of_uranium
-				bonus = 1.0
-				category = nuclear
-			}
-		}
-	}
-	
-	focus = {
-		id = COG_expanding_educational_network
-		icon = GFX_focus_research
-		cost = 10
-		prerequisite = {
-			focus = COG_self_development_of_uranium
-		}
-		x = 0
-		y = 1
-		relative_position_id = COG_self_development_of_uranium
-		cancel_if_invalid = yes
-		continue_if_invalid = no
-		available_if_capitulated = yes
-		ai_will_do = {
-			factor = 1
-		}
-			
-		completion_reward = {
-			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus COG_expanding_educational_network"
-			add_research_slot = 1
-		}
-	}
-	
-	
-	focus = {
-		id = COG_develop_sea_trade
-		icon = GFX_goal_generic_positive_trade_relations
-		cost = 10
-		prerequisite = {
-			focus = COG_create_a_congo_republic
-		}
-		x = 0
-		y = 1
-		relative_position_id = COG_create_a_congo_republic
-		ai_will_do = {
-			factor = 1
-		}
-		cancel_if_invalid = yes
-		continue_if_invalid = no
-		available_if_capitulated = yes
-		completion_reward = {
-			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus COG_develop_sea_trade"
-			295 = {
-				add_building_construction = {
-					type = naval_base
-					province = 10968
-					level = 1
-					instant_build = yes
-				}
-			}
-		}
-	}
-	
-	focus = {
-		id = COG_french_investment
-		icon = GFX_focus_chi_reach_out_to_france
-		prerequisite = { focus = COG_develop_sea_trade }
-		mutually_exclusive = {
-			focus = COG_british_investment
-			focus = COG_german_investments
-			focus = COG_italian_investments
-		}
-		x = -3
-		y = 1
-		relative_position_id = COG_develop_sea_trade
-		
-		cost = 10
-		
-		cancel_if_invalid = yes
-		continue_if_invalid = no
-		available_if_capitulated = yes
-
 		ai_will_do = {
 			factor = 1
 		}
 		available = {
-			country_exists = event_target:NW_france_scope
-			NOT = { has_war_with = event_target:NW_france_scope }
+			industrial_complex > 0
 		}
-		bypass = {
-		}
-		select_effect = {
-		}
-
 		completion_reward = {
-			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus COG_french_investment"
-			add_ideas = COG_foreign_investments
-			random_owned_controlled_state = {
-				limit = {
-					free_building_slots = {
-						building = industrial_complex
-						size > 0
-						include_locked = yes
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus COG_acquire_cabinda"
+			1056 = {
+				owner = {
+					country_event = {
+   					    id = congo.42
 					}
-				}
-				add_extra_state_shared_building_slots = 1
-				add_building_construction = {
-					type = industrial_complex
-					level = 1
-					instant_build = yes
 				}
 			}
-			random_owned_controlled_state = {
-				limit = {
-					free_building_slots = {
-						building = arms_factory
-						size > 0
-						include_locked = yes
-					}
+		}
+	}
+	focus = {
+		id = COG_german_investments
+		icon = GFX_goal_generic_demand_territory
+		cost = 10
+		prerequisite = {
+			focus = COG_military_in_civ_lives
+		}
+		available = {
+			NOT = { has_war_with = GER }
+			GER = {
+				has_opinion = {
+					target = ROOT 
+					value > 49 
 				}
+			}
+		}
+		x = 3
+		y = 3
+		relative_position_id = COG_create_a_congo_republic
+		completion_reward = { #?
+			random_owned_controlled_state = { #?
 				add_extra_state_shared_building_slots = 1
 				add_building_construction = {
 					type = arms_factory
@@ -1837,25 +3335,228 @@ focus_tree = {
 					instant_build = yes
 				}
 			}
-			add_opinion_modifier = { target = event_target:NW_france_scope modifier = COG_french_investment }
-			event_target:NW_france_scope = { add_opinion_modifier = { target = ROOT modifier = COG_french_investment } }
+			add_tech_bonus = {
+				bonus = 1
+				uses = 1
+				category = infantry_weapons
+				#name = COG_level_up_belg_weapon
+			}
+			GER = { #?
+				add_opinion_modifier = {
+					target = ROOT
+					modifier = COG_investments_in_congo
+				}
+				reverse_add_opinion_modifier = { #?
+					target = ROOT
+					modifier = COG_investments_in_congo
+				}
+			}
 		}
 	}
-	
+	focus = {
+		id = COG_french_investment
+		icon = GFX_goal_generic_demand_territory
+		cost = 10
+		prerequisite = {
+			focus = COG_military_in_civ_lives
+		}
+		available = {
+			NOT = { has_war_with = FRA }
+			FRA = {
+				has_opinion = {
+					target = ROOT 
+					value > 49 
+				}
+			}
+		}
+		x = 1
+		y = 3
+		relative_position_id = COG_create_a_congo_republic
+		completion_reward = { #?
+			random_owned_controlled_state = { #?
+				add_extra_state_shared_building_slots = 1
+				add_building_construction = {
+					type = industrial_complex
+					level = 1
+					instant_build = yes
+				}
+			}
+			add_tech_bonus = {
+				bonus = 1
+				uses = 1
+				category = industry
+				#name = COG_level_up_belg_weapon
+			}
+			FRA = { #?
+				add_opinion_modifier = {
+					target = ROOT
+					modifier = COG_investments_in_congo
+				}
+				reverse_add_opinion_modifier = { #?
+					target = ROOT
+					modifier = COG_investments_in_congo
+				}
+			}
+		}
+	}
+	focus = {
+		id = COG_british_investment
+		icon = GFX_goal_generic_demand_territory
+		cost = 10
+		prerequisite = {
+			focus = COG_military_in_civ_lives
+		}
+		available = {
+			NOT = { has_war_with = ENG }
+			ENG = {
+				has_opinion = {
+					target = ROOT 
+					value > 49 
+				}
+			}
+		}
+		x = -1
+		y = 3
+		relative_position_id = COG_create_a_congo_republic
+		completion_reward = { #?
+			random_owned_controlled_state = { #?
+				add_extra_state_shared_building_slots = 1
+				add_building_construction = {
+					type = dockyard
+					level = 1
+					instant_build = yes
+				}
+			}
+			add_tech_bonus = {
+				bonus = 1
+				uses = 1
+				category = naval_equipment
+				#name = COG_level_up_belg_weapon
+			}
+			ENG = { #?
+				add_opinion_modifier = {
+					target = ROOT
+					modifier = COG_investments_in_congo
+				}
+				reverse_add_opinion_modifier = { #?
+					target = ROOT
+					modifier = COG_investments_in_congo
+				}
+			}
+		}
+	}
+	focus = {
+		id = COG_american_investment
+		icon = GFX_goal_generic_demand_territory
+		cost = 10
+		prerequisite = {
+			focus = COG_military_in_civ_lives
+		}
+		available = {
+			NOT = { has_war_with = USA }
+			USA = {
+				has_opinion = {
+					target = ROOT 
+					value > 49 
+				}
+			}
+		}
+		x = -3
+		y = 3
+		relative_position_id = COG_create_a_congo_republic
+		completion_reward = { #?
+			random_owned_controlled_state = { #?
+				add_extra_state_shared_building_slots = 1
+				add_building_construction = {
+					type = industrial_complex
+					level = 1
+					instant_build = yes
+				}
+			}
+			random_owned_controlled_state = { #?
+				add_extra_state_shared_building_slots = 1
+				add_building_construction = {
+					type = arms_factory
+					level = 1
+					instant_build = yes
+				}
+			}
+			USA = { #?
+				add_opinion_modifier = {
+					target = ROOT
+					modifier = COG_investments_in_congo
+				}
+				reverse_add_opinion_modifier = { #?
+					target = ROOT
+					modifier = COG_investments_in_congo
+				}
+			}
+		}
+	}
+	focus = {
+		id = COG_introduce_dollars_into_wide_circulation
+		icon = GFX_goal_generic_demand_territory
+		cost = 10
+		prerequisite = {
+			focus = COG_american_investment
+		}
+		prerequisite = {
+			focus = COG_seek_alliance_with_great_powers
+		}
+		x = -3
+		y = 5
+		relative_position_id = COG_create_a_congo_republic
+		completion_reward = { #?
+			random_owned_controlled_state = { #?
+				add_extra_state_shared_building_slots = 1
+				add_building_construction = {
+					type = industrial_complex
+					level = 1
+					instant_build = yes
+				}
+			}
+			add_timed_idea = { idea = COG_introduction_of_dollars_into_economy days = 365 }
+		}
+	}
+	focus = {
+		id = COG_uganda
+		icon = GFX_goal_generic_intelligence_exchange
+		cost = 10
+		prerequisite = {
+			focus = COG_british_investment
+		}
+		prerequisite = {
+			focus = COG_seek_alliance_with_great_powers
+		}
+		x = -1
+		y = 5
+		relative_position_id = COG_create_a_congo_republic
+		ai_will_do = {
+			factor = 1
+		}
+		available = {
+			industrial_complex > 3
+			548 = { owner = { tag = ENG } }
+			is_subject = no
+		}
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus COG_uganda"
+			ENG = { country_event = { id = congo.44 } } #?
+		}
+	}
 	focus = {
 		id = COG_middle_congo
 		icon = GFX_z_goal_diplomacy_1
-		prerequisite = { focus = COG_french_investment }
-		x = 0
-		y = 1
-		relative_position_id = COG_french_investment
-		
 		cost = 10
-		
-		cancel_if_invalid = yes
-		continue_if_invalid = no
-		available_if_capitulated = yes
-
+		prerequisite = {
+			focus = COG_seek_alliance_with_great_powers
+		}
+		prerequisite = {
+			focus = COG_french_investment
+		}
+		x = 1
+		y = 5
+		relative_position_id = COG_create_a_congo_republic
 		ai_will_do = {
 			factor = 1
 		}
@@ -1864,819 +3565,871 @@ focus_tree = {
 			539 = { owner = { tag = event_target:NW_france_scope } }
 			1005 = { owner = { tag = event_target:NW_france_scope } }
 		}
-		bypass = {
-		}
-		select_effect = {
-		}
-
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus COG_middle_congo"
-			event_target:NW_france_scope = { country_event = { id = cog.14 } }
+			event_target:NW_france_scope = { country_event = { id = congo.46 } }
 		}
 	}
-	
-	focus = {
-		id = COG_british_investment
-		icon = GFX_focus_chi_british_cooperation
-		prerequisite = { focus = COG_develop_sea_trade }
-		mutually_exclusive = {
-			focus = COG_french_investment
-			focus = COG_german_investments
-			focus = COG_italian_investments
-		}
-		x = -1
-		y = 1
-		relative_position_id = COG_develop_sea_trade
-		
-		cost = 10
-		
-		cancel_if_invalid = yes
-		continue_if_invalid = no
-		available_if_capitulated = yes
-
-		ai_will_do = {
-			factor = 1
-		}
-		available = {
-			country_exists = ENG
-			NOT = { has_war_with = ENG }
-		}
-		bypass = {
-		}
-		select_effect = {
-		}
-
-		completion_reward = {
-			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus COG_british_investment"
-			add_ideas = COG_foreign_investments
-			random_owned_controlled_state = {
-				limit = {
-					free_building_slots = {
-						building = industrial_complex
-						size > 0
-						include_locked = yes
-					}
-				}
-				add_extra_state_shared_building_slots = 1
-				add_building_construction = {
-					type = industrial_complex
-					level = 1
-					instant_build = yes
-				}
-			}
-			random_owned_controlled_state = {
-				limit = {
-					free_building_slots = {
-						building = arms_factory
-						size > 0
-						include_locked = yes
-					}
-				}
-				add_extra_state_shared_building_slots = 1
-				add_building_construction = {
-					type = arms_factory
-					level = 1
-					instant_build = yes
-				}
-			}
-			add_opinion_modifier = { target = ENG modifier = COG_british_investment }
-			ENG = { add_opinion_modifier = { target = ROOT modifier = COG_british_investment } }
-		}
-	}
-	
-	focus = {
-		id = COG_uganda
-		icon = GFX_goal_generic_intelligence_exchange
-		prerequisite = { focus = COG_british_investment }
-		x = 0
-		y = 1
-		relative_position_id = COG_british_investment
-		
-		cost = 10
-		
-		cancel_if_invalid = yes
-		continue_if_invalid = no
-		available_if_capitulated = yes
-
-		ai_will_do = {
-			factor = 1
-		}
-		available = {
-			industrial_complex > 3
-			548 = { owner = { tag = ENG } }
-		}
-		bypass = {
-		}
-		select_effect = {
-		}
-
-		completion_reward = {
-			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus COG_uganda"
-			ENG = { country_event = { id = cog.16 } }
-		}
-	}
-	
-	focus = {
-		id = COG_german_investments
-		icon = GFX_focus_chi_mission_to_germany
-		prerequisite = { focus = COG_develop_sea_trade }
-		mutually_exclusive = {
-			focus = COG_french_investment
-			focus = COG_british_investment
-			focus = COG_italian_investments
-		}
-		x = 1
-		y = 1
-		relative_position_id = COG_develop_sea_trade
-		
-		cost = 10
-		
-		cancel_if_invalid = yes
-		continue_if_invalid = no
-		available_if_capitulated = yes
-
-		ai_will_do = {
-			factor = 1
-		}
-		available = {
-			country_exists = GER
-			NOT = { has_war_with = GER }
-		}
-		bypass = {
-		}
-		select_effect = {
-		}
-
-		completion_reward = {
-			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus COG_german_investments"
-			add_ideas = COG_foreign_investments
-			random_owned_controlled_state = {
-				limit = {
-					free_building_slots = {
-						building = industrial_complex
-						size > 0
-						include_locked = yes
-					}
-				}
-				add_extra_state_shared_building_slots = 1
-				add_building_construction = {
-					type = industrial_complex
-					level = 1
-					instant_build = yes
-				}
-			}
-			random_owned_controlled_state = {
-				limit = {
-					free_building_slots = {
-						building = arms_factory
-						size > 0
-						include_locked = yes
-					}
-				}
-				add_extra_state_shared_building_slots = 1
-				add_building_construction = {
-					type = arms_factory
-					level = 1
-					instant_build = yes
-				}
-			}
-			add_opinion_modifier = { target = GER modifier = COG_german_investments }
-			GER = { add_opinion_modifier = { target = ROOT modifier = COG_german_investments } }
-		}
-	}
-	
 	focus = {
 		id = COG_advisers_of_wehrmacht
 		icon = GFX_z_goal_war_department
-		prerequisite = { focus = COG_german_investments }
-		x = 0
-		y = 1
-		relative_position_id = COG_german_investments
-		
 		cost = 10
-		
-		cancel_if_invalid = yes
-		continue_if_invalid = no
-		available_if_capitulated = yes
-
+		prerequisite = {
+			focus = COG_german_investments
+		}
+		prerequisite = {
+			focus = COG_seek_alliance_with_great_powers
+		}
+		x = 3
+		y = 5
+		relative_position_id = COG_create_a_congo_republic
 		ai_will_do = {
 			factor = 1
 		}
 		available = {
 			GER = { has_government = fascism }
 		}
-		bypass = {
-		}
-		select_effect = {
-		}
-
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus COG_advisers_of_wehrmacht"
 			add_ideas = COG_advisers_of_wehrmacht
 		}
 	}
-	
 	focus = {
-		id = COG_italian_investments
-		icon = GFX_z_goal_italy
-		prerequisite = { focus = COG_develop_sea_trade }
-		mutually_exclusive = {
-			focus = COG_french_investment
+		id = COG_develop_sea_trade
+		icon = GFX_goal_generic_positive_trade_relations
+		cost = 10
+		prerequisite = {
+			focus = COG_american_investment
 			focus = COG_british_investment
+			focus = COG_french_investment
 			focus = COG_german_investments
 		}
-		x = 3
-		y = 1
-		relative_position_id = COG_develop_sea_trade
-		
+		x = -2
+		y = 4
+		relative_position_id = COG_create_a_congo_republic
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus COG_develop_sea_trade"
+			295 = { # ??
+				add_building_construction = {
+					type = naval_base
+					province = 10968
+					level = 2
+					instant_build = yes
+				}
+			}
+		}
+	}
+	focus = { # !
+		id = COG_joint_development_of_uranium
+		icon = GFX_goal_generic_demand_territory
 		cost = 10
-		
-		cancel_if_invalid = yes
-		continue_if_invalid = no
-		available_if_capitulated = yes
-
-		ai_will_do = {
-			factor = 1
+		prerequisite = {
+			focus = COG_german_investments
+			focus = COG_french_investment
+			focus = COG_british_investment
+			focus = COG_american_investment
+		}
+		mutually_exclusive = {
+			focus = COG_independent_development_of_uranium
+		}
+		x = 2
+		y = 4
+		relative_position_id = COG_create_a_congo_republic
+		completion_reward = {
+			# Уран вернётся, за каждый выполненный фокус на инвестиции, при УСЛОВИИ, что вы не в войне с инвестировавшей страной и она существует, вы получите +2 фабрики, но отдадите 1/5 урана в их столицу.
+		}
+	}
+	focus = {
+		id = COG_seek_alliance_with_great_powers
+		icon = GFX_goal_generic_demand_territory
+		cost = 10
+		prerequisite = {
+			focus = COG_american_investment
+			focus = COG_british_investment
+			focus = COG_french_investment
+			focus = COG_german_investments
 		}
 		available = {
-			country_exists = ITA
-			NOT = { has_war_with = ITA }
+			is_subject = no
 		}
-		bypass = {
-		}
-		select_effect = {
-		}
-
+		x = 0
+		y = 4
+		relative_position_id = COG_create_a_congo_republic
 		completion_reward = {
-			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus COG_italian_investments"
-			add_ideas = COG_foreign_investments
-			random_owned_controlled_state = {
-				limit = {
-					free_building_slots = {
-						building = industrial_complex
-						size > 0
-						include_locked = yes
-					}
-				}
-				add_extra_state_shared_building_slots = 1
-				add_building_construction = {
-					type = industrial_complex
-					level = 1
-					instant_build = yes
-				}
-			}
-			random_owned_controlled_state = {
-				limit = {
-					free_building_slots = {
-						building = arms_factory
-						size > 0
-						include_locked = yes
-					}
-				}
-				add_extra_state_shared_building_slots = 1
-				add_building_construction = {
-					type = arms_factory
-					level = 1
-					instant_build = yes
-				}
-			}
-			add_opinion_modifier = { target = ITA modifier = COG_italian_investments }
-			ITA = { add_opinion_modifier = { target = ROOT modifier = COG_italian_investments } }
+			# Будет открыта категория решений «Поиск союзника» !
+			unlock_decision_category_tooltip = nw_join_faction_category
+			set_country_flag = nw_join_faction_check_opinion
+			#hidden_effect = { #?
+				activate_targeted_decision = { target = ENG decision = nw_generic_ask_to_join_faction }
+				activate_targeted_decision = { target = FRA decision = nw_generic_ask_to_join_faction }
+				activate_targeted_decision = { target = USA decision = nw_generic_ask_to_join_faction }
+				activate_targeted_decision = { target = GER decision = nw_generic_ask_to_join_faction }
+			#}
 		}
 	}
 	
+	# ]
+	
+	# Ветка Королевства [
+	
 	focus = {
-		id = COG_lessons_from_ethiopian_war
-		icon = GFX_goal_generic_army_doctrines
-		prerequisite = { focus = COG_italian_investments }
+		id = COG_pierre_VIII_du_Kongo #COG_pierre_VIII_du_Kongo ?
+		icon = GFX_z_goal_monarchism_1
+		cost = 10
+		prerequisite = {
+			focus = COG_belgian_dominion
+		}
+		mutually_exclusive = {
+			focus = COG_create_a_congo_republic
+		}
+		available = {
+			always = no
+		}
+		x = 6
+		y = 1
+		relative_position_id = COG_belgian_dominion
+		completion_reward = {
+			custom_effect_tooltip = COG_pierre_VIII_du_Kongo_tt #?
+			#hidden_effect = {
+				every_state = { #?
+					limit = { is_original_congo_state = yes }
+					if = { #?
+						limit = { check_variable = { COG_loyalty_lvl_var = 5 } }
+						set_variable = { COG_loyalty_lvl_var = 2 }
+					}
+					else_if = {
+						limit = { check_variable = { COG_loyalty_lvl_var = 4 } }
+						set_variable = { COG_loyalty_lvl_var = 2 }
+					}
+					else_if = {
+						limit = { check_variable = { COG_loyalty_lvl_var = 2 } }
+						set_variable = { COG_loyalty_lvl_var = 4 }
+					}
+					else_if = {
+						limit = { check_variable = { COG_loyalty_lvl_var = 1 } }
+						set_variable = { COG_loyalty_lvl_var = 4 }
+					}
+				}
+				COG_update_administration_of_tribal_leaders_idea = yes
+			#}
+		}
+	}
+	focus = {
+		id = COG_elephants
+		#text = SKM_elephants #!
+		icon = GFX_z_goal_elephants
+		cost = 7.15
+		prerequisite = {
+			focus = COG_pierre_VIII_du_Kongo
+		}
+		x = -2
+		y = 1
+		relative_position_id = COG_pierre_VIII_du_Kongo
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus COG_elephants"
+			set_technology = {
+				#elephant_art_support = 1
+				elephant_art_support_unit = 1
+			}
+			set_variable = { ETH_elephants_trait_var = 2 }
+			add_ideas = ETH_elephants_2
+			unlock_decision_category_tooltip = ETH_spawn_elephants_category
+			#hidden_effect = {
+				# if = { #??
+					# limit = {
+						# OR = {
+							# has_idea = LIB_elephants
+							# has_idea = ETH_elephants
+							# has_idea = ETH_elephants_2
+							# has_idea = ETH_elephants_3
+							# has_idea = ETH_elephants_4
+							# has_idea = ETH_elephants_5
+						# }
+					# }
+					# set_temp_variable = { total_elephant_equipment = ETH_elephants_trait_var }
+					# set_temp_variable = { num_elephant_states = 0 }
+					# every_controlled_state = {
+						# limit = { has_state_flag = elephant_spawn_state_flag }
+						# add_to_temp_variable = { num_elephant_states = 1 }
+					# }
+					# multiply_temp_variable = { total_elephant_equipment = num_elephant_states }
+					# #subtract_from_temp_variable = { total_elephant_equipment = minus_elephants_weekly }
+					# add_equipment_to_stockpile = {
+						# type = elephant_equipment
+						# amount = total_elephant_equipment
+					# }
+					# #set_variable = { total_elephant_equipment_weekly = total_elephant_equipment }
+					# log = "[GetDateText]: [This.GetName] ([This.GetTag]): плус [?total_elephant_equipment] слонов"
+				# }
+			#}
+		}
+	}
+	focus = { #!
+		id = COG_back_to_ivory_mining #COG_back_to_ivory_mining name?
+		icon = GFX_z_goal_monarchism_1
+		cost = 5
+		prerequisite = {
+			focus = COG_pierre_VIII_du_Kongo
+		}
+		available = {
+			has_equipment = { elephant_equipment > 0 }
+			#has_completed_focus = COG_elephants ?
+		}
+		x = -4
+		y = 1
+		relative_position_id = COG_pierre_VIII_du_Kongo
+		completion_reward = {
+			custom_effect_tooltip = start_selling_ivory_tooltip
+		}
+	}
+	focus = {
+		id = COG_reclaim_mbanza_congo
+		icon = GFX_z_goal_monarchism_1
+		cost = 10
+		prerequisite = {
+			focus = COG_pierre_VIII_du_Kongo
+		}
+		available = {
+			is_subject = no
+		}
 		x = 0
 		y = 1
-		relative_position_id = COG_italian_investments
-		
-		cost = 10
-		
-		cancel_if_invalid = yes
-		continue_if_invalid = no
-		available_if_capitulated = yes
-
-		ai_will_do = {
-			factor = 1
-		}
-		available = {
-			
-		}
-		bypass = {
-		}
-		select_effect = {
-		}
-
+		relative_position_id = COG_pierre_VIII_du_Kongo
 		completion_reward = {
-			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus COG_lessons_from_ethiopian_war"
-			random_owned_controlled_state = {
+			every_state = { #?
 				limit = {
-					free_building_slots = {
-						building = arms_factory
-						size > 0
-						include_locked = yes
+					OR = {
+						state = 1056
+						state = 540
+						state = 1044
+						state = 1045
 					}
 				}
-				add_extra_state_shared_building_slots = 1
-				add_building_construction = {
-					type = arms_factory
-					level = 1
-					instant_build = yes
+				add_claim_by = ROOT
+				controller = {
+					ROOT = {
+						create_wargoal = {
+							type = take_state_focus
+							target = PREV
+							generator = { 1056 540 1044 1045 } #?
+						}
+						add_ai_strategy = { #?
+							type = antagonize
+							id = PREV
+							value = 200
+						}
+						add_ai_strategy = {
+							type = conquer
+							id = PREV
+							value = 100
+						}
+						add_ai_strategy = {
+							type = declare_war
+							id = PREV
+							value = 100
+						}
+					}
+					if = { #?
+						limit = { original_tag = POR }
+						ROOT = { activate_targeted_decision = { target = POR decision = COG_white_peace } } #add_to_array = { COG_white_peace_countries = PREV }
+					}
 				}
-			}
-			add_doctrine_cost_reduction = {
-				name = COG_lessons_from_ethiopian_war
-				cost_reduction = 0.5
-				uses = 2
-				category = land_doctrine
 			}
 		}
 	}
-	
 	focus = {
-		id = COG_free_congo
-		icon = GFX_z_goal_near_autonomy_status
-		prerequisite = {
-			focus = COG_middle_congo
-			focus = COG_uganda
-			focus = COG_advisers_of_wehrmacht
-			focus = COG_lessons_from_ethiopian_war
-		}
-		x = 1
-		y = 1
-		relative_position_id = COG_uganda
-		
+		id = COG_reclaim_congo_brazzaville
+		icon = GFX_z_goal_monarchism_1
 		cost = 10
-		
-		cancel_if_invalid = yes
-		continue_if_invalid = no
-		available_if_capitulated = yes
-
-		ai_will_do = {
-			factor = 10
+		prerequisite = {
+			focus = COG_pierre_VIII_du_Kongo
+		}
+		available = {
+			is_subject = no
+		}
+		x = 2
+		y = 1
+		relative_position_id = COG_pierre_VIII_du_Kongo
+		completion_reward = {
+			every_state = { #?
+				limit = {
+					OR = {
+						state = 1005
+					}
+				}
+				add_claim_by = ROOT
+				controller = {
+					ROOT = {
+						create_wargoal = {
+							type = take_state_focus
+							target = PREV
+							generator = { 1005 }
+						}
+						add_ai_strategy = { #?
+							type = antagonize
+							id = PREV
+							value = 200
+						}
+						add_ai_strategy = {
+							type = conquer
+							id = PREV
+							value = 100
+						}
+						add_ai_strategy = {
+							type = declare_war
+							id = PREV
+							value = 100
+						}
+					}
+					if = { #?
+						limit = { original_tag = FRA }
+						# Если этими землями владеет Франция и у неё нет стейтов соседствующих с Конго-Браззавилем, то будет доступно решение на белый мир при захвате Конго-Бразильвиля, который останется за Конго. ??
+						ROOT = { activate_targeted_decision = { target = PREV decision = COG_white_peace } } #add_to_array = { COG_white_peace_countries = PREV }
+					}
+				}
+			}
+		}
+	}
+	focus = {
+		id = COG_support_for_makand #COG_support_for_makand
+		icon = GFX_z_goal_monarchism_1
+		cost = 10
+		prerequisite = {
+			focus = COG_pierre_VIII_du_Kongo
 		}
 		available = {
 			OR = {
-				has_autonomy_state = autonomy_dominion
-				has_autonomy_state = autonomy_satellite
+				has_idea = COG_cotton_roads_lvl_1
+				has_idea = COG_cotton_roads_lvl_2
+				has_idea = COG_cotton_roads_lvl_3
+				has_idea = COG_cotton_roads_lvl_4
+				has_idea = COG_cotton_roads_lvl_5
+			}
+			custom_trigger_tooltip = {
+				tooltip = COG_evolues_var_more_than_2500 #??
+				check_variable = { COG_evolues_var > 2499 }
 			}
 		}
-		bypass = {
-		}
-		select_effect = {
-		}
-
-		completion_reward = {
-			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus COG_free_congo"
-			add_political_power = 100
-			OVERLORD = {
-				set_autonomy = {
-					target = ROOT
-					autonomy_state = autonomy_free
-				}
-			}
-			hidden_effect = { drop_cosmetic_tag = yes }
+		x = -3
+		y = 2
+		relative_position_id = COG_pierre_VIII_du_Kongo
+		completion_reward = { #??
+			add_to_variable = { COG_evolues_var = -2500 tooltip = COG_evolues_var_tooltip }
+			custom_effect_tooltip = COG_support_for_makand_tt
+			add_ideas = COG_influence_of_makand
+			#swap_ideas ?
+			#hidden_effect = {
+				COG_cotton_roads_lvl_update = yes #тултип неправильный !
+			#}
+			# динамический НД «Хлопковые дороги» получит +10% к скорости ремонта инфраструктуры за каждый уровень. !
 		}
 	}
-	
 	focus = {
-		id = COG_seek_alliance_with_great_powers
-		icon = GFX_z_goal_handshake_across_ocean
-		prerequisite = { focus = COG_free_congo }
-		mutually_exclusive = { focus = COG_neutrality_focus focus = COG_their_way }
-		x = -2
-		y = 1
-		relative_position_id = COG_free_congo
-		
-		cost = 10
-		
-		cancel_if_invalid = yes
-		continue_if_invalid = no
-		available_if_capitulated = yes
-
-		ai_will_do = {
-			factor = 2
-		}
-		available = {
-			is_subject = no
-		}
-		bypass = {
-		}
-		select_effect = {
-		}
-
-		completion_reward = {
-			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus COG_seek_alliance_with_great_powers"
-			add_ideas = COG_seek_alliance_with_great_powers_idea
-			if = {
-				limit = { has_completed_focus = COG_french_investment }
-				add_opinion_modifier = { target = event_target:NW_france_scope modifier = COG_seek_alliance_with_great_powers_idea }
-				event_target:NW_france_scope = { add_opinion_modifier = { target = ROOT modifier = COG_seek_alliance_with_great_powers_idea } }
-			}
-			if = {
-				limit = { has_completed_focus = COG_british_investment }
-				add_opinion_modifier = { target = ENG modifier = COG_seek_alliance_with_great_powers_idea }
-				ENG = { add_opinion_modifier = { target = ROOT modifier = COG_seek_alliance_with_great_powers_idea } }
-			}
-			if = {
-				limit = { has_completed_focus = COG_german_investments }
-				add_opinion_modifier = { target = GER modifier = COG_seek_alliance_with_great_powers_idea }
-				GER = { add_opinion_modifier = { target = ROOT modifier = COG_seek_alliance_with_great_powers_idea } }
-			}
-			if = {
-				limit = { has_completed_focus = COG_italian_investments }
-				add_opinion_modifier = { target = ITA modifier = COG_seek_alliance_with_great_powers_idea }
-				ITA = { add_opinion_modifier = { target = ROOT modifier = COG_seek_alliance_with_great_powers_idea } }
-			}
-		}
-	}
-	
-	focus = {
-		id = COG_neutrality_focus
-		icon = GFX_goal_generic_neutrality_focus
-		prerequisite = { focus = COG_free_congo }
-		mutually_exclusive = { focus = COG_seek_alliance_with_great_powers focus = COG_their_way }
-		x = 0
-		y = 1
-		relative_position_id = COG_free_congo
-		
-		cost = 10
-		
-		cancel_if_invalid = yes
-		continue_if_invalid = no
-		available_if_capitulated = yes
-
-		ai_will_do = {
-			factor = 2
-		}
-		available = {
-			is_subject = no
-		}
-		bypass = {
-		}
-		select_effect = {
-		}
-
-		completion_reward = {
-			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus COG_neutrality_focus"
-			add_stability = 0.1
-			add_ideas = neutrality_idea
-			
-		}
-	}
-	
-	focus = {
-		id = COG_their_way
-		icon = GFX_goal_generic_alliance
-		prerequisite = { focus = COG_free_congo }
-		mutually_exclusive = { focus = COG_seek_alliance_with_great_powers focus = COG_neutrality_focus }
-		x = 2
-		y = 1
-		relative_position_id = COG_free_congo
-		
-		cost = 10
-		
-		cancel_if_invalid = yes
-		continue_if_invalid = no
-		available_if_capitulated = yes
-
-		ai_will_do = {
-			factor = 2
-		}
-		available = {
-			is_subject = no
-		}
-		bypass = {
-		}
-		select_effect = {
-		}
-
-		completion_reward = {
-			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus COG_their_way"
-			set_rule = { can_create_factions = yes }
-			create_faction = COG_equatorial_union
-		}
-	}
-	
-	focus = {
-		id = COG_acquire_cabinda
-		icon = GFX_goal_generic_dangerous_deal
+		id = COG_create_kingdoms_military_industry
+		icon = GFX_z_goal_monarchism_1
 		cost = 10
 		prerequisite = {
-			focus = COG_create_a_congo_republic
+			focus = COG_support_for_makand
 		}
-		x = 3
-		y = 1
-		relative_position_id = COG_create_a_congo_republic
-		cancel_if_invalid = yes
-		continue_if_invalid = no
-		available_if_capitulated = yes
-		ai_will_do = {
-			factor = 1
+		prerequisite = {
+			focus = COG_our_develop_economic
 		}
-		available = {
-			industrial_complex > 0
-		}
-		
+		x = -4
+		y = 3
+		relative_position_id = COG_pierre_VIII_du_Kongo
 		completion_reward = {
-			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus COG_acquire_cabinda"
-			1056 = {
-				owner = {
-					country_event = {
-   					    id = cog.12
+			random_owned_controlled_state = { #?
+				add_extra_state_shared_building_slots = 1
+				add_building_construction = {
+					type = arms_factory
+					level = 1
+					instant_build = yes
+				}
+			}
+			random_owned_controlled_state = { #?
+				add_extra_state_shared_building_slots = 1
+				add_building_construction = {
+					type = arms_factory
+					level = 1
+					instant_build = yes
+				}
+			}
+		}
+	}
+	focus = {
+		id = COG_revive_the_royal_council
+		icon = GFX_z_goal_monarchism_1
+		cost = 10
+		prerequisite = {
+			focus = COG_pierre_VIII_du_Kongo
+		}
+		x = -1
+		y = 2
+		relative_position_id = COG_pierre_VIII_du_Kongo
+		completion_reward = {
+			add_ideas = COG_the_royal_council
+		}
+	}
+	focus = {
+		id = COG_restore_the_federal_kingdom #COG_restore_the_federal_kingdom
+		icon = GFX_z_goal_monarchism_1
+		cost = 10
+		prerequisite = {
+			focus = COG_reclaim_mbanza_congo
+		}
+		prerequisite = {
+			focus = COG_reclaim_congo_brazzaville
+		}
+		x = 1
+		y = 2
+		relative_position_id = COG_pierre_VIII_du_Kongo
+		completion_reward = {
+			custom_effect_tooltip = COG_restore_the_federal_kingdom_tt
+			unlock_decision_category_tooltip = COG_integration_of_african_kingdoms
+			#hidden_effect = {
+				country_event = { id = congo.48 days = 100 }
+				activate_targeted_decision = { target = 1044 decision = COG_integrate_kingdom_decision }
+				activate_targeted_decision = { target = 1005 decision = COG_integrate_kingdom_decision }
+				activate_targeted_decision = { target = 1001 decision = COG_integrate_kingdom_decision }
+				activate_targeted_decision = { target = 1002 decision = COG_integrate_kingdom_decision }
+				activate_targeted_decision = { target = 931 decision = COG_integrate_kingdom_decision }
+				activate_targeted_decision = { target = 871 decision = COG_integrate_kingdom_decision }
+			#}
+		}
+	}
+	focus = {
+		id = COG_recruiting_from_tribes
+		icon = GFX_z_goal_monarchism_1
+		cost = 10
+		prerequisite = {
+			focus = COG_restore_the_federal_kingdom
+		}
+		x = 1
+		y = 4
+		relative_position_id = COG_pierre_VIII_du_Kongo
+		completion_reward = {
+			add_ideas = COG_recruitment_from_tribes
+		}
+	}
+	focus = {
+		id = COG_capture_rwanda_and_burundi
+		icon = GFX_z_goal_monarchism_1
+		cost = 10
+		prerequisite = {
+			focus = COG_restore_the_federal_kingdom
+		}
+		x = 2
+		y = 3
+		relative_position_id = COG_pierre_VIII_du_Kongo
+		completion_reward = {
+			every_state = { #?
+				limit = {
+					OR = {
+						state = 1001
+						state = 977
+						state = 1002
+						state = 1102
+					}
+				}
+				add_claim_by = ROOT
+				controller = {
+					ROOT = {
+						create_wargoal = {
+							type = take_state_focus
+							target = PREV
+							generator = { 1001 977 1002 1102 } #?
+						}
+						add_ai_strategy = { #?
+							type = antagonize
+							id = PREV
+							value = 200
+						}
+						add_ai_strategy = {
+							type = conquer
+							id = PREV
+							value = 100
+						}
+						add_ai_strategy = {
+							type = declare_war
+							id = PREV
+							value = 100
+						}
+					}
+					if = { #?
+						limit = { is_subject_of = BEL }
+						ROOT = { activate_targeted_decision = { target = PREV decision = COG_white_peace } } #add_to_array = { COG_white_peace_countries = PREV }
 					}
 				}
 			}
 		}
 	}
-	
-	
-	############################
-	##### KIMBANGU SECTION #####
-	############################
-	
 	focus = {
-		id = COG_end_of_rasism
-		icon = GFX_z_goal_flames_of_rebellion
+		id = COG_reclaim_kingdoms_of_dongo_and_matamba
+		icon = GFX_z_goal_monarchism_1
 		cost = 10
 		prerequisite = {
-			focus = COG_set_of_local_magistrates
+			focus = COG_capture_rwanda_and_burundi
+		}
+		x = 2
+		y = 5
+		relative_position_id = COG_pierre_VIII_du_Kongo
+		completion_reward = {
+			every_state = { #?
+				limit = {
+					OR = {
+						state = 931
+						state = 922
+						state = 1004
+						state = 871
+					}
+				}
+				add_claim_by = ROOT
+				controller = {
+					ROOT = {
+						create_wargoal = {
+							type = take_state_focus
+							target = PREV
+							generator = { 931 922 1004 871 } #?
+						}
+						add_ai_strategy = { #?
+							type = antagonize
+							id = PREV
+							value = 200
+						}
+						add_ai_strategy = {
+							type = conquer
+							id = PREV
+							value = 100
+						}
+						add_ai_strategy = {
+							type = declare_war
+							id = PREV
+							value = 100
+						}
+					}
+					if = { #?
+						limit = { original_tag = ENG }
+						ROOT = { activate_targeted_decision = { target = PREV decision = COG_white_peace } } #add_to_array = { COG_white_peace_countries = PREV }
+					}
+				}
+			}
+		}
+	}
+	focus = {
+		id = COG_remove_language_barrier
+		icon = GFX_z_goal_monarchism_1
+		cost = 10
+		prerequisite = {
+			focus = COG_restore_the_federal_kingdom
+		}
+		available = {
+			has_idea = COG_language_barrier
+		}
+		x = 0
+		y = 3
+		relative_position_id = COG_pierre_VIII_du_Kongo
+		completion_reward = {
+			remove_ideas = COG_language_barrier #?
+		}
+	}
+	focus = {
+		id = COG_become_africas_trade_hub
+		icon = GFX_z_goal_monarchism_1
+		cost = 10
+		prerequisite = {
+			focus = COG_restore_the_federal_kingdom
+		}
+		prerequisite = {
+			focus = COG_support_for_makand
+		}
+		x = -2
+		y = 3
+		relative_position_id = COG_pierre_VIII_du_Kongo
+		completion_reward = {
+			unlock_decision_category_tooltip = COG_influence_in_africa_category
+		}
+	}
+	focus = {
+		id = COG_own_fraction
+		icon = GFX_z_goal_monarchism_1
+		cost = 10
+		prerequisite = {
+			focus = COG_become_africas_trade_hub
+		}
+		x = -2
+		y = 5
+		relative_position_id = COG_pierre_VIII_du_Kongo
+		completion_reward = {
+			set_rule = { can_create_factions = yes } #?
+		}
+	}
+	focus = {
+		id = COG_establish_relationship_with_africa
+		icon = GFX_z_goal_monarchism_1
+		cost = 10
+		prerequisite = {
+			focus = COG_become_africas_trade_hub
 		}
 		mutually_exclusive = {
-			focus = COG_union_with_military_org
+			focus = COG_establish_relationship_with_europe
 		}
-		x = 2
-		y = 1
-		relative_position_id = COG_set_of_local_magistrates
-		ai_will_do = {
-			factor = 1
-			modifier = {
-				factor = 0
-				has_country_flag = NW_COG_AI_NEUTRAL_ALTERNATE
-			}
+		x = -3
+		y = 4
+		relative_position_id = COG_pierre_VIII_du_Kongo
+		completion_reward = {
+			custom_effect_tooltip = COG_no_friends_from_left_ideology_tt
+			unlock_decision_tooltip = COG_ask_to_join_faction #loc ?
+		}
+	}
+	focus = {
+		id = COG_joint_companies
+		icon = GFX_z_goal_monarchism_1
+		cost = 10
+		prerequisite = {
+			focus = COG_establish_relationship_with_africa
 		}
 		available = {
-			hidden_trigger = {
-				NOT = { has_country_flag = cog.4.b_flag }
-			}
+			is_in_faction = yes
 		}
+		x = -4
+		y = 5
+		relative_position_id = COG_pierre_VIII_du_Kongo
 		completion_reward = {
-			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus COG_end_of_rasism"
-			add_popularity = {
-				ideology = fascism
-				popularity = 0.15
-			}
-			add_war_support = 0.05
-			country_event = { id = cog.5 }
-			COG_simon_kimbangu = {
-				add_field_marshal_role = {
-					traits = { inspirational_leader }
-					skill = 1
-					attack_skill = 1
-					defense_skill = 1
-					planning_skill = 1
-					logistics_skill = 1
-				}
-		    }
-			hidden_effect = { drop_cosmetic_tag = yes }
-			add_ai_strategy = {
-				type = antagonize
-				id = "BEL"
-				value = 100
-			}
-			add_ai_strategy = {
-				type = befriend
-				id = "BEL"
-				value = -5000
-			}
-			add_ai_strategy = {
-				type = alliance
-				id = "BEL"
-				value = -5000
+			every_other_country = {
+				limit = { is_in_faction_with = ROOT }
+				country_event = congo.57
 			}
 		}
 	}
-	
 	focus = {
-		id = COG_rationale_violence_against_satan_fiends
-		icon = GFX_focus_generic_support_the_left_right
+		id = COG_establish_relationship_with_europe
+		icon = GFX_z_goal_monarchism_1
 		cost = 10
 		prerequisite = {
-			focus = COG_end_of_rasism
+			focus = COG_become_africas_trade_hub
+		}
+		mutually_exclusive = {
+			focus = COG_establish_relationship_with_africa
+		}
+		x = -1
+		y = 4
+		relative_position_id = COG_pierre_VIII_du_Kongo
+		completion_reward = {
+			custom_effect_tooltip = COG_no_friends_from_left_ideology_tt
+			unlock_decision_tooltip = COG_ask_to_join_faction #loc ?
+		}
+	}
+	focus = {
+		id = COG_investments_in_exchange_for_uranium
+		icon = GFX_z_goal_monarchism_1
+		cost = 10
+		prerequisite = {
+			focus = COG_establish_relationship_with_europe
+		}
+		available = {
+			is_in_faction = yes
+			is_faction_leader = no
+			NOT = { has_completed_focus = COG_independent_development_of_uranium }
 		}
 		x = 0
-		y = 1
-		relative_position_id = COG_end_of_rasism
-		ai_will_do = {
-			factor = 1
-		}
-	    completion_reward = {
-			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus COG_rationale_violence_against_satan_fiends"
-			add_ideas = COG_rationale_violence_against_satan_fiends
+		y = 5
+		relative_position_id = COG_pierre_VIII_du_Kongo
+		completion_reward = {
+			var:faction_leader = { country_event = congo.58 }
 		}
 	}
 	
+	# ]
+	
+	# Ветка Кимбангу [
+	
 	focus = {
-		id = COG_build_a_cristian_country
-		icon = GFX_z_goal_monarchism_9
-		cost = 10
+		id = COG_recognition_of_congolese_church #COG_recognition_of_congolese_church
+		icon = GFX_goal_support_fascism
+		cost = 5
 		prerequisite = {
-			focus = COG_end_of_rasism
+			focus = COG_support_for_protestant_churches
+		}
+		available = {
+			NOT = { has_country_flag = block_COG_recognition_of_congolese_church_focus }
 		}
 		x = 2
-		y = 1
-		relative_position_id = COG_end_of_rasism
-		ai_will_do = {
-			factor = 1
-		}
+		y = 3
+		relative_position_id = COG_create_a_new_social_class
 		completion_reward = {
-			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus COG_build_a_cristian_country"
-			add_manpower = 25000
-			add_ideas = COG_build_a_cristian_country_idea
+			add_stability = 0.1
+			custom_effect_tooltip = COG_recognition_of_congolese_church_tt
+			#hidden_effect = {
+				if = {
+					limit = { has_completed_focus = COG_amnesty_for_prisoners }
+					country_event = { id = congo.60 } #random_days = 30
+				}
+			#}
 		}
 	}
-	
 	focus = {
-		id = COG_protection_of_black_continent
-		icon = GFX_z_goal_africa_flames
+		id = COG_amnesty_for_prisoners #COG_amnesty_for_prisoners
+		icon = GFX_goal_support_fascism
+		cost = 5
+		prerequisite = {
+			focus = COG_creating_unions_for_blacks
+		}
+		x = 0
+		y = 3
+		relative_position_id = COG_create_a_new_social_class
+		completion_reward = {
+			add_political_power = 50
+			add_stability = -0.05
+			add_popularity = {
+				ideology = var:current_party_ideology_group
+				popularity = 0.1
+			}
+			every_controlled_state = { #?
+				limit = { is_owned_by = ROOT }
+				add_manpower = 2500
+			}
+			custom_effect_tooltip = COG_amnesty_for_prisoners_tt
+			#hidden_effect = {
+				if = {
+					limit = { has_completed_focus = COG_recognition_of_congolese_church }
+					country_event = { id = congo.60 } #random_days = 30
+				}
+			#}
+		}
+	}
+	focus = {
+		id = COG_banish_the_white_man #COG_banish_the_white_man
+		icon = GFX_goal_support_fascism
 		cost = 10
 		prerequisite = {
-			focus = COG_end_of_rasism
+			focus = COG_amnesty_for_prisoners
+		}
+		prerequisite = {
+			focus = COG_recognition_of_congolese_church
+		}
+		mutually_exclusive = {
+			focus = COG_belgian_dominion
+		}
+		available = {
+			always = no #?
 		}
 		x = 4
-		y = 1
-		relative_position_id = COG_end_of_rasism
-		cancel_if_invalid = yes
-		continue_if_invalid = no
-		available_if_capitulated = yes
-		
-		ai_will_do = {
-			factor = 1
-		}
+		y = 4
+		relative_position_id = COG_create_a_new_social_class
 		completion_reward = {
-			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus COG_protection_of_black_continent"
-			add_ideas = COG_protection_of_black_continent
+			custom_effect_tooltip = COG_banish_the_white_man_tt
+			unlock_decision_category_tooltip = COG_faith_in_the_prophet_simon_kimbangu
+			unlock_decision_tooltip = COG_demand_independence
 		}
 	}
-	
 	focus = {
-		id = COG_burning_out_white_heresy
-		icon = GFX_z_goal_monarchism_19
-		cost = 10
+		id = COG_establish_khakista
+		icon = GFX_goal_support_fascism
+		cost = 5
 		prerequisite = {
-			focus = COG_protection_of_black_continent
+			focus = COG_banish_the_white_man
 		}
-		x = 0
-		y = 1
-		relative_position_id = COG_protection_of_black_continent
-		cancel_if_invalid = yes
-		continue_if_invalid = no
-		available_if_capitulated = yes
 		available = {
-			is_subject = no
+			has_country_flag = COG_establish_khakista_flag
 		}
-		ai_will_do = {
-			factor = 1
-			modifier = {
-				factor = 0
-				NOT = {
-					has_war_with = ENG
-					has_war_with = event_target:NW_france_scope
-					has_war_with = FRC
-					has_war_with = FRR
-					has_war_with = BEL
-					has_war_with = POR
-					has_war_with = ITA
-					has_war_with = SPR
-					has_war_with = SPA
-					has_war_with = SAF
+		x = 2
+		y = 1
+		relative_position_id = COG_banish_the_white_man
+		completion_reward = {
+			if = {
+				limit = { has_character = COG_simon_pierre_mpadi }
+				custom_effect_tooltip = available_political_advisor
+				show_ideas_tooltip = COG_simon_pierre_mpadi
+				effect_tooltip = {
+					add_corps_commander_role = {
+						character = COG_simon_pierre_mpadi
+					}
 				}
 			}
-	    }
-		
-		completion_reward = {
-			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus COG_burning_out_white_heresy"
-			add_timed_idea = { idea = COG_burning_out_white_heresy days = 300 }
-			add_ai_strategy = {
-				type = antagonize
-				id = "ENG"
-				value = 1000
+			# будет получена дивизия спец назначения «Khakista division» с четырьмя касками !
+			division_template = {
+				name = "Khakista division"
+				#division_names_group = COG_INF_01 # ?
+
+				regiments = {
+					paratrooper = { x = 0 y = 0 }
+					paratrooper = { x = 0 y = 1 }
+					paratrooper = { x = 0 y = 2 }
+					paratrooper = { x = 1 y = 0 }
+				}
 			}
-			add_ai_strategy = {
-				type = conquer
-				id = "ENG"
-				value = 500
+			capital_scope = {
+				create_unit = {
+					division = "name = \"Khakista division\" division_template = \"Khakista division\" start_experience_factor = 0.2 start_equipment_factor = 0.95"
+					owner = ROOT
+					count = 1
+				}
 			}
-			add_ai_strategy = {
-				type = antagonize
-				id = "FRA"
-				value = 1000
-			}
-			add_ai_strategy = {
-				type = conquer
-				id = "FRA"
-				value = 500
-			}
-			add_ai_strategy = {
-				type = antagonize
-				id = "FRC"
-				value = 1000
-			}
-			add_ai_strategy = {
-				type = conquer
-				id = "FRC"
-				value = 500
-			}
-			add_ai_strategy = {
-				type = antagonize
-				id = "FRR"
-				value = 1000
-			}
-			add_ai_strategy = {
-				type = conquer
-				id = "FRR"
-				value = 500
-			}
-			add_ai_strategy = {
-				type = antagonize
-				id = "BEL"
-				value = 1000
-			}
-			add_ai_strategy = {
-				type = conquer
-				id = "BEL"
-				value = 500
-			}
-			add_ai_strategy = {
-				type = antagonize
-				id = "POR"
-				value = 1000
-			}
-			add_ai_strategy = {
-				type = conquer
-				id = "POR"
-				value = 500
-			}
-			add_ai_strategy = {
-				type = antagonize
-				id = "ITA"
-				value = 1000
-			}
-			add_ai_strategy = {
-				type = conquer
-				id = "ITA"
-				value = 500
-			}
-			add_ai_strategy = {
-				type = antagonize
-				id = "SPR"
-				value = 1000
-			}
-			add_ai_strategy = {
-				type = conquer
-				id = "SPR"
-				value = 500
-			}
-			add_ai_strategy = {
-				type = antagonize
-				id = "SPA"
-				value = 1000
-			}
-			add_ai_strategy = {
-				type = conquer
-				id = "SPA"
-				value = 500
-			}
-			add_ai_strategy = {
-				type = antagonize
-				id = "SAF"
-				value = 1000
-			}
-			add_ai_strategy = {
-				type = conquer
-				id = "SAF"
-				value = 500
-			}
-			unlock_decision_category_tooltip = COG_burning_out_white_heresy_category
+			add_ideas = COG_khakista
 		}
 	}
-	
+	focus = {
+		id = COG_prohibition_alcoholic_beverages
+		icon = GFX_goal_support_fascism
+		cost = 10
+		prerequisite = {
+			focus = COG_establish_khakista
+		}
+		x = 2
+		y = 3
+		relative_position_id = COG_banish_the_white_man
+		completion_reward = {
+			add_ideas = COG_prohibition_of_alcohol_and_datura #есть же такой??
+		}
+	}
+	focus = {
+		id = COG_help_from_the_salvation_army
+		icon = GFX_goal_support_fascism
+		cost = 10
+		prerequisite = {
+			focus = COG_establish_khakista
+		}
+		x = 3
+		y = 2
+		relative_position_id = COG_banish_the_white_man
+		completion_reward = {
+			country_event = congo.68
+		}
+	}
+	focus = {
+		id = COG_create_black_international_mission
+		icon = GFX_goal_support_fascism
+		cost = 5
+		prerequisite = {
+			focus = COG_help_from_the_salvation_army
+		}
+		x = 4
+		y = 3
+		relative_position_id = COG_banish_the_white_man
+		completion_reward = {
+			every_country = {
+				limit = { capital_scope = { is_on_continent = africa } NOT = { has_war_with = ROOT } } # is_in_array = { global.country_in_africa = THIS } ?
+				add_opinion_modifier = {
+					target = ROOT
+					modifier = COG_international_african_mission
+				}
+				reverse_add_opinion_modifier = { #?
+					target = ROOT
+					modifier = COG_international_african_mission
+				}
+			}
+		}
+	}
 	focus = {
 		id = COG_study_deadly_ore
 		icon = GFX_z_goal_study_deadly_ore
 		cost = 10
 		prerequisite = {
-			focus = COG_end_of_rasism
+			focus = COG_help_from_the_salvation_army
 		}
-		x = 6
-		y = 1
-		relative_position_id = COG_end_of_rasism
-		cancel_if_invalid = yes
-		continue_if_invalid = no
-		available_if_capitulated = yes
+		x = 3
+		y = 4
+		relative_position_id = COG_banish_the_white_man
 		ai_will_do = {
 			factor = 1
 		}
@@ -2690,7 +4443,7 @@ focus_tree = {
 				}
 			}
 	    }
-			
+
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus COG_study_deadly_ore"
 			295 = {
@@ -2703,7 +4456,6 @@ focus_tree = {
 			}
 		}
 	}
-	
 	focus = {
 		id = COG_invite_magicians_from_europe
 		icon = GFX_z_goal_brain
@@ -2711,12 +4463,9 @@ focus_tree = {
 		prerequisite = {
 			focus = COG_study_deadly_ore
 		}
-		x = 0
-		y = 1
-		relative_position_id = COG_study_deadly_ore
-		cancel_if_invalid = yes
-		continue_if_invalid = no
-		available_if_capitulated = yes
+		x = 3
+		y = 5
+		relative_position_id = COG_banish_the_white_man
 		ai_will_do = {
 			factor = 1
 		}
@@ -2724,124 +4473,126 @@ focus_tree = {
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus COG_invite_magicians_from_europe"
 			country_event = {
-				id = cog.17
+				id = congo.69
 			}
 		}
 	}
-	
 	focus = {
-		id = COG_congo_congolese
-		icon = GFX_goal_generic_national_unity
+		id = COG_the_second_coming_of_christ #COG_the_second_coming_of_christ
+		icon = GFX_goal_support_fascism
 		cost = 10
 		prerequisite = {
-			focus = COG_end_of_rasism
+			focus = COG_banish_the_white_man
 		}
-		x = 8
+		x = 0
 		y = 1
-		relative_position_id = COG_end_of_rasism
-		cancel_if_invalid = yes
-		continue_if_invalid = no
-		available_if_capitulated = yes
-		ai_will_do = {
-			factor = 1
-		}
-		
+		relative_position_id = COG_banish_the_white_man
 		completion_reward = {
-			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus COG_congo_congolese"
+			if = {
+				limit = { has_character = COG_simon_kimbangu }
+				COG_simon_kimbangu = { add_country_leader_trait = black_jesus_1 }
+			}
+			custom_effect_tooltip = COG_the_second_coming_of_christ_tt
+			unlock_decision_category_tooltip = COG_building_christian_state
+		}
+	}
+	focus = {
+		id = COG_construction_of_the_holy_temple
+		icon = GFX_goal_support_fascism
+		cost = 5
+		prerequisite = {
+			focus = COG_the_second_coming_of_christ
+		}
+		x = 1
+		y = 2
+		relative_position_id = COG_banish_the_white_man
+		completion_reward = {
+			set_province_name = {
+				id = 12925
+				name = new_jerusalem
+			}
+			add_victory_points = { #?
+				province = 12925
+				value = 5
+			}
+			295 = { add_dynamic_modifier = { modifier = COG_holy_city } }
+		}
+	}
+	focus = {
+		id = COG_the_twelve_apostles_of_the_prophet_kimbangu
+		icon = GFX_goal_support_fascism
+		cost = 10
+		prerequisite = {
+			focus = COG_the_second_coming_of_christ
+		}
+		x = -1
+		y = 2
+		relative_position_id = COG_banish_the_white_man
+		completion_reward = {
+			# Будут доступны наши советники, которые сейчас есть у Кимбангу. !!
+			if = {
+				limit = { has_character = COG_charles_kisolokele }
+				custom_effect_tooltip = available_political_advisor
+				show_ideas_tooltip = COG_charles_kisolokele 
+			}
+			if = {
+				limit = { has_character = COG_joseph_diangienda }
+				custom_effect_tooltip = available_political_advisor
+				show_ideas_tooltip = COG_joseph_diangienda 
+			}
+			if = {
+				limit = { has_character = COG_salomon_dialungana }
+				custom_effect_tooltip = available_political_advisor
+				show_ideas_tooltip = COG_salomon_dialungana 
+			}
+			if = {
+				limit = { has_character = COG_muilu_kiawanga }
+				custom_effect_tooltip = available_political_advisor
+				show_ideas_tooltip = COG_muilu_kiawanga 
+			}
+		}
+	}
+	focus = {
+		id = COG_return_of_lands_to_tribes
+		icon = GFX_goal_support_fascism
+		cost = 10
+		prerequisite = {
+			focus = COG_the_second_coming_of_christ
+		}
+		x = 0
+		y = 3
+		relative_position_id = COG_banish_the_white_man
+		completion_reward = {
+			add_stability = 0.1
 			every_controlled_state = {
-				set_temp_variable = { temp1 = 0 }
-				randomize_temp_variable = {
-					var = temp1
-					distribution = uniform
-					min = 10000
-					max = 75000
-				}
-				round_temp_variable = temp1
-				multiply_temp_variable = { temp1 = -1 }
-				hidden_effect = { add_manpower = var:temp1 }
-				custom_effect_tooltip = COG_congo_congolese_tt
-				log = "[GetDateText]: [This.GetName] ([This.GetID]): add_manpower [?temp1]"
-				divide_temp_variable = { temp1 = 1000000 }
-				add_to_temp_variable = { ROOT.temp2 = temp1 }
+				limit = { is_original_congo_state = yes }
+				effect_tooltip = { add_extra_state_shared_building_slots = -1 }
+				# add_to_variable = { COG_building_slot_regulator_var = -1 }
+				hidden_effect = { add_state_modifier = { modifier = { local_building_slots = -1 } } }
+				
+				set_temp_variable = { lvl = COG_loyalty_lvl_var } # ?
+				add_to_temp_variable = { lvl = 1 }
+				clamp_temp_variable = { var = lvl min = 1 max = 5 } #?
+				custom_effect_tooltip = COG_increase_loyalty_lvl
+				
+				add_to_variable = { COG_loyalty_lvl_var = 1 }
+				clamp_variable = { var = COG_loyalty_lvl_var min = 1 max = 5 } #?
 			}
-			custom_effect_tooltip = COG_congo_congolese_tt2
-			hidden_effect = {
-				add_stability = temp2
-				multiply_temp_variable = { temp2 = -1 }
-				add_war_support = temp2
-			}
-			log = "[GetDateText]: [This.GetName] ([This.GetTag]): add_stability // add_war_support [?temp2]"
-			1065 = {
-				add_extra_state_shared_building_slots = 3
-				add_building_construction = {
-					type = arms_factory
-					level = 3
-					instant_build = yes
-				}
-			}
-			add_ideas = COG_congo_congolese
-    	}
-	}
-	
-	focus = {
-		id = COG_prohibition_alcoholic_beverages
-		icon = GFX_z_goal_anti_alcohol
-		cost = 10
-		prerequisite = {
-			focus = COG_congo_congolese
-		}
-		x = 0
-		y = 1
-		relative_position_id = COG_congo_congolese
-		cancel_if_invalid = yes
-		continue_if_invalid = no
-		available_if_capitulated = yes
-		ai_will_do = {
-			factor = 1
-		}
-		
-		completion_reward = {
-			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus COG_prohibition_alcoholic_beverages"
-			add_ideas = COG_prohibition_alcoholic_beverages
+			#hidden_effect = {
+				COG_update_administration_of_tribal_leaders_idea = yes
+			#}
 		}
 	}
-	
-	focus = {
-		id = COG_sermonts_among_lost_souls
-		icon = GFX_z_goal_sermonts_among_lost_souls
-		cost = 10
-		prerequisite = {
-			focus = COG_prohibition_alcoholic_beverages
-		}
-		x = 0
-		y = 1
-		relative_position_id = COG_prohibition_alcoholic_beverages
-		cancel_if_invalid = yes
-		continue_if_invalid = no
-		available_if_capitulated = yes
-		ai_will_do = {
-			factor = 1
-		}
-		
-		completion_reward = {
-			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus COG_sermonts_among_lost_souls"
-			add_ideas = COG_sermonts_among_lost_souls
-		}
-	}
-	
 	focus = {
 		id = COG_fire_rain
 		icon = GFX_z_goal_fire_rain
 		cost = 10
 		prerequisite = {
-			focus = COG_rationale_violence_against_satan_fiends
-		}
-		prerequisite = {
-			focus = COG_build_a_cristian_country
+			focus = COG_return_of_lands_to_tribes
 		}
 		x = 0
-		y = 1
-		relative_position_id = COG_build_a_cristian_country
+		y = 4
+		relative_position_id = COG_banish_the_white_man
 		ai_will_do = {
 			factor = 1
 		}
@@ -2858,20 +4609,19 @@ focus_tree = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus COG_fire_rain"
 			set_rule = { can_create_factions = yes }
 			create_faction = COG_fire_rain_faction
-			hidden_effect = { news_event = { id = trworldnews.82 hours = 6 } }
+			hidden_effect = { news_event = { id = trworldnews.82 hours = 6 } } #??
 		}
 	}
-	
 	focus = {
 		id = COG_angola_liberty
 		icon = GFX_goal_generic_more_territorial_claims
-		cost = 10.00
+		cost = 10
 		prerequisite = {
 			focus = COG_fire_rain
 		}
-		x = -2
-		y = 1
-		relative_position_id = COG_fire_rain
+		x = -1
+		y = 5
+		relative_position_id = COG_banish_the_white_man
 		ai_will_do = {
 			factor = 1
 		}
@@ -2891,7 +4641,7 @@ focus_tree = {
 				}
 				add_core_of = ROOT
 				controller = {
-					ROOT = {
+					ROOT = { #??
 						create_wargoal = {
 							type = take_state_focus
 							target = PREV
@@ -2917,96 +4667,16 @@ focus_tree = {
 			}
 		}
 	}
-	
-	focus = {
-		id = COG_saving_south_africa_from_apartheid
-		icon = GFX_z_goal_Circle_Points
-		prerequisite = { focus = COG_angola_liberty }
-		x = 0
-		y = 1
-		relative_position_id = COG_angola_liberty
-		
-		cost = 10
-		
-		cancel_if_invalid = yes
-		continue_if_invalid = no
-		available_if_capitulated = yes
-
-		ai_will_do = {
-			factor = 1
-		}
-		available = {
-			is_subject = no
-		}
-		bypass = {
-		}
-		select_effect = {
-		}
-
-		completion_reward = {
-			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus COG_saving_south_africa_from_apartheid"
-			every_state = {
-				limit = {
-					OR = {
-						is_core_of = NMB
-						is_core_of = SAF
-						is_core_of = ZIM
-						state = 275
-						state = 541
-						state = 681
-						state = 719
-						state = 1105
-						state = 1106
-						state = 542
-					}
-				}
-				add_claim_by = ROOT
-				controller = {
-					ROOT = {
-						add_ai_strategy = {
-							type = antagonize
-							id = PREV
-							value = 200
-						}
-						add_ai_strategy = {
-							type = conquer
-							id = PREV
-							value = 100
-						}
-						add_ai_strategy = {
-							type = declare_war
-							id = PREV
-							value = 100
-						}
-					}
-				}
-			}
-			unlock_decision_tooltip = COG_integrate_275
-			unlock_decision_tooltip = COG_integrate_541
-			unlock_decision_tooltip = COG_integrate_681
-			unlock_decision_tooltip = COG_integrate_719
-			unlock_decision_tooltip = COG_integrate_1113
-			unlock_decision_tooltip = COG_integrate_1105
-			unlock_decision_tooltip = COG_integrate_1106
-			unlock_decision_tooltip = COG_integrate_542
-			unlock_decision_tooltip = COG_integrate_1112
-			unlock_decision_tooltip = COG_integrate_1114
-			unlock_decision_tooltip = COG_integrate_1107
-			unlock_decision_tooltip = COG_integrate_1108
-			unlock_decision_tooltip = COG_integrate_1109
-		}
-	}
-	
 	focus = {
 		id = COG_liberty_french_colony
 		icon = GFX_goal_generic_territory_or_war
-		cost = 10.00
+		cost = 10
 		prerequisite = {
 			focus = COG_fire_rain
 		}
-		x = 0
-		y = 1
-		relative_position_id = COG_fire_rain
+		x = 1
+		y = 5
+		relative_position_id = COG_banish_the_white_man
 		available = {
 			is_subject = no
 		}
@@ -3015,7 +4685,7 @@ focus_tree = {
 		}
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus COG_liberty_french_colony"
-			every_state = {
+			every_state = { #?
 				limit = {
 					OR = {
 						state = 1005
@@ -3050,21 +4720,79 @@ focus_tree = {
 			}
 		}
 	}
-	
+	focus = {
+		id = COG_saving_south_africa_from_apartheid
+		icon = GFX_z_goal_Circle_Points
+		cost = 10
+		prerequisite = {
+			focus = COG_angola_liberty
+		}
+		x = -1
+		y = 6
+		relative_position_id = COG_banish_the_white_man
+		ai_will_do = {
+			factor = 1
+		}
+		available = {
+			is_subject = no
+		}
+		bypass = {
+		}
+		select_effect = {
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus COG_saving_south_africa_from_apartheid"
+			every_state = {
+				limit = {
+					OR = {
+						is_core_of = NMB
+						is_core_of = SAF
+						is_core_of = ZIM
+						state = 275
+						state = 541
+						state = 681
+						state = 719
+						state = 1105
+						state = 1106
+						state = 542
+					}
+				}
+				add_claim_by = ROOT
+				controller = {
+					ROOT = {
+						activate_targeted_decision = { target = PREV.PREV decision = COG_integrate_state }
+						#??
+						add_ai_strategy = {
+							type = antagonize
+							id = PREV
+							value = 200
+						}
+						add_ai_strategy = {
+							type = conquer
+							id = PREV
+							value = 100
+						}
+						add_ai_strategy = {
+							type = declare_war
+							id = PREV
+							value = 100
+						}
+					}
+				}
+			}
+		}
+	}
 	focus = {
 		id = COG_negroes_of_equatorial_sahara
 		icon = GFX_goal_generic_occupy_states_ongoing_war
-		prerequisite = { focus = COG_liberty_french_colony }
-		x = 0
-		y = 1
-		relative_position_id = COG_liberty_french_colony
-		
 		cost = 10
-		
-		cancel_if_invalid = yes
-		continue_if_invalid = no
-		available_if_capitulated = yes
-
+		prerequisite = {
+			focus = COG_liberty_french_colony
+		}
+		x = 1
+		y = 6
+		relative_position_id = COG_banish_the_white_man
 		ai_will_do = {
 			factor = 1
 		}
@@ -3088,69 +4816,10 @@ focus_tree = {
 					}
 				}
 				add_claim_by = ROOT
-			}
-			1006 = {
 				controller = {
 					ROOT = {
-						add_ai_strategy = {
-							type = antagonize
-							id = PREV
-							value = 200
-						}
-						add_ai_strategy = {
-							type = conquer
-							id = PREV
-							value = 100
-						}
-						add_ai_strategy = {
-							type = declare_war
-							id = PREV
-							value = 100
-						}
-					}
-				}
-			}
-			unlock_decision_tooltip = COG_integrate_297
-			unlock_decision_tooltip = COG_integrate_660
-			unlock_decision_tooltip = COG_integrate_1006
-			unlock_decision_tooltip = COG_integrate_1019
-		}
-	}
-	
-	focus = {
-		id = COG_east_afr_reborn
-		icon = GFX_goal_generic_major_war
-		cost = 10.00
-		prerequisite = {
-			focus = COG_fire_rain
-		}
-		x = 2
-		y = 1
-		relative_position_id = COG_fire_rain
-		available = {
-			is_subject = no
-		}
-		ai_will_do = {
-			factor = 1
-		}
-		completion_reward = {
-			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus COG_east_afr_reborn"
-			every_state = {
-				limit = {
-					OR = {
-						state = 546
-						state = 547
-						state = 548
-					}
-				}
-				add_core_of = ROOT
-				controller = {
-					ROOT = {
-						create_wargoal = {
-							type = take_state_focus
-							target = PREV
-							generator = { 546 547 548 }
-						}
+						activate_targeted_decision = { target = PREV.PREV decision = COG_integrate_state }
+						#??
 						add_ai_strategy = {
 							type = antagonize
 							id = PREV
@@ -3171,21 +4840,16 @@ focus_tree = {
 			}
 		}
 	}
-	
 	focus = {
 		id = COG_orthodox_ethiopia
 		icon = GFX_z_goal_monarchism_11
-		prerequisite = { focus = COG_east_afr_reborn }
-		x = 0
-		y = 1
-		relative_position_id = COG_east_afr_reborn
-		
 		cost = 10
-		
-		cancel_if_invalid = yes
-		continue_if_invalid = no
-		available_if_capitulated = yes
-
+		prerequisite = {
+			focus = COG_liberty_french_colony
+		}
+		x = 3
+		y = 6
+		relative_position_id = COG_banish_the_white_man
 		ai_will_do = {
 			factor = 1
 		}
@@ -3206,6 +4870,7 @@ focus_tree = {
 					add_claim_by = ROOT
 					controller = {
 						ROOT = {
+							#??
 							add_ai_strategy = {
 								type = antagonize
 								id = PREV
@@ -3225,26 +4890,22 @@ focus_tree = {
 					}
 				}
 			}
-			else = { ETH = { country_event = { id = cog.18 } } }
+			else = { ETH = { country_event = { id = congo.70 } } }
 		}
 	}
-	
 	focus = {
 		id = COG_empire_of_black_christ
 		icon = GFX_z_goal_monarchism_21
-		prerequisite = { focus = COG_saving_south_africa_from_apartheid }
-		prerequisite = { focus = COG_negroes_of_equatorial_sahara }
-		prerequisite = { focus = COG_orthodox_ethiopia }
-		x = 0
-		y = 1
-		relative_position_id = COG_negroes_of_equatorial_sahara
-		
 		cost = 10
-		
-		cancel_if_invalid = yes
-		continue_if_invalid = no
-		available_if_capitulated = yes
-
+		prerequisite = {
+			focus = COG_saving_south_africa_from_apartheid
+		}
+		prerequisite = {
+			focus = COG_negroes_of_equatorial_sahara
+		}
+		x = 0
+		y = 7
+		relative_position_id = COG_banish_the_white_man
 		ai_will_do = {
 			factor = 2
 		}
@@ -3265,68 +4926,133 @@ focus_tree = {
 			set_cosmetic_tag = COG_black_empire
 		}
 	}
-	
 	focus = {
-		id = COG_crusade_against_muslims
-		icon = GFX_z_goal_muslims_on_fire
-		prerequisite = { focus = COG_empire_of_black_christ }
-		x = 0
-		y = 1
-		relative_position_id = COG_empire_of_black_christ
-		
+		id = COG_capture_LIB
+		icon = GFX_goal_support_fascism
 		cost = 10
-		
-		cancel_if_invalid = yes
-		continue_if_invalid = no
-		available_if_capitulated = yes
-
-		ai_will_do = {
-			factor = 1
+		prerequisite = {
+			focus = COG_negroes_of_equatorial_sahara
 		}
 		available = {
-			is_subject = no
-			has_government = fascism
+			LIB = { has_government = fascism } #?
 		}
-		bypass = {
-		}
-		select_effect = {
-		}
-
+		x = 3
+		y = 7
+		relative_position_id = COG_banish_the_white_man
 		completion_reward = {
-			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus COG_crusade_against_muslims"
-			every_state = {
-				limit = {
-					OR = {
-						is_core_of = MOR
-						is_core_of = ALG
-						is_core_of = TUN
-						is_core_of = EGY
-						is_core_of = LBA
-						is_core_of = SOM
-						is_core_of = ERI
-					}
-				}
-				add_claim_by = ROOT
-				controller = {
-					ROOT = {
-						add_ai_strategy = {
-							type = antagonize
-							id = PREV
-							value = 200
-						}
-						add_ai_strategy = {
-							type = conquer
-							id = PREV
-							value = 200
-						}
-						add_ai_strategy = {
-							type = declare_war
-							id = PREV
-							value = 100
-						}
-					}
-				}
+			create_wargoal = {
+				type = annex_everything
+				target = LIB
+			}
+			add_ai_strategy = {
+				type = antagonize
+				id = LIB
+				value = 200
+			}
+			add_ai_strategy = {
+				type = conquer
+				id = LIB
+				value = 100
+			}
+			add_ai_strategy = {
+				type = declare_war
+				id = LIB
+				value = 100
 			}
 		}
 	}
+	focus = {
+		id = COG_turn_to_brothers_in_america
+		icon = GFX_goal_support_fascism
+		cost = 5
+		prerequisite = {
+			focus = COG_banish_the_white_man
+		}
+		x = -2
+		y = 1
+		relative_position_id = COG_banish_the_white_man
+		completion_reward = {
+			country_event = congo.72
+		}
+	}
+	focus = {
+		id = COG_immigrants_from_america
+		icon = GFX_goal_support_fascism
+		cost = 10
+		prerequisite = {
+			focus = COG_turn_to_brothers_in_america
+		}
+		x = -2
+		y = 3
+		relative_position_id = COG_banish_the_white_man
+		completion_reward = {
+			add_political_power = -100
+			add_ideas = COG_immigrants_from_america #?
+			USA = { country_event = { id = congo.73 } } #random_days = 30 ?
+		}
+	}
+	focus = {
+		id = COG_abolition_of_taxes #COG_abolition_of_taxes
+		icon = GFX_goal_support_fascism
+		cost = 5
+		prerequisite = {
+			focus = COG_return_of_lands_to_tribes
+		}
+		prerequisite = {
+			focus = COG_immigrants_from_america
+		}
+		x = -2
+		y = 4
+		relative_position_id = COG_banish_the_white_man
+		completion_reward = {
+			add_stability = 0.15
+			custom_effect_tooltip = COG_abolition_of_taxes_tt
+			clr_country_flag = COG_cotton_roads_flag
+			#hidden_effect = {
+				remove_ideas = COG_cotton_roads_lvl_1
+				remove_ideas = COG_cotton_roads_lvl_2
+				remove_ideas = COG_cotton_roads_lvl_3
+				remove_ideas = COG_cotton_roads_lvl_4
+				remove_ideas = COG_cotton_roads_lvl_5
+				remove_ideas = COG_cotton_roads_lvl_1_trait
+				remove_ideas = COG_cotton_roads_lvl_2_trait
+				remove_ideas = COG_cotton_roads_lvl_3_trait
+				remove_ideas = COG_cotton_roads_lvl_4_trait
+				remove_ideas = COG_cotton_roads_lvl_5_trait
+			#}
+		}
+	}
+	focus = {
+		id = COG_sermonts_among_lost_souls
+		icon = GFX_z_goal_sermonts_among_lost_souls
+		cost = 10
+		prerequisite = {
+			focus = COG_abolition_of_taxes
+		}
+		x = -2
+		y = 7
+		relative_position_id = COG_banish_the_white_man
+		ai_will_do = {
+			factor = 1
+		}
+		
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus COG_sermonts_among_lost_souls"
+			add_ideas = COG_sermonts_among_lost_souls
+		}
+	}
+	
+	# ]
+	
+	# focus = {
+		# id = COG_призвать_африканских_рабочих_к_свободе_focus
+		# icon = GFX_goal_unknown
+		# cost = 0
+		# prerequisite = {
+			# focus = COG_end_racial_segregation
+		# }
+		# x = 24
+		# y = 6
+
+	# }
 }

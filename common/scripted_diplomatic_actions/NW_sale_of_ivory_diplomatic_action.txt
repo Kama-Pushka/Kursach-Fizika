@@ -1,0 +1,102 @@
+#name ?
+
+scripted_diplomatic_actions = {
+	
+	start_selling_ivory = {
+		icon = 1
+		allowed = {		#The country making the diplomatic request
+			#ROOT = { original_tag = COG }
+		}
+		visible = {		#The target country
+			ROOT = { original_tag = COG has_completed_focus = COG_back_to_ivory_mining }
+			NOT = { has_opinion_modifier = COG_sale_of_ivory }
+			# в on_action если законч слоны !!
+		}
+		selectable = {
+			NOT = { has_war_with = ROOT } #?
+			ROOT = { has_equipment = { elephant_equipment > 0 } } #?
+		}
+		cost = 10
+		# cost_string = loc_key # ? if you have a custom cost, use this loc to display it
+		
+		send_description = start_selling_ivory_send_description # if there is no scripted gui, this desc will be used in send yes/no pop up
+
+		requires_acceptance = no
+		#show_acceptance_on_action_button = no
+
+		complete_effect = {
+			hidden_effect = {
+				log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): scripted diplomatic actions START_SELLING_IVORY from [This.GetName] ([This.GetTag])"
+			}
+			set_technology = { #?
+				elephant_art_support = 1
+				elephant_art_support_unit = 1
+			}
+			add_to_variable = { COG_elephants_weekly = 1 } #?
+			add_opinion_modifier = { #торговые отношения тоже !
+				target = ROOT
+				modifier = COG_sale_of_ivory
+			}
+			reverse_add_opinion_modifier = { #?
+				target = ROOT
+				modifier = COG_sale_of_ivory
+			}
+			ROOT = {
+				#subtract_from_variable = { COG_elephants_weekly = 1 } #tooltip ?
+				save_event_target_as = FROM_scope
+				PREV = { country_event = congo.59 }
+			}
+		}
+		# ai_acceptance = {
+			# condition = { # name is used for loc
+				# base = 100
+			# }
+		# }
+		# ai_desire = { #?
+			# base = 100
+			
+		# }
+	}
+	stop_selling_ivory = {
+		icon = 1
+		allowed = {		#The country making the diplomatic request
+			#ROOT = { original_tag = COG }
+		}
+		visible = {		#The target country
+			ROOT = { original_tag = COG }
+			has_opinion_modifier = COG_sale_of_ivory #?
+		}
+	
+		send_description = stop_selling_ivory_send_description # if there is no scripted gui, this desc will be used in send yes/no pop up
+
+		requires_acceptance = no
+		#show_acceptance_on_action_button = no
+
+		complete_effect = {
+			hidden_effect = {
+				log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): scripted diplomatic actions stop_selling_ivory from [This.GetName] ([This.GetTag])"
+			}
+			ROOT = {
+				#add_to_variable = { COG_elephants_weekly = 1 } #??
+				remove_opinion_modifier = { #?
+					target = PREV
+					modifier = COG_sale_of_ivory
+				}
+			}
+			subtract_from_variable = { COG_elephants_weekly = 1 }
+			remove_opinion_modifier = { #торговые отношения тоже !
+				target = ROOT
+				modifier = COG_sale_of_ivory
+			}
+		}
+		# ai_acceptance = {
+			# condition = { # name is used for loc
+				# base = 100
+			# }
+		# }
+		# ai_desire = { #?
+			# base = 100
+			
+		# }
+	}
+}
