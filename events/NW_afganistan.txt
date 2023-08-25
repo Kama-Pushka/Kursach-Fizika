@@ -1043,6 +1043,8 @@ country_event = {				###Племенное восстание###
 					AFG_Mohammad_Gul_han_Momand = { set_nationality = PREV.PREV }
 					AFG_Ali_Muhammed_Lamari = { set_nationality = PREV.PREV }
 					AFG_Ghulam_Haidar_Rasuli = { set_nationality = PREV.PREV }
+					AFG_Shah_Doleh_Han_Sapi = { set_nationality = PREV.PREV }
+					AFG_Mohammad_Alam_Han = { set_nationality = PREV.PREV }
 					declare_war_on = {
 						target = PREV
 						type = civil_war
@@ -1095,7 +1097,7 @@ country_event = {				###Племенное восстание###
 					limit = { has_character = AFG_Turabaz_Khan }
 					capital_scope = {
 						create_unit = {
-							division = "name = \"«Shahi»\" division_template = \"«Shahi»\" start_experience_base = 0.3"
+							division = "name = \"«Shahi»\" division_template = \"«Shahi»\" start_experience_factor = 0.3"
 							owner = PREV
 							count = 1
 							allow_spawning_on_enemy_provs = yes
@@ -1339,15 +1341,6 @@ country_event = {				###Восстание в Хазараджате###
 						traits = { AFG_son_of_a_bull_rider }
 					}
 				}
-				add_corps_commander_role = {
-					Character = AFG_Ali_Dust_Han
-					traits = { trait_reckless war_hero harsh_leader }
-					skill = 2
-					attack_skill = 1
-					defense_skill = 3
-					planning_skill = 2
-					logistics_skill = 3
-				}
 				every_other_country = {
 					limit = { 
 						OR = { original_tag = ROOT original_tag = AFG }
@@ -1387,6 +1380,7 @@ country_event = {				###Восстание в Хазараджате###
     option = {
         name = NW_AFG.22.a
 		custom_effect_tooltip = AFG_tribal_war_5_tt
+		unlock_decision_tooltip = AFG_make_concessions_to_the_Khazars
 	}
 	option = {
         name = NW_AFG.22.b
@@ -1399,6 +1393,8 @@ country_event = {				###Восстание в Хазараджате###
 			}
 		}
 		show_unit_leaders_tooltip = AFG_Ali_Dust_Han
+		custom_effect_tooltip = available_political_advisor
+		show_ideas_tooltip = AFG_Ali_Dust_Han
 		hidden_effect = {
 			random_other_country = {
 				limit = { 
@@ -2069,5 +2065,135 @@ country_event = {				###Отказ [FROM.GetName]###
 	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_AFG.38" }
     option = {
         name = NW_AFG.38.a
+	}
+}
+
+country_event = {				###[FROM.GetName] требует подчинения###
+    id = NW_AFG.39
+	title = NW_AFG.39.t
+    desc = NW_AFG.39.d
+	picture = GFX_report_event_afg_army2
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_AFG.39" }
+    option = {
+        name = NW_AFG.39.a
+		ai_chance = {
+			base = 1
+			modifier = {
+				add = 3
+				has_opinion = { target = FROM value < 50 }
+			}
+		}
+		hidden_effect = { FROM = { country_event = { id = NW_AFG.41 days = 1 } } }
+	}
+	option = {
+        name = NW_AFG.39.b
+		ai_chance = { base = 3 }
+		hidden_effect = { FROM = { country_event = { id = NW_AFG.40 days = 1 } } }
+	}
+}
+
+country_event = {				###Уйгуры подчиняются###
+    id = NW_AFG.40
+	title = NW_AFG.40.t
+    desc = NW_AFG.40.d
+	picture = GFX_report_event_afg_army2
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_AFG.40" }
+    option = {
+        name = NW_AFG.40.a
+		if = {
+			limit = {
+				OR = {
+					has_dlc = "Together for Victory"
+					has_dlc = "Man the Guns"
+				}
+			}
+			set_autonomy = {
+				target = FROM
+				autonomy_state = autonomy_integrated_puppet
+				end_wars = no
+				end_civil_wars = no
+			}
+		}
+		else = { puppet = FROM }
+	}
+}
+
+country_event = {				###Отказ уйгуров###
+    id = NW_AFG.41
+	title = NW_AFG.41.t
+    desc = NW_AFG.41.d
+	picture = GFX_report_event_afg_army2
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_AFG.41" }
+    option = {
+        name = NW_AFG.41.a
+		create_wargoal = {
+			type = puppet_wargoal_focus
+			target = FROM
+			expire = 0
+		}
+		add_ai_strategy = {
+			type = antagonize
+			id = FROM
+			value = 200
+		}
+		add_ai_strategy = {
+			type = declare_war
+			id = FROM
+			value = 200
+		}
+	}
+}
+
+country_event = {				###[FROM.GetLeader] предлагает уступки###
+    id = NW_AFG.42
+	title = NW_AFG.42.t
+    desc = NW_AFG.42.d
+	picture = GFX_report_event_afg_army2
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_AFG.42" }
+    option = {
+        name = NW_AFG.42.a
+		ai_chance = {
+			base = 2
+			modifier = {
+				add = 2
+				surrender_progress > 0.35
+			}
+			modifier = {
+				add = 18
+				FROM = {
+					OR = {
+						has_country_leader = { character = AFG_Ismail_Barhi ruling_only = yes }
+						has_country_leader = { character = AFG_Shah_Mahmud_Khan ruling_only = yes }
+						has_country_leader = { character = AFG_Mohammed_Zahir_Shah ruling_only = yes }
+						has_country_leader = { character = AFG_Humaira_Begum ruling_only = yes }
+					}
+				}
+			}
+		}
+		FROM = { 
+			annex_country = { target = ROOT transfer_troops = no }
+			set_country_flag = { flag = AFG_make_concessions_to_the_Khazars_flag days = 400 value = 1 }			
+		}
+	}
+	option = {
+        name = NW_AFG.42.b
+		ai_chance = { base = 3 }
+		hidden_effect = { FROM = { country_event = { id = NW_AFG.43 hours = 6 } } }
+	}
+}
+
+country_event = {				###Отказ хазарейцев###
+    id = NW_AFG.43
+	title = NW_AFG.43.t
+    desc = NW_AFG.43.d
+	picture = GFX_report_event_afg_army2
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_AFG.43" }
+    option = {
+        name = NW_AFG.43.a
 	}
 }
