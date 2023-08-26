@@ -980,17 +980,6 @@ country_event = {				###Племенное восстание###
 	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_AFG.16" }
 	immediate = {
 		hidden_effect = {
-			if = {
-				limit = {
-					AFG_Turabaz_Khan = {
-						is_hired_as_advisor = no
-					}
-				}
-				delete_units = {
-					division_template = "«Shahi»"
-					disband = no
-				}
-			}
 			create_dynamic_country = {
 				original_tag = ROOT
 				copy_tag = ROOT
@@ -1019,6 +1008,14 @@ country_event = {				###Племенное восстание###
 						}
 						transfer_state_to = PREV.PREV
 					}
+					transfer_units_fraction = {
+						target = PREV
+						size = 0.4
+						stockpile_ratio = 0.3
+						army_ratio = 0.3
+						air_ratio = 0.3
+						navy_ratio = 0.3
+					}
 					if = {
 						limit = { NOT = { has_completed_focus = AFG_the_great_executioner } }
 						AFG_Lodina_Tadj_Muhammad_Pagmani = { set_nationality = PREV.PREV }
@@ -1030,7 +1027,21 @@ country_event = {				###Племенное восстание###
 					}
 					if = {
 						limit = { AFG_Turabaz_Khan = { is_hired_as_advisor = no } }
-						AFG_Turabaz_Khan = { set_nationality = PREV.PREV } 
+						delete_unit_template_and_units = { division_template = "«Shahi»" }
+						AFG_Turabaz_Khan = { set_nationality = PREV.PREV }
+						PREV = {
+							capital_scope = {
+								create_unit = {
+									division = "name = \"«Shahi»\" division_template = \"«Shahi»\" start_experience_factor = 0.3"
+									owner = PREV
+									count = 1
+								}
+							}
+						}
+					}
+					if = {
+						limit = { NOT = { has_country_leader = { character = AFG_Ali_Muhammed_Lamari ruling_only = yes } } }
+						AFG_Ali_Muhammed_Lamari = { set_nationality = PREV.PREV }
 					}
 					AFG_Gulam_Siddik_han = { set_nationality = PREV.PREV }										#every modernists person#
 					AFG_Amanulla = { set_nationality = PREV.PREV }												
@@ -1042,10 +1053,6 @@ country_event = {				###Племенное восстание###
 					AFG_Muhammad_Kabir_Khan = { set_nationality = PREV.PREV }
 					AFG_Abdur_Rahim_Khan = { set_nationality = PREV.PREV }
 					AFG_Mohammad_Gul_han_Momand = { set_nationality = PREV.PREV }
-					if = {
-						limit = { NOT = { has_country_leader = { character = AFG_Ali_Muhammed_Lamari ruling_only = yes } } }
-						AFG_Ali_Muhammed_Lamari = { set_nationality = PREV.PREV }
-					}
 					AFG_Ghulam_Haidar_Rasuli = { set_nationality = PREV.PREV }
 					AFG_Shah_Doleh_Han_Sapi = { set_nationality = PREV.PREV }
 					AFG_Mohammad_Alam_Han = { set_nationality = PREV.PREV }
@@ -1096,17 +1103,6 @@ country_event = {				###Племенное восстание###
 					defense_skill = 2
 					planning_skill = 1
 					logistics_skill = 3
-				}
-				if = {
-					limit = { has_character = AFG_Turabaz_Khan }
-					capital_scope = {
-						create_unit = {
-							division = "name = \"«Shahi»\" division_template = \"«Shahi»\" start_experience_factor = 0.3"
-							owner = PREV
-							count = 1
-							allow_spawning_on_enemy_provs = yes
-						}
-					}
 				}
 				add_political_power = 70
 				AFG_autofocus_complete_effect = yes
@@ -1176,17 +1172,23 @@ country_event = {				###Племенное восстание II###
 					long_name = AFG_neutrality_party_long
 					name = AFG_neutrality_party
 				}
-				if = {
-					limit = { 948 = { controller = { OR = { original_tag = ROOT has_cosmetic_tag = AFG_hazarajat } } } }
-					transfer_state = 948 
+				948 = {
+					if = {
+						limit = { controller = { OR = { original_tag = ROOT has_cosmetic_tag = AFG_hazarajat } } }
+						transfer_state_to = PREV
+					}
 				}
-				if = {
-					limit = { 947 = { controller = { OR = { original_tag = ROOT has_cosmetic_tag = AFG_hazarajat } } } }
-					transfer_state = 947 
+				947 = {
+					if = {
+						limit = { controller = { OR = { original_tag = ROOT has_cosmetic_tag = AFG_hazarajat } } }
+						transfer_state_to = PREV
+					}
 				}
-				if = {
-					limit = { 952 = { controller = { OR = { original_tag = ROOT has_cosmetic_tag = AFG_hazarajat } } } }
-					transfer_state = 952 
+				952 = {
+					if = {
+						limit = { controller = { OR = { original_tag = ROOT has_cosmetic_tag = AFG_hazarajat } } }
+						transfer_state_to = PREV
+					}
 				}		
 				ROOT = {
 					AFG_Fazl_Omar_Modjaddidi = { set_nationality = PREV.PREV }												#every ulema person#
@@ -1296,12 +1298,11 @@ country_event = {				###Восстание в Хазараджате###
 				}
 				set_cosmetic_tag = AFG_hazarajat
 				load_focus_tree = AFG_HAZ_focus
-				transfer_state = 949
 				if = {
 					limit = { NOT = { has_template = "Tribal Lashkar" } }
 					division_template = {
 						name = "Tribal Lashkar"	
-						is_locked = yes
+						is_locked = no
 						division_names_group = AFG_CAV_01
 						regiments = {
 							cavalry = { x = 0 y = 0 }
@@ -1312,6 +1313,7 @@ country_event = {				###Восстание в Хазараджате###
 					}
 				}
 				949 = {
+					transfer_state_to = PREV
 					create_unit = {
 						division = "name = \"Tribal Lashkar\" division_template = \"Tribal Lashkar\" start_experience_factor = 0.1 start_equipment_factor = 0.3"
 						owner = PREV
@@ -1326,7 +1328,7 @@ country_event = {				###Восстание в Хазараджате###
 					add_civil_war_target = PREV
 				}
 				every_country_with_original_tag = {
-					original_tag_to_check = AFG 
+					original_tag_to_check = AFG
 					set_nationality = {
 						target_country = PREV
 						character = AFG_Ibragim_Gausavar
@@ -1402,7 +1404,7 @@ country_event = {				###Восстание в Хазараджате###
 		hidden_effect = {
 			random_other_country = {
 				limit = { 
-					original_tag = ROOT 
+					original_tag = ROOT
 					has_cosmetic_tag = AFG_hazarajat
 				}
 				change_tag_from = ROOT
