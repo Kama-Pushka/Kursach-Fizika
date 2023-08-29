@@ -1,39 +1,113 @@
-COG_update_administration_of_tribal_leaders_idea = { #name ?
-	add_to_temp_variable = { sum = 295.COG_loyalty_lvl_var }
-	add_to_temp_variable = { sum = 886.COG_loyalty_lvl_var }
-	add_to_temp_variable = { sum = 1065.COG_loyalty_lvl_var }
-	add_to_temp_variable = { sum = 538.COG_loyalty_lvl_var }
-	add_to_temp_variable = { sum = 718.COG_loyalty_lvl_var }
-	add_to_temp_variable = { sum = 915.COG_loyalty_lvl_var }
+COG_update_administration_of_tribal_leaders_idea = {
+	every_controlled_state = {
+		limit = { is_original_congo_state = yes }
+		add_to_temp_variable = { sum = COG_loyalty_lvl_var }
+		add_to_temp_variable = { num = 1 }
+	}
+	
+	set_temp_variable = { faithful = 4 } #??
+	multiply_temp_variable = { faithful = num }
+	set_temp_variable = { loyal = 2.33 } #?
+	multiply_temp_variable = { loyal = num }
+	round_temp_variable = loyal #?
+	# set_temp_variable = { disloyal = 4 }
+	# multiply_temp_variable = { disloyal = num }
+	
 	if = {
-		limit = { check_variable = { sum > 23 } } #check_variable = { var = sum value = 24 } ?
-		remove_ideas = {
-			COG_loyal_administration_of_tribal_leaders
-			COG_disloyal_administration_of_tribal_leaders
+		limit = { check_variable = { var = sum value = faithful compare = greater_than_or_equals } }
+		set_temp_variable = { temp_value = sum }
+		multiply_temp_variable = { temp_value = 0.01 }
+		set_variable = { COG_atl_political_power_gain = temp_value }
+		
+		set_temp_variable = { temp_value = sum }
+		multiply_temp_variable = { temp_value = 0.005 }
+		set_variable = { COG_atl_local_resources_factor = temp_value }
+		
+		set_temp_variable = { temp_value = sum }
+		multiply_temp_variable = { temp_value = -0.02 }
+		divide_temp_variable = { temp_value = 3 }
+		set_variable = { COG_atl_monthly_population = temp_value }
+		
+		if = {
+			limit = { NOT = { has_dynamic_modifier = { modifier = COG_faithful_administration_of_tribal_leaders } } }
+			add_dynamic_modifier = { modifier = COG_faithful_administration_of_tribal_leaders }
 		}
-		add_ideas = COG_faithful_administration_of_tribal_leaders
+		if = {
+			limit = { has_dynamic_modifier = { modifier = COG_loyal_administration_of_tribal_leaders } }
+			remove_dynamic_modifier = { modifier = COG_loyal_administration_of_tribal_leaders }
+		}
+		if = {
+			limit = { has_dynamic_modifier = { modifier = COG_disloyal_administration_of_tribal_leaders } }
+			remove_dynamic_modifier = { modifier = COG_disloyal_administration_of_tribal_leaders }
+		}
 	}
 	else_if = {
 		limit = { #?
-			check_variable = { sum < 24 }
-			check_variable = { sum > 13 }
+			# check_variable = { sum < 24 }
+			check_variable = { var = sum value = loyal compare = greater_than_or_equals }
 		}
-		remove_ideas = {
-			COG_faithful_administration_of_tribal_leaders
-			COG_disloyal_administration_of_tribal_leaders
+		set_temp_variable = { temp_value = sum }
+		multiply_temp_variable = { temp_value = 0.031 }
+		subtract_from_temp_variable = { temp_value = 0.495 }
+		set_variable = { COG_atl_political_power_gain = temp_value }
+		
+		set_temp_variable = { temp_value = sum }
+		multiply_temp_variable = { temp_value = 0.005 }
+		# ? !!
+		set_variable = { COG_atl_local_resources_factor = temp_value }
+		
+		set_temp_variable = { temp_value = sum }
+		multiply_temp_variable = { temp_value = -0.02 }
+		divide_temp_variable = { temp_value = 3 }
+		set_variable = { COG_atl_monthly_population = temp_value }
+		
+		if = {
+			limit = { has_dynamic_modifier = { modifier = COG_faithful_administration_of_tribal_leaders } }
+			remove_dynamic_modifier = { modifier = COG_faithful_administration_of_tribal_leaders }
 		}
-		add_ideas = COG_loyal_administration_of_tribal_leaders
+		if = {
+			limit = { NOT = { has_dynamic_modifier = { modifier = COG_loyal_administration_of_tribal_leaders } } }
+			add_dynamic_modifier = { modifier = COG_loyal_administration_of_tribal_leaders }
+		}
+		if = {
+			limit = { has_dynamic_modifier = { modifier = COG_disloyal_administration_of_tribal_leaders } }
+			remove_dynamic_modifier = { modifier = COG_disloyal_administration_of_tribal_leaders }
+		}
 	}
-	else_if = { #?
-		limit = { #?
-			check_variable = { sum < 14 }
+	else = { #?
+		# limit = { #?
+			# check_variable = { sum < 14 }
+		# }
+		set_temp_variable = { temp_value = sum }
+		multiply_temp_variable = { temp_value = 0.01 }
+		subtract_from_temp_variable = { temp_value = 0.21 }
+		set_variable = { COG_atl_political_power_gain = temp_value }
+		
+		set_temp_variable = { temp_value = sum }
+		multiply_temp_variable = { temp_value = 0.005 }
+		subtract_from_temp_variable = { temp_value = 0.105 }
+		set_variable = { COG_atl_local_resources_factor = temp_value }
+		
+		# set_temp_variable = { temp_value = sum }
+		# multiply_temp_variable = { temp_value = -0.02 }
+		# divide_temp_variable = { temp_value = 3 }
+		set_variable = { COG_atl_monthly_population = 0 }
+		
+		if = {
+			limit = { has_dynamic_modifier = { modifier = COG_faithful_administration_of_tribal_leaders } }
+			remove_dynamic_modifier = { modifier = COG_faithful_administration_of_tribal_leaders }
 		}
-		remove_ideas = {
-			COG_faithful_administration_of_tribal_leaders
-			COG_loyal_administration_of_tribal_leaders
+		if = {
+			limit = { has_dynamic_modifier = { modifier = COG_loyal_administration_of_tribal_leaders } }
+			remove_dynamic_modifier = { modifier = COG_loyal_administration_of_tribal_leaders }
 		}
-		add_ideas = COG_disloyal_administration_of_tribal_leaders
+		if = {
+			limit = { NOT = { has_dynamic_modifier = { modifier = COG_disloyal_administration_of_tribal_leaders } } }
+			add_dynamic_modifier = { modifier = COG_disloyal_administration_of_tribal_leaders }
+		}
 	}
+	
+	force_update_dynamic_modifier = yes
 }
 COG_cotton_roads_lvl_update = {
 	for_each_scope_loop = { #?
@@ -219,7 +293,59 @@ COG_resistance_and_compliance_in_state_update = { #?
 		}
 	}
 }
-
+COG_army_irregular_effect = {
+	if = {
+		limit = { check_variable = { COG_loyalty_lvl_var = 2 } }
+		add_manpower = -3000
+		create_unit = {
+			division = "name = \"Militia Unit\" division_template = \"Militia Unit\" start_experience_factor = 0.1 start_equipment_factor = 0.6"
+			owner = ROOT
+			allow_spawning_on_enemy_provs = yes
+			count = 1
+		}
+		add_to_temp_variable = { num_milita_unit = 1 }
+	}
+	else_if = {
+		limit = { check_variable = { COG_loyalty_lvl_var = 3 } }
+		add_manpower = -6000
+		create_unit = {
+			division = "name = \"Militia Unit\" division_template = \"Militia Unit\" start_experience_factor = 0.1 start_equipment_factor = 0.6"
+			owner = ROOT
+			allow_spawning_on_enemy_provs = yes
+			count = 2
+		}
+		add_to_temp_variable = { num_milita_unit = 2 }
+	}
+	else_if = {
+		limit = { check_variable = { COG_loyalty_lvl_var = 4 } }
+		add_manpower = -9000
+		create_unit = {
+			division = "name = \"Militia Unit\" division_template = \"Militia Unit\" start_experience_factor = 0.1 start_equipment_factor = 0.6"
+			owner = ROOT
+			allow_spawning_on_enemy_provs = yes
+			count = 1
+		}
+		create_unit = {
+			division = "name = \"Militia Division\" division_template = \"Militia Division\" start_experience_factor = 0.1 start_equipment_factor = 0.6"
+			owner = ROOT
+			allow_spawning_on_enemy_provs = yes
+			count = 1
+		}
+		add_to_temp_variable = { num_milita_division = 1 }
+		add_to_temp_variable = { num_milita_unit = 1 }
+	}
+	else_if = {
+		limit = { check_variable = { COG_loyalty_lvl_var = 5 } }
+		add_manpower = -12000
+		create_unit = {
+			division = "name = \"Militia Division\" division_template = \"Militia Division\" start_experience_factor = 0.1 start_equipment_factor = 0.6"
+			owner = ROOT
+			allow_spawning_on_enemy_provs = yes
+			count = 2
+		}
+		add_to_temp_variable = { num_milita_division = 2 }
+	}
+}
 COG_install_some_stuff_PREVPREV = { #? !
 	PREV = {
 		set_variable = { nw_CongoGoogleMaps = PREV.nw_CongoGoogleMaps }
@@ -230,6 +356,7 @@ COG_install_some_stuff_PREVPREV = { #? !
 		set_variable = { COG_build_power_plant_on_inga_dam_var = PREV.COG_build_power_plant_on_inga_dam_var }
 		set_variable = { COG_build_inga_dam_var = PREV.COG_build_inga_dam_var }
 		set_variable = { COG_ctf_cotton_plantations_cost = PREV.COG_ctf_cotton_plantations_cost }
+		set_variable = { COG_union_miniere_factory = PREV.COG_union_miniere_factory }
 		# set_variable = { COG_integrate_kingdom_decision_end = PREV.COG_integrate_kingdom_decision_end } #?
 		country_event = { id = congo.10 days = 30 random_days = 365 } #??
 	}
@@ -363,6 +490,186 @@ COG_install_some_stuff_PREVPREV = { #? !
 			add_dynamic_modifier = { modifier = COG_tropical_diseases }
 			set_variable = { COG_td_monthly_population = PREV.COG_td_monthly_population }
 			set_variable = { COG_td_stability_factor = PREV.COG_td_stability_factor }
+		}
+	}
+}
+COG_simon_kimbangu_superpowers_update = { #? log !
+	hidden_effect = {
+		if = {
+			limit = { check_variable = { COG_faith_in_the_prophet > 90000 } }
+			set_temp_variable = { lvl = 3 }
+		}
+		else_if = {
+			limit = { check_variable = { COG_faith_in_the_prophet > 45000 } }
+			set_temp_variable = { lvl = 2 }
+		}
+		else = {
+			# limit = { check_variable = { COG_faith_in_the_prophet < 30000 } }
+			set_temp_variable = { lvl = 1 }
+		}
+		
+		if = {
+			limit = { has_country_leader_with_trait = COG_simon_kimbangu_goodness_lvl_1 }
+			remove_country_leader_trait = COG_simon_kimbangu_goodness_lvl_1
+			set_temp_variable = { tier = 1 }
+		}
+		else_if = {
+			limit = { has_country_leader_with_trait = COG_simon_kimbangu_goodness_lvl_2 }
+			remove_country_leader_trait = COG_simon_kimbangu_goodness_lvl_2
+			set_temp_variable = { tier = 1 }
+		}
+		else_if = {
+			limit = { has_country_leader_with_trait = COG_simon_kimbangu_goodness_lvl_3 }
+			remove_country_leader_trait = COG_simon_kimbangu_goodness_lvl_3
+			set_temp_variable = { tier = 1 }
+		}
+		if = { #!
+			limit = { has_country_leader_with_trait = COG_simon_kimbangu_aggressiveness_lvl_1 }
+			remove_country_leader_trait = COG_simon_kimbangu_aggressiveness_lvl_1
+			set_temp_variable = { tier = 2 }
+		}
+		else_if = {
+			limit = { has_country_leader_with_trait = COG_simon_kimbangu_aggressiveness_lvl_2 }
+			remove_country_leader_trait = COG_simon_kimbangu_aggressiveness_lvl_2
+			set_temp_variable = { tier = 2 }
+		}
+		else_if = {
+			limit = { has_country_leader_with_trait = COG_simon_kimbangu_aggressiveness_lvl_3 }
+			remove_country_leader_trait = COG_simon_kimbangu_aggressiveness_lvl_3
+			set_temp_variable = { tier = 2 }
+		}
+		if = { #!
+			limit = { has_country_leader_with_trait = COG_simon_kimbangu_diplomaticness_lvl_1 }
+			remove_country_leader_trait = COG_simon_kimbangu_diplomaticness_lvl_1
+			set_temp_variable = { tier = 3 }
+		}
+		else_if = {
+			limit = { has_country_leader_with_trait = COG_simon_kimbangu_diplomaticness_lvl_2 }
+			remove_country_leader_trait = COG_simon_kimbangu_diplomaticness_lvl_2
+			set_temp_variable = { tier = 3 }
+		}
+		else_if = {
+			limit = { has_country_leader_with_trait = COG_simon_kimbangu_diplomaticness_lvl_3 }
+			remove_country_leader_trait = COG_simon_kimbangu_diplomaticness_lvl_3
+			set_temp_variable = { tier = 3 }
+		}
+	}
+	
+	if = {
+		limit = { 
+			check_variable = { goodness = 1 } 
+			NOT = { check_variable = { tier = 1 } } 
+			check_variable = { var = COG_faith_in_the_prophet_goodness value = 2 compare = greater_than_or_equals }
+		}
+		if = {
+			limit = { check_variable = { COG_faith_in_the_prophet_goodness > 2 } }
+			set_temp_variable = { tier = 1 }
+		}
+		effect_tooltip = {
+			meta_effect = {
+				text = {
+					COG_simon_kimbangu = { add_country_leader_trait = COG_simon_kimbangu_goodness_lvl_[LVL] }
+				}
+				LVL = lvl
+			}
+		}
+	}
+	else_if = {
+		limit = {
+			check_variable = { aggressiveness = 1 } 
+			NOT = { check_variable = { tier = 2 } }
+			check_variable = { var = COG_faith_in_the_prophet_aggressiveness value = 2 compare = greater_than_or_equals }
+		}
+		if = {
+			limit = { check_variable = { COG_faith_in_the_prophet_aggressiveness > 2 } }
+			set_temp_variable = { tier = 2 }
+		}
+		effect_tooltip = {
+			meta_effect = {
+				text = {
+					COG_simon_kimbangu = { add_country_leader_trait = COG_simon_kimbangu_aggressiveness_lvl_[LVL] }
+				}
+				LVL = lvl
+			}
+		}
+	}
+	else_if = {
+		limit = { 
+			check_variable = { diplomaticness = 1 } 
+			NOT = { check_variable = { tier = 3 } } 
+			check_variable = { var = COG_faith_in_the_prophet_diplomaticness value = 2 compare = greater_than_or_equals }
+		}
+		if = {
+			limit = { check_variable = { COG_faith_in_the_prophet_diplomaticness > 2 } }
+			set_temp_variable = { tier = 3 }
+		}
+		effect_tooltip = {
+			meta_effect = {
+				text = {
+					COG_simon_kimbangu = { add_country_leader_trait = COG_simon_kimbangu_diplomaticness_lvl_[LVL] }
+				}
+				LVL = lvl
+			}
+		}
+	}
+	
+	hidden_effect = {
+		if = {
+			limit = { check_variable = { tier = 1 } }
+			meta_effect = {
+				text = {
+					add_country_leader_trait = COG_simon_kimbangu_goodness_lvl_[LVL]
+				}
+				LVL = lvl
+			}
+			set_portraits = {
+				character = COG_simon_kimbangu
+				civilian = { 
+					large = "gfx/leaders/COG/Portrait_Simon_Kimbangu_goodness.dds" 
+				}
+				army = { 
+					large = "gfx/leaders/COG/Portrait_Simon_Kimbangu_goodness.dds" 
+					small = "gfx/interface/ideas/idea_africa_generic_land_1.dds" #!
+				}
+			}
+		}
+		else_if = {
+			limit = { check_variable = { tier = 2 } }
+			meta_effect = {
+				text = {
+					add_country_leader_trait = COG_simon_kimbangu_aggressiveness_lvl_[LVL]
+				}
+				LVL = lvl
+			}
+			set_portraits = {
+				character = COG_simon_kimbangu
+				civilian = { 
+					large = "gfx/leaders/COG/Portrait_Simon_Kimbangu_aggressiveness.dds" #??? !!
+				}
+				army = { 
+					large = "gfx/leaders/COG/Portrait_Simon_Kimbangu_aggressiveness.dds" 
+					small = "gfx/interface/ideas/idea_africa_generic_land_1.dds" #!
+				}
+			}
+		}
+		else_if = {
+			limit = { check_variable = { tier = 3 } }
+			meta_effect = {
+				text = {
+					add_country_leader_trait = COG_simon_kimbangu_diplomaticness_lvl_[LVL]
+				}
+				LVL = lvl
+			}
+			set_portraits = {
+				character = COG_simon_kimbangu
+				civilian = { 
+					large = "gfx/leaders/COG/Portrait_Simon_Kimbangu_drip.dds" 
+				}
+				army = { 
+					large = "gfx/leaders/COG/Portrait_Simon_Kimbangu_drip.dds" 
+					small = "gfx/interface/ideas/idea_africa_generic_land_1.dds" #!
+				}
+			}
 		}
 	}
 }

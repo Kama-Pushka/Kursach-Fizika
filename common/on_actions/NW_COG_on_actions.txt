@@ -19,16 +19,17 @@ on_actions = {
 				
 				if = {
 					limit = {
-						has_completed_focus = COG_belgian_dominion #?
-						#has_idea = COG_pedro_vii #!
-						has_idea = COG_disloyal_administration_of_tribal_leaders
+						has_completed_focus = COG_belgian_dominion
+						has_idea = POR_pedro_8 #!
+						# has_idea = COG_disloyal_administration_of_tribal_leaders
+						has_dynamic_modifier = { modifier = COG_disloyal_administration_of_tribal_leaders }
 					}
 					country_event = congo.37
 				}
 				else_if = {
 					limit = {
-						has_completed_focus = COG_belgian_dominion #?
-						#NOT = { has_idea = COG_pedro_vii } #? #!
+						has_completed_focus = COG_belgian_dominion
+						NOT = { has_idea = POR_pedro_8 }
 						OR = {
 							has_idea = COG_loyal_administration_of_tribal_leaders
 							has_idea = COG_faithful_administration_of_tribal_leaders
@@ -59,6 +60,10 @@ on_actions = {
 					}
 				}
 				
+				if = { #?
+					limit = { has_country_leader_with_trait = black_jesus }
+					add_to_variable = { COG_faith_in_the_prophet = 14 }
+				}
 				if = { #?
 					limit = { 295 = { has_dynamic_modifier = { modifier = COG_holy_city } } }
 					add_to_variable = { COG_faith_in_the_prophet = 14 }
@@ -133,6 +138,50 @@ on_actions = {
 	
 	on_state_control_changed = { #??
 		effect = {
+			if = {
+				limit = { 
+					FROM.FROM = { has_dynamic_modifier = { modifier = COG_tribal_system } } #is_original_congo_state = yes
+					NOT = { ROOT = { original_tag = COG } } #has_focus_tree
+				}
+				FROM.FROM = {
+					remove_dynamic_modifier = { modifier = COG_tribal_system }
+				}
+			}
+			else_if = {
+				limit = { 
+					FROM.FROM = { is_original_congo_state = yes NOT = { has_dynamic_modifier = { modifier = COG_tribal_system } has_state_flag = COG_tribal_system_block } }
+					ROOT = { original_tag = COG } #has_focus_tree
+				}
+				FROM.FROM = {
+					add_dynamic_modifier = { modifier = COG_tribal_system }
+				}
+			}
+			
+			if = {
+				limit = { 
+					FROM.FROM = { is_original_congo_state = yes } 
+					ROOT = { original_tag = COG }
+					FROM = { original_tag = COG }
+				}
+				ROOT = {
+					if = {
+						limit = { NOT = { tag = COG } } # FROM.FROM = { NOT = { has_state_flag = COG_minus_party_popularity@ROOT } }
+						add_popularity = {
+							ideology = var:current_party_ideology_group
+							popularity = -0.1
+						}
+						NW_legitimacy_check = yes
+						FROM.FROM = {
+							set_state_flag = COG_minus_party_popularity@ROOT
+						}
+					}
+					COG_update_administration_of_tribal_leaders_idea = yes #?
+				}
+				FROM = {
+					COG_update_administration_of_tribal_leaders_idea = yes
+				}
+			}
+			
 			if = {
 				limit = { 
 					ROOT = { original_tag = COG has_completed_focus = COG_restore_the_federal_kingdom check_variable = { COG_integrate_kingdom_decision_end < 6 } }
