@@ -192,7 +192,7 @@ GER_unit_production = {
 	ai_strategy = {
 		type = unit_ratio
 		id = convoy
-		value = 20
+		value = 10
 	}
 	
 
@@ -329,7 +329,7 @@ GER_template_design = {
 GER_less_naval_focused = {
 	allowed = {
 		original_tag = GER
-		not = {
+		NOT = {
 			has_dlc = "Man the Guns"
 		}
 	}
@@ -361,7 +361,7 @@ GER_less_naval_focused = {
 	ai_strategy = {
 		type = unit_ratio
 		id = convoy
-		value = -3
+		value = -10
 	}
 }
 
@@ -371,7 +371,7 @@ GER_naval_role_ratios_historical = {
 		has_dlc = "Man the Guns"
 	}
 	enable = {
-		not = { GER_naval_interest_trigger = yes }
+		NOT = { GER_naval_interest_trigger = yes }
 	}
 
 	abort_when_not_enabled = yes
@@ -843,7 +843,7 @@ GER_stock_up_on_trains_before_barbarossa = {
 GER_convoys_low = {
 	allowed = { original_tag = GER }
 	enable = {
-		has_war = yes
+		has_war = no
 		has_equipment = {
 			convoy_1 < 150
 		}
@@ -856,7 +856,7 @@ GER_convoys_low = {
 			has_equipment = {	#critical_low strategy now engages
 				convoy_1 < 50
 			}
-			has_war = no
+			has_war = yes
 		}
 	}
 	ai_strategy = {
@@ -3189,7 +3189,7 @@ GER_enable_invasion_of_NOR = {
 	}
 	ai_strategy = {
 		type = naval_invasion_focus
-		value = 2500
+		value = 5000
 	}
 #	ai_strategy = {
 #		type = naval_mission_threshold
@@ -3203,7 +3203,19 @@ GER_enable_invasion_of_NOR = {
 #		ordertype = invasion
 #		execute_order = yes
 #	}
-
+	
+	ai_strategy = {
+		type = invasion_unit_request
+		tag = NOR
+		value = 200
+	}
+	ai_strategy = {
+		type = invasion_unit_request
+		strategic_region = 11
+		value = 200
+	}
+	
+	
 	ai_strategy = {
 		type = front_control
 		state_trigger = {
@@ -4274,6 +4286,58 @@ GER_want_to_invade_GRE_with_axis = {
 
 ### СССР // ЛЕТО 1941
 
+NW_GER_area_priority_SOV = {
+	allowed = { original_tag = GER }
+	enable = {
+		OR = {
+			focus_progress = { focus = GER_ussr_war_goal progress > 0.01 }
+			has_war_with = SOV
+		}
+	}
+	abort = {
+		SOV = {
+			OR = {
+				exists = no
+				is_subject_of = ROOT
+			}
+		}
+	}
+	
+	ai_strategy = {
+		type = prepare_for_war
+		id = "SOV"
+		value = 200
+	}
+	ai_strategy = {
+		type = area_priority
+		id = europe
+		value = 500
+	}
+	ai_strategy = {
+		type = front_armor_score
+		id = "SOV"
+		value = 300
+	}
+	ai_strategy = {
+		type = front_unit_request
+		country_trigger = {
+			original_tag = SOV
+		}
+		value = 100
+	}
+	ai_strategy = {
+		type = front_unit_request
+		country_trigger = {
+			NOT = { original_tag = SOV }
+			OR = {
+				is_in_faction_with = SOV
+				is_subject_of = SOV
+			}
+		}
+		value = 15
+	}
+}
+
 NW_GER_caucasia_nym_nym = {
 	allowed = { original_tag = GER }
 	enable = {
@@ -4318,6 +4382,27 @@ NW_GER_ignore_SPA = {
 
 # focus on barbarossa
 NW_axis_prep_for_barbarossa = {
+	allowed = {
+		OR = {
+			original_tag = ITA
+			original_tag = FRA
+			original_tag = HOL
+			original_tag = BEL
+			original_tag = DEN
+			original_tag = FIN
+			original_tag = SWE
+			original_tag = NOR
+			original_tag = HUN
+			original_tag = ROM
+			original_tag = TUR
+			original_tag = PER
+			original_tag = BUL
+			original_tag = POL
+			original_tag = CZE
+			original_tag = BAM
+			original_tag = SLO
+		}
+	}
 	enable = {
 		is_in_faction_with = GER
 		is_neighbor_of = SOV
@@ -4347,10 +4432,10 @@ NW_axis_prep_for_barbarossa = {
 			}
 		}
 	}
-
 	abort_when_not_enabled = yes
 
 	ai_strategy = { type = conquer id = "SOV" value = 100 }
+	ai_strategy = { type = prepare_for_war id = "SOV" value = 100 }
 	ai_strategy = { type = garrison value = -100 }
 }
 
