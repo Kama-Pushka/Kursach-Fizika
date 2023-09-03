@@ -100,26 +100,62 @@ scripted_gui = {
 		effects = {
 			state_coup_click = {
 				log = "[GetDateText]: ROOT: [Root.GetName] ([Root.GetTag]) // TARGET: [From.From.Owner.GetName] ([From.From.Owner.GetTag]) [From.From.GetName] : gui effects state_coup_click"
-				FROM.FROM = {
-					set_state_flag = state_coup_state_flag
-					owner = {
-						set_country_flag = { flag = state_coup_per_rate days = 3 }
-						if = {
-							limit = { NOT = { has_war_with = ROOT } }
-							set_country_flag = { flag = state_coup_once days = 180 }
-						}
-						if = {
-							limit = {
-								has_war_with = ROOT
-								has_country_flag = state_coup_once
+				hidden_effect = {
+					FROM.FROM = {
+						set_state_flag = state_coup_state_flag
+						owner = {
+							set_country_flag = { flag = state_coup_per_rate days = 3 }
+							if = {
+								limit = { NOT = { has_war_with = ROOT } }
+								set_country_flag = { flag = state_coup_once days = 180 }
 							}
-							clr_country_flag = state_coup_once
-							set_country_flag = { flag = state_coup_per_month days = 30 }
+							if = {
+								limit = {
+									has_war_with = ROOT
+									has_country_flag = state_coup_once
+								}
+								clr_country_flag = state_coup_once
+								set_country_flag = { flag = state_coup_per_month days = 30 }
+							}
+							country_event = { id = NWstate_coup.1 days = 1 }
 						}
-						country_event = { id = NWstate_coup.1 days = 1 }
+					}
+					ROOT = { add_political_power = -50 }
+				}
+				effect_tooltip = {
+					FROM.FROM = {
+						random_list = {
+							3 = {
+								modifier = { factor = 0 supply_node < 1 }
+								damage_building = { type = supply_node damage = 0.35 }
+							}
+							1 = {
+								modifier = { factor = 0 industrial_complex < 2 }
+								damage_building = { type = industrial_complex damage = 2 }
+							}
+							1 = {
+								modifier = { factor = 0 arms_factory < 2 }
+								damage_building = { type = arms_factory damage = 2 }
+							}
+							2 = {
+								modifier = { factor = 0 infrastructure < 1 }
+								damage_building = { type = infrastructure damage = 0.35 }
+							}
+							2 = {
+								modifier = { factor = 0 rail_way < 1 }
+								if = {
+									limit = { rail_way > 2 }
+									damage_building = { type = rail_way damage = 3 }
+								}
+								else_if = {
+									limit = { rail_way > 1 }
+									damage_building = { type = rail_way damage = 2 }
+								}
+								else = { damage_building = { type = rail_way damage = 1 } }
+							}
+						}
 					}
 				}
-				ROOT = { add_political_power = -50 }
 			}
 		}
 		
