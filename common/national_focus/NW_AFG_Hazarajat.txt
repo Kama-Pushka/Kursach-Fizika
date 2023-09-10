@@ -15,15 +15,22 @@ focus_tree = {
 	focus = {
 		id = AFG_HAZ_national_rise
 		icon = GFX_z_goal_revision_of_versailles_dictate
-		cost = 7.2
+		cost = 2.9
 		x = 12
 		y = 0
 		search_filters = {  }
 		ai_will_do = { base = 10 }
-		available = { }
-		bypass = { }
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus AFG_HAZ_national_rise"
+			add_political_power = 50
+			add_timed_idea = {
+				idea = HAZ_national_rise
+				days = 120
+			}
+			swap_ideas = {
+				remove_idea = HAZ_lack_of_national_consciousness
+				add_idea = HAZ_lack_of_national_consciousness_2
+			}
 		}		
 	}
 	
@@ -41,6 +48,8 @@ focus_tree = {
 		bypass = { }
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus AFG_HAZ_the_spirit_of_Genghis_Khan"
+			add_country_leader_trait = HAZ_the_spirit_of_Genghis_Khan 
+			add_command_power = 40
 		}		
 	}
 	
@@ -58,6 +67,7 @@ focus_tree = {
 		bypass = { }
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus AFG_HAZ_Hezar"
+			custom_effect_tooltip = AFG_HAZ_Hezar_tt
 		}		
 	}
 	
@@ -75,6 +85,22 @@ focus_tree = {
 		bypass = { }
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus AFG_HAZ_production_from_barracks"
+			random_owned_controlled_state = {
+				limit = {
+					is_core_of = ROOT
+					free_building_slots = {
+						building = industrial_complex
+						size > 0
+						include_locked = yes
+					}
+				}
+				add_extra_state_shared_building_slots = 1
+				add_building_construction = {
+					type = industrial_complex
+					level = 1
+					instant_build = yes		
+				}
+			}
 		}		
 	}
 	
@@ -93,6 +119,26 @@ focus_tree = {
 		bypass = { }
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus AFG_HAZ_support_the_nomads"
+			if = {
+				limit = { has_dynamic_modifier = { modifier = AFG_an_underdeveloped_feudal_tribal_state } }
+				custom_effect_tooltip = AFG_an_underdeveloped_feudal_tribal_state_tt
+				if = { 
+					limit = { check_variable = { a = 0.04 } check_variable = { b = 0.04 } check_variable = { c = 0.02 } check_variable = { d = 0.03 } }
+					add_to_variable = { a = 0.04 tooltip = production_speed_buildings_tooltip }
+					add_to_variable = { b = 0.04 tooltip = production_factory_max_efficiency_factor_tooltip }
+					add_to_variable = { c = 0.02 tooltip = research_speed_factor_tooltip }
+					add_to_variable = { d = 0.03 tooltip = global_building_slots_tooltip }
+					force_update_dynamic_modifier = yes
+				}
+				else = {
+					add_to_variable = { a = 0.08 tooltip = production_speed_buildings_tooltip }
+					add_to_variable = { b = 0.08 tooltip = production_factory_max_efficiency_factor_tooltip }
+					add_to_variable = { c = 0.04 tooltip = research_speed_factor_tooltip }
+					add_to_variable = { d = 0.06 tooltip = global_building_slots_tooltip }
+					force_update_dynamic_modifier = yes
+				}
+			}
+			add_ideas = HAZ_support_the_nomads
 		}		
 	}
 	
@@ -111,6 +157,28 @@ focus_tree = {
 		bypass = { }
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus AFG_HAZ_develop_the_mining_industry"
+			random_owned_controlled_state = {
+				limit = {
+					is_core_of = ROOT
+					free_building_slots = {
+						building = industrial_complex
+						size > 0
+						include_locked = yes
+					}
+				}
+				add_extra_state_shared_building_slots = 1
+				add_building_construction = {
+					type = industrial_complex
+					level = 1
+					instant_build = yes		
+				}
+			}
+			add_tech_bonus = {
+				name = AFG_HAZ_develop_the_mining_industry
+				bonus = 0.75
+				uses = 2
+				category = excavation_tech
+			}
 		}		
 	}
 	
@@ -128,6 +196,7 @@ focus_tree = {
 		bypass = { }
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus AFG_HAZ_creation_of_a_network_of_madrassas"
+			add_research_slot = 1
 		}		
 	}
 	
@@ -147,6 +216,26 @@ focus_tree = {
 		bypass = { }
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus AFG_HAZ_to_reconcile_the_peoples"
+			if = {
+				limit = { has_idea = HAZ_lack_of_national_consciousness }
+				swap_ideas = {
+					remove_idea = HAZ_lack_of_national_consciousness
+					add_idea = HAZ_lack_of_national_consciousness_2
+				}
+			}
+			else_if = {
+				limit = { has_idea = HAZ_lack_of_national_consciousness_2 }
+				swap_ideas = {
+					remove_idea = HAZ_lack_of_national_consciousness_2
+					add_idea = HAZ_lack_of_national_consciousness_3
+				}
+			}
+			else_if = {
+				limit = { has_idea = HAZ_lack_of_national_consciousness_3 }
+				remove_ideas = HAZ_lack_of_national_consciousness_3
+			}
+			add_to_variable = { haz_peoples_militia_var = 3 }
+			custom_effect_tooltip = AFG_HAZ_to_reconcile_the_peoples_tt
 		}		
 	}
 	
@@ -166,6 +255,11 @@ focus_tree = {
 		bypass = { }
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus AFG_HAZ_creation_of_a_regular_army"
+			swap_ideas = {
+				remove_idea = partial_regular_army 
+				add_idea = extensive_conscription 
+			}
+			country_lock_all_division_template = no
 		}		
 	}
 	
@@ -184,6 +278,14 @@ focus_tree = {
 		bypass = { }
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus AFG_HAZ_to_establish_an_illegal_supply_of_weapons"
+			if = {
+				limit = { has_game_rule = { rule = trade_weapons option = DEFAULT } }
+				add_to_variable = {
+					var = weapons_buy_discount 
+					value = 0.5
+					tooltip = AFG_support_for_the_arms_trade_tt
+				}	
+			}
 		}		
 	}
 	
@@ -202,6 +304,34 @@ focus_tree = {
 		bypass = { }
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus AFG_HAZ_factory_for_the_production_of_ammunition"
+			random_owned_controlled_state = {
+				limit = {
+					is_core_of = ROOT
+					free_building_slots = {
+						building = arms_factory
+						size > 0
+						include_locked = yes
+					}
+				}
+				add_extra_state_shared_building_slots = 1
+				add_building_construction = {
+					type = arms_factory
+					level = 1
+					instant_build = yes		
+				}
+			}
+			add_tech_bonus = {
+				name = AFG_HAZ_factory_for_the_production_of_ammunition
+				bonus = 0.75
+				uses = 1
+				category = artillery 
+			}
+			add_tech_bonus = {
+				name = AFG_HAZ_factory_for_the_production_of_ammunition
+				bonus = 0.75
+				uses = 1
+				category = infantry_weapons 
+			}
 		}		
 	}
 	
@@ -219,6 +349,24 @@ focus_tree = {
 		bypass = { }
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus AFG_HAZ_to_take_the_lands_of_the_Pashtun_Sardars"
+			if = {
+				limit = { has_idea = HAZ_dominance_of_the_pashtun_sardars }
+				swap_ideas = {
+					remove_idea = HAZ_dominance_of_the_pashtun_sardars
+					add_idea = HAZ_dominance_of_the_pashtun_sardar_2
+				}
+			}
+			else_if = {
+				limit = { has_idea = HAZ_dominance_of_the_pashtun_sardar_2 }
+				swap_ideas = {
+					remove_idea = HAZ_dominance_of_the_pashtun_sardar_2
+					add_idea = HAZ_dominance_of_the_pashtun_sardar_3
+				}
+			}
+			else_if = {
+				limit = { has_idea = HAZ_dominance_of_the_pashtun_sardar_3 }
+				remove_ideas = HAZ_dominance_of_the_pashtun_sardar_3
+			}
 		}		
 	}
 	
@@ -233,10 +381,13 @@ focus_tree = {
 		y = 1
 		search_filters = {  }
 		ai_will_do = { base = 10 }
-		available = { }
+		available = {
+			num_of_factories > 10
+		}
 		bypass = { }
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus AFG_HAZ_introduction_of_farming_technologies"
+			add_research_slot = 1
 		}		
 	}
 	
@@ -254,6 +405,46 @@ focus_tree = {
 		bypass = { }
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus AFG_HAZ_creation_of_the_administrative_apparatus"
+			if = {
+				limit = { has_idea = HAZ_lack_of_national_consciousness }
+				swap_ideas = {
+					remove_idea = HAZ_lack_of_national_consciousness
+					add_idea = HAZ_lack_of_national_consciousness_2
+				}
+			}
+			else_if = {
+				limit = { has_idea = HAZ_lack_of_national_consciousness_2 }
+				swap_ideas = {
+					remove_idea = HAZ_lack_of_national_consciousness_2
+					add_idea = HAZ_lack_of_national_consciousness_3
+				}
+			}
+			else_if = {
+				limit = { has_idea = HAZ_lack_of_national_consciousness_3 }
+				remove_ideas = HAZ_lack_of_national_consciousness_3
+			}
+			
+			if = {
+				limit = { has_idea = HAZ_dominance_of_the_pashtun_sardars }
+				swap_ideas = {
+					remove_idea = HAZ_dominance_of_the_pashtun_sardars
+					add_idea = HAZ_dominance_of_the_pashtun_sardar_2
+				}
+			}
+			else_if = {
+				limit = { has_idea = HAZ_dominance_of_the_pashtun_sardar_2 }
+				swap_ideas = {
+					remove_idea = HAZ_dominance_of_the_pashtun_sardar_2
+					add_idea = HAZ_dominance_of_the_pashtun_sardar_3
+				}
+			}
+			else_if = {
+				limit = { has_idea = HAZ_dominance_of_the_pashtun_sardar_3 }
+				remove_ideas = HAZ_dominance_of_the_pashtun_sardar_3
+			}
+			
+			add_political_power = 30
+			add_ideas = SAU_centralization_end
 		}		
 	}
 	
@@ -268,10 +459,16 @@ focus_tree = {
 		y = 1
 		search_filters = {  }
 		ai_will_do = { base = 10 }
-		available = { }
+		available = { NOT = { country_exists = AFG } controls_state = 267 }
 		bypass = { }
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus AFG_HAZ_new_power_of_Afghanistan"
+			AFG = {
+				every_core_state = {
+					add_core_of = ROOT
+				}
+			}
+			drop_cosmetic_tag = yes
 		}		
 	}
 	
@@ -290,6 +487,16 @@ focus_tree = {
 		bypass = { }
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus AFG_HAZ_peaceful_coexistence"
+			AFG = {
+				white_peace = {
+					tag = ROOT
+					message = haz_peace_tt
+				}
+			}
+			hidden_effect = {
+				transfer_state = 949
+				949 = { remove_core_of = AFG }
+			}
 		}		
 	}
 	
@@ -307,13 +514,35 @@ focus_tree = {
 		bypass = { }
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus AFG_HAZ_move_to_Quetta"
+			445 = { 
+				add_claim_by = ROOT
+				controller = {
+					ROOT = {
+						create_wargoal = {
+							type = annex_everything
+							target = PREV
+							expire = 0
+						}
+						add_ai_strategy = {
+						type = antagonize
+							id = PREV
+							value = 200
+						}
+						add_ai_strategy = {
+							type = declare_war
+							id = PREV
+							value = 200
+						}
+					}
+				}
+			}
 		}		
 	}
 	
 	focus = {
 		id = AFG_HAZ_easing_of_tax_charges
 		icon = GFX_z_goal_cancellation_of_money
-		prerequisite = { focus = AFG_HAZ_new_power_of_Afghanistan }
+		prerequisite = { focus = AFG_HAZ_new_power_of_Afghanistan focus = AFG_HAZ_peaceful_coexistence }
 		relative_position_id = AFG_HAZ_new_power_of_Afghanistan
 		cost = 7.2
 		x = 1
@@ -324,13 +553,14 @@ focus_tree = {
 		bypass = { }
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus AFG_HAZ_easing_of_tax_charges"
+			add_ideas = SAU_easing_the_tax_burden
 		}		
 	}
 	
 	focus = {
 		id = AFG_HAZ_overcome_Religious_Disputes
 		icon = GFX_z_goal_religious_consensus
-		prerequisite = { focus = AFG_HAZ_easing_of_tax_charges }
+		prerequisite = { focus = AFG_HAZ_easing_of_tax_charges focus = AFG_HAZ_peaceful_coexistence }
 		relative_position_id = AFG_HAZ_easing_of_tax_charges
 		cost = 7.2
 		x = 1
@@ -341,6 +571,7 @@ focus_tree = {
 		bypass = { }
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus AFG_HAZ_overcome_Religious_Disputes"
+			add_ideas = SAU_defenders_of_Islam
 		}		
 	}
 	
@@ -354,10 +585,17 @@ focus_tree = {
 		y = 1
 		search_filters = {  }
 		ai_will_do = { base = 10 }
-		available = { }
+		available = {
+			is_subject = no
+			JAP = {
+				is_faction_leader = yes
+				has_government = fascism
+			}
+		}
 		bypass = { }
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus AFG_HAZ_establish_contacts_with_Japan"
+			JAP = { country_event = generic.2 }
 		}		
 	}
 }
