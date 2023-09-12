@@ -1652,6 +1652,11 @@ focus_tree = {
 					instant_build = yes
 				}
 			}
+			build_railway = {
+				level = 3
+				start_province = 10454
+				target_province = 10837
+			}
 			419 = {
 				add_extra_state_shared_building_slots = 5
 				add_building_construction = {
@@ -2479,12 +2484,31 @@ focus_tree = {
 			
 		}
 		bypass = {
-			NOT = { has_idea = PER_soviet_persian_treaty }
+			if = {
+				limit = { has_completed_focus = PER_alliance_with_soviet_union }
+				NOT = { has_idea = PER_soviet_persian_treaty_11 }
+			}
+			else_if = {
+				limit = { OR = { has_completed_focus = PER_triumph_of_third_force has_completed_focus = PER_refuse_stalinist_policy } }
+				NOT = { has_idea = PER_soviet_persian_treaty_1 }
+			}
+			else = { NOT = { has_idea = PER_soviet_persian_treaty } }
 		}
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus PER_break_soviet_persian_treaty"
-			remove_ideas = PER_soviet_persian_treaty
+			if = {
+				limit = { has_idea = PER_soviet_persian_treaty }
+				remove_ideas = PER_soviet_persian_treaty
+			}
+			else_if = {
+				limit = { has_idea = PER_soviet_persian_treaty_1 }
+				remove_ideas = PER_soviet_persian_treaty_1
+			}
+			else_if = {
+				limit = { has_idea = PER_soviet_persian_treaty_11 }
+				remove_ideas = PER_soviet_persian_treaty_11
+			}
 		}
 	}
 	
@@ -7371,10 +7395,11 @@ focus_tree = {
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus PER_unite_with_social_democrats"
 			add_political_power = 50
-			add_popularity = {
-				ideology = democratic
-				popularity = -0.15
-			}
+			
+			add_to_array = { coalition_array = token:democratic }
+			NW_legitimacy_check = yes
+			custom_effect_tooltip = add_dem_in_coalition
+			
 			custom_effect_tooltip = available_political_advisor
 			show_ideas_tooltip = PER_mostafa_fateh
 		}
@@ -7626,6 +7651,13 @@ focus_tree = {
 			hidden_effect = {
 				country_event = { id = NWpersian.422 days = 1 }
 			}
+			if = {
+				limit = { has_idea = PER_soviet_persian_treaty }
+				swap_ideas = {
+					remove_idea = PER_soviet_persian_treaty
+					add_idea = PER_soviet_persian_treaty_1
+				}
+			}
 		}
 	}
 	
@@ -7679,8 +7711,7 @@ focus_tree = {
 		}
 		available = {
 			NOT = { has_country_flag = PER_form_prosoviet_government_flag has_country_flag = PER_concessions_for_germanophiles_flag }
-			any_country_with_original_tag = {
-				original_tag_to_check = TUR
+			TUR = {
 				is_faction_leader = yes
 				has_completed_focus = TUR_socialist_kemalism_2
 				has_civil_war = no
@@ -7692,8 +7723,7 @@ focus_tree = {
 			}
 		}
 		bypass = {
-			any_country_with_original_tag = {
-				original_tag_to_check = TUR
+			TUR = {
 				has_completed_focus = TUR_socialist_kemalism_2
 				is_in_faction_with = ROOT
 			}
@@ -7741,8 +7771,7 @@ focus_tree = {
 			base = 1
 			modifier = {
 				factor = 0.1
-				any_country_with_original_tag = {
-					original_tag_to_check = TUR
+				TUR = {
 					has_completed_focus = TUR_socialist_kemalism_2
 				}
 			}
@@ -8352,6 +8381,13 @@ focus_tree = {
 					create_faction = PER_middle_eastern_socialism
 				}
 			}
+			if = {
+				limit = { has_idea = PER_soviet_persian_treaty }
+				swap_ideas = {
+					remove_idea = PER_soviet_persian_treaty
+					add_idea = PER_soviet_persian_treaty_1
+				}
+			}
 		}
 	}
 	
@@ -8409,6 +8445,13 @@ focus_tree = {
 			set_country_leader_ideology = stalinism
 			custom_effect_tooltip = set_country_leader_ideology_stalinism
 			add_country_leader_trait = favorite_of_moscow
+			if = {
+				limit = { has_idea = PER_soviet_persian_treaty }
+				swap_ideas = {
+					remove_idea = PER_soviet_persian_treaty
+					add_idea = PER_soviet_persian_treaty_11
+				}
+			}
 			SOV = { country_event = { id = generic.2 days = 1 } }
 		}
 	}
