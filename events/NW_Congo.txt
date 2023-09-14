@@ -792,6 +792,10 @@ country_event = { #Ситуация с дорогами
 	is_triggered_only = yes
 	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event congo.16" }
 	
+	trigger = {
+		NOT = { has_completed_focus = COG_abolition_of_taxes }
+	}
+	
 	option = {
 		name = congo.16.a
 		add_manpower = -210
@@ -814,6 +818,8 @@ country_event = { #Жизнь конголезского шахтёра
 	desc = congo.17.d
 	is_triggered_only = yes
 	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event congo.17" }
+	
+	fire_only_once = yes
 	
 	option = {
 		name = congo.17.a
@@ -1150,7 +1156,7 @@ country_event = { #Восстание рабочих в Конго
 	}
 	option = {
 		name = congo.28.b
-		trigger = { is_ai = no }
+		trigger = { is_ai = no NOT = { has_completed_focus = COG_increase_production_in_katanga_mines } }
 		random_other_country = { 
 			limit = {
 				original_tag = COG
@@ -1158,9 +1164,41 @@ country_event = { #Восстание рабочих в Конго
 			change_tag_from = ROOT
 		}
 	}
+	option = {
+		name = congo.28.c
+		trigger = { is_ai = no has_completed_focus = COG_increase_production_in_katanga_mines }
+		random_other_country = { 
+			limit = {
+				original_tag = COG
+			}
+			custom_effect_tooltip = COG_increase_production_in_katanga_mines_tt_1
+			division_template = {
+				name = "Militia Unit"
+				#division_names_group = COG_INF_01 # ?
+				is_locked = yes
+				force_allow_recruiting = no #?
+
+				# Note: Represents militia units
+				regiments = {
+					militia = { x = 0 y = 0 }
+					militia = { x = 0 y = 1 }
+					militia = { x = 0 y = 2 }
+				}
+			}
+			capital_scope = {
+				create_unit = {
+					division = "name = \"Militia Unit\" division_template = \"Militia Unit\" start_experience_factor = 0.1 start_equipment_factor = 0.6"
+					owner = PREV
+					allow_spawning_on_enemy_provs = yes
+					count = 4
+				}
+			}
+			change_tag_from = ROOT
+		}
+	}
 }
 
-country_event = { #Уран Конго
+country_event = { #Уран Конго - USA
 	id = congo.29
 	title = congo.29.t
 	desc = congo.29.d
@@ -1170,7 +1208,25 @@ country_event = { #Уран Конго
 	option = {
 		name = congo.29.a
 		add_political_power = -200
+		add_tech_bonus = {
+			name = COG_sell_uranium_in_USA
+			bonus = 1
+			uses = 1
+			category = nuclear
+		}
+		FROM = {
+			add_political_power = 200
+			add_tech_bonus = {
+				name = COG_sell_uranium_in_USA
+				bonus = -1
+				uses = 4
+				category = nuclear
+			}
+		}
 		# Уран снова появится на карте Конго, но будет принадлежать США !
+	}
+	option = {
+		name = congo.29.b
 	}
 }
 
@@ -1364,7 +1420,7 @@ country_event = { #Устройство партии
 		SOV = { #?
 			add_opinion_modifier = {
 				target = ROOT
-				modifier = COG_advisors_from_moscow
+				modifier = COG_advisors_from_moscow_opinion
 			}
 		}
 	}
@@ -1444,7 +1500,7 @@ country_event = { #Реставрация королевства Конго
 	}
 }
 
-country_event = { #Коронация Педро VII
+country_event = { #Коронация Педро VIII
 	id = congo.38
 	title = congo.38.t
 	desc = congo.38.d
@@ -2134,12 +2190,27 @@ country_event = { #Предложение Конго - Лидер альянса
 	
 	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event congo.58" }
 	
-	option = { #? (как уведомим игрока?)
+	option = {
 		name = congo.58.a
 		# ai_will_do !!! (если страна мажор, в 100% случаев этот вариант, если мидл, то в 50%, если минор, то 0%)
+		add_political_power = -200
+		add_tech_bonus = {
+			name = COG_investments_in_exchange_for_uranium
+			bonus = 1
+			uses = 1
+			category = nuclear
+		}
+		FROM = {
+			add_political_power = 200
+			add_tech_bonus = {
+				name = COG_investments_in_exchange_for_uranium
+				bonus = -1
+				uses = 4
+				category = nuclear
+			}
+		}
+		
 		# Уран снова появится на карте Конго, но будет принадлежать главе альянса
-		# custom_effect_tooltip = "фокус «Самостоятельная разработка урана» станет недоступен" # !
-		# FROM = { set_country_flag = block_COG_independent_development_of_uranium_focus }
 	}
 	option = {
 		name = congo.58.b
@@ -2779,5 +2850,38 @@ country_event = { #
 	
 	option = {
 		name = congo.77.a
+	}
+}
+
+country_event = { # [FROM.capital.GetName] отзывает своих советников / [FROM.GetAdjectiveCap] советники покидают страну
+	id = congo.78
+	title = { text = congo.78.t_SOV trigger = { FROM = { is_left_ideology = yes } } }
+	title = { text = congo.78.t_SAF trigger = { FROM = { is_left_ideology = no } } }
+	desc = { text = congo.78.d_SOV trigger = { FROM = { is_left_ideology = yes } } }
+	desc = { text = congo.78.d_SAF trigger = { FROM = { is_left_ideology = no } } }
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event congo.78" }
+	
+	option = {
+		name = congo.78.a
+		every_character = {
+			limit = { has_character_flag = COG_advisor@FROM }
+			set_nationality = FROM
+			clr_character_flag = COG_advisor@FROM
+		}
+		activate_targeted_decision = { decision = COG_invite_advisors target = FROM }
+	}
+}
+country_event = { # (Спасибо парадоксам, блять)
+	id = congo.79
+	
+	hidden = yes
+	is_triggered_only = yes
+
+	immediate = {
+		log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event congo.79"
+		FROM = { country_event = congo.78 }
 	}
 }
