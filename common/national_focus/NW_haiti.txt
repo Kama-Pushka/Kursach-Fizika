@@ -5149,9 +5149,18 @@ focus_tree = {
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus HAI_protect_haitian_culture"
 			add_ideas = 0.1
-			swap_ideas = {
-				remove_idea = HAI_religious_setting__dominance_of_catholicism_idea
-				add_idea = HAI_religious_setting__voodoo_syncretism_idea
+			if = {
+				limit = { has_idea = HAI_religious_setting__syncretic_catholicism_idea }
+				swap_ideas = {
+					remove_idea = HAI_religious_setting__syncretic_catholicism_idea
+					add_idea = HAI_religious_setting__voodoo_syncretism_idea
+				}
+			}
+			else = {
+				swap_ideas = {
+					remove_idea = HAI_religious_setting__dominance_of_catholicism_idea
+					add_idea = HAI_religious_setting__voodoo_syncretism_idea
+				}
 			}
 			set_country_flag = { flag = HAI_protect_haitian_culture_flag days = 63 }
 		}
@@ -5573,8 +5582,11 @@ focus_tree = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus HAI_liberate_the_black_continent"
 			every_other_country = {
 				limit = {
-					capital_scope = { is_on_continent = africa }
-					any_owned_state = { is_on_continent = africa NOT = { is_core_of = PREV }}
+					NOT = { capital_scope = { is_on_continent = africa } }
+					OR = {
+						any_owned_state = { is_on_continent = africa NOT = { is_core_of = PREV } }
+						any_subject_country = { capital_scope = { is_on_continent = africa } }
+					}
 				}
 				ROOT = {
 					create_wargoal = {
@@ -5769,6 +5781,34 @@ focus_tree = {
 		available_if_capitulated = no
 
 		available = {
+			OR = {
+				any_of_scopes = {
+					array = global.is_communism
+					tooltip = is_communism_tt
+					NOT = { tag = ROOT }
+					capital_scope = {
+						OR = {
+							is_on_continent = north_america
+							is_on_continent = south_america
+							is_on_continent = africa
+						}
+					}
+					exists = yes
+				}
+				any_of_scopes = {
+					array = global.is_trozkism
+					tooltip = is_trozkism_tt
+					NOT = { tag = ROOT }
+					capital_scope = {
+						OR = {
+							is_on_continent = north_america
+							is_on_continent = south_america
+							is_on_continent = africa
+						}
+					}
+					exists = yes
+				}
+			}
 		}
 		bypass = {
 		}
@@ -5777,46 +5817,69 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus HAI_protection_from_communism"
+			custom_effect_tooltip = HAI_protection_from_communism_tt
 			for_each_loop = {
 				array = global.is_communism
-				ROOT = {
-					create_wargoal = {
-						target = PREV
-						type = topple_government
-						expire = 0
-					}
-					hidden_effect = {
-						add_ai_strategy = {
-							type = antagonize
-							id = PREV
-							value = 200
+				if = {
+					limit = {
+						capital_scope = {
+							OR = {
+								is_on_continent = north_america
+								is_on_continent = south_america
+								is_on_continent = africa
+							}
 						}
-						add_ai_strategy = {
-							type = declare_war
-							id = PREV
-							value = 100
+					}
+					ROOT = {
+						create_wargoal = {
+							target = PREV
+							type = topple_government
+							expire = 0
+						}
+						hidden_effect = {
+							add_ai_strategy = {
+								type = antagonize
+								id = PREV
+								value = 200
+							}
+							add_ai_strategy = {
+								type = declare_war
+								id = PREV
+								value = 100
+							}
 						}
 					}
 				}
 			}
 			for_each_loop = {
 				array = global.is_trozkism
-				ROOT = {
-					create_wargoal = {
-						target = PREV
-						type = topple_government
-						expire = 0
-					}
-					hidden_effect = {
-						add_ai_strategy = {
-							type = antagonize
-							id = PREV
-							value = 200
+				if = {
+					limit = {
+						capital_scope = {
+							OR = {
+								is_on_continent = north_america
+								is_on_continent = south_america
+								is_on_continent = africa
+							}
 						}
-						add_ai_strategy = {
-							type = declare_war
-							id = PREV
-							value = 100
+					}
+					ROOT = {
+						create_wargoal = {
+							target = PREV
+							type = topple_government
+							expire = 0
+						}
+						hidden_effect = {
+							add_ai_strategy = {
+								type = antagonize
+								id = PREV
+								value = 200
+							}
+							add_ai_strategy = {
+								type = declare_war
+								id = PREV
+								value = 100
+							}
 						}
 					}
 				}
@@ -5829,6 +5892,7 @@ focus_tree = {
 #					}
 #					capital_scope = {
 #						OR = {
+#							is_on_continent = africa
 #							is_on_continent = north_america
 #							is_on_continent = south_america
 #						}
@@ -6524,8 +6588,7 @@ focus_tree = {
 	focus = {
 		id = HAI_strategy_of_psychological_impact
 		icon = GFX_z_goal_Armored_control
-		prerequisite = { focus = HAI_expansion_of_black_militia }
-		prerequisite = { focus = HAI_betting_on_secret_police }
+		prerequisite = { focus = HAI_expansion_of_black_militia focus = HAI_betting_on_secret_police }
 		x = 1
 		y = 1
 		relative_position_id = HAI_expansion_of_black_militia
