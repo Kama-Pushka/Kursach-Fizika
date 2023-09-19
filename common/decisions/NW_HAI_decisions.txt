@@ -268,6 +268,124 @@ economy_decisions = {
 			hidden_effect = { remove_ideas = HAI_revive_haitis_transportation_system_mission }
 		}
 	}
+	HAI_construction_of_rural_roads = {
+		icon = generic_decision
+		allowed = {
+			always = no
+		}
+		activation = {
+			always = no
+		}
+		available = {	 #GOAL
+			infrastructure > var:target_num_of_infrastructure
+		}
+		is_good = no
+		days_mission_timeout = 195
+		fire_only_once = yes
+		
+		timeout_effect = {		#MISSION FAILS
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): timeout decision HAI_construction_of_rural_roads"
+			add_popularity = { ideology = var:current_party_ideology_group popularity = -0.1 }
+			hidden_effect = { remove_ideas = HAI_construction_of_rural_roads }
+			clear_variable = num_of_infrastructure
+			clear_variable = target_num_of_infrastructure
+		}
+		complete_effect = {		#MISSION SUCCEEDS
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision HAI_construction_of_rural_roads"
+			if = {
+				limit = { has_idea = HAI_backward_transport_and_social_infrastructure_idea_PHC_2 }
+				swap_ideas = {
+					remove_idea = HAI_backward_transport_and_social_infrastructure_idea_PHC_2
+					add_idea = HAI_backward_transport_and_social_infrastructure_idea_PHC_3
+				}
+			}
+			else_if = {
+				limit = { has_idea = HAI_backward_transport_and_social_infrastructure_idea_PHC_4 }
+				swap_ideas = {
+					remove_idea = HAI_backward_transport_and_social_infrastructure_idea_PHC_4
+					add_idea = HAI_backward_transport_and_social_infrastructure_idea_PHC_3_4
+				}
+			}
+			hidden_effect = { remove_ideas = HAI_construction_of_rural_roads }
+			clear_variable = num_of_infrastructure
+			clear_variable = target_num_of_infrastructure
+		}
+	}
+}
+
+war_measures = {
+	HAI_arming_haitian_youth = {
+		icon = generic_decision
+		allowed = { tag = HAI }
+		available = {
+			surrender_progress > 0.15
+		}
+		visible = {
+			has_completed_focus = HAI_haitian_patriotic_youth_league
+		}
+		custom_cost_trigger = {
+			set_temp_variable = { custom_cost_pp = 120 }
+			set_temp_variable = { rifles_temp_cost = 3000 }
+			has_political_power > custom_cost_pp
+			has_equipment = { infantry_equipment > rifles_temp_cost }
+		}
+		custom_cost_text = pol_and_rifles_cost
+		days_remove = 30
+		days_re_enable = 180
+		ai_will_do = {
+			factor = 20
+		}
+		complete_effect = {
+			hidden_effect = {
+				add_political_power = -120
+				add_equipment_to_stockpile = {
+					type = infantry_equipment
+					amount = -3000
+				}
+			}
+		}
+		remove_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): remove decisions HAI_arming_haitian_youth"
+			add_stability = -0.125
+			hidden_effect = {
+				if = {
+					limit = { NOT = { has_template = "Milice Populaire de la Jeunesse" } }
+					division_template = {
+						name = "Milice Populaire de la Jeunesse"
+						is_locked = yes
+						regiments = {
+							infantry = { x = 0 y = 0 }
+							infantry = { x = 0 y = 1 }
+							infantry = { x = 0 y = 2 }
+						}
+					}
+				}
+			}
+			random_controlled_state = {
+				prioritize = { 318 }
+				capital_scope = {
+					create_unit = {
+						division = "name = \"Milice Populaire de la Jeunesse\" division_template = \"Milice Populaire de la Jeunesse\" start_experience_factor = 0.2"
+						owner = ROOT
+						count = 2
+						allow_spawning_on_enemy_provs = yes
+					}
+				}
+			}
+			random_controlled_state = {
+				prioritize = { 869 }
+				capital_scope = {
+					create_unit = {
+						division = "name = \"Milice Populaire de la Jeunesse\" division_template = \"Milice Populaire de la Jeunesse\" start_experience_factor = 0.2"
+						owner = ROOT
+						count = 2
+						allow_spawning_on_enemy_provs = yes
+					}
+				}
+			}
+			custom_effect_tooltip = HAI_arming_haitian_youth_tt
+		}
+	}
 }
 
 HAI_dominican_haitian_border_category = {
@@ -2499,6 +2617,438 @@ HAI_development_of_provincial_education_category = {
 					remove_idea = HAI_new_educational_policy_idea
 					add_idea = HAI_new_educational_policy_idea_3
 				}
+			}
+		}
+	}
+}
+
+
+HAI_organization_of_collective_labor_category = {
+
+	HAI_artibonite_labor_communes = {
+		icon = generic_decision
+		available = {
+			controls_state = 869
+			num_of_civilian_factories_available_for_projects > 2
+		}
+		visible = {
+			controls_state = 869
+		}
+		cost = 0
+		days_remove = 56
+		ai_will_do = {
+			factor = 20
+		}
+		modifier = {
+			civilian_factory_use = 2
+			political_power_cost = 0.5
+			industrial_capacity_factory = -0.175
+		}
+		remove_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): remove decisions HAI_artibonite_labor_communes"
+			set_country_flag = HAI_artibonite_labor_communes
+			869 = {
+				add_extra_state_shared_building_slots = 1
+				add_dynamic_modifier = { modifier = HAI_labor_communes_dyn }
+			}
+			unlock_decision_tooltip = HAI_cultivation_of_gonaiva_swamps
+			unlock_decision_tooltip = HAI_cultivation_of_mato_ridge
+		}
+	}
+	HAI_cultivation_of_gonaiva_swamps = {
+		icon = generic_decision
+		available = {
+			controls_state = 869
+		}
+		visible = {
+			has_country_flag = HAI_artibonite_labor_communes
+			controls_state = 869
+		}
+		cost = 120
+		days_remove = 80
+		ai_will_do = {
+			factor = 20
+		}
+		modifier = {
+			production_speed_buildings_factor = -0.15
+			stability_weekly = -0.001
+		}
+		remove_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): remove decisions HAI_cultivation_of_gonaiva_swamps"
+			set_country_flag = HAI_cultivation_of_gonaiva_swamps_flag
+			869 = {
+				add_extra_state_shared_building_slots = 2
+				add_resource = {
+					type = rubber
+					amount = 5
+				}
+				if = {
+					limit = { ROOT = { num_of_civilian_factories > 5 } }
+					add_building_construction = {
+						type = industrial_complex
+						level = 1
+						instant_build = yes
+					}
+				}
+			}
+		}
+	}
+	HAI_cultivation_of_mato_ridge = {
+		icon = generic_decision
+		available = {
+			controls_state = 869
+		}
+		visible = {
+			has_country_flag = HAI_artibonite_labor_communes
+			controls_state = 869
+		}
+		cost = 120
+		days_remove = 80
+		ai_will_do = {
+			factor = 20
+		}
+		modifier = {
+			industrial_capacity_factory = -0.2
+			consumer_goods_factor = 0.03
+		}
+		remove_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): remove decisions HAI_cultivation_of_mato_ridge"
+			set_country_flag = HAI_cultivation_of_mato_ridge_flag
+			869 = {
+				add_resource = {
+					type = steel
+					amount = 5
+				}
+				add_resource = {
+					type = chromium
+					amount = 4
+				}
+				add_resource = {
+					type = tungsten
+					amount = 2
+				}
+				if = {
+					limit = { infrastructure < 5 }
+					add_building_construction = {
+						type = infrastructure
+						level = 1
+						instant_build = yes
+					}
+				}
+			}
+		}
+	}
+	HAI_defensive_labor_communes_in_east = {
+		icon = generic_decision
+		available = {
+			controls_state = 1189
+			num_of_civilian_factories_available_for_projects > 2
+		}
+		visible = {
+			controls_state = 1189
+		}
+		cost = 0
+		days_remove = 56
+		ai_will_do = {
+			factor = 20
+		}
+		modifier = {
+			civilian_factory_use = 2
+			political_power_cost = 0.25
+			consumer_goods_factor = 0.03
+		}
+		remove_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): remove decisions HAI_defensive_labor_communes_in_east"
+			1189 = {
+				add_extra_state_shared_building_slots = 1
+				add_dynamic_modifier = { modifier = HAI_defensive_labor_communes_in_east_dyn }
+			}
+		}
+	}
+	HAI_exploration_of_aluminum_ores = {
+		icon = generic_decision
+		available = {
+			controls_state = 869
+			controls_state = 318
+			num_of_civilian_factories_available_for_projects > 1
+		}
+		visible = {
+			controls_state = 869
+			controls_state = 318
+		}
+		cost = 135
+		days_remove = 80
+		ai_will_do = {
+			factor = 20
+		}
+		modifier = {
+			civilian_factory_use = 1
+			production_speed_buildings_factor = -0.15
+			industrial_capacity_factory = -0.15
+		}
+		remove_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): remove decisions HAI_exploration_of_aluminum_ores"
+			869 = {
+				add_resource = {
+					type = aluminium
+					amount = 3
+				}
+			}
+			318 = {
+				add_resource = {
+					type = aluminium
+					amount = 4
+				}
+			}
+		}
+	}
+	HAI_economy_of_plain_of_cul_de_sac = {
+		icon = generic_decision
+		available = {
+			controls_state = 318
+			num_of_civilian_factories_available_for_projects > 3
+		}
+		visible = {
+			controls_state = 318
+		}
+		cost = 0
+		days_remove = 62
+		ai_will_do = {
+			factor = 20
+		}
+		modifier = {
+			civilian_factory_use = 3
+			political_power_cost = 0.25
+			industrial_capacity_factory = -0.2
+			industrial_capacity_dockyard = -0.3
+		}
+		remove_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): remove decisions HAI_economy_of_plain_of_cul_de_sac"
+			318 = {
+				add_extra_state_shared_building_slots = 2
+				add_dynamic_modifier = { modifier = HAI_proletarian_communes_dyn }
+				if = {
+					limit = { ROOT = { num_of_civilian_factories > 6 } }
+					add_building_construction = {
+						type = dockyard
+						level = 1
+						instant_build = yes
+					}
+					add_building_construction = {
+						type = arms_factory
+						level = 1
+						instant_build = yes
+					}
+				}
+			}
+		}
+	}
+}
+
+
+HAI_preparation_of_terrorist_cells_category = {
+
+	HAI_creation_of_terrorist_cell_in_detroit = {
+		icon = generic_decision
+		available = {
+			num_of_civilian_factories_available_for_projects > 2
+		}
+		visible = {
+		}
+		custom_cost_trigger = {
+			set_temp_variable = { rifles_temp_cost = 1500 }
+			set_temp_variable = { command_power_temp_cost = 20 }
+			has_equipment = { infantry_equipment > rifles_temp_cost }
+			command_power > command_power_temp_cost
+		}
+		custom_cost_text = rifles_and_CP_cost
+		days_remove = 115
+		fire_only_once = yes
+		ai_will_do = {
+			factor = 20
+		}
+		modifier = {
+			civilian_factory_use = 2
+		}
+		complete_effect = {
+			hidden_effect = {
+				add_equipment_to_stockpile = {
+					type = infantry_equipment
+					amount = -1500
+				}
+				add_command_power = -20
+			}
+		}
+		remove_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): remove decisions HAI_creation_of_terrorist_cell_in_detroit"
+			if = {
+				limit = { NOT = { has_war_with = USA } }
+				custom_effect_tooltip = after_start_war_with_USA_tt
+				358 = {
+					effect_tooltip = {
+						damage_building = { type = industrial_complex	damage = 0.4 }
+						damage_building = { type = industrial_complex	damage = 0.4 }
+						damage_building = { type = industrial_complex	damage = 0.4 }
+						damage_building = { type = industrial_complex	damage = 0.4 }
+						damage_building = { type = arms_factory			damage = 0.4 }
+						damage_building = { type = arms_factory			damage = 0.4 }
+						damage_building = { type = infrastructure		damage = 0.4 }
+					}
+					set_state_flag = HAI_creation_of_terrorist_cell_in_detroit
+				}
+			}
+			else = {
+				393 = { state_event = { id = NWhaiti.37 hours = 6 random_hours = 18 trigger_for = controller } }
+			}
+		}
+	}
+	HAI_creation_of_terrorist_cell_in_new_york = {
+		icon = generic_decision
+		available = {
+			num_of_civilian_factories_available_for_projects > 2
+		}
+		visible = {
+		}
+		custom_cost_trigger = {
+			set_temp_variable = { rifles_temp_cost = 1500 }
+			set_temp_variable = { command_power_temp_cost = 20 }
+			has_equipment = { infantry_equipment > rifles_temp_cost }
+			command_power > command_power_temp_cost
+		}
+		custom_cost_text = rifles_and_CP_cost
+		days_remove = 115
+		fire_only_once = yes
+		ai_will_do = {
+			factor = 20
+		}
+		modifier = {
+			civilian_factory_use = 2
+		}
+		complete_effect = {
+			hidden_effect = {
+				add_equipment_to_stockpile = {
+					type = infantry_equipment
+					amount = -1500
+				}
+				add_command_power = -20
+			}
+		}
+		remove_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): remove decisions HAI_creation_of_terrorist_cell_in_new_york"
+			if = {
+				limit = { NOT = { has_war_with = USA } }
+				custom_effect_tooltip = after_start_war_with_USA_tt
+				358 = {
+					effect_tooltip = {
+						damage_building = { type = industrial_complex	damage = 0.4 }
+						damage_building = { type = industrial_complex	damage = 0.4 }
+						damage_building = { type = industrial_complex	damage = 0.4 }
+						damage_building = { type = arms_factory			damage = 0.4 }
+						damage_building = { type = arms_factory			damage = 0.4 }
+						damage_building = { type = dockyard				damage = 0.4 }
+						damage_building = { type = infrastructure		damage = 0.4 }
+					}
+					set_state_flag = HAI_creation_of_terrorist_cell_in_new_york
+				}
+			}
+			else = {
+				358 = { state_event = { id = NWhaiti.38 hours = 6 random_hours = 18 trigger_for = controller } }
+			}
+		}
+	}
+	HAI_creation_of_terrorist_cell_in_louisiana = {
+		icon = generic_decision
+		available = {
+			num_of_civilian_factories_available_for_projects > 4
+		}
+		visible = {
+		}
+		custom_cost_trigger = {
+			set_temp_variable = { rifles_temp_cost = 3500 }
+			set_temp_variable = { command_power_temp_cost = 20 }
+			has_equipment = { infantry_equipment > rifles_temp_cost }
+			command_power > command_power_temp_cost
+		}
+		custom_cost_text = rifles_and_CP_cost
+		days_remove = 135
+		fire_only_once = yes
+		ai_will_do = {
+			factor = 50
+		}
+		modifier = {
+			civilian_factory_use = 4
+		}
+		complete_effect = {
+			hidden_effect = {
+				add_equipment_to_stockpile = {
+					type = infantry_equipment
+					amount = -3500
+				}
+				add_command_power = -20
+			}
+		}
+		remove_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): remove decisions HAI_creation_of_terrorist_cell_in_louisiana"
+			if = {
+				limit = { NOT = { has_war_with = USA } }
+				custom_effect_tooltip = after_start_war_with_USA_tt
+				371 = {
+					custom_effect_tooltip = all_building_will_be_damage_on_12_tt
+					set_state_flag = HAI_creation_of_terrorist_cell_in_louisiana
+				}
+			}
+			else = {
+				371 = { state_event = { id = NWhaiti.39 hours = 6 random_hours = 18 trigger_for = controller } }
+			}
+		}
+	}
+	HAI_creation_of_terrorist_cell_in_california = {
+		icon = generic_decision
+		available = {
+			num_of_civilian_factories_available_for_projects > 1
+		}
+		visible = {
+		}
+		custom_cost_trigger = {
+			set_temp_variable = { rifles_temp_cost = 1500 }
+			set_temp_variable = { command_power_temp_cost = 20 }
+			has_equipment = { infantry_equipment > rifles_temp_cost }
+			command_power > command_power_temp_cost
+		}
+		custom_cost_text = rifles_and_CP_cost
+		days_remove = 125
+		fire_only_once = yes
+		ai_will_do = {
+			factor = 20
+		}
+		modifier = {
+			civilian_factory_use = 1
+		}
+		complete_effect = {
+			hidden_effect = {
+				add_equipment_to_stockpile = {
+					type = infantry_equipment
+					amount = -1500
+				}
+				add_command_power = -20
+			}
+		}
+		remove_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): remove decisions HAI_creation_of_terrorist_cell_in_california"
+			if = {
+				limit = { NOT = { has_war_with = USA } }
+				custom_effect_tooltip = after_start_war_with_USA_tt
+				378 = {
+					effect_tooltip = {
+						damage_building = { type = dockyard		damage = 0.32 }
+						damage_building = { type = dockyard		damage = 0.32 }
+						damage_building = { type = dockyard		damage = 0.32 }
+					}
+					set_state_flag = HAI_creation_of_terrorist_cell_in_california
+				}
+			}
+			else = {
+				378 = { state_event = { id = NWhaiti.40 hours = 6 random_hours = 18 trigger_for = controller } }
 			}
 		}
 	}
