@@ -100,13 +100,17 @@ country_event = {
 					has_idea = HAI_apolitical_armed_forces_idea_3
 				}
 			}
-			effect_tooltip = { remove_ideas = HAI_apolitical_armed_forces_idea_1 }
-			hidden_effect = {
-				remove_ideas = {
-					HAI_apolitical_armed_forces_idea_1
-					HAI_apolitical_armed_forces_idea_2
-					HAI_apolitical_armed_forces_idea_3
-				}
+			if = {
+				limit = { has_idea = HAI_apolitical_armed_forces_idea_1 }
+				remove_ideas = HAI_apolitical_armed_forces_idea_1
+			}
+			else_if = {
+				limit = { has_idea = HAI_apolitical_armed_forces_idea_2 }
+				remove_ideas = HAI_apolitical_armed_forces_idea_2
+			}
+			else_if = {
+				limit = { has_idea = HAI_apolitical_armed_forces_idea_3 }
+				remove_ideas = HAI_apolitical_armed_forces_idea_3
 			}
 		}
 		if = {
@@ -1265,13 +1269,86 @@ state_event = {
 	}
 }
 
+# Гаитянское вступление в Коминтерн // SOV
+country_event = {
+	id = NWhaiti.41
+	title = NWhaiti.41.t
+	desc = NWhaiti.41.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWhaiti.41" }
+	
+	option = {
+		name = NWhaiti.41.a
+		ai_chance = {
+			factor = 1
+		}
+		hidden_effect = {
+			add_ai_strategy = {
+				type = alliance
+				id = FROM
+				value = 200
+			}
+			FROM = {
+				add_ai_strategy = {
+					type = alliance
+					id = ROOT
+					value = 200
+				}
+			}
+		}
+		add_to_faction = FROM
+	}
+	
+	option = {
+		name = NWhaiti.41.b
+		ai_chance = {
+			factor = 0
+		}
+		FROM = {
+			add_opinion_modifier = { target = ROOT modifier = HAI_joining_the_comintern_negative_op }
+			country_event = { id = NWhaiti.42 hours = 6 }
+		}
+		hidden_effect = {
+			add_ai_strategy = {
+				type = alliance
+				id = FROM
+				value = -999
+			}
+			FROM = {
+				add_ai_strategy = {
+					type = alliance
+					id = ROOT
+					value = -999
+				}
+			}
+		}
+	}
+}
 
+
+# Советский Союз отклоняет нашу заявку в Коминтерн! // HAI
+country_event = {
+	id = NWhaiti.42
+	title = NWhaiti.42.t
+	desc = NWhaiti.42.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWhaiti.42" }
+	
+	option = {
+		name = NWhaiti.42.a
+		effect_tooltip = { add_opinion_modifier = { target = FROM modifier = HAI_joining_the_comintern_negative_op } }
+	}
+}
 
 
 
 # Подсчет Ж/Д
 country_event = {
-	id = NWhaiti.997
+	id = NWhaiti.996
 	hidden = yes
 	is_triggered_only = yes
 	
@@ -1294,6 +1371,37 @@ country_event = {
 			set_variable = { delta_num_of_rail = target_num_of_rail }
 			subtract_from_variable = { delta_num_of_rail = total_num_of_rail }
 			subtract_from_variable = { delta_num_of_rail = start_num_of_rail }
+			
+			country_event = { id = NWhaiti.996 days = 14 }
+		}
+	}
+}
+
+# Подсчет приморских укрепов
+country_event = {
+	id = NWhaiti.997
+	hidden = yes
+	is_triggered_only = yes
+	
+	trigger = {
+		has_active_mission = HAI_coast_fortification_plan_mission
+	}
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWhaiti.997" }
+	immediate = {
+		hidden_effect = {
+			clear_variable = total_num_of_bunker
+			while_loop_effect = {
+				limit = {
+					coastal_bunker > var:num_of_coastal_bunker
+				}
+				add_to_temp_variable = { num_of_coastal_bunker = 1 }
+			}
+			add_to_variable = { total_num_of_bunker = num_of_coastal_bunker }
+			
+			set_variable = { delta_num_of_bunker = target_num_of_bunker }
+			subtract_from_variable = { delta_num_of_bunker = total_num_of_bunker }
+			subtract_from_variable = { delta_num_of_bunker = start_num_of_bunker }
 			
 			country_event = { id = NWhaiti.997 days = 14 }
 		}
