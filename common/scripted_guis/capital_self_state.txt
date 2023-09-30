@@ -91,7 +91,6 @@ scripted_gui = {
 					}
 				}
 				NOT = {
-					is_owned_by = ROOT
 					is_controlled_by = ROOT
 				}
 			}
@@ -104,7 +103,6 @@ scripted_gui = {
 					FROM.FROM = {
 						set_state_flag = state_coup_state_flag
 						owner = {
-							set_country_flag = { flag = state_coup_per_rate days = 3 }
 							if = {
 								limit = { NOT = { has_war_with = ROOT } }
 								set_country_flag = { flag = state_coup_once days = 180 }
@@ -115,7 +113,6 @@ scripted_gui = {
 									has_country_flag = state_coup_once
 								}
 								clr_country_flag = state_coup_once
-								set_country_flag = { flag = state_coup_per_month days = 30 }
 							}
 							country_event = { id = NWstate_coup.1 days = 1 }
 						}
@@ -172,7 +169,6 @@ scripted_gui = {
 						}
 					}
 					NOT = {
-						is_owned_by = ROOT
 						is_controlled_by = ROOT
 					}
 				}
@@ -191,10 +187,31 @@ scripted_gui = {
 			}
 		}
 		
+		ai_test_interval = 144
+		ai_test_variance = 24
+		ai_max_weight_taken_per_test = 5
+		
 		ai_check = {
+			ROOT = {
+				has_country_flag = state_coup_flag
+				if = {
+					limit = { tag = FRF }
+					OR = {
+						has_government = fascism
+						has_government = neutrality
+					}
+				}
+				if = {
+					limit = { tag = IFA }
+					has_government = anarchism
+				}
+			}
 		}
 		
 		ai_check_scope = {
+			NOT = {
+				is_controlled_by = ROOT
+			}
 		}
 		
 		ai_weights = {
@@ -202,15 +219,20 @@ scripted_gui = {
 				ai_will_do = {
 					factor = 0
 					modifier = {
-						add = 1
+						add = 2
 						FROM.FROM = {
 							is_capital = yes
 							owner = {
-								NOT = {
-									has_war_with = ROOT
-									has_country_flag = state_coup_once
-									has_country_flag = state_coup_per_month
-								}
+								NOT = { has_country_flag = state_coup_once }
+							}
+						}
+					}
+					modifier = {
+						add = 2
+						FROM.FROM = {
+							owner = {
+								has_war_with = ROOT
+								has_country_flag = state_coup_once
 							}
 						}
 					}
@@ -220,23 +242,12 @@ scripted_gui = {
 						FROM.FROM = {
 							owner = {
 								has_war_with = ROOT
-								NOT = { has_country_flag = state_coup_per_month }
 							}
 						}
 					}
-					modifier = {
-						add = -2
-						FROM.FROM = {
-							owner = {
-								has_country_flag = state_coup_per_rate
-							}
-						}
-					}
+					
 				}
 			}
 		}
 	}
-	
-	
 }
-
