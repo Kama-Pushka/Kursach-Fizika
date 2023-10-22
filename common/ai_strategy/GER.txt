@@ -101,7 +101,7 @@ GER_unit_production = {
 	ai_strategy = {
 		type = equipment_production_factor
 		id = fighter
-		value = 15
+		value = 100
 	}
 	ai_strategy = {
 		type = equipment_production_min_factories
@@ -118,7 +118,7 @@ GER_unit_production = {
 	ai_strategy = {
 		type = equipment_production_factor
 		id = cas
-		value = 10
+		value = 25
 	}
 	ai_strategy = {
 		type = equipment_production_min_factories
@@ -618,7 +618,65 @@ GER_get_new_tranport = {
 
 
 
-NW_GER_reduce_heavy_fighters = {	#why have fighter:heavy fighter ratio of 1:1?
+
+GER_build_2k_fighter = {
+	allowed = { tag = GER }
+	enable = {
+		has_deployed_air_force_size = { size < 2000 type = fighter }
+	}
+	abort_when_not_enabled = yes
+
+	ai_strategy = { type = equipment_variant_production_factor	id = small_plane_airframe	value = 100 }
+	ai_strategy = { type = equipment_production_factor			id = fighter				value = 35 }
+	ai_strategy = { type = build_airplane						id = fighter				value = 10000 }
+	ai_strategy = { type = unit_ratio							id = fighter				value = 210 }
+	ai_strategy = { type = air_factory_balance					value = 35 }
+	ai_strategy = { type = equipment_production_min_factories	id = fighter				value = 2 }
+}
+GER_build_1k_heavy_fighter = {
+	allowed = { tag = GER }
+	enable = {
+		has_deployed_air_force_size = { size < 1000 type = heavy_fighter }
+	}
+	abort_when_not_enabled = yes
+
+	ai_strategy = { type = equipment_variant_production_factor	id = medium_plane_fighter_airframe	value = 100 }
+	ai_strategy = { type = equipment_production_factor			id = heavy_fighter					value = 10 }
+	ai_strategy = { type = build_airplane						id = heavy_fighter					value = 10000 }
+	ai_strategy = { type = unit_ratio							id = heavy_fighter					value = 210 }
+	ai_strategy = { type = air_factory_balance					value = 10 }
+	ai_strategy = { type = equipment_production_min_factories	id = heavy_fighter					value = 1 }
+}
+GER_build_500_cas = {
+	allowed = { tag = GER }
+	enable = {
+		has_deployed_air_force_size = { size < 500 type = cas }
+	}
+	abort_when_not_enabled = yes
+
+	ai_strategy = { type = equipment_variant_production_factor	id = small_plane_airframe	value = 100 }
+	ai_strategy = { type = equipment_production_factor			id = cas					value = 20 }
+	ai_strategy = { type = build_airplane						id = cas					value = 10000 }
+	ai_strategy = { type = unit_ratio							id = cas					value = 210 }
+	ai_strategy = { type = air_factory_balance					value = 20 }
+	ai_strategy = { type = equipment_production_min_factories	id = cas					value = 2 }
+}
+GER_build_1k_tactical_bomber = {
+	allowed = { tag = GER }
+	enable = {
+		has_deployed_air_force_size = { size < 1000 type = tactical_bomber }
+	}
+	abort_when_not_enabled = yes
+
+	ai_strategy = { type = equipment_variant_production_factor	id = medium_plane_airframe	value = 100 }
+	ai_strategy = { type = equipment_production_factor			id = tactical_bomber		value = 10 }
+	ai_strategy = { type = build_airplane						id = tactical_bomber		value = 10000 }
+	ai_strategy = { type = unit_ratio							id = tactical_bomber		value = 210 }
+	ai_strategy = { type = air_factory_balance					value = 10 }
+	ai_strategy = { type = equipment_production_min_factories	id = tactical_bomber					value = 1 }
+}
+
+GER_reduce_heavy_fighters = {	#why have fighter:heavy fighter ratio of 1:1?
 	allowed = { tag = GER }
 	enable = {
 		num_of_military_factories > 100
@@ -628,10 +686,10 @@ NW_GER_reduce_heavy_fighters = {	#why have fighter:heavy fighter ratio of 1:1?
 		always = no
 	}
 	
-	ai_strategy = {
-		type = air_factory_balance
-		value = 20
-	}
+#	ai_strategy = {
+#		type = air_factory_balance
+#		value = 20
+#	}
 	
 	ai_strategy = {
 		type = equipment_variant_production_factor
@@ -651,13 +709,13 @@ GER_industry_we_are_the_baddies_but_not_yet = {
 
 	ai_strategy = {
 		type = air_factory_balance
-		value = 70
-	} 
-	#ai_strategy = {
-	#	type = role_ratio
-	#	id = armor
-	#	value = -25
-	#}
+		value = 75
+	}
+#	ai_strategy = {
+#		type = role_ratio
+#		id = armor
+#		value = -25
+#	}
 }
 
 GER_industry_we_are_the_baddies = {
@@ -675,7 +733,7 @@ GER_industry_we_are_the_baddies = {
 	}
 	ai_strategy = {
 		type = air_factory_balance
-		value = 95 
+		value = 105 
 	} 
 }
 
@@ -2519,9 +2577,13 @@ NW_GER_historical_ignore_FRA = {
 	}
 	abort = {
 		OR = {
-			POL = { has_capitulated = yes }
-			POL = { exists = no }
-			POL = { is_puppet = yes }
+			POL = {
+				OR = {
+					has_capitulated = yes
+					exists = no
+					is_puppet = yes
+				}
+			}
 			is_in_faction_with = POL
 			NOT = { controls_state = 809 }
 			NOT = { controls_state = 835 }
@@ -3398,8 +3460,31 @@ GER_around_the_maginot_2 = {
 	}
 }
 
+# lets not invade until we have europe
+GER_ignore_italian_front_FRA = {
+	allowed = {
+		tag = GER
+		is_historical_focus_on = yes
+	}
+	enable = {
+		date < 1941.1.1
+		FRA = { has_capitulated = no }
+	}
+	abort_when_not_enabled = yes
+	ai_strategy = {
+		type = front_unit_request
+		state_trigger = {
+			is_controlled_by = ITA
+			any_neighbor_state = {
+				is_controlled_by = FRA
+			}
+		}
+		value = -500
+	}
+}
+
 GER_blitzkrieg_benelux = {
-	allowed = { original_tag = GER }
+	allowed = { tag = GER }
 	enable = {
 		date > 1940.5.1
 		OR = {
@@ -3476,7 +3561,7 @@ GER_blitzkrieg_benelux = {
 ### ФРАНЦИЯ // МАЙ-ИЮНЬ 1940
 
 invading_france_is_pointless_because_we_go_through_benelux_soon = {
-	allowed = { original_tag = GER }
+	allowed = { tag = GER }
 	enable = {
 		if = {
 			limit = { NOT = { has_dlc = "Man the Guns" } }
@@ -3511,7 +3596,7 @@ invading_france_is_pointless_because_we_go_through_benelux_soon = {
 
 
 GER_let_italy_handle_french_front_alone = {
-	allowed = { original_tag = GER }
+	allowed = { tag = GER }
 	enable = {
 		is_in_faction_with = ITA
 		has_war_together_with = ITA
@@ -3523,7 +3608,7 @@ GER_let_italy_handle_french_front_alone = {
 }
 
 GER_let_italy_handle_africa_front_alone = {
-	allowed = { original_tag = GER }
+	allowed = { tag = GER }
 	enable = {
 		is_in_faction_with = AOI
 	}
