@@ -25,14 +25,11 @@ focus_tree = {
 		y = 0
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus COG_create_a_new_social_class"
-			set_temp_variable = { temp = COG_evolues_gain_var }
-			add_to_temp_variable = { COG_evolues_gain_var = temp }
-			if = {
-				limit = { NOT = { has_idea = COG_assimilation_of_congolese } } 
-				add_to_temp_variable = { COG_evolues_gain_var = 1 }
-			}
+			set_temp_variable = { COG_evolues_gain_LOC = 1 }
+			set_temp_variable = { state = 295.id }
 			add_ideas = COG_assimilation_of_congolese
 			custom_effect_tooltip = COG_create_a_new_social_class_tt
+			
 			unlock_decision_category_tooltip = COG_create_new_social_class_category
 			hidden_effect = {
 				add_dynamic_modifier = { modifier = COG_evolues_idea }
@@ -40,8 +37,15 @@ focus_tree = {
 					limit = { is_original_congo_state = yes }
 					set_variable = { COG_evolues_factor_@token:high_skilled = 0.017 } # 1.65% (9.9 / 6)
 					set_variable = { COG_evolues_factor_@token:medium_skilled = 0.099 } # 9.9% (39.9 / 4)
-					set_variable = { COG_evolues_factor_@token:skill_lvl = 1 } # 9.9% (39.9 / 4)
+					set_variable = { COG_evolues_factor_@token:low_skilled = 1 }
 				}
+				set_variable = { 295.nw_CongoGoogleMapsEvolues_state_position = 10 }
+				set_variable = { 886.nw_CongoGoogleMapsEvolues_state_position = 110 }
+				set_variable = { 1065.nw_CongoGoogleMapsEvolues_state_position = 140 }
+				set_variable = { 538.nw_CongoGoogleMapsEvolues_state_position = 67 }
+				set_variable = { 718.nw_CongoGoogleMapsEvolues_state_position = 149 }
+				set_variable = { 915.nw_CongoGoogleMapsEvolues_state_position = 168 }
+				set_variable = { COG_evolues_limit_on_repression = 2 } #?
 			}
 		}
 	}
@@ -371,7 +375,7 @@ focus_tree = {
 	focus = {
 		id = COG_expand_school_education
 		icon = GFX_z_goal_Opening_of_the_school_of_Princes
-		cost = 10
+		cost = 7.15
 		prerequisite = {
 			focus = COG_INEAC_focus
 		}
@@ -395,20 +399,25 @@ focus_tree = {
 			#(Complete Effect)
 			custom_effect_tooltip = COG_focus_complete_effect_tt # SOV_focus_complete_effect_tt
 			hidden_effect = { remove_ideas = COG_expand_school_education_idea }
-			COG_poor_education_of_congolese_update = yes
-			if = {
-				limit = { has_idea = COG_assimilation_of_congolese }
-				custom_effect_tooltip = COG_assimilation_of_congolese_update
-				add_to_variable = { COG_evolues_gain_var = 3 tooltip = COG_evolues_gain_tooltip }
-			}
-			else = {
-				effect_tooltip = {
-					set_temp_variable = { COG_evolues_gain_var = 3 }
-					custom_effect_tooltip = COG_assimilation_of_congolese_update_alt
-					add_ideas = COG_assimilation_of_congolese
+			
+			custom_effect_tooltip = COG_stimulate_medium_skilled_evolues_growth_tt #?? !
+			hidden_effect = {
+				every_state = {
+					limit = { is_original_congo_state = yes }
+					multiply_variable = { COG_evolues_factor_@token:medium_skilled = 2 }
 				}
-				add_to_variable = { COG_evolues_gain_var = 3 }
 			}
+			COG_poor_education_of_congolese_update = yes
+			
+			hidden_effect = { #!!
+				random_owned_controlled_state = {
+					limit = { is_original_congo_state = yes }
+					set_temp_variable = { state = THIS.id }
+					add_to_variable = { COG_evolues_gain_var = 3 } 
+				}
+			}
+			custom_effect_tooltip = COG_assimilation_of_congolese_update
+			add_to_temp_variable = { COG_evolues_gain_LOC = 3 tooltip = COG_assimilation_of_congolese_loc }
 			custom_effect_tooltip = empty_line_tooltip
 			
 			every_core_state = {
@@ -428,9 +437,12 @@ focus_tree = {
 	focus = {
 		id = COG_creation_of_a_medical_faculty
 		icon = GFX_z_goal_med
-		cost = 10
+		cost = 7.15
 		prerequisite = {
 			focus = COG_expand_school_education
+		}
+		select_effect = {
+			add_ideas = COG_create_medical_faculty_idea
 		}
 		ai_will_do = {
 			factor = 4
@@ -440,12 +452,28 @@ focus_tree = {
 		relative_position_id = COG_INEAC_focus
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus COG_creation_of_a_medical_faculty"
+			#Tooltip purposes (Select Effect)
+			custom_effect_tooltip = COG_focus_select_effect_tt # SOV_focus_select_effect_tt
+			effect_tooltip = {
+				add_ideas = COG_create_medical_faculty_idea
+			}
+			
+			#(Complete Effect)
+			custom_effect_tooltip = COG_focus_complete_effect_tt # SOV_focus_complete_effect_tt
+			hidden_effect = { remove_ideas = COG_create_medical_faculty_idea }
 			add_research_slot = 1
 			295 = {
 				add_building_construction = {
 					type = hospital
 					level = 1
 					instant_build = yes
+				}
+			}
+			custom_effect_tooltip = COG_stimulate_high_skilled_evolues_growth_tt #??
+			hidden_effect = {
+				every_state = {
+					limit = { is_original_congo_state = yes }
+					multiply_variable = { COG_evolues_factor_@token:high_skilled = 4 }
 				}
 			}
 			COG_poor_education_of_congolese_update = yes
@@ -1103,6 +1131,10 @@ focus_tree = {
 			OR = {
 				has_completed_focus = COG_dominate_to_serve
 				is_left_ideology = yes
+			}
+			custom_trigger_tooltip = { #?
+				tooltip = COG_evolues_ms_more_than_199
+				check_variable = { COG_evolues_count_@token:medium_skilled > 199 }
 			}
 		}
 		ai_will_do = {
@@ -2588,6 +2620,16 @@ focus_tree = {
 			1065 = { #?
 				add_manpower = 2000
 			}
+			
+			# custom_effect_tooltip = empty_line_tooltip
+			custom_effect_tooltip = COG_stimulate_medium_skilled_evolues_growth_tt_alt #?? !
+			hidden_effect = {
+				every_state = {
+					limit = { is_original_congo_state = yes }
+					multiply_variable = { COG_evolues_factor_@token:medium_skilled = 1.5 }
+				}
+			}
+			
 			if = {
 				limit = { has_idea = COG_white_unions }
 				swap_ideas = {

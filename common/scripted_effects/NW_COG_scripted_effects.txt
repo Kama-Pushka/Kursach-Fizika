@@ -805,20 +805,21 @@ COG_invite_advisors_effect = {
 
 #
 
-nw_CongoGoogleMapsEvolues_set_position = {
+nw_CongoGoogleMapsEvolues_create_list = { #name ?
 	if = {
-		limit = { check_variable = { nw_CongoGoogleMapsEvolues_state_position = 0 } }
+		limit = { check_variable = { nw_CongoGoogleMapsEvolues_highlight_states^0 = 0 } }
 		every_state = {
 			limit = { has_variable = nw_CongoGoogleMapsEvolues_state_position }
 			add_to_variable = { nw_CongoGoogleMapsEvolues_state_position = -80 }
 		}
 		add_to_variable = { nw_CongoGoogleMapsEvolues_state_position = -80 }
-		add_to_array = { nw_CongoGoogleMapsEvolues_highlight_state = highlight_state }
+		resize_array = { nw_CongoGoogleMapsEvolues_highlight_states = 1 }
+		set_variable = { nw_CongoGoogleMapsEvolues_highlight_states^0 = highlight_state }
 	}
 	else_if = {
-		limit = { NOT = { check_variable = { nw_CongoGoogleMapsEvolues_highlight_state^0 = highlight_state } } }
-		clear_array = nw_CongoGoogleMapsEvolues_highlight_state
-		add_to_array = { nw_CongoGoogleMapsEvolues_highlight_state = highlight_state }
+		limit = { NOT = { check_variable = { nw_CongoGoogleMapsEvolues_highlight_states^0 = highlight_state } } }
+		resize_array = { nw_CongoGoogleMapsEvolues_highlight_states = 1 }
+		set_variable = { nw_CongoGoogleMapsEvolues_highlight_states^0 = highlight_state }
 	}
 	else = {
 		every_state = {
@@ -826,9 +827,19 @@ nw_CongoGoogleMapsEvolues_set_position = {
 			add_to_variable = { nw_CongoGoogleMapsEvolues_state_position = 80 }
 		}
 		add_to_variable = { nw_CongoGoogleMapsEvolues_state_position = 80 } 
-		clear_array = nw_CongoGoogleMapsEvolues_highlight_state
+		clear_array = nw_CongoGoogleMapsEvolues_highlight_states
 	}
-	
+	add_to_variable = { nw_CongoGoogleMapsEvolues_update = 1 }
+}
+nw_CongoGoogleMapsEvolues_update_list = { #name ?
+	if = {
+		limit = { NOT = { check_variable = { nw_CongoGoogleMapsEvolues_highlight_states^1 = highlight_state } } } #?
+		resize_array = { nw_CongoGoogleMapsEvolues_highlight_states = 2 } #?
+		set_variable = { nw_CongoGoogleMapsEvolues_highlight_states^1 = highlight_state }
+	}
+	else = {
+		remove_from_array = { nw_CongoGoogleMapsEvolues_highlight_states = highlight_state }
+	}
 	add_to_variable = { nw_CongoGoogleMapsEvolues_update = 1 }
 }
 
@@ -849,6 +860,7 @@ COG_add_evolues_in_state = {
 		subtract_from_temp_variable = { evolues = _@var:skill_lvl }
 	
 		add_to_variable = { COG_evolues_count_@var:skill_lvl = _@var:skill_lvl }
+		add_to_variable = { ROOT.COG_evolues_count_@var:skill_lvl = _@var:skill_lvl }
 		log = "[THIS.GetName] [?_@var:skill_lvl] [?skill_lvl.GetTokenKey] COG_add_evolues_in_state"
 	}
 	
@@ -874,8 +886,7 @@ COG_set_political_views_evolues = {
 		subtract_from_temp_variable = { evolues = _@var:ideology }
 		log = "[THIS.GetName] [?_@var:ideology] [?ideology.GetTokenKey] COG_add_evolues_in_state"
 	}
-	set_temp_variable = { _@token:neutrality = evolues } #?
-	add_to_variable = { COG_evolues_count_@token:neutrality = _@token:neutrality }
+	add_to_variable = { COG_evolues_count_@token:neutrality = evolues }
 }
 COG_create_iq_pie_chart = {
 	clear_temp_array = skills_lvl
@@ -1023,4 +1034,23 @@ nw_CongoGoogleMapsEvolues_set_bonus_ROOT = { #?
 	}
 	log = "[THIS.GetName] [?COG_ei_research_speed_factor]"
 }
+
+COG_remove_unnecessary_skills_evolues = { #name ?
+	add_to_temp_array = { skills_lvl = token:high_skilled } #?
+	add_to_temp_array = { skills_lvl = token:medium_skilled }
+	add_to_temp_array = { skills_lvl = token:low_skilled }
+	for_each_loop = {
+		array = skills_lvl
+		value = skill_lvl
+		
+		set_temp_variable_to_random = { var = _@var:skill_lvl min = 0 max = COG_evolues_count_@var:skill_lvl integer = yes } #?
+		clamp_temp_variable = { var = _@var:skill_lvl min = 0 max = evolues }
+		subtract_from_variable = { COG_evolues_count_@var:skill_lvl = _@var:skill_lvl }
+		subtract_from_variable = { ROOT.COG_evolues_count_@var:skill_lvl = _@var:skill_lvl }
+		
+		subtract_from_temp_variable = { evolues = _@var:skill_lvl }
+		log = "[THIS.GetName] [?_@var:skill_lvl] [?skill_lvl.GetTokenKey] COG_remove_unnecessary_skills_evolues"
+	}
+	subtract_from_variable = { COG_evolues_count_@token:low_skilled = evolues } #??
+	subtract_from_variable = { ROOT.COG_evolues_count_@token:low_skilled = evolues } #??
 }

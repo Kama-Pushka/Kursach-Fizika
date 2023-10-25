@@ -74,10 +74,7 @@ PixelShader =
 		
 		float4 main( VS_OUTPUT v ) : PDX_COLOR
 		{
-			if( -v.vTexCoord0.y <= CurrentState )
-				return vFirstColor;
-			else
-				return vSecondColor;
+			return CurrentState * vFirstColor;
 		}
 		
 	]]
@@ -87,15 +84,11 @@ PixelShader =
 		
 		float4 main( VS_OUTPUT v ) : PDX_COLOR
 		{
-			if( -v.vTexCoord0.y <= CurrentState )
-				return tex2D( TextureOne, v.vTexCoord0.xy );
-			else
-				return tex2D( TextureTwo, v.vTexCoord0.xy );
+			return CurrentState * tex2D( TextureOne, v.vTexCoord0.xy );
 		}
 		
 	]]
 }
-
 
 BlendState BlendState
 {
