@@ -6825,10 +6825,12 @@ focus_tree = {
 		y = 1
 		search_filters = {  }
 		ai_will_do = { factor = 10 }
+		available = { has_government = anarchism is_subject = no }
 		prerequisite = { focus = HOL_Anarchism_without_borders }
 		relative_position_id = HOL_Anarchism_without_borders
 		completion_reward = { 
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus HOL_promote_anarchist_ideas_in_the_Benelux"
+			unlock_decision_category_tooltip = HOL_promote_anarchist_ideas_in_the_Benelux_category
 		}
 	}
 	
@@ -6840,10 +6842,12 @@ focus_tree = {
 		y = 1
 		search_filters = {  }
 		ai_will_do = { factor = 10 }
+		available = { has_government = anarchism is_subject = no }
 		prerequisite = { focus = HOL_promote_anarchist_ideas_in_the_Benelux }
 		relative_position_id = HOL_promote_anarchist_ideas_in_the_Benelux
 		completion_reward = { 
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus HOL_rock_the_boat_in_France"
+			unlock_decision_category_tooltip = HOL_promote_anarchist_ideas_in_the_France_category
 		}
 	}
 	
@@ -6873,12 +6877,60 @@ focus_tree = {
 		cost = 10
 		x = 2
 		y = 1
-		search_filters = {  }
+		search_filters = { FOCUS_FILTER_INDUSTRY FOCUS_FILTER_MANPOWER }
 		ai_will_do = { factor = 10 }
+		available = {
+			has_government = anarchism
+			has_war_support > 0.25
+			set_temp_variable = { HOL_num_of_winning_Federation_states_TEMP = HOL_num_of_winning_Federation_states }
+			divide_temp_variable = { HOL_num_of_winning_Federation_states_TEMP = num_core_states }
+			custom_trigger_tooltip = {
+				tooltip = HOL_to_stop_the_intervention_of_the_bourgeois_revolution_tt2
+				check_variable = { HOL_num_of_winning_Federation_states_TEMP > 0.59 }
+			}
+		}
 		prerequisite = { focus = HOL_defense_against_external_threats }
 		relative_position_id = HOL_defense_against_external_threats
 		completion_reward = { 
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus HOL_transfer_weapons_to_workers"
+			hidden_effect = {
+				random_core_state = {
+					limit = { has_state_flag = HOL_winning_Federation_support_flag }
+					clr_state_flag = HOL_winning_Federation_support_flag
+				}
+				random_core_state = {
+					limit = { has_state_flag = HOL_winning_Federation_support_flag }
+					clr_state_flag = HOL_winning_Federation_support_flag
+				}
+				random_core_state = {
+					limit = { has_state_flag = HOL_winning_Federation_support_flag }
+					clr_state_flag = HOL_winning_Federation_support_flag
+				}
+			}
+			add_to_variable = { var = HOL_num_of_winning_Federation_states value = -3 tooltip = HOL_num_of_winning_Federation_states_tt }
+			add_ideas = HOL_transfer_weapons_to_workers_idea
+			hidden_effect = {
+				if = {
+					limit = { NOT = { has_template = "Workers' militia" } }
+					division_template = {
+						name = "Workers' militia"
+						is_locked = no
+						division_names_group = HOL_INF_01
+						regiments = {
+							infantry = { x = 0 y = 0 }
+							infantry = { x = 0 y = 1 }
+							infantry = { x = 0 y = 2 }
+						}
+					}
+				}
+			}
+			capital_scope = {
+				create_unit = {
+					division = "division_template = \"Workers' militia\" start_experience_factor = 0.3"
+					owner = ROOT
+					count = 3
+				}	
+			}
 		}
 	}
 	
@@ -6987,11 +7039,17 @@ focus_tree = {
 		y = 1
 		search_filters = {  }
 		ai_will_do = { factor = 10 }
+		available = {
+			has_government = anarchism
+			has_war_support > 0.5
+		}
 		prerequisite = { focus = HOL_formation_of_the_Red_Armies }
 		prerequisite = { focus = HOL_boycott_Nazism }
 		relative_position_id = HOL_formation_of_the_Red_Armies
 		completion_reward = { 
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus HOL_violent_defense"
+			add_ideas = HOL_violent_defense_idea
+			unlock_decision_category_tooltip = HOL_violent_defense_category
 		}
 	}
 	

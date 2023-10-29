@@ -2723,3 +2723,338 @@ HOL_search_for_allies_in_the_world_category = {
 		}
 	}
 }
+
+HOL_promote_anarchist_ideas_in_the_Benelux_category = {
+	
+	HOL_spreading_the_ideas_of_anarchism_in_the_Benelux = {
+		priority = 100
+		icon = hol_engelandvaarders
+		cost = 100
+		fire_only_once = no
+		days_re_enable = 130
+		days_remove = 7
+		available = {
+			OR = {
+				AND = {
+					country_exists = BEL
+					BEL = { NOT = { has_government = anarchism } }
+				}
+				AND = {
+					country_exists = LUX
+					LUX = { NOT = { has_government = anarchism } }
+				}
+			}
+		}
+		remove_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): remove decision HOL_spreading_the_ideas_of_anarchism_in_the_Benelux"
+			add_timed_idea = { idea = HOL_spreading_the_ideas_of_anarchism_in_the_Benelux_idea days = 120 }
+			if = {
+				limit = {
+					country_exists = BEL
+					BEL = { NOT = { has_government = anarchism } }
+				}
+				BEL = { add_timed_idea = { idea = HOL_spreading_the_ideas_of_anarchism_in_the_Benelux_idea_2 days = 120 } }
+			}
+			if = {
+				limit = {
+					country_exists = LUX
+					LUX = { NOT = { has_government = anarchism } }
+				}
+				LUX = { add_timed_idea = { idea = HOL_spreading_the_ideas_of_anarchism_in_the_Benelux_idea_2 days = 120 } }
+			}
+		}
+	}
+	
+	HOL_support_the_anarchist_uprising_in_Belgium = {
+		priority = 60
+		icon = hol_engelandvaarders
+		custom_cost_trigger = {
+			set_temp_variable = { custom_cost = 10 }
+			check_variable = { var = anarchism_unity_var value = custom_cost compare = greater_than_or_equals }
+		}
+		custom_cost_text = custom_cost_anarcho_unity
+		fire_only_once = yes
+		days_remove = 7
+		available = {
+			country_exists = BEL
+			BEL = {
+				NOT = { has_government = anarchism }
+				has_stability < 0.5
+				anarchism > 0.2
+			}
+		}
+		complete_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision HOL_support_the_anarchist_uprising_in_Belgium"
+			hidden_effect = {
+				set_temp_variable = { custom_cost = 10 }
+				subtract_from_variable = { anarchism_unity_var = custom_cost }
+			}
+		}
+		remove_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): remove decision HOL_support_the_anarchist_uprising_in_Belgium"
+			BEL = {
+				if = {
+					limit = { anarchism > 0.5 }
+					start_civil_war = {
+						ideology = anarchism
+						size = 0.6
+						set_cosmetic_tag = BEL_Belgian_Federation_of_Councils
+						ROOT = {
+							if = {
+								limit = { OR = { has_dlc = "Together for Victory" has_dlc = "Man the Guns" } }
+								set_autonomy = { target = PREV autonomous_state = autonomy_integrated_puppet }
+								else = { puppet = PREV }
+							}
+						}
+					}
+				}
+				else_if = {
+					limit = { anarchism > 0.4 }
+					start_civil_war = {
+						ideology = anarchism
+						size = 0.5
+						set_cosmetic_tag = BEL_Belgian_Federation_of_Councils
+						ROOT = {
+							if = {
+								limit = { OR = { has_dlc = "Together for Victory" has_dlc = "Man the Guns" } }
+								set_autonomy = { target = PREV autonomous_state = autonomy_integrated_puppet }
+								else = { puppet = PREV }
+							}
+						}
+					}
+				}
+				else_if = {
+					limit = { anarchism > 0.3 }
+					start_civil_war = {
+						ideology = anarchism
+						size = 0.35
+						set_cosmetic_tag = BEL_Belgian_Federation_of_Councils
+						ROOT = {
+							if = {
+								limit = { OR = { has_dlc = "Together for Victory" has_dlc = "Man the Guns" } }
+								set_autonomy = { target = PREV autonomous_state = autonomy_integrated_puppet }
+								else = { puppet = PREV }
+							}
+						}
+					}
+				}
+				else = {
+					start_civil_war = {
+						ideology = anarchism
+						size = 0.15
+						set_cosmetic_tag = BEL_Belgian_Federation_of_Councils
+						ROOT = {
+							if = {
+								limit = { OR = { has_dlc = "Together for Victory" has_dlc = "Man the Guns" } }
+								set_autonomy = { target = PREV autonomous_state = autonomy_integrated_puppet }
+								else = { puppet = PREV }
+							}
+						}
+					}
+				}
+				if = {
+					limit = { NOT = { has_war_with = ROOT } }
+					ROOT = { declare_war_on = { target = PREV type = topple_government } }
+				}
+			}
+		}
+	}
+	
+	HOL_support_the_anarchist_uprising_in_Luxembourg = {
+		priority = 30
+		icon = hol_engelandvaarders
+		custom_cost_trigger = {
+			set_temp_variable = { custom_cost = 10 }
+			check_variable = { var = anarchism_unity_var value = custom_cost compare = greater_than_or_equals }
+		}
+		custom_cost_text = custom_cost_anarcho_unity
+		fire_only_once = yes
+		days_remove = 7
+		available = {
+			country_exists = LUX
+			LUX = {
+				NOT = { has_government = anarchism }
+				has_stability < 0.5
+				anarchism > 0.4
+			}
+		}
+		complete_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision HOL_support_the_anarchist_uprising_in_Luxembourg"
+			hidden_effect = {
+				set_temp_variable = { custom_cost = 10 }
+				subtract_from_variable = { anarchism_unity_var = custom_cost }
+			}
+		}
+		remove_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): remove decision HOL_support_the_anarchist_uprising_in_Luxembourg"
+			LUX = {
+				set_politics = { ruling_party = anarchism elections_allowed = no }
+				ROOT = {
+					if = {
+						limit = { OR = { has_dlc = "Together for Victory" has_dlc = "Man the Guns" } }
+						set_autonomy = { target = PREV autonomous_state = autonomy_integrated_puppet }
+						else = { puppet = PREV }
+					}
+				}
+				drop_cosmetic_tag = yes
+				set_cosmetic_tag = LUX_Luxembourg_Federation_of_Councils
+			}
+		}
+	}
+}
+
+HOL_promote_anarchist_ideas_in_the_France_category = {
+	
+	HOL_spreading_the_ideas_of_anarchism_in_the_France = {
+		priority = 100
+		icon = hol_engelandvaarders
+		cost = 100
+		fire_only_once = no
+		days_re_enable = 130
+		days_remove = 7
+		available = {
+			country_exists = event_target:NW_france_scope
+			event_target:NW_france_scope = { NOT = { has_government = anarchism } }
+		}
+		remove_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): remove decision HOL_spreading_the_ideas_of_anarchism_in_the_France"
+			add_timed_idea = { idea = HOL_spreading_the_ideas_of_anarchism_in_the_France_idea days = 120 }
+			event_target:NW_france_scope = { add_timed_idea = { idea = HOL_spreading_the_ideas_of_anarchism_in_the_Benelux_idea_2 days = 120 } }
+		}
+	}
+	
+	HOL_support_the_anarchist_uprising_in_France = {
+		priority = 50
+		icon = hol_engelandvaarders
+		custom_cost_trigger = {
+			set_temp_variable = { custom_cost = 10 }
+			check_variable = { var = anarchism_unity_var value = custom_cost compare = greater_than_or_equals }
+		}
+		custom_cost_text = custom_cost_anarcho_unity
+		fire_only_once = yes
+		days_remove = 7
+		available = {
+			country_exists = event_target:NW_france_scope
+			event_target:NW_france_scope = {
+				NOT = { has_government = anarchism }
+				has_stability < 0.5
+				anarchism > 0.2
+			}
+		}
+		complete_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision HOL_support_the_anarchist_uprising_in_France"
+			hidden_effect = {
+				set_temp_variable = { custom_cost = 10 }
+				subtract_from_variable = { anarchism_unity_var = custom_cost }
+			}
+		}
+		remove_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): remove decision HOL_support_the_anarchist_uprising_in_France"
+			event_target:NW_france_scope = {
+				if = {
+					limit = { anarchism > 0.5 }
+					start_civil_war = {
+						ideology = anarchism
+						size = 0.6
+						set_cosmetic_tag = FRA_France_Federation_of_Councils
+						ROOT = {
+							if = {
+								limit = { OR = { has_dlc = "Together for Victory" has_dlc = "Man the Guns" } }
+								set_autonomy = { target = PREV autonomous_state = autonomy_integrated_puppet }
+								else = { puppet = PREV }
+							}
+						}
+					}
+				}
+				else_if = {
+					limit = { anarchism > 0.4 }
+					start_civil_war = {
+						ideology = anarchism
+						size = 0.5
+						set_cosmetic_tag = FRA_France_Federation_of_Councils
+						ROOT = {
+							if = {
+								limit = { OR = { has_dlc = "Together for Victory" has_dlc = "Man the Guns" } }
+								set_autonomy = { target = PREV autonomous_state = autonomy_integrated_puppet }
+								else = { puppet = PREV }
+							}
+						}
+					}
+				}
+				else_if = {
+					limit = { anarchism > 0.3 }
+					start_civil_war = {
+						ideology = anarchism
+						size = 0.35
+						set_cosmetic_tag = FRA_France_Federation_of_Councils
+						ROOT = {
+							if = {
+								limit = { OR = { has_dlc = "Together for Victory" has_dlc = "Man the Guns" } }
+								set_autonomy = { target = PREV autonomous_state = autonomy_integrated_puppet }
+								else = { puppet = PREV }
+							}
+						}
+					}
+				}
+				else = {
+					start_civil_war = {
+						ideology = anarchism
+						size = 0.15
+						set_cosmetic_tag = FRA_France_Federation_of_Councils
+						ROOT = {
+							if = {
+								limit = { OR = { has_dlc = "Together for Victory" has_dlc = "Man the Guns" } }
+								set_autonomy = { target = PREV autonomous_state = autonomy_integrated_puppet }
+								else = { puppet = PREV }
+							}
+						}
+					}
+				}
+				if = {
+					limit = { NOT = { has_war_with = ROOT } }
+					ROOT = { declare_war_on = { target = PREV type = topple_government } }
+				}
+			}
+		}
+	}
+}
+
+HOL_violent_defense_category = {
+
+	HOL_preemptive_strike_decision = {
+		priority = 50
+		icon = hol_engelandvaarders
+		custom_cost_trigger = {
+			set_temp_variable = { custom_cost = 10 }
+			check_variable = { var = anarchism_unity_var value = custom_cost compare = greater_than_or_equals }
+		}
+		custom_cost_text = custom_cost_anarcho_unity
+		fire_only_once = yes
+		available = {
+			is_subject = no
+		}
+		target_trigger = {
+			FROM = {
+				OR = {
+					is_justifying_wargoal_against = ROOT
+					has_wargoal_against = ROOT
+				}
+				NOT = { has_war_with = ROOT }
+			}
+		}
+		target_array = global.countries
+		targets_dynamic = yes
+		complete_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision HOL_preemptive_strike_decision"
+			hidden_effect = {
+				set_temp_variable = { custom_cost = 10 }
+				subtract_from_variable = { anarchism_unity_var = custom_cost }
+			}
+			if = {
+				limit = { NOT = { has_idea = HOL_preemptive_strike_idea } }
+				add_ideas = HOL_preemptive_strike_idea
+			}
+			declare_war_on = { target = FROM type = annex_everything }
+		}
+	}
+}
