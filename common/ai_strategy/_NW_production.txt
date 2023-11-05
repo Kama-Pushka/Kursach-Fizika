@@ -477,7 +477,7 @@ default_artillery_production = {
 			num_of_military_factories > 19
 		}
 	}
-	ai_strategy = { type = equipment_production_factor	id = artillery	value = 15 }
+	ai_strategy = { type = equipment_production_factor	id = artillery	value = 5 }
 }
 major_artillery_production = {
 	allowed = { NOT = { tag = SAI } }
@@ -487,7 +487,7 @@ major_artillery_production = {
 	abort = {
 		num_of_military_factories < 20
 	}
-	ai_strategy = { type = equipment_production_factor	id = artillery	value = 25 }
+	ai_strategy = { type = equipment_production_factor	id = artillery	value = 15 }
 }
 
 
@@ -499,8 +499,8 @@ reduce_motorized_production = {
 	abort = {
 		has_equipment = { motorized_equipment < 500 }
 	}
-	ai_strategy = { type = equipment_production_factor id = motorized	value = -125 }
-	ai_strategy = { type = equipment_production_factor id = infantry	value = 50 }
+	ai_strategy = { type = equipment_production_factor id = motorized	value = -25 }
+	ai_strategy = { type = equipment_production_factor id = infantry	value = 10 }
 }
 reduce_motorized_production_2 = {
 	allowed = { NOT = { tag = SAI } }
@@ -510,8 +510,8 @@ reduce_motorized_production_2 = {
 	abort = {
 		has_equipment = { motorized_equipment < 1000 }
 	}
-	ai_strategy = { type = equipment_production_factor id = motorized	value = -75 }
-	ai_strategy = { type = equipment_production_factor id = infantry	value = 50 }
+	ai_strategy = { type = equipment_production_factor id = motorized	value = -125 }
+	ai_strategy = { type = equipment_production_factor id = infantry	value = 5 }
 }
 
 
@@ -535,7 +535,7 @@ reduce_support_production_2 = {
 		has_equipment = { support_equipment < 1000 }
 	}
 	ai_strategy = { type = equipment_production_factor id = support		value = -50 }
-	ai_strategy = { type = equipment_production_factor id = infantry	value = 25 }
+	ai_strategy = { type = equipment_production_factor id = infantry	value = 5 }
 }
 support_equipment_assignment = {
 	allowed = { NOT = { tag = SAI } }
@@ -638,8 +638,11 @@ artillery_factory_assignment_2 = {
 
 motorized_factory_assignment = {
 	allowed = { NOT = { tag = SAI } }
-	enable = { always = yes }
-	abort = { always = no }
+	enable = {
+		num_of_military_factories > 5
+		has_tech = tech_trucks
+	}
+	abort_when_not_enabled = yes
 	ai_strategy = { type = equipment_production_min_factories id = motorized	value = 1 }
 }
 
@@ -730,7 +733,7 @@ anti_air_default_production = {
 	}
 	ai_strategy = { type = equipment_production_factor			id = anti_air					value = 10 }
 	ai_strategy = { type = template_prio						id = anti_air_brigade			value = 50 }
-	ai_strategy = { type = role_ratio							id = anti_air					value = 15 }
+	ai_strategy = { type = role_ratio							id = anti_air					value = 5 }
 	ai_strategy = { type = build_army							id = anti_air					value = 20 }
 }
 
@@ -746,10 +749,30 @@ anti_air_motorized_default_production = {
 		num_of_military_factories < 35
 	}
 	ai_strategy = { type = equipment_production_factor			id = anti_air					value = 10 }
-	ai_strategy = { type = equipment_production_factor			id = motorized					value = 10 }
+	ai_strategy = { type = equipment_production_factor			id = motorized					value = 5 }
 	ai_strategy = { type = template_prio						id = mot_anti_air_brigade		value = 50 }
-	ai_strategy = { type = role_ratio							id = anti_air_motorized			value = 15 }
+	ai_strategy = { type = role_ratio							id = anti_air_motorized			value = 5 }
 	ai_strategy = { type = build_army							id = anti_air_motorized			value = 20 }
+}
+
+stop_anti_air_production = {
+	allowed = {
+	}
+	enable = {
+		set_temp_variable = { temp_anti_air = num_armies_with_type@anti_air_brigade }
+		add_to_temp_variable = { temp_anti_air = num_armies_with_type@mot_anti_air_brigade }
+		if = {
+			limit = { check_variable = { temp_anti_air > 0 } }
+			divide_temp_variable = { temp_anti_air = num_armies }
+			check_variable = { temp_anti_air > 0.1 }
+		}
+	}
+	abort_when_not_enabled = yes
+	ai_strategy = { type = equipment_production_factor			id = anti_air					value = -9 }
+	ai_strategy = { type = template_prio						id = anti_air_brigade			value = -50 }
+	ai_strategy = { type = template_prio						id = mot_anti_air_brigade		value = -50 }
+	ai_strategy = { type = build_army							id = anti_air					value = -9999 }
+	ai_strategy = { type = build_army							id = anti_air_motorized			value = -9999 }
 }
 
 
@@ -811,7 +834,7 @@ equipment_production_armor = {
 		}
 	}
 	abort_when_not_enabled = yes
-	ai_strategy = { type = equipment_production_factor			id = armor	value = 35 }
+	ai_strategy = { type = equipment_production_factor			id = armor	value = 10 }
 	ai_strategy = { type = equipment_production_min_factories	id = armor	value = 5 }
 }
 
@@ -1902,7 +1925,7 @@ extra_civil_war_production = {
 			}
 		}
 	}
-	ai_strategy = { type = equipment_production_min_factories	id = infantry			value = 15 }
+	ai_strategy = { type = equipment_production_factor			id = infantry			value = 25 }
 	ai_strategy = { type = equipment_production_factor			id = armor				value = -200 }
 	ai_strategy = { type = equipment_production_factor			id = artillery			value = -200 }
 	ai_strategy = { type = equipment_variant_production_factor	id = support_equipment	value = -200 }
@@ -1974,7 +1997,7 @@ excess_motorized_production_2 = {
 	ai_strategy = { type = equipment_production_factor	id = infantry	value = 15 }
 	ai_strategy = { type = equipment_production_factor	id = armor		value = 5 }
 	ai_strategy = { type = equipment_production_factor	id = anti_tank	value = 5 }
-	ai_strategy = { type = equipment_production_factor	id = fighter		value = 15 }
+	ai_strategy = { type = equipment_production_factor	id = fighter	value = 15 }
 }
 
 
@@ -2128,7 +2151,7 @@ default_rocket_production = {
 		}
 	}
 
-	ai_strategy = { type = equipment_production_factor			id = rocket						value = 10 }
+	ai_strategy = { type = equipment_production_factor			id = rocket						value = 5 }
 	ai_strategy = { type = equipment_variant_production_factor	id = motorized_rocket_equipment	value = 5 }
 	ai_strategy = { type = equipment_variant_production_factor	id = rocket_artillery_equipment	value = 10 }
 	ai_strategy = { type = role_ratio							id = rocket						value = 5 }
@@ -2148,7 +2171,7 @@ major_rocket_production = {
 	}
 	abort_when_not_enabled = yes
 
-	ai_strategy = { type = equipment_production_factor			id = rocket						value = 20 }
+	ai_strategy = { type = equipment_production_factor			id = rocket						value = 15 }
 	ai_strategy = { type = equipment_variant_production_factor	id = motorized_rocket_equipment	value = 20 }
 	ai_strategy = { type = equipment_variant_production_factor	id = rocket_artillery_equipment	value = -5 }
 	ai_strategy = { type = role_ratio							id = motorized_rocket			value = 10 }
@@ -2446,4 +2469,143 @@ reduce_heavy_armor_production = {
 	ai_strategy = { type = equipment_variant_production_factor	id = heavy_tank_chassis		value = -75 }
 	ai_strategy = { type = equipment_production_factor			id = infantry				value = 20 }
 	ai_strategy = { type = equipment_variant_production_factor	id = infantry_equipment		value = 35 }
+}
+
+
+
+
+
+#####################
+###### РЫНОЧЕК ######
+#####################
+
+
+
+default_market_stockpile_management = {
+	enable = {
+		always = yes
+		# NOT = { original_tag = GER } # commented until actually needs override
+	}
+	abort_when_not_enabled = yes
+
+	# Hold your trains there, partner
+	ai_strategy = {
+		type = equipment_market_for_sale_threshold
+		id = train
+		value = 20  # only start considering selling trains if surplus more than 20
+	}
+	ai_strategy = {
+		type = equipment_market_min_for_sale
+		id = train
+		value = 5  # only put up for sale in chunks of 5
+	}
+	ai_strategy = {
+		type = equipment_market_for_sale_factor
+		id = train
+		value = -50  # put fewer trains up for sale
+	}
+
+	# Better not put all your boats up for sail
+	# ai_strategy = {  # Commented because handled dynamically in code through the EQUIPMENT_MARKET_WANTED_CONVOY_USAGE_RATIO define
+	# 	type = equipment_market_for_sale_threshold
+	# 	id = convoy
+	# 	value = 100  # only start considering selling convoys if surplus more than 100
+	# }
+	ai_strategy = {
+		type = equipment_market_min_for_sale
+		id = convoy
+		value = 20  # only put up for sale in chunks of 20
+	}
+
+	# Don't let all your planes just fly out the window.
+	# Only sell planes if we have more than one airwing in surplus.
+	ai_strategy = {
+		type = equipment_market_for_sale_threshold
+		id = fighter
+		value = 100
+	}
+	ai_strategy = {
+		type = equipment_market_for_sale_threshold
+		id = cas
+		value = 100
+	}
+	ai_strategy = {
+		type = equipment_market_for_sale_threshold
+		id = cv_fighter
+		value = 100
+	}
+	ai_strategy = {
+		type = equipment_market_for_sale_threshold
+		id = cv_cas
+		value = 100
+	}
+	ai_strategy = {
+		type = equipment_market_for_sale_threshold
+		id = tactical_bomber
+		value = 100
+	}
+	ai_strategy = {
+		type = equipment_market_for_sale_threshold
+		id = strategic_bomber
+		value = 100
+	}
+}
+
+default_market_stockpile_management_if_at_war = {
+	enable = {
+		has_war = yes
+		# something something preparing for war?
+		# NOT = { original_tag = GER } # commented until actually needs override
+	}
+	abort_when_not_enabled = yes
+
+	# Don't sell stuff that we need for the war
+	ai_strategy = {
+		type = equipment_market_for_sale_threshold
+		id = infantry
+		value = 20000
+	}
+	ai_strategy = {
+		type = equipment_market_for_sale_threshold
+		id = support
+		value = 6000
+	}
+	ai_strategy = {
+		type = equipment_market_for_sale_threshold
+		id = artillery
+		value = 1000
+	}
+	ai_strategy = {
+		type = equipment_market_for_sale_threshold
+		id = fighter
+		value = 200
+	}
+	ai_strategy = {
+		type = equipment_market_for_sale_threshold
+		id = motorized
+		value = 1000
+	}
+	ai_strategy = {
+		type = equipment_market_for_sale_threshold
+		id = train
+		value = 50
+	}
+	ai_strategy = {
+		type = equipment_market_for_sale_threshold
+		id = convoy
+		value = 50
+	}
+}
+
+default_market_convoy_purchases = {
+	enable = {
+		naval_base > 0  # not land-locked
+	}
+	abort_when_not_enabled = yes
+
+	ai_strategy = {
+		type = equipment_market_buying_threshold
+		id = convoy
+		value = 30  # Consider buying if we have too few (less than 30) convoys. Also interacts with the EQUIPMENT_MARKET_WANTED_CONVOY_USAGE_RATIO define.
+	}
 }
