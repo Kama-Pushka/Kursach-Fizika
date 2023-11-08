@@ -16,6 +16,117 @@
 # declare_war
 
 
+######## CONSTRUCTIONS ########
+
+SOV_build_civs_not_mils_faggot = {
+	allowed = { tag = SOV }
+	enable = {
+		date < 1938.01.01
+		has_war = no
+	}
+	abort = {
+		date > 1938.01.01
+	}
+	ai_strategy = { type = building_target	id = industrial_complex	value = 90 }
+}
+
+SOV_still_build_more_civ = {
+	allowed = { tag = SOV }
+	enable = {
+		date < 1941.01.01
+	}
+	abort = {
+		OR = {
+			has_war = yes
+			date > 1941.01.01
+			OR = {
+				date > 1940.01.01
+				NOT = { has_global_flag = sov_yes_pact }
+			}
+			any_neighbor_country = {
+				is_major = yes
+				has_wargoal_against = SOV
+			}
+		}
+	}
+	ai_strategy = { type = added_military_to_civilian_factory_ratio value = -30 }
+}
+
+SOV_now_build_your_mils = {
+	allowed = { tag = SOV }
+	enable = {
+		date > 1941.1.1
+		has_war = yes
+	}
+	abort_when_not_enabled = yes
+	ai_strategy = { type = added_military_to_civilian_factory_ratio value = 60 }
+}
+
+SOV_dockyards_useless_now = {
+	allowed = { tag = SOV }
+	enable = {
+		has_war_with = GER
+	}
+	abort_when_not_enabled = yes
+	ai_strategy = { type = dockyard_to_military_factory_ratio value = -200 }
+}
+
+
+# ПОЧИНИТЬ ПОТОМ
+SOV_expand_navy = {	#note: while historical, it also prevents stupid soviet AI wartime behaviour, when it suddenly decides it needs 9999+ convoys and starts building dozens of useless dockyards in (to be conquered) dangerous states.
+	allowed = { tag = SOV }
+	enable = {
+#		has_completed_focus = SOV_expand_shipbuilding_plants
+		num_of_military_factories > 70
+		date < 1941.01.01
+		has_war = no
+	}
+	abort = {
+		OR = {
+			has_war = yes
+			date > 1942.01.01
+		}
+	}
+	ai_strategy = { type = building_target id = dockyard value = 10 }
+}
+
+SOV_expand_rubber_production = {
+	allowed = { tag = SOV }
+	enable = {
+		has_tech = rubber_processing
+		OR = {
+			JAP = { has_war_with = ENG }
+			has_war_with = ENG
+		}
+	}
+	abort = {
+		has_war = yes
+		surrender_progress > 0.5
+	}
+	ai_strategy = { type = building_target id = synthetic_refinery value = 6 }
+}
+
+##### LATE GAME #####
+SOV_expand_rubber_production_late = {
+	allowed = { tag = SOV }
+	enable = {
+		num_of_military_factories > 220
+		has_tech = rubber_processing
+		OR = {
+			has_war_with = ENG
+			has_war_with = JAP
+		}
+	}
+	abort = {
+		surrender_progress > 0.3
+	}
+	ai_strategy = { type = building_target id = synthetic_refinery value = 15 }
+}
+
+
+######## END CONSTRUCTIONS ########
+
+
 # СССР: на старте должны быть шаблоны на легкие танки, средние танки и тяжелые танки. Ещё огнеметных легких танков можно
 # Строить он должен все трое соответственно, но упор на ЛТ
 SOV_start_tanks_production = {
@@ -1505,150 +1616,13 @@ SOV_air_destroyed_by_luftwaffe = {
 	}
 }
 
-SOV_build_civs_not_mils_faggot = {
-	allowed = {
-		tag = SOV
-	}
-	enable = {
-		date < 1938.01.01
-		has_war = no
-	}
-	abort_when_not_enabled = yes
-	ai_strategy = {
-		type = building_target
-		id = industrial_complex
-		value = 90
-	}
-}
-
-SOV_still_build_more_civ = {
-	allowed = {
-		tag = SOV
-	}
-	enable = {
-		date < 1941.01.01
-	}
-	abort = {
-		OR = {
-			has_war = yes
-			date > 1941.01.01
-			OR = {
-				date > 1940.01.01
-				NOT = { has_global_flag = sov_yes_pact }
-			}
-			any_neighbor_country = {
-				is_major = yes
-				has_wargoal_against = SOV
-			}
-		}
-	}
-	
-	ai_strategy = {
-		type = added_military_to_civilian_factory_ratio	
-		value = -30
-	}
-}
-
-SOV_now_build_your_mils = {
-	allowed = {
-		tag = SOV
-	}
-	enable = {
-		date > 1941.1.1
-		has_war = yes
-	}
-	abort = {
-		has_war = no
-	}
-	ai_strategy = {
-		type = added_military_to_civilian_factory_ratio
-		value = 60
-	}
-}
-
-SOV_dockyards_useless_now = {
-	allowed = {
-		tag = SOV
-	}
-	enable = {
-		has_war_with = GER
-	}
-	abort_when_not_enabled = yes
-	ai_strategy = {
-		type = dockyard_to_military_factory_ratio
-		value = -200
-	}
-}
-
-# ПОЧИНИТЬ ПОТОМ
-SOV_expand_navy = {	#note: while historical, it also prevents stupid soviet AI wartime behaviour, when it suddenly decides it needs 9999+ convoys and starts building dozens of useless dockyards in (to be conquered) dangerous states.
-	allowed = {
-		tag = SOV
-	}
-	enable = {
-#		has_completed_focus = SOV_expand_shipbuilding_plants
-		num_of_military_factories > 70
-		date < 1941.01.01
-		has_war = no
-	}
-	abort = {
-		OR = {
-			has_war = yes
-			date > 1942.01.01
-		}
-	}
-	ai_strategy = {
-		type = building_target
-		id = dockyard
-		value = 10
-	}
-}
-
-SOV_expand_rubber_production = {
-	allowed = {
-		tag = SOV
-	}
-	enable = {
-		has_tech = rubber_processing
-		OR = {
-			JAP = { has_war_with = ENG }
-			has_war_with = ENG
-		}
-	}
-	abort = {
-		has_war = yes
-		surrender_progress > 0.5
-	}
-	ai_strategy = {
-		type = building_target
-		id = synthetic_refinery
-		value = 6
-	}
-}
 
 
-##### LATE GAME #####
-SOV_expand_rubber_production_late = {
-	allowed = {
-		original_tag = SOV
-	}
-	enable = {
-		num_of_military_factories > 220
-		has_tech = rubber_processing
-		OR = {
-			has_war_with = ENG
-			has_war_with = JAP
-		}
-	}
-	abort = {
-		surrender_progress > 0.3
-	}
-	ai_strategy = {
-		type = building_target
-		id = synthetic_refinery
-		value = 15
-	}
-}
+
+
+
+
+
 
 SOV_reenable_bombers = {
 	allowed = {
