@@ -1306,6 +1306,12 @@ country_event = {
 			}
 		}
 		add_to_faction = FROM
+		hidden_effect = {
+			FROM = {
+				set_variable = { points_of_dependence_on_ussr_var = 0 }
+				HAI_update_actual_points_of_dependence_on_ussr_idea = yes
+			}
+		}
 	}
 	
 	option = {
@@ -1558,6 +1564,87 @@ country_event = {
 					clear_variable = random_damage
 				}
 			}
+		}
+	}
+}
+
+# Черная революция на Юге // USA
+country_event = {
+	id = NWhaiti.44
+	title = NWhaiti.44.t
+	desc = NWhaiti.44.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWhaiti.44" }
+	
+	option = {
+		name = NWhaiti.44.a
+		AAU = {
+			set_province_controller = 1843
+			set_province_controller = 1453
+			set_province_controller = 4535
+			set_province_controller = 12398
+			set_province_controller = 12735
+			set_province_controller = 7480
+			hidden_effect = {
+				division_template = {
+					name = "Black Panthers"
+					template_counter = 20
+					regiments = { 
+						infantry = { x = 0 y = 0 } 
+						infantry = { x = 0 y = 1 } 
+						infantry = { x = 1 y = 0 } 
+						infantry = { x = 1 y = 1 }
+					} 
+					support = { 
+						logistics_company = { x = 0 y = 0 } 
+					} 
+				}
+			}
+			hidden_effect = {
+				load_oob = USA_AAU_rebels_1843
+				load_oob = USA_AAU_rebels_1453
+				load_oob = USA_AAU_rebels_4535
+				load_oob = USA_AAU_rebels_12398
+				load_oob = USA_AAU_rebels_12735
+				load_oob = USA_AAU_rebels_7480
+				
+				set_temp_variable = { num_cucle = FROM.HAI_organizing_armed_patrols }
+				while_loop_effect = {
+					limit = {
+						check_variable = { num_cucle > 0 }
+					}
+					random_list = {
+						1 = { load_oob = USA_AAU_rebels_1843 }
+						1 = { load_oob = USA_AAU_rebels_1453 }
+						1 = { load_oob = USA_AAU_rebels_4535 }
+						1 = { load_oob = USA_AAU_rebels_12398 }
+						1 = { load_oob = USA_AAU_rebels_12735 }
+						1 = { load_oob = USA_AAU_rebels_7480 }
+					}
+					add_to_temp_variable = { num_cucle = -1 }
+				}
+				declare_war_on = { target = ROOT type = civil_war }
+				add_civil_war_target = ROOT
+				ROOT = { add_civil_war_target = AAU }
+			}
+		}
+		if = {
+			limit = { check_variable = { FROM.HAI_organizing_armed_patrols = 6 } }
+			367 = { remove_core_of = ROOT }
+			366 = { remove_core_of = ROOT }
+			371 = { remove_core_of = ROOT }
+			375 = { add_core_of = AAU }
+		}
+		FROM = {
+			set_autonomy = {
+				target = AAU
+				autonomy_state = autonomy_integrated_puppet
+				end_wars = no
+				end_civil_wars = no
+			}
+			clear_variable = HAI_organizing_armed_patrols
 		}
 	}
 }
