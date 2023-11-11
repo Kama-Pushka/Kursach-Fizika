@@ -494,7 +494,7 @@ major_artillery_production = {
 reduce_motorized_production = {
 	allowed = { NOT = { tag = SAI } }
 	enable = {
-		has_equipment = { motorized_equipment > 2500 }
+		has_equipment = { motorized_equipment > 3500 }
 	}
 	abort = {
 		has_equipment = { motorized_equipment < 500 }
@@ -607,8 +607,60 @@ reduce_anti_tank_production_3 = {
 
 
 ######################################
+#	Supply
+######################################
+
+more_supply_trucks_1 = {
+	enable = { check_variable = { num_equipment@motorized_equipment < 500 } }
+	abort = { NOT = { check_variable = { num_equipment@motorized_equipment < 1000 } } }
+
+	ai_strategy = { type = equipment_production_surplus_management	id = motorized_equipment	value = 1 }
+	ai_strategy = { type = equipment_variant_production_factor		id = motorized_equipment	value = 10 }
+}
+
+more_supply_trucks_2 = {
+	enable = { num_of_military_factories > 40 check_variable = { num_equipment@motorized_equipment < 500 } }
+	abort = { NOT = { check_variable = { num_equipment@motorized_equipment < 1000 } } }
+
+	ai_strategy = { type = equipment_production_surplus_management	id = motorized_equipment	value = 1 }
+	ai_strategy = { type = equipment_variant_production_factor		id = motorized_equipment	value = 10 }
+}
+
+more_supply_trucks_3 = {
+	enable = { num_of_military_factories > 60 check_variable = { num_equipment@motorized_equipment < 500 } }
+	abort = { NOT = { check_variable = { num_equipment@motorized_equipment < 1000 } } }
+
+	ai_strategy = { type = equipment_production_surplus_management	id = motorized_equipment	value = 1 }
+	ai_strategy = { type = equipment_variant_production_factor		id = motorized_equipment	value = 10 }
+}
+
+
+######################################
 ##	МИНИМАЛЬНЫЕ ФАБРИКИ
 ######################################
+
+supply_trains_assignment = {
+	allowed = {
+		OR = {
+			tag = SOV
+			tag = ITA
+			tag = USA
+			tag = ENG
+			tag = FRA
+			tag = FRC
+			tag = FRR
+			tag = JAP
+			
+			tag = HUN
+			tag = CZE
+			tag = AUS
+		}
+	}
+	enable = { is_major = yes has_war = yes }
+	abort_when_not_enabled = yes
+
+	ai_strategy = { type = equipment_production_min_factories	id = train	value = 1 }
+}
 
 support_equipment_assignment = {
 	allowed = { NOT = { tag = SAI } }
@@ -618,7 +670,7 @@ support_equipment_assignment = {
 	abort = {
 		has_equipment = { support_equipment > 1000 }
 	}
-	ai_strategy = { type = equipment_production_factor id = support value = 15 }
+	ai_strategy = { type = equipment_production_factor	id = support	value = 15 }
 }
 
 
@@ -626,13 +678,13 @@ artillery_factory_assignment_1 = {
 	allowed = { NOT = { tag = SAI } }
 	enable = { num_of_military_factories > 5 }
 	abort_when_not_enabled = yes
-	ai_strategy = { type = equipment_production_min_factories id = artillery	value = 2 }
+	ai_strategy = { type = equipment_production_min_factories	id = artillery	value = 2 }
 }
 artillery_factory_assignment_2 = {
 	allowed = { NOT = { tag = SAI } }
 	enable = { num_of_military_factories > 15 }
 	abort_when_not_enabled = yes
-	ai_strategy = { type = equipment_production_min_factories id = artillery	value = 3 }
+	ai_strategy = { type = equipment_production_min_factories	id = artillery	value = 3 }
 }
 
 
@@ -771,8 +823,7 @@ stop_anti_air_production = {
 	ai_strategy = { type = equipment_production_factor			id = anti_air					value = -9 }
 	ai_strategy = { type = template_prio						id = anti_air_brigade			value = -50 }
 	ai_strategy = { type = template_prio						id = mot_anti_air_brigade		value = -50 }
-	ai_strategy = { type = build_army							id = anti_air					value = -9999 }
-	ai_strategy = { type = build_army							id = anti_air_motorized			value = -9999 }
+	ai_strategy = { type = unit_ratio							id = anti_air					value = -9999 }
 }
 
 
@@ -1882,7 +1933,7 @@ default_antitank_production = {
 
 
 stockpile_less_early_game = {
-	allowed = { NOT = { tag = SAI } }
+	allowed = { NOT = { tag = SAI tag = GER } }
 	enable = {
 		date < 1938.1.1
 	}
@@ -2028,6 +2079,7 @@ default_armored_car_production = {
 		OR = {
 			num_of_military_factories < 10
 			num_of_military_factories > 19
+			has_equipment = { armored_car_equipment > 3000 }
 		}
 	}
 
@@ -2042,6 +2094,7 @@ major_armored_car_production = {
 	}
 	enable = {
 		num_of_military_factories > 19
+		has_equipment = { armored_car_equipment < 5000 }
 	}
 	abort_when_not_enabled = yes
 
@@ -2105,43 +2158,32 @@ NW_more_armored_car_focused_nation_2 = {
 	}
 	abort_when_not_enabled = yes
 
-	ai_strategy = {
-		type = role_ratio
-		id = armored_car
-		value = 15
-	}
-	ai_strategy = {
-		type = equipment_production_factor
-		id = motorized
-		value = 15
-	}
-	ai_strategy = {
-		type = equipment_variant_production_factor
-		id = armored_car_equipment
-		value = 15
-	}
+	ai_strategy = { type = role_ratio id = armored_car value = 15	}
 }
 
 reduce_armored_car_production = {
 	allowed = { NOT = { tag = SAI } }
 	enable = {
-		has_equipment = { armored_car_equipment > 2500 }
+		has_equipment = { armored_car_equipment > 3000 }
 	}
 	abort = {
 		has_equipment = { armored_car_equipment < 500 }
 	}
-	ai_strategy = { type = equipment_variant_production_factor id = armored_car_equipment	value = -75 }
-	ai_strategy = { type = equipment_variant_production_factor id = infantry_equipment		value = 5 }
+	ai_strategy = { type = equipment_production_factor			id = motorized				value = -10 }
+	ai_strategy = { type = equipment_variant_production_factor	id = armored_car_equipment	value = -100 }
+	ai_strategy = { type = equipment_production_min_factories	id = motorized				value = -10 }
 }
 reduce_armored_car_production_2 = {
 	allowed = { NOT = { tag = SAI } }
 	enable = {
-		has_equipment = { armored_car_equipment > 10000 }
+		has_equipment = { armored_car_equipment > 5000 }
 	}
 	abort = {
 		has_equipment = { armored_car_equipment < 1000 }
 	}
-	ai_strategy = { type = equipment_production_factor id = motorized	value = -25 }
+	ai_strategy = { type = equipment_production_factor			id = motorized				value = -25 }
+	ai_strategy = { type = equipment_variant_production_factor	id = armored_car_equipment	value = -500 }
+	ai_strategy = { type = equipment_production_min_factories	id = motorized				value = -20 }
 }
 
 default_rocket_production = {
