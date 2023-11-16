@@ -376,6 +376,10 @@ NDefines.NAI.MAX_SCREEN_TASKFORCES_FOR_CONVOY_DEFENSE_MAX_CONVOY_THREAT = 500	--
 -- AIR
 -----------------------------
 
+NDefines.NAI.WANTED_LAND_PLANES_PER_BASE_CAPACITY_FACTOR = 1.15				-- Scales how many land-based planes the AI want per air base space (excluding carriers).
+NDefines.NAI.WANTED_LAND_PLANES_PER_DIVISION = 25							-- How many land-based planes the AI want for each division it wants.
+
+
 -- NDefines.NAI.PRODUCTION_CARRIER_PLANE_BUFFER_RATIO = 3					-- in additiona to total deck size of carriers, we want at list this ratio to buffer it
 -- NDefines.NAI.MAX_FUEL_CONSUMPTION_RATIO_FOR_AIR_TRAINING = 1				-- ai will use at most this ratio of affordable fuel for air training
 

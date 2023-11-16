@@ -3577,7 +3577,7 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus HAI_national_defense_plan"
-			
+			add_ideas = HAI_national_defense_plan_idea
 		}
 	}
 	
@@ -3589,7 +3589,7 @@ focus_tree = {
 		y = 1
 		relative_position_id = HAI_national_defense_plan
 		
-		cost = 3
+		cost = 7
 		
 		cancel_if_invalid = no
 		continue_if_invalid = yes
@@ -3598,12 +3598,64 @@ focus_tree = {
 		available = {
 		}
 		bypass = {
+			USA = {
+				OR = {
+					NOT = { has_government = democratic }
+					has_war_with = ROOT
+				}
+			}
 		}
 		select_effect = {
 		}
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus HAI_maintain_military_ties_with_united_states"
-			
+			army_experience = 20
+			navy_experience = 25
+			add_doctrine_cost_reduction = {
+				name = HAI_maintain_military_ties_with_united_states
+				cost_reduction = 0.5
+				uses = 3
+				category = cat_marines_doctrine
+			}
+			add_tech_bonus = {
+				name = HAI_maintain_military_ties_with_united_states
+				bonus = 0.25
+				uses = 4
+				category = naval_equipment
+			}
+			USA = {
+				if = {
+					limit = {
+						OR = {
+							AND = {
+								has_opinion = { target = ROOT value < 45 }
+								NOT = { has_non_aggression_pact_with = ROOT }
+							}
+							AND = {
+								has_opinion = { target = ROOT value < 75 }
+								has_non_aggression_pact_with = ROOT
+							}
+						}
+					}
+					custom_effect_tooltip = HAI_maintain_military_ties_with_united_states_tt
+				}
+				else = {
+					if = {
+						limit = {
+							has_opinion = { target = ROOT value > 44 }
+							NOT = { has_non_aggression_pact_with = ROOT }
+						}
+						diplomatic_relation = { country = ROOT relation = non_aggression_pact active = yes }
+					}
+					if = {
+						limit = {
+							has_opinion = { target = ROOT value > 74 }
+						}
+						add_to_tech_sharing_group = HAI_USA_science_group
+						ROOT = { add_to_tech_sharing_group = HAI_USA_science_group }
+					}
+				}
+			}
 		}
 	}
 
@@ -8514,8 +8566,8 @@ focus_tree = {
 			has_completed_focus = HAI_joining_the_comintern
 		}
 		bypass = {
-			has_completed_focus = HAI_joining_the_comintern
-			NOT = { is_in_faction_with = SOV }
+			has_country_flag = HAI_points_of_dependence_on_ussr_block_flag
+			NOT = { is_subject_of = SOV }	# смысла в условии нет, чисто для тултипа
 		}
 		select_effect = {
 		}
@@ -8567,6 +8619,8 @@ focus_tree = {
 			if = {
 				limit = { has_variable = points_of_dependence_on_ussr_var }
 				add_to_variable = { points_of_dependence_on_ussr_var = 12 tooltip = points_of_dependence_on_ussr_effect_tt }
+				clamp_variable = { var = points_of_dependence_on_ussr_var min = 0 max = 100 }
+				HAI_update_actual_points_of_dependence_on_ussr_idea = yes
 			}
 		}
 	}
@@ -8656,8 +8710,8 @@ focus_tree = {
 			has_completed_focus = HAI_joining_the_comintern
 		}
 		bypass = {
-			has_completed_focus = HAI_joining_the_comintern
-			NOT = { is_in_faction_with = SOV }
+			has_country_flag = HAI_points_of_dependence_on_ussr_block_flag
+			NOT = { is_subject_of = SOV }	# смысла в условии нет, чисто для тултипа
 		}
 		select_effect = {
 		}
@@ -8673,6 +8727,8 @@ focus_tree = {
 			if = {
 				limit = { has_variable = points_of_dependence_on_ussr_var }
 				add_to_variable = { points_of_dependence_on_ussr_var = 12 tooltip = points_of_dependence_on_ussr_effect_tt }
+				clamp_variable = { var = points_of_dependence_on_ussr_var min = 0 max = 100 }
+				HAI_update_actual_points_of_dependence_on_ussr_idea = yes
 			}
 		}
 	}
@@ -8834,8 +8890,8 @@ focus_tree = {
 			has_completed_focus = HAI_joining_the_comintern
 		}
 		bypass = {
-			has_completed_focus = HAI_joining_the_comintern
-			NOT = { is_in_faction_with = SOV }
+			has_country_flag = HAI_points_of_dependence_on_ussr_block_flag
+			NOT = { is_subject_of = SOV }	# смысла в условии нет, чисто для тултипа
 		}
 		select_effect = {
 		}
@@ -8853,6 +8909,8 @@ focus_tree = {
 			if = {
 				limit = { has_variable = points_of_dependence_on_ussr_var }
 				add_to_variable = { points_of_dependence_on_ussr_var = 15 tooltip = points_of_dependence_on_ussr_effect_tt }
+				clamp_variable = { var = points_of_dependence_on_ussr_var min = 0 max = 100 }
+				HAI_update_actual_points_of_dependence_on_ussr_idea = yes
 			}
 		}
 	}
@@ -8981,6 +9039,8 @@ focus_tree = {
 						add_offsite_building = { type = industrial_complex level = 1 }
 					}
 				}
+				clamp_variable = { var = points_of_dependence_on_ussr_var min = 0 max = 100 }
+				HAI_update_actual_points_of_dependence_on_ussr_idea = yes
 			}
 			else = { add_offsite_building = { type = industrial_complex level = 1 } }
 		}
@@ -9106,6 +9166,7 @@ focus_tree = {
 			SOV = { has_country_leader = { character = SOV_iosif_stalin ruling_only = yes } }
 		}
 		bypass = {
+			NOT = { SOV = { has_country_leader = { character = SOV_iosif_stalin ruling_only = yes } } }
 		}
 		select_effect = {
 		}
@@ -9131,15 +9192,22 @@ focus_tree = {
 		available_if_capitulated = no
 
 		available = {
-			country_exists = SOV
-			SOV = {
-				is_faction_leader = yes
-				has_government = communism
-				NOT = { has_war_with = ROOT }
-			}
 		}
 		bypass = {
-			is_in_faction_with = SOV
+			OR = {
+				is_in_faction_with = SOV
+				NOT = { country_exists = SOV }
+				SOV = {
+					OR = {
+						is_faction_leader = no
+						NOT = {
+							has_government = communism
+							has_government = trozkism
+						}
+						has_war_with = ROOT
+					}
+				}
+			}
 		}
 		select_effect = {
 		}
@@ -9175,6 +9243,8 @@ focus_tree = {
 			NOT = { has_war_with = SOV }
 		}
 		bypass = {
+			has_country_flag = HAI_points_of_dependence_on_ussr_block_flag
+			NOT = { is_subject_of = SOV }	# смысла в условии нет, чисто для тултипа
 		}
 		select_effect = {
 		}
@@ -9208,6 +9278,8 @@ focus_tree = {
 			if = {
 				limit = { has_variable = points_of_dependence_on_ussr_var }
 				add_to_variable = { points_of_dependence_on_ussr_var = 18 tooltip = points_of_dependence_on_ussr_effect_tt }
+				clamp_variable = { var = points_of_dependence_on_ussr_var min = 0 max = 100 }
+				HAI_update_actual_points_of_dependence_on_ussr_idea = yes
 			}
 		}
 	}
@@ -9231,6 +9303,8 @@ focus_tree = {
 			NOT = { has_war_with = SOV }
 		}
 		bypass = {
+			has_country_flag = HAI_points_of_dependence_on_ussr_block_flag
+			NOT = { is_subject_of = SOV }	# смысла в условии нет, чисто для тултипа
 		}
 		select_effect = {
 		}
@@ -9254,6 +9328,8 @@ focus_tree = {
 			if = {
 				limit = { has_variable = points_of_dependence_on_ussr_var }
 				add_to_variable = { points_of_dependence_on_ussr_var = 5 tooltip = points_of_dependence_on_ussr_effect_tt }
+				clamp_variable = { var = points_of_dependence_on_ussr_var min = 0 max = 100 }
+				HAI_update_actual_points_of_dependence_on_ussr_idea = yes
 			}
 		}
 	}
@@ -9316,6 +9392,8 @@ focus_tree = {
 			if = {
 				limit = { has_variable = points_of_dependence_on_ussr_var }
 				add_to_variable = { points_of_dependence_on_ussr_var = 11 tooltip = points_of_dependence_on_ussr_effect_tt }
+				clamp_variable = { var = points_of_dependence_on_ussr_var min = 0 max = 100 }
+				HAI_update_actual_points_of_dependence_on_ussr_idea = yes
 			}
 		}
 	}
@@ -9469,6 +9547,8 @@ focus_tree = {
 			NOT = { has_war_with = SOV }
 		}
 		bypass = {
+			has_country_flag = HAI_points_of_dependence_on_ussr_block_flag
+			NOT = { is_subject_of = SOV }	# смысла в условии нет, чисто для тултипа
 		}
 		select_effect = {
 		}
@@ -9487,6 +9567,8 @@ focus_tree = {
 			if = {
 				limit = { has_variable = points_of_dependence_on_ussr_var }
 				add_to_variable = { points_of_dependence_on_ussr_var = 7 tooltip = points_of_dependence_on_ussr_effect_tt }
+				clamp_variable = { var = points_of_dependence_on_ussr_var min = 0 max = 100 }
+				HAI_update_actual_points_of_dependence_on_ussr_idea = yes
 			}
 		}
 	}
@@ -9510,6 +9592,8 @@ focus_tree = {
 			NOT = { has_war_with = SOV }
 		}
 		bypass = {
+			has_country_flag = HAI_points_of_dependence_on_ussr_block_flag
+			NOT = { is_subject_of = SOV }	# смысла в условии нет, чисто для тултипа
 		}
 		select_effect = {
 		}
@@ -9548,6 +9632,8 @@ focus_tree = {
 					multiply_temp_variable = { temp1 = -2 }
 					add_to_variable = { points_of_dependence_on_ussr_var = temp1 }
 				}
+				clamp_variable = { var = points_of_dependence_on_ussr_var min = 0 max = 100 }
+				HAI_update_actual_points_of_dependence_on_ussr_idea = yes
 			}
 		}
 	}
@@ -9787,6 +9873,8 @@ focus_tree = {
 			NOT = { has_war_with = SOV }
 		}
 		bypass = {
+			has_country_flag = HAI_points_of_dependence_on_ussr_block_flag
+			NOT = { is_subject_of = SOV }	# смысла в условии нет, чисто для тултипа
 		}
 		select_effect = {
 		}
@@ -9822,6 +9910,8 @@ focus_tree = {
 		available = {
 		}
 		bypass = {
+			has_country_flag = HAI_points_of_dependence_on_ussr_block_flag
+			NOT = { is_subject_of = SOV }	# смысла в условии нет, чисто для тултипа
 		}
 		select_effect = {
 		}
@@ -9936,6 +10026,8 @@ focus_tree = {
 			if = {
 				limit = { has_variable = points_of_dependence_on_ussr_var }
 				add_to_variable = { points_of_dependence_on_ussr_var = 10 tooltip = points_of_dependence_on_ussr_effect_tt }
+				clamp_variable = { var = points_of_dependence_on_ussr_var min = 0 max = 100 }
+				HAI_update_actual_points_of_dependence_on_ussr_idea = yes
 			}
 		}
 	}
@@ -10090,7 +10182,13 @@ focus_tree = {
 		available = {
 		}
 		bypass = {
-			controls_state = 693
+			OR = {
+				controls_state = 693
+				AND = {
+					has_country_flag = HAI_points_of_dependence_on_ussr_block_flag
+					NOT = { is_subject_of = SOV }	# смысла в условии нет, чисто для тултипа
+				}
+			}
 		}
 		select_effect = {
 		}
@@ -10360,6 +10458,8 @@ focus_tree = {
 			if = {
 				limit = { has_variable = points_of_dependence_on_ussr_var }
 				add_to_variable = { points_of_dependence_on_ussr_var = 2 tooltip = points_of_dependence_on_ussr_effect_tt }
+				clamp_variable = { var = points_of_dependence_on_ussr_var min = 0 max = 100 }
+				HAI_update_actual_points_of_dependence_on_ussr_idea = yes
 			}
 			hidden_effect = {
 				if = {
@@ -10463,6 +10563,8 @@ focus_tree = {
 						add_to_variable = { points_of_dependence_on_ussr_var = 10 tooltip = points_of_dependence_on_ussr_effect_tt }
 					}
 				}
+				clamp_variable = { var = points_of_dependence_on_ussr_var min = 0 max = 100 }
+				HAI_update_actual_points_of_dependence_on_ussr_idea = yes
 			}
 		}
 	}

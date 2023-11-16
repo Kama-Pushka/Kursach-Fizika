@@ -147,6 +147,79 @@ on_actions = {
 					add_manpower = modifier@local_population_weekly
 				}
 			}
+			
+			if = {
+				limit = { has_variable = points_of_dependence_on_ussr_var }
+				if = {
+					limit = {
+						OR = {
+							NOT = { country_exists = SOV }
+							SOV = {
+								OR = {
+									has_capitulated = yes
+									NOT = {
+										has_government = communism
+										has_government = trozkism
+										is_in_faction_with = ROOT
+									}
+								}
+							}
+							is_major = yes
+							AND = {
+								controls_province = 7552	# Новый Орлеан
+								controls_province = 1843	# Майами
+								controls_province = 3878	# Нью-Йорк
+								controls_province = 3957	# Вашингтон
+								controls_province = 9671	# Сан-Франциско
+								controls_province = 9814	# Лос-Анджелес
+								controls_province = 3960	# Даллас
+								controls_province = 6710	# Детройт
+							}
+						}
+					}
+					clear_variable = points_of_dependence_on_ussr_var
+					set_country_flag = HAI_points_of_dependence_on_ussr_block_flag	# юзается для проверки негативного отключения механики (т.е. исключая случай отключения механа при 100% зависимости и марионетстве от СССР)
+				}
+				else = {
+					if = {
+						limit = { check_variable = { num_of_factories = HAI_current_target_num_of_factories compare = greater_than_or_equals } }
+						add_to_variable = { HAI_current_target_num_of_factories = 10 }
+						add_to_variable = { points_of_dependence_on_ussr_var = -6 tooltip = points_of_dependence_on_ussr_effect_tt }
+						clamp_variable = { var = points_of_dependence_on_ussr_var min = 0 max = 100 }
+						HAI_update_actual_points_of_dependence_on_ussr_idea = yes
+					}
+					if = {
+						limit = { check_variable = { num_battalions = HAI_current_target_num_battalions compare = greater_than_or_equals } }
+						add_to_variable = { HAI_current_target_num_battalions = 12 }
+						add_to_variable = { points_of_dependence_on_ussr_var = -5 tooltip = points_of_dependence_on_ussr_effect_tt }
+						clamp_variable = { var = points_of_dependence_on_ussr_var min = 0 max = 100 }
+						HAI_update_actual_points_of_dependence_on_ussr_idea = yes
+					}
+				}
+			}
+			
+			if = {
+				limit = {
+					has_idea = HAI_national_defense_plan_idea
+					has_war = yes
+					any_core_state = { is_owned_by = ROOT NOT = { is_controlled_by = ROOT } }
+				}
+				country_event = { id = NWhaiti.54 hours = 6 }
+			}
+		}
+	}
+	
+	on_monthly_HAI = {
+		effect = {
+			if = {
+				limit = { has_variable = points_of_dependence_on_ussr_var }
+				if = {
+					limit = { SOV = { is_lend_leasing = HAI } }
+					add_to_variable = { points_of_dependence_on_ussr_var = 8 tooltip = points_of_dependence_on_ussr_effect_tt }
+					clamp_variable = { var = points_of_dependence_on_ussr_var min = 0 max = 100 }
+					HAI_update_actual_points_of_dependence_on_ussr_idea = yes
+				}
+			}
 		}
 	}
 }

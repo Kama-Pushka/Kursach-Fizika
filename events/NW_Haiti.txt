@@ -1310,6 +1310,13 @@ country_event = {
 			FROM = {
 				set_variable = { points_of_dependence_on_ussr_var = 0 }
 				HAI_update_actual_points_of_dependence_on_ussr_idea = yes
+				HAI_start_points_of_dependence_on_ussr_mission = yes
+				
+				set_variable = { HAI_current_target_num_of_factories = num_of_factories }
+				add_to_variable = { HAI_current_target_num_of_factories = 10 }
+				
+				set_variable = { HAI_current_target_num_battalions = num_battalions }
+				add_to_variable = { HAI_current_target_num_battalions = 12 }
 			}
 		}
 	}
@@ -1322,6 +1329,7 @@ country_event = {
 		FROM = {
 			add_opinion_modifier = { target = ROOT modifier = HAI_joining_the_comintern_negative_op }
 			country_event = { id = NWhaiti.42 hours = 6 }
+			hidden_effect = { country_event = { id = NWhaiti.420 days = 230 } }
 		}
 		hidden_effect = {
 			add_ai_strategy = {
@@ -1337,6 +1345,19 @@ country_event = {
 				}
 			}
 		}
+	}
+}
+
+# Рандомная миссия Гаити // HAI
+country_event = {
+	id = NWhaiti.420
+	is_triggered_only = yes
+	hidden = yes
+	
+	immediate = {
+		log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWhaiti.420"
+		HAI_start_points_of_dependence_on_ussr_mission = yes
+		country_event = { id = NWhaiti.420 days = 230 }
 	}
 }
 
@@ -1646,6 +1667,279 @@ country_event = {
 		}
 	}
 }
+
+# Вопросы состоятельности гаитянской промышленности // HAI
+country_event = {
+	id = NWhaiti.45
+	title = NWhaiti.45.t
+	desc = NWhaiti.45.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = {
+		log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWhaiti.45"
+		hidden_effect = {
+			set_variable = { target_num_of_constructed_civilian_factory = total_constructed_civilian_factory }
+			activate_mission = HAI_prove_strength_of_caribbean_industry_mission
+		}
+	}
+	
+	option = {
+		name = NWhaiti.45.a
+		effect_tooltip = { activate_mission = HAI_prove_strength_of_caribbean_industry_mission }
+		hidden_effect = { add_ai_strategy = { type = building_target	id = industrial_complex	value = 1 } }
+	}
+}
+
+# Уверенное развитие тяжелой промышленности // HAI
+country_event = {
+	id = NWhaiti.46
+	title = NWhaiti.46.t
+	desc = NWhaiti.46.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWhaiti.46" }
+	
+	option = {
+		name = NWhaiti.46.a
+		random_list = {
+			60 = { add_political_power = 10 }
+			25 = {
+				modifier = { factor = 0 all_core_state = { infrastructure > 4 } }
+				random_core_state = {
+					limit = { infrastructure < 5 }
+					add_building_construction = {
+						type = infrastructure
+						level = 1
+						instant_build = yes
+					}
+				}
+			}
+			15 = {
+				add_tech_bonus = {
+					name = NWhaiti.46.t
+					bonus = 0.3
+					uses = 1
+					category = industry
+				}
+			}
+		}
+	}
+}
+
+# Экономические затруднения // HAI
+country_event = {
+	id = NWhaiti.47
+	title = NWhaiti.47.t
+	desc = NWhaiti.47.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWhaiti.47" }
+	
+	option = {
+		name = NWhaiti.47.a
+		add_political_power = -15
+		add_popularity = { ideology = communism popularity = -0.025 }
+		hidden_effect = { add_ai_strategy = { type = building_target	id = industrial_complex	value = -1 } }
+	}
+}
+
+# Вопросы гаитянского ВПК // HAI
+country_event = {
+	id = NWhaiti.48
+	title = NWhaiti.48.t
+	desc = NWhaiti.48.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = {
+		log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWhaiti.48"
+		hidden_effect = {
+			set_variable = { target_num_of_military_factories = num_of_military_factories }
+			activate_mission = HAI_establish_independent_military_production_mission
+		}
+	}
+	
+	option = {
+		name = NWhaiti.48.a
+		effect_tooltip = { activate_mission = HAI_establish_independent_military_production_mission }
+		hidden_effect = { add_ai_strategy = { type = building_target	id = arms_factory	value = 1 } }
+	}
+}
+
+
+# Успехи военного производства // HAI
+country_event = {
+	id = NWhaiti.49
+	title = NWhaiti.49.t
+	desc = NWhaiti.49.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWhaiti.49" }
+	
+	option = {
+		name = NWhaiti.49.a
+		random_list = {
+			60 = { add_war_support = 0.05 }
+			25 = { add_equipment_to_stockpile = { type = infantry_equipment_1 amount = 1000 } }
+			15 = {
+				add_equipment_to_stockpile = { type = motorized_equipment amount = 200 }
+				add_equipment_to_stockpile = { type = artillery_equipment_1 amount = 350 }
+				add_equipment_to_stockpile = { type = support_equipment amount = 700 }
+			}
+		}
+	}
+}
+
+# Неудовлетворительные отчеты о ВПК // HAI
+country_event = {
+	id = NWhaiti.50
+	title = NWhaiti.50.t
+	desc = NWhaiti.50.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWhaiti.50" }
+	
+	option = {
+		name = NWhaiti.50.a
+		add_war_support = -0.05
+		add_popularity = { ideology = communism popularity = -0.035 }
+		hidden_effect = { add_ai_strategy = { type = building_target	id = arms_factory	value = -1 } }
+	}
+}
+
+# Вопросы Карибского ВМФ // HAI
+country_event = {
+	id = NWhaiti.51
+	title = NWhaiti.51.t
+	desc = NWhaiti.51.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = {
+		log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWhaiti.51"
+		hidden_effect = {
+			set_variable = { target_num_of_naval_factories = num_of_naval_factories }
+			activate_mission = HAI_show_development_of_our_navy_mission
+		}
+	}
+	
+	option = {
+		name = NWhaiti.51.a
+		effect_tooltip = { activate_mission = HAI_show_development_of_our_navy_mission }
+		hidden_effect = { add_ai_strategy = { type = building_target	id = dockyard	value = 1 } }
+	}
+}
+
+
+# Триумф карибского судостроения // HAI
+country_event = {
+	id = NWhaiti.52
+	title = NWhaiti.52.t
+	desc = NWhaiti.52.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWhaiti.52" }
+	
+	option = {
+		name = NWhaiti.52.a
+		random_list = {
+			60 = { navy_experience = 10 }
+			25 = {
+				add_tech_bonus = {
+					name = NWhaiti.52.t
+					bonus = 0.25
+					uses = 2
+					category = mio_cat_tech_all_destroyer_and_modules
+					category = mio_cat_tech_all_submarine_and_modules
+				}
+			}
+			15 = {
+				add_tech_bonus = {
+					name = NWhaiti.52.t
+					bonus = 0.5
+					uses = 2
+					category = marine_tech
+					category = tp_tech
+				}
+			}
+		}
+	}
+}
+
+# Торможение программы развития ВМФ // HAI
+country_event = {
+	id = NWhaiti.53
+	title = NWhaiti.53.t
+	desc = NWhaiti.53.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWhaiti.53" }
+	
+	option = {
+		name = NWhaiti.53.a
+		add_war_support = -0.05
+		add_popularity = { ideology = communism popularity = -0.035 }
+		hidden_effect = { add_ai_strategy = { type = building_target	id = dockyard	value = -1 } }
+	}
+}
+
+# Активация плана национальной обороны // HAI
+country_event = {
+	id = NWhaiti.54
+	title = NWhaiti.54.t
+	desc = NWhaiti.54.desc
+	picture = GFX_report_event_generic_rally_3
+	is_triggered_only = yes
+	
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWhaiti.54" }
+	
+	option = {
+		name = NWhaiti.54.a
+		add_war_support = 0.1
+		add_manpower = 100000
+		add_equipment_to_stockpile = { type = infantry_equipment_1 amount = 2500 }
+		hidden_effect = {
+			if = {
+				limit = { NOT = { has_template = "Milice Patriotique" } }
+				division_template = {
+					name = "Milice Patriotique"
+					template_counter = 3
+					is_locked = yes
+					regiments = {
+						militia = { x = 0 y = 0 }
+						militia = { x = 0 y = 1 }
+						militia = { x = 1 y = 0 }
+						militia = { x = 1 y = 1 }
+					}
+				}
+			}
+		}
+		capital_scope = {
+			create_unit = {
+				division = "name = \"Milice Patriotique\" division_template = \"Milice Patriotique\" start_experience_factor = 0.2"
+				owner = ROOT
+				count = 3
+				allow_spawning_on_enemy_provs = yes
+			}
+		}
+		swap_ideas = {
+			remove_idea = HAI_national_defense_plan_idea
+			add_idea = HAI_activating_defense_plan_idea
+		}
+	}
+}
+
+
+
+
+
 
 
 
