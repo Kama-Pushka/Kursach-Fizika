@@ -4915,6 +4915,7 @@ focus_tree = {
 						instant_build = yes
 					}
 				}
+				add_victory_points = { province = 14691 value = 1 }
 			}
 		}
 	}
@@ -7521,7 +7522,7 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus HAI_military_contraband"
-			
+			custom_effect_tooltip = HAI_military_contraband_tt
 		}
 	}
 	
@@ -10281,7 +10282,10 @@ focus_tree = {
 		}
 		select_effect = {
 		}
-
+		
+		will_lead_to_war_with = FRA
+		will_lead_to_war_with = ENG
+		will_lead_to_war_with = HOL
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus HAI_kindle_fire_of_caribbean_revolution"
 			every_state = {
@@ -10312,7 +10316,7 @@ focus_tree = {
 				}
 				add_claim_by = ROOT
 			}
-			309 = {
+			309 = {		# HOL
 				owner = {
 					ROOT = {
 						create_wargoal = {
@@ -10335,10 +10339,10 @@ focus_tree = {
 					}
 				}
 			}
-			310 = {
+			310 = {		# FRA
 				owner = {
 					ROOT = {
-						create_wargoal = {
+						declare_war_on = {
 							type = take_state_focus
 							target = PREV
 							generator = { 310 }
@@ -10358,10 +10362,10 @@ focus_tree = {
 					}
 				}
 			}
-			687 = {
+			687 = {		# ENG
 				owner = {
 					ROOT = {
-						create_wargoal = {
+						declare_war_on = {
 							type = take_state_focus
 							target = PREV
 							generator = { 687 }
@@ -10382,6 +10386,109 @@ focus_tree = {
 				}
 			}
 			unlock_decision_tooltip = HAI_afro_caribbean_association
+			
+			hidden_effect = {
+				if = {
+					limit = {
+						OR = {
+							has_country_flag = HAI_arm_bustamante_strikers_flag
+							has_country_flag = HAI_sponsor_plp_flag
+							has_country_flag = HAI_recruitment_of_west_indian_revolutionaries_flag
+						}
+					}
+					division_template = {
+						name = "Révolutionnaires Caribéens"
+						template_counter = 14
+						regiments = {
+							infantry = { x = 0 y = 0 }
+							infantry = { x = 0 y = 1 }
+							infantry = { x = 0 y = 2 }
+						}
+					}
+				}
+				if = {
+					limit = { has_country_flag = HAI_arm_bustamante_strikers_flag }
+					clr_country_flag = HAI_arm_bustamante_strikers_flag
+					set_province_controller = 12304
+					load_oob = HAI_arm_bustamante_strikers_oob
+				}
+				if = {
+					limit = { has_country_flag = HAI_sponsor_plp_flag }
+					clr_country_flag = HAI_sponsor_plp_flag
+					set_province_controller = 693
+					load_oob = HAI_sponsor_plp_oob
+				}
+				if = {
+					limit = { has_country_flag = HAI_recruitment_of_west_indian_revolutionaries_flag }
+					clr_country_flag = HAI_recruitment_of_west_indian_revolutionaries_flag
+					set_province_controller = 177
+					set_province_controller = 13084
+					load_oob = HAI_recruitment_of_west_indian_revolutionaries_oob
+				}
+				if = {
+					limit = { has_country_flag = HAI_create_committee_for_liberation_of_antilles_flag }
+					clr_country_flag = HAI_create_committee_for_liberation_of_antilles_flag
+					BWI = {
+						set_cosmetic_tag = BWI_haf
+						set_country_flag = BWI_haf
+						set_capital = { state = 694 }
+						
+						ROOT = {
+							set_autonomy = {
+								target = BWI
+								autonomy_state = autonomy_integrated_puppet
+								end_wars = no
+								end_civil_wars = no
+							}
+						}
+						
+						set_popularities = {
+							communism = 100
+						}
+						set_politics = {
+							ruling_party = communism
+							elections_allowed = no
+						}
+						
+						add_state_core = 686
+						add_state_core = 1146
+						add_state_core = 1140
+						add_state_core = 934
+						add_state_core = 1142
+						add_state_core = 308
+						add_state_core = 694
+						add_state_core = 692
+						add_state_core = 1144
+						add_state_core = 691
+						
+						set_state_owner = 694
+						set_province_controller = 177
+						set_province_controller = 13084
+						set_province_controller = 13009
+						set_province_controller = 7123
+						set_province_controller = 9377
+						load_oob = HAI_create_committee_for_liberation_of_antilles_oob
+						
+						ROOT = {
+							HAI_rene_menil = {
+								set_nationality = BWI
+							}
+						}
+						add_country_leader_role = {
+							character = HAI_rene_menil
+							country_leader = {
+								desc="POLITICS_RENE_MENIL_DESC"
+								ideology = marxism
+								traits = {
+								}
+								expire = "1965.1.1"
+							}
+							promote_leader = yes
+						}
+						
+					}
+				}
+			}
 		}
 	}
 	
@@ -10525,7 +10632,7 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus HAI_creation_of_louisiana_and_florida_cell"
-			
+			custom_effect_tooltip = HAI_creation_of_louisiana_and_florida_cell_tt
 		}
 	}
 	
@@ -10585,11 +10692,18 @@ focus_tree = {
 		available_if_capitulated = no
 
 		available = {
-			OR = {
-				NOT = { has_dlc = "La Resistance" }
+			if = {
+				limit = { has_dlc = "La Resistance" }
+				custom_trigger_tooltip = {
+					tooltip = HAI_financing_propaganda_in_black_belt_trigger_tt
+					371 = { has_dynamic_modifier = { modifier = HAI_dark_skinned_revolutionary_associations_dyn } }
+					366 = { has_dynamic_modifier = { modifier = HAI_dark_skinned_revolutionary_associations_dyn } }
+				}
 			}
 		}
 		bypass = {
+			owns_state = 371
+			owns_state = 366
 		}
 		select_effect = {
 		}
@@ -10862,15 +10976,15 @@ focus_tree = {
 						division_template = {
 							name = "Black Panthers"
 							template_counter = 20
-							regiments = { 
-								infantry = { x = 0 y = 0 } 
-								infantry = { x = 0 y = 1 } 
-								infantry = { x = 1 y = 0 } 
+							regiments = {
+								infantry = { x = 0 y = 0 }
+								infantry = { x = 0 y = 1 }
+								infantry = { x = 1 y = 0 }
 								infantry = { x = 1 y = 1 }
-							} 
-							support = { 
-								logistics_company = { x = 0 y = 0 } 
-							} 
+							}
+							support = {
+								logistics_company = { x = 0 y = 0 }
+							}
 						}
 						load_oob = USA_AAU_rebels_1843
 						load_oob = USA_AAU_rebels_1453
