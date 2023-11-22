@@ -2,16 +2,11 @@ COG_update_administration_of_tribal_leaders_idea = {
 	every_controlled_state = {
 		limit = { is_original_congo_state = yes }
 		add_to_temp_variable = { sum = COG_loyalty_lvl_var }
-		add_to_temp_variable = { num = 1 }
+		add_to_temp_variable = { num_states = 1 }
 	}
-	
-	set_temp_variable = { faithful = 4 } #??
-	multiply_temp_variable = { faithful = num }
-	set_temp_variable = { loyal = 2.33 } #?
-	multiply_temp_variable = { loyal = num }
-	round_temp_variable = loyal #?
-	# set_temp_variable = { disloyal = 4 }
-	# multiply_temp_variable = { disloyal = num }
+	set_temp_variable = { faithful = 4 } multiply_temp_variable = { faithful = num_states }
+	set_temp_variable = { loyal = 2.33 } multiply_temp_variable = { loyal = num_states } round_temp_variable = loyal
+	# set_temp_variable = { disloyal = 4 } multiply_temp_variable = { disloyal = num_states }
 	
 	if = {
 		limit = { check_variable = { var = sum value = faithful compare = greater_than_or_equals } }
@@ -312,6 +307,8 @@ COG_install_some_stuff_PREVPREV = {
 	PREV = {
 		set_variable = { nw_CongoGoogleMaps = PREV.nw_CongoGoogleMaps }
 		set_variable = { COG_evolues_gain_var = PREV.COG_evolues_gain_var }
+		set_variable = { COG_evolues_bonus_coeff = PREV.COG_evolues_bonus_coeff }
+		set_variable = { COG_evolues_limit_on_repression = PREV.COG_evolues_limit_on_repression }
 		set_variable = { COG_local_farmers_program_count = PREV.COG_local_farmers_program_count }
 		set_variable = { COG_plant_new_soybean_varieties_count = PREV.COG_plant_new_soybean_varieties_count } #?
 		set_variable = { COG_bppid_industrial_complex_level = PREV.COG_bppid_industrial_complex_level }
@@ -469,17 +466,18 @@ COG_install_some_stuff_PREVPREV = {
 }
 
 COG_simon_kimbangu_superpowers_update = { #? log !
+	# setup
 	hidden_effect = {
 		if = {
 			limit = { check_variable = { COG_faith_in_the_prophet > 90000 } }
 			set_temp_variable = { lvl = 3 }
 		}
 		else_if = {
-			limit = { check_variable = { COG_faith_in_the_prophet > 45000 } }
+			limit = { check_variable = { COG_faith_in_the_prophet > 60000 } }
 			set_temp_variable = { lvl = 2 }
 		}
-		else = {
-			# limit = { check_variable = { COG_faith_in_the_prophet < 30000 } }
+		else_if = {
+			limit = { check_variable = { COG_faith_in_the_prophet > 30000 } }
 			set_temp_variable = { lvl = 1 }
 		}
 		
@@ -530,14 +528,15 @@ COG_simon_kimbangu_superpowers_update = { #? log !
 		}
 	}
 	
+	# effect_tooltip
 	if = {
 		limit = { 
 			check_variable = { goodness = 1 } 
-			NOT = { check_variable = { tier = 1 } } 
-			check_variable = { var = COG_faith_in_the_prophet_goodness value = 2 compare = greater_than_or_equals }
+			NOT = { check_variable = { tier = 1 } check_variable = { lvl = 0 } } 
+			check_variable = { var = COG_fitp_goodness value = 2 compare = greater_than_or_equals }
 		}
 		if = {
-			limit = { check_variable = { COG_faith_in_the_prophet_goodness > 2 } }
+			limit = { check_variable = { COG_fitp_goodness > 2 } }
 			set_temp_variable = { tier = 1 }
 		}
 		effect_tooltip = {
@@ -552,11 +551,11 @@ COG_simon_kimbangu_superpowers_update = { #? log !
 	else_if = {
 		limit = {
 			check_variable = { aggressiveness = 1 } 
-			NOT = { check_variable = { tier = 2 } }
-			check_variable = { var = COG_faith_in_the_prophet_aggressiveness value = 2 compare = greater_than_or_equals }
+			NOT = { check_variable = { tier = 2 } check_variable = { lvl = 0 } }
+			check_variable = { var = COG_fitp_aggressiveness value = 2 compare = greater_than_or_equals }
 		}
 		if = {
-			limit = { check_variable = { COG_faith_in_the_prophet_aggressiveness > 2 } }
+			limit = { check_variable = { COG_fitp_aggressiveness > 2 } }
 			set_temp_variable = { tier = 2 }
 		}
 		effect_tooltip = {
@@ -571,11 +570,11 @@ COG_simon_kimbangu_superpowers_update = { #? log !
 	else_if = {
 		limit = { 
 			check_variable = { diplomaticness = 1 } 
-			NOT = { check_variable = { tier = 3 } } 
-			check_variable = { var = COG_faith_in_the_prophet_diplomaticness value = 2 compare = greater_than_or_equals }
+			NOT = { check_variable = { tier = 3 } check_variable = { lvl = 0 } } 
+			check_variable = { var = COG_fitp_diplomaticness value = 2 compare = greater_than_or_equals }
 		}
 		if = {
-			limit = { check_variable = { COG_faith_in_the_prophet_diplomaticness > 2 } }
+			limit = { check_variable = { COG_fitp_diplomaticness > 2 } }
 			set_temp_variable = { tier = 3 }
 		}
 		effect_tooltip = {
@@ -588,9 +587,10 @@ COG_simon_kimbangu_superpowers_update = { #? log !
 		}
 	}
 	
+	# effect
 	hidden_effect = {
 		if = {
-			limit = { check_variable = { tier = 1 } }
+			limit = { check_variable = { tier = 1 } NOT = { check_variable = { lvl = 0 } } }
 			meta_effect = {
 				text = {
 					add_country_leader_trait = COG_simon_kimbangu_goodness_lvl_[LVL]
@@ -609,7 +609,7 @@ COG_simon_kimbangu_superpowers_update = { #? log !
 			}
 		}
 		else_if = {
-			limit = { check_variable = { tier = 2 } }
+			limit = { check_variable = { tier = 2 } NOT = { check_variable = { lvl = 0 } } }
 			meta_effect = {
 				text = {
 					add_country_leader_trait = COG_simon_kimbangu_aggressiveness_lvl_[LVL]
@@ -628,7 +628,7 @@ COG_simon_kimbangu_superpowers_update = { #? log !
 			}
 		}
 		else_if = {
-			limit = { check_variable = { tier = 3 } }
+			limit = { check_variable = { tier = 3 } NOT = { check_variable = { lvl = 0 } } }
 			meta_effect = {
 				text = {
 					add_country_leader_trait = COG_simon_kimbangu_diplomaticness_lvl_[LVL]
@@ -861,11 +861,11 @@ COG_add_evolues_in_state = {
 	
 		add_to_variable = { COG_evolues_count_@var:skill_lvl = _@var:skill_lvl }
 		add_to_variable = { ROOT.COG_evolues_count_@var:skill_lvl = _@var:skill_lvl }
-		log = "[THIS.GetName] [?_@var:skill_lvl] [?skill_lvl.GetTokenKey] COG_add_evolues_in_state"
+		log = "COG_add_evolues_in_state [THIS.GetName] [?_@var:skill_lvl] [?skill_lvl.GetTokenKey]"
 	}
 	
 	set_temp_variable = { evolues = COG_evolues_gain_var }
-	COG_set_political_views_evolues = yes
+	COG_evolues_political_counts_update = yes
 	
 	add_to_variable = { COG_evolues_var = COG_evolues_gain_var }
 	add_to_variable = { ROOT.COG_evolues_var = COG_evolues_gain_var }
@@ -876,17 +876,86 @@ COG_add_evolues_in_state = {
 		COG_create_pol_pie_chart = yes
 	}
 }
-COG_set_political_views_evolues = {
-	for_each_loop = {
-		array = global.ideology_groups
-		value = ideology
-		
-		set_temp_variable_to_random = { var = _@var:ideology min = 0 max = evolues integer = yes }
-		add_to_variable = { COG_evolues_count_@var:ideology = _@var:ideology }
-		subtract_from_temp_variable = { evolues = _@var:ideology }
-		log = "[THIS.GetName] [?_@var:ideology] [?ideology.GetTokenKey] COG_add_evolues_in_state"
+COG_evolues_political_counts_update = {
+	if = {
+		limit = { check_variable = { evolues > 0 } }
+		for_each_loop = {
+			array = global.ideology_groups
+			value = ideology
+			
+			set_temp_variable_to_random = { var = _@var:ideology min = 0 max = evolues integer = yes }
+			add_to_variable = { COG_evolues_count_@var:ideology = _@var:ideology }
+			subtract_from_temp_variable = { evolues = _@var:ideology }
+			log = "COG_evolues_political_counts_update (plus) [THIS.GetName] [?_@var:ideology] [?ideology.GetTokenKey]"
+		}
+		if = {
+			limit = { check_variable = { evolues > 0 } }
+			add_to_variable = { COG_evolues_count_@token:neutrality = evolues }
+			log = "COG_evolues_political_counts_update (plus) [THIS.GetName] [?evolues] [?ideology.GetTokenKey] - остаток"
+		}
 	}
-	add_to_variable = { COG_evolues_count_@token:neutrality = evolues }
+	else = {
+		for_each_loop = {
+			array = global.ideology_groups
+			value = ideology
+			multiply_temp_variable = { evolues = -1 }
+			
+			set_temp_variable_to_random = { var = _@var:ideology min = 0 max = COG_evolues_count_@var:ideology integer = yes }
+			clamp_temp_variable = { var = _@var:ideology min = 0 max = evolues }
+			subtract_from_variable = { COG_evolues_count_@var:ideology = _@var:ideology }
+			
+			subtract_from_temp_variable = { evolues = _@var:ideology }
+			log = "COG_evolues_political_counts_update (minus) [THIS.GetName] [?_@var:ideology] [?ideology.GetTokenKey]"
+		}
+		if = { # в теории возможен баг, когда neutrality нет, а другие есть !!
+			limit = { check_variable = { evolues > 0 } }
+			subtract_from_variable = { COG_evolues_count_@token:neutrality = evolues }
+			log = "COG_evolues_political_counts_update (minus) [THIS.GetName] [?evolues] [?ideology.GetTokenKey] - остаток"
+		}
+	}
+}
+COG_evolues_skill_counts_update = {
+	if = { # засунуть выше ? !
+		limit = { check_variable = { evolues > 0 } }
+		for_each_loop = {
+			array = skills_lvl
+			value = skill_lvl
+			
+			set_temp_variable_to_random = { var = _@var:skill_lvl min = 0 max = evolues integer = yes }
+			add_to_variable = { COG_evolues_count_@var:skill_lvl = _@var:skill_lvl }
+			add_to_variable = { ROOT.COG_evolues_count_@var:skill_lvl = _@var:skill_lvl }
+			
+			subtract_from_temp_variable = { evolues = _@var:skill_lvl }
+			log = "COG_evolues_skill_counts_update (plus) [THIS.GetName] [?_@var:skill_lvl] [?skill_lvl.GetTokenKey]"
+		}
+		if = {
+			limit = { check_variable = { evolues > 0 } }
+			add_to_variable = { COG_evolues_count_@token:low_skilled = evolues }
+			add_to_variable = { ROOT.COG_evolues_count_@token:low_skilled = evolues }
+			log = "COG_evolues_skill_counts_update (plus) [THIS.GetName] [?evolues] [?skill_lvl.GetTokenKey] - остаток"
+		}
+	}
+	else = {
+		for_each_loop = {
+			array = skills_lvl
+			value = skill_lvl
+			multiply_temp_variable = { evolues = -1 }
+			
+			set_temp_variable_to_random = { var = _@var:skill_lvl min = 0 max = COG_evolues_count_@var:skill_lvl integer = yes } #?
+			clamp_temp_variable = { var = _@var:skill_lvl min = 0 max = evolues }
+			subtract_from_variable = { COG_evolues_count_@var:skill_lvl = _@var:skill_lvl }
+			subtract_from_variable = { ROOT.COG_evolues_count_@var:skill_lvl = _@var:skill_lvl }
+			
+			subtract_from_temp_variable = { evolues = _@var:skill_lvl }
+			log = "COG_evolues_skill_counts_update (minus) [THIS.GetName] [?_@var:skill_lvl] [?skill_lvl.GetTokenKey]"
+		}
+		if = { # в теории возможен баг, когда low_skilled нет, а другие есть !!
+			limit = { check_variable = { evolues > 0 } }
+			subtract_from_variable = { COG_evolues_count_@token:low_skilled = evolues }
+			subtract_from_variable = { ROOT.COG_evolues_count_@token:low_skilled = evolues }
+			log = "COG_evolues_skill_counts_update (minus) [THIS.GetName] [?evolues] [?skill_lvl.GetTokenKey] - остаток"
+		}
+	}
 }
 COG_create_iq_pie_chart = {
 	clear_temp_array = skills_lvl
@@ -913,9 +982,9 @@ COG_create_iq_pie_chart = {
 			
 			set_temp_variable = { prev_skill_lvl = global.skills_lvl^prev_i }
 			add_to_variable = { COG_evolues_pie_@var:skill_lvl = COG_evolues_pie_@var:prev_skill_lvl }
-			log = "[THIS.GetName] [?prev_skill_lvl.GetTokenKey] - prev [?COG_evolues_pie_@var:prev_skill_lvl] - add COG_create_iq_pie_chart"
+			# log = "COG_create_iq_pie_chart [THIS.GetName] [?prev_skill_lvl.GetTokenKey] - prev [?COG_evolues_pie_@var:prev_skill_lvl] - add"
 		}
-		log = "[THIS.GetName] [?skill_lvl.GetTokenKey] [?_@var:skill_lvl] | [?evolues] : [?COG_evolues_pie_@var:skill_lvl] COG_create_iq_pie_chart"
+		log = "COG_create_iq_pie_chart [THIS.GetName] [?skill_lvl.GetTokenKey] [?COG_evolues_count_@var:skill_lvl] / [?evolues] : [?_@var:skill_lvl] ([?COG_evolues_pie_@var:skill_lvl]%)"
 	}
 }
 COG_create_pol_pie_chart = {
@@ -940,9 +1009,9 @@ COG_create_pol_pie_chart = {
 			
 			set_temp_variable = { prev_ideology = global.ideology_groups^prev_i }
 			add_to_variable = { COG_evolues_pie_@var:ideology = COG_evolues_pie_@var:prev_ideology }
-			log = "[THIS.GetName] [?prev_ideology.GetTokenKey] - prev [?COG_evolues_pie_@var:prev_ideology] - add COG_create_pol_pie_chart"
+			# log = "COG_create_pol_pie_chart [THIS.GetName] [?prev_ideology.GetTokenKey] - prev [?COG_evolues_pie_@var:prev_ideology] - add"
 		}
-		log = "[THIS.GetName] [?ideology.GetTokenKey] [?_@var:ideology] | [?evolues] : [?COG_evolues_pie_@var:ideology] COG_create_pol_pie_chart"
+		log = "COG_create_pol_pie_chart [THIS.GetName] [?ideology.GetTokenKey] [?COG_evolues_count_@var:ideology] / [?evolues] : [?_@var:ideology] ([?COG_evolues_pie_@var:ideology]%)"
 	}
 }
 
@@ -1029,28 +1098,46 @@ nw_CongoGoogleMapsEvolues_set_bonus_ROOT = { #?
 	add_to_variable = { ROOT.COG_ei_anarchism_drift = THIS.COG_ei_anarchism_drift }
 	add_to_variable = { ROOT.COG_ei_drift_defence_factor = THIS.COG_ei_drift_defence_factor }
 	
+	multiply_variable = { ROOT.COG_ei_stability_factor = COG_evolues_bonus_coeff } #?
+	multiply_variable = { ROOT.COG_ei_political_power_factor = COG_evolues_bonus_coeff }
+	multiply_variable = { ROOT.COG_ei_industrial_capacity_factory = COG_evolues_bonus_coeff }
+	multiply_variable = { ROOT.COG_ei_production_speed_buildings_factor = COG_evolues_bonus_coeff }
+	multiply_variable = { ROOT.COG_ei_production_factory_max_efficiency_factor = COG_evolues_bonus_coeff }
+	multiply_variable = { ROOT.COG_ei_research_speed_factor = COG_evolues_bonus_coeff }
+	multiply_variable = { ROOT.COG_ei_democratic_drift = COG_evolues_bonus_coeff }
+	multiply_variable = { ROOT.COG_ei_communism_drift = COG_evolues_bonus_coeff }
+	multiply_variable = { ROOT.COG_ei_fascism_drift = COG_evolues_bonus_coeff }
+	multiply_variable = { ROOT.COG_ei_neutrality_drift = COG_evolues_bonus_coeff }
+	multiply_variable = { ROOT.COG_ei_technocracy_drift = COG_evolues_bonus_coeff }
+	multiply_variable = { ROOT.COG_ei_trozkism_drift = COG_evolues_bonus_coeff }
+	multiply_variable = { ROOT.COG_ei_monarchy_drift = COG_evolues_bonus_coeff }
+	multiply_variable = { ROOT.COG_ei_anarchism_drift = COG_evolues_bonus_coeff }
+	multiply_variable = { ROOT.COG_ei_drift_defence_factor = THIS.COG_evolues_bonus_coeff }
+	
 	ROOT = { 
 		force_update_dynamic_modifier = yes
 	}
-	log = "[THIS.GetName] [?COG_ei_research_speed_factor]"
+	log = "nw_CongoGoogleMapsEvolues_set_bonus_ROOT [THIS.GetName] (bonus_coeff: [?COG_evolues_bonus_coeff])"
 }
 
-COG_remove_unnecessary_skills_evolues = { #name ?
-	add_to_temp_array = { skills_lvl = token:high_skilled } #?
-	add_to_temp_array = { skills_lvl = token:medium_skilled }
-	add_to_temp_array = { skills_lvl = token:low_skilled }
-	for_each_loop = {
-		array = skills_lvl
-		value = skill_lvl
+nw_CongoGoogleMapsEvolues_MinusEvoluesThatIdeology = {
+	random_owned_controlled_state = { #?
+		limit = { check_variable = { COG_evolues_count_@var:ideology > 0 } }
+		set_temp_variable = { Limit = COG_evolues_count_@var:ideology }
+		divide_temp_variable = { Limit = ROOT.COG_evolues_limit_on_repression } #?
+		multiply_temp_variable = { Limit = -1 }
 		
-		set_temp_variable_to_random = { var = _@var:skill_lvl min = 0 max = COG_evolues_count_@var:skill_lvl integer = yes } #?
-		clamp_temp_variable = { var = _@var:skill_lvl min = 0 max = evolues }
-		subtract_from_variable = { COG_evolues_count_@var:skill_lvl = _@var:skill_lvl }
-		subtract_from_variable = { ROOT.COG_evolues_count_@var:skill_lvl = _@var:skill_lvl }
+		set_temp_variable_to_random = { var = evolues min = Limit max = 0 integer = yes } #-1
+		add_to_variable = { COG_evolues_count_@var:ideology = evolues tooltip = COG_minus_ideology_evolues_tooltip } #name??
+		add_to_variable = { COG_evolues_var = evolues }
+		add_to_variable = { ROOT.COG_evolues_var = evolues }
+		add_to_temp_array = { skills_lvl = token:high_skilled }
+		add_to_temp_array = { skills_lvl = token:medium_skilled }
+		add_to_temp_array = { skills_lvl = token:low_skilled }
+		COG_evolues_skill_counts_update = yes
 		
-		subtract_from_temp_variable = { evolues = _@var:skill_lvl }
-		log = "[THIS.GetName] [?_@var:skill_lvl] [?skill_lvl.GetTokenKey] COG_remove_unnecessary_skills_evolues"
+		COG_create_iq_pie_chart = yes
+		COG_create_pol_pie_chart = yes
 	}
-	subtract_from_variable = { COG_evolues_count_@token:low_skilled = evolues } #??
-	subtract_from_variable = { ROOT.COG_evolues_count_@token:low_skilled = evolues } #??
+	add_to_variable = { nw_CongoGoogleMapsEvolues_update = 1 } #?
 }

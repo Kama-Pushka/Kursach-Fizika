@@ -46,6 +46,7 @@ focus_tree = {
 				set_variable = { 718.nw_CongoGoogleMapsEvolues_state_position = 149 }
 				set_variable = { 915.nw_CongoGoogleMapsEvolues_state_position = 168 }
 				set_variable = { COG_evolues_limit_on_repression = 2 } #?
+				set_variable = { COG_evolues_bonus_coeff = 1 } #?
 			}
 		}
 	}
@@ -409,15 +410,30 @@ focus_tree = {
 			}
 			COG_poor_education_of_congolese_update = yes
 			
-			hidden_effect = { #!!
+			hidden_effect = {
 				random_owned_controlled_state = {
 					limit = { is_original_congo_state = yes }
 					set_temp_variable = { state = THIS.id }
 					add_to_variable = { COG_evolues_gain_var = 3 } 
+					add_to_variable = { ROOT.COG_evolues_gain_var = 3 } 
 				}
 			}
 			custom_effect_tooltip = COG_assimilation_of_congolese_update
 			add_to_temp_variable = { COG_evolues_gain_LOC = 3 tooltip = COG_assimilation_of_congolese_loc }
+			
+			# if = {
+				# limit = { has_idea = COG_assimilation_of_congolese }
+				# custom_effect_tooltip = COG_assimilation_of_congolese_update
+				# add_to_variable = { COG_evolues_gain_var = 3 tooltip = COG_evolues_gain_tooltip }
+			# }
+			# else = {
+				# effect_tooltip = {
+					# set_temp_variable = { COG_evolues_gain_var = 3 }
+					# custom_effect_tooltip = COG_assimilation_of_congolese_update_alt
+					# add_ideas = COG_assimilation_of_congolese
+				# }
+				# add_to_variable = { COG_evolues_gain_var = 3 }
+			# }
 			custom_effect_tooltip = empty_line_tooltip
 			
 			every_core_state = {
@@ -861,19 +877,18 @@ focus_tree = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus COG_institute_of_central_african_studies"
 			add_research_slot = 1
 			COG_poor_education_of_congolese_update = yes
-			if = {
-				limit = { has_idea = COG_assimilation_of_congolese }
-				custom_effect_tooltip = COG_assimilation_of_congolese_update
-				add_to_variable = { COG_evolues_gain_var = 3 tooltip = COG_evolues_gain_tooltip }
-			}
-			else = {
-				effect_tooltip = {
-					set_temp_variable = { COG_evolues_gain_var = 3 }
-					custom_effect_tooltip = COG_assimilation_of_congolese_update_alt
-					add_ideas = COG_assimilation_of_congolese
+			hidden_effect = {
+				capital_scope = {
+					if = {
+						limit = { is_original_congo_state = yes }
+						set_temp_variable = { state = THIS.id }
+						add_to_variable = { COG_evolues_gain_var = 12 } 
+						add_to_variable = { ROOT.COG_evolues_gain_var = 12 } 
+					}
 				}
-				add_to_variable = { COG_evolues_gain_var = 3 }
 			}
+			custom_effect_tooltip = COG_assimilation_of_congolese_update
+			add_to_temp_variable = { COG_evolues_gain_LOC = 12 tooltip = COG_assimilation_of_congolese_loc }
 		}
 	}
 	focus = {
@@ -2600,8 +2615,8 @@ focus_tree = {
 		}
 		available = {
 			custom_trigger_tooltip = {
-				tooltip = COG_evolues_var_more_than_2000 #?
-				check_variable = { COG_evolues_var > 1999 }
+				tooltip = COG_evolues_ms_more_than_499
+				check_variable = { COG_evolues_count_@token:medium_skilled > 499 }
 			}
 			OR = {
 				has_completed_focus = COG_dominate_to_serve
@@ -2616,10 +2631,7 @@ focus_tree = {
 		relative_position_id = COG_create_a_new_social_class
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus COG_creating_unions_for_blacks"
-			add_to_variable = { COG_evolues_var = -2000 tooltip = COG_evolues_var_tooltip }
-			1065 = { #?
-				add_manpower = 2000
-			}
+			multiply_variable = { COG_evolues_bonus_coeff = 1.5 tooltip = COG_evolues_bonus_up_1_tooltip }
 			
 			# custom_effect_tooltip = empty_line_tooltip
 			custom_effect_tooltip = COG_stimulate_medium_skilled_evolues_growth_tt_alt #?? !
@@ -3602,13 +3614,10 @@ focus_tree = {
 		relative_position_id = COG_create_a_new_social_class
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus COG_dominate_to_serve"
-			add_to_variable = { COG_evolues_var = -3000 tooltip = COG_evolues_var_tooltip }
-			every_controlled_state = {
-				limit = { is_original_congo_state = yes }
-				add_manpower = 500
-			}
+			add_political_power = 75
 			add_stability = 0.05
-			add_ideas = COG_dominate_to_serve #?
+			add_ideas = COG_dominate_to_serve_idea #?
+			multiply_variable = { COG_evolues_bonus_coeff = 2 tooltip = COG_evolues_bonus_up_2_tooltip }
 		}
 	}
 	focus = {
@@ -3672,8 +3681,8 @@ focus_tree = {
 				add_idea = COG_all_benefits_to_metropolis_1
 			}
 			swap_ideas = {
-				remove_idea = COG_dominate_to_serve
-				add_idea = COG_dominate_to_serve_1
+				remove_idea = COG_dominate_to_serve_idea
+				add_idea = COG_dominate_to_serve_idea_1
 			}
 		}
 	}
@@ -3722,7 +3731,7 @@ focus_tree = {
 		relative_position_id = COG_create_a_new_social_class
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus COG_belgian_dominion"
-			remove_ideas = COG_dominate_to_serve_1
+			remove_ideas = COG_dominate_to_serve_idea_1
 			if = {
 				limit = { is_subject_of = BEL }
 				swap_ideas = {
@@ -5410,11 +5419,14 @@ focus_tree = {
 				value = 5
 			}
 			295 = { add_dynamic_modifier = { modifier = COG_holy_city } }
-			custom_effect_tooltip = COG_simon_kimbangu_goodness_tooltip
-			add_to_variable = { COG_faith_in_the_prophet_goodness = 1 }
-			
-			set_temp_variable = { goodness = 1 }
-			COG_simon_kimbangu_superpowers_update = yes
+			if = { #?
+				limit = { check_variable = { COG_faith_in_the_prophet > 30000 } }
+				custom_effect_tooltip = COG_simon_kimbangu_goodness_tooltip
+				add_to_variable = { COG_fitp_goodness = 1 } #?
+				
+				set_temp_variable = { goodness = 1 }
+				COG_simon_kimbangu_superpowers_update = yes
+			}
 		}
 	}
 	focus = {
@@ -5528,11 +5540,14 @@ focus_tree = {
 					modifier = COG_international_intervention_2
 				}
 			}
-			custom_effect_tooltip = COG_simon_kimbangu_aggressiveness_tooltip #??
-			add_to_variable = { COG_faith_in_the_prophet_aggressiveness = 1 }
-			
-			set_temp_variable = { aggressiveness = 1 }
-			COG_simon_kimbangu_superpowers_update = yes
+			if = { #?
+				limit = { check_variable = { COG_faith_in_the_prophet > 30000 } }
+				custom_effect_tooltip = COG_simon_kimbangu_aggressiveness_tooltip #??
+				add_to_variable = { COG_fitp_aggressiveness = 1 } #?
+				
+				set_temp_variable = { aggressiveness = 1 }
+				COG_simon_kimbangu_superpowers_update = yes
+			}
 		}
 	}
 	focus = {
@@ -6122,7 +6137,7 @@ focus_tree = {
 			# add_ideas = COG_sermonts_among_lost_souls ?
 			unlock_decision_tooltip = COG_sermonts_among_lost_souls_decision #?
 			custom_effect_tooltip = COG_simon_kimbangu_diplomaticness_tooltip
-			add_to_variable = { COG_faith_in_the_prophet_diplomaticness = 1 }
+			add_to_variable = { COG_fitp_diplomaticness = 1 }
 		}
 	}
 	
