@@ -352,7 +352,7 @@ GER_bba_air_prod_2 = {
 	ai_strategy = {
 		type = unit_ratio
 		id = fighter
-		value = 300
+		value = 200
 	}
 
 	ai_strategy = {
@@ -370,7 +370,7 @@ GER_bba_air_prod_2 = {
 	ai_strategy = {
 		type = unit_ratio
 		id = cas
-		value = 25 #because doctrine this = 15
+		value = 250 #because doctrine this = 15
 	}
 
 	ai_strategy = {
@@ -740,7 +740,7 @@ GER_build_2k_fighter = {
 
 	ai_strategy = { type = equipment_variant_production_factor	id = small_plane_airframe	value = 100 }
 	ai_strategy = { type = equipment_production_factor			id = fighter				value = 235 }
-	ai_strategy = { type = build_airplane						id = fighter				value = 100000 }
+	ai_strategy = { type = build_airplane						id = fighter				value = 10000 }
 	ai_strategy = { type = unit_ratio							id = fighter				value = 2100 }
 	ai_strategy = { type = equipment_production_min_factories	id = fighter				value = 2 }
 }
@@ -757,16 +757,16 @@ GER_build_1k_heavy_fighter = {
 	ai_strategy = { type = unit_ratio							id = heavy_fighter					value = 1100 }
 	ai_strategy = { type = equipment_production_min_factories	id = heavy_fighter					value = 1 }
 }
-GER_build_500_cas = {
+GER_build_1500_cas = {
 	allowed = { tag = GER }
 	enable = {
-		has_deployed_air_force_size = { size < 500 type = cas }
+		has_deployed_air_force_size = { size < 1500 type = cas }
 	}
 	abort_when_not_enabled = yes
 
 	ai_strategy = { type = equipment_variant_production_factor	id = small_plane_cas_airframe	value = 100 }
 	ai_strategy = { type = equipment_production_factor			id = cas						value = 220 }
-	ai_strategy = { type = build_airplane						id = cas						value = 20000 }
+	ai_strategy = { type = build_airplane						id = cas						value = 10000 }
 	ai_strategy = { type = unit_ratio							id = cas						value = 2000 }
 	ai_strategy = { type = equipment_production_min_factories	id = cas						value = 2 }
 }
@@ -3250,6 +3250,33 @@ ITA_dont_invade_NOR_until_FRA_falls = {
 	}
 }
 
+GER_norway_buffer = {
+	allowed = { tag = GER }
+	enable = {
+		NOR = {
+			OR = {
+				has_capitulated = yes
+				is_in_faction_with = ROOT
+			}
+		}
+	}
+	abort_when_not_enabled = yes
+
+	ai_strategy = {
+		type = put_unit_buffers
+		states = {
+			142
+			143
+			144
+			110
+			777
+		}
+		ratio = 0.05
+		area = normandy_landing_zone
+		subtract_invasions_from_need = no
+		subtract_fronts_from_need = yes
+	}
+}
 
 
 
@@ -3852,7 +3879,7 @@ GER_ITA_close_up_maginot_line_after_FRA_falls = {
 GER_normandy_buffer = {
 	allowed = { tag = GER }
 	enable = {
-		FRA = { has_capitulated = yes }
+		FRA = { is_in_faction_with = ROOT }
 	}
 	abort_when_not_enabled = yes
 
@@ -4028,7 +4055,16 @@ GER_push_back_our_coasts_until_overlord = {
 NW_GER_garrison_atlantic_wall = {
 	allowed = { tag = GER }
 	enable = {
-		any_enemy_country = { is_ai = no is_major = yes naval_strength_ratio = { tag = GER ratio > 1.0 } }
+		any_enemy_country = {
+			OR = {
+				is_ai = no
+				AND = {
+					OR = { tag = ENG tag = FRA tag = USA }
+					is_major = yes
+				}
+				naval_strength_ratio = { tag = GER ratio > 1.0 }
+			}
+		}
 	}
 	abort_when_not_enabled = yes
 
@@ -4036,6 +4072,7 @@ NW_GER_garrison_atlantic_wall = {
 		type = put_unit_buffers
 		ratio = 0.15
 		states = {
+			37
 			99
 			764
 			807
@@ -4066,8 +4103,8 @@ NW_GER_garrison_atlantic_wall = {
 			821
 			1165
 		}
-		subtract_invasions_from_need = no
-		subtract_fronts_from_need = no
+		subtract_invasions_from_need = yes
+		subtract_fronts_from_need = yes
 	}
 }
 
@@ -4684,7 +4721,7 @@ NW_axis_avoid_GER_border = {
 	ai_strategy = { type = dont_defend_ally_borders id = "GER" value = 5000 }
 }
 
-NW_axis_avoid_FIN_border = {
+NW_GER_avoid_FIN_border = {
 	allowed = {
 		tag = GER
 	}
@@ -4716,7 +4753,73 @@ NW_axis_avoid_FIN_border = {
 	ai_strategy = { type = dont_defend_ally_borders id = "FIN" value = 5000 }
 }
 
+NW_GER_crush_NOR = {
+	allowed = { tag = GER }
+	enable = {
+		has_war_with = NOR
+		is_in_faction_with = FIN
+	}
+	abort_when_not_enabled = yes
+	
+	ai_strategy = {
+		type = front_control
+		tag = NOR
+		ratio = 0.15
+		execution_type = rush
+		manual_attack = yes
+		execute_order = yes
+	}
+	ai_strategy = {
+		type = front_unit_request
+		country_trigger = {
+			tag = NOR
+		}
+		value = 24
+	}
+}
 
+
+GER_blockade_leningrad = {
+	allowed = {
+		OR = {
+			tag = GER
+			tag = FIN
+			tag = ITA
+			tag = HUN
+			tag = ROM
+			tag = BUL
+			tag = DEN
+		}
+	}
+	
+	enable = {
+		has_war_with = SOV
+		NOT = { has_full_control_of_state = 195 }					# Ленинград
+		check_variable = { global.province_controllers^3151 = SOV }	# Ленинград
+		count_triggers = {
+			amount = 2
+			controls_province = 13799
+			controls_province = 149
+			controls_province = 6179
+		}
+	}
+	abort_when_not_enabled = yes
+	
+	ai_strategy = {
+		type = front_control
+		state = 195
+		priority = 1
+		ordertype = front
+		execute_order = no
+		manual_attack = no
+	}
+	
+	ai_strategy = {
+		type = front_unit_request
+		state = 195
+		value = 1
+	}
+}
 
 
 
