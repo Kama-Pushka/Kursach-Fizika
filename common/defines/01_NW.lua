@@ -65,7 +65,7 @@ NDefines.NGraphics.COUNTRY_FLAG_LARGE_STRIPE_MAX_HEIGHT = 24000
 --------------
 
 --попытка починить раш альянсов
-NDefines.NAI.POTENTIAL_ALLY_JOIN_WAR_FACTOR = 25							-- If amount of enemy fighters is higher than this mission won't perform
+NDefines.NAI.POTENTIAL_ALLY_JOIN_WAR_FACTOR = 25							-- How much increase in threat does AI feel against neighbours who are allied against one of our enemies
 
 NDefines.NAI.GARRISON_FRACTION = 0.2										-- How large part of a front should always be holding the line rather than advancing at the enemy
 NDefines.NAI.DIPLOMACY_REJECTED_WAIT_MONTHS_BASE = 1						-- AI will not repeat offers until at least this time has passed, and at most the double
