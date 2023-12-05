@@ -4666,11 +4666,22 @@ focus_tree = {
 	}
 	
 	focus = {
-		id = POR_start_fight_against_bourgeoisie_in_country
-		icon = GFX_z_goal_POR_start_fight_against_bourgeoisie_in_country
+		id = POR_start_fight_against_bourgeoisie_in_country_or_POR_direct_economy_to_domestic_problems
+		icon = {
+			trigger = {
+				has_completed_focus = POR_strengthening_regime_pvde
+			}
+			value = GFX_z_goal_direct_economy_to_domestic_problems
+		}
+		icon = {
+			trigger = {
+				NOT = { has_completed_focus = POR_strengthening_regime_pvde }
+			}
+			value = GFX_z_goal_POR_start_fight_against_bourgeoisie_in_country
+		}
 		prerequisite = {
 			focus = POR_introduction_of_one_party_system
-			focus = POR_direct_economy_to_domestic_problems
+			focus = POR_national_unity_program
 		}
 		x = 0
 		y = 4
@@ -4694,9 +4705,22 @@ focus_tree = {
 		
 		search_filters = {}
 		completion_reward = {
-			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus POR_start_fight_against_bourgeoisie_in_country"
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus POR_start_fight_against_bourgeoisie_in_country_or_POR_direct_economy_to_domestic_problems"
 			if = {
-				limit = { has_completed_focus = POR_victory_of_portuguese_communist_party }
+				limit = { has_completed_focus = POR_strengthening_regime_pvde }
+				add_timed_idea = { idea = POR_rebuilding_the_country days = 180 }
+				if = {
+					limit = { has_idea = POR_workers_discontent_idea }
+					remove_ideas = POR_workers_discontent_idea
+				}
+				
+				custom_effect_tooltip = on_half_year_tt
+				add_ideas = civilian_economy
+				add_to_variable = { POR_progress_of_national_unity_program_var = 10 tooltip = POR_progress_of_national_unity_program_tt }
+				POR_progress_of_national_unity_program_dyn_calculate = yes
+#				custom_effect_tooltip = POR_direct_economy_to_domestic_problems_tt
+			}
+			else = {
 				custom_effect_tooltip = POR_unlock_new_propaganda_tt
 				set_variable = { POR_radical_republicanism_var = 20 }
 				POR_radical_republicanism_icon_frame_set_effect = yes
@@ -4707,10 +4731,10 @@ focus_tree = {
 	focus = {
 		id = POR_move_radio_party_to_lisbon
 		icon = GFX_goal_generic_radar
-		prerequisite = { focus = POR_start_fight_against_bourgeoisie_in_country }
+		prerequisite = { focus = POR_start_fight_against_bourgeoisie_in_country_or_POR_direct_economy_to_domestic_problems }
 		x = -4
 		y = 3
-		relative_position_id = POR_start_fight_against_bourgeoisie_in_country
+		relative_position_id = POR_start_fight_against_bourgeoisie_in_country_or_POR_direct_economy_to_domestic_problems
 		
 		cost = 5
 		
@@ -4785,10 +4809,10 @@ focus_tree = {
 	focus = {
 		id = POR_socialization_of_all_means_of_production
 		icon = GFX_z_goal_red_socialization_of_all_means_of_production
-		prerequisite = { focus = POR_start_fight_against_bourgeoisie_in_country }
+		prerequisite = { focus = POR_start_fight_against_bourgeoisie_in_country_or_POR_direct_economy_to_domestic_problems }
 		x = -3
 		y = 1
-		relative_position_id = POR_start_fight_against_bourgeoisie_in_country
+		relative_position_id = POR_start_fight_against_bourgeoisie_in_country_or_POR_direct_economy_to_domestic_problems
 		
 		cost = 5
 		
@@ -4809,7 +4833,10 @@ focus_tree = {
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus POR_socialization_of_all_means_of_production"
 			if = {
-				limit = { has_completed_focus = POR_victory_of_portuguese_communist_party }
+				limit = { has_completed_focus = POR_strengthening_regime_pvde }
+				custom_effect_tooltip = POR_unlock_elimination_of_bourgeois_elements_tt2
+			}
+			else = {
 				custom_effect_tooltip = POR_unlock_elimination_of_bourgeois_elements_tt
 			}
 		}
@@ -4849,7 +4876,7 @@ focus_tree = {
 				category = industry
 			}
 			if = {
-				limit = { has_completed_focus = POR_victory_of_portuguese_communist_party }
+				limit = { has_completed_focus = POR_formation_of_popular_front }
 				custom_effect_tooltip = POR_continuous_production_concept_category
 			}
 		}
@@ -4858,10 +4885,10 @@ focus_tree = {
 	focus = {
 		id = POR_collectivization_of_private_property
 		icon = GFX_z_goal_red_collectivization_of_private_property
-		prerequisite = { focus = POR_start_fight_against_bourgeoisie_in_country }
+		prerequisite = { focus = POR_start_fight_against_bourgeoisie_in_country_or_POR_direct_economy_to_domestic_problems }
 		x = -1
 		y = 1
-		relative_position_id = POR_start_fight_against_bourgeoisie_in_country
+		relative_position_id = POR_start_fight_against_bourgeoisie_in_country_or_POR_direct_economy_to_domestic_problems
 		
 		cost = 5
 		
@@ -4882,15 +4909,18 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus POR_collectivization_of_private_property"
-			add_political_power = 50
-			every_owned_state = {
-				limit = {
-					is_on_continent = europe
-				}
-				add_extra_state_shared_building_slots = 1
-			}
 			if = {
-				limit = { has_completed_focus = POR_victory_of_portuguese_communist_party }
+				limit = { has_completed_focus = POR_strengthening_regime_pvde }
+				custom_effect_tooltip = POR_unlock_elimination_of_bourgeois_elements_tt2
+			}
+			else = {
+				add_political_power = 50
+				every_owned_state = {
+					limit = {
+						is_on_continent = europe
+					}
+					add_extra_state_shared_building_slots = 1
+				}
 				custom_effect_tooltip = POR_unlock_elimination_of_bourgeois_elements_tt
 			}
 		}
@@ -4926,7 +4956,7 @@ focus_tree = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus POR_nationalisation_crunch_lands"
 			add_political_power = 50
 			if = {
-				limit = { has_completed_focus = POR_victory_of_portuguese_communist_party }
+				limit = { has_completed_focus = POR_formation_of_popular_front }
 				custom_effect_tooltip = POR_unlock_new_propaganda_tt
 			}
 			random_owned_controlled_state = {
@@ -4976,22 +5006,25 @@ focus_tree = {
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus POR_town_reforms"
 			if = {
-				limit = { has_completed_focus = POR_victory_of_portuguese_communist_party }
+				limit = { has_completed_focus = POR_strengthening_regime_pvde }
+				custom_effect_tooltip = POR_unlock_elimination_of_bourgeois_elements_tt2
+			}
+			else = {
 				custom_effect_tooltip = POR_unlock_new_propaganda_tt
 				custom_effect_tooltip = POR_unlock_elimination_of_bourgeois_elements_tt
-			}
-			every_owned_state = {
-				limit = {
-					is_on_continent = europe
-					free_building_slots = {
-						building = infrastructure
-						size > 0
+				every_owned_state = {
+					limit = {
+						is_on_continent = europe
+						free_building_slots = {
+							building = infrastructure
+							size > 0
+						}
 					}
-				}
-				add_building_construction = {
-					type = infrastructure
-					level = 1
-					instant_build = yes
+					add_building_construction = {
+						type = infrastructure
+						level = 1
+						instant_build = yes
+					}
 				}
 			}
 		}
@@ -5000,10 +5033,10 @@ focus_tree = {
 	focus = {
 		id = POR_use_avante_as_an_ideological_guide
 		icon = GFX_z_goal_POR_use_avante_as_an_ideological_guide
-		prerequisite = { focus = POR_start_fight_against_bourgeoisie_in_country }
+		prerequisite = { focus = POR_start_fight_against_bourgeoisie_in_country_or_POR_direct_economy_to_domestic_problems }
 		x = 0
 		y = 3
-		relative_position_id = POR_start_fight_against_bourgeoisie_in_country
+		relative_position_id = POR_start_fight_against_bourgeoisie_in_country_or_POR_direct_economy_to_domestic_problems
 		
 		cost = 10
 		
@@ -5025,7 +5058,7 @@ focus_tree = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus POR_use_avante_as_an_ideological_guide"
 			add_ideas = POR_use_avante_as_an_ideological_guide_idea
 			if = {
-				limit = { has_completed_focus = POR_victory_of_portuguese_communist_party }
+				limit = { has_completed_focus = POR_formation_of_popular_front }
 				custom_effect_tooltip = unlock_propaganda_campaign_slot_tt
 				POR_unlock_propaganda_campaign_slot_effect = yes
 			}
@@ -5035,10 +5068,10 @@ focus_tree = {
 	focus = {
 		id = POR_first_5_year_plan
 		icon = GFX_z_goal_Start_the_first_five_year_plan
-		prerequisite = { focus = POR_start_fight_against_bourgeoisie_in_country }
+		prerequisite = { focus = POR_start_fight_against_bourgeoisie_in_country_or_POR_direct_economy_to_domestic_problems }
 		x = 1
 		y = 1
-		relative_position_id = POR_start_fight_against_bourgeoisie_in_country
+		relative_position_id = POR_start_fight_against_bourgeoisie_in_country_or_POR_direct_economy_to_domestic_problems
 		
 		cost = 10
 		
@@ -5061,7 +5094,7 @@ focus_tree = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus POR_first_5_year_plan"
 			add_ideas = POR_i_five_year_plan_idea
 			if = {
-				limit = { has_completed_focus = POR_victory_of_portuguese_communist_party }
+				limit = { has_completed_focus = POR_formation_of_popular_front }
 				custom_effect_tooltip = POR_unlock_new_propaganda_tt
 			}
 		}
@@ -6123,85 +6156,12 @@ focus_tree = {
 	}
 	
 	focus = {
-		id = POR_direct_economy_to_domestic_problems
-		icon = GFX_z_goal_direct_economy_to_domestic_problems
-		prerequisite = { focus = POR_anti_fascist_uprising }
-		x = -4
-		y = 1
-		relative_position_id = POR_anti_fascist_uprising
-		
-		cost = 5
-		
-		cancel_if_invalid = no
-		continue_if_invalid = yes
-		available_if_capitulated = no
-
-		ai_will_do = {
-			factor = 10
-		}
-		available = {
-		}
-		bypass = {
-		}
-		select_effect = {
-		}
-
-		completion_reward = {
-			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus POR_direct_economy_to_domestic_problems"
-			add_timed_idea = { idea = POR_rebuilding_the_country days = 180 }
-			if = {
-				limit = { has_idea = POR_workers_discontent_idea }
-				remove_ideas = POR_workers_discontent_idea
-			}
-			
-			custom_effect_tooltip = on_half_year_tt
-			add_ideas = civilian_economy
-			
-#			custom_effect_tooltip = POR_direct_economy_to_domestic_problems_tt
-		}
-	}
-	
-	focus = {
-		id = POR_free_gubernatorial_elections
-		icon = GFX_z_goal_communist_discourse
+		id = POR_creation_of_anti_fascist_combat_groups
+		icon = GFX_z_goal_red_army3
 		prerequisite = { focus = POR_anti_fascist_uprising }
 		x = -2
 		y = 1
 		relative_position_id = POR_anti_fascist_uprising
-		
-		cost = 10
-		
-		cancel_if_invalid = no
-		continue_if_invalid = yes
-		available_if_capitulated = no
-
-		ai_will_do = {
-			factor = 10
-		}
-		available = {
-		}
-		bypass = {
-		}
-		select_effect = {
-		}
-
-		completion_reward = {
-			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus POR_free_gubernatorial_elections"
-			add_political_power = 100
-			add_stability = 0.05
-		}
-	}
-	
-	focus = {
-		id = POR_creation_of_anti_fascist_combat_groups
-		icon = GFX_z_goal_red_army3
-		prerequisite = {
-			focus = POR_direct_economy_to_domestic_problems
-			focus = POR_free_gubernatorial_elections
-		}
-		x = 1
-		y = 1
-		relative_position_id = POR_direct_economy_to_domestic_problems
 		
 		cost = 10
 		
@@ -6227,10 +6187,10 @@ focus_tree = {
 	}
 	
 	focus = {
-		id = POR_complete_reorganization_of_party
-		icon = GFX_z_goal_POR_complete_reorganization_of_party
+		id = POR_national_unity_program
+		icon = GFX_z_focus_propaganda_soviet
 		prerequisite = { focus = POR_anti_fascist_uprising }
-		x = 0
+		x = -4
 		y = 1
 		relative_position_id = POR_anti_fascist_uprising
 		
@@ -6251,10 +6211,78 @@ focus_tree = {
 		}
 
 		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus POR_national_unity_program"
+			unlock_decision_category_tooltip = POR_implementation_of_national_unity_program_category
+			set_variable = { POR_progress_of_national_unity_program_var = 0 }
+		}
+	}
+	
+	focus = {
+		id = POR_free_gubernatorial_elections
+		icon = GFX_z_goal_communist_discourse
+		prerequisite = { focus = POR_national_unity_program }
+		x = 1
+		y = 1
+		relative_position_id = POR_national_unity_program
+		
+		cost = 10
+		
+		cancel_if_invalid = no
+		continue_if_invalid = yes
+		available_if_capitulated = no
+
+		ai_will_do = {
+			factor = 10
+		}
+		available = {
+			has_idea = POR_new_constitution_idea
+		}
+		bypass = {
+		}
+		select_effect = {
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus POR_free_gubernatorial_elections"
+			add_political_power = 100
+			add_stability = 0.05
+			add_to_variable = { POR_progress_of_national_unity_program_var = 5 tooltip = POR_progress_of_national_unity_program_tt }
+			POR_progress_of_national_unity_program_dyn_calculate = yes
+		}
+	}
+	
+	focus = {
+		id = POR_complete_reorganization_of_party
+		icon = GFX_z_goal_POR_complete_reorganization_of_party
+		prerequisite = { focus = POR_anti_fascist_uprising }
+		x = 0
+		y = 1
+		relative_position_id = POR_anti_fascist_uprising
+		
+		cost = 10
+		
+		cancel_if_invalid = no
+		continue_if_invalid = yes
+		available_if_capitulated = no
+
+		ai_will_do = {
+			factor = 10
+		}
+		available = {
+			has_idea = POR_voting_in_central_committee_idea
+		}
+		bypass = {
+		}
+		select_effect = {
+		}
+
+		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus POR_complete_reorganization_of_party"
 			add_political_power = 50
 			add_stability = -0.05
 			add_popularity = { ideology = communism popularity = 0.2 }
+			add_to_variable = { POR_progress_of_national_unity_program_var = 5 tooltip = POR_progress_of_national_unity_program_tt }
+			POR_progress_of_national_unity_program_dyn_calculate = yes
 		}
 	}
 	
@@ -6818,43 +6846,12 @@ focus_tree = {
 	}
 	
 	focus = {
-		id = POR_national_unity_program
-		icon = GFX_z_focus_propaganda_soviet
+		id = POR_grant_independence_to_african_colonies
+		icon = GFX_z_goal_red_establishment_of_portuguese_union_republics_in_africa
 		prerequisite = { focus = POR_complete_reorganization_of_party }
 		x = 3
 		y = 1
 		relative_position_id = POR_complete_reorganization_of_party
-		
-		cost = 5
-		
-		cancel_if_invalid = no
-		continue_if_invalid = yes
-		available_if_capitulated = no
-
-		ai_will_do = {
-			factor = 10
-		}
-		available = {
-		}
-		bypass = {
-		}
-		select_effect = {
-		}
-
-		completion_reward = {
-			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus POR_national_unity_program"
-			unlock_decision_category_tooltip = POR_implementation_of_national_unity_program_category
-			set_variable = { POR_progress_of_national_unity_program_var = 0 }
-		}
-	}
-	
-	focus = {
-		id = POR_grant_independence_to_african_colonies
-		icon = GFX_z_goal_red_establishment_of_portuguese_union_republics_in_africa
-		prerequisite = { focus = POR_national_unity_program }
-		x = 1
-		y = 1
-		relative_position_id = POR_national_unity_program
 		
 		cost = 10
 		
@@ -6920,6 +6917,78 @@ focus_tree = {
 						load_focus_tree = { tree = nw_portugal_redcol keep_completed = no }
 						set_cosmetic_POR_REDCOL_subject = yes
 						set_POR_REDCOL_start_effect = yes
+					}
+				}
+			}
+			add_to_variable = { POR_progress_of_national_unity_program_var = 5 tooltip = POR_progress_of_national_unity_program_tt }
+			POR_progress_of_national_unity_program_dyn_calculate = yes
+		}
+	}
+	
+	focus = {
+		id = POR_transfer_colony_cities_to_their_owners
+		icon = GFX_z_goal_POR_creation_of_youth_organizations
+		prerequisite = { focus = POR_grant_independence_to_african_colonies }
+		x = 1
+		y = 1
+		relative_position_id = POR_grant_independence_to_african_colonies
+		
+		cost = 5
+		
+		cancel_if_invalid = no
+		continue_if_invalid = yes
+		available_if_capitulated = no
+
+		ai_will_do = {
+			factor = 10
+		}
+		available = {
+			OR = {
+				721 = { controller = { OR = { tag = ROOT is_subject_of = ROOT } } }
+				729 = { controller = { OR = { tag = ROOT is_subject_of = ROOT } } }
+				321 = { controller = { OR = { tag = ROOT is_subject_of = ROOT } } }
+			}
+		}
+		bypass = {
+		}
+		select_effect = {
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus POR_transfer_colony_cities_to_their_owners"
+			add_political_power = 100
+			capital_scope = { add_manpower = 50000 }
+			add_to_variable = { POR_progress_of_national_unity_program_var = 5 tooltip = POR_progress_of_national_unity_program_tt }
+			POR_progress_of_national_unity_program_dyn_calculate = yes
+			
+			729 = {
+				if = {
+					limit = { is_controlled_by = ROOT }
+					random_neighbor_state = {
+						limit = { owner = { is_literally_china = yes NOT = { has_war_with = ROOT } } }
+						owner = { country_event = { id = NWportugal.116 hours = 6 } }
+					}
+				}
+			}
+			721 = {
+				if = {
+					limit = { is_controlled_by = ROOT }
+					1163 = {
+						owner = {
+							if = {
+								limit = { NOT = { has_war_with = ROOT } }
+								country_event = { id = NWportugal.117 hours = 6 }
+							}
+						}
+					}
+				}
+			}
+			321 = {
+				if = {
+					limit = { is_controlled_by = ROOT }
+					random_neighbor_state = {
+						limit = { owner = { NOT = { has_war_with = ROOT } } }
+						owner = { country_event = { id = NWportugal.118 hours = 6 } }
 					}
 				}
 			}
@@ -10437,6 +10506,20 @@ focus_tree = {
 			factor = 10
 		}
 		available = {
+			OR = {
+				any_of_scopes = {
+					array = ANG.core_states
+					tooltip = any_of_core_states_ANG_tt
+					controller = { OR = { tag = ROOT is_subject_of = ROOT } }
+				}
+				any_of_scopes = {
+					array = MZB.core_states
+					tooltip = any_of_core_states_MZB_tt
+					controller = { OR = { tag = ROOT is_subject_of = ROOT } }
+				}
+				721 = { controller = { OR = { tag = ROOT is_subject_of = ROOT } } }
+				729 = { controller = { OR = { tag = ROOT is_subject_of = ROOT } } }
+			}
 		}
 		bypass = {
 		}
@@ -10447,32 +10530,63 @@ focus_tree = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus POR_emancipation_of_the_colonies"
 			set_temp_variable = { temp2 = -200000 }
 			every_controlled_state = {
-				limit = { is_core_of = ANG is_controlled_by = ROOT }
-				add_to_temp_variable = { temp1 = 1 }
-				divide_temp_variable = { temp2 = temp1 }
-				round_temp_variable = temp2
-				add_manpower = temp2
-				multiply_temp_variable = { temp2 = -1 }
-				add_to_temp_variable = { temp_manpower = temp2 }
-				custom_effect_tooltip = "1 = [?temp1]"
+				limit = { is_core_of = ANG }
+				custom_effect_tooltip = minus_200k_manpower
+				hidden_effect = {
+					add_to_temp_variable = { temp1 = 1 }
+					divide_temp_variable = { temp2 = temp1 }
+					round_temp_variable = temp2
+					add_manpower = temp2
+					multiply_temp_variable = { temp2 = -1 }
+					add_to_temp_variable = { temp_manpower = temp2 }
+				}
 			}
 			if = {
 				limit = { check_variable = { temp1 > 0 } }
-				release = ANG
+				if = {
+					limit = { NOT = { country_exists = ANG } }
+					release = ANG
+				}
+				else = {
+					every_controlled_state = {
+						limit = { is_core_of = ANG }
+						transfer_state_to = ANG
+					}
+					if = {
+						limit = { ANG = { is_subject_of = ROOT } }
+						set_autonomy = { target = ANG autonomy_state = autonomy_free end_wars = yes }
+					}
+				}
 			}
 			set_temp_variable = { temp4 = -200000 }
 			every_controlled_state = {
-				limit = { is_core_of = MZB is_controlled_by = ROOT }
-				add_to_temp_variable = { temp3 = 1 }
-				divide_temp_variable = { temp4 = temp3 }
-				round_temp_variable = temp4
-				add_manpower = temp4
-				multiply_temp_variable = { temp4 = -1 }
-				add_to_temp_variable = { temp_manpower = temp4 }
+				limit = { is_core_of = MZB }
+				custom_effect_tooltip = minus_200k_manpower
+				hidden_effect = {
+					add_to_temp_variable = { temp3 = 1 }
+					divide_temp_variable = { temp4 = temp3 }
+					round_temp_variable = temp4
+					add_manpower = temp4
+					multiply_temp_variable = { temp4 = -1 }
+					add_to_temp_variable = { temp_manpower = temp4 }
+				}
 			}
 			if = {
 				limit = { check_variable = { temp3 > 0 } }
-				release = MZB
+				if = {
+					limit = { NOT = { country_exists = MZB } }
+					release = MZB
+				}
+				else = {
+					every_controlled_state = {
+						limit = { is_core_of = MZB }
+						transfer_state_to = MZB
+					}
+					if = {
+						limit = { MZB = { is_subject_of = ROOT } }
+						set_autonomy = { target = MZB autonomy_state = autonomy_free end_wars = yes }
+					}
+				}
 			}
 			721 = { if = { limit = { is_controlled_by = ROOT } add_manpower = -40000	add_to_temp_variable = { temp_manpower = 40000 }	ROOT = { release = TIM } } }
 			729 = {
