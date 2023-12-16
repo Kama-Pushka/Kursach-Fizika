@@ -65,5 +65,5 @@ tags={
 }
 picture="thumbnail.png"
 name="New Ways REBOOT DEV BUILD"
-supported_version="1.12.*"
+supported_version="1.13.*"
 path="mod/Kursach-Fizika"
