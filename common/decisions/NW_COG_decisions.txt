@@ -685,8 +685,7 @@ COG_create_new_social_class_category = {
 				# add_to_variable = { ROOT.COG_evolues_var = evolues } #?? !!
 				COG_evolues_political_counts_update = yes
 				
-				COG_create_iq_pie_chart = yes
-				COG_create_pol_pie_chart = yes
+				COG_evolues_interface_update = yes
 			}
 			every_state = {
 				limit = { is_original_congo_state = yes has_variable = COG_seg_decision_add_evolues }
@@ -736,8 +735,7 @@ COG_create_new_social_class_category = {
 				# add_to_variable = { ROOT.COG_evolues_var = evolues } #?? !!
 				COG_evolues_political_counts_update = yes
 				
-				COG_create_iq_pie_chart = yes
-				COG_create_pol_pie_chart = yes
+				COG_evolues_interface_update = yes
 			}
 			every_state = {
 				limit = { is_original_congo_state = yes }
@@ -787,8 +785,7 @@ COG_create_new_social_class_category = {
 				# add_to_variable = { ROOT.COG_evolues_var = evolues } #?? !!
 				COG_evolues_political_counts_update = yes
 				
-				COG_create_iq_pie_chart = yes
-				COG_create_pol_pie_chart = yes
+				COG_evolues_interface_update = yes
 			}
 			every_state = {
 				limit = { is_original_congo_state = yes }
@@ -838,22 +835,83 @@ COG_create_new_social_class_category = {
 	}
 	
 	# навести порядок в решениях !!
-	# COG_CongoGoogleMapsEvolues_resettle_decision = {
-		# icon = GFX_decision_generic_propaganda
-		# allowed = { always = no }
-		# visible = {
-			# check_variable = { CongoGoogleMapsEvolues_resettle_decision = 1 }
-		# }
-		# complete_effect = {
-			# log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision COG_CongoGoogleMapsEvolues_resettle_decision"
-			# add_to_variable = { ENG_Hmmlr_Guns = -10 }
-			# set_variable = { CongoGoogleMapsEvolues_resettle = 1 }
-		# }
+	COG_CongoGoogleMapsEvolues_resettle_decision = {
+		icon = GFX_decision_generic_propaganda
+		visible = {
+			NOT = { check_variable = { nw_CongoGoogleMapsEvolues_resettle = 1 } }
+			has_variable = nw_CGME_highlight_states^1
+		}
+		available = {
+			var:nw_CGME_highlight_states^1 = {
+				custom_trigger_tooltip = {
+					tooltip = COG_resettle_not_employed_tt
+					NOT = {
+						has_variable = COG_evolues_resettle_count_@token:high_skilled
+						has_variable = COG_evolues_resettle_count_@token:medium_skilled
+						has_variable = COG_evolues_resettle_count_@token:low_skilled
+					}
+				}
+			}
+		}
+		complete_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision COG_CongoGoogleMapsEvolues_resettle_decision"
+			add_to_variable = { nw_CongoGoogleMapsEvolues_resettle = 1 }
+			add_to_variable = { nw_CongoGoogleMapsEvolues_update = 1 } #?
+		}
 		
-		# ai_will_do = {
-			# factor = 0
-		# }
-	# }
+		ai_will_do = {
+			factor = 0
+		}
+	}
+	
+	COG_CongoGoogleMapsEvolues_resettle_mission = {
+		icon = GFX_decision_generic_propaganda
+		
+		allowed = { always = no }
+		activation = { always = no }
+		available = { hidden_trigger = { always = no } }
+		state_target = yes
+		
+		days_mission_timeout = 45
+		selectable_mission = no #?
+		fire_only_once = yes
+		
+		timeout_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): timeout decision COG_CongoGoogleMapsEvolues_resettle_mission [FROM.GetName] ([FROM.GetID])"
+			FROM = {
+				set_state_flag = { flag = COG_resettle_cooldown days = 14 value = 1 }
+				add_to_variable = { 
+					var = COG_evolues_count_@token:low_skilled
+					value = COG_evolues_resettle_count_@token:low_skilled
+				}
+				add_to_variable = { 
+					var = COG_evolues_count_@token:medium_skilled
+					value = COG_evolues_resettle_count_@token:medium_skilled
+				}
+				add_to_variable = { 
+					var = COG_evolues_count_@token:high_skilled
+					value = COG_evolues_resettle_count_@token:high_skilled
+				}
+				
+				add_to_temp_variable = { evolues = COG_evolues_resettle_count_@token:high_skilled }
+				add_to_temp_variable = { evolues = COG_evolues_resettle_count_@token:medium_skilled }
+				add_to_temp_variable = { evolues = COG_evolues_resettle_count_@token:low_skilled }
+				add_to_variable = { 
+					var = COG_evolues_var
+					value = evolues
+				}
+				COG_evolues_political_counts_update = yes
+				nw_CongoGoogleMapsEvolues_resettle_ClearVar = yes
+				
+				COG_evolues_interface_update = yes
+			}
+			add_to_variable = { nw_CongoGoogleMapsEvolues_update = 1 } 
+		}
+		
+		ai_will_do = {
+			factor = 0
+		}
+	}
 }
 
 COG_agricultural_reform = {
@@ -3047,7 +3105,7 @@ COG_faith_in_the_prophet_simon_kimbangu = {
 			add_stability = -0.01
 			random_owned_controlled_state = {
 				set_temp_variable_to_random = { var = evolues min = -200 max = 0 integer = yes }
-				if = {
+				if = { #!!
 					limit = { 
 						OR = {
 							check_variable = { COG_evolues_count_@token:high_skilled > 0 }
