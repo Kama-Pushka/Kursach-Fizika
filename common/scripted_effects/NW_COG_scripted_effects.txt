@@ -921,6 +921,124 @@ COG_evolues_growth_update = {
 	set_variable = { COG_old_evolues_var = COG_evolues_var }
 }
 
+COG_evolues_calculate_state_lvl_pt1 = { #?? !!
+	# set_temp_variable = { max_lvl = 1 }
+	set_temp_variable = { lvl@THIS = 1 }
+	if = {
+		limit = { check_variable = { var = COG_evolues_var value = 5000 } }
+		set_temp_variable = { lvl@THIS = 5 }
+		if = {
+			limit = { check_variable = { max_lvl < 5 } }
+			set_temp_variable = { max_lvl = 5 }
+			set_temp_variable = { max_lvl_count = 1 }
+		}
+		else_if = {
+			limit = { check_variable = { max_lvl = 5 } }
+			add_to_temp_variable = { max_lvl_count = 1 }
+		}
+	}
+	else_if = {
+		limit = { check_variable = { var = COG_evolues_var value = 1000 } }
+		set_temp_variable = { lvl@THIS = 4 }
+		if = {
+			limit = { check_variable = { max_lvl < 4 } }
+			set_temp_variable = { max_lvl = 4 }
+			set_temp_variable = { max_lvl_count = 1 }
+		}
+		else_if = {
+			limit = { check_variable = { max_lvl = 4 } }
+			add_to_temp_variable = { max_lvl_count = 1 }
+		}
+	}
+	else_if = {
+		limit = { check_variable = { var = COG_evolues_var value = 100 } }
+		set_temp_variable = { lvl@THIS = 3 }
+		if = {
+			limit = { check_variable = { max_lvl < 3 } }
+			set_temp_variable = { max_lvl = 3 }
+			set_temp_variable = { max_lvl_count = 1 }
+		}
+		else_if = {
+			limit = { check_variable = { max_lvl = 3 } }
+			add_to_temp_variable = { max_lvl_count = 1 }
+		}
+	}
+	else_if = {
+		limit = { check_variable = { var = COG_evolues_var value = 1 } }
+		set_temp_variable = { lvl@THIS = 2 }
+		if = {
+			limit = { check_variable = { max_lvl < 2 } }
+			set_temp_variable = { max_lvl = 2 }
+			set_temp_variable = { max_lvl_count = 1 }
+		}
+		else_if = {
+			limit = { check_variable = { max_lvl = 2 } }
+			add_to_temp_variable = { max_lvl_count = 1 }
+		}
+	}
+	# else = {
+		# else_if = {
+			# limit = { check_variable = { max_lvl = 1 } }
+			# add_to_temp_variable = { max_lvl_count = 1 }
+		# }
+	# }
+}
+COG_evolues_calculate_state_lvl_pt2 = {
+	every_controlled_state = {
+		limit = { is_original_congo_state = yes }
+		if = {
+			limit = { 
+				OR = {
+					check_variable = { var = COG_evolues_var value = 5000 }
+					AND = {
+						check_variable = { lvl@THIS = max_lvl }
+						check_variable = { max_lvl_count = 1 }
+					}
+				}
+			}
+			set_variable = { COG_evolues_state_lvl = 5 }
+		}
+		else_if = {
+			limit = { 
+				OR = {
+					check_variable = { var = COG_evolues_var value = 1000 }
+					AND = {
+						check_variable = { lvl@THIS = max_lvl }
+						check_variable = { max_lvl_count = 2 }
+					}
+				}
+			}
+			set_variable = { COG_evolues_state_lvl = 4 }
+		}
+		else_if = {
+			limit = { 
+				OR = {
+					check_variable = { var = COG_evolues_var value = 100 }
+					AND = {
+						check_variable = { lvl@THIS = max_lvl }
+						check_variable = { max_lvl_count = 3 }
+					}
+				}
+			}
+			set_variable = { COG_evolues_state_lvl = 3 }
+		}
+		else_if = {
+			limit = { 
+				OR = {
+					check_variable = { var = COG_evolues_var value = 1 }
+					AND = {
+						check_variable = { lvl@THIS = max_lvl }
+						check_variable = { max_lvl_count > 3 }
+					}
+				}
+			}
+			set_variable = { COG_evolues_state_lvl = 2 }
+		}
+		else = { set_variable = { COG_evolues_state_lvl = 1 } }
+		log = "COG_evolues_calculate_state_lvl [THIS.GetName] [?COG_evolues_state_lvl] [?lvl@THIS] | max: [?max_lvl] count: [?max_lvl_count]"
+	}
+}
+
 COG_evolues_skill_counts_update = {
 	# clear_temp_array = skills_lvl #?
 	if = { # засунуть выше ? !
@@ -954,11 +1072,11 @@ COG_evolues_skill_counts_update = {
 		}
 	}
 	else = {
+		set_temp_variable = { evoluesExtended = evolues }
+		multiply_temp_variable = { evoluesExtended = -1 }
 		for_each_loop = {
 			array = skills_lvl
 			value = skill_lvl
-			set_temp_variable = { evoluesExtended = evolues }
-			multiply_temp_variable = { evoluesExtended = -1 }
 			
 			set_temp_variable_to_random = { var = _@var:skill_lvl min = 0 max = COG_evolues_count_@var:skill_lvl integer = yes } #?
 			clamp_temp_variable = { var = _@var:skill_lvl min = 0 max = evoluesExtended }
@@ -1014,11 +1132,11 @@ COG_evolues_political_counts_update = {
 		}
 	}
 	else = {
+		set_temp_variable = { evoluesExtended = evolues }
+		multiply_temp_variable = { evoluesExtended = -1 }
 		for_each_loop = {
 			array = global.ideology_groups
 			value = ideology
-			set_temp_variable = { evoluesExtended = evolues }
-			multiply_temp_variable = { evoluesExtended = -1 }
 			
 			set_temp_variable_to_random = { var = _@var:ideology min = 0 max = COG_evolues_count_@var:ideology integer = yes }
 			clamp_temp_variable = { var = _@var:ideology min = 0 max = evoluesExtended }
@@ -1029,6 +1147,7 @@ COG_evolues_political_counts_update = {
 		}
 		if = {
 			limit = { check_variable = { evoluesExtended > 0 } }
+			log = "COG_evolues_political_counts_update (minus) [THIS.GetName] остаток: [?evoluesExtended]"
 			for_each_loop = {
 				array = global.ideology_groups
 				value = ideology
@@ -1107,6 +1226,7 @@ COG_create_pol_pie_chart = {
 
 nw_CongoGoogleMapsEvolues_ClearCountVar_ROOT = {
 	set_variable = { ROOT.COG_evolues_var = 0 }
+	set_variable = { ROOT.COG_evolues_gain_var = 0 }
 	set_variable = { ROOT.COG_evolues_count_@token:high_skilled = 0 }
 	set_variable = { ROOT.COG_evolues_count_@token:medium_skilled = 0 }
 	set_variable = { ROOT.COG_evolues_count_@token:low_skilled = 0 }
@@ -1198,11 +1318,12 @@ nw_CGME_ms_calculate_effect = {
 		add_to_temp_variable = { building = _@var:skill_lvl }
 	}
 	subtract_from_temp_variable = { _@var:skill_lvl = building }
-	multiply_temp_variable = { building = 2 } # coeff
+	multiply_temp_variable = { building = 2 } # base coeff
 }
 
 nw_CongoGoogleMapsEvolues_SetCountVar_ROOT = {
 	add_to_variable = { ROOT.COG_evolues_var = THIS.COG_evolues_var }
+	add_to_variable = { ROOT.COG_evolues_gain_var = THIS.COG_evolues_gain_var }
 	add_to_variable = { ROOT.COG_evolues_count_@token:high_skilled = THIS.COG_evolues_count_@token:high_skilled }
 	add_to_variable = { ROOT.COG_evolues_count_@token:medium_skilled = THIS.COG_evolues_count_@token:medium_skilled }
 	add_to_variable = { ROOT.COG_evolues_count_@token:low_skilled = THIS.COG_evolues_count_@token:low_skilled }
