@@ -621,13 +621,25 @@ HAI_consequences_of_petrushka_massacre_category = {
 				factor = 0
 				is_historical_focus_on = yes
 			}
+			modifier = {
+				add = 125
+				OR = {
+					has_country_flag = NW_HAI_AI_DEMOCRATIC
+					has_country_flag = NW_HAI_AI_FASCIST
+					has_country_flag = NW_HAI_AI_COMMUNIST
+				}
+			}
 		}
 		complete_effect = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decisions HAI_reduce_vigilance"
 			add_stability = 0.035
 			add_war_support = 0.035
 			add_command_power = 15
-			add_days_mission_timeout = { mission = HAI_calixtas_coup_miss days = -170 }
+			custom_effect_tooltip = HAI_reduce_vigilance_tt
+			hidden_effect = {
+				set_temp_variable_to_random = { var = temp_days min = -150 max = -95 integer = yes }
+				add_days_mission_timeout = { mission = HAI_calixtas_coup_miss days = temp_days }
+			}
 		}
 	}
 	
@@ -683,7 +695,12 @@ HAI_consequences_of_petrushka_massacre_category = {
 			factor = 1
 			modifier = {
 				factor = 0
-				is_historical_focus_on = yes
+				OR = {
+					is_historical_focus_on = yes
+					has_country_flag = NW_HAI_AI_DEMOCRATIC
+					has_country_flag = NW_HAI_AI_FASCIST
+					has_country_flag = NW_HAI_AI_COMMUNIST
+				}
 			}
 		}
 		complete_effect = {
@@ -1004,6 +1021,10 @@ HAI_calixtas_actions_category = {
 				limit = { has_completed_focus = HAI_start_persecution_of_voodoo }
 				activate_mission = HAI_remove_blacks_from_command
 				add_days_mission_timeout = { mission = HAI_preparing_coup days = -24 }
+				if = {
+					limit = { has_active_mission = HAI_concessions_to_dominican_republic }
+					add_days_mission_timeout = { mission = HAI_concessions_to_dominican_republic	days = -24 }
+				}
 			}
 			else = { activate_mission = HAI_chasing_voodoo }
 			set_country_flag = HAI_amendments_to_education_system_flag
@@ -1093,6 +1114,7 @@ HAI_calixtas_actions_category = {
 			add_political_power = -200
 			add_stability = 0.115
 			add_popularity = { ideology = neutrality popularity = 0.115 }
+			set_variable = { HAI_concessions_to_dominican_republic_days = days_mission_timeout@HAI_preparing_coup }
 			activate_mission = HAI_concessions_to_dominican_republic
 		}
 		complete_effect = {		#MISSION SUCCEEDS
@@ -1113,7 +1135,7 @@ HAI_calixtas_actions_category = {
 		}
 		cancel_trigger = { has_completed_focus = HAI_coup_of_noirists }
 		is_good = no
-		days_mission_timeout = 132
+		days_mission_timeout = HAI_concessions_to_dominican_republic_days		# 132
 		fire_only_once = yes
 		
 		timeout_effect = {		#MISSION FAILS
@@ -4127,7 +4149,7 @@ HAI_dependence_on_soviet_union_category = {
 		cancel_trigger = {
 			OR = {
 				NOT = { is_in_faction_with = SOV }
-				NOT = { has_variable = points_of_dependence_on_ussr_var }
+				NOT = { has_country_flag = HAI_points_of_dependence_on_ussr_block_flag }
 			}
 		}
 		is_good = no
@@ -4168,7 +4190,7 @@ HAI_dependence_on_soviet_union_category = {
 		cancel_trigger = {
 			OR = {
 				NOT = { is_in_faction_with = SOV }
-				NOT = { has_variable = points_of_dependence_on_ussr_var }
+				NOT = { has_country_flag = HAI_points_of_dependence_on_ussr_block_flag }
 			}
 		}
 		is_good = no
@@ -4209,11 +4231,11 @@ HAI_dependence_on_soviet_union_category = {
 		cancel_trigger = {
 			OR = {
 				NOT = { is_in_faction_with = SOV }
-				NOT = { has_variable = points_of_dependence_on_ussr_var }
+				NOT = { has_country_flag = HAI_points_of_dependence_on_ussr_block_flag }
 			}
 		}
 		is_good = no
-		days_mission_timeout = 220
+		days_mission_timeout = 365
 		fire_only_once = yes
 		
 		timeout_effect = {		#MISSION FAILS
