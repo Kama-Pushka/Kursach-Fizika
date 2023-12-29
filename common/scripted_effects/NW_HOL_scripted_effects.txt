@@ -701,14 +701,14 @@ HOL_agitation_of_ratcommi_DOWN_effect = {
 }
 
 influence_in_the_International_effect = {
-	
 	hidden_effect = {
 		clamp_variable = { var = ROOT.influence_in_the_International min = 0 max = 100 }
 	}
 }
-HOL_checking_vars_gui_effect = {
 
-	hidden_effect = {		
+HOL_checking_vars_gui_effect = {
+	hidden_effect = {
+		log = "============================================================================"
 ### СЛУЧАЙ ДЛЯ ПРИБАВКИ НЕ НЕЙТРАЛОВ
 		if = {
 			limit = {
@@ -745,6 +745,7 @@ HOL_checking_vars_gui_effect = {
 				}
 			}	
 		}
+		
 ### СЛУЧАЙ ДЛЯ ПРИБАВКИ НЕЙТРАЛОВ
 		else_if = {
 			limit = { NOT = { check_variable = { HOL_support_for_the_non_unioners_var_temp = 0 } } }
@@ -752,11 +753,34 @@ HOL_checking_vars_gui_effect = {
 			add_to_temp_variable = { current_delta_temp = HOL_support_for_the_non_unioners_var_temp }
 			add_to_variable = { HOL_support_for_the_non_unioners_var = current_delta_temp }
 		}
-			
+		log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): current_delta_temp 1 = [?current_delta_temp|2]"
 ### ОПЕРАЦИИ ВЫЧЕТА ИЗ НЕ НЕЙТРАЛЬНЫХ ПАРТИЙ
 		if = {
 			limit = { NOT = { check_variable = { current_delta_temp = 0 } } }
 			set_temp_variable = { percent_piece_total = 100 }
+			if = {
+				limit = { NOT = { check_variable = { HOL_support_for_the_communist_party_var_temp = 0 } } }
+				subtract_from_temp_variable = { percent_piece_total = HOL_support_for_the_communist_party_var }
+			}
+			else_if = {
+				limit = { NOT = { check_variable = { HOL_support_for_the_trozkism_party_var_temp = 0 } } }
+				subtract_from_temp_variable = { percent_piece_total = HOL_support_for_the_trozkism_party_var }
+			}
+			else_if = {
+				limit = { NOT = { check_variable = { HOL_support_for_the_anarchism_party_var_temp = 0 } } }
+				subtract_from_temp_variable = { percent_piece_total = HOL_support_for_the_anarchism_party_var }
+			}
+			else_if = {
+				limit = { NOT = { check_variable = { HOL_support_for_the_ratcommi_party_var_temp = 0 } } }
+				subtract_from_temp_variable = { percent_piece_total = HOL_support_for_the_ratcommi_party_var }
+			}
+			else_if = {
+				limit = { NOT = { check_variable = { HOL_support_for_the_non_unioners_var_temp = 0 } } }
+				subtract_from_temp_variable = { percent_piece_total = HOL_support_for_the_non_unioners_var }
+			}
+			round_temp_variable = percent_piece_total
+			
+			
 			if = {
 				limit = {
 					check_variable = { HOL_support_for_the_communist_party_var_temp = 0 }
@@ -772,10 +796,10 @@ HOL_checking_vars_gui_effect = {
 					set_temp_variable = { delta_temp_1 = current_delta_temp }
 					multiply_temp_variable = { delta_temp_1 = percent_piece }
 					# ИТОГОВОЕ ВЫЧИСЛЕНИЕ
-					subtract_from_temp_variable = { current_delta_temp = delta_temp_1 }
+#					subtract_from_temp_variable = { current_delta_temp = delta_temp_1 }
 					subtract_from_variable = { HOL_support_for_the_communist_party_var = delta_temp_1 }
 				}
-				if = {
+				else_if = {
 					limit = {
 						has_government = trozkism
 						check_variable = { HOL_support_for_the_trozkism_party_var > 0 }
@@ -785,9 +809,10 @@ HOL_checking_vars_gui_effect = {
 					set_temp_variable = { delta_temp_1 = current_delta_temp }
 					multiply_temp_variable = { delta_temp_1 = percent_piece }
 					# ИТОГОВОЕ ВЫЧИСЛЕНИЕ
-					subtract_from_temp_variable = { current_delta_temp = delta_temp_1 }
+#					subtract_from_temp_variable = { current_delta_temp = delta_temp_1 }
 					subtract_from_variable = { HOL_support_for_the_trozkism_party_var = delta_temp_1 }
 				}
+				log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): delta_temp_1 2 = [?delta_temp_1|2]"
 			}
 			if = {
 				limit = {
@@ -802,9 +827,10 @@ HOL_checking_vars_gui_effect = {
 					set_temp_variable = { delta_temp_1 = current_delta_temp }
 					multiply_temp_variable = { delta_temp_1 = percent_piece }
 					# ИТОГОВОЕ ВЫЧИСЛЕНИЕ
-					subtract_from_temp_variable = { current_delta_temp = delta_temp_1 }
+#					subtract_from_temp_variable = { current_delta_temp = delta_temp_1 }
 					subtract_from_variable = { HOL_support_for_the_anarchism_party_var = delta_temp_1 }
 				}
+				log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): delta_temp_1 3 = [?delta_temp_1|2]"
 			}
 			if = {
 				limit = {
@@ -819,25 +845,206 @@ HOL_checking_vars_gui_effect = {
 					set_temp_variable = { delta_temp_1 = current_delta_temp }
 					multiply_temp_variable = { delta_temp_1 = percent_piece }
 					# ИТОГОВОЕ ВЫЧИСЛЕНИЕ
-					subtract_from_temp_variable = { current_delta_temp = delta_temp_1 }
+#					subtract_from_temp_variable = { current_delta_temp = delta_temp_1 }
 					subtract_from_variable = { HOL_support_for_the_ratcommi_party_var = delta_temp_1 }
 				}
+				log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): delta_temp_1 4 = [?delta_temp_1|2]"
+			}
+		}
+		HOL_checking_summ_gui_effect = yes
+		HOL_the_Struggle_for_the_Proletariat_gui_effect = yes
+	}
+}
+
+HOL_checking_summ_gui_effect = {
+	### ПРОВЕРКА
+	set_temp_variable = { total_support_party_temp = HOL_support_for_the_communist_party_var }
+	add_to_temp_variable = { total_support_party_temp = HOL_support_for_the_trozkism_party_var }
+	add_to_temp_variable = { total_support_party_temp = HOL_support_for_the_anarchism_party_var }
+	add_to_temp_variable = { total_support_party_temp = HOL_support_for_the_ratcommi_party_var }
+	add_to_temp_variable = { total_support_party_temp = HOL_support_for_the_non_unioners_var }
+	log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): total_support_party_temp 1 = [?total_support_party_temp|2]"
+	if = {
+		limit = { NOT = { check_variable = { total_support_party_temp = 100.00 } } }
+		if = {
+			limit = { check_variable = { total_support_party_temp > 100.00 } }
+			set_temp_variable = { current_delta_temp = total_support_party_temp }
+			subtract_from_temp_variable = { current_delta_temp = 100.00 }
+			else_if = {
+				limit = { check_variable = { total_support_party_temp < 100.00 } }
+				set_temp_variable = { current_delta_temp = 100.00 }
+				subtract_from_temp_variable = { current_delta_temp = total_support_party_temp }
+			}
+		}
+		log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): current_delta_temp = [?current_delta_temp|2]"
+		
+		### ДЕЛИМ ОСТАТОК НА РАВНЫЕ КУСОЧКИ И РАСПРЕДЕЛЯЕМ МЕЖДУ ДРУГИМИ ПАРТИЯМИ // ГЕНИУС, ЗНАЮ
+		set_temp_variable = { num_of_party_temp = 0 }
+		if = {
+			limit = { OR = { check_variable = { HOL_support_for_the_communist_party_var > 0 } check_variable = { HOL_support_for_the_trozkism_party_var > 0 } } }
+			add_to_temp_variable = { num_of_party_temp = 1 }
+		}
+		if = {
+			limit = { check_variable = { HOL_support_for_the_anarchism_party_var > 0 } }
+			add_to_temp_variable = { num_of_party_temp = 1 }
+		}
+		if = {
+			limit = { check_variable = { HOL_support_for_the_ratcommi_party_var > 0 } }
+			add_to_temp_variable = { num_of_party_temp = 1 }
+		}
+		if = {
+			limit = { check_variable = { HOL_support_for_the_non_unioners_var > 0 } }
+			add_to_temp_variable = { num_of_party_temp = 1 }
+		}
+		add_to_temp_variable = { num_of_party_temp = -1 }
+		divide_temp_variable = { current_delta_temp = num_of_party_temp }
+		log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): num_of_party_temp = [?num_of_party_temp]"
+		log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): current_delta_temp 2 = [?current_delta_temp|3]"
+		
+		
+		if = {
+			limit = {
+				OR = {
+					NOT = { check_variable = { HOL_support_for_the_communist_party_var_temp = 0 } }
+					NOT = { check_variable = { HOL_support_for_the_trozkism_party_var_temp = 0 } }
+				}
+			}
+			if = {
+				limit = { check_variable = { HOL_support_for_the_anarchism_party_var > 0 } }
+				add_to_variable = { HOL_support_for_the_anarchism_party_var = current_delta_temp }
+			}
+			if = {
+				limit = { check_variable = { HOL_support_for_the_ratcommi_party_var > 0 } }
+				add_to_variable = { HOL_support_for_the_ratcommi_party_var = current_delta_temp }
+			}
+			if = {
+				limit = { check_variable = { HOL_support_for_the_non_unioners_var > 0 } }
+				add_to_variable = { HOL_support_for_the_non_unioners_var = current_delta_temp }
+			}
+		}
+		else_if = {
+			limit = { NOT = { check_variable = { HOL_support_for_the_anarchism_party_var_temp = 0 } } }
+			if = {
+				limit = { check_variable = { HOL_support_for_the_communist_party_var > 0 } }
+				add_to_variable = { HOL_support_for_the_communist_party_var = current_delta_temp }
+			}
+			if = {
+				limit = { check_variable = { HOL_support_for_the_trozkism_party_var > 0 } }
+				add_to_variable = { HOL_support_for_the_trozkism_party_var = current_delta_temp }
+			}
+			if = {
+				limit = { check_variable = { HOL_support_for_the_ratcommi_party_var > 0 } }
+				add_to_variable = { HOL_support_for_the_ratcommi_party_var = current_delta_temp }
+			}
+			if = {
+				limit = { check_variable = { HOL_support_for_the_non_unioners_var > 0 } }
+				add_to_variable = { HOL_support_for_the_non_unioners_var = current_delta_temp }
+			}
+		}
+		else_if = {
+			limit = { NOT = { check_variable = { HOL_support_for_the_ratcommi_party_var_temp = 0 } } }
+			if = {
+				limit = { check_variable = { HOL_support_for_the_communist_party_var > 0 } }
+				add_to_variable = { HOL_support_for_the_communist_party_var = current_delta_temp }
+			}
+			if = {
+				limit = { check_variable = { HOL_support_for_the_trozkism_party_var > 0 } }
+				add_to_variable = { HOL_support_for_the_trozkism_party_var = current_delta_temp }
+			}
+			if = {
+				limit = { check_variable = { HOL_support_for_the_anarchism_party_var > 0 } }
+				add_to_variable = { HOL_support_for_the_anarchism_party_var = current_delta_temp }
+			}
+			if = {
+				limit = { check_variable = { HOL_support_for_the_non_unioners_var > 0 } }
+				add_to_variable = { HOL_support_for_the_non_unioners_var = current_delta_temp }
+			}
+		}
+		else_if = {
+			limit = { NOT = { check_variable = { HOL_support_for_the_non_unioners_var_temp = 0 } } }
+			if = {
+				limit = { check_variable = { HOL_support_for_the_communist_party_var > 0 } }
+				add_to_variable = { HOL_support_for_the_anarchism_party_var = current_delta_temp }
+			}
+			if = {
+				limit = { check_variable = { HOL_support_for_the_trozkism_party_var > 0 } }
+				add_to_variable = { HOL_support_for_the_trozkism_party_var = current_delta_temp }
+			}
+			if = {
+				limit = { check_variable = { HOL_support_for_the_anarchism_party_var > 0 } }
+				add_to_variable = { HOL_support_for_the_anarchism_party_var = current_delta_temp }
+			}
+			if = {
+				limit = { check_variable = { HOL_support_for_the_non_unioners_var > 0 } }
+				add_to_variable = { HOL_support_for_the_non_unioners_var = current_delta_temp }
 			}
 		}
 	}
-}
-		
-HOL_the_Struggle_for_the_Proletariat_gui_effect = {
 	
+	set_temp_variable = { total_support_party_temp = HOL_support_for_the_anarchism_party_var }
+	add_to_temp_variable = { total_support_party_temp = HOL_support_for_the_ratcommi_party_var }
+	add_to_temp_variable = { total_support_party_temp = HOL_support_for_the_non_unioners_var }
+	add_to_temp_variable = { total_support_party_temp = HOL_support_for_the_communist_party_var }
+	add_to_temp_variable = { total_support_party_temp = HOL_support_for_the_trozkism_party_var }
+	log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): total_support_party_temp 2 = [?total_support_party_temp|2]"
+	
+	if = {
+		limit = { NOT = { check_variable = { total_support_party_temp = 100.00 } } }
+		if = {
+			limit = { check_variable = { total_support_party_temp > 100.00 } }
+			set_temp_variable = { current_delta_temp = total_support_party_temp }
+			subtract_from_temp_variable = { current_delta_temp = 100.00 }
+			else_if = {
+				limit = { check_variable = { total_support_party_temp < 100.00 } }
+				set_temp_variable = { current_delta_temp = 100.00 }
+				subtract_from_temp_variable = { current_delta_temp = total_support_party_temp }
+			}
+		}
+		
+		if = {
+			limit = { NOT = { check_variable = { HOL_support_for_the_communist_party_var_temp = 0 } } }
+			add_to_variable = { HOL_support_for_the_communist_party_var = current_delta_temp }
+		}
+		else_if = {
+			limit = { NOT = { check_variable = { HOL_support_for_the_trozkism_party_var_temp = 0 } } }
+			add_to_variable = { HOL_support_for_the_trozkism_party_var = current_delta_temp }
+		}
+		else_if = {
+			limit = { NOT = { check_variable = { HOL_support_for_the_anarchism_party_var_temp = 0 } } }
+			add_to_variable = { HOL_support_for_the_anarchism_party_var = current_delta_temp }
+		}
+		else_if = {
+			limit = { NOT = { check_variable = { HOL_support_for_the_ratcommi_party_var_temp = 0 } } }
+			add_to_variable = { HOL_support_for_the_ratcommi_party_var = current_delta_temp }
+		}
+		else_if = {
+			limit = { NOT = { check_variable = { HOL_support_for_the_non_unioners_var_temp = 0 } } }
+			add_to_variable = { HOL_support_for_the_non_unioners_var = current_delta_temp }
+		}
+	}
+	
+	set_temp_variable = { total_support_party_temp = HOL_support_for_the_anarchism_party_var }
+	add_to_temp_variable = { total_support_party_temp = HOL_support_for_the_ratcommi_party_var }
+	add_to_temp_variable = { total_support_party_temp = HOL_support_for_the_non_unioners_var }
+	add_to_temp_variable = { total_support_party_temp = HOL_support_for_the_communist_party_var }
+	add_to_temp_variable = { total_support_party_temp = HOL_support_for_the_trozkism_party_var }
+	log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): total_support_party_temp 3 = [?total_support_party_temp|2]"
+}
+
+HOL_the_Struggle_for_the_Proletariat_gui_effect = {
 	hidden_effect = {
 		if = {
 			limit = { has_government = communism }
 			clamp_variable = { var = HOL_support_for_the_communist_party_var min = 0 max = 100 }
-			else = { clamp_variable = { var = HOL_support_for_the_trozkism_party_var min = 0 max = 100 } }
+			set_variable = { HOL_support_for_the_trozkism_party_var = 0 }
+			else = {
+				clamp_variable = { var = HOL_support_for_the_trozkism_party_var min = 0 max = 100 }
+				set_variable = { HOL_support_for_the_communist_party_var = 0 }
+			}
 		}		
-		clamp_variable = { var = HOL_support_for_the_anarchism_party_var min = 0 max = 100 }
-		clamp_variable = { var = HOL_support_for_the_ratcommi_party_var min = 0 max = 100 }
-		clamp_variable = { var = HOL_support_for_the_non_unioners_var min = 0 max = 100 }
+		clamp_variable = { var = HOL_support_for_the_anarchism_party_var	min = 0	max = 100 }
+		clamp_variable = { var = HOL_support_for_the_ratcommi_party_var		min = 0	max = 100 }
+		clamp_variable = { var = HOL_support_for_the_non_unioners_var		min = 0	max = 100 }
 		
 		if = {
 			limit = { 
@@ -939,5 +1146,32 @@ HOL_the_Struggle_for_the_Proletariat_gui_effect = {
 
 		clear_variable = ROOT.last_idx
 		add_to_variable = { pie_chart_dirty = 1 }
+		
+		
+### ПРОВЕРКА
+		set_variable = { total_support_party = HOL_support_for_the_anarchism_party_var }
+		add_to_variable = { total_support_party = HOL_support_for_the_ratcommi_party_var }
+		add_to_variable = { total_support_party = HOL_support_for_the_non_unioners_var }
+		add_to_variable = { total_support_party = HOL_support_for_the_communist_party_var }
+		add_to_variable = { total_support_party = HOL_support_for_the_trozkism_party_var }
 	}
+}
+
+HOL_gui_test_0 = {
+	set_variable = { HOL_support_for_the_trozkism_party_var = 14 }
+	set_variable = { HOL_support_for_the_anarchism_party_var = 21 }
+	set_variable = { HOL_support_for_the_ratcommi_party_var = 55 }
+	set_variable = { HOL_support_for_the_non_unioners_var = 10 }
+	HOL_the_Struggle_for_the_Proletariat_gui_effect = yes
+}
+
+HOL_gui_test_1 = {
+	set_temp_variable = { HOL_support_for_the_anarchism_party_var_temp = 11 }
+	add_to_variable = { HOL_support_for_the_anarchism_party_var = HOL_support_for_the_anarchism_party_var_temp }
+	HOL_checking_vars_gui_effect = yes
+}
+HOL_gui_test_2 = {
+	set_temp_variable = { HOL_support_for_the_ratcommi_party_var_temp = 11.5 }
+	add_to_variable = { HOL_support_for_the_ratcommi_party_var = HOL_support_for_the_ratcommi_party_var_temp }
+	HOL_checking_vars_gui_effect = yes
 }
