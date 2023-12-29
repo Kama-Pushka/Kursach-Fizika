@@ -5,6 +5,7 @@ focus_tree = {
 		factor = 0
 		modifier = {
 			add = 11
+			# has_start_date 
 			original_tag = COG
 		}
 	}
@@ -25,7 +26,13 @@ focus_tree = {
 		y = 0
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus COG_create_a_new_social_class"
-			set_temp_variable = { COG_evolues_gain_LOC = 1 }
+			set_temp_variable = { evolues = 3 } #? !
+			multiply_temp_variable = { evolues = 295.COG_evolues_gain_factor }
+			round_temp_variable = evolues
+			add_to_variable = { 295.COG_evolues_gain_var = evolues } #?
+			add_to_variable = { ROOT.COG_evolues_gain_var = evolues } 
+			
+			set_temp_variable = { COG_evolues_gain_LOC = evolues }
 			set_temp_variable = { state = 295.id }
 			add_ideas = COG_assimilation_of_congolese
 			custom_effect_tooltip = COG_create_a_new_social_class_tt
@@ -385,11 +392,11 @@ focus_tree = {
 			custom_effect_tooltip = COG_focus_complete_effect_tt # SOV_focus_complete_effect_tt
 			hidden_effect = { remove_ideas = COG_expand_school_education_idea }
 			
-			custom_effect_tooltip = COG_stimulate_medium_skilled_evolues_growth_tt #?? !
+			custom_effect_tooltip = COG_stimulate_ms_evolues_growth_tt #?? !
 			hidden_effect = {
 				every_state = {
 					limit = { is_original_congo_state = yes }
-					multiply_variable = { COG_evolues_factor_@token:medium_skilled = 2 }
+					multiply_variable = { COG_evolues_gain_factor_@token:medium_skilled = 2 }
 				}
 			}
 			COG_poor_education_of_congolese_update = yes
@@ -398,12 +405,16 @@ focus_tree = {
 				random_owned_controlled_state = {
 					limit = { is_original_congo_state = yes }
 					set_temp_variable = { state = THIS.id }
-					add_to_variable = { COG_evolues_gain_var = 3 } 
-					add_to_variable = { ROOT.COG_evolues_gain_var = 3 } 
+					
+					set_temp_variable = { evolues = 3 }
+					multiply_temp_variable = { evolues = COG_evolues_gain_factor }
+					round_temp_variable = evolues
+					add_to_variable = { COG_evolues_gain_var = evolues } 
+					add_to_variable = { ROOT.COG_evolues_gain_var = evolues } 
 				}
 			}
 			custom_effect_tooltip = COG_assimilation_of_congolese_update
-			add_to_temp_variable = { COG_evolues_gain_LOC = 3 tooltip = COG_assimilation_of_congolese_loc }
+			add_to_temp_variable = { COG_evolues_gain_LOC = evolues tooltip = COG_assimilation_of_congolese_loc }
 			
 			# if = {
 				# limit = { has_idea = COG_assimilation_of_congolese }
@@ -469,11 +480,11 @@ focus_tree = {
 					instant_build = yes
 				}
 			}
-			custom_effect_tooltip = COG_stimulate_high_skilled_evolues_growth_tt #??
+			custom_effect_tooltip = COG_stimulate_hs_evolues_growth_tt #??
 			hidden_effect = {
 				every_state = {
 					limit = { is_original_congo_state = yes }
-					multiply_variable = { COG_evolues_factor_@token:high_skilled = 4 }
+					multiply_variable = { COG_evolues_gain_factor_@token:high_skilled = 4 }
 				}
 			}
 			COG_poor_education_of_congolese_update = yes
@@ -861,18 +872,23 @@ focus_tree = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus COG_institute_of_central_african_studies"
 			add_research_slot = 1
 			COG_poor_education_of_congolese_update = yes
+			
 			hidden_effect = {
 				capital_scope = {
 					if = {
 						limit = { is_original_congo_state = yes }
 						set_temp_variable = { state = THIS.id }
-						add_to_variable = { COG_evolues_gain_var = 12 } 
-						add_to_variable = { ROOT.COG_evolues_gain_var = 12 } 
+						
+						set_temp_variable = { evolues = 12 }
+						multiply_temp_variable = { evolues = COG_evolues_gain_factor }
+						round_temp_variable = evolues
+						add_to_variable = { COG_evolues_gain_var = evolues } 
+						add_to_variable = { ROOT.COG_evolues_gain_var = evolues } 
 					}
 				}
 			}
 			custom_effect_tooltip = COG_assimilation_of_congolese_update
-			add_to_temp_variable = { COG_evolues_gain_LOC = 12 tooltip = COG_assimilation_of_congolese_loc }
+			add_to_temp_variable = { COG_evolues_gain_LOC = evolues tooltip = COG_assimilation_of_congolese_loc }
 		}
 	}
 	focus = {
@@ -2460,7 +2476,7 @@ focus_tree = {
 				remove_ideas = COG_general_strike
 			}
 			add_stability = 0.12
-			add_ideas = COG_increased_salaries_of_workers_comm
+			add_ideas = COG_increased_salaries_of_workers_1
 		}
 	}
 	focus = {
@@ -2478,8 +2494,8 @@ focus_tree = {
 		relative_position_id = COG_proclaim_a_workers_state
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus COG_end_racial_segregation"
-			remove_ideas = COG_racial_segregation
 			add_stability = 0.05
+			remove_ideas = COG_racial_segregation
 		}
 	}
 	focus = {
@@ -2513,13 +2529,13 @@ focus_tree = {
 					value = 50
 				}
 			}
-			SOV = {
-				set_temp_variable = { num_advisor = 1 }
-				COG_invite_advisors_effect = yes
+			if = {
+				limit = { has_civil_war = yes SOV = { is_left_ideology = yes } }
+				add_ideas = COG_help_from_comintern
 			}
-			SAF = {
-				set_temp_variable = { num_advisor = 1 }
-				COG_invite_advisors_effect = yes
+			if = {
+				limit = { has_civil_war = yes SAF = { exists = yes } }
+				add_ideas = COG_help_from_SAF_trade_unions
 			}
 		}
 	}
@@ -2541,16 +2557,16 @@ focus_tree = {
 		relative_position_id = COG_proclaim_a_workers_state
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus COG_nationalize_foreign_business"
-			if = { #(мое!)
+			if = {
 				limit = { NOT = { has_completed_focus = COG_union_miniere_du_haut_katanga } }
 				custom_effect_tooltip = COG_union_miniere_du_haut_katanga_tt
-				country_event = congo.17 #?
+				country_event = congo.17
 				hidden_effect = {
 					complete_national_focus = COG_union_miniere_du_haut_katanga #?
 				}
+				custom_effect_tooltip = empty_line_tooltip
 			}
 			else = {
-				# custom_effect_tooltip = COG_union_miniere_du_haut_katanga_tt
 				unlock_decision_tooltip = COG_nationalise_katanga_industries_decision
 				hidden_effect = {
 					activate_targeted_decision = { decision = COG_nationalise_katanga_industries_decision target = 1065 }
@@ -2587,6 +2603,8 @@ focus_tree = {
 			hidden_effect = {
 				country_event = { id = congo.34 days = 30 }
 			}
+			custom_effect_tooltip = COG_planned_economy_plus
+			add_to_variable = { COG_planned_economy_lvl = 3 }
 		}
 	}
 	focus = {
@@ -2598,13 +2616,13 @@ focus_tree = {
 			focus = COG_dominate_to_serve
 		}
 		available = {
-			custom_trigger_tooltip = { #?
-				tooltip = COG_evolues_ms_more_than_499
-				check_variable = { COG_evolues_count_@token:medium_skilled > 499 }
-			}
 			OR = {
 				has_completed_focus = COG_dominate_to_serve
 				is_left_ideology = yes
+			}
+			custom_trigger_tooltip = { #?
+				tooltip = COG_evolues_ms_more_than_499
+				check_variable = { COG_evolues_count_@token:medium_skilled > 499 }
 			}
 		}
 		ai_will_do = {
@@ -2615,15 +2633,14 @@ focus_tree = {
 		relative_position_id = COG_create_a_new_social_class
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus COG_creating_unions_for_blacks"
-			multiply_variable = { COG_evolues_bonus_coeff = 1.5 tooltip = COG_evolues_bonus_up_1_tooltip }
-			
-			# custom_effect_tooltip = empty_line_tooltip
-			custom_effect_tooltip = COG_stimulate_medium_skilled_evolues_growth_tt_alt #?? !
-			hidden_effect = {
-				every_state = {
-					limit = { is_original_congo_state = yes }
-					multiply_variable = { COG_evolues_factor_@token:medium_skilled = 1.5 }
-				}
+			every_state = {
+				limit = { is_original_congo_state = yes }
+				custom_effect_tooltip = COG_evolues_modifier_tooltip
+				multiply_variable = { COG_evolues_bonus_factor = 1.5 tooltip = COG_evolues_increase_bonus_factor_15_tt }
+				add_to_array = { COG_evolues_modifiers = 2 }
+				#
+				multiply_variable = { COG_evolues_gain_factor_@token:medium_skilled = 1.5 tooltip = COG_evolues_medium_skilled_growth_15_tt }
+				add_to_array = { COG_evolues_modifiers = 3 }
 			}
 			
 			if = {
@@ -2658,49 +2675,31 @@ focus_tree = {
 			focus = COG_nationalize_foreign_business
 		}
 		available = {
-			custom_trigger_tooltip = {
-				tooltip = COG_evolues_var_more_than_2000 #?
-				check_variable = { COG_evolues_var > 1999 }
-			}
 			has_completed_focus = COG_creating_unions_for_blacks
 		}
 		ai_will_do = {
 			factor = 6
 		}
-		x = -3
+		x = -2
 		y = 4
 		relative_position_id = COG_proclaim_a_workers_state
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus COG_equalize_the_rights_of_white_and_black_workers"
-			add_to_variable = { COG_evolues_var = -2000 tooltip = COG_evolues_var_tooltip }
-			1065 = { #?
-				add_manpower = 2000
+			every_state = {
+				limit = { is_original_congo_state = yes }
+				custom_effect_tooltip = COG_evolues_modifier_tooltip
+				multiply_variable = { COG_evolues_gain_factor_@token:medium_skilled = 1.5 tooltip = COG_evolues_medium_skilled_growth_15_tt }
+				add_to_array = { COG_evolues_modifiers = 3 }
 			}
-			remove_ideas = COG_incompetent_production_managers_1 #?
+			if = {
+				limit = { has_idea = COG_incompetent_production_managers_1 }
+				remove_ideas = COG_incompetent_production_managers_1
+			}
 			add_timed_idea = { idea = COG_conflicts_at_work days = 365 }
 		}
 	}
 	focus = {
-		id = COG_creation_of_youth_organizations
-		icon = GFX_z_goal_POR_creation_of_youth_organizations
-		cost = 10
-		prerequisite = {
-			focus = COG_nationalize_foreign_business
-		}
-		ai_will_do = {
-			factor = 6
-		}
-		x = -1
-		y = 4
-		relative_position_id = COG_proclaim_a_workers_state
-		completion_reward = {
-			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus COG_creation_of_youth_organizations"
-			add_ideas = COG_youth_clubs
-			# рост со временем как в манчжурии ? !
-		}
-	}
-	focus = { #объединить фокусы ?
-		id = COG_restoration_of_administration
+		id = COG_homo_futurus_focus
 		icon = GFX_z_goal_greek_government
 		cost = 10
 		prerequisite = {
@@ -2713,22 +2712,65 @@ focus_tree = {
 		y = 3
 		relative_position_id = COG_proclaim_a_workers_state
 		completion_reward = {
-			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus COG_restoration_of_administration"
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus COG_homo_futurus_focus"
+			every_state = {
+				limit = { is_original_congo_state = yes }
+				custom_effect_tooltip = COG_evolues_modifiers_tooltip
+				multiply_variable = { COG_evolues_gain_factor = 1.5 tooltip = COG_evolues_gain_factor_15_tt }
+				multiply_variable = { COG_evolues_gain_var = 1.5 }
+				round_variable = COG_evolues_gain_var
+				add_to_array = { COG_evolues_modifiers = 4 }
+				#
+				divide_variable = { COG_evolues_bonus_factor = 1.5 tooltip = COG_evolues_decrease_bonus_factor_15_tt }
+				add_to_array = { COG_evolues_modifiers = 5 }
+				
+				custom_effect_tooltip = unlock_decision_COG_evolues_likbez_tt
+				custom_effect_tooltip = unlock_decision_COG_evolues_commie_propaganda_tt
+				custom_effect_tooltip = COG_evolues_click_on_region_tooltip
+			}
+			set_country_flag = COG_homo_futurus_flag
+			custom_effect_tooltip = COG_homo_futurus_tt
 			custom_effect_tooltip = COG_restoration_of_administration_tt
-			unlock_decision_category_tooltip = COG_restoration_of_administration_category
+			unlock_decision_category_tooltip = COG_homo_futurus_category #? !
 		}
 	}
-	focus = { #объединить фокусы ?
-		id = COG_organize_a_workers_party
-		icon = GFX_z_goal_lanka_sama_party
-		cost = 5
+	focus = {
+		id = COG_creation_of_youth_organizations
+		icon = GFX_z_goal_POR_creation_of_youth_organizations
+		cost = 14.3
 		prerequisite = {
-			focus = COG_restoration_of_administration
+			focus = COG_homo_futurus_focus
 		}
 		ai_will_do = {
 			factor = 6
 		}
-		x = 1
+		x = 2
+		y = 4
+		relative_position_id = COG_proclaim_a_workers_state
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus COG_creation_of_youth_organizations"
+			every_state = {
+				limit = { is_original_congo_state = yes }
+				custom_effect_tooltip = COG_evolues_remove_modifier_tooltip
+				multiply_variable = { COG_evolues_bonus_factor = 1.5 tooltip = COG_evolues_decrease_bonus_factor_15_tt } #? (может лучше добавить)
+				remove_from_array = { COG_evolues_modifiers = 5 }
+			}
+			add_ideas = COG_youth_clubs
+			custom_effect_tooltip = COG_planned_economy_plus
+			add_to_variable = { COG_planned_economy_lvl = 3 }
+		}
+	}
+	focus = {
+		id = COG_organize_a_workers_party
+		icon = GFX_z_goal_lanka_sama_party
+		cost = 5
+		prerequisite = {
+			focus = COG_homo_futurus_focus
+		}
+		ai_will_do = {
+			factor = 6
+		}
+		x = 0
 		y = 4
 		relative_position_id = COG_proclaim_a_workers_state
 		completion_reward = {
@@ -2737,7 +2779,7 @@ focus_tree = {
 		}
 	}
 	focus = {
-		id = COG_congolese_soviet_republic
+		id = COG_congolese_soviet_republic_focus
 		icon = GFX_z_goal_create_soviet_congo
 		cost = 10
 		prerequisite = {
@@ -2751,7 +2793,7 @@ focus_tree = {
 		y = 6
 		relative_position_id = COG_proclaim_a_workers_state
 		completion_reward = {
-			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus COG_congolese_soviet_republic"
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus COG_congolese_soviet_republic_focus"
 			if = {
 				limit = { has_government = trozkism }
 				add_ideas = COG_congolese_soviet_republic_troz
@@ -2768,7 +2810,7 @@ focus_tree = {
 		icon = GFX_z_goal_arab_control_over_the_tribes
 		cost = 5
 		prerequisite = {
-			focus = COG_congolese_soviet_republic
+			focus = COG_congolese_soviet_republic_focus
 		}
 		mutually_exclusive = {
 			focus = COG_tribal_socialism
@@ -2778,31 +2820,17 @@ focus_tree = {
 		}
 		x = 1
 		y = 1
-		relative_position_id = COG_congolese_soviet_republic
-		completion_reward = { #?? !!
+		relative_position_id = COG_congolese_soviet_republic_focus
+		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus COG_stop_ethnic_struggle"
 			add_stability = -0.15
 			custom_effect_tooltip = COG_stop_ethnic_struggle_tt
-			every_state = { #?
+			every_controlled_state = {
 				limit = { is_original_congo_state = yes }
-				set_variable = { COG_loyalty_lvl_var = 6 } #-1?
-				remove_dynamic_modifier = { modifier = COG_tribal_system }
-				set_state_flag = COG_tribal_system_block
+				custom_effect_tooltip = unlock_decision_COG_stop_ethnic_struggle_decision_tt
 			}
-			hidden_effect = {
-				if = {
-					limit = { has_dynamic_modifier = { modifier = COG_faithful_administration_of_tribal_leaders } }
-					remove_dynamic_modifier = { modifier = COG_faithful_administration_of_tribal_leaders }
-				}
-				if = {
-					limit = { has_dynamic_modifier = { modifier = COG_loyal_administration_of_tribal_leaders } }
-					remove_dynamic_modifier = { modifier = COG_loyal_administration_of_tribal_leaders }
-				}
-				if = {
-					limit = { has_dynamic_modifier = { modifier = COG_disloyal_administration_of_tribal_leaders } }
-					remove_dynamic_modifier = { modifier = COG_disloyal_administration_of_tribal_leaders }
-				}
-			}
+			unlock_decision_tooltip = COG_end_ethnic_struggle # ?
+			custom_effect_tooltip = COG_planned_economy_great_plus
 		}
 	}
 	focus = {
@@ -2817,7 +2845,7 @@ focus_tree = {
 		}
 		x = 1
 		y = 2
-		relative_position_id = COG_congolese_soviet_republic
+		relative_position_id = COG_congolese_soviet_republic_focus
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus COG_cult_of_personality"
 			add_country_leader_trait = COG_cult_of_personality_trait
@@ -2828,7 +2856,7 @@ focus_tree = {
 		icon = GFX_z_goal_arab_tribes
 		cost = 10
 		prerequisite = {
-			focus = COG_congolese_soviet_republic
+			focus = COG_congolese_soviet_republic_focus
 		}
 		mutually_exclusive = {
 			focus = COG_stop_ethnic_struggle
@@ -2838,7 +2866,7 @@ focus_tree = {
 		}
 		x = -1
 		y = 1
-		relative_position_id = COG_congolese_soviet_republic
+		relative_position_id = COG_congolese_soviet_republic_focus
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus COG_tribal_socialism"
 			add_stability = 0.1
@@ -2876,7 +2904,7 @@ focus_tree = {
 		}
 		x = -1
 		y = 2
-		relative_position_id = COG_congolese_soviet_republic
+		relative_position_id = COG_congolese_soviet_republic_focus
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus COG_revolutionary_militia"
 			custom_effect_tooltip = COG_revolutionary_militia_tt
@@ -2908,10 +2936,25 @@ focus_tree = {
 		relative_position_id = COG_proclaim_a_workers_state
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus COG_accept_help_from_SAF_trade_unions"
-			add_stability = 0.05
+			add_war_support = 0.05
+			custom_effect_tooltip = "Эффективность £decision_icon_small  решения §HКоммунистическая пропаганда§! значительно увеличится."
+			
+			add_to_variable = { COG_pol_advisors_limit@SAF = 2 }
+			set_temp_variable = { COG_pol_advisors_limit@SAF = 2 } #for loc
 			SAF = {
-				set_temp_variable = { num_advisor = 2 }
-				COG_invite_advisors_effect = yes # ивент !
+				if = {
+					limit = { has_government = communism } # is_left_ideology = yes
+					country_event = congo.78
+					custom_effect_tooltip = if_they_accept
+					event_option_tooltip = congo.78.a
+					# ивент ?
+				}
+				else = {
+					set_temp_variable = { cog_tag = ROOT }
+					set_temp_variable = { num_pol_advisors = cog_tag.COG_pol_advisors_limit@THIS }
+					set_temp_variable = { num_mil_advisors = cog_tag.COG_mil_advisors_limit@THIS }
+					COG_invite_advisors_effect = yes
+				}
 			}
 		}
 	}
@@ -2931,6 +2974,15 @@ focus_tree = {
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus COG_fourth_international"
 			add_to_variable = { global.troz_threat_var = 1.5 tooltip = troz_threat_tt }
+			set_var_for_troz_threat_dyn = yes #? !
+			every_state = {
+				limit = { is_original_congo_state = yes }
+				custom_effect_tooltip = COG_evolues_modifier_tooltip
+				custom_effect_tooltip = COG_evolues_increase_count_limit_trozkism_tt
+				add_to_variable = { COG_evolues_count_limit_@token:trozkism = 0.25 }
+				clamp_variable = { var = COG_evolues_count_limit_@token:trozkism max = 1 }
+				add_to_array = { COG_evolues_modifiers = 8 }
+			}
 			set_rule = { can_create_factions = yes }
 			create_faction = COG_section_fourth_international
 		}
@@ -2951,7 +3003,15 @@ focus_tree = {
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus COG_the_theory_of_permanent_revolution_for_peasants"
 			add_to_variable = { global.troz_threat_var = 0.5 tooltip = troz_threat_tt }
-			set_var_for_troz_threat_dyn = yes
+			set_var_for_troz_threat_dyn = yes #? !
+			every_state = {
+				limit = { is_original_congo_state = yes }
+				custom_effect_tooltip = COG_evolues_modifier_tooltip
+				custom_effect_tooltip = COG_evolues_increase_count_limit_trozkism_tt
+				add_to_variable = { COG_evolues_count_limit_@token:trozkism = 0.25 }
+				clamp_variable = { var = COG_evolues_count_limit_@token:trozkism max = 1 }
+				add_to_array = { COG_evolues_modifiers = 8 }
+			}
 			add_ideas = COG_theory_of_revolution_for_peasants
 		}
 	}
@@ -2973,6 +3033,7 @@ focus_tree = {
 			every_core_state = {
 				limit = { is_controlled_by = ROOT }
 				add_extra_state_shared_building_slots = 1
+				add_dynamic_modifier = { modifier = COG_collective_farming }
 			}
 		}
 	}
@@ -3263,9 +3324,23 @@ focus_tree = {
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus COG_advisors_from_moscow"
 			add_stability = 0.05
+			custom_effect_tooltip = "Эффективность программы «Ликбез» увеличится в 2 раза."
+			add_to_variable = { COG_pol_advisors_limit@SOV = 2 }
+			set_temp_variable = { COG_pol_advisors_limit@SOV = 2 } #for loc
 			SOV = {
-				set_temp_variable = { num_advisor = 2 }
-				COG_invite_advisors_effect = yes
+				if = {
+					limit = { has_government = communism } # is_left_ideology = yes
+					country_event = congo.78
+					custom_effect_tooltip = if_they_accept
+					event_option_tooltip = congo.78.a
+					# ивент ?
+				}
+				else = {
+					set_temp_variable = { cog_tag = ROOT }
+					set_temp_variable = { num_pol_advisors = cog_tag.COG_pol_advisors_limit@THIS }
+					set_temp_variable = { num_mil_advisors = cog_tag.COG_mil_advisors_limit@THIS }
+					COG_invite_advisors_effect = yes
+				}
 			}
 		}
 	}
@@ -3289,6 +3364,9 @@ focus_tree = {
 		prerequisite = {
 			focus = COG_advisors_from_moscow
 		}
+		available = {
+			has_completed_focus = COG_modernization_of_agriculture
+		}
 		ai_will_do = {
 			factor = 6
 		}
@@ -3297,7 +3375,12 @@ focus_tree = {
 		relative_position_id = COG_advisors_from_moscow
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus COG_collectivization"
-			add_ideas = collectivization_focus
+			add_stability = -0.05
+			every_controlled_state = {
+				limit = { is_original_congo_state = yes }
+				custom_effect_tooltip = unlock_decision_COG_collectivization_decision_tt
+			}
+			custom_effect_tooltip = COG_planned_economy_great_plus
 		}
 	}
 	focus = {
@@ -3387,15 +3470,16 @@ focus_tree = {
 			add_ideas = generic_ethics_for_war
 		}
 	}
-	focus = { #!
-		id = Военные_советники_из_СССР
+	focus = {
+		id = COG_military_advisors_from_USSR
 		icon = GFX_focus_generic_military_mission
-		cost = 0
+		cost = 5
 		prerequisite = {
 			focus = COG_ethics_of_war
 		}
 		available = {
 			has_war = yes
+			NOT = { has_war_with = SOV }
 		}
 		ai_will_do = {
 			factor = 6
@@ -3403,7 +3487,28 @@ focus_tree = {
 		x = -1
 		y = 6
 		relative_position_id = COG_advisors_from_moscow
-
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus COG_military_advisors_from_USSR"
+			add_war_support = 0.05
+			add_ideas = COG_military_advisors_from_USSR_idea
+			add_to_variable = { COG_mil_advisors_limit@SOV = 1 }
+			set_temp_variable = { COG_mil_advisors_limit@SOV = 1 } #for loc
+			SOV = {
+				if = {
+					limit = { has_government = communism } # is_left_ideology = yes
+					country_event = congo.78
+					custom_effect_tooltip = if_they_accept
+					event_option_tooltip = congo.78.a
+					# ивент ?
+				}
+				else = {
+					set_temp_variable = { cog_tag = ROOT }
+					set_temp_variable = { num_pol_advisors = cog_tag.COG_pol_advisors_limit@THIS }
+					set_temp_variable = { num_mil_advisors = cog_tag.COG_mil_advisors_limit@THIS }
+					COG_invite_advisors_effect = yes
+				}
+			}
+		}
 	}
 	focus = {
 		id = COG_renounce_the_politics_of_moscow
@@ -3424,11 +3529,6 @@ focus_tree = {
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus COG_renounce_the_politics_of_moscow"
 			add_political_power = 100
-			every_character = {
-				limit = { has_character_flag = COG_advisor@SOV }
-				set_nationality = SOV
-				clr_character_flag = COG_advisor@SOV
-			}
 			SOV = {
 				remove_opinion_modifier = {
 					target = ROOT
@@ -3465,6 +3565,15 @@ focus_tree = {
 		relative_position_id = COG_advisors_from_moscow
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus COG_african_international"
+			every_state = {
+				limit = { is_original_congo_state = yes }
+				custom_effect_tooltip = COG_evolues_modifier_tooltip
+				custom_effect_tooltip = COG_evolues_increase_count_limit_communism_tt
+				add_to_variable = { COG_evolues_count_limit_@token:communism = 0.25 }
+				clamp_variable = { var = COG_evolues_count_limit_@token:communism max = 1 }
+				add_to_array = { COG_evolues_modifiers = 9 }
+			}
+			
 			set_rule = { can_create_factions = yes }
 			create_faction = COG_african_international
 		}
@@ -3531,17 +3640,65 @@ focus_tree = {
 			country_event = congo.36
 		}
 	}
-	focus = { # !
-		id = Переход_на_плановую_экономику
+	focus = {
+		id = COG_planned_economy
 		icon = GFX_z_goal_krauch_plan
-		cost = 0
+		cost = 10
 		prerequisite = {
 			focus = COG_determine_the_course_of_the_party
 		}
 		x = 1
 		y = 5
 		relative_position_id = COG_advisors_from_moscow
-
+		completion_reward = { # ?
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus COG_planned_economy"
+			if = { # ? !
+				limit = { has_idea = COG_increased_salaries_of_workers_comm_2 }
+				swap_ideas = {
+					remove_idea = COG_increased_salaries_of_workers_comm_2
+					add_idea = COG_increased_salaries_of_workers_comm_3
+				}
+			}
+			else_if = {
+				limit = { has_idea = COG_increased_salaries_of_workers_troz_2 }
+				swap_ideas = {
+					remove_idea = COG_increased_salaries_of_workers_troz_2
+					add_idea = COG_increased_salaries_of_workers_troz_3
+				}
+			}
+			else_if = {
+				limit = { has_government = trozkism }
+				swap_ideas = {
+					remove_idea = COG_increased_salaries_of_workers_1
+					add_idea = COG_increased_salaries_of_workers_troz_3
+				}
+			}
+			else = {
+				swap_ideas = {
+					remove_idea = COG_increased_salaries_of_workers_1
+					add_idea = COG_increased_salaries_of_workers_comm_3
+				}
+			}
+			if = {
+				limit = { check_variable = { COG_planned_economy_lvl < 6 } }
+				add_ideas = COG_planned_economy_idea
+			}
+			else_if = {
+				limit = { check_variable = { COG_planned_economy_lvl < 12 } }
+				add_ideas = COG_planned_economy_idea_2
+			}
+			else = { 
+				add_ideas = COG_planned_economy_idea_3 
+			}
+			custom_effect_tooltip = "Эффективность идеи зависит от того, насколько страна готова к плановой экономике!" #?
+			if = {
+				limit = { check_variable = { COG_planned_economy_lvl < 12 } }
+				country_event = congo.80
+			}
+			else = {
+				country_event = congo.81
+			}
+		}
 	}
 	focus = {
 		id = COG_start_first_five_year_plan
@@ -3549,7 +3706,7 @@ focus_tree = {
 		icon = GFX_z_goal_Start_the_first_five_year_plan
 		cost = 10
 		prerequisite = {
-			focus = Переход_на_плановую_экономику
+			focus = COG_planned_economy
 		}
 		ai_will_do = {
 			factor = 6
@@ -3559,7 +3716,14 @@ focus_tree = {
 		relative_position_id = COG_advisors_from_moscow
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus COG_start_first_five_year_plan"
-			set_country_flag = { flag = COG_five_year_plan_flag days = 1835 value = 1 }
+			set_variable = { COG_five_year_plan_civ_factory = num_of_civilian_factories } #?
+			clamp_variable = { var = COG_five_year_plan_civ_factory min = 0 }
+			
+			set_variable = { COG_five_year_plan_arms_factory = num_of_military_factories }
+			clamp_variable = { var = COG_five_year_plan_arms_factory min = 0 }
+			
+			set_variable = { COG_five_year_plan_dockyard = num_of_naval_factories }
+			clamp_variable = { var = COG_five_year_plan_dockyard min = 0 }
 			activate_mission = COG_five_year_plan_ending
 		}
 	}
@@ -3605,8 +3769,13 @@ focus_tree = {
 			# }
 			add_political_power = 75
 			add_stability = 0.05
+			every_state = {
+				limit = { is_original_congo_state = yes }
+				custom_effect_tooltip = COG_evolues_modifier_tooltip
+				multiply_variable = { COG_evolues_bonus_factor = 2 tooltip = COG_evolues_increase_bonus_factor_2_tt }
+				add_to_array = { COG_evolues_modifiers = 1 }
+			}
 			add_ideas = COG_dominate_to_serve_idea #?
-			multiply_variable = { COG_evolues_bonus_coeff = 2 tooltip = COG_evolues_bonus_up_2_tooltip }
 		}
 	}
 	focus = {
@@ -5154,7 +5323,10 @@ focus_tree = {
 			focus = COG_belgian_dominion
 		}
 		available = {
-			always = no #?
+			custom_trigger_tooltip = {
+				tooltip = "§HКимбангисты подняли восстание.§!" #? !
+				always = no
+			}
 		}
 		x = 4
 		y = 4
@@ -5164,18 +5336,41 @@ focus_tree = {
 			custom_effect_tooltip = COG_banish_the_white_man_tt
 			unlock_decision_category_tooltip = COG_faith_in_the_prophet_simon_kimbangu
 			unlock_decision_tooltip = COG_demand_independence
+			
+			add_to_temp_array = { ideologies = token:democratic } #?? !!
+			add_to_temp_array = { ideologies = token:communism }
+			# add_to_temp_array = { ideologies = token:fascism }
+			add_to_temp_array = { ideologies = token:neutrality }
+			add_to_temp_array = { ideologies = token:technocracy }
+			add_to_temp_array = { ideologies = token:trozkism }
+			add_to_temp_array = { ideologies = token:monarchy }
+			add_to_temp_array = { ideologies = token:anarchism }
+			set_temp_variable = { curr_value = -0.25 }
+			every_state = {
+				limit = { is_original_congo_state = yes }
+				custom_effect_tooltip = COG_evolues_modifiers_tooltip
+				divide_variable = { COG_evolues_gain_factor = 2 tooltip = COG_evolues_decrease_gain_factor_2_tt }
+				divide_variable = { COG_evolues_gain_var = 2 }
+				round_variable = COG_evolues_gain_var
+				add_to_array = { COG_evolues_modifiers = 6 }
+				#
+				custom_effect_tooltip = COG_evolues_increase_count_limit_fascism_tt
+				COG_evolues_change_count_limit = yes
+				add_to_array = { COG_evolues_modifiers = 7 }
+			}
+			
 			if = {
 				limit = { has_completed_focus = COG_union_miniere_du_haut_katanga }
 				unlock_decision_tooltip = COG_nationalise_katanga_industries_decision
 				hidden_effect = { activate_targeted_decision = { decision = COG_nationalise_katanga_industries_decision target = ROOT } } #?
 			}
 			every_other_country = {
-				# limit = { has_decision } ?
 				add_opinion_modifier = {
 					target = ROOT
 					modifier = COG_international_intervention_1 #_2?
 				}
 			}
+			custom_effect_tooltip = "§HКрайне низкие отношения с соседними державами могут спровоцировать их военную интервенцию!§!" #? крупными
 		}
 	}
 	focus = {
@@ -5279,7 +5474,13 @@ focus_tree = {
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus COG_create_black_international_mission"
 			every_country = {
-				limit = { capital_scope = { is_on_continent = africa } NOT = { has_war_with = ROOT } } # is_in_array = { global.country_in_africa = THIS } ?
+				limit = { 
+					capital_scope = { is_on_continent = africa } NOT = { has_war_with = ROOT } 
+					if = {
+						limit = { original_tag = LIB }
+						NOT = { has_government = fascism }
+					}
+				}
 				add_opinion_modifier = {
 					target = ROOT
 					modifier = COG_international_african_mission
@@ -5288,12 +5489,25 @@ focus_tree = {
 					target = ROOT
 					modifier = COG_international_african_mission
 				}
+				add_opinion_modifier = {
+					target = ROOT
+					modifier = COG_international_african_mission_trade
+				}
+				reverse_add_opinion_modifier = {
+					target = ROOT
+					modifier = COG_international_african_mission_trade
+				}
 				add_ai_strategy = {
 					type = befriend
 					id = ROOT
 					value = 50
 				}
 			}
+			if = {
+				limit = { has_idea = COG_kimbangu_isolation }
+				add_ideas = limited_exports
+			}
+			unlock_decision_tooltip = COG_appeal_to_african_brothers
 		}
 	}
 	focus = {
@@ -5375,7 +5589,9 @@ focus_tree = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus COG_the_second_coming_of_christ"
 			if = {
 				limit = { has_character = COG_simon_kimbangu }
+				set_temp_variable = { COG_bj_faith_in_the_prophet_gain = 50 }
 				COG_simon_kimbangu = { add_country_leader_trait = black_jesus } #?
+				add_to_variable = { COG_bj_faith_in_the_prophet_gain = 50 }
 			}
 			custom_effect_tooltip = COG_the_second_coming_of_christ_tt
 			unlock_decision_category_tooltip = COG_building_christian_state
@@ -5408,10 +5624,11 @@ focus_tree = {
 				value = 5
 			}
 			295 = { add_dynamic_modifier = { modifier = COG_holy_city } }
-			if = { #?
+			
+			add_to_variable = { COG_fitp_goodness = 1 } #тут так
+			if = {
 				limit = { check_variable = { COG_faith_in_the_prophet > 30000 } }
 				custom_effect_tooltip = COG_simon_kimbangu_goodness_tooltip
-				add_to_variable = { COG_fitp_goodness = 1 } #?
 				
 				set_temp_variable = { goodness = 1 }
 				COG_simon_kimbangu_superpowers_update = yes
@@ -5529,10 +5746,11 @@ focus_tree = {
 					modifier = COG_international_intervention_2
 				}
 			}
-			if = { #?
+			
+			add_to_variable = { COG_fitp_aggressiveness = 1 } #тут так
+			if = {
 				limit = { check_variable = { COG_faith_in_the_prophet > 30000 } }
 				custom_effect_tooltip = COG_simon_kimbangu_aggressiveness_tooltip #??
-				add_to_variable = { COG_fitp_aggressiveness = 1 } #?
 				
 				set_temp_variable = { aggressiveness = 1 }
 				COG_simon_kimbangu_superpowers_update = yes
@@ -6125,8 +6343,12 @@ focus_tree = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus COG_sermonts_among_lost_souls"
 			# add_ideas = COG_sermonts_among_lost_souls ?
 			unlock_decision_tooltip = COG_sermonts_among_lost_souls_decision #?
-			custom_effect_tooltip = COG_simon_kimbangu_diplomaticness_tooltip
-			add_to_variable = { COG_fitp_diplomaticness = 1 }
+			
+			add_to_variable = { COG_fitp_diplomaticness = 1 } #тут так
+			if = {
+				limit = { check_variable = { COG_faith_in_the_prophet > 30000 } }
+				custom_effect_tooltip = COG_simon_kimbangu_diplomaticness_tooltip
+			}
 		}
 	}
 	

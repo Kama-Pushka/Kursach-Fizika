@@ -1,28 +1,13 @@
 on_actions = { # все проверки только в первом сценарии !!
 	
-	on_weekly_COG = {
+	on_weekly_COG = { # !!
 		effect = {
 			every_country_with_original_tag = {
 				original_tag_to_check = COG
+				log = "[THIS.GetName] ([THIS.GetTag]) GAY SEX"
 				if = { #?
 					limit = { has_idea = COG_assimilation_of_congolese }
-					nw_EvoluesIdea_ClearVar_ROOT = yes
-					nw_CongoGoogleMapsEvolues_ClearCountVar_ROOT = yes
-					every_controlled_state = {
-						limit = { is_original_congo_state = yes }
-						if = {
-							limit = { has_variable = COG_evolues_gain_var }
-							COG_add_evolues_in_state = yes
-						}
-						nw_CongoGoogleMapsEvolues_SetBonus_State = yes
-						nw_CongoGoogleMapsEvolues_SetBonus_ROOT = yes
-						nw_CongoGoogleMapsEvolues_SetCountVar_ROOT = yes
-						COG_evolues_calculate_state_lvl_pt1 = yes
-					}
-					nw_CongoGoogleMapsEvolues_MultiplyBonus_ROOT = yes
-					COG_evolues_calculate_state_lvl_pt2 = yes
-					COG_evolues_growth_update = yes
-					add_to_variable = { nw_CongoGoogleMapsEvolues_update = 1 }
+					COG_evolues_gain_effect = yes
 				}
 				
 				if = {
@@ -69,26 +54,74 @@ on_actions = { # все проверки только в первом сцена
 							#log = "[?temp_casualties_k] | [?COG_casualties_k] (THIS: [THIS.GetTag] PREV: [PREV.GetTag])"
 						}
 						add_to_variable = { COG_casualties_k = 1 }
-						add_to_variable = { PREV.COG_faith_in_the_prophet = 1000 }
+						add_to_variable = { PREV.COG_faith_in_the_prophet = 1000 } # ?? !!
+						add_to_temp_variable = { faith_update = 1 }
 					}
-					COG_simon_kimbangu_superpowers_update = yes #?
+				}
+				if = {
+					limit = { has_idea = COG_self_sacrifice has_war = yes }
+					#log = "REEEEEEEEEEE [This.GetTag]"
+					if = {
+						limit = {
+							set_temp_variable = { temp_casualties_k = COG_casualties_k }
+							add_to_temp_variable = { temp_casualties_k = 0.999 }
+							check_variable = { casualties_k > temp_casualties_k } # ? casualties_k > var:temp_casualties_k
+							#log = "[?temp_casualties_k] | [?COG_casualties_k] (THIS: [THIS.GetTag])"
+						}
+						add_to_variable = { COG_casualties_k = 1 }
+						add_to_variable = { COG_faith_in_the_prophet = 1000 } # ?? !!
+						add_to_temp_variable = { faith_update = 1 }
+					}
 				}
 				
-				if = { #?
+				if = {
 					limit = { has_country_leader_with_trait = black_jesus }
-					add_to_variable = { COG_faith_in_the_prophet = 14 }
-					COG_simon_kimbangu_superpowers_update = yes #?
+					add_to_variable = { COG_faith_in_the_prophet = COG_bj_faith_in_the_prophet_gain }
+					add_to_temp_variable = { faith_update = 1 }
 				}
-				if = { #?
+				if = {
 					limit = { 295 = { has_dynamic_modifier = { modifier = COG_holy_city } } }
-					add_to_variable = { COG_faith_in_the_prophet = 14 }
-					COG_simon_kimbangu_superpowers_update = yes #?
+					add_to_variable = { COG_faith_in_the_prophet = 100 }
+					add_to_temp_variable = { faith_update = 1 }
+				}
+				
+				if = {
+					limit = { has_variable = faith_update } #?? !
+					COG_kimbangu_isolation_modifier_update = yes
+					COG_simon_kimbangu_superpowers_update = yes
+				}
+				
+				if = {
+					limit = { has_idea = COG_help_from_comintern }
+					add_equipment_to_stockpile = {
+						type = infantry_equipment
+						amount = 35
+					}
+				}
+				if = {
+					limit = { has_idea = COG_help_from_SAF_trade_unions }
+					add_equipment_to_stockpile = {
+						type = infantry_equipment
+						amount = 35
+					}
+				}
+				
+				if = {
+					limit = { has_active_mission = COG_five_year_plan_ending }
+					set_variable = { COG_five_year_plan_civ_factory_built = num_of_civilian_factories }
+					subtract_from_variable = { COG_five_year_plan_civ_factory_built = COG_five_year_plan_civ_factory }
+					
+					set_variable = { COG_five_year_plan_arms_factory = num_of_military_factories }
+					subtract_from_variable = { COG_five_year_plan_arms_factory = COG_five_year_plan_civ_factory }
+					
+					set_variable = { COG_five_year_plan_dockyard = num_of_naval_factories }
+					subtract_from_variable = { COG_five_year_plan_dockyard = COG_five_year_plan_civ_factory }
 				}
 			}
 		}
 	}
 	
-	on_monthly_COG = { #??
+	on_monthly_COG = { # _COG !!
 		effect = {
 			every_country_with_original_tag = { #?
 				original_tag_to_check = COG
@@ -107,25 +140,6 @@ on_actions = { # все проверки только в первом сцена
 						controls_state = 1056 #?
 					}
 					country_event = congo.47
-				}
-				
-				if = {
-					limit = {
-						OR = {
-							AND = {
-								has_country_flag = COG_advisorsSOV
-								any_character = { is_political_advisor = yes has_character_flag = COG_advisorSOV } 
-							}
-							AND = {
-								has_country_flag = COG_advisorsSAF 
-								any_character = { is_political_advisor = yes has_character_flag = COG_advisorSAF } 
-							}
-						}
-					}
-					random_list = { #?
-						1 = { SOV = { country_event = congo.79 } }
-						1 = { SAF = { country_event = congo.79 } }
-					}
 				}
 			}
 		}
@@ -296,6 +310,17 @@ on_actions = { # все проверки только в первом сцена
 						state_event = { id = congo.56 days = 13 hours = 1 trigger_for = controller }
 					}
 					#ROOT = { activate_targeted_decision = { target = 871 decision = COG_integrate_kingdom_mission } }
+				}
+			}
+		}
+	}
+	
+	on_puppet = {
+		effect = {
+			ROOT = {
+				if = { 
+					limit = { has_focus_tree = nw_COG_focus }
+					COG_focus_tree_update = yes
 				}
 			}
 		}
