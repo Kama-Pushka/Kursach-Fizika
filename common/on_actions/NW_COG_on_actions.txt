@@ -1,10 +1,10 @@
 on_actions = { # все проверки только в первом сценарии !!
 	
-	on_weekly_COG = { # !!
+	on_weekly_SAI = {
 		effect = {
 			every_country_with_original_tag = {
 				original_tag_to_check = COG
-				log = "[THIS.GetName] ([THIS.GetTag]) GAY SEX"
+				log = "[THIS.GetName] ([THIS.GetTag]) WEEKLY CHECKS"
 				if = { #?
 					limit = { has_idea = COG_assimilation_of_congolese }
 					COG_evolues_gain_effect = yes
@@ -21,7 +21,7 @@ on_actions = { # все проверки только в первом сцена
 				if = { #? !
 					limit = {
 						has_completed_focus = COG_belgian_dominion
-						has_idea = POR_pedro_8 #!
+						has_idea = POR_pedro_8
 						has_dynamic_modifier = { modifier = COG_disloyal_administration_of_tribal_leaders }
 					}
 					country_event = congo.37
@@ -40,38 +40,59 @@ on_actions = { # все проверки только в первом сцена
 				
 				if = {
 					limit = { has_completed_focus = COG_banish_the_white_man has_war = yes }
-					#log = "REEEEEEEEEEE [This.GetTag]"
 					every_enemy_country = {
-						limit = {
-							capital_scope = { is_on_continent = europe }
-							
-							set_temp_variable = { temp_casualties_k = COG_casualties_k }
-							add_to_temp_variable = { temp_casualties_k = 0.999 }
-							casualties_inflicted_by = {
-								opponent = PREV
-								thousands > var:temp_casualties_k
+						limit = { capital_scope = { is_on_continent = europe } }
+						set_temp_variable = { COG_casualties_k_loc = COG_casualties_k } #for log
+						if = {
+							limit = { 
+								set_temp_variable = { temp_casualties_k = COG_casualties_k }
+								add_to_temp_variable = { temp_casualties_k = 99.999 }
+								casualties_inflicted_by = {
+									opponent = PREV
+									thousands > var:temp_casualties_k
+								}
 							}
-							#log = "[?temp_casualties_k] | [?COG_casualties_k] (THIS: [THIS.GetTag] PREV: [PREV.GetTag])"
+							add_to_variable = { COG_casualties_k = 100 }
+							add_to_variable = { PREV.COG_faith_in_the_prophet = 100000 }
 						}
-						add_to_variable = { COG_casualties_k = 1 }
-						add_to_variable = { PREV.COG_faith_in_the_prophet = 1000 } # ?? !!
+						else_if = {
+							limit = { 
+								set_temp_variable = { temp_casualties_k = COG_casualties_k }
+								add_to_temp_variable = { temp_casualties_k = 9.999 }
+								casualties_inflicted_by = {
+									opponent = PREV
+									thousands > var:temp_casualties_k
+								} 
+							}
+							add_to_variable = { COG_casualties_k = 10 }
+							add_to_variable = { PREV.COG_faith_in_the_prophet = 10000 }
+						}
+						else_if = {
+							limit = {
+								set_temp_variable = { temp_casualties_k = COG_casualties_k }
+								add_to_temp_variable = { temp_casualties_k = 0.999 }
+								casualties_inflicted_by = {
+									opponent = PREV
+									thousands > var:temp_casualties_k
+								}
+							}
+							add_to_variable = { COG_casualties_k = 1 }
+							add_to_variable = { PREV.COG_faith_in_the_prophet = 1000 }
+						}
+						else = { set_temp_variable = { temp_casualties_k = 0 } }
+						log = "COG_add_faith_from_casualties (THIS: [THIS.GetTag] PREV: [PREV.GetTag]) casualties [?temp_casualties_k] | recorded casualties [?COG_casualties_k_loc]"
 						add_to_temp_variable = { faith_update = 1 }
 					}
 				}
 				if = {
 					limit = { has_idea = COG_self_sacrifice has_war = yes }
-					#log = "REEEEEEEEEEE [This.GetTag]"
-					if = {
-						limit = {
-							set_temp_variable = { temp_casualties_k = COG_casualties_k }
-							add_to_temp_variable = { temp_casualties_k = 0.999 }
-							check_variable = { casualties_k > temp_casualties_k } # ? casualties_k > var:temp_casualties_k
-							#log = "[?temp_casualties_k] | [?COG_casualties_k] (THIS: [THIS.GetTag])"
-						}
-						add_to_variable = { COG_casualties_k = 1 }
-						add_to_variable = { COG_faith_in_the_prophet = 1000 } # ?? !!
-						add_to_temp_variable = { faith_update = 1 }
-					}
+					set_temp_variable = { temp_casualties = casualties }
+					subtract_from_temp_variable = { temp_casualties = COG_casualties }
+					log = "COG_add_faith_from_casualties (COG_self_sacrifice) (THIS: [THIS.GetTag]) new casualties [?temp_casualties] | recorded casualties [?COG_casualties] casualties [?casualties_k]"
+					
+					add_to_variable = { COG_casualties = temp_casualties }
+					add_to_variable = { COG_faith_in_the_prophet = temp_casualties }
+					add_to_temp_variable = { faith_update = 1 }
 				}
 				
 				if = {
@@ -86,9 +107,10 @@ on_actions = { # все проверки только в первом сцена
 				}
 				
 				if = {
-					limit = { has_variable = faith_update } #?? !
+					limit = { check_variable = { faith_update > 0 } }
 					COG_kimbangu_isolation_modifier_update = yes
 					COG_simon_kimbangu_superpowers_update = yes
+					# clear_variable = faith_update
 				}
 				
 				if = {
@@ -121,7 +143,7 @@ on_actions = { # все проверки только в первом сцена
 		}
 	}
 	
-	on_monthly_COG = { # _COG !!
+	on_monthly_SAI = {
 		effect = {
 			every_country_with_original_tag = { #?
 				original_tag_to_check = COG
@@ -141,6 +163,15 @@ on_actions = { # все проверки только в первом сцена
 					}
 					country_event = congo.47
 				}
+			}
+		}
+	}
+	
+	on_peace = {
+		effect = {
+			if = {
+				limit = { has_variable = COG_casualties_k }
+				clear_variable = COG_casualties_k
 			}
 		}
 	}

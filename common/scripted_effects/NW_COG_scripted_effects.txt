@@ -482,6 +482,12 @@ COG_install_some_stuff_PREVPREV = {
 			set_variable = { COG_td_stability_factor = PREV.COG_td_stability_factor }
 		}
 	}
+	if = {
+		limit = { has_dynamic_modifier = { modifier = COG_evolues_idea } }
+		PREV = {
+			add_dynamic_modifier = { modifier = COG_evolues_idea }
+		}
+	}
 }
 
 COG_simon_kimbangu_superpowers_update = { #? log !
@@ -672,7 +678,7 @@ COG_simon_kimbangu_superpowers_update = { #? log !
 	# goodness - 1
 	# aggressiveness - 2
 	# diplomaticness - 3
-	log = "[GetDateText]: [ROOT.GetName] ([ROOT.GetTag]): COG_simon_kimbangu_superpowers_update: lvl [?lvl], old trait [?old_tier], new trait [?tier]"
+	log = "[GetDateText]: [THIS.GetName] ([THIS.GetTag]): COG_simon_kimbangu_superpowers_update: lvl [?lvl], old trait [?old_tier], new trait [?tier]"
 }
 
 COG_poor_education_of_congolese_update = {
@@ -849,13 +855,23 @@ COG_collectivization_effect = {
 		clr_state_flag = COG_start_collectivization_flag
 		set_state_flag = COG_collectivization_flag
 	}
-	if = { #?
+	if = {
+		limit = { 
+			has_dynamic_modifier = { modifier = COG_underdeveloped_tribal_agriculture } 
+			check_variable = { COG_local_farmers_program_count > 5 }
+		}
+		remove_dynamic_modifier = { modifier = COG_underdeveloped_tribal_agriculture }
+		clear_variable = COG_local_farmers_program_count
+	}
+	else_if = { #?
 		limit = { has_dynamic_modifier = { modifier = COG_underdeveloped_tribal_agriculture } }
 		custom_effect_tooltip = COG_underdeveloped_tribal_agriculture_tooltip
 		add_to_variable = { COG_udta_monthly_population = 0.025 tooltip = monthly_population_tooltip }
+		add_to_variable = { COG_udta_consumer_goods_factor = 0.05 tooltip = consumer_goods_factor_tooltip }
 		add_to_variable = { COG_udta_global_building_slots_factor = 0.075 tooltip = global_building_slots_tooltip }
 		add_to_variable = { COG_udta_production_speed_buildings_factor = 0.015 tooltip = production_speed_buildings_tooltip }
 		custom_effect_tooltip = empty_line_tooltip
+		add_to_variable = { COG_local_farmers_program_count = 1 } #??
 	}
 	if = { #?
 		limit = { has_dynamic_modifier = { modifier = COG_collectivization_idea } }
