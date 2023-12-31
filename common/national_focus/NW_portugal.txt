@@ -878,10 +878,13 @@ focus_tree = {
 		}
 		available = {
 			SPR_scw_in_progress = yes
-			any_country_with_original_tag = {
-				original_tag_to_check = SPA
-				exists = yes
-				has_completed_focus = SPA_the_phalanx_ascendant
+			OR = {
+			    any_country_with_original_tag = {
+				    original_tag_to_check = SPA
+				    exists = yes
+				    has_completed_focus = SPA_the_phalanx_ascendant
+				}
+		        country_exists = CAS
 			}
 		}
 		bypass = {
@@ -6269,8 +6272,16 @@ focus_tree = {
 		}
 		available = {
 			SPR_scw_in_progress = yes
-			country_exists = SPA	
-			NOT = { has_war_with = SPA }
+			OR = {
+			    AND = {
+				    country_exists = SPA
+				    NOT = { has_war_with = SPA }
+				}
+			    AND = {
+				    country_exists = SEU
+				    NOT = { has_war_with = SEU }	
+				}
+			}
 		}
 		bypass = {
 		}
@@ -6301,16 +6312,34 @@ focus_tree = {
 			army_experience = 10
 			air_experience = 20
 			hidden_effect = {
-				add_ai_strategy = {
-					type = befriend
-					id = SPA
-					value = 100
-				}
-				SPA = {
-					add_ai_strategy = {
-						type = befriend
-						id = POR
-						value = 100
+				if = {
+					limit = { country_exists = SPA }
+		            add_ai_strategy = {
+					    type = befriend
+					    id = SPA
+					    value = 100
+				    }
+					SPA = {
+						add_ai_strategy = {
+							type = befriend
+							id = POR
+							value = 100
+						}
+					}
+					else_if = {
+						limit = { country_exists = SEU }
+		           		add_ai_strategy = {
+					  	   type = befriend
+					 	   id = SEU
+					 	   value = 100
+				    	}
+						SEU = {
+							add_ai_strategy = {
+								type = befriend
+								id = POR
+								value = 100
+							}	
+						}
 					}
 				}
 			}
@@ -6373,6 +6402,13 @@ focus_tree = {
 						}
 					}
 				}
+				AND = {
+					country_exists = SEU
+					SPA = {
+						has_war = no 
+						is_in_faction = no
+					}
+				}
 			}
 			OR = {
 				country_exists = GER
@@ -6422,6 +6458,7 @@ focus_tree = {
 				has_government = democratic
 				has_government = communism
 			}
+			NOT = { country_exists = SEU }
 			NOT = { country_exists = SPA }
 			any_of_scopes = {
 				array = global.is_literally_spain
