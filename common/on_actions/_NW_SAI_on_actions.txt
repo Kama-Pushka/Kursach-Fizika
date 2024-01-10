@@ -176,6 +176,39 @@ on_actions = {
 	
 	on_weekly_SAI = {
 		effect = {
+### CHI ### #Удержание позиций // Миссия для is_literally_china
+			if = {
+				limit = {
+					all_of_scopes = {
+						array = global.is_literally_china
+						all_core_state = { controller = { NOT = { tag = JAP is_subject_of = JAP is_in_faction_with = JAP } } }
+					}
+					KOR = { all_core_state = { controller = { NOT = { tag = JAP is_subject_of = JAP is_in_faction_with = JAP } } } }
+				}
+				random_scope_in_array = {
+					array = global.is_literally_china
+					limit = { exists = yes has_country_flag = china_declare_government_flag }
+					if = {
+						limit = { has_country_flag = JAP_offer_peace_to_Japan_flag }
+						clr_country_flag = JAP_offer_peace_to_Japan_flag
+					}
+					activate_mission = JAP_holding_positions_mission
+				}
+			}
+### BRM ### #Борьба коммунистов // Залупа BRM
+			random_country_with_original_tag = {
+				original_tag_to_check = BRM
+				limit = {
+					has_government = trozkism
+					has_completed_focus = BRM_burmese_martyrs_day
+					NOT = { has_country_flag = BRM_the_struggle_for_power_category_BLOCK_flag }
+				}
+				add_to_variable = { BRM_clear_party_var = modifier@BRM_clear_party_var_weekly_modifier }
+				subtract_from_variable = { BRM_stable_party_var = modifier@BRM_clear_party_var_weekly_modifier }
+				add_to_variable = { BRM_stable_party_var = modifier@BRM_stable_party_var_weekly_modifier }
+				subtract_from_variable = { BRM_clear_party_var = modifier@BRM_stable_party_var_weekly_modifier }
+				BRM_the_struggle_for_power_effect = yes
+			}
 ### HOL ### #Пропаганда // Нацдух HOL
 			HOL = {
 				if = {
@@ -533,7 +566,11 @@ on_actions = {
 					}
 				}
 			}
-			
+			every_country_with_original_tag = {
+				original_tag_to_check = BRM
+				add_to_variable = { BRM_burmese_currency_var = modifier@BRM_burmese_currency_var_monthly_modifier }
+				BRM_burmese_currency_effect = yes
+			}
 			
 #			if = {
 #				limit = {
