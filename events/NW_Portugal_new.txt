@@ -1211,6 +1211,10 @@ country_event = {
 				complete_national_focus = POR_involve_military_to_maintain_order
 				reset_anarchism_party_name = yes
 				
+				add_dynamic_modifier = { modifier = POR_corporate_state_dyn }
+				set_variable = { POR_building_corporate_state = ROOT.POR_building_corporate_state }
+				POR_corporate_state_dyn_calculate = yes
+				
 				ROOT = {
 					every_character = {
 						limit = {
@@ -1842,6 +1846,10 @@ country_event = {
 					complete_national_focus = POR_restoration_of_monarchy
 				}
 				
+				add_dynamic_modifier = { modifier = POR_corporate_state_dyn }
+				set_variable = { POR_building_corporate_state = ROOT.POR_building_corporate_state }
+				POR_corporate_state_dyn_calculate = yes
+				
 				ROOT = {
 					every_character = {
 						limit = {
@@ -1930,6 +1938,7 @@ country_event = {
 				load_focus_tree = { tree = nw_portugal_focus keep_completed = yes }
 				POR_focus_synchronization = yes
 				complete_national_focus = POR_formation_of_popular_front
+				set_variable = { POR_building_corporate_state = ROOT.POR_building_corporate_state }
 				
 				ROOT = {
 					every_character = {
@@ -2357,6 +2366,9 @@ country_event = {
 			keep_all_characters = no
 			size = 0.5
 			hidden_effect = {
+				add_dynamic_modifier = { modifier = POR_corporate_state_dyn }
+				set_variable = { POR_building_corporate_state = ROOT.POR_building_corporate_state }
+				POR_corporate_state_dyn_calculate = yes
 				ROOT = {
 					every_character = {
 						limit = {
@@ -2478,7 +2490,7 @@ country_event = {
 	}
 }
 
-# Восстание Коммунистической партии Португалии // POR
+# Антифашистское восстание // POR // is_in_faction_with = GER
 country_event = {
 	id = NWportugal.60
 	title = NWportugal.60.t
@@ -2517,6 +2529,9 @@ country_event = {
 			keep_all_characters = no
 			size = 0.5
 			hidden_effect = {
+				add_dynamic_modifier = { modifier = POR_corporate_state_dyn }
+				set_variable = { POR_building_corporate_state = ROOT.POR_building_corporate_state }
+				POR_corporate_state_dyn_calculate = yes
 				ROOT = {
 					every_character = {
 						limit = {
@@ -2855,39 +2870,48 @@ country_event = {
 	option = {
 		name = NWportugal.66.a
 		set_politics = { ruling_party = fascism elections_allowed = no }
+		complete_national_focus = POR_revolt_against_salazar_regime
+		if = {
+			limit = { has_completed_focus = POR_formation_of_popular_front }
+			uncomplete_national_focus = { focus = POR_formation_of_popular_front		uncomplete_children = yes }
+		}
+		
 		start_civil_war = {
 			ideology = neutrality #SPLITTING TAG
 			states = all
 			keep_all_characters = no
 			size = 0.6
-		}
-		complete_national_focus = POR_revolt_against_salazar_regime
-		hidden_effect = {
-			if = {
-				limit = { has_completed_focus = POR_formation_of_popular_front }
-				uncomplete_national_focus = { focus = POR_formation_of_popular_front		uncomplete_children = yes }
-			}
-			ROOT = {
+			hidden_effect = {
+				add_dynamic_modifier = { modifier = POR_corporate_state_dyn }
+				set_variable = { POR_building_corporate_state = ROOT.POR_building_corporate_state }
+				POR_corporate_state_dyn_calculate = yes
+	
+				if = {
+					limit = { has_completed_focus = POR_formation_of_popular_front }
+					uncomplete_national_focus = { focus = POR_formation_of_popular_front		uncomplete_children = yes }
+				}
+				ROOT = {
+					every_character = {
+						limit = {
+							NOT = {
+								has_trait = block_trait
+								has_character_flag = POR_cw_character_integralist_side_flag
+								has_character_flag = POR_cw_character_monarchist_side_flag
+							}
+						}
+						set_nationality = PREV.PREV
+					}
+				}
 				every_character = {
 					limit = {
-						NOT = {
-							has_trait = block_trait
+						NOT = { has_trait = block_trait }
+						OR = {
 							has_character_flag = POR_cw_character_integralist_side_flag
 							has_character_flag = POR_cw_character_monarchist_side_flag
 						}
 					}
-					set_nationality = PREV.PREV
+					set_nationality = ROOT
 				}
-			}
-			every_character = {
-				limit = {
-					NOT = { has_trait = block_trait }
-					OR = {
-						has_character_flag = POR_cw_character_integralist_side_flag
-						has_character_flag = POR_cw_character_monarchist_side_flag
-					}
-				}
-				set_nationality = ROOT
 			}
 		}
 	}
