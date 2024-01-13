@@ -1,0 +1,433 @@
+#	THIS FILE IS FOR on_actions SPECIFICALLY FOR THE chinese TAGs
+
+on_actions = { # Общекитайские мехи
+
+	on_daily = {
+		effect = {
+			if = { # ??
+				limit = { has_country_flag = chinese_integration_of_province_flag }
+				set_variable = { china_integration_of_province_time = 120 }
+				
+				set_temp_variable = { multiplier = 1 }
+				add_to_temp_variable = { multiplier = modifier@china_integration_of_province_time_modifier }
+				multiply_variable = { china_integration_of_province_time = multiplier }
+			}
+		}
+	}
+	
+	# ROOT is new controller, FROM is old controller, FROM.FROM is state ID. 
+	on_state_control_changed = {
+		effect = {
+			if = {
+				limit = { is_in_array = { global.chinese_state = FROM.FROM } }
+				for_loop_effect = {
+					start = FROM.FROM.china_left_border
+					end = FROM.FROM.china_right_border
+					value = v
+					
+					add_to_array = { check_state = global.chinese_state^v }
+				}
+				if = {
+					limit = {
+						any_of = { #переделать под scope ?
+							array = check_state
+							value = state
+							
+							var:state = { NOT = { is_controlled_by = FROM } }
+						}
+					}
+					FROM = {
+						meta_effect = {
+							text = {
+								remove_targeted_decision = { target = [STATE] decision = china_integrate_province }
+								if = {
+									limit = { is_in_array = { chinese_integrate_province_state_map = [STATE] } }
+									remove_from_array = { chinese_integrate_province_state_map = [STATE] }
+								}
+							}
+							STATE = "[?FROM.FROM.china_capital_of_province]"
+						}
+					}
+				}
+				if = {
+					limit = {
+						any_of = {
+							array = check_state
+							value = state
+							
+							var:state = { NOT = { is_core_of = ROOT } }
+						}
+						all_of = {
+							array = check_state
+							value = state
+							
+							var:state = { is_controlled_by = ROOT }
+						}
+					}
+					ROOT = {
+						meta_effect = {
+							text = {
+								activate_targeted_decision = { target = [STATE] decision = china_integrate_province } 
+								if = {
+									limit = { NOT = { is_in_array = { chinese_integrate_province_state_map = [STATE] } } }
+									add_to_array = { chinese_integrate_province_state_map = [STATE] }
+								}
+							}
+							STATE = "[?FROM.FROM.china_capital_of_province]" 
+						}
+					}
+				}
+				clear_array = check_state
+				log = "[GetDateText] [FROM.FROM.GetName] [FROM.FROM.GetID]: check china_integrate_province decision trigger (ROOT: [ROOT.GetTag] FROM: [FROM.GetTag])"
+			}
+		}
+	}
+}
+
+on_actions = { # Китайские страны, с небольшим кол-вом экшонов
+
+	### NGX ###
+	
+	on_monthly_NGX = {
+		effect = {
+			if = {
+				limit = {
+					has_completed_focus = NGX_birth_of_a_new_nation
+					NOT = { has_country_flag = NGX_hui_nation_formed }
+				}
+				if = {
+					limit = {
+						NOT = { check_variable = { modifier@hui_nationalism_gain = 0 } }
+					}
+					add_to_variable = { NGX_hui_nationalism = modifier@hui_nationalism_gain }
+					clamp_variable = {
+						var = NGX_hui_nationalism
+						max = 100
+						min = 0
+					}
+				}
+				if = {
+					limit = {
+						check_variable = { NGX_hui_nationalism < 20 }
+					}
+					remove_ideas = {
+						NGX_very_weak_hui_nationalism
+						NGX_weak_hui_nationalism
+						NGX_growing_hui_nationalism
+						NGX_strong_hui_nationalism
+					}
+					add_ideas = NGX_no_hui_nationalism
+					add_ideas = very_low_legitimacy
+				}
+				if = {
+					limit = {
+						AND = {
+							check_variable = { NGX_hui_nationalism > 20 }
+							check_variable = { NGX_hui_nationalism < 41 }
+						}
+					}
+					remove_ideas = {
+						NGX_no_hui_nationalism
+						NGX_weak_hui_nationalism
+						NGX_growing_hui_nationalism
+						NGX_strong_hui_nationalism
+					}
+					add_ideas = NGX_very_weak_hui_nationalism
+					add_ideas = low_legitimacy
+				}
+				if = {
+					limit = {
+						AND = {
+							check_variable = { NGX_hui_nationalism > 40 }
+							check_variable = { NGX_hui_nationalism < 61 }
+						}
+					}
+					remove_ideas = {
+						NGX_no_hui_nationalism
+						NGX_very_weak_hui_nationalism
+						NGX_growing_hui_nationalism
+						NGX_strong_hui_nationalism
+					}
+					add_ideas = NGX_weak_hui_nationalism
+					add_ideas = normal_legitimacy
+				}
+				if = {
+					limit = {
+						AND = {
+							check_variable = { NGX_hui_nationalism > 60 }
+							check_variable = { NGX_hui_nationalism < 81 }
+						}
+					}
+					remove_ideas = {
+						NGX_no_hui_nationalism
+						NGX_very_weak_hui_nationalism
+						NGX_weak_hui_nationalism
+						NGX_strong_hui_nationalism
+					}
+					add_ideas = NGX_growing_hui_nationalism
+				}
+				if = {
+					limit = {
+						check_variable = { NGX_hui_nationalism > 80 }
+					}
+					remove_ideas = {
+						NGX_no_hui_nationalism
+						NGX_very_weak_hui_nationalism
+						NGX_weak_hui_nationalism
+						NGX_growing_hui_nationalism
+					}
+					add_ideas = NGX_strong_hui_nationalism
+				}
+			}
+		}
+	}
+	
+	on_state_control_changed = {
+		effect = {
+			if = {
+				limit = {
+					FROM.FROM = {
+						has_state_flag = NGX_resistance_to_hui_nationalism_flag
+					}
+				}
+				if = {
+					limit = { ROOT = { NOT = { original_tag = NGX } } }
+					FROM.FROM = {
+						remove_dynamic_modifier = {
+							modifier = NGX_resistance_to_hui_nationalism
+						}
+					}
+					add_to_variable = {
+						var = NGX.resisting_states
+						value = 1
+					}
+				}
+				else_if = {
+					limit = {
+						ROOT = {
+							original_tag = NGX
+							has_completed_focus = NGX_birth_of_a_new_nation
+							OR = {
+								has_idea = NGX_no_hui_nationalism
+								has_idea = NGX_very_weak_hui_nationalism
+								has_idea = NGX_weak_hui_nationalism
+								has_idea = NGX_growing_hui_nationalism
+								has_idea = NGX_strong_hui_nationalism
+							}
+						}
+					}
+					FROM.FROM = {
+						add_dynamic_modifier = {
+							modifier = NGX_resistance_to_hui_nationalism
+						}
+					}
+					add_to_variable = {
+						var = NGX.resisting_states
+						value = -1
+					}
+				}					
+			}
+			if = {
+				limit = {
+					FROM.FROM = { state = 1125 }
+				}
+				if = {
+					limit = { ROOT = { NOT = { original_tag = NGX } } }
+					FROM.FROM = {
+						remove_dynamic_modifier = {
+							modifier = NGX_gansu_autonomy
+						}
+					}
+				}
+				else_if = {
+					limit = {
+						ROOT = {
+							original_tag = NGX
+							has_character = NGX_ma_hongbin
+						}
+					}
+					FROM.FROM = {
+						add_dynamic_modifier = {
+							modifier = NGX_gansu_autonomy
+						}
+					}
+				}					
+			}
+		}
+	}
+	
+	### CSR ###
+	
+	on_daily_CSR = {
+		effect = {
+			### УГОЛЬ
+			if = {
+				limit = {
+					NOT = { check_variable = { modifier@coal_gain = 0 } }
+				}
+				add_to_variable = { coal_var_total = modifier@coal_gain }
+			}
+		}
+	}
+	
+	### EHB ###
+	
+	on_startup = {
+		effect = {
+			if = {
+				limit = {
+					has_start_date < 1936.01.02
+				}
+				EHB = {
+					country_event = { id = hebei.4 days = 2 }
+					country_event = { id = hebei.5 days = 192 }
+				}
+			}
+		}	
+	}
+	
+	### KUM ###
+	
+	on_startup = {
+		effect = {
+			#Кумуль стартпак
+			if = {
+				limit = {
+					has_start_date < 1936.1.2
+				}
+				KUM = {
+					country_event = { id = NWkumul.12 days = 5 }		#Исторические очерки
+					country_event = { id = NWkumul.13221 days = 638 }	#Прибытие колонны КПК
+					country_event = { id = NWkumul.01121 days = 211 }	#Чек дынь. Ежегодный пульсар
+				}
+				SIK = {
+					country_event = { id = NWkumul.13221 days = 638 }	#Прибытие колонны КПК
+				}
+			}
+			if = {
+				limit = { # ?
+					has_start_date > 1936.1.2
+					has_start_date < 1939.9.1
+				}
+				KUM = {
+					country_event = { id = NWkumul.01121 days = 352 }	#Чек дынь. Ежегодный пульсар 
+					country_event = { id = NWkumul.1150 days = 1 }		#Урожай середины августа. Пульсар
+				}
+			}
+		}
+	}
+	
+	### TNG ###
+	
+	on_startup = {
+		effect = {
+			#Тунганистан стартпак
+			if = {
+				limit = {
+					has_start_date < 1936.1.2
+				}
+				TNG = {
+					country_event = { id = NWtunganistan.0 days = 166 }	#Новости с Тартарии: путешествие из Пекина в Кашмир
+					country_event = { id = NWtunganistan.300 days = 486 }	#Терпение кончилось 1 мая 1937
+				}
+			}
+		}
+	}
+	
+	on_daily_TNG = {
+		effect = {
+			#Опиумная зависимость армии
+			if = {
+				limit = { num_divisions < 6 }
+				set_variable = { opium_var_daily = -4 }
+				else_if = {
+					limit = { num_divisions < 11 }
+					set_variable = { opium_var_daily = -4 }
+				}
+				else_if = {
+					limit = { num_divisions < 25 }
+					set_variable = { opium_var_daily = -8 }
+				}
+				else_if = {
+					limit = { num_divisions < 51 }
+					set_variable = { opium_var_daily = -16 }
+				}
+				else_if = {
+					limit = { num_divisions > 50 }
+					set_variable = { opium_var_daily = -32 }
+				}
+			}
+			if = {
+				limit = {
+					check_variable = { TNG_opium_total = 0 }
+					NOT = { has_idea = TNG_lack_of_opium_for_the_army }
+				}
+				add_ideas = TNG_lack_of_opium_for_the_army
+			}
+			if = {
+				limit = {
+					check_variable = { TNG_opium_total > 0 }
+					NOT = { has_dynamic_modifier = { modifier = TNG_army_opium_addiction_dyn } }
+				}
+				add_dynamic_modifier = { modifier = TNG_army_opium_addiction_dyn }
+			}
+			if = {
+				limit = {
+					has_dynamic_modifier = { modifier = TNG_army_opium_addiction_dyn }
+					NOT = { check_variable = { modifier@opium_bonus = 0 } }
+				}
+				add_to_variable = { TNG_opium_total = modifier@opium_bonus }
+				clamp_variable = { var = TNG_opium_total min = 0 max = 99999 }
+			}
+		}
+	}
+	
+	#ROOT = country that joined a war
+	on_war = {
+		effect = {
+			if = {
+				limit = {
+					tag = TNG
+					has_war_with = SIK
+					NOT = { has_country_flag = TNG_patience_is_over_flag }
+					has_country_leader = { name = "Ma Hushan" ruling_only = yes } # ?
+				}
+				country_event = { id = NWtunganistan.3 }
+			}
+		}
+	}
+	
+	#ROOT is winner #FROM is loser
+	on_peaceconference_ended = {
+		effect = {
+			if = {
+				limit = {
+					FROM = { tag = SIK }
+					ROOT = {
+						tag = TNG
+						has_completed_focus = TNG_smash_the_traitor_shitsai
+					}
+				}
+				ROOT = {
+					set_capital = { state = 617 }
+					set_cosmetic_tag = SIK
+				}
+			}
+		}
+	}
+	
+	### XIK ###
+	
+	on_startup = {
+		effect = {
+			if = {
+				limit = {
+					has_start_date < 1936.01.02
+				}
+				XIK = {
+					country_event = { id = NWxikan.1 days = 2 }
+				}
+			}
+		}	
+	}
+}

@@ -1,0 +1,3618 @@
+﻿###########################
+# Manchukou Events
+########################### 
+
+add_namespace = manchukou
+add_namespace = manchukou_hidden
+
+country_event = { #Инцидент с Худжунами
+	id = manchukou.1
+	title = manchukou.1.t
+	desc = manchukou.1.d
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event manchukou.1" }
+	
+	option = {
+		name = manchukou.1.a
+		remove_advisor_role = {
+			character = "MAN_Tong_Jixu"
+			slot = political_advisor
+		}
+	}
+	option = {
+		name = manchukou.1.b
+		add_political_power = -25
+		add_stability = -0.1
+	}
+}
+
+country_event = { #Время мести
+	id = manchukou.2
+	title = manchukou.2.t
+	desc = manchukou.2.d
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event manchukou.2" }
+	
+	option = {
+		name = manchukou.2.a
+		CSR = { country_event = { id = manchukou.3 days = 30 } }
+	}
+	option = {
+		name = manchukou.2.b
+	}
+}
+
+country_event = { #Пополнении армии - CSR
+	id = manchukou.3
+	title = manchukou.3.t
+	desc = manchukou.3.d
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event manchukou.3" }
+	
+	option = {
+		name = manchukou.3.a
+		hidden_effect = { 
+			MAN = { 
+				set_country_flag = { flag = timer_60_days days = 60 value = 1 }
+				country_event = { id = manchukou_hidden.1 days = 60 }
+			}
+		}
+	}
+}
+
+country_event = { #Проверка на 
+	id = manchukou_hidden.1
+	
+	hidden = yes
+	is_triggered_only = yes
+	
+	immediate = { 
+		log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event manchukou_hidden.1"
+		if = {
+			limit = { 
+				has_country_flag = event_MEN_Informant_in_CSR_army #name ?
+			}
+			MEN = { country_event = manchukou.9 }
+			clr_country_flag = event_MEN_Informant_in_CSR_army
+		}
+		else = {
+			country_event = { id = manchukou_hidden.2 days = 50 }
+		}
+	}
+	
+}
+
+country_event = { #Убийство императора - проверка
+	id = manchukou_hidden.2
+	
+	hidden = yes
+	is_triggered_only = yes
+	
+	immediate = { 
+		log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event manchukou_hidden.2"
+		if = {
+			limit = { 
+				NOT = { has_idea = MAN_Tong_Jixu }
+				has_character = MAN_aisin_gioro_puyi # has_idea = MAN_aisin_gyoro_puyi
+			}
+			country_event = manchukou.4
+		}
+		else_if = {
+			limit = { has_character = MAN_aisin_gioro_puyi } # has_idea = MAN_aisin_gyoro_puyi
+			country_event = manchukou.8
+		}
+	}
+	
+}
+country_event = { #Убийство императора
+	id = manchukou.4
+	title = manchukou.4.t
+	desc = manchukou.4.d
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event manchukou.4" }
+	
+	option = {
+		name = manchukou.4.a
+		retire_character = MAN_aisin_gioro_puyi
+		hidden_effect = { 
+			remove_ideas = MAN_aisin_gyoro_puyi 
+			country_event = { id = manchukou_hidden.3 days = 10 }
+		}
+	}
+}
+
+country_event = { #Судьба императорского престола - проверка на наследника
+	id = manchukou_hidden.3
+	
+	hidden = yes
+	is_triggered_only = yes
+	
+	immediate = { 
+		log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event manchukou_hidden.3"
+		if = {
+			limit = { OR = { has_country_flag = heir_aisin_gyoro_pujie_flag has_country_flag = heir_aisin_gyoro_yuyan_flag } }
+			country_event = manchukou.5
+		}
+		else = {
+			country_event = manchukou.7
+		}
+	}
+	
+}
+country_event = { #Судьба императорского престола I
+	id = manchukou.5
+	title = manchukou.5.t
+	desc = manchukou.5.d
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event manchukou.5" }
+	
+	option = {
+		name = manchukou.5.a
+		trigger = { has_country_flag = heir_aisin_gyoro_pujie_flag }
+		add_ideas = MAN_aisin_gyoro_pujie
+		add_opinion_modifier = { #?
+			target = JAP
+			modifier = MAN_aisin_gioro_pujie
+		}
+	}
+	option = {
+		name = manchukou.5.b
+		trigger = { has_country_flag = heir_aisin_gyoro_yuyan_flag }
+		add_ideas = MAN_aisin_gyoro_yuyan
+	}
+	option = {
+		name = manchukou.5.c
+		add_political_power = -100
+		add_stability = -0.05
+		add_war_support = -0.05
+		country_event = manchukou.6
+	}
+}
+
+country_event = { #Смена режима правления
+	id = manchukou.6
+	title = manchukou.6.t
+	desc = manchukou.6.d
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event manchukou.6" }
+	
+	option = {
+		name = manchukou.6.a
+		add_country_leader_role = {
+			character = "MAN_aisin_gioro_pujie"
+			promote_leader = yes
+			country_leader = {
+				ideology = despotism
+				desc = "POLITICS_AISIN_GIORO_PUJIE_DESC"
+				expire = "1965.1.1.1"
+				traits = {} #?
+			}
+		}
+	}
+}
+
+country_event = { #Судьба императорского престола II
+	id = manchukou.7
+	title = manchukou.7.t
+	desc = manchukou.7.d
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event manchukou.7" }
+	
+	option = {
+		name = manchukou.7.a
+		#trigger = {} ? не надо
+		add_ideas = MAN_aisin_gyoro_pujie
+		add_opinion_modifier = { #?
+			target = JAP
+			modifier = MAN_aisin_gioro_pujie
+		}
+	}
+	option = {
+		name = manchukou.7.b
+		add_political_power = -100
+		add_stability = -0.05
+		add_war_support = -0.05
+		country_event = manchukou.6
+	}
+}
+
+country_event = { #Неудачное покушение на жизнь императора
+	id = manchukou.8
+	title = manchukou.8.t
+	desc = manchukou.8.d
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event manchukou.8" }
+	
+	option = {
+		name = manchukou.8.a
+		add_stability = -0.03
+	}
+}
+
+country_event = { #Информатор в армии предателей - MEN
+	id = manchukou.9
+	title = manchukou.9.t
+	desc = manchukou.9.d
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event manchukou.9" }
+	
+	option = {
+		name = manchukou.9.a
+		add_timed_idea = { idea = MAN_subversive_activities days = 90 }
+		hidden_effect = { CSR = { country_event = { id = manchukou.10 days = 15 } } }
+	}
+}
+
+country_event = { #Предатель в наших рядах - CSR
+	id = manchukou.10
+	title = manchukou.10.t
+	desc = manchukou.10.d
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event manchukou.10" }
+	
+	option = {
+		name = manchukou.10.a
+		country_event = { id = manchukou.11 days = 3 }
+	}
+	option = {
+		name = manchukou.10.b
+		country_event = { id = manchukou.13 days = 45 }
+	}
+}
+
+country_event = { #Инцидент в храме - CSR
+	id = manchukou.11
+	title = manchukou.11.t
+	desc = manchukou.11.d
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event manchukou.11" }
+	
+	option = {
+		name = manchukou.11.a
+		MEN = { remove_ideas = MAN_subversive_activities }
+		# TODO: Обама перестанет быть доступным в качестве советника (retire_character)
+		random_country_division = {
+			destroy_unit = yes
+		}
+		hidden_effect = {
+			every_country = {
+				news_event = { id = manchukou.12 hours = 6 }
+			}
+		}
+	}
+}
+news_event = { #Инцидент во Внутренней Монголии
+	id = manchukou.12
+	title = manchukou.12.t
+	desc = manchukou.12.d
+	picture = GFX_news_event_worker_protests
+	
+	is_triggered_only = yes
+	
+	option = { name = manchukou.12.a }
+}
+
+country_event = { #Успешная ликвидация шпионов - CSR
+	id = manchukou.13
+	title = manchukou.13.t
+	desc = manchukou.13.d
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event manchukou.13" }
+	
+	option = {
+		name = manchukou.13.a
+		MEN = { remove_ideas = MAN_subversive_activities }
+	}
+}
+
+#
+
+country_event = { #Совещание монгольских губернаторов
+	id = manchukou.14
+	title = manchukou.14.t
+	desc = manchukou.14.d
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event manchukou.14" }
+	
+	option = {
+		name = manchukou.14.a
+		trigger = { 
+			NOT = { has_completed_focus = MAN_restoration_of_positions_of_concordia_association } 
+		}
+		add_stability = -0.02
+		custom_effect_tooltip = manchurian_revolt_tt
+		set_country_flag = potential_rebellion_flag
+	}
+	option = {
+		name = manchukou.14.b
+		trigger = {
+			has_completed_focus = MAN_restoration_of_positions_of_concordia_association 
+		}
+	}
+	option = {
+		name = manchukou.14.c
+		trigger = {
+			NOT = { has_completed_focus = MAN_restoration_of_positions_of_concordia_association }
+			has_completed_focus = MAN_suppress_autonomy_of_concordia_association
+		}
+		add_political_power = -50
+		country_event = { id = manchukou.15 days = 10 }
+	}
+}
+
+country_event = { #Начало арестов в Синъане
+	id = manchukou.15
+	title = manchukou.15.t
+	desc = manchukou.15.d
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event manchukou.15" }
+	
+	option = {
+		name = manchukou.15.a
+		country_event = { id = manchukou.16 days = 3 }
+	}
+}
+
+country_event = { #Арест Лин Шэна
+	id = manchukou.16
+	title = manchukou.16.t
+	desc = manchukou.16.d
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event manchukou.16" }
+	
+	option = {
+		name = manchukou.16.a
+		add_stability = -0.02
+		remove_advisor_role = {
+			character = "MAN_lin_sheng"
+			slot = political_advisor
+		}
+		country_event = { id = manchukou.17 days = 2 }
+	}
+}
+
+country_event = { #Просьба императора
+	id = manchukou.17
+	title = manchukou.17.t
+	desc = manchukou.17.d
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event manchukou.17" }
+	
+	option = {
+		name = manchukou.17.a
+		add_war_support = -0.03
+		country_event = { id = manchukou.18 days = 5 }
+	}
+}
+
+country_event = { #Казнь
+	id = manchukou.18
+	title = manchukou.18.t
+	desc = manchukou.18.d
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event manchukou.18" }
+	
+	option = {
+		name = manchukou.18.a
+		add_political_power = -15
+		add_popularity = {
+			ideology = fascism 
+			popularity = 0.04
+		}
+		country_event = { id = manchukou.19 days = 3 }
+	}
+}
+
+country_event = { #Итог инцидента
+	id = manchukou.19
+	title = manchukou.19.t
+	desc = manchukou.19.d
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event manchukou.19" }
+	
+	option = {
+		name = manchukou.19.a
+		add_stability = -0.02
+		remove_advisor_role = {
+			character = "MAN_guifu"
+			slot = political_advisor
+		}
+	}
+}
+
+country_event = { #Проверка на живого Пу И (Маньчжурское восстание)
+	id = manchukou_hidden.4
+	
+	hidden = yes
+	is_triggered_only = yes
+	
+	immediate = { 
+		log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event manchukou_hidden.4"
+		if = {
+			limit = { 
+				has_character = MAN_aisin_gioro_puyi 
+				has_country_flag = MAN_manchurian_revolt_alt
+			}
+			country_event = manchukou.21
+		}
+		else_if = {
+			limit = { 
+				has_character = MAN_aisin_gioro_puyi # has_idea = MAN_aisin_gyoro_puyi
+			}
+			country_event = manchukou.20
+		}
+	}
+	
+}
+country_event = { #Маньчжурское восстание I 
+	id = manchukou.20
+	title = manchukou.20.t
+	desc = manchukou.20.d
+	is_triggered_only = yes
+	immediate = {
+		log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event manchukou.20" 
+		remove_ideas = MAN_aisin_gyoro_puyi
+		remove_ideas = MAN_aisin_gyoro_puyi_1
+		start_civil_war = {
+			ideology = monarchy
+			size = 1
+			keep_all_characters = yes
+			states = all
+			states_filter = {
+				is_capital = no
+				NOT = { state = 716 } #state = 328
+			}
+			
+			load_focus_tree = nw_MAN_manchurian_revolt
+			set_cosmetic_tag = MAN_manchurian_revolt 
+			
+			set_party_name = {
+				name = MAN_mr_neutrality_party
+				long_name = MAN_mr_neutrality_party_long
+				ideology = neutrality
+			}
+			set_political_party = { ideology = neutrality popularity = 15 }
+			set_party_name = {
+				name = MAN_mr_fascism_party
+				long_name = MAN_mr_fascism_party_long
+				ideology = fascism
+			}
+			set_political_party = { ideology = fascism popularity = 15 }
+			set_party_name = {
+				name = MAN_mr_monarchy_party
+				long_name = MAN_mr_monarchy_party_long
+				ideology = monarchy
+			}
+			set_political_party = { ideology = monarchy popularity = 40 }
+			set_party_name = {
+				name = MAN_mr_democratic_party
+				long_name = MAN_mr_democratic_party_long
+				ideology = democratic
+			}
+			set_political_party = { ideology = democratic popularity = 7 }
+			set_political_party = { ideology = communism popularity = 15 }
+			set_political_party = { ideology = trozkism popularity = 5 }
+			set_political_party = { ideology = anarchism popularity = 3 }
+			NW_legitimacy_check = yes
+			NW_migration_check = yes
+			
+			PREV = { 
+				MAN_aisin_gioro_puyi = { #leader
+					set_nationality = PREV.PREV
+					promote_character = yes
+				}
+				every_unit_leader = {
+					limit = { NOT = { is_character = MAN_zhang_jinghui } }
+					set_nationality = PREV.PREV
+				}
+			}
+			set_country_flag = { flag = focus_synchronization days = 7 value = 1 } #?
+		}
+	}
+	
+	option = {
+		name = manchukou.20.a
+		JAP = { country_event = { id = manchukou.22 days = 2 } } #days ?
+	}
+	option = {
+		name = manchukou.20.b
+		trigger = { is_ai = no }
+		random_other_country = { 
+			limit = {
+				tag = MGM
+			}
+			change_tag_from = ROOT
+		}
+		JAP = { country_event = { id = manchukou.22 days = 2 } } #days ?
+	}
+}
+
+country_event = { #Маньчжурское восстание II
+	id = manchukou.21
+	title = manchukou.21.t 
+	desc = manchukou.21.d 
+	is_triggered_only = yes
+	immediate = {
+		log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event manchukou.21" 
+		remove_ideas = MAN_aisin_gyoro_puyi
+		remove_ideas = MAN_aisin_gyoro_puyi_1
+		create_dynamic_country = {
+			original_tag = MAN
+			save_event_target_as = MAN_manchurian_revolt
+			
+			every_state = {
+				limit = {
+					is_controlled_by = ROOT
+					NOT = { is_capital = yes state = 716 }
+				}
+				transfer_state_to = event_target:MAN_manchurian_revolt
+			}
+			
+			load_focus_tree = nw_MAN_manchurian_revolt
+			set_cosmetic_tag = MAN_manchurian_revolt 
+			
+			PREV = { 
+				MAN_aisin_gioro_puyi = { #leader
+					set_nationality = PREV.PREV
+					promote_character = yes
+				}
+				transfer_units_fraction = {
+					target = PREV
+					size = 1
+					keep_unit_leaders_trigger = { 
+						is_country_leader = yes
+					}
+				}
+			}
+			
+			set_politics = { 
+				ruling_party = monarchy
+				elections_allowed = no
+			}
+			
+			set_party_name = {
+				name = MAN_mr_neutrality_party
+				long_name = MAN_mr_neutrality_party_long
+				ideology = neutrality
+			}
+			set_political_party = { ideology = neutrality popularity = 15 }
+			set_party_name = {
+				name = MAN_mr_fascism_party
+				long_name = MAN_mr_fascism_party_long
+				ideology = fascism
+			}
+			set_political_party = { ideology = fascism popularity = 15 }
+			set_party_name = {
+				name = MAN_mr_monarchy_party
+				long_name = MAN_mr_monarchy_party_long
+				ideology = monarchy
+			}
+			set_political_party = { ideology = monarchy popularity = 40 }
+			set_party_name = {
+				name = MAN_mr_democratic_party
+				long_name = MAN_mr_democratic_party_long
+				ideology = democratic
+			}
+			set_political_party = { ideology = democratic popularity = 7 }
+			set_political_party = { ideology = communism popularity = 15 }
+			set_political_party = { ideology = trozkism popularity = 5 }
+			set_political_party = { ideology = anarchism popularity = 3 }
+			NW_legitimacy_check = yes
+			NW_migration_check = yes
+			
+			if = {
+				limit = { PREV = { has_idea = MAN_opium_empire } }
+				add_ideas = MAN_opium_empire
+			}
+			else_if = {
+				limit = { PREV = { has_idea = MAN_opium_empire_1 } }
+				add_ideas = MAN_opium_empire_1
+			}
+			else_if = {
+				limit = { PREV = { has_idea = MAN_hidden_drug_trafficking } }
+				add_ideas = MAN_hidden_drug_trafficking
+			}
+			else_if = {
+				limit = { PREV = { has_idea = MAN_hidden_drug_trafficking_1 } }
+				add_ideas = MAN_hidden_drug_trafficking_1
+			}
+			add_ideas = {
+				MAN_dilapidated_tax_system
+				generic_civil_war
+			}
+			
+			every_other_country = {
+				limit = { original_tag = MAN NOT = { tag = MAN } }
+				PREV = { 
+					declare_war_on = {
+						target = PREV
+						type = civil_war
+					}
+					add_civil_war_target = PREV
+					set_country_flag = { flag = focus_synchronization days = 7 value = 1 } #?
+				}
+				add_civil_war_target = PREV
+			}
+		}
+		every_other_country = {
+			limit = { original_tag = MAN NOT = { has_war_with = ROOT } }
+			ROOT = { 
+				declare_war_on = {
+					target = PREV
+					type = civil_war
+				}
+				add_civil_war_target = PREV
+			}
+			add_civil_war_target = ROOT
+		}
+	}
+	
+	option = {
+		name = manchukou.21.a
+		JAP = { country_event = { id = manchukou.22 days = 2 } } #days ?
+	}
+	option = {
+		name = manchukou.21.b
+		trigger = { is_ai = no }
+		random_other_country = { 
+			limit = {
+				tag = MGM
+			}
+			change_tag_from = ROOT
+		}
+		JAP = { country_event = { id = manchukou.22 days = 2 } } #days ?
+	}
+}
+
+country_event = { #Крупномасштабное восстание в Маньчжоу-Го - JAP
+	id = manchukou.22
+	title = manchukou.22.t
+	desc = manchukou.22.d
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event manchukou.22" }
+	
+	option = {
+		name = manchukou.22.a
+		trigger = { 
+			OR = {
+				is_neighbor_of = FROM 
+				any_country = {
+					OR = {
+						is_in_faction_with = ROOT
+						is_subject_of = ROOT
+					}
+					is_neighbor_of = FROM 
+				} 
+			}
+		}
+		add_stability = -0.07
+		add_political_power = -20
+		every_country = {
+			limit = { original_tag = MAN NOT = { tag = MAN } }
+			ROOT = {
+				declare_war_on = {
+					target = PREV 
+					type = annex_everything #?
+				}
+			}
+		}
+		if = { #переделать всех маньчжурских под Затяжную кампанию ? А если идет война с еще одним китай-тегом, то Затяжная кампания заменяется на общий таймер ?
+			limit = {
+				NOT = { 
+					has_active_mission = JAP_capitulation_timer_MGM
+					has_active_mission = JAP_capitulation_timer
+				}
+			}
+			#set_variable = { JAP_capitulation_timeout = 90 }
+			custom_effect_tooltip = MAN_war_timer
+			hidden_effect = { activate_mission = JAP_capitulation_timer_MGM }
+		}
+		#country_event = { id = manchukou.66 days = 90 } #60 - не актуально, убрать ! (или оставить ?)
+	}
+	option = {
+		ai_chance = { factor = 0 }
+		name = manchukou.22.b
+		add_stability = -0.07
+		add_political_power = -20
+	}
+}
+
+country_event = { #Сроки срываются - JAP
+	id = manchukou.66
+	title = manchukou.66.t
+	desc = manchukou.66.d
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event manchukou.66" }
+	
+	trigger = {
+		has_war_with = MGM
+	}
+	
+	option = {
+		name = manchukou.66.a
+		ai_chance = { #?
+			factor = 2
+			modifier = {
+				has_idea = JAP_protracted_military_campaign_3
+				factor = 0
+			}
+		}
+		add_stability = -0.03
+		add_war_support = -0.05
+		add_political_power = -10
+		if = {
+			limit = { has_idea = JAP_protracted_military_campaign }
+			swap_ideas = {
+				remove_idea = JAP_protracted_military_campaign
+				add_idea = JAP_protracted_military_campaign_1
+			}
+		}
+		else_if = {
+			limit = { has_idea = JAP_protracted_military_campaign_1 }
+			swap_ideas = {
+				remove_idea = JAP_protracted_military_campaign_1
+				add_idea = JAP_protracted_military_campaign_2
+			}
+		}
+		else_if = {
+			limit = { has_idea = JAP_protracted_military_campaign_2 }
+			swap_ideas = {
+				remove_idea = JAP_protracted_military_campaign_2
+				add_idea = JAP_protracted_military_campaign_3
+			}
+		}
+		else_if = {
+			limit = { NOT = { has_idea = JAP_protracted_military_campaign_3 } }
+			add_ideas = JAP_protracted_military_campaign
+		}
+		hidden_effect = {
+			country_event = { id = manchukou.66 days = 30 }
+		}
+	}
+	option = {
+		name = manchukou.66.b
+		ai_chance = { #?
+			factor = 1
+			modifier = {
+				NOT = { has_idea = JAP_protracted_military_campaign has_idea = JAP_protracted_military_campaign_1 has_idea = JAP_protracted_military_campaign_2 has_idea = JAP_protracted_military_campaign_3 }
+				factor = 0
+			}
+			#modifier = {
+			#	has_idea = JAP_protracted_military_campaign_3
+			#	factor = 100
+			#}
+		}
+		set_country_flag = JAP_will_surrender_MGM
+		add_stability = -0.05
+		add_war_support = -0.07
+		add_political_power = -15
+		MGM = { country_event = manchukou.67 }
+	}
+}
+
+country_event = { #Квантунская армия отступает
+	id = manchukou.67
+	title = manchukou.67.t
+	desc = manchukou.67.d
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event manchukou.67" }
+	
+	option = {
+		name = manchukou.67.a
+		#hidden_effect = {
+			if = {
+				limit = { tag = MGM NOT = { has_completed_focus = MGM_manchurian_revolt_focus } }
+				complete_national_focus = MGM_manchurian_revolt_focus
+			}
+		#}
+		white_peace = JAP
+		every_country = { 
+			limit = {
+				OR = {
+					is_subject_of = JAP 
+					is_in_faction_with = JAP 
+				}
+				has_war_with = ROOT 
+				# NOT = { tag = MAN } ?
+			} 
+			white_peace = ROOT 
+		}
+		#hidden_effect = { 
+			if = { #?
+				limit = { YCP = { exists = yes } }
+				YCP = { white_peace = JAP }
+				declare_war_on = {
+					target = YCP
+					type = annex_everything
+				}
+			}
+		#}
+	}
+	option = {
+		name = manchukou.67.b
+		ai_chance = {
+			factor = 0
+		}
+		#hidden_effect = {
+			#JAP = { country_event = { id = manchukou.66 days = 30 } } - не актуально, убрать
+		#}
+	}
+}
+
+country_event = { #Русские в Харбине
+	id = manchukou.23
+	title = manchukou.23.t
+	desc = manchukou.23.d
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event manchukou.23" }
+	
+	option = {
+		name = manchukou.23.a
+		country_event = { id = manchukou.24 days = 5 }
+	}
+}
+
+country_event = { #Дело Симона Каспе
+	id = manchukou.24
+	title = manchukou.24.t
+	desc = manchukou.24.d
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event manchukou.24" }
+	
+	option = {
+		name = manchukou.24.a
+		country_event = { id = manchukou.25 days = 5 }
+	}
+}
+
+country_event = { #Расследование
+	id = manchukou.25
+	title = manchukou.25.t
+	desc = manchukou.25.d
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event manchukou.25" }
+	
+	option = {
+		name = manchukou.25.a
+		country_event = { id = manchukou.26 days = 5 }
+	}
+}
+
+country_event = { #Второе судебное заседание
+	id = manchukou.26
+	title = manchukou.26.t
+	desc = manchukou.26.d
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event manchukou.26" }
+	
+	option = {
+		name = manchukou.26.a
+		country_event = { id = manchukou.27 days = 5 }
+	}
+}
+
+country_event = { #Петиция императору
+	id = manchukou.27
+	title = manchukou.27.t
+	desc = manchukou.27.d
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event manchukou.27" }
+	
+	option = {
+		name = manchukou.27.a
+		if = {
+			limit = { has_completed_focus = MAN_restoration_of_positions_of_concordia_association }
+			country_event = { id = manchukou.28 days = 5 }
+		}
+		else = { country_event = { id = manchukou.29 days = 5 } }
+	}
+}
+
+country_event = { #Казнь убийц
+	id = manchukou.28
+	title = manchukou.28.t
+	desc = manchukou.28.d
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event manchukou.28" }
+	
+	option = {
+		name = manchukou.28.a
+		add_stability = 0.05
+		328 = { add_manpower = 2500 }
+		set_country_flag = { flag = second_trial_in_kaspe_case_end value = 2 }
+	}
+}
+
+country_event = { #Решение Верховного суда
+	id = manchukou.29
+	title = manchukou.29.t
+	desc = manchukou.29.d
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event manchukou.29" }
+	
+	option = {
+		name = manchukou.29.a
+		add_stability = -0.05
+		set_country_flag = second_trial_in_kaspe_case_end
+	}
+}
+
+country_event = { #Смерть Сандо
+	id = manchukou.30
+	title = manchukou.30.t
+	desc = manchukou.30.d
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event manchukou.30" }
+	
+	option = {
+		name = manchukou.30.a
+		retire_character = MAN_sando
+	}
+}
+
+#
+
+country_event = { #Окончательное подавление партизан
+	id = manchukou.31
+	title = manchukou.31.t
+	desc = manchukou.31.d
+	is_triggered_only = yes
+	
+	immediate = { 
+		log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event manchukou.31" 
+		remove_dynamic_modifier = { modifier = MAN_banditry }
+	}
+	
+	option = {
+		name = manchukou.31.a
+	}
+}
+
+country_event = { #Крупномасштабное восстание бандитов
+	id = manchukou.32
+	title = manchukou.32.t
+	desc = manchukou.32.d
+	is_triggered_only = yes
+	immediate = {
+		log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event manchukou.32" 
+		remove_dynamic_modifier = { modifier = MAN_banditry }
+		start_civil_war = {
+			ideology = communism
+			size = 0.2
+			capital = 714
+			states = { 610 717 } #bandit's regions
+			keep_all_characters = yes 
+			
+			create_country_leader = {
+				name = MAN_peoples_antijapanese_council
+				picture = "GFX_portrait_man_henry_pu_yi_emperor" # !!
+				expire = "1965.1.1"
+				ideology = stalinism 
+			}
+			set_cosmetic_tag = MAN_peasant_uprising #?
+			
+			PREV = { 
+				MAN_yang_jingyu = { #corps_commander
+					set_nationality = PREV.PREV
+				}
+				MAN_li_zhaolin = { #corps_commander
+					set_nationality = PREV.PREV
+				}
+				MAN_zhou_baozhong = { #corps_commander
+					set_nationality = PREV.PREV
+				}
+				MAN_zhao_shangzhi = { #corps_commander
+					set_nationality = PREV.PREV
+				}
+				MAN_li_yanlu = { #minister
+					set_nationality = PREV.PREV
+				}
+				MAN_wang_datai = { #minister
+					set_nationality = PREV.PREV
+				}
+				MAN_choi_yeongon = { #minister
+					set_nationality = PREV.PREV
+				}
+				MAN_feng_zhongyun = { #minister
+					set_nationality = PREV.PREV
+				}
+				KOR_kim_il_sung = { 
+					set_nationality = PREV.PREV
+				}
+				KOR_choe_hyon = { 
+					set_nationality = PREV.PREV
+				}
+			}
+			
+			load_focus_tree = nw_MAN_communist
+			division_template = {
+				name = "Resistance Fighters"
+				priority = 1
+				is_locked = no 
+				template_counter = 3
+				division_names_group = MAN_INF_01
+				regiments = {
+					infantry = { x = 0 y = 0 }
+					infantry = { x = 0 y = 1 }
+					infantry = { x = 0 y = 2 }
+					infantry = { x = 1 y = 0 }
+					infantry = { x = 1 y = 1 }
+				}
+			}
+			capital_scope = {
+				create_unit = { 
+					division = "name = \"Resistance Fighters\" division_template = \"Resistance Fighters\" start_experience_factor = 0.05 start_equipment_factor = 0.95" owner = PREV count = 10
+				}
+			}
+			add_ideas = MAN_ethnic_strife
+			add_ideas = MAN_lynching_of_hanjiang
+			
+			NW_legitimacy_check = yes
+			NW_migration_check = yes
+			set_country_flag = { flag = focus_synchronization days = 7 value = 1 } #?
+		}
+		set_country_flag = { flag = focus_synchronization days = 7 value = 1 } #?
+		
+		if = {
+			limit = { has_country_flag = potential_rebellion_flag } 
+			set_country_flag = MAN_manchurian_revolt_alt
+			country_event = { id = manchukou_hidden.4 days = 10 }
+			clr_country_flag = potential_rebellion_flag
+		}
+	}
+	
+	option = {
+		name = manchukou.32.a
+	}
+	option = {
+		name = manchukou.32.b
+		trigger = { is_ai = no }
+		random_other_country = {
+			limit = {
+				original_tag = ROOT
+			}
+			change_tag_from = ROOT
+		}
+	}
+}
+
+country_event = { #Смерть лидера МКП 
+	id = manchukou.33
+	title = manchukou.33.t
+	desc = manchukou.33.d
+	fire_only_once = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event manchukou.33" }
+	
+	trigger = {
+		date > 1951.5.7 
+		tag = MAN
+		NOT = { has_country_flag = MAN_refuse_YCP_flag }
+		NOT = { has_country_leader = { character = MAN_zeng_qi } }
+	}
+
+	mean_time_to_happen = {
+		days = 20
+	}
+	
+	option = {
+		name = manchukou.33.a
+		retire_character = MAN_zeng_qi
+	}
+}
+
+country_event = { #Смерть премьер-министра
+	id = manchukou.34
+	title = manchukou.34.t
+	desc = manchukou.34.d
+	fire_only_once = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event manchukou.34" }
+	
+	trigger = {
+		date > 1951.5.7 
+		tag = MAN
+		NOT = { has_country_flag = MAN_refuse_YCP_flag }
+		has_country_leader = { character = MAN_zeng_qi }
+	}
+
+	mean_time_to_happen = {
+		days = 20
+	}
+	
+	option = {
+		name = manchukou.34.a
+		MAN_li_huan = {
+			add_country_leader_role = {
+				#character = "MAN_li_huan"
+				promote_leader = yes
+				country_leader = {
+					ideology = national_etatism # national_conservatism
+					expire = "1965.1.1.1"
+					traits = { anticommunist_agitator }
+				}
+			}
+		}
+		retire_character = MAN_zeng_qi
+	}
+	option = {
+		name = manchukou.34.b
+		MAN_zuo_shunsheng = {
+			add_country_leader_role = {
+				#character = "MAN_zuo_shunsheng"
+				promote_leader = yes
+				country_leader = {
+					ideology = national_etatism # national_conservatism
+					expire = "1965.1.1.1"
+					traits = { anticommunist_agitator }
+				}
+			}
+		}
+		retire_character = MAN_zeng_qi
+	}
+}
+
+#
+
+country_event = { #Губернатор уходит в отставку
+	id = manchukou.35
+	title = manchukou.35.t
+	desc = manchukou.35.d
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event manchukou.35" }
+	
+	option = {
+		name = manchukou.35.a
+		remove_advisor_role = { #?
+			character = "MAN_liu_menggeng"
+			slot = political_advisor
+		}
+	}
+}
+
+country_event = { #Уход Ло Чжэньюя
+	id = manchukou.36
+	title = manchukou.36.t
+	desc = manchukou.36.d
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event manchukou.36" }
+	
+	option = {
+		name = manchukou.36.a
+		remove_advisor_role = {
+			character = "MAN_luo_zhenyu"
+			slot = political_advisor
+		}
+	}
+}
+
+country_event = { #Сасаки Тоичи уезжает
+	id = manchukou.37
+	title = manchukou.37.t
+	desc = manchukou.37.d
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event manchukou.37" }
+	
+	option = {
+		name = manchukou.37.a
+		remove_advisor_role = {
+			character = "MAN_sasaki_toichi" 
+			slot = high_command
+		}
+	}
+}
+
+country_event = { #Отсутствие наследника
+	id = manchukou.38
+	title = manchukou.38.t
+	desc = manchukou.38.d
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event manchukou.38" }
+	
+	option = {
+		name = manchukou.38.a
+		add_stability = 0.05
+		add_popularity = {
+			ideology = neutrality 
+			popularity = 0.02
+		}
+		add_popularity = {
+			ideology = fascism 
+			popularity = 0.01
+		}
+		add_popularity = {
+			ideology = monarchy 
+			popularity = -0.03
+		}
+		country_event = { id = manchukou.39 days = 12 }
+		set_country_flag = heir_aisin_gyoro_pujie_flag
+	}
+	option = {
+		name = manchukou.38.b
+		add_stability = -0.05
+		add_popularity = {
+			ideology = monarchy 
+			popularity = 0.02
+		}
+		add_popularity = {
+			ideology = fascism 
+			popularity = -0.02
+		}
+		set_country_flag = heir_aisin_gyoro_yuyan_flag
+	}
+}
+
+country_event = { #Отсутствие истинного наследника
+	id = manchukou.39
+	title = manchukou.39.t
+	desc = manchukou.39.d
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event manchukou.39" }
+	
+	option = {
+		name = manchukou.39.a
+		country_event = { id = manchukou.40 days = 12 }
+	}
+}
+
+country_event = { #План Пу И
+	id = manchukou.40
+	title = manchukou.40.t
+	desc = manchukou.40.d
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event manchukou.40" }
+	
+	option = {
+		name = manchukou.40.a
+		country_event = { id = manchukou.41 days = 12 }
+		JAP = { country_event = { id = manchukou.42 days = 12 } }
+	}
+}
+
+country_event = { #Скандал с Тан Шися
+	id = manchukou.41
+	title = manchukou.41.t
+	desc = manchukou.41.d
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event manchukou.41" }
+	
+	option = {
+		name = manchukou.41.a
+	}
+}
+
+country_event = { #Наследник трона Маньчжоу-Го - JAP
+	id = manchukou.42
+	title = manchukou.42.t
+	desc = manchukou.42.d
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event manchukou.42" }
+	
+	option = {
+		name = manchukou.42.a
+		country_event = { id = manchukou.43 days = 12 }
+	}
+}
+
+country_event = { #Вмешательство Пу И - JAP
+	id = manchukou.43
+	title = manchukou.43.t
+	desc = manchukou.43.d
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event manchukou.43" }
+	
+	option = {
+		name = manchukou.43.a
+		MAN = { country_event = { id = manchukou.44 days = 12 } }
+		country_event = { id = manchukou.45 days = 12 }
+	}
+	
+	option = {
+		name = manchukou.43.b
+		MAN = { country_event = { id = manchukou.50 days = 12 } }
+	}
+}
+
+country_event = { #Разрушение планов
+	id = manchukou.44
+	title = manchukou.44.t
+	desc = manchukou.44.d
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event manchukou.44" }
+	
+	option = {
+		name = manchukou.44.a
+		add_stability = -0.01
+	}
+}
+
+country_event = { #Кандидатки для Пу Цзе - JAP
+	id = manchukou.45
+	title = manchukou.45.t
+	desc = manchukou.45.d
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event manchukou.45" }
+	
+	option = {
+		name = manchukou.45.a
+		MAN = { country_event = { id = manchukou.46 days = 20 } }
+		country_event = { id = manchukou.46 days = 20 }
+	}
+}
+
+country_event = { #Помолвка Пу Цзе
+	id = manchukou.46
+	title = manchukou.46.t
+	desc = manchukou.46.d
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event manchukou.46" }
+	
+	option = {
+		name = manchukou.46.a
+		trigger = { tag = MAN }
+		country_event = { id = manchukou.47 days = 60 }
+		JAP = { country_event = { id = manchukou.47 days = 60 } }
+	}
+	
+	option = {
+		name = manchukou.46.b
+		trigger = { tag = JAP }
+	}
+}
+
+country_event = { #Свадьба Пу Цзе и Хиро Саги
+	id = manchukou.47
+	title = manchukou.47.t
+	desc = manchukou.47.d
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event manchukou.47" }
+	
+	option = {
+		name = manchukou.47.a
+		trigger = { tag = MAN }
+		country_event = { id = manchukou.48 days = 180 }
+	}
+	
+	option = {
+		name = manchukou.47.b
+		trigger = { tag = JAP }
+	}
+}
+
+country_event = { #Возвращение Пу Цзе
+	id = manchukou.48
+	title = manchukou.48.t
+	desc = manchukou.48.d
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event manchukou.48" }
+	
+	option = {
+		name = manchukou.48.a
+		add_stability = -0.01
+		#hidden_effect = {
+			country_event = { id = manchukou.49 days = 50 }
+		#}
+	}
+}
+
+country_event = { #Потепление отношений
+	id = manchukou.49
+	title = manchukou.49.t
+	desc = manchukou.49.d
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event manchukou.49" }
+	
+	option = {
+		name = manchukou.49.a
+		add_stability = 0.01
+	}
+}
+
+country_event = { #План сработал
+	id = manchukou.50
+	title = manchukou.50.t
+	desc = manchukou.50.d
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event manchukou.50" }
+	
+	option = {
+		name = manchukou.50.a
+		country_event = { id = manchukou.51 days = 75 }
+	}
+}
+
+country_event = { #Свадьба Пу Цзе и Ван Минтун
+	id = manchukou.51
+	title = manchukou.51.t
+	desc = manchukou.51.d
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event manchukou.51" }
+	
+	option = {
+		name = manchukou.51.a
+		add_stability = 0.01
+	}
+}
+
+#
+
+country_event = { #Переселение группы корейцев
+	id = manchukou.52
+	title = manchukou.52.t
+	desc = manchukou.52.d
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event manchukou.52" }
+	
+	trigger = {
+		check_variable = { event_manchukou_52_count < 4 }
+	}
+	
+	option = {
+		name = manchukou.52.a
+		if = {
+			limit = { has_dynamic_modifier = { modifier = MAN_banditry } }
+			custom_effect_tooltip = MAN_strength_of_partisan_movement_tooltip
+			add_to_variable = { MAN_strength_of_partisan_movement_var = 0.01 tooltip = stability_factor_tooltip }
+			custom_effect_tooltip = empty_line_tooltip
+		}
+		714 = { add_manpower = 9000 }
+		717 = { add_manpower = 9000 }
+		525 = { add_manpower = -9000 }
+		527 = { add_manpower = -9000 }
+		#hidden_effect = {
+			add_to_variable = { event_manchukou_52_count = 1 }
+			country_event = { id = manchukou.52 days = 365 }
+		#}
+	}
+}
+
+country_event = { #План Фугу - JAP
+	id = manchukou.53
+	title = manchukou.53.t
+	desc = manchukou.53.d
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event manchukou.53" }
+	
+	option = {
+		name = manchukou.53.a
+		MAN = { country_event = manchukou.54 }
+	}
+	option = {
+		name = manchukou.53.b
+		MAN = { country_event = manchukou.55 }
+	}
+	option = {
+		name = manchukou.53.c
+		MAN = { country_event = manchukou.56 }
+	}
+}
+
+country_event = { #Еврейский вопрос под контролем военных
+	id = manchukou.54
+	title = manchukou.54.t
+	desc = manchukou.54.d
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event manchukou.54" }
+	
+	option = {
+		name = manchukou.54.a
+		effect_tooltip = {
+			unlock_national_focus = MAN_jewish_state_in_manchuria
+			unlock_national_focus = MAN_jews_are_another_race
+		}
+		set_country_flag = MAN_jewish_state_available_flag
+		set_country_flag = MAN_jews_are_another_one_race_available_flag
+	}
+}
+
+country_event = { #Токио взял еврейский вопрос под свой контроль
+	id = manchukou.55
+	title = manchukou.55.t
+	desc = manchukou.55.d
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event manchukou.55" }
+	
+	option = {
+		name = manchukou.55.a
+		effect_tooltip = {
+			unlock_national_focus = MAN_jews_are_another_race
+		}
+		set_country_flag = MAN_jews_are_another_one_race_available_flag
+	}
+}
+
+country_event = { #Японии не нужны евреи
+	id = manchukou.56
+	title = manchukou.56.t
+	desc = manchukou.56.d
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event manchukou.56" }
+	
+	option = {
+		name = manchukou.56.a
+	}
+}
+
+country_event = { #Расположение еврейского государства
+	id = manchukou.57
+	title = manchukou.57.t
+	desc = manchukou.57.desc
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event manchukou.57" }
+	
+	option = {
+		name = manchukou.57.a
+		trigger = { 610 = { is_owned_and_controlled_by = MAN } } 
+		set_country_flag = MAN_jewish_state_610
+		country_event = { id = manchukou.58 days = 2 }
+	}
+	option = {
+		name = manchukou.57.b
+		trigger = { 715 = { is_owned_and_controlled_by = MAN } } 
+		set_country_flag = MAN_jewish_state_715
+		country_event = { id = manchukou.58 days = 2 }
+	}
+	option = {
+		name = manchukou.57.c
+		trigger = { 716 = { is_owned_and_controlled_by = MAN } } 
+		set_country_flag = MAN_jewish_state_716
+		country_event = { id = manchukou.58 days = 2 }
+	}
+	option = {
+		name = manchukou.57.d
+		trigger = { 1048 = { is_owned_and_controlled_by = MAN } } 
+		set_country_flag = MAN_jewish_state_1048
+		country_event = { id = manchukou.58 days = 2 }
+	}
+}
+
+country_event = { #Провозглашение Исраэль-Го
+	id = manchukou.58
+	title = manchukou.58.t
+	desc = manchukou.58.d
+	is_triggered_only = yes
+	immediate = { 
+		log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event manchukou.58" 
+		create_dynamic_country = {
+			original_tag = ROOT
+			#save_event_target_as = MAN_jewish_state
+			if = {
+				limit = { ROOT = { has_country_flag = MAN_jewish_state_610 } }
+				transfer_state = 610
+				add_state_core = 610
+				JAP = { puppet = PREV }
+			}
+			else_if = {
+				limit = { ROOT = { has_country_flag = MAN_jewish_state_715 } }
+				transfer_state = 715
+				add_state_core = 715
+				JAP = { puppet = PREV }
+			}
+			else_if = {
+				limit = { ROOT = { has_country_flag = MAN_jewish_state_716 } } # state в .32 ?
+				transfer_state = 716
+				add_state_core = 716
+				JAP = { puppet = PREV }
+			}
+			else_if = {
+				limit = { ROOT = { has_country_flag = MAN_jewish_state_1048 } }
+				transfer_state = 1048
+				add_state_core = 1048
+				JAP = { puppet = PREV }
+			}
+			
+			set_politics = { #?
+				ruling_party = fascism
+				elections_allowed = no
+			}
+			set_popularities = {
+				democratic = 0
+				neutrality = 20
+				fascism = 80
+				communism = 0
+			}
+			#ROOT = { leader ?
+			#	FRA_philippe_petain= {
+			#		set_nationality = event_target:france_vichy	
+			#	}
+			#}
+			set_cosmetic_tag = MAN_jewish_state
+			
+			NW_legitimacy_check = yes
+			NW_migration_check = yes
+		}
+	}
+	
+	option = {
+		name = manchukou.58.a
+		every_other_country = { 
+			limit = { has_cosmetic_tag = MAN_jewish_state } 
+			add_timed_idea = { idea = IGO_arrival_of_jewish_settlers days = 3650 }
+			capital_scope = { add_dynamic_modifier = { modifier = IGO_jewish_kibbutzim } }
+		}
+	}
+	option = {
+		name = manchukou.58.b
+		trigger = { is_ai = no }
+		every_other_country = { 
+			limit = { has_cosmetic_tag = MAN_jewish_state } 
+			add_timed_idea = { idea = IGO_arrival_of_jewish_settlers days = 3650 }
+			capital_scope = { add_dynamic_modifier = { modifier = IGO_jewish_kibbutzim } }
+			
+			change_tag_from = ROOT
+		}
+	}
+}
+
+#
+
+country_event = { #Распространение монархической пропаганды
+	id = manchukou.59
+	title = manchukou.59.t
+	desc = manchukou.59.d
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event manchukou.59" }
+	
+	fire_for_sender = no
+	
+	option = {
+		name = manchukou.59.a
+		add_popularity = {
+			ideology = monarchy
+			popularity = 0.03
+		}
+		add_war_support = 0.02
+	}
+}
+
+country_event = { #Обещание крестьянам
+	id = manchukou.60
+	title = manchukou.60.t
+	desc = manchukou.60.d
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event manchukou.60" }
+	
+	option = {
+		name = manchukou.60.a
+	}
+}
+
+country_event = { #Пропаганда китайской эмиграции
+	id = manchukou.61
+	title = manchukou.61.t
+	desc = manchukou.61.d
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event manchukou.61" }
+	
+	option = {
+		name = manchukou.61.a
+	}
+}
+
+country_event = { #Маньчжуры предлагают сотрудничество - YCP
+	id = manchukou.62
+	title = manchukou.62.t
+	desc = manchukou.62.d
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event manchukou.62" }
+	
+	option = {
+		name = manchukou.62.a
+		#ai_chance = { factor = 1 }
+		FROM = { 
+			ROOT = {
+				every_unit_leader = { # every_character ??
+					set_character_flag = MAN_YCP_general
+					#set_nationality = FROM
+				}
+			}
+			annex_country = { target = YCP transfer_troops = yes } #генералы переходят ??
+			add_popularity = {
+				ideology = democratic
+				popularity = 0.1
+			}
+			if = {
+				limit = { 
+					ROOT = { is_ai = no } 
+					is_ai = yes 
+				}
+				change_tag_from = ROOT
+			}
+			country_event = manchukou.63
+		}
+	}
+	option = {
+		name = manchukou.62.b
+		#ai_chance = { factor = 0 }
+		FROM = { 
+			country_event = manchukou.64
+		}
+	}
+}
+
+country_event = { #Армия Железная Крови присоединилась к нам
+	id = manchukou.63
+	title = manchukou.63.t
+	desc = manchukou.63.d
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event manchukou.63" }
+	
+	option = {
+		name = manchukou.63.a
+		set_country_flag = MAN_contact_with_YCP
+	}
+}
+
+country_event = { #Отказ Армии Железной Крови
+	id = manchukou.64
+	title = manchukou.64.t
+	desc = manchukou.64.d
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event manchukou.64" }
+	
+	option = {
+		name = manchukou.64.a
+		#set_country_flag = MAN_refuse_YCP_flag
+	}
+}
+
+country_event = { #Возвращение в Мукден
+	id = manchukou.65
+	title = manchukou.65.t
+	desc = manchukou.65.d
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event manchukou.65" }
+	
+	option = {
+		name = manchukou.65.a
+		set_cosmetic_tag = MAN_manchurian_government
+		add_ideas = MAN_high_crime_level
+		unlock_decision_category_tooltip = MAN_pressure_on_emperor_Puyi
+		if = {
+			limit = { has_completed_focus = MGM_issue_an_appeal_to_peasants }
+			unlock_decision_category_tooltip = MAN_discontent_of_peasants
+			activate_mission = MAN_peasant_uprising_mission
+		}
+	}
+}
+
+country_event = { #Крестьянское восстание
+	id = manchukou.68
+	title = manchukou.68.t
+	desc = manchukou.68.d
+	is_triggered_only = yes
+	immediate = {
+		log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event manchukou.68" 
+		start_civil_war = {
+			ideology = communism
+			size = 0.33
+			keep_all_characters = yes
+			
+			PREV = { 
+				MAN_yang_jingyu = { #leader
+					set_nationality = PREV.PREV
+					add_country_leader_role = {
+						#character = "MAN_yang_jingyu"
+						promote_leader = yes
+						country_leader = {
+							ideology = stalinism
+							expire = "1965.1.1.1"
+							traits = { Unsurrendered }
+						}
+					}
+				}
+				MAN_li_zhaolin = { #corps_commander
+					set_nationality = PREV.PREV
+				}
+				MAN_zhou_baozhong = { #corps_commander
+					set_nationality = PREV.PREV
+				}
+				MAN_zhao_shangzhi = { #corps_commander
+					set_nationality = PREV.PREV
+				}
+				MAN_li_yanlu = { #minister
+					set_nationality = PREV.PREV
+				}
+				MAN_wang_datai = { #minister
+					set_nationality = PREV.PREV
+				}
+				MAN_choi_yeongon = { #minister
+					set_nationality = PREV.PREV
+				}
+				MAN_feng_zhongyun = { #minister
+					set_nationality = PREV.PREV
+				}
+				KOR_kim_il_sung = { 
+					set_nationality = PREV.PREV
+				}
+				KOR_choe_hyon = { 
+					set_nationality = PREV.PREV
+				}
+			}
+
+			set_cosmetic_tag = MAN_peasant_uprising
+			load_focus_tree = nw_MAN_communist
+			add_ideas = MAN_ethnic_strife
+			add_ideas = MAN_lynching_of_hanjiang
+			
+			NW_legitimacy_check = yes
+			NW_migration_check = yes
+			set_country_flag = { flag = focus_synchronization days = 7 value = 1 } #?
+		}
+		set_country_flag = { flag = focus_synchronization days = 7 value = 1 } #?
+	}
+	
+	option = {
+		name = manchukou.68.a
+	}
+	option = {
+		name = manchukou.68.b
+		trigger = { is_ai = no }
+		random_other_country = {
+			limit = { 
+				original_tag = ROOT #?
+			}
+			change_tag_from = ROOT
+		}
+	}
+}
+
+country_event = { #Судьба государственного устройства
+	id = manchukou.69
+	title = manchukou.69.t
+	desc = manchukou.69.d
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event manchukou.69" }
+	
+	option = {
+		name = manchukou.69.a
+		add_stability = -0.05
+		add_political_power = 150
+	}
+}
+
+country_event = { #Опасные переулки Мукдена
+	id = manchukou.70
+	title = manchukou.70.t
+	desc = manchukou.70.d
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event manchukou.70" }
+	
+	trigger = {
+		check_variable = { MAN_political_stand_Military_var = 2 }
+		check_variable = { MAN_political_stand_Bureaucrats_var = 2 }
+	}
+	
+	option = {
+		name = manchukou.70.a
+		set_country_flag = block_constitutional_project_focuses
+		country_event = { id = manchukou.71 days = 40 }
+	}
+	option = {
+		name = manchukou.70.b
+		set_country_flag = block_constitutional_project_focuses
+		country_event = { id = manchukou.72 days = 20 }
+	}
+}
+
+country_event = { #Результаты расследования
+	id = manchukou.71
+	title = manchukou.71.t
+	desc = manchukou.71.d
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event manchukou.71" }
+	
+	option = {
+		name = manchukou.71.a
+		if = {
+			limit = { 
+				check_variable = { MAN_political_stand_Military_var = 2 } 
+				check_variable = { MAN_political_stand_Bureaucrats_var = 2 } 
+			}
+			complete_national_focus = MGM_save_political_system_manchukuo
+			complete_national_focus = MGM_swap_japanese_military_to_chinese
+		}
+		else = {
+			complete_national_focus = MGM_constitutional_reformers_project
+		}
+	}
+	option = {
+		name = manchukou.71.b
+		complete_national_focus = MGM_save_political_system_manchukuo
+	}
+	option = {
+		name = manchukou.71.c
+		every_unit_leader = { #?
+			limit = { has_character_flag = MAN_YCP_general }
+			set_nationality = YCP
+		}
+		effect_tooltip = {
+			unlock_national_focus = MGM_constitutional_reformers_project
+		}
+		set_country_flag = available_MGM_constitutional_reformers_project_focus
+	}
+}
+
+country_event = { #Военные требуют военного положения
+	id = manchukou.72
+	title = manchukou.72.t
+	desc = manchukou.72.d
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event manchukou.72" }
+	
+	option = {
+		name = manchukou.72.a
+		complete_national_focus = MGM_save_political_system_manchukuo
+		complete_national_focus = MGM_swap_japanese_military_to_chinese
+	}
+	option = {
+		name = manchukou.72.b
+		country_event = { id = manchukou.117 days = 40 }
+	}
+}
+
+country_event = { #Военные не дают результатов
+	id = manchukou.117
+	title = manchukou.117.t
+	desc = manchukou.117.d
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event manchukou.117" }
+	
+	option = {
+		name = manchukou.117.a
+		complete_national_focus = MGM_constitutional_reformers_project
+	}
+	option = {
+		name = manchukou.117.b
+		complete_national_focus = MGM_save_political_system_manchukuo
+		complete_national_focus = MGM_swap_japanese_military_to_chinese
+	}
+}
+
+country_event = { #Недовольство младокитайцев
+	id = manchukou.73
+	title = manchukou.73.t
+	desc = manchukou.73.d
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event manchukou.73" }
+	
+	trigger = {
+		#был установлен контакт с МКП (ниже)
+		has_country_flag = MAN_contact_with_YCP
+	}
+	
+	option = {
+		name = manchukou.73.a
+		trigger = { NOT = { has_completed_focus = MGM_promote_commanders_of_YCP } }
+		country_event = { id = manchukou.74 days = 5 }
+	}
+	option = {
+		name = manchukou.73.b
+		if = {
+			limit = { has_completed_focus = MGM_promote_commanders_of_YCP }
+			country_event = { id = manchukou.77 days = 5 } #5?
+		}
+	}
+	option = {
+		name = manchukou.73.c
+		set_country_flag = block_MGM_save_political_system_manchukuo_focus
+		custom_effect_tooltip = block_MGM_save_political_system_manchukuo_focus_tt
+	}
+}
+
+country_event = { #Уличные столкновения
+	id = manchukou.74
+	title = manchukou.74.t
+	desc = manchukou.74.d
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event manchukou.74" }
+	
+	option = {
+		name = manchukou.74.a
+		add_stability = -0.05
+		if = {
+			limit = { check_variable = { MAN_political_stand_Bureaucrats_var = 0 } } #сделать через NOT как в диздоке ?
+			set_country_flag = MAN_rebellion_of_YCP_loc
+			country_event = { id = manchukou.76 days = 5 }
+		}
+		else = {
+			country_event = { id = manchukou.75 days = 5 }
+		}
+	}
+}
+
+country_event = { #Арест лидеров МКП
+	id = manchukou.75
+	title = manchukou.75.t
+	desc = manchukou.75.d
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event manchukou.75" }
+	
+	option = {
+		name = manchukou.75.a
+		add_popularity = {
+			ideology = democratic
+			popularity = -0.05
+		}
+		add_popularity = {
+			ideology = monarchy
+			popularity = 0.05
+		}
+		set_country_flag = arrest_of_MKP_leaders_flag
+		set_country_flag = MAN_refuse_YCP_flag
+	}
+}
+
+country_event = { #Мятеж младокитайцев
+	id = manchukou.76
+	title = { text = manchukou.76.t trigger = { has_country_flag = MAN_rebellion_of_YCP_loc } } #name ?
+	title = { text = manchukou.76.t_a trigger = { has_country_flag = MAN_army_is_on_side_of_YCP_loc } }
+	title = { text = manchukou.76.t_b trigger = { has_country_flag = MAN_rebellion_of_YCP_alt_loc } }
+	desc = { text = manchukou.76.d trigger = { has_country_flag = MAN_rebellion_of_YCP_loc } } # #name ?
+	desc = { text = manchukou.76.d_a trigger = { has_country_flag = MAN_army_is_on_side_of_YCP_loc } } #
+	desc = { text = manchukou.76.d_b trigger = { has_country_flag = MAN_rebellion_of_YCP_alt_loc } } #
+	is_triggered_only = yes
+	immediate = { 
+		log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event manchukou.76" 
+		every_core_state = {
+			add_core_of = YCP
+		}
+		random_owned_controlled_state = { 
+			limit = { NOT = { state = 716 } }
+			set_temp_variable = { YCP.num_possible_controlled_states = ROOT.num_controlled_states } #ROOT.num_controlled_states
+			divide_temp_variable = { YCP.num_possible_controlled_states = 3 } # -1 ? (ибо будет один лишний регион точно(но это не страшно имхо))
+			
+			transfer_state_to = YCP
+			add_to_temp_variable = { YCP.num_actually_controlled_states = 1 }
+			every_neighbor_state = {
+				limit = { is_controlled_by = ROOT NOT = { state = 716 } check_variable = { YCP.num_actually_controlled_states < YCP.num_possible_controlled_states } } #YCP.num_controlled_states
+				transfer_state_to = YCP
+				add_to_temp_variable = { YCP.num_actually_controlled_states = 1 }
+			}
+		}
+		if = {
+			limit = { has_country_flag = MAN_rebellion_of_YCP_alt_loc }
+			MAN_zeng_qi = { #во главе с Вэном Чжаоюанем, идеология - демократия, субидеология – национал-этатизм !!
+				set_nationality = YCP
+				add_country_leader_role = {
+					#character = "MAN_zeng_qi"
+					promote_leader = yes
+					country_leader = {
+						ideology = national_etatism # national_conservatism
+						expire = "1951.5.7"
+						traits = { founder_of_Young_China_Party }
+					}
+				}
+			}
+		}
+		else = {
+			MAN_zeng_qi = {
+				set_nationality = YCP
+				add_country_leader_role = {
+					#character = "MAN_zeng_qi"
+					promote_leader = yes
+					country_leader = {
+						ideology = national_etatism # national_conservatism
+						expire = "1951.5.7"
+						traits = { founder_of_Young_China_Party }
+					}
+				}
+			}
+		}
+		declare_war_on = {
+			target = YCP
+			type = civil_war
+		}
+		add_civil_war_target = YCP
+		YCP = {
+			set_politics = {
+				ruling_party = democratic
+				elections_allowed = no #literally democratic
+			}
+			add_civil_war_target = ROOT
+			set_cosmetic_tag = YCP_chinese_republic # флаг какой будет ?
+			remove_ideas = YCP_china_youth_blood_army #?
+			set_country_flag = { flag = focus_synchronization days = 7 value = 1 } #?
+			
+			NW_legitimacy_check = yes
+			NW_migration_check = yes
+		}
+		every_unit_leader = {
+			limit = { has_character_flag = MAN_YCP_general }
+			set_nationality = YCP
+		}
+		transfer_units_fraction = {
+			target = YCP
+			size = 0.25
+			keep_unit_leaders_trigger = { 
+				NOT = { has_character_flag = MAN_YCP_general } #always = yes
+			}
+		}
+		set_country_flag = { flag = focus_synchronization days = 7 value = 1 } #?
+		
+		set_country_flag = MAN_refuse_YCP_flag
+	}
+	
+	option = {
+		name = manchukou.76.a
+	}
+	option = {
+		trigger = { is_ai = no }
+		name = manchukou.76.a
+		YCP = {
+			change_tag_from = ROOT
+		}
+	}
+}
+
+country_event = { #Младокитайцы захватывают власть
+	id = manchukou.77
+	title = manchukou.77.t
+	desc = manchukou.77.d
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event manchukou.77" }
+	
+	option = {
+		name = manchukou.77.a
+		set_country_flag = block_MGM_save_political_system_manchukuo_focus
+		custom_effect_tooltip = block_MGM_save_political_system_manchukuo_focus_tt
+		complete_national_focus = MGM_ycp_constitution
+		add_popularity = {
+			ideology = democratic
+			popularity = 0.1
+		}
+		add_popularity = {
+			ideology = monarchy
+			popularity = -0.1
+		}
+	}
+	option = {
+		name = manchukou.77.b
+		set_country_flag = block_MGM_save_political_system_manchukuo_focus
+		custom_effect_tooltip = block_MGM_save_political_system_manchukuo_focus_tt
+		complete_national_focus = MGM_constitutional_reformers_project
+		add_popularity = {
+			ideology = democratic
+			popularity = 0.07
+		}
+		add_popularity = {
+			ideology = monarchy
+			popularity = -0.07
+		}
+	}
+}
+
+country_event = { #Ползучий переворот военных
+	id = manchukou.78
+	title = manchukou.78.t
+	desc = manchukou.78.d
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event manchukou.78" }
+	
+	trigger = {
+		OR = {
+			has_country_flag = MGM_slow_military_coup_flag
+			AND = {
+				NOT = { has_completed_focus = MGM_swap_japanese_military_to_chinese has_completed_focus = MGM_promote_commanders_of_YCP }
+				has_government = monarchy
+			}
+		}
+	}
+	
+	option = {
+		name = manchukou.78.a
+		clr_country_flag = MGM_slow_military_coup_flag
+		complete_national_focus = MGM_swap_japanese_military_to_chinese #???
+	}
+}
+
+country_event = { #Убийство императора
+	id = manchukou.79
+	title = manchukou.79.t
+	desc = manchukou.79.d
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event manchukou.79" }
+	
+	trigger = {
+		check_variable = { MAN_political_stand_Government_var = 2 }
+		NOT = { check_variable = { MAN_political_stand_Military_var = 3 } }
+	}
+	
+	option = {
+		name = manchukou.79.a
+		retire_character = MAN_aisin_gioro_puyi
+		create_country_leader = { # TODO: переделать под character
+			name = MAN_constitutional_assembly
+			picture = "GFX_portrait_man_henry_pu_yi_emperor" # !!
+			expire = "1965.1.1"
+			ideology = monarchy_ideology
+			traits = {}
+		}
+		add_ideas = MAN_aisin_gyoro_pujie_alt
+		set_country_flag = block_MGM_great_powers_of_monarch_focus
+		custom_effect_tooltip = block_MGM_great_powers_of_monarch_focus_tt
+		country_event = { id = manchukou.80 days = 1 }
+	}
+}
+
+country_event = { #Окончательный выбор конституции
+	id = manchukou.80
+	title = manchukou.80.t
+	desc = manchukou.80.d
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event manchukou.80" }
+	
+	option = {
+		name = manchukou.80.a
+		complete_national_focus = MGM_constitutional_reformers_project
+		#hidden_effect = {
+			country_event = { id = manchukou.81 days = 10 }
+		#}
+	}
+	option = {
+		name = manchukou.80.b
+		complete_national_focus = MGM_save_political_system_manchukuo
+		#hidden_effect = {
+			country_event = { id = manchukou.81 days = 10 }
+		#}
+	}
+}
+
+country_event = { #Убийца мёртв
+	id = manchukou.81
+	title = manchukou.81.t
+	desc = manchukou.81.d
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event manchukou.81" }
+	
+	option = {
+		name = manchukou.81.a
+	}
+}
+
+country_event = { #Проверка на ... бля забыл
+	id = manchukou_hidden.10
+	
+	hidden = yes
+	is_triggered_only = yes
+	
+	immediate = { 
+		log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event manchukou_hidden.10"
+		if = { #большой вопрос верно ли ???
+			limit = { 
+				NOT = { check_variable = { MAN_political_stand_Government_var = 3 } }
+				NOT = { check_variable = { MAN_political_stand_Military_var = 3 } }
+				NOT = { check_variable = { MAN_political_stand_Bureaucrats_var = 3 } }
+			}
+			country_event = manchukou.82
+		}
+		else_if = {
+			limit = {
+				check_variable = { MAN_political_stand_Government_var = 3 }
+				check_variable = { MAN_political_stand_Military_var = 3 }
+				check_variable = { MAN_political_stand_Bureaucrats_var = 3 }
+			}
+			if = {
+				limit = { has_completed_focus = MGM_promote_commanders_of_YCP }
+				country_event = manchukou.83
+			}
+			else_if = {
+				limit = { 
+					NOT = { has_completed_focus = MGM_promote_commanders_of_YCP } 
+					#был установлен контакт с МКП (ниже)
+					has_country_flag = MAN_contact_with_YCP
+				}
+				set_country_flag = MAN_army_is_on_side_of_YCP_loc
+				country_event = manchukou.76
+			}
+			else = {
+				country_event = manchukou.85
+			}
+		}
+	}
+	
+}
+country_event = { #Изоляция императора
+	id = manchukou.82
+	title = manchukou.82.t
+	desc = manchukou.82.d
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event manchukou.82" }
+	
+	option = {
+		name = manchukou.82.a
+		create_country_leader = { # TODO: переделать под character
+			name = MAN_constitutional_assembly
+			picture = "GFX_portrait_man_henry_pu_yi_emperor" # !!
+			expire = "1965.1.1"
+			ideology = monarchy_ideology
+			traits = {}
+		}
+		if = { 
+			limit = { MAN_aisin_gioro_puyi = { has_trait = the_god_emperor } } 
+			add_ideas = MAN_aisin_gyoro_puyi_1_alt
+		}
+		else = { add_ideas = MAN_aisin_gyoro_puyi_alt }
+		set_country_flag = block_MGM_restore_the_mandate_of_heaven_focus
+		custom_effect_tooltip = block_MGM_restore_the_mandate_of_heaven_focus_tt
+		complete_national_focus = MGM_save_political_system_manchukuo
+	}
+	option = {
+		name = manchukou.82.b
+		create_country_leader = { # TODO: переделать под character
+			name = MAN_constitutional_assembly
+			picture = "GFX_portrait_man_henry_pu_yi_emperor" # !!
+			expire = "1965.1.1"
+			ideology = monarchy_ideology
+			traits = {}
+		}
+		if = { 
+			limit = { MAN_aisin_gioro_puyi = { has_trait = the_god_emperor } } 
+			add_ideas = MAN_aisin_gyoro_puyi_1_alt
+		}
+		else = { add_ideas = MAN_aisin_gyoro_puyi_alt }
+		set_country_flag = block_MGM_restore_the_mandate_of_heaven_focus
+		custom_effect_tooltip = block_MGM_restore_the_mandate_of_heaven_focus_tt
+		complete_national_focus = MGM_constitutional_reformers_project
+	}
+}
+
+country_event = { #Младокитайцы совершают переворот
+	id = manchukou.83
+	title = manchukou.83.t
+	desc = manchukou.83.d
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event manchukou.83" }
+	
+	option = {
+		name = manchukou.83.a
+		set_country_flag = block_MGM_restore_the_mandate_of_heaven_focus
+		custom_effect_tooltip = block_MGM_restore_the_mandate_of_heaven_focus_tt
+		country_event = { id = manchukou.84 days = 2 }
+	}
+}
+
+country_event = { #Напряжённость в воздухе
+	id = manchukou.84
+	title = manchukou.84.t
+	desc = manchukou.84.d
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event manchukou.84" }
+	
+	option = {
+		name = manchukou.84.a
+		set_politics = {
+			ruling_party = democratic
+			elections_allowed = no #literally democratic
+		}
+		add_country_leader_role = {
+			character = "MAN_zeng_qi"
+			promote_leader = yes
+			country_leader = {
+				ideology = national_etatism # national_conservatism
+				expire = "1951.5.7"
+				traits = { founder_of_Young_China_Party }
+			}
+		}
+		if = { 
+			limit = { MAN_aisin_gioro_puyi = { has_trait = the_god_emperor } } 
+			add_ideas = MAN_aisin_gyoro_puyi_1_alt
+		}
+		else = { add_ideas = MAN_aisin_gyoro_puyi_alt }
+		add_popularity = {
+			ideology = democratic
+			popularity = 0.15
+		}
+		add_popularity = {
+			ideology = monarchy
+			popularity = -0.15
+		}
+	}
+	option = {
+		name = manchukou.84.b
+		every_character = { #?
+			set_nationality = YCP
+		}
+		every_core_state = {
+			add_core_of = YCP
+		}
+		YCP = { 
+			set_cosmetic_tag = YCP_chinese_republic # флаг какой будет ?
+			remove_ideas = YCP_china_youth_blood_army #?
+			MAN_zeng_qi = {
+				add_country_leader_role = {
+					#character = "MAN_zeng_qi"
+					promote_leader = yes
+					country_leader = {
+						ideology = national_etatism # national_conservatism
+						expire = "1951.5.7"
+						traits = { founder_of_Young_China_Party }
+					}
+				}
+			}
+			annex_country = { target = ROOT transfer_troops = yes } 
+			set_politics = {
+				ruling_party = democratic
+				elections_allowed = no #literally democratic
+			}
+			add_stability = -0.2
+			NW_legitimacy_check = yes
+			NW_migration_check = yes
+			
+			change_tag_from = ROOT
+		}
+	}
+}
+
+country_event = { #Неудачная попытка переворота младокитайцев
+	id = manchukou.85
+	title = manchukou.85.t
+	desc = manchukou.85.d
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event manchukou.85" }
+	
+	option = {
+		name = manchukou.85.a
+		add_popularity = {
+			ideology = monarchy
+			popularity = 0.05
+		}
+		add_popularity = {
+			ideology = democratic
+			popularity = -0.05
+		}
+		set_country_flag = MAN_refuse_YCP_flag
+		#hidden_effect = {
+			every_unit_leader = {
+				limit = { has_character_flag = MAN_YCP_general }
+				set_nationality = YCP
+			}
+		#}
+	}
+}
+
+country_event = { #Представители неподконтрольных территорий
+	id = manchukou.86
+	title = manchukou.86.t
+	desc = manchukou.86.d
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event manchukou.86" }
+	
+	option = {
+		name = manchukou.86.a
+	}
+	option = {
+		name = manchukou.86.b
+		set_country_flag = MAN_representatives_from_all_over_China_flag
+	}
+}
+
+country_event = { #Открытие первой сессии парламента I
+	id = manchukou.87
+	title = manchukou.87.t
+	desc = manchukou.87.d
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event manchukou.87" }
+	
+	option = {
+		name = manchukou.87.a
+		set_politics = {
+			ruling_party = democratic
+			elections_allowed = no #literally democratic
+		}
+		add_country_leader_role = {
+			character = "MAN_zeng_qi"
+			promote_leader = yes
+			country_leader = {
+				ideology = national_etatism # national_conservatism
+				expire = "1951.5.7"
+				traits = { founder_of_Young_China_Party }
+			}
+		}
+	}
+}
+country_event = { #Открытие первой сессии парламента II
+	id = manchukou.88
+	title = manchukou.88.t
+	desc = manchukou.88.d
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event manchukou.88" }
+	
+	option = {
+		name = manchukou.88.a
+		#placeholder !
+	}
+}
+
+#placeholder ! (дальнейшие ивенты на сессии парламента)
+
+country_event = { #Криминальные разборки
+	id = manchukou.89
+	title = manchukou.89.t
+	desc = manchukou.89.desc
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event manchukou.89" }
+	
+	option = {
+		name = manchukou.89.a
+		add_stability = -0.12
+		add_political_power = -50
+		country_event = { id = manchukou.90 days = 40 }
+		set_country_flag = { flag = group_selected_flag value = 1 } 
+	}
+	option = {
+		name = manchukou.89.b
+		add_stability = -0.06
+		add_political_power = -100
+		country_event = { id = manchukou.90 days = 40 }
+		set_country_flag = { flag = group_selected_flag value = 2 } 
+	}
+	option = {
+		name = manchukou.89.c
+		add_stability = -0.18
+		country_event = { id = manchukou.90 days = 40 }
+		set_country_flag = { flag = group_selected_flag value = 3 } 
+	}
+	option = {
+		name = manchukou.89.d
+		add_stability = -0.03
+		add_political_power = -200
+		country_event = { id = manchukou.90 days = 40 }
+		set_country_flag = { flag = group_selected_flag value = 4 } 
+	}
+}
+
+country_event = { #Перестрелки бандитов
+	id = manchukou.90
+	title = manchukou.90.t
+	desc = manchukou.90.d
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event manchukou.90" }
+	
+	option = {
+		name = manchukou.90.a
+		country_event = { id = manchukou.91 days = 25 }
+	}
+}
+
+country_event = { #Зачистка завершена
+	id = manchukou.91
+	title = manchukou.91.t
+	desc = manchukou.91.d
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event manchukou.91" }
+	
+	option = {
+		name = manchukou.91.a
+		trigger = {
+			has_country_flag = { flag = group_selected_flag value = 1 }
+		}
+		remove_ideas = MAN_high_crime_level
+		set_variable = { MAN_political_stand_Bureaucrats_var = 1 tooltip = political_stand_Bureaucrats_1_tooltip }
+
+		add_to_variable = { MAN_level_of_corruption_var = 2 tooltip = MAN_level_of_corruption_tooltip }
+		add_to_variable = { MAN_loc_political_power_factor = -0.02 tooltip = political_power_factor_tooltip } 
+		add_to_variable = { MAN_loc_command_power_gain_mult = -0.02 tooltip = command_power_gain_mult_tooltip } 
+		add_to_variable = { MAN_loc_political_advisor_cost_factor = 0.02 tooltip = political_advisor_cost_factor_tooltip }
+	}
+	option = {
+		name = manchukou.91.b
+		trigger = {
+			has_country_flag = { flag = group_selected_flag value = 1 }
+			has_equipment = { infantry_equipment > 299 }
+			has_manpower > 149
+		}
+		add_manpower = -150
+		add_equipment_to_stockpile = {
+			type = infantry_equipment
+			amount = -300
+		}
+		remove_ideas = MAN_high_crime_level
+		add_popularity = {
+			ideology = communism
+			popularity = 0.02
+		}
+		if = {
+			limit = {
+				has_active_mission = MAN_peasant_uprising_mission
+			}
+			add_days_mission_timeout = {
+				mission = MAN_peasant_uprising_mission
+				days = -15
+			}
+		}
+	}
+	
+	option = {
+		name = manchukou.91.a
+		trigger = {
+			has_country_flag = { flag = group_selected_flag value = 2 }
+		}
+		remove_ideas = MAN_high_crime_level
+		set_variable = { MAN_political_stand_Bureaucrats_var = 1 tooltip = political_stand_Bureaucrats_1_tooltip }
+		
+		add_to_variable = { MAN_level_of_corruption_var = 4 tooltip = MAN_level_of_corruption_tooltip }
+		add_to_variable = { MAN_loc_political_power_factor = -0.04 tooltip = political_power_factor_tooltip } 
+		add_to_variable = { MAN_loc_command_power_gain_mult = -0.04 tooltip = command_power_gain_mult_tooltip } 
+		add_to_variable = { MAN_loc_political_advisor_cost_factor = 0.04 tooltip = political_advisor_cost_factor_tooltip }
+	}
+	option = {
+		name = manchukou.91.b
+		trigger = {
+			has_country_flag = { flag = group_selected_flag value = 2 }
+			has_equipment = { infantry_equipment > 499 }
+			has_manpower > 299
+		}
+		add_manpower = -300
+		add_equipment_to_stockpile = {
+			type = infantry_equipment
+			amount = -500
+		}
+		remove_ideas = MAN_high_crime_level
+		add_popularity = {
+			ideology = communism
+			popularity = 0.04
+		}
+		if = {
+			limit = {
+				has_active_mission = MAN_peasant_uprising_mission
+			}
+			add_days_mission_timeout = {
+				mission = MAN_peasant_uprising_mission
+				days = -30
+			}
+		}
+	}
+	
+	option = {
+		name = manchukou.91.a
+		trigger = {
+			has_country_flag = { flag = group_selected_flag value = 3 }
+		}
+		remove_ideas = MAN_high_crime_level
+		set_variable = { MAN_political_stand_Bureaucrats_var = 1 tooltip = political_stand_Bureaucrats_1_tooltip }
+	
+		add_to_variable = { MAN_level_of_corruption_var = 1 tooltip = MAN_level_of_corruption_tooltip }
+		add_to_variable = { MAN_loc_political_power_factor = -0.01 tooltip = political_power_factor_tooltip } 
+		add_to_variable = { MAN_loc_command_power_gain_mult = -0.01 tooltip = command_power_gain_mult_tooltip } 
+		add_to_variable = { MAN_loc_political_advisor_cost_factor = 0.01 tooltip = political_advisor_cost_factor_tooltip }
+		if = {
+			limit = { SOV = { has_civil_war = no } } #? 100% по другому
+			complete_national_focus = MGM_the_second_russian_guard
+		}
+	}
+	option = {
+		name = manchukou.91.b
+		trigger = {
+			has_country_flag = { flag = group_selected_flag value = 3 }
+			has_equipment = { infantry_equipment > 199 }
+			has_manpower > 99
+		}
+		add_manpower = -100
+		add_equipment_to_stockpile = {
+			type = infantry_equipment
+			amount = -200
+		}
+		remove_ideas = MAN_high_crime_level
+		add_popularity = {
+			ideology = communism
+			popularity = 0.02
+		}
+	}
+	
+	option = {
+		name = manchukou.91.a
+		trigger = {
+			has_country_flag = { flag = group_selected_flag value = 4 }
+		}
+		remove_ideas = MAN_high_crime_level
+		set_variable = { MAN_political_stand_Bureaucrats_var = 1 tooltip = political_stand_Bureaucrats_1_tooltip }
+
+		add_to_variable = { MAN_level_of_corruption_var = 7 tooltip = MAN_level_of_corruption_tooltip }
+		add_to_variable = { MAN_loc_political_power_factor = -0.07 tooltip = political_power_factor_tooltip } 
+		add_to_variable = { MAN_loc_command_power_gain_mult = -0.07 tooltip = command_power_gain_mult_tooltip } 
+		add_to_variable = { MAN_loc_political_advisor_cost_factor = 0.07 tooltip = political_advisor_cost_factor_tooltip }
+	}
+	option = {
+		name = manchukou.91.b
+		trigger = {
+			has_country_flag = { flag = group_selected_flag value = 4 }
+			has_equipment = { infantry_equipment > 999 }
+			has_manpower > 499
+		}
+		add_manpower = -500
+		add_equipment_to_stockpile = {
+			type = infantry_equipment
+			amount = -1000
+		}
+		remove_ideas = MAN_high_crime_level
+		add_popularity = {
+			ideology = communism
+			popularity = 0.07
+		}
+		if = {
+			limit = {
+				has_active_mission = MAN_peasant_uprising_mission
+			}
+			add_days_mission_timeout = {
+				mission = MAN_peasant_uprising_mission
+				days = -50
+			}
+		}
+	}
+}
+
+country_event = { #Переговоры о возвращении имущества - JAP
+	id = manchukou.92
+	title = manchukou.92.t
+	desc = manchukou.92.d
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event manchukou.92" }
+	
+	option = {
+		name = manchukou.92.a
+		FROM = { country_event = { id = manchukou.93 hours = 6 } } 
+	}
+}
+
+country_event = { #Успешные переговоры с японцами
+	id = manchukou.93
+	title = manchukou.93.t
+	desc = manchukou.93.d
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event manchukou.93" }
+	
+	option = {
+		name = manchukou.93.a
+		add_opinion_modifier = { 
+			target = JAP
+			modifier = MGM_negotiations_on_return_of_property
+		}
+		JAP = {
+			add_opinion_modifier = { 
+				target = ROOT
+				modifier = MGM_negotiations_on_return_of_property 
+			}
+			random_owned_controlled_state = {
+				add_extra_state_shared_building_slots = 1
+				add_building_construction = {
+					type = industrial_complex
+					level = 1
+					instant_build = yes
+				}
+			}
+			random_owned_controlled_state = { #засунуть внуть предыдущего с other ?
+				add_extra_state_shared_building_slots = 1
+				add_building_construction = {
+					type = industrial_complex
+					level = 1
+					instant_build = yes
+				}
+			}
+		}
+		#hidden_effect = {
+			if = {
+				limit = { NOT = { has_completed_focus = MGM_restore_the_mandate_of_heaven has_completed_focus = MGM_great_powers_of_monarch has_completed_focus = MGM_save_political_system_manchukuo } } #это имелось ввиду ??
+				country_event = { id = manchukou.94 days = 5 random_days = 10 }
+			}
+		#}
+	}
+}
+
+country_event = { #Антияпонские демонстрации
+	id = manchukou.94
+	title = manchukou.94.t
+	desc = manchukou.94.d
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event manchukou.94" }
+	
+	option = {
+		name = manchukou.94.a
+		add_popularity = {
+			ideology = communism
+			popularity = 0.05
+		}
+		add_stability = -0.07
+		#placeholder !
+	}
+}
+
+country_event = { #Предатели императора
+	id = manchukou.95
+	title = manchukou.95.t
+	desc = manchukou.95.d
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event manchukou.95" }
+	
+	trigger = { #??
+		OR = {
+			NOT = { has_completed_focus = MGM_swap_japanese_military_to_chinese }
+			AND = {
+				NOT = { check_variable = { MAN_political_stand_Government_var = 2 } }
+				NOT = { check_variable = { MAN_political_stand_Military_var = 2 } }
+				NOT = { check_variable = { MAN_political_stand_Bureaucrats_var = 2 } }
+				if = { #Чтобы в лог не срал при ГВ
+					limit = { has_character = MAN_aisin_gioro_xiqia }
+					MAN_aisin_gioro_xiqia = {
+						is_country_leader = no
+					}
+				}
+			}
+		}
+	}
+	
+	option = {
+		name = manchukou.95.a
+		retire_character = MAN_aisin_gioro_xiqia #??
+		set_politics = {
+			ruling_party = neutrality
+			#elections_allowed = no #literally democratic
+		}
+		add_country_leader_role = {
+			character = "MAN_zang_shiyi"
+			promote_leader = yes
+			country_leader = {
+				ideology = despotism # при каких вообще условиях ?? кто глава страны ??
+				desc = "POLITICS_ZANG_SHIYI_DESC"
+				expire = "1965.1.1.1"
+				traits = {  }
+			}
+		}
+		# Пу И в идею ?
+		set_country_flag = block_MGM_manchurian_independent_state_flag
+	}
+}
+
+country_event = { #Повторное провозглашение Маньчжурии
+	id = manchukou.96
+	title = manchukou.96.t
+	desc = manchukou.96.d
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event manchukou.96" }
+	
+	option = {
+		name = manchukou.96.a
+		if = {
+			limit = { has_cosmetic_tag = MAN_change_name }
+			set_cosmetic_tag = MAN_manchurian_state_alt
+		}
+		else = {
+			set_cosmetic_tag = MAN_manchurian_state
+		}
+		set_variable = { MAN_rms_stability_factor = -0.25 }
+		set_variable = { MAN_rms_war_support_factor = -0.5 }
+		set_variable = { MAN_rms_political_power_factor = -0.25 }
+		set_variable = { MAN_rms_conscription_factor = -0.5 }
+		add_dynamic_modifier = { modifier = MAN_manchurian_separatism }
+		remove_ideas = chine_clique
+		add_ideas = MAN_unrecognized_state
+	}
+}
+
+country_event = { #Маньчжуры подтвердили курс на сепаратизм
+	id = manchukou.97
+	title = manchukou.97.t
+	desc = manchukou.97.d
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event manchukou.97" }
+	
+	option = {
+		name = manchukou.97.a
+		add_opinion_modifier = {
+			target = FROM #?
+			modifier = MGM_confirmed_course_of_separatism 		
+		}
+	}
+}
+
+country_event = { #Выбор государственного языка
+	id = manchukou.98
+	title = manchukou.98.t
+	desc = manchukou.98.d
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event manchukou.98" }
+	
+	option = {
+		name = manchukou.98.a
+		add_stability = 0.15 
+	}
+	option = {
+		name = manchukou.98.b
+		add_stability = 0.05
+		custom_effect_tooltip = MAN_manchurian_separatism_tooltip
+		add_to_variable = { MAN_rms_stability_factor = 0.05 tooltip = stability_factor_tooltip }
+		add_to_variable = { MAN_rms_war_support_factor = 0.05 tooltip = war_support_factor_tooltip }
+		add_to_variable = { MAN_rms_political_power_factor = 0.05 tooltip = political_power_factor_tooltip }
+		add_to_variable = { MAN_rms_conscription_factor = 0.05 tooltip = conscription_factor_tooltip }
+	}
+	option = {
+		name = manchukou.98.c 
+		add_timed_idea = { idea = MAN_collapse_of_state_apparatus days = 90 } 
+		effect_tooltip = { 
+			set_variable = { timer = 90 tooltip = timer_tootip } #custom_effect_tooltip = ETH_domestication_of_warthogs_tt
+			add_to_variable = { MAN_pmn_count = 2 tooltip = MAN_pmn_count_tooltip } 
+		}
+	}
+}
+
+country_event = { #Предложение китайского императора - CSR, TIB, KUM
+	id = manchukou.99
+	title = manchukou.99.t
+	desc = { text = manchukou.99.d_csr trigger = { original_tag = CSR } } # 
+	desc = { text = manchukou.99.d_tib trigger = { original_tag = TIB } } #
+	desc = { text = manchukou.99.d_kum trigger = { original_tag = KUM } } #
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event manchukou.99" }
+	
+	option = {
+		name = manchukou.99.a
+		FROM = { country_event = manchukou.100 }
+	}
+	option = {
+		name = manchukou.99.b
+		FROM = { country_event = manchukou.101 }
+	}
+}
+
+country_event = { #Согласие [FROM.GetName] представителей
+	id = manchukou.100
+	title = manchukou.100.t 
+	desc = { text = manchukou.100.d_csr trigger = { FROM = { original_tag = CSR } } } # 
+	desc = { text = manchukou.100.d_tib trigger = { FROM = { original_tag = TIB } } } #
+	desc = { text = manchukou.100.d_kum trigger = { FROM = { original_tag = KUM } } } #
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event manchukou.100" }
+	
+	option = {
+		name = manchukou.100.a
+		set_autonomy = {
+			target = FROM
+			autonomous_state = autonomy_puppet
+		}
+	}
+}
+
+country_event = { #Отказ [FROM.GetName] представителей
+	id = manchukou.101
+	title = manchukou.101.t 
+	desc = { text = manchukou.101.d_csr trigger = { FROM = { original_tag = CSR } } } # 
+	desc = { text = manchukou.101.d_tib trigger = { FROM = { original_tag = TIB } } } #
+	desc = { text = manchukou.101.d_kum trigger = { FROM = { original_tag = KUM } } } #
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event manchukou.101" }
+	
+	option = {
+		name = manchukou.101.a
+		if = { #??
+			limit = { FROM = { tag = CSR } }
+			every_country = {
+				limit = { OR = { tag = FROM tag = MEN tag = MON } } #??
+				ROOT = {
+					create_wargoal = {
+						target = PREV
+						type = annex_everything
+					}
+				}
+			}
+		}
+		else_if = {
+			limit = { FROM = { OR = { tag = TIB tag = KUM } } } #?
+			create_wargoal = {
+				target = FROM
+				type = annex_everything
+			}
+		}
+	}
+}
+
+country_event = { #Переговорщик от монархистов - SHX
+	id = manchukou.102
+	title = manchukou.102.t
+	desc = manchukou.102.d
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event manchukou.102" }
+	
+	option = {
+		name = manchukou.102.a
+		hidden_effect = { #?
+			SHX_yan_xishan = {
+				add_country_leader_role = {
+					promote_leader = yes
+					country_leader = {
+						ideology = monarchy_ideology
+						expire = "1965.1.1.1"
+					}
+				}
+			}
+		}
+		set_cosmetic_tag = man_yellow_flag #?
+		FROM = {
+			set_autonomy = {
+				target = PREV
+				autonomous_state = autonomy_puppet
+			}
+			set_country_flag = SHX_yes_flag
+			country_event = manchukou.103
+		}
+	}
+	option = {
+		name = manchukou.102.b
+		diplomatic_relation = {
+			country = FROM
+			relation = non_aggression_pact
+			active = yes
+		}
+		FROM = {
+			set_country_flag = SHX_neutrality_flag
+			country_event = manchukou.103
+		}
+	}
+	option = {
+		name = manchukou.102.c
+		FROM = {
+			set_country_flag = SHX_no_flag
+			country_event = manchukou.103
+		}
+	}
+}
+country_event = { 
+	id = manchukou.103
+	title = { text = manchukou.103.t_yes trigger = { has_country_flag = SHX_yes_flag } }
+	title = { text = manchukou.103.t_neutrality trigger = { has_country_flag = SHX_neutrality_flag } }
+	title = { text = manchukou.103.t_no trigger = { has_country_flag = SHX_no_flag } }
+	desc = { text = manchukou.103.d_yes trigger = { has_country_flag = SHX_yes_flag } } # 
+	desc = { text = manchukou.103.d_neutrality trigger = { has_country_flag = SHX_neutrality_flag } } #
+	desc = { text = manchukou.103.d_no trigger = { has_country_flag = SHX_no_flag } } #
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event manchukou.103" }
+	
+	option = { #Шаньси под нашим контролем
+		trigger = { has_country_flag = SHX_yes_flag }
+		name = manchukou.103.a
+		clr_country_flag = SHX_yes_flag
+	}
+	option = { #Достижение нейтралитета
+		trigger = { has_country_flag = SHX_neutrality_flag }
+		name = manchukou.103.b
+		clr_country_flag = SHX_neutrality_flag
+	}
+	option = { #Отказ от переговоров
+		trigger = { has_country_flag = SHX_no_flag }
+		name = manchukou.103.c
+		clr_country_flag = SHX_no_flag
+	}
+}
+
+country_event = { #Тайное предложение монархистов - XSM 
+	id = manchukou.106 
+	title = manchukou.106.t
+	desc = manchukou.106.d
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event manchukou.106" }
+	
+	option = {
+		name = manchukou.106.a
+		#trigger = { has_completed_focus = «Подтвердить лояльность центральному правительству» } !!
+		FROM = { country_event = manchukou.107 }
+	}
+	option = {
+		name = manchukou.106.b
+		#trigger = { NOT = { has_completed_focus = «Подтвердить лояльность центральному правительству» } } !!
+		FROM = { country_event = manchukou.107 }
+	}
+	option = {
+		name = manchukou.106.c
+		hidden_effect = { #?
+			XSM_ma_bufang = {
+				add_country_leader_role = {
+					promote_leader = yes
+					country_leader = {
+						ideology = monarchy_ideology
+						expire = "1965.1.1.1"
+					}
+				}
+			}
+		}
+		overlord = { # ??
+			save_global_event_target_as = MAN_ex_overlord
+		}
+		FROM = {
+			set_autonomy = {
+				target = PREV
+				autonomous_state = autonomy_puppet
+			}
+		}
+		set_cosmetic_tag = man_yellow_flag
+		every_country = {
+			limit = { OR = { has_idea = chine_clique tag = event_target:MAN_ex_overlord } }
+			country_event = manchukou.108
+		}
+	}
+}
+
+country_event = { #Отказ Ма Буфана
+	id = manchukou.107
+	title = manchukou.107.t
+	desc = manchukou.107.d
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event manchukou.107" }
+	
+	option = {
+		name = manchukou.107.a
+	}
+}
+
+country_event = { #Ма Буфан перешёл на сторону монархистов
+	id = manchukou.108
+	title = manchukou.108.t
+	desc = manchukou.108.d
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event manchukou.108" }
+	
+	option = {
+		name = manchukou.108.a
+		trigger = { NOT = { tag = FROM tag = MGM tag = event_target:MAN_ex_overlord } } #?
+		clear_global_event_target = MAN_ex_overlord #?
+	}
+	option = {
+		name = manchukou.108.b
+		trigger = { tag = event_target:MAN_ex_overlord }
+		clear_global_event_target = MAN_ex_overlord #?
+	}
+	option = {
+		name = manchukou.108.c
+		#trigger = { OR = { tag = FROM tag = MGM } } #??
+		clear_global_event_target = MAN_ex_overlord #?
+	}
+}
+
+country_event = { #Младокитайские связи - SIH
+	id = manchukou.104
+	title = manchukou.104.t
+	desc = manchukou.104.d
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event manchukou.104" }
+	
+	option = {
+		name = manchukou.104.a
+		FROM = {
+			set_autonomy = {
+				target = PREV
+				autonomous_state = autonomy_puppet
+			}
+			set_country_flag = SIH_yes_flag
+			country_event = manchukou.105
+		}
+	}
+	option = {
+		name = manchukou.104.b
+		FROM = {
+			country_event = manchukou.105
+		}
+	}
+}
+country_event = { 
+	id = manchukou.105
+	title = { text = manchukou.105.t_yes trigger = { has_country_flag = SIH_yes_flag } }
+	title = { text = manchukou.105.t_no trigger = { NOT = { has_country_flag = SIH_yes_flag } } }
+	desc = { text = manchukou.105.d_yes trigger = { has_country_flag = SIH_yes_flag } } # 
+	desc = { text = manchukou.105.d_no trigger = { NOT = { has_country_flag = SIH_yes_flag } } } #
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event manchukou.105" }
+	
+	option = { #Сычуань наш
+		name = manchukou.105.a
+		trigger = { has_country_flag = SIH_yes_flag }
+		clr_country_flag = SIH_yes_flag
+	}
+	option = { #Отказ сычуаньских лидеров
+		name = manchukou.105.b
+		trigger = { NOT = { has_country_flag = SIH_yes_flag } }
+	}
+}
+
+country_event = { #Официальное название государства
+	id = manchukou.109
+	title = manchukou.109.t
+	desc = manchukou.109.d
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event manchukou.109" }
+	
+	option = { 
+		name = manchukou.109.a
+		set_cosmetic_tag = MAN_qing_empire
+		add_stability = -0.15
+	}
+	option = { 
+		name = manchukou.109.b
+		set_cosmetic_tag = MAN_restored
+	}
+}
+
+country_event = { #Победа Младокитайской партии
+	id = manchukou.110
+	title = manchukou.110.t
+	desc = manchukou.110.d
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event manchukou.110" }
+	
+	option = { 
+		name = manchukou.110.a
+		set_politics = {
+			ruling_party = democratic
+			elections_allowed = no #literally democratic
+		}
+		MAN_zeng_qi = {
+			add_country_leader_role = {
+				#character = "MAN_zeng_qi"
+				promote_leader = yes
+				country_leader = {
+					ideology = national_etatism # national_conservatism
+					expire = "1951.5.7"
+					traits = { founder_of_Young_China_Party }
+				}
+			}
+		}
+		set_party_name = {
+			name = MAN_constitutional_party
+			long_name = MAN_constitutional_party_long
+			ideology = monarchy
+		}
+	}
+}
+
+country_event = { #Победа Конституционной партии
+	id = manchukou.111
+	title = manchukou.111.t
+	desc = manchukou.111.d
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event manchukou.111" }
+	
+	option = { 
+		name = manchukou.111.a
+		set_politics = { #? (вроде надо!)
+			ruling_party = monarchy
+			elections_allowed = no 
+		}
+		MAN_zang_shiyi = {
+			add_country_leader_role = {
+				#character = "MAN_zang_shiyi"
+				promote_leader = yes
+				country_leader = {
+					ideology = dual_monarchy
+					desc = "POLITICS_ZANG_SHIYI_DESC"
+					expire = "1965.1.1.1"
+					traits = { }
+				}
+			}
+		}
+		set_party_name = {
+			name = MAN_constitutional_party
+			long_name = MAN_constitutional_party_long
+			ideology = monarchy
+		}
+	}
+}
+
+country_event = { #Вторые выборы в Законодательное собрание Империи
+	id = manchukou.112
+	title = manchukou.112.t
+	desc = manchukou.112.d
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event manchukou.112" }
+	
+	option = { 
+		name = manchukou.112.a
+		trigger = { has_completed_focus = MGM_manchuria_is_heart_of_china NOT = { has_completed_focus = MGM_social_development_projects has_completed_focus = MGM_high_quality_technical_education } }
+		set_country_flag = MAN_ycp_come_to_power_flag
+		country_event = manchukou.113
+	}
+	option = { 
+		name = manchukou.112.a
+		trigger = { has_completed_focus = MGM_manchuria_is_heart_of_china has_completed_focus = MGM_social_development_projects has_completed_focus = MGM_high_quality_technical_education }
+		set_country_flag = MAN_mon_hold_power
+		country_event = manchukou.114
+	}
+	option = { 
+		name = manchukou.112.b
+		trigger = { has_completed_focus = MGM_awakening_of_the_lion has_completed_focus = MGM_universal_education }
+		set_country_flag = MAN_ycp_hold_power
+		country_event = manchukou.113
+	}
+	option = { 
+		name = manchukou.112.b
+		trigger = { has_completed_focus = MGM_awakening_of_the_lion NOT = { has_completed_focus = MGM_universal_education } }
+		set_country_flag = MAN_pss_come_to_power_flag
+		country_event = manchukou.114
+	}
+}
+
+country_event = { #Младокитайцы приходят к власти, Младокитайцы сохранили большинство в парламенте
+	id = manchukou.113
+	title = { text = manchukou.113.t_come_to_power trigger = { has_country_flag = MAN_ycp_come_to_power_flag } }
+	title = { text = manchukou.113.t_hold_power trigger = { has_country_flag = MAN_ycp_hold_power } }
+	desc = { text = manchukou.113.d_come_to_power trigger = { has_country_flag = MAN_ycp_come_to_power_flag } } # 
+	desc = { text = manchukou.113.d_hold_power trigger = { has_country_flag = MAN_ycp_hold_power } } #
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event manchukou.113" }
+	
+	option = { 
+		name = manchukou.113.a
+		trigger = { has_country_flag = MAN_ycp_come_to_power_flag }
+		add_to_variable = { MAN_level_of_corruption_var = -5 tooltip = MAN_level_of_corruption_tooltip }
+		add_to_variable = { MAN_loc_political_power_factor = 0.05 tooltip = political_power_factor_tooltip } 
+		add_to_variable = { MAN_loc_command_power_gain_mult = 0.05 tooltip = command_power_gain_mult_tooltip } 
+		add_to_variable = { MAN_loc_political_advisor_cost_factor = -0.05 tooltip = political_advisor_cost_factor_tooltip }
+		
+		set_politics = {
+			ruling_party = democratic
+			elections_allowed = no #literally democratic
+		}
+		if = {
+			limit = { has_character = MAN_zeng_qi } #?
+			MAN_zeng_qi = {
+				add_country_leader_role = {
+					#character = "MAN_zeng_qi"
+					promote_leader = yes
+					country_leader = {
+						ideology = national_etatism # national_conservatism
+						expire = "1951.5.7"
+						traits = { founder_of_Young_China_Party }
+					}
+				}
+			}
+		}
+		else = {
+			MAN_li_huan = {
+				add_country_leader_role = {
+					#character = "MAN_li_huan"
+					promote_leader = yes
+					country_leader = {
+						ideology = national_etatism # national_conservatism
+						expire = "1965.1.1.1"
+						traits = { anticommunist_agitator }
+					}
+				}
+			}
+		}
+		clr_country_flag = MAN_ycp_come_to_power_flag
+	}
+	option = { 
+		name = manchukou.113.b
+		trigger = { has_country_flag = MAN_ycp_hold_power }
+		clr_country_flag = MAN_ycp_hold_power
+	}
+}
+
+country_event = { #Конституционалисты сохраняют власть, Коалиция во главе с ПГС взяла верх
+	id = manchukou.114
+	title = { text = manchukou.114.t_come_to_power trigger = { has_country_flag = MAN_pss_come_to_power_flag } }
+	title = { text = manchukou.114.t_hold_power trigger = { has_country_flag = MAN_mon_hold_power } }
+	desc = { text = manchukou.114.d_come_to_power trigger = { has_country_flag = MAN_pss_come_to_power_flag } } # 
+	desc = { text = manchukou.114.d_hold_power trigger = { has_country_flag = MAN_mon_hold_power } } #
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event manchukou.114" }
+	
+	option = { 
+		name = manchukou.114.a
+		trigger = { has_country_flag = MAN_mon_hold_power }
+		add_to_variable = { MAN_level_of_corruption_var = 5 tooltip = MAN_level_of_corruption_tooltip }
+		add_to_variable = { MAN_loc_political_power_factor = -0.05 tooltip = political_power_factor_tooltip } 
+		add_to_variable = { MAN_loc_command_power_gain_mult = -0.05 tooltip = command_power_gain_mult_tooltip } 
+		add_to_variable = { MAN_loc_political_advisor_cost_factor = 0.05 tooltip = political_advisor_cost_factor_tooltip }
+		
+		clr_country_flag = MAN_mon_hold_power
+	}
+	option = { 
+		name = manchukou.114.b
+		trigger = { has_country_flag = MAN_pss_come_to_power_flag }
+		set_politics = {
+			ruling_party = democratic
+			elections_allowed = no #literally democratic
+		}
+		MAN_xu_fulin = {
+			add_country_leader_role = {
+				#character = "MAN_xu_fulin"
+				promote_leader = yes
+				country_leader = {
+					ideology = democratic_socialism 
+					expire = "1965.1.1.1"
+					traits = { legal_scholar }
+				}
+			}
+		}
+		remove_dynamic_modifier = { modifier = MAN_level_of_corruption }
+		set_variable = { MAN_level_of_corruption_var = 0 } # убрать из decision ?
+		set_variable = { MAN_loc_political_power_factor = 0 }
+		set_variable = { MAN_loc_command_power_gain_mult = 0 }
+		set_variable = { MAN_loc_political_advisor_cost_factor = 0 }
+		set_party_name = {
+			name = MAN_party_of_state_socialism
+			long_name = MAN_party_of_state_socialism_long
+			ideology = democratic
+		}
+		clr_country_flag = MAN_pss_come_to_power_flag
+	}
+}
+
+#
+
+country_event = { #Северо-Восточная Антияпонская Объединённая армия
+	id = manchukou.115
+	title = manchukou.115.t
+	desc = manchukou.115.d
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event manchukou.115" }
+	
+	option = { 
+		name = manchukou.115.a
+	}
+}
+
+country_event = { #Выборы главы правительства
+	id = manchukou.116
+	title = manchukou.116.t
+	desc = manchukou.116.desc
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event manchukou.116" }
+	
+	option = { 
+		name = manchukou.116.a
+		MAN_yang_jingyu = {
+			add_country_leader_role = {
+				#character = "MAN_yang_jingyu"
+				promote_leader = yes
+				country_leader = {
+					ideology = stalinism
+					expire = "1965.1.1.1"
+					traits = { Unsurrendered }
+				}
+			}
+		}
+	}
+	option = { 
+		name = manchukou.116.b
+		MAN_li_zhaolin = {
+			add_country_leader_role = {
+				#character = "MAN_li_zhaolin"
+				promote_leader = yes
+				country_leader = {
+					ideology = stalinism 
+					expire = "1965.1.1.1"
+					traits = { cornered_fox } #?
+				}
+			}
+		}
+	}
+	option = { 
+		name = manchukou.116.c
+		MAN_zhou_baozhong = {
+			add_country_leader_role = {
+				#character = "MAN_zhou_baozhong"
+				promote_leader = yes
+				country_leader = {
+					ideology = stalinism 
+					expire = "1965.1.1.1"
+					traits = { graduate_of_KUTV }
+				}
+			}
+		}
+	}
+	option = { 
+		name = manchukou.116.d
+		MAN_zhao_shangzhi = {
+			#add_country_leader_role = {
+			#	#character = "MAN_zhao_shangzhi"
+			#	promote_leader = yes
+			#	country_leader = {
+			#		ideology = stalinism 
+			#		expire = "1965.1.1.1"
+			#		traits = { graduate_of_vampu_academy }
+			#	}
+			#}
+			promote_character = yes
+		}
+	}
+}
+
+country_event = { #Завершение земельной реформы
+	id = manchukou.118
+	title = manchukou.118.t
+	desc = manchukou.118.d
+	#is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event manchukou.118" }
+	
+	trigger = {
+		original_tag = MAN
+		has_country_flag = MAN_land_reform_available_flag
+		check_variable = { var = land_reform_progress_var value = 100 }
+	}
+	
+	mean_time_to_happen = { #? TODO
+		days = 2
+	}
+	
+	option = { 
+		name = manchukou.118.a
+		clr_country_flag = MAN_land_reform_available_flag
+		#clear_variable = land_reform_progress_var
+	}
+}
+
+###   ##  #  # ###  ### ###      ##  ##  ###   ##  ###  ##   ##  ### 
+#  # #  # ## # #  #  #   #      #   #  # #  # #  #  #  #  # #    #   
+###  #### # ## #  #  #   #       #  #### ###  #  #  #  #### # ## ##  
+#  # #  # #  # #  #  #   #        # #  # #  # #  #  #  #  # #  # #   
+###  #  # #  # ###  ###  #      ##  #  # ###   ##   #  #  #  ##  ### 
+
+add_namespace = wtt_manchukou_bandit_sabotage
+
+#Bandit sabotage - factory sabotaged
+country_event = {
+	id = wtt_manchukou_bandit_sabotage.21
+	title = wtt_manchukou_bandit_sabotage.21.t
+	desc = wtt_manchukou_bandit_sabotage.21.desc
+	picture = GFX_report_event_generic_ruins
+
+	is_triggered_only = yes
+	
+	option = {
+		name = wtt_manchukou_bandit_sabotage.21.a #okay
+		random_owned_state = {
+			limit = {
+				is_fully_controlled_by = ROOT
+				arms_factory > 0
+			}
+			damage_building = {
+				type = arms_factory
+				damage = 0.6
+			}
+		}
+	}
+}
+
+#Bandit sabotage - civilian factory sabotaged
+country_event = {
+	id = wtt_manchukou_bandit_sabotage.22
+	title = wtt_manchukou_bandit_sabotage.22.t
+	desc = wtt_manchukou_bandit_sabotage.21.desc
+	picture = GFX_report_event_generic_ruins
+
+	is_triggered_only = yes
+	
+	option = {
+		name = wtt_manchukou_bandit_sabotage.21.a #okay
+		random_owned_state = {
+			limit = {
+				is_fully_controlled_by = ROOT
+				industrial_complex > 0
+			}
+			damage_building = {
+				type = industrial_complex
+				damage = 0.6
+			}
+		}
+	}
+}
+
+#Bandit sabotage - bridge blown
+country_event = {
+	id = wtt_manchukou_bandit_sabotage.23
+	title = wtt_manchukou_bandit_sabotage.23.t
+	desc = wtt_manchukou_bandit_sabotage.23.desc
+	picture = GFX_report_event_generic_train
+
+	is_triggered_only = yes
+	
+	option = {
+		name = wtt_manchukou_bandit_sabotage.21.a #okay
+		random_owned_state = {
+			limit = {
+				is_fully_controlled_by = ROOT
+				infrastructure > 0
+			}
+			damage_building = {
+				type = infrastructure
+				damage = 1
+			}
+		}
+	}
+}

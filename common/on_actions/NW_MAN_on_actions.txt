@@ -1,0 +1,134 @@
+on_actions = {
+
+	on_startup = {
+		effect = {
+			if = {
+				limit = { has_start_date < 1936.01.02 }
+				HCP = { country_event = { id = manchukou.2 days = 14 } }
+				MAN = { 
+					country_event = { id = manchukou.14 days = 60 } 
+					country_event = { id = manchukou.23 days = 74 } 
+					country_event = { id = manchukou.30 days = 1900 } #?
+				}
+			}
+		}
+	}
+	
+	on_daily_SAI = { # ?
+		effect = {
+			every_country_with_original_tag = {
+				original_tag_to_check = MAN
+				if = {
+					limit = {
+						has_idea = MGM_industrial_reform_idea 
+						check_variable = { MAN_research_bonus_industry_count < 5 }
+					}
+					set_temp_variable = { temp = num_of_civilian_factories }
+					subtract_from_temp_variable = { temp = MAN_current_num_of_civilian_factories }
+					if = {
+						limit = { 
+							check_variable = { temp > 9 }
+						}
+						add_tech_bonus = {
+							name = industrial_bonus
+							bonus = 0.5
+							uses = 1
+							category = industry
+						}
+						add_to_variable = { MAN_research_bonus_industry_count = 1 }
+						set_variable = { MAN_current_num_of_civilian_factories = num_of_civilian_factories }
+					}
+				}
+			}
+		}
+	}
+	
+	on_daily_MAN = { #not MGM
+		effect = {
+			if = { #event
+				limit = { 
+					has_country_flag = timer_60_days 
+					CSR = { OR = { has_border_war = yes has_war = yes } }
+				}
+				set_country_flag = event_MEN_Informant_in_CSR_army
+				clr_country_flag = timer_60_days
+			}
+			
+			if = { #decision
+				limit = { 
+					check_variable = { var = MAN_strength_of_partisan_movement_var value = 0 } #compare = greater_than_or_equals
+					has_dynamic_modifier = { modifier = MAN_banditry }
+				}
+				country_event = manchukou.31
+			}
+			else_if = {
+				limit = { 
+					check_variable = { var = MAN_strength_of_partisan_movement_var value = -0.5 compare = less_than_or_equals }
+					has_dynamic_modifier = { modifier = MAN_banditry }
+					has_civil_war = no #?
+				}
+				country_event = manchukou.32
+			}
+		}
+	}
+	
+	on_monthly_SAI = { # ?
+		effect = {
+			every_country_with_original_tag = {
+				original_tag_to_check = MAN
+				if = {
+					limit = { has_idea = IGO_arrival_of_jewish_settlers }
+					capital_scope = {
+						add_manpower = 1000
+					}
+				}
+			}
+		}
+	}
+	
+	on_civil_war_end = {
+		effect = {
+			if = {
+				limit = { FROM = { original_tag = MAN } ROOT = { NOT = { has_government = communism } } } 
+				FROM = { 
+					every_character = { ## FROM characters return to ROOT ##
+						limit = { NOT = { is_character = MAN_zhang_jinghui } }
+						set_nationality = ROOT
+						log = "[GetDateText]: [THIS.GetName]: character set_nationality = [Root.GetTag]"
+					}
+					every_core_state = { # TODO: решение - (если захотим создать марионетку MAN ?)
+						remove_core_of = PREV
+					}
+				}
+			}
+			else_if = {
+				limit = { FROM = { original_tag = MAN NOT = { tag = MGM } } ROOT = { has_government = communism NOT = { has_war_with = JAP } } } #?
+				JAP = {
+					activate_mission = JAP_intervention_timer
+				}
+				ROOT = {
+					set_country_flag = JAP_intervention_flag
+					activate_mission = JAP_intervention_timer
+				}
+				if = {
+					limit = { country_exists = YCP }
+					YCP = {
+						set_country_flag = JAP_intervention_flag
+						activate_mission = JAP_intervention_timer
+					}
+				}
+			}
+		}
+	}
+	
+	on_unit_leader_created = { #?
+		effect = {
+			if = {
+				limit = {
+					FROM = { has_completed_focus = MGM_decentralization_of_command } #?
+				}
+				add_unit_leader_trait = decentralized_command_trait
+			}
+		}
+	}
+}
