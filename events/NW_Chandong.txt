@@ -62,73 +62,63 @@ country_event = {
 	
 	option = {
 		name = CSR.3.a
-		#Скорее всего, это можно написать как-то более оптимизировано - если да, объясните пж, самому будет полезно
-		every_controlled_state = {
-			limit = { 
-				OR = {
-					state = 1132
-					state = 1134
-					state = 1060
-					state = 1127
-					state = 1123
-					state = 1124
-					state = 1125
-				} 
-			}
-			transfer_state_to = GHS
-		}
-		# if = {
-			# limit = { controls_state = 1132 }
-   			# GHS = { transfer_state = 1132 }
-		# }
-		# if = {
-			# limit = { controls_state = 1134 }
-   			# GHS = { transfer_state = 1134 }
-		# }	
-		# if = {
-			# limit = { controls_state = 1060 }
-			# GHS = { transfer_state = 1060 }
-		# }
-		# if = {
-			# limit = { controls_state = 1127 }
-			# GHS = { transfer_state = 1127 }
-		# }
-		# if = {
-			# limit = { controls_state = 1123 }
-    		# GHS = { transfer_state = 1123 }
-		# }
-		# if = {
-			# limit = { controls_state = 1124 }
-    		# GHS = { transfer_state = 1124 }
-		# }
-		# if = {
-			# limit = { controls_state = 1125 }
-    		# GHS = { transfer_state = 1125 }
-		# }
-		JAP = {
-			puppet = GHS
-		}
-	
-		GHS = { # TODO: нет тега, использовать create_dynamic_country
-   			create_country_leader = { # TODO: переделать под character
-				name = "Van In"
-				desc = "POLITICS_LI_SHOUXIN_DESC"
-				picture = "gfx/leaders/Asia/Portrait_Asia_Generic_warlord2.dds"
-				expire = "1965.1.1"
-				ideology = despotism
-				traits = {}
-    		}
-			hidden_effect = {
-    			create_country_leader = { # TODO: переделать под character
-					name = "Van In"
-					desc = "POLITICS_LI_SHOUXIN_DESC"
-					picture = "gfx/leaders/Asia/Portrait_Asia_Generic_warlord2.dds"
-					expire = "1965.1.1"
-					ideology = fascism_ideology
-					traits = {}
+		create_dynamic_country = {
+			original_tag = CHI
+			ROOT = {
+				every_controlled_state = {
+					limit = { 
+						OR = {
+							state = 1132
+							state = 1134
+							state = 1060
+							state = 1127
+							state = 1123
+							state = 1124
+							state = 1125
+						} 
+					}
+					transfer_state_to = PREV.PREV
+				}
+				hidden_effect = {
+					if = {
+						limit = { has_character = CSR_van_in }
+						CSR_van_in = { set_nationality = PREV.PREV }
+					}
+					else = {
+						random_other_country = {
+							limit = { has_character = CSR_van_in }
+							CSR_van_in = { set_nationality = PREV.PREV }
+						}
+						CSR_van_in = { set_nationality = PREV.PREV }
+					}
 				}
 			}
-	    }
+			JAP = {
+				if = {
+					limit = { exists = yes NOT = { has_war_with = ROOT } }
+					if = {
+						limit = { has_dlc = "Together for Victory" }
+						set_autonomy = { target = PREV autonomy_state = autonomy_integrated_puppet }
+					}
+					else = { puppet = PREV }
+				}
+			}
+			if = {
+				limit = { NOT = { has_government = neutrality } }
+				add_popularity = { ideology = neutrality popularity = 1	}
+				set_politics = { ruling_party = neutrality elections_allowed = no }
+			}
+			set_party_name = { ideology = neutrality long_name = CSR_neutrality_party3 name = CSR_neutrality_party3 }
+			add_country_leader_role = {
+				character = CSR_van_in
+				promote_leader = yes
+				country_leader = {
+					ideology = despotism
+					expire = "1965.1.1.1"
+					traits = {  }
+				}
+			}
+		}
 	}	
 }
 
@@ -239,10 +229,6 @@ country_event = {
 	option = {
 		name = CSR.8.b
 		PRC = { set_country_flag = PRC_CSR_ready_to_rebellion }
-		if = {
-            limit = { any_unit_leader = { has_id = 1432999 } }
-            remove_unit_leader = 1432999 # TODO: переделать под character
-    	}
 	}
 }
 
@@ -1486,61 +1472,61 @@ country_event = {
 
 	option = {
 		name = CSR.59.a
-	    create_country_leader = { # TODO: переделать под character
-			name = "Bayandalay"
-			desc = "POLITICS_BUYINGDALAI_DESC"
-			picture = "gfx/leaders/Asia/Portrait_Asia_Generic_warlord2.dds"
-			expire = "1965.1.1"
-			ideology = marxism
-			traits = {}
-		}
 		if = {
-			limit = { has_government = neutrality }
-			start_civil_war = {
-				ruling_party = neutrality
-				ideology = communism
-				size = 0.5
-				states = { 611 }
+			limit = {
+				OR = {
+					has_government = neutrality
+					has_government = monarchy
+				}
 			}
-		}
-		else_if = {
-			limit = { has_government = monarchy }
 			start_civil_war = {
-				ruling_party = monarchy
 				ideology = communism
 				size = 0.5
 				states = { 611 }
+				keep_unit_leaders_trigger = { always = yes }
+				keep_all_characters = yes
+				ROOT = { CSR_bayandalay = { set_nationality = PREV.PREV } }
+				add_country_leader_role = {
+					character = CSR_bayandalay
+					promote_leader = yes
+					country_leader = {
+						desc = "POLITICS_BUYINGDALAI_DESC"
+						ideology = marxism
+						expire = "1965.1.1.1"
+						traits = {  }
+					}		
+				}
 			}
 		}
 	}
 
 	option = {
 		name = CSR.59.b
-		load_focus_tree = nw_chandong_focus_vosstanie
-		create_country_leader = { # TODO: переделать под character
-			name = "Bayandalay"
-			desc = "POLITICS_BUYINGDALAI_DESC"
-			picture = "gfx/leaders/Asia/Portrait_Asia_Generic_warlord2.dds"
-			expire = "1965.1.1"
-			ideology = marxism
-			traits = {}
-		}
+#		load_focus_tree = nw_chandong_focus_vosstanie		#TODO: нет древа!!!
 		if = {
-			limit = { has_government = neutrality }
-			start_civil_war = {
-				ruling_party = communism
-				ideology = neutrality
-				size = 0.5
-				states = { 611 }
+			limit = {
+				OR = {
+					has_government = neutrality
+					has_government = monarchy
+				}
 			}
-		}
-		if = {
-			limit = { has_government = monarchy }
 			start_civil_war = {
-				ruling_party = communism
-				ideology = monarchy
+				ideology = communism
 				size = 0.5
 				states = { 611 }
+				keep_unit_leaders_trigger = { always = yes }
+				keep_all_characters = yes
+				ROOT = { CSR_bayandalay = { set_nationality = PREV.PREV } }
+				add_country_leader_role = {
+					character = CSR_bayandalay
+					promote_leader = yes
+					country_leader = {
+						desc = "POLITICS_BUYINGDALAI_DESC"
+						ideology = marxism
+						expire = "1965.1.1.1"
+						traits = {  }
+					}		
+				}
 			}
 		}
 	}
@@ -1741,24 +1727,19 @@ country_event = {
 	
 	option = {
 		name = CSR.68.a
-		create_country_leader = { # TODO: переделать под character
-			name = "Bogdo Gegen IX"
-			desc = "POLITICS_Demchugdongrub_DESC"
-			picture = "gfx/leaders/Asia/Portrait_Asia_Generic_warlord2.dds"
-			expire = "1965.1.1"
-			ideology = theocratic_monarchy
-			traits = {}
+		add_country_leader_role = {
+			character = CSR_bogdo_gegen_IX
+			promote_leader = yes
+			country_leader = {
+				desc = "POLITICS_Demchugdongrub_DESC"
+				ideology = theocratic_monarchy
+				expire = "1965.1.1.1"
+				traits = {  }
+			}		
 		}
-		add_popularity = {
-			ideology = monarchy
-			popularity = 0.4
-		}
-        set_politics = { ruling_party = monarchy }
-	    set_party_name = {
-			ideology = monarchy
-			name = CSR_monarchy2
-			long_name = CSR_monarchy2_long
-		}		
-		load_focus_tree = nw_chandong_focus_aristocraty				
+		add_popularity = { ideology = monarchy popularity = 0.4 }
+        set_politics = { ruling_party = monarchy elections_allowed = no }
+	    set_party_name = { ideology = monarchy name = CSR_monarchy2 long_name = CSR_monarchy2_long }		
+#		load_focus_tree = nw_chandong_focus_aristocraty				#TODO: нет древа!!!
 	}
 }
