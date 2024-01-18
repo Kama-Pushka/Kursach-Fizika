@@ -1,0 +1,3858 @@
+focus_tree = {
+	id = NEA_focus
+
+	country = {
+		factor = 0
+		modifier = {
+			add = 10
+			tag = NEA
+		}
+	}
+	default = no
+
+	continuous_focus_position = { x = 25 y = 3000 }
+	
+	##Секретное соглашение с коммунистами
+	focus = {
+		id = NEA_secret_agreement_with_the_communists
+		icon = GFX_goal_generic_construct_civilian
+		x = 13
+		y = 0
+		cost = 10
+		mutually_exclusive = { focus = NEA_join_the_movement_for_a_new_life }
+
+		ai_will_do = {
+			factor = 100
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus NEA_secret_agreement_with_the_communists"
+			remove_ideas = NEA_divided_command_idea
+			country_event = northeasternarmy.82
+			random_country_with_original_tag = { # есть ли настоящая необходимость в такой конструкции? можно просто использовать тег страны
+				original_tag_to_check = PRC
+				country_event = northeasternarmy.82
+			}
+		}		
+	}
+
+	##Разрешить коммунистическую пропаганду в войсках
+	focus = {
+		id = NEA_allow_communist_propaganda_in_the_troops
+		icon = GFX_goal_generic_construct_civilian
+		x = -2
+		y = 1
+		cost = 5
+		relative_position_id = NEA_secret_agreement_with_the_communists
+		prerequisite = { focus = NEA_secret_agreement_with_the_communists }
+
+		ai_will_do = {
+			factor = 10
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus NEA_allow_communist_propaganda_in_the_troops"
+			add_ideas = NEA_communist_propaganda_in_the_army_idea
+		}		
+	}
+	
+	##Школа подготовки низшего комсостава
+	focus = {
+		id = NEA_training_school_of_the_lower_command_staff
+		icon = GFX_goal_generic_construct_civilian
+		x = 0
+		y = 1
+		cost = 5
+		relative_position_id = NEA_allow_communist_propaganda_in_the_troops
+		prerequisite = { focus = NEA_allow_communist_propaganda_in_the_troops }
+
+		ai_will_do = {
+			factor = 10
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus NEA_training_school_of_the_lower_command_staff"
+			add_popularity = {
+				ideology = communism
+				popularity = 0.05
+			}
+			army_experience = 25
+		}		
+	}
+	
+	##Академия наук Северо-Восточной армии
+	focus = {
+		id = NEA_academy_of_sciences_of_the_north_eastern_army
+		icon = GFX_goal_generic_construct_civilian
+		x = -2
+		y = 1
+		cost = 5
+		relative_position_id = NEA_allow_communist_propaganda_in_the_troops
+		prerequisite = { focus = NEA_allow_communist_propaganda_in_the_troops }
+
+		ai_will_do = {
+			factor = 10
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus NEA_academy_of_sciences_of_the_north_eastern_army"
+			add_popularity = {
+				ideology = communism
+				popularity = 0.05
+			}
+			add_research_slot = 1
+		}		
+	}
+	
+	##Немыслимый план
+	focus = {
+		id = NEA_an_unthinkable_plan
+		icon = GFX_goal_generic_construct_civilian
+		x = -1
+		y = 1
+		cost = 5
+		relative_position_id = NEA_training_school_of_the_lower_command_staff
+		prerequisite = { focus = NEA_training_school_of_the_lower_command_staff }
+		prerequisite = { focus = NEA_academy_of_sciences_of_the_north_eastern_army }
+
+		ai_will_do = {
+			factor = 10
+		}
+
+		available = {
+			has_war = no
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus NEA_an_unthinkable_plan"
+			unlock_decision_tooltip = NEA_arrest_chiang_kai_shek
+			random_country_with_original_tag = {
+				original_tag_to_check = PRC
+				country_event = northeasternarmy.83
+			}
+		}		
+	}
+	
+	##Товарный обмен с советским районом
+	focus = {
+		id = NEA_commodity_exchange_with_the_soviet_district
+		icon = GFX_goal_generic_construct_civilian
+		x = 2
+		y = 1
+		cost = 5
+		relative_position_id = NEA_secret_agreement_with_the_communists
+		prerequisite = { focus = NEA_secret_agreement_with_the_communists }
+
+		ai_will_do = {
+			factor = 10
+		}
+
+		available = {
+
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus NEA_commodity_exchange_with_the_soviet_district"
+			random_country_with_original_tag = { # TODO нихуя взяли поменяли закон у другой страны
+				original_tag_to_check = PRC
+				if = {
+					limit = { NOT = { has_idea = limited_exports } }
+					add_ideas = limited_exports
+				}
+			}
+		}		
+	}
+	
+	##Поставки оружия коммунистам
+	focus = {
+		id = NEA_arms_supplies_to_communists
+		icon = GFX_goal_generic_construct_civilian
+		x = 0
+		y = 1
+		cost = 5
+		relative_position_id = NEA_commodity_exchange_with_the_soviet_district
+		prerequisite = { focus = NEA_commodity_exchange_with_the_soviet_district }
+
+		ai_will_do = {
+			factor = 10
+		}
+
+		available = {
+			has_equipment = {
+				infantry_equipment > 1499
+			}
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus NEA_arms_supplies_to_communists"
+			send_equipment = {
+				equipment = infantry_equipment
+				amount = 1500
+				target = PRC
+			}
+			# TODO: чтобы что? нужен хоть какой-то бонус
+		}		
+	}
+	
+	##Экономическая помощь советскому району
+	focus = {
+		id = NEA_economic_assistance_to_the_soviet_district
+		icon = GFX_goal_generic_construct_civilian
+		x = 2
+		y = 1
+		cost = 5
+		relative_position_id = NEA_commodity_exchange_with_the_soviet_district
+		prerequisite = { focus = NEA_commodity_exchange_with_the_soviet_district }
+
+		ai_will_do = {
+			factor = 10
+		}
+
+		available = {
+
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus NEA_economic_assistance_to_the_soviet_district"
+			add_ideas = NEA_assistance_to_the_soviet_district_idea
+		}		
+	}
+	
+	##Присоединиться к Движению за новую жизнь
+	focus = {
+		id = NEA_join_the_movement_for_a_new_life
+		icon = GFX_goal_generic_construct_civilian
+		x = 23
+		y = 0
+		cost = 5
+		mutually_exclusive = { focus = NEA_secret_agreement_with_the_communists }
+
+		ai_will_do = {
+			factor = 10
+		}
+
+		available = {
+
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus NEA_join_the_movement_for_a_new_life"
+			country_event = northeasternarmy.84
+			add_popularity = {
+				ideology = fascism
+				popularity = 0.1
+			}
+		}		
+	}
+	
+	##Антияпонская ассоциация товарищей
+	focus = {
+		id = NEA_anti_japanese_association_of_comrades
+		icon = GFX_goal_generic_construct_civilian
+		x = -5
+		y = 1
+		cost = 5
+		relative_position_id = NEA_join_the_movement_for_a_new_life
+		prerequisite = { focus = NEA_join_the_movement_for_a_new_life  focus = NEA_secret_agreement_with_the_communists }
+
+		ai_will_do = {
+			factor = 10
+		}
+
+		available = {
+
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus NEA_anti_japanese_association_of_comrades"
+			add_political_power = 100
+			add_popularity = {
+				ideology = neutrality
+				popularity = 0.03
+			}
+			add_popularity = {
+				ideology = fascism
+				popularity = 0.02
+			}
+			set_party_name = {
+				ideology = fascism
+				long_name = NEA_fascist_party_anti_japanese_association_of_comrades
+				name = NEA_fascist_party_anti_japanese_association_of_comrades
+			}		
+		}		
+	}
+	
+	##Окончательный удар по коммунистам
+	focus = {
+		id = NEA_the_final_blow_to_the_communists
+		icon = GFX_goal_generic_construct_civilian
+		x = -2
+		y = 1
+		cost = 5
+		relative_position_id = NEA_join_the_movement_for_a_new_life
+		prerequisite = { focus = NEA_join_the_movement_for_a_new_life }
+
+		ai_will_do = {
+			factor = 10
+		}
+
+		available = {
+
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus NEA_the_final_blow_to_the_communists"
+			random_country_with_original_tag = {
+				original_tag_to_check = CHI
+				country_event = northeasternarmy.87
+			}
+			declare_war_on = {
+				target = PRC
+				type = annex_everything
+			}
+		}		
+	}
+
+	##Подготовка к войне с Японией
+	focus = {
+		id = NEA_preparing_for_war_with_japan
+		icon = GFX_goal_generic_construct_civilian
+		x = -2
+		y = 1
+		cost = 5
+		relative_position_id = NEA_the_final_blow_to_the_communists
+		prerequisite = { focus = NEA_the_final_blow_to_the_communists }
+
+		ai_will_do = {
+			factor = 10
+		}
+
+		available = {
+
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus NEA_preparing_for_war_with_japan"
+			add_doctrine_cost_reduction = {
+				cost_reduction = 0.5
+				uses = 1
+				category = land_doctrine
+			}			
+		}		
+	}
+	
+	##Подтвердить статус губернатора Шэньси
+	focus = {
+		id = NEA_confirm_the_status_of_shaanxi_governor
+		icon = GFX_goal_generic_construct_civilian
+		x = 0
+		y = 1
+		cost = 5
+		relative_position_id = NEA_the_final_blow_to_the_communists
+		prerequisite = { focus = NEA_the_final_blow_to_the_communists }
+
+		ai_will_do = {
+			factor = 10
+		}
+
+		available = {
+
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus NEA_confirm_the_status_of_shaanxi_governor"
+			1123 = {
+				add_core_of = ROOT
+			}
+			1124 = {
+				add_core_of = ROOT
+			}
+			1127 = {
+				add_core_of = ROOT
+			}
+		}		
+	}
+	
+	##Помощь монгольским князьям
+	focus = {
+		id = NEA_assistance_to_the_mongol_princes
+		icon = GFX_goal_generic_construct_civilian
+		x = 1
+		y = 1
+		cost = 5
+		relative_position_id = NEA_preparing_for_war_with_japan
+		prerequisite = { focus = NEA_preparing_for_war_with_japan }
+		prerequisite = { focus = NEA_confirm_the_status_of_shaanxi_governor }
+
+		ai_will_do = {
+			factor = 10
+		}
+
+		available = {
+			NOT = { country_exists = PRC }
+			country_exists = MEN
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus NEA_assistance_to_the_mongol_princes"
+			if = {
+				limit = { NOT = { has_government = communism } }
+				add_ideas = NEA_assistance_to_the_mongol_princes_idea
+			}
+			else = {
+				declare_war_on = {
+					target = MEN
+					type = annex_everything
+				}
+			}
+		}		
+	}
+
+	##Антикоммунистическая пропаганда
+	focus = {
+		id = NEA_anti_communist_propaganda
+		icon = GFX_goal_generic_construct_civilian
+		x = 2
+		y = 1
+		cost = 5
+		relative_position_id = NEA_join_the_movement_for_a_new_life
+		prerequisite = { focus = NEA_join_the_movement_for_a_new_life }
+
+		ai_will_do = {
+			factor = 10
+		}
+
+		available = {
+
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus NEA_anti_communist_propaganda"
+			add_popularity = {
+				ideology = communism
+				popularity = -0.12
+			}
+			add_popularity = {
+				ideology = neutrality
+				popularity = 0.1
+			}
+			add_popularity = {
+				ideology = communism
+				popularity = 0.02
+			}			
+		}		
+	}
+	
+	##Культ личности Генералиссимуса
+	focus = {
+		id = NEA_the_cult_of_the_personality_of_the_generalissimo
+		icon = GFX_goal_generic_construct_civilian
+		x = 0
+		y = 1
+		cost = 5
+		relative_position_id = NEA_anti_communist_propaganda
+		prerequisite = { focus = NEA_anti_communist_propaganda }
+		mutually_exclusive = { focus = NEA_the_cult_of_the_personality_of_the_young_marshal }
+
+		ai_will_do = {
+			factor = 10
+		}
+
+		available = {
+
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus NEA_the_cult_of_the_personality_of_the_generalissimo"
+			random_country_with_original_tag = {
+				original_tag_to_check = CHI
+				puppet = {
+					target = ROOT
+					end_wars = no
+				}
+			}
+		}		
+	}
+	
+	##Культ личности Молодого Маршала
+	focus = {
+		id = NEA_the_cult_of_the_personality_of_the_young_marshal
+		icon = GFX_goal_generic_construct_civilian
+		x = 2
+		y = 1
+		cost = 5
+		relative_position_id = NEA_anti_communist_propaganda
+		prerequisite = { focus = NEA_anti_communist_propaganda }
+		mutually_exclusive = { focus = NEA_the_cult_of_the_personality_of_the_generalissimo }
+
+		ai_will_do = {
+			factor = 10
+		}
+
+		available = {
+
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus NEA_the_cult_of_the_personality_of_the_young_marshal"
+			add_political_power = 35
+			add_stability = 0.07
+			add_popularity = {
+				ideology = fascism
+				popularity = 0.05
+			}
+			add_popularity = {
+				ideology = neutrality
+				popularity = 0.05
+			}
+		}		
+	}
+	
+	##Антияпонская пропаганда
+	focus = {
+		id = NEA_anti_japanese_propaganda
+		icon = GFX_goal_generic_construct_civilian
+		x = -1
+		y = 1
+		cost = 5
+		relative_position_id = NEA_the_cult_of_the_personality_of_the_young_marshal
+		prerequisite = { focus = NEA_the_cult_of_the_personality_of_the_young_marshal focus = NEA_the_cult_of_the_personality_of_the_generalissimo }
+
+		ai_will_do = {
+			factor = 10
+		}
+
+		available = {
+
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus NEA_anti_japanese_propaganda"
+			add_stability = 0.05
+			add_war_support = 0.15
+		}		
+	}
+	
+	##Разговор с Чан Кайши
+	focus = {
+		id = NEA_conversation_with_chiang_kai_shek
+		icon = GFX_goal_generic_construct_civilian
+		x = 1
+		y = 1
+		cost = 5
+		relative_position_id = NEA_anti_japanese_propaganda
+		prerequisite = { focus = NEA_anti_japanese_propaganda }
+
+		ai_will_do = {
+			factor = 10
+		}
+
+		available = {
+			NOT = {
+				country_exists = PRC
+			}
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus NEA_conversation_with_chiang_kai_shek"
+			random_country_with_original_tag = {
+				original_tag_to_check = CHI
+				country_event = northeasternarmy.88
+			}
+		}		
+	}
+	
+	##Вернуть флаги назад
+	focus = {
+		id = NEA_bring_the_flags_back
+		icon = GFX_goal_generic_construct_civilian
+		x = 0
+		y = 4
+		cost = 5
+		relative_position_id = NEA_join_the_movement_for_a_new_life
+		prerequisite = { focus = NEA_join_the_movement_for_a_new_life }
+
+		ai_will_do = {
+			factor = 10
+		}
+
+		available = {
+			OR = {
+				has_country_flag = NEA_cancel_military_operation_flag
+				CHI = {
+					OR = {
+						has_civil_war = yes
+						NOT = { country_exists = CHI }
+						is_ally_with = JAP
+					}
+				}
+			}
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus NEA_bring_the_flags_back"
+			random_other_country = {
+				limit = { has_subject = ROOT }
+				set_autonomy = {
+					target = FROM
+					autonomy_state = autonomy_free
+					end_wars = no
+					end_civil_wars = no
+				}
+			}
+			hidden_effect = {
+				ROOT = { drop_cosmetic_tag = yes }
+			}
+			set_cosmetic_tag = NEA_fengtian_government_cosmetic
+			##ДОДЕЛАТЬ
+			country_event = northeasternarmy.91
+			every_other_country = {
+				limit = {
+					OR = {
+						is_chinese_warlord = yes
+						original_tag = CHI
+					}
+				}
+				country_event = northeasternarmy.91
+			}
+			hidden_effect = {
+				set_country_flag = chinese_integration_of_province_flag # (TODO для меня)
+				add_dynamic_modifier = { modifier = china_integration_of_province_dyn }
+				china_integrate_province_set_cost_array = yes
+			}
+			# custom_effect_tooltip = chinese_integration_of_province_mechanic_on_tt # ??
+			unlock_decision_category_tooltip = chinese_reunification
+		}		
+	}
+	
+	##Личная власть маршала
+	focus = {
+		id = NEA_personal_power_of_the_marshal
+		icon = GFX_goal_generic_construct_civilian
+		x = 2
+		y = 4
+		cost = 5
+		relative_position_id = NEA_join_the_movement_for_a_new_life
+
+		ai_will_do = {
+			factor = 10
+		}
+
+		available = {
+			##ДОДЕЛАТЬ (см. ветку "Освободить маршала Чжана")
+			OR = {
+				custom_trigger_tooltip = { # TODO: убрать custom_trigger_tooltip везде, где проверка только по флагу
+					tooltip = NEA_loyalists_save_majority_tt
+					has_country_flag = NEA_loyalists_save_majority_flag
+				}
+				custom_trigger_tooltip = {
+					tooltip = NEA_the_return_of_the_young_marshal_tt				
+					has_country_flag = NEA_the_return_of_the_young_marshal_flag
+				}
+			}
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus NEA_personal_power_of_the_marshal"
+			random_other_country = {
+				limit = { has_subject = ROOT }
+				set_autonomy = {
+					target = FROM
+					autonomy_state = autonomy_free
+					end_wars = no
+					end_civil_wars = no
+				}
+			}
+			hidden_effect = {
+				ROOT = { drop_cosmetic_tag = yes }
+			}
+			set_cosmetic_tag = NEA_fengtian_government_cosmetic
+			##ДОДЕЛАТЬ
+			country_event = northeasternarmy.91
+			every_other_country = {
+				limit = {
+					OR = {
+						is_chinese_warlord = yes
+						original_tag = CHI
+					}
+				}
+				country_event = northeasternarmy.91
+			}
+			hidden_effect = {
+				set_country_flag = chinese_integration_of_province_flag # (TODO для меня)
+				add_dynamic_modifier = { modifier = china_integration_of_province_dyn }
+				china_integrate_province_set_cost_array = yes
+			}
+			# custom_effect_tooltip = chinese_integration_of_province_mechanic_on_tt # ??
+			unlock_decision_category_tooltip = chinese_reunification
+		}		
+	}
+	
+	##Новая революция
+	focus = {
+		id = NEA_a_new_revolution
+		icon = GFX_goal_generic_construct_civilian
+		x = 1
+		y = 1
+		cost = 10
+		relative_position_id = NEA_bring_the_flags_back
+		prerequisite = { focus = NEA_bring_the_flags_back focus = NEA_personal_power_of_the_marshal }
+
+		ai_will_do = {
+			factor = 10
+		}
+
+		available = {
+
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus NEA_a_new_revolution"
+			add_popularity = {
+				ideology = fascism
+				popularity = 0.25
+			}
+			NEA_zhang_xueliang = {
+				remove_country_leader_role = {
+					ideology = militarism_ideology
+				}
+			}
+			add_country_leader_role = {
+				character = NEA_zhang_xueliang
+				promote_leader = yes
+				country_leader = {
+					ideology = fascism_ideology
+					expire = "1965.1.1.1"
+					traits = { young_marshal }
+				}
+			}
+			set_politics = {
+				ruling_party = fascism
+				elections_allowed = no
+				long_name = NEA_fascist_party_anti_japanese_association_of_comrades
+				name = NEA_fascist_party_anti_japanese_association_of_comrades
+			}
+			every_other_country = {
+				limit = {
+					OR = {
+						tag = ROOT
+						is_chinese_warlord = yes
+					}
+				}
+				country_event = northeasternarmy.92
+			}
+			add_ideas = NEA_a_new_revolution_idea
+			add_ideas = very_low_legitimacy
+		}		
+	}
+	
+	##Уроки сотрудничества с коммунистами
+	focus = {
+		id = NEA_lessons_of_cooperation_with_communists
+		icon = GFX_goal_generic_construct_civilian
+		x = 1
+		y = 1
+		cost = 10
+		relative_position_id = NEA_a_new_revolution
+		prerequisite = { focus = NEA_a_new_revolution }
+
+		ai_will_do = {
+			factor = 10
+		}
+
+		available = {
+
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus NEA_lessons_of_cooperation_with_communists"
+			add_political_power = 150
+		}		
+	}
+	
+	##Подкуп губернаторов
+	focus = {
+		id = NEA_bribery_of_governors
+		icon = GFX_goal_generic_construct_civilian
+		x = -1
+		y = 1
+		cost = 10
+		relative_position_id = NEA_a_new_revolution
+		prerequisite = { focus = NEA_a_new_revolution }
+
+		ai_will_do = {
+			factor = 10
+		}
+
+		available = {
+			has_war_with = JAP
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus NEA_lessons_of_cooperation_with_communists"
+			create_faction = NEA_anti_japanese_front_faction
+			every_other_country = {
+				limit = {
+					OR = {
+						original_tag = SHX
+						original_tag = SHA
+						AND = {
+							original_tag = SIH
+							has_government = neutrality
+						}
+					}
+				}
+				country_event = northeasternarmy.93
+			}
+		}		
+	}
+	
+	##Обучение партизанской войне
+	focus = {
+		id = NEA_training_in_guerrilla_warfare
+		icon = GFX_goal_generic_construct_civilian
+		x = -3
+		y = 1
+		cost = 10
+		relative_position_id = NEA_lessons_of_cooperation_with_communists
+		prerequisite = { focus = NEA_lessons_of_cooperation_with_communists }
+
+		ai_will_do = {
+			factor = 10
+		}
+
+		available = {
+			has_war = yes
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus NEA_training_in_guerrilla_warfare"
+			##Саня сказал сделать так. Не исправлять
+			if = {
+				limit = {
+					NOT = { has_tech = peoples_army_asy }
+				}
+				add_doctrine_cost_reduction = {
+					cost_reduction = 0.5
+					uses = 1
+					category = cat_asymmetric_warfare
+				}
+			}
+			else_if = {
+				limit = { has_tech = peoples_army_asy }
+				add_doctrine_cost_reduction = {
+					cost_reduction = 1
+					uses = 1
+					category = cat_asymmetric_warfare
+				}
+			}
+		}
+	}
+	
+	##Массовое использование пропаганды
+	focus = {
+		id = NEA_mass_use_of_propaganda
+		icon = GFX_goal_generic_construct_civilian
+		x = 1
+		y = 1
+		cost = 10
+		relative_position_id = NEA_lessons_of_cooperation_with_communists
+		prerequisite = { focus = NEA_lessons_of_cooperation_with_communists }
+		
+		ai_will_do = {
+			factor = 10
+		}
+
+		available = {
+
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus NEA_mass_use_of_propaganda" 
+			unlock_decision_category_tooltip = NEA_propaganda_of_the_new_revolution_category
+			activate_mission = NEA_expectation_of_changes_in_society
+			# ROOT = {
+				# add_to_array = { # данная меха убрана, зачем она вообще нужна? лучше реализовать это иначе, чем блокировка возможности переката
+					# array = global.countries_with_blocked_elections_events ##literature 1984
+					# value = THIS.id
+				# }
+			# }
+			set_country_flag = spain_block_legitimacy_flag
+		}		
+	}
+	
+	##Борьба с тремя принципами
+	focus = {
+		id = NEA_fighting_the_three_principles
+		icon = GFX_goal_generic_construct_civilian
+		x = 2
+		y = 1
+		cost = 10
+		relative_position_id = NEA_mass_use_of_propaganda
+		prerequisite = { focus = NEA_mass_use_of_propaganda }
+		prerequisite = { focus = NEA_proclaim_universal_social_equality }
+
+		ai_will_do = {
+			factor = 10
+		}
+
+		available = {
+		
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus NEA_fighting_the_three_principles" 
+			add_popularity = {
+				ideology = fascism
+				popularity = 0.1
+			}
+			add_popularity = {
+				ideology = neutrality
+				popularity = -0.1
+			}
+			custom_effect_tooltip = NEA_400_days_tt
+			add_to_variable = { NEA_decision_completion_time_var = 400 } ##Зачем?
+		}
+	}
+	
+	##Провозгласить всеобщее социальное равенство
+	focus = {
+		id = NEA_proclaim_universal_social_equality
+		icon = GFX_goal_generic_construct_civilian
+		x = -1
+		y = 1
+		cost = 10
+		relative_position_id = NEA_lessons_of_cooperation_with_communists
+		prerequisite = { focus = NEA_lessons_of_cooperation_with_communists }
+
+		ai_will_do = {
+			factor = 10
+		}
+
+		available = {
+		
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus NEA_proclaim_universal_social_equality" 
+			add_popularity = {
+				ideology = fascism
+				popularity = 0.07
+			}
+			add_stability = 0.03
+			custom_effect_tooltip = NEA_plus_50_days_tt
+			add_to_variable = { NEA_decision_completion_time_var = 50 }
+		}
+	}
+	
+	##Фашизм с китайской спецификой
+	focus = {
+		id = NEA_fascism_with_chinese_specifics
+		icon = GFX_goal_generic_construct_civilian
+		x = -2
+		y = 1
+		cost = 10
+		relative_position_id = NEA_proclaim_universal_social_equality
+		prerequisite = { focus = NEA_mass_use_of_propaganda }
+		prerequisite = { focus = NEA_proclaim_universal_social_equality }
+
+		ai_will_do = {
+			factor = 10
+		}
+
+		available = {
+		
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus NEA_fascism_with_chinese_specifics" 
+			add_popularity = {
+				ideology = fascism
+				popularity = 0.12
+			}
+			add_stability = 0.12
+			add_ideas = NEA_corporate_economics_idea
+		}
+	}
+	
+	##Полная смена бюрократической системы
+	focus = {
+		id = NEA_complete_change_of_the_bureaucratic_system
+		icon = GFX_goal_generic_construct_civilian
+		x = 0
+		y = 1
+		cost = 10
+		relative_position_id = NEA_mass_use_of_propaganda
+		prerequisite = { focus = NEA_mass_use_of_propaganda }
+		prerequisite = { focus = NEA_proclaim_universal_social_equality }
+
+		ai_will_do = {
+			factor = 10
+		}
+
+		available = {
+		
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus NEA_complete_change_of_the_bureaucratic_system"
+			custom_effect_tooltip = NEA_plus_100_days_tt
+			add_to_variable = { NEA_decision_completion_time_var = 100 }
+			unlock_decision_category_tooltip = NEA_reforming_the_bureaucracy_category
+			activate_mission = NEA_preparing_a_new_bureaucracy
+			add_to_variable = { china_integration_of_province_cost_var = 0.1 }
+			add_to_variable = { china_integration_of_province_time_var = 0.05 }
+			add_dynamic_modifier = {
+				modifier = NEA_war_with_bureaucracy_dyn
+			}			
+			NEA_war_with_bureaucracy_dyn_effects = yes
+		}
+	}
+	
+	##Единое общество – единое государство
+	focus = {
+		id = NEA_a_single_society_is_a_single_state
+		icon = GFX_goal_generic_construct_civilian
+		x = 0
+		y = 1
+		cost = 10
+		relative_position_id = NEA_proclaim_universal_social_equality
+		prerequisite = { focus = NEA_mass_use_of_propaganda }
+		prerequisite = { focus = NEA_proclaim_universal_social_equality }
+
+		ai_will_do = {
+			factor = 10
+		}
+
+		available = {
+			has_war = no
+			all_of_scopes = {
+				array = global.chinese_state
+				tooltip = NEA_controlle_all_chinese_states_tt
+				
+				FROM = { controls_state = PREV }
+			}
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus NEA_a_single_society_is_a_single_state"
+			set_cosmetic_tag = NEA_chinese_state_cosmetic
+			remove_ideas = {
+				chine_clique
+				NEA_a_new_revolution_idea
+			}
+		}
+	}
+	
+	##Централизация управления страной
+	focus = {
+		id = NEA_centralization_of_country_governance
+		icon = GFX_goal_generic_construct_civilian
+		x = 0
+		y = 1
+		cost = 10
+		relative_position_id = NEA_a_single_society_is_a_single_state
+		prerequisite = { focus = NEA_a_single_society_is_a_single_state }
+
+		ai_will_do = {
+			factor = 10
+		}
+
+		available = {
+
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus NEA_centralization_of_country_governance"
+			set_temp_variable = { china_integration_of_province_cost_temp_var = -0.2 }
+			add_to_variable = { china_integration_of_province_cost_var = china_integration_of_province_cost_temp_var }
+			set_temp_variable = { china_integration_of_province_time_temp_var = 0.1 }
+			add_to_variable = { china_integration_of_province_time_var = china_integration_of_province_time_temp_var }
+			multiply_temp_variable = { china_integration_of_province_cost_temp_var = 100 }
+			multiply_temp_variable = { china_integration_of_province_time_temp_var = 100 }
+			custom_effect_tooltip = NEA_china_integration_of_province_cost_tt
+			custom_effect_tooltip = NEA_china_integration_of_province_time_tt
+		}
+	}
+	
+	##Углубить вестернизацию Китая
+	focus = {
+		id = NEA_deepen_chinas_westernization
+		icon = GFX_goal_generic_construct_civilian
+		x = -2
+		y = 1
+		cost = 10
+		relative_position_id = NEA_a_single_society_is_a_single_state
+		prerequisite = { focus = NEA_a_single_society_is_a_single_state }
+
+		ai_will_do = {
+			factor = 10
+		}
+
+		available = {
+
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus NEA_deepen_chinas_westernization"
+			add_timed_idea = {
+				idea = NEA_westernization_idea
+				days = 1000
+			}
+			hidden_effect = {
+				country_event = { id = northeasternarmy.94 days = 1250 }
+			}
+			custom_effect_tooltip = NEA_deepen_chinas_westernization_tt
+		}
+	}
+	
+	##Программа всеобщего образования
+	focus = {
+		id = NEA_universal_education_program
+		icon = GFX_goal_generic_construct_civilian
+		x = 2
+		y = 1
+		cost = 10
+		relative_position_id = NEA_a_single_society_is_a_single_state
+		prerequisite = { focus = NEA_a_single_society_is_a_single_state }
+
+		ai_will_do = {
+			factor = 10
+		}
+
+		available = {
+
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus NEA_universal_education_program"
+			add_research_slot = 1
+			add_timed_idea = {
+				idea = NEA_implementation_of_the_universal_education_program_idea
+				days = 1080
+			}
+		}
+	}
+	
+	##Новые социальные лифты
+	focus = {
+		id = NEA_new_social_elevators
+		icon = GFX_goal_generic_construct_civilian
+		x = 1
+		y = 1
+		cost = 14
+		relative_position_id = NEA_universal_education_program
+		prerequisite = { focus = NEA_universal_education_program }
+
+		ai_will_do = {
+			factor = 10
+		}
+
+		available = {
+
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus NEA_new_social_elevators"
+			random_owned_controlled_state = {
+				add_extra_state_shared_building_slots = 1
+				add_building_construction = {
+					type = industrial_complex
+					level = 1
+					instant_build = yes
+				}				
+			}
+			random_owned_controlled_state = {
+				add_extra_state_shared_building_slots = 1
+				add_building_construction = {
+					type = industrial_complex
+					level = 1
+					instant_build = yes
+				}				
+			}
+			random_owned_controlled_state = {
+				add_extra_state_shared_building_slots = 1
+				add_building_construction = {
+					type = industrial_complex
+					level = 1
+					instant_build = yes
+				}				
+			}
+			add_popularity = {
+				ideology = fascism
+				popularity = 0.1
+			}
+			add_stability = 0.1
+		}
+	}
+	
+	##Приватизация предприятий
+	focus = {
+		id = NEA_privatization_of_enterprises
+		icon = GFX_goal_generic_construct_civilian
+		x = -1
+		y = 1
+		cost = 11
+		relative_position_id = NEA_centralization_of_country_governance
+		prerequisite = { focus = NEA_centralization_of_country_governance }
+
+		ai_will_do = {
+			factor = 10
+		}
+
+		available = {
+
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus NEA_privatization_of_enterprises"
+			add_ideas = civilian_economy
+		}
+	}
+	
+	##Внедрить корпоративизм
+	focus = {
+		id = NEA_introduce_corporatism
+		icon = GFX_goal_generic_construct_civilian
+		x = 1
+		y = 1
+		cost = 10
+		relative_position_id = NEA_centralization_of_country_governance
+		prerequisite = { focus = NEA_centralization_of_country_governance }
+
+		ai_will_do = {
+			factor = 10
+		}
+
+		available = {
+
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus NEA_introduce_corporatism"
+			add_ideas = NEA_corporatist_economics_idea
+		}
+	}
+	
+	##Опереться на Маньчжурию
+	focus = {
+		id = NEA_lean_on_manchuria
+		icon = GFX_goal_generic_construct_civilian
+		x = 1
+		y = 1
+		cost = 10
+		relative_position_id = NEA_introduce_corporatism
+		prerequisite = { focus = NEA_introduce_corporatism }
+
+		ai_will_do = {
+			factor = 10
+		}
+
+		available = {
+			##Доступен, если выполнен фокус «Восстановление захваченных предприятий» 
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus NEA_lean_on_manchuria"
+			if = {
+				limit = {
+					owns_state = 610
+					controls_state = 610
+				}
+				610 = {
+					add_extra_state_shared_building_slots = 1
+					add_building_construction = {
+						type = industrial_complex
+						level = 1
+						instant_build = yes
+					}					
+				}
+			}
+			if = {
+				limit = {
+					owns_state = 716
+					controls_state = 716
+				}
+				716 = {
+					add_extra_state_shared_building_slots = 1
+					add_building_construction = {
+						type = industrial_complex
+						level = 1
+						instant_build = yes
+					}					
+				}
+			}
+			if = {
+				limit = {
+					owns_state = 328
+					controls_state = 328
+				}
+				328 = {
+					add_extra_state_shared_building_slots = 1
+					add_building_construction = {
+						type = industrial_complex
+						level = 1
+						instant_build = yes
+					}					
+				}
+			}
+		}
+	}
+
+	##Все дороги ведут на северо-восток
+	focus = {
+		id = NEA_all_roads_lead_to_the_northeast
+		icon = GFX_goal_generic_construct_civilian
+		x = 1
+		y = 1
+		cost = 10
+		relative_position_id = NEA_lean_on_manchuria
+		prerequisite = { focus = NEA_lean_on_manchuria }
+
+		ai_will_do = {
+			factor = 10
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus NEA_all_roads_lead_to_the_northeast"
+			if = {
+				limit = {
+					owns_state = 608
+					controls_state = 608
+				}
+				608 = {
+					add_extra_state_shared_building_slots = 1
+					add_building_construction = {
+						type = infrastructure
+						level = 1
+						instant_build = yes
+					}					
+				}
+			}
+			if = {
+				limit = {
+					owns_state = 609
+					controls_state = 609
+				}
+				609 = {
+					add_extra_state_shared_building_slots = 1
+					add_building_construction = {
+						type = infrastructure
+						level = 1
+						instant_build = yes
+					}					
+				}
+			}
+			if = {
+				limit = {
+					owns_state = 610
+					controls_state = 610
+				}
+				610 = {
+					add_extra_state_shared_building_slots = 1
+					add_building_construction = {
+						type = infrastructure
+						level = 1
+						instant_build = yes
+					}					
+				}
+			}
+			if = {
+				limit = {
+					owns_state = 614
+					controls_state = 614
+				}
+				614 = {
+					add_extra_state_shared_building_slots = 1
+					add_building_construction = {
+						type = infrastructure
+						level = 1
+						instant_build = yes
+					}					
+				}
+			}
+		}
+	}
+	
+	##Создать парамилитарные структуры
+	focus = {
+		id = NEA_create_paramilitary_structures
+		icon = GFX_goal_generic_construct_civilian
+		x = -6
+		y = 1
+		cost = 10
+		relative_position_id = NEA_a_single_society_is_a_single_state
+		prerequisite = { focus = NEA_a_single_society_is_a_single_state }
+
+		ai_will_do = {
+			factor = 10
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus NEA_create_paramilitary_structures"
+			add_political_power = 150
+		}
+	}
+
+	##Сократить армию
+	focus = {
+		id = NEA_reduce_the_army
+		icon = GFX_goal_generic_construct_civilian
+		x = -4
+		y = 1
+		cost = 10
+		relative_position_id = NEA_a_single_society_is_a_single_state
+		prerequisite = { focus = NEA_a_single_society_is_a_single_state }
+
+		ai_will_do = {
+			factor = 10
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus NEA_reduce_the_army"
+			add_ideas = only_volunteers
+			if = {
+				limit = { NOT = { has_completed_focus = NEA_create_paramilitary_structures } }
+				add_stability = -0.2
+			}
+		}
+	}
+	
+	##Увеличить зарплаты
+	focus = {
+		id = NEA_increase_salaries
+		icon = GFX_goal_generic_construct_civilian
+		x = -3
+		y = 1
+		cost = 10
+		relative_position_id = NEA_reduce_the_army
+		prerequisite = { focus = NEA_reduce_the_army }
+
+		ai_will_do = {
+			factor = 10
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus NEA_increase_salaries"
+			add_war_support = 0.15
+			add_command_power = 50
+		}
+	}
+	
+	##Изменить стратегию ведения войны
+	focus = {
+		id = NEA_change_the_strategy_of_warfare
+		icon = GFX_goal_generic_construct_civilian
+		x = -1
+		y = 1
+		cost = 10
+		relative_position_id = NEA_reduce_the_army
+		prerequisite = { focus = NEA_reduce_the_army }
+
+		ai_will_do = {
+			factor = 10
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus NEA_change_the_strategy_of_warfare"
+			add_doctrine_cost_reduction = {
+				cost_reduction = 0.5
+				uses = 1
+				category = land_doctrine				
+			}
+		}
+	}
+	
+	##Моторизация войск
+	focus = {
+		id = NEA_motorization_of_troops
+		icon = GFX_goal_generic_construct_civilian
+		x = 0
+		y = 2
+		cost = 10
+		relative_position_id = NEA_change_the_strategy_of_warfare
+		prerequisite = { focus = NEA_change_the_strategy_of_warfare }
+		prerequisite = { focus = NEA_investments_in_modern_military_industry }
+
+		ai_will_do = {
+			factor = 10
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus NEA_motorization_of_troops"
+			add_tech_bonus = {
+				bonus = 1
+				uses = 1
+				category = motorized_equipment
+			}
+		}
+	}
+	
+	##Инвестиции в современную военную промышленность
+	focus = {
+		id = NEA_investments_in_modern_military_industry
+		icon = GFX_goal_generic_construct_civilian
+		x = 1
+		y = 2
+		cost = 10
+		relative_position_id = NEA_reduce_the_army
+		prerequisite = { focus = NEA_reduce_the_army }
+
+		ai_will_do = {
+			factor = 10
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus NEA_investments_in_modern_military_industry"
+			random_owned_controlled_state = {
+				add_extra_state_shared_building_slots = 1
+				add_building_construction = {
+					type = arms_factory
+					level = 1
+					instant_build = yes
+				}				
+			}			
+			add_tech_bonus = {
+				bonus = 0.3
+				uses = 1
+				category = electronics
+			}
+			add_tech_bonus = {
+				bonus = 0.3
+				uses = 1
+				category = industry
+			}
+		}
+	}
+
+	##Наладить качественный выпуск артиллерии
+	focus = {
+		id = NEA_to_establish_a_high_quality_production_of_artillery
+		icon = GFX_goal_generic_construct_civilian
+		x = 0
+		y = 1
+		cost = 10
+		relative_position_id = NEA_investments_in_modern_military_industry
+		prerequisite = { focus = NEA_investments_in_modern_military_industry }
+
+		ai_will_do = {
+			factor = 10
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus NEA_to_establish_a_high_quality_production_of_artillery"
+			
+		}
+	}
+	
+	##Изучить трофейную японскую технику
+	focus = {
+		id = NEA_to_study_captured_japanese_equipment
+		icon = GFX_goal_generic_construct_civilian
+		x = 2
+		y = 1
+		cost = 10
+		relative_position_id = NEA_investments_in_modern_military_industry
+		prerequisite = { focus = NEA_investments_in_modern_military_industry }
+
+		ai_will_do = {
+			factor = 10
+		}
+
+		available = {
+			##Доступен, если выполнен фокус «Восстановление захваченных предприятий»
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus NEA_to_study_captured_japanese_equipment"
+			add_tech_bonus = {
+				bonus = 0.25
+				uses = 1
+				category = armor
+			}
+			add_tech_bonus = {
+				bonus = 0.25
+				uses = 1
+				category = air_equipment
+			}
+			add_tech_bonus = {
+				bonus = 0.25
+				uses = 1
+				category = artillery
+			}
+		}
+	}
+	
+	##Новый китайский флот
+	focus = {
+		id = NEA_the_new_chinese_fleet
+		icon = GFX_goal_generic_construct_civilian
+		x = 2
+		y = 1
+		cost = 10
+		relative_position_id = NEA_to_study_captured_japanese_equipment
+		prerequisite = { focus = NEA_to_study_captured_japanese_equipment }
+		prerequisite = { focus = NEA_lean_on_manchuria }
+
+		ai_will_do = {
+			factor = 10
+		}
+
+		available = {
+			owns_state = 745
+			controls_state = 745
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus NEA_the_new_chinese_fleet"
+			745 = {
+				add_extra_state_shared_building_slots = 1
+				add_building_construction = {
+					type = dockyard
+					level = 1
+					instant_build = yes
+				}
+			}
+			if = {
+				limit = {
+					has_dlc = "Man the Guns"
+				}
+				set_technology = {
+					improved_ship_hull_cruiser = 1
+				}
+			}
+			else = {
+				set_technology = {
+					improved_heavy_cruiser = 1
+				}
+			}
+			add_tech_bonus = {
+				bonus = 0.5
+				uses = 1
+				category = naval_equipment
+			}
+		}
+	}
+	
+	##Длинная дорога домой
+	focus = {
+		id = NEA_the_long_road_home
+		icon = GFX_goal_generic_construct_civilian
+		x = 4
+		y = 2
+		cost = 10
+		relative_position_id = NEA_conversation_with_chiang_kai_shek
+		prerequisite = { focus = NEA_a_new_revolution focus = NEA_conversation_with_chiang_kai_shek }
+
+		ai_will_do = {
+			factor = 10
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus NEA_the_long_road_home"
+			declare_war_on = { # TODO: wargoal
+				target = JAP
+				type = annex_everything
+			}
+		}
+	}
+
+	##Оборона занятых рубежей
+	focus = {
+		id = NEA_defense_of_occupied_borders
+		icon = GFX_goal_generic_construct_civilian
+		x = -1
+		y = 1
+		cost = 10
+		relative_position_id = NEA_the_long_road_home
+		prerequisite = { focus = NEA_the_long_road_home }
+
+		ai_will_do = {
+			factor = 10
+		}
+
+		available = {
+			controls_state = 610
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus NEA_defense_of_occupied_borders"
+			610 = {
+				add_building_construction = {
+					type = bunker
+					level = 2
+					instant_build = yes
+					province = {
+						id = 6898 
+						id = 11855 
+						id = 7633 
+						id = 7575 
+						id = 6988 
+					}
+				}
+			}
+		}
+	}
+	
+	##Восстановление железных дорог
+	focus = {
+		id = NEA_restoration_of_railways
+		icon = GFX_goal_generic_construct_civilian
+		x = 1
+		y = 1
+		cost = 10
+		relative_position_id = NEA_the_long_road_home
+		prerequisite = { focus = NEA_the_long_road_home }
+
+		ai_will_do = {
+			factor = 10
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus NEA_restoration_of_railways"
+			add_ideas = NEA_infrastructure_restoration_idea
+		}
+	}
+	
+	##Перенести штаб на родную землю
+	focus = {
+		id = NEA_move_the_headquarters_to_their_native_land
+		icon = GFX_goal_generic_construct_civilian
+		x = 1
+		y = 1
+		cost = 10
+		relative_position_id = NEA_defense_of_occupied_borders
+		prerequisite = { focus = NEA_restoration_of_railways focus = NEA_defense_of_occupied_borders }
+
+		ai_will_do = {
+			factor = 10
+		}
+
+		available = {
+			controls_state = 610
+			owns_state = 610
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus NEA_move_the_headquarters_to_their_native_land"
+			set_capital = { state = 610 }
+		}
+	}
+	
+	##Восстановление захваченных предприятий
+	focus = {
+		id = NEA_restoration_of_seized_enterprises
+		icon = GFX_goal_generic_construct_civilian
+		x = 1
+		y = 1
+		cost = 10
+		relative_position_id = NEA_restoration_of_railways
+		prerequisite = { focus = NEA_restoration_of_railways }
+
+		ai_will_do = {
+			factor = 10
+		}
+
+		available = {
+			controls_state = 610
+			controls_state = 715
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus NEA_restoration_of_seized_enterprises"
+			add_research_slot = 1
+		}
+	}
+	
+	##Расследование японских преступлений
+	focus = {
+		id = NEA_investigation_of_japanese_crimes
+		icon = GFX_goal_generic_construct_civilian
+		x = 1
+		y = 1
+		cost = 10
+		relative_position_id = NEA_move_the_headquarters_to_their_native_land
+		prerequisite = { focus = NEA_restoration_of_seized_enterprises focus = NEA_move_the_headquarters_to_their_native_land }
+		ai_will_do = {
+			factor = 10
+		}
+
+		available = {
+			controls_state = 610
+			controls_state = 715
+			controls_state = 716
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus NEA_investigation_of_japanese_crimes"
+			add_ideas = NEA_hatred_of_the_japanese_idea
+		}
+	}
+	
+	##Великий суд над Японией
+	focus = {
+		id = NEA_the_great_trial_of_japan
+		icon = GFX_goal_generic_construct_civilian
+		x = 0
+		y = 1
+		cost = 10
+		relative_position_id = NEA_investigation_of_japanese_crimes
+		prerequisite = { focus = NEA_investigation_of_japanese_crimes }
+
+		ai_will_do = {
+			factor = 10
+		}
+
+		available = {
+			NOT = { has_war_with = JAP }
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus NEA_the_great_trial_of_japan"
+			add_stability = 0.3
+			add_war_support = -0.15
+			add_popularity = {
+				ideology = fascism
+				popularity = 0.2
+			}
+		}
+	}
+	
+	##Сформировать Северо-Западное Правительство Национальной обороны
+	focus = {
+		id = NEA_to_form_the_north_western_government_of_national_defense
+		icon = GFX_goal_generic_construct_civilian
+		x = 0
+		y = 4
+		cost = 3
+		relative_position_id = NEA_secret_agreement_with_the_communists
+		prerequisite = { focus = NEA_secret_agreement_with_the_communists }
+		mutually_exclusive = { focus = NEA_formation_of_the_anti_japanese_front focus = NEA_release_marshal_zhang }
+		
+		ai_will_do = {
+			factor = 10
+		}
+
+		available = {
+			CHI = {
+				OR = {
+					is_ally_with = JAP
+					has_war_with = ROOT
+					has_civil_war = yes
+					NOT = {
+						country_exists = PREV
+					}
+					OR = {
+						has_war_with = GXC
+						has_war_with = GND
+					}
+				}
+			}
+			hidden_trigger = {
+				NOT = { has_country_flag = NEA_focus_canceled_flag }
+			}
+			NOT = { has_completed_focus = NEA_peoples_political_conference }
+		}		
+		
+		select_effect = {
+			country_event = { id = northeasternarmy.95 days = 5 }
+		} 
+		
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus NEA_to_form_the_north_western_government_of_national_defense"
+			add_ideas = NEA_coalition_government_idea
+			remove_ideas = NEA_communist_propaganda_in_the_army_idea
+			set_cosmetic_tag = NEA_north_western_government_of_national_defense_cosmetic
+			set_capital = { state = 283 }
+			swap_ideas = {
+				remove_idea = NEA_two_former_armies_idea
+				add_idea = NEA_three_armies_idea
+			}
+			annex_country = {
+				target = NWA
+				transfer_troops = yes
+			}
+			annex_country = {
+				target = PRC
+				transfer_troops = yes
+			}
+			hidden_effect = {
+				set_popularities = {
+					democratic = 30
+					neutrality = 30
+					fascism = 5
+					communism = 30
+					trozkism = 5
+					anarchism = 0
+					monarchy = 0
+					technocracy = 0
+				}
+			}
+			every_other_country = {
+				limit = {
+					OR = {
+						is_chinese_warlord = yes
+						original_tag = CHI
+					}
+				}
+				country_event = northeasternarmy.96
+			}
+			set_party_name = {
+				ideology = neutrality
+				long_name = NEA_neutrality_party_zhang_loyalists
+				name = NEA_neutrality_party_zhang_loyalists
+			}
+			set_party_name = {
+				ideology = democratic
+				long_name = NEA_democratic_party_left_kuomintang
+				name = NEA_democratic_party_left_kuomintang
+			}
+			set_party_name = {
+				ideology = fascism
+				long_name = NEA_fascist_party_anti_japanese_association_of_comrades
+				name = NEA_fascist_party_anti_japanese_association_of_comrades
+			}
+		}
+	}
+	
+	##Призыв к губернаторам
+	focus = {
+		id = NEA_appeal_to_the_governors
+		icon = GFX_goal_generic_construct_civilian
+		x = 2
+		y = 1
+		cost = 10
+		relative_position_id = NEA_to_form_the_north_western_government_of_national_defense
+		prerequisite = { focus = NEA_to_form_the_north_western_government_of_national_defense }
+
+		ai_will_do = {
+			factor = 10
+		}
+
+		available = {
+			NOT = { has_completed_focus = NEA_peoples_political_conference }
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus NEA_appeal_to_the_governors"
+			create_faction = NEA_anti_japanese_front_faction
+			every_other_country = {
+				limit = {
+					is_chinese_warlord = yes
+					is_in_faction = no
+					is_subject = no
+				}
+				country_event = northeasternarmy.97
+			}
+		}
+	}
+	
+	##Первоочерёдная цель – Япония
+	focus = {
+		id = NEA_the_primary_goal_is_japan
+		icon = GFX_goal_generic_construct_civilian
+		x = 4
+		y = 1
+		cost = 10
+		relative_position_id = NEA_to_form_the_north_western_government_of_national_defense
+		prerequisite = { focus = NEA_to_form_the_north_western_government_of_national_defense }
+
+		ai_will_do = {
+			factor = 10
+		}
+
+		available = {
+			NOT = { has_completed_focus = NEA_peoples_political_conference }
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus NEA_the_primary_goal_is_japan"
+			unlock_decision_category_tooltip = NEA_war_with_japan_category
+		}
+	}
+	
+	##Организация партизанских восстаний
+	focus = {
+		id = NEA_organization_of_guerrilla_uprisings
+		icon = GFX_goal_generic_construct_civilian
+		x = 1
+		y = 1
+		cost = 10
+		relative_position_id = NEA_the_primary_goal_is_japan
+		prerequisite = { focus = NEA_the_primary_goal_is_japan }
+
+		ai_will_do = {
+			factor = 10
+		}
+
+		available = {
+			NOT = { has_completed_focus = NEA_peoples_political_conference }
+			NOT = { has_war_with = JAP }
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus NEA_organization_of_guerrilla_uprisings"
+			unlock_decision_tooltip = NEA_organize_an_uprising_with_the_help_of_the_north_eastern_army
+			unlock_decision_tooltip = NEA_organize_an_uprising_with_the_help_of_the_north_western_army
+			unlock_decision_tooltip = NEA_organize_an_uprising_with_the_help_of_the_red_army
+		}
+	}
+	
+	##Организация сопротивления реакционерам
+	focus = {
+		id = NEA_organization_of_resistance_to_reactionaries
+		icon = GFX_goal_generic_construct_civilian
+		x = -4
+		y = 1
+		cost = 10
+		relative_position_id = NEA_to_form_the_north_western_government_of_national_defense
+		prerequisite = { focus = NEA_to_form_the_north_western_government_of_national_defense }
+
+		ai_will_do = {
+			factor = 10
+		}
+
+		available = {
+			NOT = { has_completed_focus = NEA_peoples_political_conference }
+		}
+		
+		bypass = {
+			has_war_with = CHI
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus NEA_organization_of_resistance_to_reactionaries"
+			declare_war_on = { # TODO: wargoal
+				target = CHI
+				type = annex_everything
+			}
+		}
+	}
+	
+	##Отправки групп диверсантов
+	focus = {
+		id = NEA_sending_groups_of_saboteurs
+		icon = GFX_goal_generic_construct_civilian
+		x = -1
+		y = 1
+		cost = 10
+		relative_position_id = NEA_organization_of_resistance_to_reactionaries
+		prerequisite = { focus = NEA_organization_of_resistance_to_reactionaries }
+
+		ai_will_do = {
+			factor = 10
+		}
+
+		available = {
+			has_war_with = CHI
+			NOT = { has_completed_focus = NEA_peoples_political_conference }			
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus NEA_sending_groups_of_saboteurs"
+			unlock_decision_category_tooltip = NEA_the_war_with_the_kuomintang_category
+		}
+	}
+	
+	##Борьба за лояльность
+	focus = {
+		id = NEA_the_struggle_for_loyalty
+		icon = GFX_goal_generic_construct_civilian
+		x = -1
+		y = 1
+		cost = 10
+		relative_position_id = NEA_appeal_to_the_governors
+		prerequisite = { focus = NEA_appeal_to_the_governors }
+
+		ai_will_do = {
+			factor = 10
+		}
+
+		available = {
+			NOT = { has_completed_focus = NEA_peoples_political_conference }
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus NEA_the_struggle_for_loyalty"
+			unlock_decision_category_tooltip = NEA_the_struggle_for_loyalty_category
+			hidden_effect = {
+				activate_targeted_decision = { target = SIH decision = NEA_put_pressure_on_the_governor }
+				activate_targeted_decision = { target = XSM decision = NEA_put_pressure_on_the_governor }
+				activate_targeted_decision = { target = NGX decision = NEA_put_pressure_on_the_governor }
+				activate_targeted_decision = { target = XIK decision = NEA_put_pressure_on_the_governor }
+				activate_targeted_decision = { target = SHX decision = NEA_put_pressure_on_the_governor }
+				activate_targeted_decision = { target = YUL decision = NEA_put_pressure_on_the_governor }
+				activate_targeted_decision = { target = SIK decision = NEA_put_pressure_on_the_governor }
+				activate_targeted_decision = { target = HCP decision = NEA_put_pressure_on_the_governor }
+			}
+		}
+	}
+	
+	##Объединение «северных» армий
+	focus = {
+		id = NEA_unification_of_the_northern_armies
+		icon = GFX_goal_generic_construct_civilian
+		x = 1
+		y = 1
+		cost = 10
+		relative_position_id = NEA_appeal_to_the_governors
+		prerequisite = { focus = NEA_appeal_to_the_governors }
+
+		ai_will_do = {
+			factor = 10
+		}
+
+		available = {
+			NOT = { has_completed_focus = NEA_peoples_political_conference }
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus NEA_unification_of_the_northern_armies"
+			country_event = northeasternarmy.104
+			swap_ideas = {
+				remove_idea = NEA_three_armies_idea
+				add_idea = NEA_two_armies_idea
+			}
+		}
+	}
+	
+	##Присоединение Чжана Сюэляна к Левому Гоминьдану
+	focus = {
+		id = NEA_zhang_xueliangs_accession_to_the_left_kuomintang
+		icon = GFX_goal_generic_construct_civilian
+		x = -1
+		y = 1
+		cost = 10
+		relative_position_id = NEA_unification_of_the_northern_armies
+		prerequisite = { focus = NEA_unification_of_the_northern_armies }
+		mutually_exclusive = { focus = NEA_the_entry_of_a_young_marshal_into_the_cpc }
+
+		ai_will_do = {
+			factor = 10
+		}
+
+		available = {
+			NOT = { has_completed_focus = NEA_peoples_political_conference }
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus NEA_zhang_xueliangs_accession_to_the_left_kuomintang"
+			add_stability = 0.05
+			add_popularity = {
+				ideology = democratic
+				popularity = 0.15
+			}			
+			add_popularity = {
+				ideology = neutrality
+				popularity = -0.15
+			}
+		}
+	}
+	
+	##Статус Красной армии
+	focus = {
+		id = NEA_status_of_the_red_army
+		icon = GFX_goal_generic_construct_civilian
+		x = 1
+		y = 1
+		cost = 10
+		relative_position_id = NEA_unification_of_the_northern_armies
+		prerequisite = { focus = NEA_unification_of_the_northern_armies }
+
+		ai_will_do = {
+			factor = 10
+		}
+
+		available = {
+			NOT = { has_completed_focus = NEA_peoples_political_conference }
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus NEA_status_of_the_red_army"
+			remove_ideas = NEA_two_armies_idea			
+			add_popularity = {
+				ideology = democratic
+				popularity = 0.02
+			}
+			add_popularity = {
+				ideology = neutrality
+				popularity = 0.03
+			}			
+			add_popularity = {
+				ideology = communism
+				popularity = -0.05
+			}
+		}
+	}
+	
+	##Статус советского района
+	focus = {
+		id = NEA_status_of_the_soviet_district
+		icon = GFX_goal_generic_construct_civilian
+		x = 0
+		y = 1
+		cost = 10
+		relative_position_id = NEA_status_of_the_red_army
+		prerequisite = { focus = NEA_status_of_the_red_army }
+
+		ai_will_do = {
+			factor = 10
+		}
+
+		available = {
+			NOT = { has_completed_focus = NEA_peoples_political_conference }
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus NEA_status_of_the_soviet_district"		
+			add_popularity = {
+				ideology = democratic
+				popularity = 0.04
+			}
+			add_popularity = {
+				ideology = neutrality
+				popularity = 0.04
+			}			
+			add_popularity = {
+				ideology = communism
+				popularity = -0.08
+			}
+		}
+	}
+	
+	##Точка сбора Левого Гоминьдана
+	focus = {
+		id = NEA_the_gathering_point_of_the_left_kuomintang
+		icon = GFX_goal_generic_construct_civilian
+		x = 0
+		y = 1
+		cost = 10
+		relative_position_id = NEA_to_form_the_north_western_government_of_national_defense
+		prerequisite = { focus = NEA_to_form_the_north_western_government_of_national_defense }
+
+		ai_will_do = {
+			factor = 10
+		}
+
+		available = {
+			NOT = { has_completed_focus = NEA_peoples_political_conference }
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus NEA_the_gathering_point_of_the_left_kuomintang"		
+			every_other_country = {
+				limit = {
+					original_tag = CHI
+					is_chinese_warlord = yes
+				}
+				country_event = northeasternarmy.105
+			}
+			if = {
+				limit = {
+					##Если Сун Цинлин не является лидером какого-либо государства
+				}
+				country_event = {
+					id = northeasternarmy.106
+					days = 20
+				}
+			}
+			if = {
+				limit = {
+					##Если Фэн Юйсян не является лидером какого-либо государства или генералом у SIH/HCP/SHA
+				}
+				country_event = {
+					id = northeasternarmy.107
+					days = 45
+				}
+			}
+		}
+	}
+	
+	##Организация поставок из СССР
+	focus = {
+		id = NEA_organization_of_supplies_from_the_ussr
+		icon = GFX_goal_generic_construct_civilian
+		x = -2
+		y = 1
+		cost = 10
+		relative_position_id = NEA_to_form_the_north_western_government_of_national_defense
+		prerequisite = { focus = NEA_to_form_the_north_western_government_of_national_defense }
+
+		ai_will_do = {
+			factor = 10
+		}
+
+		available = {
+			NOT = { has_completed_focus = NEA_peoples_political_conference }
+			country_exists = SOV
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus NEA_organization_of_supplies_from_the_ussr"		
+			unlock_decision_category_tooltip = NEA_soviet_aid_to_china_category
+		}
+	}
+	
+	##Прибытие советских специалистов
+	focus = {
+		id = NEA_arrival_of_soviet_specialists
+		icon = GFX_goal_generic_construct_civilian
+		x = -1
+		y = 1
+		cost = 10
+		relative_position_id = NEA_organization_of_supplies_from_the_ussr
+		prerequisite = { focus = NEA_organization_of_supplies_from_the_ussr }
+
+		ai_will_do = {
+			factor = 10
+		}
+
+		available = {
+			country_exists = SOV
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus NEA_arrival_of_soviet_specialists"		
+			add_ideas = NEA_soviet_specialists_idea
+			add_popularity = {
+				ideology = communism
+				popularity = 0.02
+			}
+			create_corps_commander = { # TODO: переделать под character
+				name = "Aleksandr Cherepanov"
+				gfx = GFX_portrait_sov_aleksandr_cherepanov 
+				skill = 3
+				attack_skill = 3
+				defense_skill = 3
+				planning_skill = 2
+				logistics_skill = 2
+				id = 600
+			}
+		}
+	}
+	
+	##Заняться проектом земельной реформы
+	focus = {
+		id = NEA_engage_in_a_land_reform_project
+		icon = GFX_goal_generic_construct_civilian
+		x = -1
+		y = 1
+		cost = 10
+		relative_position_id = NEA_arrival_of_soviet_specialists
+		prerequisite = { focus = NEA_arrival_of_soviet_specialists }
+
+		ai_will_do = {
+			factor = 10
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus NEA_engage_in_a_land_reform_project"		
+			add_popularity = {
+				ideology = communism
+				popularity = 0.12
+			}
+			add_popularity = {
+				ideology = neutrality
+				popularity = -0.12
+			}
+			random_owned_controlled_state = {
+				add_extra_state_shared_building_slots = 1
+			}
+			random_owned_controlled_state = {
+				add_extra_state_shared_building_slots = 1
+			}
+			random_owned_controlled_state = {
+				add_extra_state_shared_building_slots = 1
+			}
+		}
+	}
+	
+	##Создание собственной промышленной базы
+	focus = {
+		id = NEA_creating_your_own_industrial_base
+		icon = GFX_goal_generic_construct_civilian
+		x = 1
+		y = 1
+		cost = 10
+		relative_position_id = NEA_arrival_of_soviet_specialists
+		prerequisite = { focus = NEA_arrival_of_soviet_specialists }
+
+		ai_will_do = {
+			factor = 10
+		}
+
+		available = {
+			communism > 0.35
+			country_exists = SOV
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus NEA_creating_your_own_industrial_base"		
+			add_tech_bonus = {
+				bonus = 0.5
+				uses = 1
+				category = industry				
+			}
+			add_tech_bonus = {
+				bonus = 1
+				uses = 1
+				category = construction_tech				
+			}
+		}
+	}
+	
+	##Заводы из СССР «под ключ»
+	focus = {
+		id = NEA_plants_from_the_ussr_turnkey
+		icon = GFX_goal_generic_construct_civilian
+		x = -1
+		y = 1
+		cost = 10
+		relative_position_id = NEA_creating_your_own_industrial_base
+		prerequisite = { focus = NEA_creating_your_own_industrial_base }
+
+		ai_will_do = {
+			factor = 10
+		}
+
+		available = {
+			communism > 0.45
+			country_exists = SOV
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus NEA_plants_from_the_ussr_turnkey"		
+			add_popularity = {
+				ideology = communism
+				popularity = 0.04
+			}
+			random_owned_controlled_state = {
+				add_extra_state_shared_building_slots = 1
+				add_building_construction = {
+					type = industrial_complex
+					level = 1
+					instant_build = yes				
+				}
+			}
+			random_owned_controlled_state = {
+				add_extra_state_shared_building_slots = 1
+				add_building_construction = {
+					type = arms_factory
+					level = 1
+					instant_build = yes				
+				}
+			}
+			random_owned_controlled_state = {
+				add_extra_state_shared_building_slots = 1
+				add_building_construction = {
+					type = arms_factory
+					level = 1
+					instant_build = yes				
+				}
+			}
+		}
+	}
+	
+	##Национализация старых производств
+	focus = {
+		id = NEA_nationalization_of_old_production_facilities
+		icon = GFX_goal_generic_construct_civilian
+		x = 1
+		y = 1
+		cost = 10
+		relative_position_id = NEA_creating_your_own_industrial_base
+		prerequisite = { focus = NEA_creating_your_own_industrial_base }
+
+		ai_will_do = {
+			factor = 10
+		}
+
+		available = {
+			num_of_controlled_states > 10
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus NEA_nationalization_of_old_production_facilities"		
+			add_ideas = NEA_backward_enterprises_idea
+			add_popularity = {
+				ideology = communism
+				popularity = 0.04
+			}
+			random_owned_controlled_state = {
+				add_extra_state_shared_building_slots = 1
+				add_building_construction = {
+					type = industrial_complex
+					level = 1
+					instant_build = yes				
+				}
+			}
+			random_owned_controlled_state = {
+				add_extra_state_shared_building_slots = 1
+				add_building_construction = {
+					type = industrial_complex
+					level = 1
+					instant_build = yes				
+				}
+			}
+			random_owned_controlled_state = {
+				add_extra_state_shared_building_slots = 1
+				add_building_construction = {
+					type = industrial_complex
+					level = 1
+					instant_build = yes				
+				}
+			}
+		}
+	}
+	
+	##Модернизация предприятий при советской помощи
+	focus = {
+		id = NEA_modernization_of_enterprises_with_soviet_assistance
+		icon = GFX_goal_generic_construct_civilian
+		x = -1
+		y = 1
+		cost = 10
+		relative_position_id = NEA_nationalization_of_old_production_facilities
+		prerequisite = { focus = NEA_nationalization_of_old_production_facilities }
+		prerequisite = { focus = NEA_plants_from_the_ussr_turnkey }
+
+		ai_will_do = {
+			factor = 10
+		}
+
+		available = {
+			communism > 0.55
+			country_exists = SOV
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus NEA_modernization_of_enterprises_with_soviet_assistance"		
+			remove_ideas = NEA_backward_enterprises_idea
+			add_popularity = {
+				ideology = communism
+				popularity = 0.03
+			}
+			add_tech_bonus = {
+				bonus = 0.75
+				uses = 1
+				category = industry				
+			}			
+		}
+	}
+	
+	##Вопрос о признании
+	focus = {
+		id = NEA_the_question_of_recognition
+		icon = GFX_goal_generic_construct_civilian
+		x = 1
+		y = 1
+		cost = 10
+		relative_position_id = NEA_organization_of_supplies_from_the_ussr
+		prerequisite = { focus = NEA_organization_of_supplies_from_the_ussr }
+
+		ai_will_do = {
+			factor = 10
+		}
+
+		available = {
+			NOT = { has_completed_focus = NEA_peoples_political_conference }
+			country_exists = SOV
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus NEA_the_question_of_recognition"		
+			random_country_with_original_tag = {
+				original_tag_to_check = SOV
+				country_event = northeasternarmy.113
+			}			
+		}
+	}
+	
+	##Вступление Молодого маршала в КПК
+	focus = {
+		id = NEA_the_entry_of_a_young_marshal_into_the_cpc
+		icon = GFX_goal_generic_construct_civilian
+		x = 1
+		y = 1
+		cost = 10
+		relative_position_id = NEA_the_question_of_recognition
+		prerequisite = { focus = NEA_the_question_of_recognition }
+		mutually_exclusive = { focus = NEA_zhang_xueliangs_accession_to_the_left_kuomintang }
+
+		ai_will_do = {
+			factor = 10
+		}
+
+		available = {
+			NOT = { has_completed_focus = NEA_peoples_political_conference }
+			has_country_flag = NEA_soviet_union_recognize_us_flag
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus NEA_the_entry_of_a_young_marshal_into_the_cpc"		
+			add_popularity = {
+				ideology = communism
+				popularity = 0.15
+			}
+			add_popularity = {
+				ideology = neutrality
+				popularity = -0.15
+			}			
+		}
+	}
+	
+	##Народная политическая конференция
+	focus = {
+		id = NEA_peoples_political_conference
+		icon = GFX_goal_generic_construct_civilian
+		x = 5
+		y = 9
+		cost = 10
+
+		ai_will_do = {
+			factor = 10
+		}
+
+		available = {
+			has_war = no
+			all_of_scopes = {
+				array = global.chinese_state
+				tooltip = NEA_controlle_all_chinese_states_tt
+				
+				FROM = { controls_state = PREV }
+			}			
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus NEA_peoples_political_conference"		
+			set_capital = { state = 608 }
+			if = {
+				limit = { communism > 0.72 }
+				country_event = northeasternarmy.116
+			}
+			else_if = {
+				limit = { neutrality > 0.72 }
+				country_event = northeasternarmy.117
+			}
+			else_if = {
+				limit = { democratic > 0.72 }
+				country_event = northeasternarmy.118
+			}
+			else = {
+				country_event = northeasternarmy.119
+			}
+		}
+	}
+	
+	##Установление нестабильной демократии
+	focus = {
+		id = NEA_establishing_an_unstable_democracy
+		icon = GFX_goal_generic_construct_civilian
+		x = 0
+		y = 1
+		cost = 10
+		relative_position_id = NEA_peoples_political_conference
+		prerequisite = { focus = NEA_peoples_political_conference }
+
+		ai_will_do = {
+			factor = 10
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus NEA_establishing_an_unstable_democracy"
+			if = {
+				limit = { has_country_flag = NEA_loyalists_save_majority_flag }
+				custom_effect_tooltip = NEA_block_focus_tt
+				clr_country_flag = NEA_loyalists_save_majority_flag
+			}
+			if = {
+				limit = {
+					OR = {
+						democratic > party_popularity@communism
+						democratic > party_popularity@neutrality
+					}
+				}
+				country_event = northeasternarmy.122
+				country_event = { id = northeasternarmy.128 days = 1460 }
+			}
+			else_if = {
+				limit = {
+					OR = {
+						neutrality > party_popularity@communism
+						neutrality > party_popularity@democratic
+					}
+				}
+				country_event = northeasternarmy.124
+				country_event = { id = northeasternarmy.129 days = 1460 }
+			}
+			else_if = {
+				limit = {
+					OR = {
+						communism > party_popularity@neutrality
+						communism > party_popularity@democratic
+					}
+				}
+				country_event = northeasternarmy.126
+			}
+		}
+	}
+	
+	##Борьба с коммунистическими партизанами
+	focus = {
+		id = NEA_the_fight_against_communist_partisans
+		icon = GFX_goal_generic_construct_civilian
+		x = -4
+		y = 1
+		cost = 10
+		relative_position_id = NEA_establishing_an_unstable_democracy
+		prerequisite = { focus = NEA_establishing_an_unstable_democracy }
+
+		ai_will_do = {
+			factor = 10
+		}
+
+		available = {
+			has_war = yes
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus NEA_the_fight_against_communist_partisans"
+			add_ideas = NEA_fighting_the_partisans_idea
+		}
+	}
+	
+	##Укрепить разделение властей
+	focus = {
+		id = NEA_strengthen_the_separation_of_powers
+		icon = GFX_goal_generic_construct_civilian
+		x = -2
+		y = 1
+		cost = 10
+		relative_position_id = NEA_establishing_an_unstable_democracy
+		prerequisite = { focus = NEA_establishing_an_unstable_democracy }
+
+		ai_will_do = {
+			factor = 10
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus NEA_strengthen_the_separation_of_powers"
+			add_stability = 0.1
+			add_political_power = 150
+		}
+	}
+	
+	##Создать партию маршала
+	focus = {
+		id = NEA_create_a_marshals_party
+		icon = GFX_goal_generic_construct_civilian
+		x = 2
+		y = 1
+		cost = 10
+		relative_position_id = NEA_establishing_an_unstable_democracy
+		prerequisite = { focus = NEA_establishing_an_unstable_democracy }
+
+		ai_will_do = {
+			factor = 10
+		}
+
+		available = {
+			has_country_leader = { character = NEA_zhang_xueliang ruling_only = yes }
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus NEA_create_a_marshals_party"
+			add_popularity = {
+				ideology = neutrality
+				popularity = 0.05
+			}
+			set_party_name = {
+				ideology = neutrality
+				long_name = NEA_neutrality_party_united_china
+				name = NEA_neutrality_party_united_china
+			}
+		}
+	}
+	
+	##Визит дружбы
+	focus = {
+		id = NEA_friendship_visit
+		icon = GFX_goal_generic_construct_civilian
+		x = 4
+		y = 1
+		cost = 10
+		relative_position_id = NEA_establishing_an_unstable_democracy
+		prerequisite = { focus = NEA_establishing_an_unstable_democracy }
+		
+		ai_will_do = {
+			factor = 10
+		}
+
+		available = {
+			communism > 0.25
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus NEA_friendship_visit"
+			##SOV получит событие «Визит китайской делегации в Москву»
+		}
+	}
+	
+	##Поддержание многовекторной дипломатии
+	focus = {
+		id = NEA_maintaining_multi_vector_diplomacy
+		icon = GFX_goal_generic_construct_civilian
+		x = 6
+		y = 1
+		cost = 10
+		relative_position_id = NEA_establishing_an_unstable_democracy
+		prerequisite = { focus = NEA_establishing_an_unstable_democracy }
+
+		ai_will_do = {
+			factor = 10
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus NEA_maintaining_multi_vector_diplomacy"
+			every_other_country = {
+				limit = { is_major = yes }
+				PREV = {
+					add_opinion_modifier = {
+						target = ROOT
+						modifier = NEA_multi_vector_diplomacy
+					}					
+				}
+			}
+			add_opinion_modifier = {
+				target = PREV
+				modifier = NEA_multi_vector_diplomacy
+			}
+		}
+	}
+	
+	##Реализация земельной реформы
+	focus = {
+		id = NEA_implementation_of_land_reform
+		icon = GFX_goal_generic_construct_civilian
+		x = 0
+		y = 1
+		cost = 10
+		relative_position_id = NEA_establishing_an_unstable_democracy
+		prerequisite = { focus = NEA_establishing_an_unstable_democracy }
+
+		ai_will_do = {
+			factor = 10
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus NEA_implementation_of_land_reform"
+			every_other_country = {
+				limit = { is_major = yes }
+				PREV = {
+					add_opinion_modifier = {
+						target = ROOT
+						modifier = NEA_multi_vector_diplomacy
+					}					
+				}
+			}
+			add_opinion_modifier = {
+				target = PREV
+				modifier = NEA_multi_vector_diplomacy
+			}
+		}
+	}
+	
+	##Национализировать крупную промышленность
+	focus = {
+		id = NEA_nationalize_large_scale_industry
+		icon = GFX_goal_generic_construct_civilian
+		x = -2
+		y = 1
+		cost = 10
+		relative_position_id = NEA_implementation_of_land_reform
+		prerequisite = { focus = NEA_implementation_of_land_reform }
+
+		ai_will_do = {
+			factor = 10
+		}
+
+		available = {
+			custom_trigger_tooltip = {
+				tooltip = NEA_neu_com_popularity_tt
+				
+				set_temp_variable = { NEA_neutrality_party_pop_temp_var = party_popularity_100@neutrality }
+				set_temp_variable = { NEA_communism_party_pop_temp_var = party_popularity_100@communism }
+				add_to_temp_variable = { NEA_neutrality_party_pop_temp_var = NEA_communism_party_pop_temp_var }
+				check_variable = { NEA_neutrality_party_pop_temp_var > 50 }
+			}
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus NEA_nationalize_large_scale_industry"
+			add_timed_idea = {
+				idea = NEA_consequences_of_the_nationalization_of_large_scale_industry_idea
+				days = 300
+			}
+			random_owned_controlled_state = {
+				add_extra_state_shared_building_slots = 1
+				add_building_construction = {
+					type = industrial_complex
+					level = 1
+					instant_build = yes				
+				}
+			}
+			random_owned_controlled_state = {
+				add_extra_state_shared_building_slots = 1
+				add_building_construction = {
+					type = industrial_complex
+					level = 1
+					instant_build = yes				
+				}
+			}
+			random_owned_controlled_state = {
+				add_extra_state_shared_building_slots = 1
+				add_building_construction = {
+					type = industrial_complex
+					level = 1
+					instant_build = yes				
+				}
+			}
+			random_owned_controlled_state = {
+				add_extra_state_shared_building_slots = 1
+				add_building_construction = {
+					type = arms_factory
+					level = 1
+					instant_build = yes				
+				}
+			}
+			random_owned_controlled_state = {
+				add_extra_state_shared_building_slots = 1
+				add_building_construction = {
+					type = arms_factory
+					level = 1
+					instant_build = yes				
+				}
+			}			
+		}
+	}
+	
+	##Национализировать железные дороги
+	focus = {
+		id = NEA_nationalize_railways
+		icon = GFX_goal_generic_construct_civilian
+		x = 0
+		y = 1
+		cost = 10
+		relative_position_id = NEA_nationalize_large_scale_industry
+		prerequisite = { focus = NEA_nationalize_large_scale_industry }
+
+		ai_will_do = {
+			factor = 10
+		}
+
+		available = {
+			custom_trigger_tooltip = {
+				tooltip = NEA_neu_com_popularity_tt
+				
+				set_temp_variable = { NEA_neutrality_party_pop_temp_var = party_popularity_100@neutrality }
+				set_temp_variable = { NEA_communism_party_pop_temp_var = party_popularity_100@communism }
+				add_to_temp_variable = { NEA_neutrality_party_pop_temp_var = NEA_communism_party_pop_temp_var }
+				check_variable = { NEA_neutrality_party_pop_temp_var > 50 }
+			}
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus NEA_nationalize_railways"
+			show_ideas_tooltip = NEA_chinese_railways
+		}
+	}
+	
+	##Восстановление страны
+	focus = {
+		id = NEA_rebuilding_the_country
+		icon = GFX_goal_generic_construct_civilian
+		x = 2
+		y = 1
+		cost = 10
+		relative_position_id = NEA_implementation_of_land_reform
+		prerequisite = { focus = NEA_implementation_of_land_reform }
+
+		ai_will_do = {
+			factor = 10
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus NEA_rebuilding_the_country"
+			add_timed_idea = {
+				idea = NEA_post_war_recovery_idea
+				days = 365
+			}
+		}
+	}
+	
+	##Выборы в местные органы самоуправления
+	focus = {
+		id = NEA_local_government_elections
+		icon = GFX_goal_generic_construct_civilian
+		x = 0
+		y = 1
+		cost = 10
+		relative_position_id = NEA_implementation_of_land_reform
+		prerequisite = { focus = NEA_implementation_of_land_reform }
+
+		ai_will_do = {
+			factor = 10
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus NEA_local_government_elections"
+			add_to_variable = { china_integration_of_province_cost_var = -0.2 }
+			set_temp_variable = { china_integration_of_province_cost_temp_var = -20 }
+			custom_effect_tooltip = NEA_china_integration_of_province_cost_tt
+			add_popularity = {
+				ideology = democratic
+				popularity = 0.1
+			}
+		}
+	}
+	
+	##Ставка на крестьян-собственников
+	focus = {
+		id = NEA_the_bet_on_peasant_owners
+		icon = GFX_goal_generic_construct_civilian
+		x = 0
+		y = 1
+		cost = 10
+		relative_position_id = NEA_local_government_elections
+		prerequisite = { focus = NEA_local_government_elections }
+		
+		ai_will_do = {
+			factor = 10
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus NEA_the_bet_on_peasant_owners"
+			add_to_variable = { china_integration_of_province_cost_var = -0.2 }
+			set_temp_variable = { china_integration_of_province_cost_temp_var = -20 }
+			custom_effect_tooltip = NEA_china_integration_of_province_cost_tt
+		}
+	}
+
+	##Стимулирование урбанизации​
+	focus = {
+		id = NEA_stimulating_urbanization
+		icon = GFX_goal_generic_construct_civilian
+		x = 0
+		y = 1
+		cost = 10
+		relative_position_id = NEA_rebuilding_the_country
+		prerequisite = { focus = NEA_rebuilding_the_country }
+
+		ai_will_do = {
+			factor = 10
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus NEA_stimulating_urbanization"
+			hidden_effect = { # TODO: сделать адекватно
+				set_temp_variable = { NEA_num_of_controlled_ownder_states_var = num_controlled_states }
+				multiply_temp_variable = { NEA_num_of_controlled_ownder_states_var = 0.5 }
+				add_to_temp_variable = { NEA_num_of_controlled_ownder_states_var = 1 }
+				every_state = {
+					limit = {
+						is_controlled_by = ROOT
+					}
+					add_to_temp_array = { states_controlled_by_NEA_array = THIS }				
+				}
+				while_loop_effect = {
+					limit = {
+						check_variable = { states_received_extra_slots < NEA_num_of_controlled_ownder_states_var }
+					}
+					random_state = {
+						limit = {
+							is_in_array = { states_controlled_by_NEA_array = THIS }
+						}
+						remove_from_temp_array = { states_controlled_by_NEA_array = THIS }
+						add_extra_state_shared_building_slots = 1
+					}
+					add_to_temp_variable = { states_received_extra_slots = 1 }
+				}
+			}
+			custom_effect_tooltip = NEA_half_states_get_building_slots_tt
+		}
+	}
+	
+	##Ликвидация безграмотности в сельской местности
+	focus = {
+		id = NEA_elimination_of_illiteracy_in_rural_areas
+		icon = GFX_goal_generic_construct_civilian
+		x = 0
+		y = 1
+		cost = 10
+		relative_position_id = NEA_stimulating_urbanization
+		prerequisite = { focus = NEA_the_bet_on_peasant_owners }
+		prerequisite = { focus = NEA_stimulating_urbanization }
+
+		ai_will_do = {
+			factor = 10
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus NEA_elimination_of_illiteracy_in_rural_areas"
+			add_research_slot = 1
+		}
+	}
+
+	##Первая четырёхлетка
+	focus = {
+		id = NEA_the_first_is_a_four_year_plan
+		icon = GFX_goal_generic_construct_civilian
+		x = 0
+		y = 1
+		cost = 10
+		relative_position_id = NEA_the_bet_on_peasant_owners
+		prerequisite = { focus = NEA_the_bet_on_peasant_owners }
+		prerequisite = { focus = NEA_stimulating_urbanization }
+		prerequisite = { focus = NEA_nationalize_railways }
+
+		ai_will_do = {
+			factor = 10
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus NEA_the_first_is_a_four_year_plan"
+			if = {
+				limit = { has_government = communism }
+				add_timed_idea = {	
+					idea = NEA_the_first_is_a_four_year_plan_idea
+					days = 1460
+				}
+			}
+			else_if = {
+				limit = { has_government = democratic }
+				add_timed_idea = {	
+					idea = NEA_the_first_is_a_four_year_plan_2_idea
+					days = 1460
+				}
+			}
+			else_if = {
+				limit = { has_government = neutrality }
+				add_timed_idea = {	
+					idea = NEA_the_first_is_a_four_year_plan_3_idea
+					days = 1460
+				}
+			}
+		}
+	}
+
+	##Вторая четырёхлетка
+	focus = {
+		id = NEA_the_second_is_a_four_year_plan
+		icon = GFX_goal_generic_construct_civilian
+		x = 0
+		y = 1
+		cost = 10
+		relative_position_id = NEA_the_first_is_a_four_year_plan
+		prerequisite = { focus = NEA_the_first_is_a_four_year_plan }
+
+		ai_will_do = {
+			factor = 10
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus NEA_the_first_is_a_four_year_plan"
+			if = {
+				limit = { has_idea = NEA_the_first_is_a_four_year_plan_idea }
+				add_ideas = NEA_the_second_is_a_four_year_plan_idea
+			}
+			else_if = {
+				limit = { has_idea = NEA_the_first_is_a_four_year_plan_2_idea }
+				add_ideas = NEA_the_second_is_a_four_year_plan_idea
+			}
+			else_if = {
+				limit = { has_idea = NEA_the_first_is_a_four_year_plan_3_idea }
+				add_ideas = NEA_the_second_is_a_four_year_plan_idea
+			}
+		}
+	}
+	
+	##Ограниченная советская помощь с индустриализацией
+	focus = {
+		id = NEA_limited_soviet_assistance_with_industrialization
+		icon = GFX_goal_generic_construct_civilian
+		x = 2
+		y = 1
+		cost = 10
+		relative_position_id = NEA_the_first_is_a_four_year_plan
+		prerequisite = { focus = NEA_the_first_is_a_four_year_plan }
+
+		ai_will_do = {
+			factor = 10
+		}
+
+		available = {
+			communism > 0.05
+			SOV = { has_war = no }
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus NEA_limited_soviet_assistance_with_industrialization"
+			random_country_with_original_tag = {
+				original_tag_to_check = SOV
+				country_event = northeasternarmy.131
+			}
+		}
+	}
+	
+	##Стимулирование внутреннего инвестирования
+	focus = {
+		id = NEA_stimulating_domestic_investment
+		icon = GFX_goal_generic_construct_civilian
+		x = -2
+		y = 1
+		cost = 10
+		relative_position_id = NEA_the_first_is_a_four_year_plan
+		prerequisite = { focus = NEA_the_first_is_a_four_year_plan }
+
+		ai_will_do = {
+			factor = 10
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus NEA_stimulating_domestic_investment"
+			add_timed_idea = { 
+				idea = NEA_post_war_economic_growth_idea
+				days = 3650
+			}
+		}
+	}
+	
+	##Встреча с американским президентом
+	focus = {
+		id = NEA_meeting_with_the_american_president
+		icon = GFX_goal_generic_construct_civilian
+		x = 0
+		y = 1
+		cost = 10
+		relative_position_id = NEA_maintaining_multi_vector_diplomacy
+		prerequisite = { focus = NEA_maintaining_multi_vector_diplomacy }
+
+		ai_will_do = {
+			factor = 10
+		}
+
+		available = {
+			NOT = { has_war_with = USA }
+			any_other_country = {
+				original_tag = USA
+				NOT = { has_idea = great_depression }
+			}
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus NEA_meeting_with_the_american_president"
+			random_country_with_original_tag = {
+				original_tag_to_check = USA
+				country_event = northeasternarmy.134
+			}
+		}
+	}
+	
+	##Открыть рынки для американских компаний
+	focus = {
+		id = NEA_open_markets_for_american_companies
+		icon = GFX_goal_generic_construct_civilian
+		x = 0
+		y = 1
+		cost = 10
+		relative_position_id = NEA_meeting_with_the_american_president
+		prerequisite = { focus = NEA_meeting_with_the_american_president }
+
+		ai_will_do = {
+			factor = 10
+		}
+
+		available = {
+			has_war = no
+			has_country_flag = NEA_usa_accept_help_for_us_flag
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus NEA_open_markets_for_american_companies"
+			add_ideas = free_trade
+			add_timed_idea = {
+				idea = NEA_investing_in_american_companies_idea
+				days = 2000
+			}
+		}
+	}
+	
+	##Зоны с пониженными налогами
+	focus = {
+		id = NEA_zones_with_reduced_taxes
+		icon = GFX_goal_generic_construct_civilian
+		x = 0
+		y = 1
+		cost = 10
+		relative_position_id = NEA_open_markets_for_american_companies
+		prerequisite = { focus = NEA_open_markets_for_american_companies }
+
+		ai_will_do = {
+			factor = 10
+		}
+
+		available = {
+			has_idea = NEA_investing_in_american_companies_idea
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus NEA_zones_with_reduced_taxes"
+			unlock_decision_category_tooltip = NEA_creation_of_investment_economic_zones_category
+		}
+	}
+	
+	##Модернизация армии
+	focus = {
+		id = NEA_modernization_of_the_army
+		icon = GFX_goal_generic_construct_civilian
+		x = -6
+		y = 1
+		cost = 10
+		relative_position_id = NEA_establishing_an_unstable_democracy
+		prerequisite = { focus = NEA_establishing_an_unstable_democracy }
+
+		ai_will_do = {
+			factor = 10
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus NEA_modernization_of_the_army"
+			add_command_power = 25 # ахуенная модернизация, мощные бонусы
+		}
+	}
+	
+	##Сложить старьё на склады
+	focus = {
+		id = NEA_put_the_old_stuff_in_warehouses
+		icon = GFX_goal_generic_construct_civilian
+		x = -1
+		y = 1
+		cost = 10
+		relative_position_id = NEA_modernization_of_the_army
+		prerequisite = { focus = NEA_modernization_of_the_army }
+
+		ai_will_do = {
+			factor = 10
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus NEA_put_the_old_stuff_in_warehouses"
+			##Модернизация армии пропустит 1 уровень
+		}
+	}
+	
+	##Ввести штат мирного времени
+	focus = {
+		id = NEA_introduce_a_peacetime_staff
+		icon = GFX_goal_generic_construct_civilian
+		x = 1
+		y = 1
+		cost = 10
+		relative_position_id = NEA_modernization_of_the_army
+		prerequisite = { focus = NEA_modernization_of_the_army }
+
+		ai_will_do = {
+			factor = 10
+		}
+
+		available = {
+			has_war = no
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus NEA_introduce_a_peacetime_staff"
+			add_ideas = only_volunteers
+			army_experience = 25
+		}
+	}
+	
+	##Избавиться от наследия партизанщины
+	focus = {
+		id = NEA_get_rid_of_the_legacy_of_partisanship
+		icon = GFX_goal_generic_construct_civilian
+		x = -1
+		y = 1
+		cost = 10
+		relative_position_id = NEA_introduce_a_peacetime_staff
+		prerequisite = { focus = NEA_introduce_a_peacetime_staff }
+		prerequisite = { focus = NEA_put_the_old_stuff_in_warehouses }
+
+		ai_will_do = {
+			factor = 10
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus NEA_get_rid_of_the_legacy_of_partisanship"
+			add_tech_bonus = {
+				uses = 1
+				bonus = 1
+				category = cat_special_forces_generic
+			}
+		}
+	}
+	
+	##Использовать подпольные разработки оружия
+	focus = {
+		id = NEA_use_clandestine_weapons_development
+		icon = GFX_goal_generic_construct_civilian
+		x = -1
+		y = 2
+		cost = 10
+		relative_position_id = NEA_put_the_old_stuff_in_warehouses
+		prerequisite = { focus = NEA_put_the_old_stuff_in_warehouses }
+
+		ai_will_do = {
+			factor = 10
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus NEA_use_clandestine_weapons_development"
+			add_tech_bonus = {
+				uses = 1
+				bonus = 1
+				category = infantry_weapons
+			}
+		}
+	}
+
+	##Создать военные госкорпорации
+	focus = {
+		id = NEA_create_military_state_corporations
+		icon = GFX_goal_generic_construct_civilian
+		x = 2
+		y = 1
+		cost = 10
+		relative_position_id = NEA_get_rid_of_the_legacy_of_partisanship
+		prerequisite = { focus = NEA_get_rid_of_the_legacy_of_partisanship }
+		prerequisite = { focus = NEA_nationalize_large_scale_industry }
+
+		ai_will_do = {
+			factor = 10
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus NEA_create_military_state_corporations"
+			show_ideas_tooltip = NEA_hanyang_arsenal
+			show_ideas_tooltip = NEA_mukden_arsenal
+			show_ideas_tooltip = NEA_taiyuan_arsenal
+			add_popularity = {
+				ideology = neutrality
+				popularity = 0.05
+			}
+		}
+	}
+
+	##Инженерная академия в Сиане
+	focus = {
+		id = NEA_xian_engineering_academy
+		icon = GFX_goal_generic_construct_civilian
+		x = 2
+		y = 2
+		cost = 10
+		relative_position_id = NEA_use_clandestine_weapons_development
+		prerequisite = { focus = NEA_use_clandestine_weapons_development }
+		prerequisite = { focus = NEA_create_military_state_corporations }
+
+		ai_will_do = {
+			factor = 10
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus NEA_xian_engineering_academy"
+			add_research_slot = 1
+			show_ideas_tooltip = NEA_xian_engineering_academy_manufacturer
+		}
+	}
+	
+	##Формирование антияпонского фронта
+	focus = {
+		id = NEA_formation_of_the_anti_japanese_front
+		icon = GFX_goal_generic_construct_civilian
+		x = -5
+		y = 1
+		cost = 10
+		relative_position_id = NEA_an_unthinkable_plan
+		prerequisite = { focus = NEA_an_unthinkable_plan }
+		mutually_exclusive = { focus = NEA_to_form_the_north_western_government_of_national_defense focus = NEA_release_marshal_zhang }
+
+		ai_will_do = {
+			factor = 10
+		}
+
+		available = {
+			NOT = { 
+				has_country_leader = { character = NEA_yin_detang ruling_only = yes } 
+			}
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus NEA_formation_of_the_anti_japanese_front"
+			if = {
+				limit = {
+					any_character = {
+						is_country_leader = yes
+						NOT = { is_character = NEA_zhang_xueliang }
+					}
+				}
+				random_character = {
+					limit = { is_country_leader = yes }
+					add_country_leader_role = {
+						character = THIS
+						promote_leader = yes
+						country_leader = {
+							ideology = marxism
+							expire = "1965.1.1.1"
+							traits = { }
+						}
+					}
+				}
+			}
+			else_if = {
+				limit = {
+					any_character = {
+						is_country_leader = yes
+						is_character = NEA_zhang_xueliang
+					}
+				}
+				NEA_zhang_xueliang = {
+					add_country_leader_role = {
+						character = THIS
+						promote_leader = yes
+						country_leader = {
+							ideology = marxism
+							expire = "1965.1.1.1"
+							traits = { young_marshal }
+						}
+					}
+				}
+			}
+			set_politics = {
+				ruling_party = communism
+				elections_allowed = no
+			}
+			random_country_with_original_tag = {
+				original_tag_to_check = PRC
+				country_event = northeasternarmy.138
+			}
+		}
+	}
+	
+	##Политическое подчинение компартии
+	focus = {
+		id = NEA_political_subordination_to_the_communist_party
+		icon = GFX_goal_generic_construct_civilian
+		x = -1
+		y = 1
+		cost = 10
+		relative_position_id = NEA_formation_of_the_anti_japanese_front
+		prerequisite = { focus = NEA_formation_of_the_anti_japanese_front }
+
+		ai_will_do = {
+			factor = 10
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus NEA_political_subordination_to_the_communist_party"
+			random_country_with_original_tag = {
+				original_tag_to_check = PRC
+				puppet = ROOT
+			}
+		}
+	}
+	
+	##Введение должности политического комиссара
+	focus = {
+		id = NEA_introduction_of_the_post_of_political_commissar
+		icon = GFX_goal_generic_construct_civilian
+		x = 0
+		y = 1
+		cost = 10
+		relative_position_id = NEA_political_subordination_to_the_communist_party
+		prerequisite = { focus = NEA_political_subordination_to_the_communist_party }
+
+		ai_will_do = {
+			factor = 10
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus NEA_introduction_of_the_post_of_political_commissar"
+			add_ideas = NEA_political_commissars_idea
+			add_autonomy_score = {
+				value = -150
+			}
+			add_popularity = {
+				ideology = communism
+				popularity = 0.04
+			}
+		}
+	}
+	
+	##Приглашение коммунистов в правительство провинции
+	focus = {
+		id = NEA_inviting_communists_to_the_provincial_government
+		icon = GFX_goal_generic_construct_civilian
+		x = 1
+		y = 1
+		cost = 10
+		relative_position_id = NEA_formation_of_the_anti_japanese_front
+		prerequisite = { focus = NEA_formation_of_the_anti_japanese_front }
+
+		ai_will_do = {
+			factor = 10
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus NEA_inviting_communists_to_the_provincial_government"
+			add_autonomy_score = {
+				value = -150
+			}
+			add_popularity = {
+				ideology = communism
+				popularity = 0.07
+			}
+		}
+	}
+	
+	##Трансформация в советский район
+	focus = {
+		id = NEA_transformation_into_the_soviet_district
+		icon = GFX_goal_generic_construct_civilian
+		x = 0
+		y = 1
+		cost = 10
+		relative_position_id = NEA_inviting_communists_to_the_provincial_government
+		prerequisite = { focus = NEA_inviting_communists_to_the_provincial_government }
+
+		ai_will_do = {
+			factor = 10
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus NEA_transformation_into_the_soviet_district"
+			add_ideas = war_economy
+		}
+	}
+	
+	##Земельная реформа в Шэньси
+	focus = {
+		id = NEA_shaanxi_land_reform
+		icon = GFX_goal_generic_construct_civilian
+		x = 0
+		y = 1
+		cost = 10
+		relative_position_id = NEA_transformation_into_the_soviet_district
+		prerequisite = { focus = NEA_transformation_into_the_soviet_district }
+
+		ai_will_do = {
+			factor = 10
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus NEA_shaanxi_land_reform"
+			add_timed_idea = {
+				idea = NEA_land_reform_idea
+				days = 150
+			}
+			custom_effect_tooltip = NEA_economy_growth_tt
+		}
+	}
+	
+	##Обучение методам партизанской войны
+	focus = {
+		id = NEA_training_in_guerrilla_warfare_methods
+		icon = GFX_goal_generic_construct_civilian
+		x = 0
+		y = 1
+		cost = 10
+		relative_position_id = NEA_introduction_of_the_post_of_political_commissar
+		prerequisite = { focus = NEA_introduction_of_the_post_of_political_commissar }
+
+		ai_will_do = {
+			factor = 10
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus NEA_training_in_guerrilla_warfare_methods"
+			##Саня не говорил так делать, не исправлять
+			if = {
+				limit = {
+					NOT = { has_tech = peoples_army_asy }
+				}
+				add_doctrine_cost_reduction = {
+					cost_reduction = 0.5
+					uses = 1
+					category = cat_asymmetric_warfare
+				}
+			}
+			else_if = {
+				limit = { has_tech = peoples_army_asy }
+				add_doctrine_cost_reduction = {
+					cost_reduction = 1
+					uses = 1
+					category = cat_asymmetric_warfare
+				}
+			}			
+		}
+	}
+	
+	##Новая коммунистическая армия
+	focus = {
+		id = NEA_the_new_communist_army
+		icon = GFX_goal_generic_construct_civilian
+		x = 1
+		y = 1
+		cost = 10
+		relative_position_id = NEA_training_in_guerrilla_warfare_methods
+		prerequisite = { focus = NEA_training_in_guerrilla_warfare_methods }
+		prerequisite = { focus = NEA_shaanxi_land_reform }
+
+		ai_will_do = {
+			factor = 10
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus NEA_the_new_communist_army"
+			if = {
+				limit = { is_ai = no }
+				random_country_with_original_tag = {
+					original_tag_to_check = PRC
+					change_tag_from = ROOT
+				}
+			}
+			random_country_with_original_tag = {
+				original_tag_to_check = PRC
+				annex_country = {
+					target = ROOT
+					transfer_troops = yes
+				}
+			}
+		}
+	}
+	
+	##Освободить маршала Чжана
+	focus = {
+		id = NEA_release_marshal_zhang
+		icon = GFX_goal_generic_construct_civilian
+		x = -10
+		y = 1
+		cost = 10
+		relative_position_id = NEA_an_unthinkable_plan
+		prerequisite = { focus = NEA_an_unthinkable_plan }
+		mutually_exclusive = { focus = NEA_formation_of_the_anti_japanese_front focus = NEA_to_form_the_north_western_government_of_national_defense }
+
+		ai_will_do = {
+			factor = 10
+		}
+
+		available = {
+			has_country_leader = { character = NEA_yin_detang ruling_only = yes }
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus NEA_release_marshal_zhang"
+			add_war_support = 0.1
+			add_popularity = {
+				ideology = fascism 
+				popularity = 0.05
+			}
+			add_popularity = {
+				ideology = neutrality 
+				popularity = 0.05
+			}
+		}
+	}
+
+	##Решить вопрос силовым путём
+	focus = {
+		id = NEA_solve_the_issue_by_force
+		icon = GFX_goal_generic_construct_civilian
+		x = -2
+		y = 1
+		cost = 10
+		relative_position_id = NEA_release_marshal_zhang
+		prerequisite = { focus = NEA_release_marshal_zhang }
+
+		ai_will_do = {
+			factor = 10
+		}
+
+		available = {
+			has_country_leader = { character = NEA_yin_detang ruling_only = yes }
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus NEA_solve_the_issue_by_force"
+			country_event = northeasternarmy.142
+		}
+	}
+	
+	##Начать переговорный процесс
+	focus = {
+		id = NEA_start_the_negotiation_process
+		icon = GFX_goal_generic_construct_civilian
+		x = 0
+		y = 1
+		cost = 10
+		relative_position_id = NEA_release_marshal_zhang
+		prerequisite = { focus = NEA_release_marshal_zhang }
+
+		ai_will_do = {
+			factor = 10
+		}
+
+		available = {
+			has_country_leader = { character = NEA_yin_detang ruling_only = yes }
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus NEA_start_the_negotiation_process"
+			random_country_with_original_tag = {
+				original_tag_to_check = CHI
+				country_event = northeasternarmy.143
+			}
+		}
+	}
+	
+	##Охота на коммунистов
+	focus = {
+		id = NEA_the_hunt_for_communists
+		icon = GFX_goal_generic_construct_civilian
+		x = 2
+		y = 1
+		cost = 10
+		relative_position_id = NEA_release_marshal_zhang
+		prerequisite = { focus = NEA_release_marshal_zhang }
+
+		ai_will_do = {
+			factor = 10
+		}
+
+		available = {
+			has_country_leader = { character = NEA_yin_detang ruling_only = yes }
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus NEA_the_hunt_for_communists"
+			add_stability = -0.1
+			add_popularity = {
+				ideology = communism
+				popularity = -0.15
+			}
+			add_popularity = {
+				ideology = neutrality
+				popularity = 0.15
+			}
+			retire_character = NEA_gao_fuyuan
+		}
+	}
+}

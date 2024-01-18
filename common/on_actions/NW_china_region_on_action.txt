@@ -453,4 +453,239 @@ on_actions = { # Китайские страны, с небольшим кол-�
 			}
 		}	
 	}
+	
+	### NEA ###
+	
+	on_startup = {
+		effect = {
+			if = {
+				limit = {
+					has_start_date < 1936.01.02
+				}
+				NEA = {
+					country_event = { id = northeasternarmy.1 days = 4 }
+					country_event = { id = northeasternarmy.2 days = 19 }
+					activate_mission = NEA_patience_chiang_kai_shek
+					if = {
+						limit = { is_historical_focus_on = yes } # ??
+						country_event = {
+							id = northeasternarmy.9
+							days = 346						
+						}
+					}
+				}
+			}
+		}
+	}
+	
+	on_state_control_changed = {
+		effect = {
+			if = {
+				limit = { 
+					FROM.FROM = { 
+						state = 744 
+						is_owned_by = NEA
+						NOT = { has_state_flag = CHI_fall_of_xian_flag }
+					}
+					ROOT = { 
+						original_tag = CHI 
+						has_war_with = NEA 
+						has_country_flag = CHI_the_silence_of_the_young_marshal_flag
+					}
+				}
+				ROOT = { country_event = northeasternarmy.80 }
+				FROM.FROM = { set_state_flag = CHI_fall_of_xian_flag }
+			}
+		}
+	}
+	
+	### SHX ###
+	
+	on_startup = {
+		effect = {
+			if = {
+				limit = {
+					has_start_date < 1936.01.02
+				}
+				SHX = {
+					country_event = { id = shanxi.1 days = 5 }
+				}
+			}
+		}
+	}
+	on_declare_war = {
+		effect = {
+			if = {
+				limit = {
+					OR = {
+						AND = {
+							original_tag = SHX
+							FROM = { original_tag = JAP }
+						}
+						AND = {
+							original_tag = JAP
+							FROM = { original_tag = SHX }
+						}
+					}
+				}
+				SHX = {
+					country_event = shanxi.14
+				}
+			}
+		}
+	}
+	
+	### GXC ###
+	
+	on_startup = {
+		effect = {
+			if = {
+				limit = {
+					has_start_date < 1936.01.02
+				}
+				GXC = {
+					country_event = { id = guangxi.3 days = 1391 }
+				}
+			}
+		}
+	}
+	on_declare_war = {
+		effect = {
+			if = {
+				limit = {
+					tag = GXC
+					FROM = { tag = CHI }
+				}
+				random_country_with_original_tag = {
+					original_tag_to_check = GXC
+					country_event = guangxi.1
+				}
+			}
+		}
+	}
+	on_unit_leader_created = {
+		effect = {
+			if = {
+				limit = {
+					FROM = { has_completed_focus = GXC_small_army_groups }
+				}
+				add_unit_leader_trait = small_army
+			}
+		}
+	}
+	
+	### YUN ###
+	
+	on_startup = {
+		effect = {
+			if = {
+				limit = {
+					has_start_date < 1936.01.02
+				}
+				YUN = {
+					country_event = { id = yunnan.1 days = 3 }
+					country_event = { id = yunnan.2 days = 334 }
+				}
+			}
+		}
+	}
+	
+	### SIK ###
+	
+	on_startup = {
+		effect = {
+			if = {
+				limit = {
+					has_start_date < 1936.01.02
+					NOT = {
+						618 = { controller = { controls_state = 1047 } }
+					}
+				}
+				618 = { controller = { country_event = { id = NW_SIK.3 days = 1 } } }			#Вспышка чумы на границе с СССР#
+				1047 = { controller = { country_event = { id = NW_SIK.3 days = 1 } } }
+			}
+			else = {
+				618 = { controller = { country_event = { id = NW_SIK.3 days = 1 } } } 			#Вспышка чумы на границе с СССР#
+			}
+			if = {
+				limit = {
+					has_start_date < 1936.01.02
+				}
+				SIK = {
+					country_event = { id = NW_SIK.6 days = 10 }									#Возвращение Ма Шаоу#
+					country_event = { id = NW_SIK.8 hours = 12 }								#Заключение секретного соглашения#
+				}
+			}
+		}
+	}
+	on_declare_war = {
+		effect = {
+			if = {
+				limit = {
+					FROM = { original_tag = TNG }
+					ROOT = { 
+						original_tag = SIK 
+						has_country_leader = { character = SIK_Sheng_Shicai ruling_only = yes }
+					}	
+				}
+				ROOT = { country_event = { id = NW_SIK.4 days = 2 }	}							#Переговоры с генералом Тунганистана#
+			}
+			if = {
+				limit = {
+					ROOT = { original_tag = TNG }
+					FROM = { 
+						original_tag = SIK 
+						has_country_leader = { character = SIK_Sheng_Shicai ruling_only = yes }
+					}
+				}
+				FROM = { country_event = { id = NW_SIK.4 days = 2 }	}							#Переговоры с генералом Тунганистана#
+			}  
+			if = {
+				limit = { 
+					FROM = { original_tag = KAS }
+					ROOT = {
+						original_tag = SIK
+						controls_state = 1047
+					}
+				}
+				ROOT = { country_event = { id = NW_SIK.9 days = 15 } }							#Киргизское восстание в Куче#
+			}
+			if = {
+				limit = { 
+					ROOT = { original_tag = KAS }
+					FROM = {
+						original_tag = SIK
+						controls_state = 1047
+					}
+				}
+				FROM = { country_event = { id = NW_SIK.9 days = 15 } }							#Киргизское восстание в Куче#
+			}
+		}
+	}
+	on_daily_SIK = { 
+		effect = { 
+			if = {
+				limit = {
+					has_country_flag = SIK_start_collecting_information_on_officials_flag_2
+				}
+				add_to_variable = {
+					var = soviet_influence
+					value = -0.15
+					tooltip = SIK_minus_to_var_tt
+				}
+			}
+			if = {
+				limit = {
+					check_variable = { soviet_influence < 88 }
+				}
+				country_event = { id = NW_SIK.28 }												#Разговор с братом#
+			}
+			if = {
+				limit = {
+					check_variable = { soviet_influence < 85 }
+				}
+				SOV = { country_event = { id = NW_SIK_SOV.17 } }								#Донесения из Синьцзяна#
+			}
+		}
+	}
 }
