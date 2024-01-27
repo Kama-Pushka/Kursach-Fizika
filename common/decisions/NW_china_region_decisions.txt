@@ -76,6 +76,18 @@ chinese_reunification = {
 
 				check_variable = { has_political_power > cost }
 			}
+			any_of_scopes = {
+				array = FROM.FROM.chinese_province
+				tooltip = any_state_chinese_province
+				
+				NOT = { is_core_of = ROOT }
+			}
+			all_of_scopes = {
+				array = FROM.FROM.chinese_province
+				tooltip = all_state_chinese_province
+
+				is_controlled_by = ROOT
+			} 
 		}
 
 		on_map_mode = map_and_decisions_view #map_only
@@ -115,7 +127,7 @@ chinese_reunification = {
 
 		remove_effect = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): remove decision china_integrate_province target: [From.GetName]"
-			every_controlled_state = {
+			every_state = {
 				limit = {
 					#is_in_array = { global.chinese_state = THIS }
 					check_variable = { china_capital_of_province = FROM.china_capital_of_province }
@@ -123,9 +135,16 @@ chinese_reunification = {
 				}
 				add_core_of = ROOT
 			}
-			if = {
-				limit = { is_in_array = { chinese_integrate_province_state_map = FROM } }
-				remove_from_array = { chinese_integrate_province_state_map = FROM }
+			hidden_effect = {
+				if = {
+					limit = { is_in_array = { chinese_integrate_province_state_map = FROM.FROM:china_capital_of_province.id } }
+					for_each_loop = {
+						array = FROM.FROM.china_capital_of_province:chinese_province
+						value = state
+						
+						remove_from_array = { chinese_integrate_province_state_map = state }
+					}
+				}
 			}
 		}
 	}

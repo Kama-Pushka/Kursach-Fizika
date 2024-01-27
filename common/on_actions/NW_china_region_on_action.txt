@@ -2,29 +2,6 @@
 
 on_actions = { # Общекитайские мехи
 	
-	on_startup = {
-		effect = {
-			every_country = {
-				limit = {
-					OR = {
-						has_idea = chine_clique
-						has_idea = MAN_unrecognized_state
-					}
-				}
-				set_rule = { can_access_market = no }
-				every_other_country = {
-					limit = { affects_chinese_region = no }
-					add_opinion_modifier = { target = PREV modifier = CHI_not_clique }
-					reverse_add_opinion_modifier = { target = PREV modifier = CHI_not_clique }
-				}
-				every_other_country = {
-					limit = { affects_chinese_region = yes }
-					add_opinion_modifier = { target = PREV modifier = CHI_chine_clique }
-					reverse_add_opinion_modifier = { target = PREV modifier = CHI_chine_clique }
-				}
-			}
-		}
-	}
 	on_daily = {
 		effect = {
 			if = { # ??
@@ -43,65 +20,44 @@ on_actions = { # Общекитайские мехи
 		effect = {
 			if = {
 				limit = { is_in_array = { global.chinese_state = FROM.FROM } }
-				for_loop_effect = {
-					start = FROM.FROM.china_left_border
-					end = FROM.FROM.china_right_border
-					value = v
-					
-					add_to_array = { check_state = global.chinese_state^v }
-				}
-				if = {
-					limit = {
-						any_of = { #переделать под scope ?
-							array = check_state
-							value = state
-							
-							var:state = { NOT = { is_controlled_by = FROM } }
-						}
-					}
-					FROM = {
-						meta_effect = {
-							text = {
-								remove_targeted_decision = { target = [STATE] decision = china_integrate_province }
-								if = {
-									limit = { is_in_array = { chinese_integrate_province_state_map = [STATE] } }
-									remove_from_array = { chinese_integrate_province_state_map = [STATE] }
-								}
+				ROOT = { 
+					if = {
+						limit = { FROM.FROM = { NOT = { is_core_of = PREV } } }
+						activate_targeted_decision = { target = FROM.FROM.china_capital_of_province decision = china_integrate_province }
+						if = {
+							limit = { NOT = { is_in_array = { chinese_integrate_province_state_map = FROM.FROM:china_capital_of_province.id } } }
+							for_each_loop = {
+								array = FROM.FROM.china_capital_of_province:chinese_province
+								value = state
+								
+								add_to_array = { chinese_integrate_province_state_map = state }
 							}
-							STATE = "[?FROM.FROM.china_capital_of_province]"
 						}
 					}
 				}
-				if = {
-					limit = {
-						any_of = {
-							array = check_state
-							value = state
-							
-							var:state = { NOT = { is_core_of = ROOT } }
+				FROM = {
+					if = {
+						limit = { 
+							all_of = {
+								array = FROM.FROM.chinese_province
+								value = state
+								
+								NOT = { controls_state = var:state }
+							} 
 						}
-						all_of = {
-							array = check_state
-							value = state
-							
-							var:state = { is_controlled_by = ROOT }
-						}
-					}
-					ROOT = {
-						meta_effect = {
-							text = {
-								activate_targeted_decision = { target = [STATE] decision = china_integrate_province } 
-								if = {
-									limit = { NOT = { is_in_array = { chinese_integrate_province_state_map = [STATE] } } }
-									add_to_array = { chinese_integrate_province_state_map = [STATE] }
-								}
+						remove_targeted_decision = { target = FROM.FROM.china_capital_of_province decision = china_integrate_province }
+						if = {
+							limit = { is_in_array = { chinese_integrate_province_state_map = FROM.FROM:china_capital_of_province.id } }
+							for_each_loop = {
+								array = FROM.FROM.china_capital_of_province:chinese_province
+								value = state
+								
+								remove_from_array = { chinese_integrate_province_state_map = state }
 							}
-							STATE = "[?FROM.FROM.china_capital_of_province]" 
 						}
 					}
 				}
-				clear_array = check_state
-				log = "[GetDateText] [FROM.FROM.GetName] [FROM.FROM.GetID]: check china_integrate_province decision trigger (ROOT: [ROOT.GetTag] FROM: [FROM.GetTag])"
+				log = "[GetDateText]: [FROM.FROM.GetName] [FROM.FROM.GetID]: check china_integrate_province decision trigger (ROOT: [ROOT.GetTag] FROM: [FROM.GetTag])"
 			}
 		}
 	}
