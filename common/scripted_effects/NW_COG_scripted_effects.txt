@@ -244,8 +244,8 @@ COG_add_ai_strategy_antagonize = { # TODO: сделать в виде полно
 }
 
 COG_civilwar_install_some_stuff = {
-	if = {
-		limit = { NOT = { check_variable = { nw_CGME_state_position = 0 } } } #?? !!
+	if = { # TODO: переделать?
+		limit = { NOT = { check_variable = { nw_CGME_state_position = 0 } } }
 		every_state = {
 			limit = { has_variable = nw_CGME_state_position }
 			add_to_variable = { nw_CGME_state_position = 80 }
@@ -283,6 +283,14 @@ COG_civilwar_install_some_stuff = {
 		country_event = { id = congo.13 days = 30 random_days = 720 }
 	}
 	if = {
+		limit = { has_completed_focus = COG_modernization_of_agriculture }
+		PREV = {
+			set_variable = { COG_old_arp_var = PREV.COG_agricultural_research_points_var }
+			set_country_flag = COG_INEAC_stop_work_flag
+			activate_targeted_decision = { target = THIS decision = COG_restart_INEAC_work }
+		}
+	}
+	if = {
 		limit = { has_country_flag = COG_establish_khakista_flag }
 		PREV = {
 			set_country_flag = COG_establish_khakista_flag
@@ -310,12 +318,6 @@ COG_civilwar_install_some_stuff = {
 		# limit = { has_country_flag = COG_simon_kimbangu_political_advisor }
 		# PREV = {
 			# set_country_flag = COG_simon_kimbangu_political_advisor
-		# }
-	# }
-	# if = { #?
-		# limit = { has_country_flag = COG_george_lyndon_carpente_flag }
-		# PREV = {
-			# set_country_flag = COG_george_lyndon_carpente_flag
 		# }
 	# }
 	# if = { #?
@@ -446,6 +448,21 @@ COG_civilwar_install_some_stuff = {
 	}
 }
 
+COG_remove_colonial_times_unit_leaders = {
+	COG_pierre_ryckmans = {
+		remove_unit_leader_role = yes
+	}
+	COG_auguste_tilkens = {
+		remove_unit_leader_role = yes
+	}
+	COG_auguste_edouard_gilliaert = {
+		remove_unit_leader_role = yes
+	}
+	COG_paul_ermens = {
+		remove_unit_leader_role = yes
+	}
+}
+
 COG_destroyed_administrative_institutions_update = {
 	if = {
 		limit = { has_idea = COG_destroyed_administrative_institutions }
@@ -505,6 +522,7 @@ COG_invite_mil_advisor = {
 	random_character = {
 		limit = { 
 			is_character_slot = high_command is_high_command = no NOT = { has_character_flag = COG_advisor@PREV has_character_flag = SOV_character_purged_flag has_character_flag = SOV_exiled_flag } #? (военных лидеров может и не быть)
+			COG_available_as_an_advisor_SOV = yes
 		}
 		set_nationality = cog_tag
 		set_character_flag = COG_advisor@PREV
@@ -574,6 +592,7 @@ COG_stop_ethnic_struggle_effect = {
 		set_temp_variable = { value = COG_ts_recruitable_population_factor }
 		multiply_temp_variable = { value = -1 }
 		add_to_variable = { COG_ts_recruitable_population_factor = value tooltip = recruitable_population_factor_tooltip }
+		force_update_dynamic_modifier = yes
 		
 		custom_effect_tooltip = empty_line_tooltip
 		divide_variable = { COG_cd_days_remove = 2 tooltip = COG_collectivization_days_remove_tt }
@@ -592,6 +611,7 @@ COG_collectivization_effect = {
 			limit = { has_dynamic_modifier = { modifier = COG_tribal_system } }
 			custom_effect_tooltip = COG_tribal_system_tooltip
 			add_to_variable = { COG_ts_recruitable_population_factor = 0.1 tooltip = recruitable_population_factor_tooltip } #?
+			force_update_dynamic_modifier = yes
 		}
 		custom_effect_tooltip = COG_stop_ethnic_struggle_available_tt
 		clr_state_flag = COG_start_collectivization_flag
@@ -630,13 +650,13 @@ COG_five_year_plan_update = {
 	set_variable = { COG_five_year_plan_dockyard_built = 0 }
 	
 	set_variable = { COG_five_year_plan_civ_factory = num_of_civilian_factories }
-	clamp_variable = { var = COG_five_year_plan_civ_factory min = 0 }
+	clamp_variable = { var = COG_five_year_plan_civ_factory min = 1 }
 	
 	set_variable = { COG_five_year_plan_arms_factory = num_of_military_factories }
-	clamp_variable = { var = COG_five_year_plan_arms_factory min = 0 }
+	clamp_variable = { var = COG_five_year_plan_arms_factory min = 1 }
 	
 	set_variable = { COG_five_year_plan_dockyard = num_of_naval_factories }
-	clamp_variable = { var = COG_five_year_plan_dockyard min = 0 }
+	clamp_variable = { var = COG_five_year_plan_dockyard min = 1 }
 	activate_mission = COG_five_year_plan_ending
 }
 
@@ -901,7 +921,7 @@ COG_simon_kimbangu_superpowers_update = {
 				}
 				army = { 
 					large = "gfx/leaders/COG/Portrait_Simon_Kimbangu_goodness.dds" 
-					small = "gfx/interface/ideas/idea_africa_generic_land_1.dds" #!
+					small = "gfx/interface/ideas/idea_africa_generic_land_1.dds" # TODO
 				}
 			}
 		}
@@ -920,7 +940,7 @@ COG_simon_kimbangu_superpowers_update = {
 				}
 				army = { 
 					large = "gfx/leaders/COG/Portrait_Simon_Kimbangu_aggressiveness.dds" 
-					small = "gfx/interface/ideas/idea_africa_generic_land_1.dds" #!
+					small = "gfx/interface/ideas/idea_africa_generic_land_1.dds" # TODO
 				}
 			}
 		}
@@ -939,7 +959,7 @@ COG_simon_kimbangu_superpowers_update = {
 				}
 				army = { 
 					large = "gfx/leaders/COG/Portrait_Simon_Kimbangu_drip.dds" 
-					small = "gfx/interface/ideas/idea_africa_generic_land_1.dds" #!
+					small = "gfx/interface/ideas/idea_africa_generic_land_1.dds" # TODO
 				}
 			}
 		}
@@ -1108,8 +1128,8 @@ COG_focus_tree_update = {
 COG_state_setup = {
 	set_variable = { COG_evolues_gain_factor = 1 } # общий фактор ?? (а какой нейминг будет в случае гражданки)
 	set_variable = { COG_ts_recruitable_population_factor = -0.5 }
-	set_variable = { COG_ses_days_remove = 360 } #?
-	set_variable = { COG_cd_days_remove = 720 } #?
+	set_variable = { COG_ses_days_remove = 270 } # 360
+	set_variable = { COG_cd_days_remove = 540 } # 720
 	add_dynamic_modifier = { modifier = COG_tribal_system }
 }
 
@@ -1278,7 +1298,7 @@ COG_evolues_skill_counts_update = { # STATE: выдает эволюэ квал�
 			value = skill_lvl
 			
 			set_temp_variable = { maximum = evolues }
-			multiply_temp_variable = { maximum = COG_evolues_gain_factor_@var:skill_lvl } #1.65% - high 9,9% - medium
+			multiply_temp_variable = { maximum = COG_evolues_gain_factor_@var:skill_lvl }
 			round_temp_variable = maximum
 			add_to_temp_variable = { maximum = 1 }
 			
@@ -1496,7 +1516,7 @@ nw_CongoGoogleMapsEvolues_set_bonus_STATE = { # STATE: переопределя�
 		value = skill_lvl
 		
 		set_temp_variable = { _@var:skill_lvl = COG_evolues_count_@var:skill_lvl }
-		divide_temp_variable = { _@var:skill_lvl = 100000 }
+		divide_temp_variable = { _@var:skill_lvl = 50000 } # 100000
 		
 		if = {
 			limit = { check_variable = { skill_lvl = token:low_skilled } }
@@ -1541,7 +1561,7 @@ nw_CongoGoogleMapsEvolues_set_bonus_STATE = { # STATE: переопределя�
 		value = ideology
 		
 		set_temp_variable = { _@var:ideology = COG_evolues_count_@var:ideology }
-		divide_temp_variable = { _@var:ideology = 100000 }
+		divide_temp_variable = { _@var:ideology = 200000 } # 100000
 		if = {
 			limit = { PREV = { has_government = var:ideology } } #!!
 			set_variable = { COG_ei_drift_defence_factor = _@var:ideology }
