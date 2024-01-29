@@ -3,7 +3,7 @@
 --NDefines.NGame.LAG_DAYS_FOR_PAUSE = 60									-- Days of client lag for pause of gamespeed.
 
 -- Politics
-NDefines.NPolitics.BASE_POLITICAL_POWER_INCREASE = 2.5						-- Weekly ?? (DAYLY!!) increase of PP.
+NDefines.NPolitics.BASE_POLITICAL_POWER_INCREASE = 2.0						-- Weekly ?? (DAYLY!!) increase of PP.
 
 -- Focuses
 NDefines.NFocus.MAX_SAVED_FOCUS_PROGRESS = 5								-- This much progress can be saved while not having a focus selected
