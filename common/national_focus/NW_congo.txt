@@ -4,8 +4,8 @@ focus_tree = {
 	country = {
 		factor = 0
 		modifier = {
-			add = 11
-			# has_start_date 
+			add = 10
+			# has_start_date? 
 			original_tag = COG
 		}
 	}
@@ -26,7 +26,7 @@ focus_tree = {
 		y = 0
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus COG_create_a_new_social_class"
-			set_temp_variable = { evolues = 3 } #? !
+			set_temp_variable = { evolues = 3 } #?
 			multiply_temp_variable = { evolues = 295.COG_evolues_gain_factor }
 			round_temp_variable = evolues
 			add_to_variable = { 295.COG_evolues_gain_var = evolues } #?
@@ -277,15 +277,7 @@ focus_tree = {
 			activate_mission_tooltip = COG_plant_new_soybean_varieties_mission
 			hidden_effect = {
 				random_controlled_state = {
-					limit = { 
-						is_original_congo_state = yes
-						has_state_flag = COG_local_farmers_program_flag
-						NOT = { has_dynamic_modifier = { modifier = COG_new_varieties_of_soybeans } }
-					}
-					ROOT = { 
-						activate_targeted_decision = { target = PREV decision = COG_plant_new_soybean_varieties_mission }
-						set_country_flag = COG_plant_new_soybean_varieties_flag
-					}
+					COG_plant_new_soybean_varieties_activate = yes
 				}
 			}
 		}
@@ -1019,6 +1011,18 @@ focus_tree = {
 				}
 			}
 			add_ideas = COG_force_publique
+			if = {
+				limit = { has_character = COG_justin_kokolo }
+				add_corps_commander_role = {
+					character = COG_justin_kokolo
+					traits = { }
+					skill = 1
+					attack_skill = 3
+					defense_skill = 1
+					planning_skill = 1
+					logistics_skill = 2
+				}
+			}
 		}
 	}
 	focus = {
@@ -1040,11 +1044,12 @@ focus_tree = {
 		relative_position_id = COG_force_publique
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus COG_transport_production"
+			add_ideas = COG_transport_production_idea
 			random_owned_controlled_state = {
-				add_extra_state_shared_building_slots = 1
+				add_extra_state_shared_building_slots = 2
 				add_building_construction = {
 					type = arms_factory
-					level = 1
+					level = 2
 					instant_build = yes
 				}
 			}
@@ -2807,13 +2812,13 @@ focus_tree = {
 			else = {
 				add_ideas = COG_congolese_soviet_republic_comm
 			}
-			# еще чего нить добавить (в идеи)?
+			# TODO еще чего нить добавить (в идеи)?
 			set_cosmetic_tag = COG_congolese_soviet_republic
 		}
 	}
 	focus = {
 		id = COG_stop_ethnic_struggle
-		icon = GFX_z_goal_arab_control_over_the_tribes
+		icon = GFX_z_goal_COG_stop_ethnic_struggle
 		cost = 5
 		prerequisite = {
 			focus = COG_congolese_soviet_republic_focus
@@ -2841,7 +2846,7 @@ focus_tree = {
 	}
 	focus = {
 		id = COG_cult_of_personality
-		icon = GFX_goal_support_communism
+		icon = GFX_z_goal_COG_cult_of_personality
 		cost = 10
 		prerequisite = {
 			focus = COG_stop_ethnic_struggle
@@ -2859,7 +2864,7 @@ focus_tree = {
 	}
 	focus = {
 		id = COG_tribal_socialism
-		icon = GFX_z_goal_arab_tribes
+		icon = GFX_z_goal_COG_tribal_socialism
 		cost = 10
 		prerequisite = {
 			focus = COG_congolese_soviet_republic_focus
@@ -2879,13 +2884,8 @@ focus_tree = {
 			custom_effect_tooltip = COG_tribal_socialism_tt
 			every_controlled_state = {
 				limit = { is_original_congo_state = yes }
-				set_temp_variable = { lvl = COG_loyalty_lvl_var } # ?
-				add_to_temp_variable = { lvl = 1 }
-				clamp_temp_variable = { var = lvl min = 1 max = 5 }
-				custom_effect_tooltip = COG_increase_loyalty_lvl
-				
-				add_to_variable = { COG_loyalty_lvl_var = 1 }
-				clamp_variable = { var = COG_loyalty_lvl_var min = 1 max = 5 }
+				set_temp_variable = { level = 1 }
+				COG_tribal_loyalty_effect = yes
 				
 				if = {
 					limit = { has_dynamic_modifier = { modifier = COG_tribal_system } }
@@ -2901,7 +2901,7 @@ focus_tree = {
 	}
 	focus = {
 		id = COG_revolutionary_militia
-		icon = GFX_z_goal_rev_militia1
+		icon = GFX_z_goal_COG_revolutionary_militia
 		cost = 10
 		prerequisite = {
 			focus = COG_tribal_socialism
@@ -2998,7 +2998,7 @@ focus_tree = {
 	}
 	focus = {
 		id = COG_the_theory_of_permanent_revolution_for_peasants
-		icon = GFX_z_goal_red_resume_collectivization
+		icon = GFX_z_goal_COG_permanent_revolution_for_peasants
 		cost = 10
 		prerequisite = {
 			focus = COG_accept_help_from_SAF_trade_unions
@@ -3048,7 +3048,7 @@ focus_tree = {
 	}
 	focus = {
 		id = COG_black_nationalism
-		icon = GFX_goal_support_communism
+		icon = GFX_z_goal_COG_black_nationalism
 		cost = 10
 		prerequisite = {
 			focus = COG_accept_help_from_SAF_trade_unions
@@ -3069,7 +3069,7 @@ focus_tree = {
 	}
 	focus = {
 		id = COG_capture_angola
-		icon = GFX_z_goal_red_establishment_of_portuguese_union_republics_in_africa
+		icon = GFX_z_goal_COG_capture_angola
 		cost = 10
 		prerequisite = {
 			focus = COG_black_nationalism
@@ -3121,7 +3121,7 @@ focus_tree = {
 	}
 	focus = {
 		id = COG_capture_NMB
-		icon = GFX_goal_support_communism
+		icon = GFX_z_goal_COG_capture_NMB
 		cost = 10
 		prerequisite = {
 			focus = COG_capture_angola
@@ -3167,7 +3167,7 @@ focus_tree = {
 	}
 	focus = {
 		id = COG_capture_SAF
-		icon = GFX_goal_support_communism
+		icon = GFX_z_goal_COG_capture_SAF
 		cost = 10
 		prerequisite = {
 			focus = COG_capture_angola
@@ -3213,7 +3213,7 @@ focus_tree = {
 	}
 	focus = {
 		id = COG_capture_mozambique
-		icon = GFX_goal_support_communism
+		icon = GFX_z_goal_COG_capture_mozambique
 		cost = 10
 		prerequisite = {
 			focus = COG_capture_NMB
@@ -3260,7 +3260,7 @@ focus_tree = {
 	}
 	focus = {
 		id = COG_save_rhodesian_workers
-		icon = GFX_goal_support_communism
+		icon = GFX_z_goal_COG_save_rhodesian_workers
 		cost = 10
 		prerequisite = {
 			focus = COG_capture_SAF
@@ -3338,7 +3338,7 @@ focus_tree = {
 			set_temp_variable = { COG_pol_advisors_limit@SOV = 2 } #for loc
 			SOV = {
 				if = {
-					limit = { has_government = communism } # is_left_ideology = yes
+					limit = { has_government = communism }
 					country_event = congo.78
 					custom_effect_tooltip = if_they_accept
 					event_option_tooltip = congo.78.a
@@ -3352,7 +3352,7 @@ focus_tree = {
 			}
 		}
 	}
-	focus = { # TODO: перенести в Определить курс партии
+	focus = { # TODO: перенести в Определить курс партии?
 		id = COG_socialism_in_one_country
 		icon = GFX_z_goal_council_communism
 		cost = 5
@@ -3628,7 +3628,7 @@ focus_tree = {
 		relative_position_id = COG_advisors_from_moscow
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus COG_communist_african_research_block"
-			every_country = { #? (в on_action надо тоже !)
+			every_country = { # TODO: в on_action надо тоже
 				limit = { is_in_faction_with = COG }
 				add_to_tech_sharing_group = COG_communist_african_research_block
 			}
@@ -4158,13 +4158,13 @@ focus_tree = {
 			factor = 6
 		}
 		completion_reward = {
-			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus COG_level_up_belg_weapon"
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus COG_union_with_military_org"
 			army_experience = 15
 			add_tech_bonus = {
 				bonus = 1
 				uses = 1
 				category = infantry_weapons
-				name = COG_level_up_belg_weapon
+				name = COG_union_with_military_org
 			}
 		}
 	}
@@ -4203,13 +4203,8 @@ focus_tree = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus COG_recognize_dialects"
 			every_controlled_state = {
 				limit = { is_original_congo_state = yes }
-				set_temp_variable = { lvl = COG_loyalty_lvl_var } # ?
-				add_to_temp_variable = { lvl = 1 }
-				clamp_temp_variable = { var = lvl min = 1 max = 5 }
-				custom_effect_tooltip = COG_increase_loyalty_lvl
-				
-				add_to_variable = { COG_loyalty_lvl_var = 1 }
-				clamp_variable = { var = COG_loyalty_lvl_var min = 1 max = 5 }
+				set_temp_variable = { level = 1 }
+				COG_tribal_loyalty_effect = yes
 			}
 			hidden_effect = {
 				COG_update_administration_of_tribal_leaders_idea = yes
@@ -4234,12 +4229,8 @@ focus_tree = {
 		relative_position_id = COG_create_a_congo_republic
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus COG_acquire_cabinda"
-			1056 = { #?
-				owner = {
-					country_event = {
-   					    id = congo.42
-					}
-				}
+			1056 = {
+				owner = { country_event = congo.42 }
 			}
 		}
 	}
@@ -4302,8 +4293,8 @@ focus_tree = {
 			focus = COG_military_in_civ_lives
 		}
 		available = {
-			NOT = { has_war_with = FRA }
-			FRA = {
+			NOT = { has_war_with = event_target:NW_france_scope }
+			event_target:NW_france_scope = {
 				exists = yes
 				has_opinion = {
 					target = ROOT 
@@ -4333,7 +4324,7 @@ focus_tree = {
 				category = industry
 				name = COG_french_investment
 			}
-			FRA = {
+			event_target:NW_france_scope = {
 				add_opinion_modifier = {
 					target = ROOT
 					modifier = COG_investments_in_congo
@@ -4371,6 +4362,7 @@ focus_tree = {
 		completion_reward = { #?
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus COG_british_investment"
 			random_owned_controlled_state = {
+				limit = { is_coastal = yes }
 				add_extra_state_shared_building_slots = 1
 				add_building_construction = {
 					type = dockyard
@@ -5416,7 +5408,7 @@ focus_tree = {
 	}
 	focus = {
 		id = COG_establish_khakista
-		icon = GFX_goal_support_fascism
+		icon = GFX_z_goal_COG_establish_khakista
 		cost = 5
 		prerequisite = {
 			focus = COG_banish_the_white_man
@@ -5661,7 +5653,7 @@ focus_tree = {
 	}
 	focus = {
 		id = COG_construction_of_the_holy_temple
-		icon = GFX_z_goal_congo_temple
+		icon = GFX_z_goal_congo_temple_new # GFX_z_goal_congo_temple
 		cost = 5
 		prerequisite = {
 			focus = COG_the_second_coming_of_christ
@@ -5699,7 +5691,7 @@ focus_tree = {
 	}
 	focus = {
 		id = COG_the_twelve_apostles_of_the_prophet_kimbangu
-		icon = GFX_goal_support_fascism
+		icon = GFX_z_goal_COG_twelve_apostles
 		cost = 10
 		prerequisite = {
 			focus = COG_the_second_coming_of_christ
@@ -5755,13 +5747,8 @@ focus_tree = {
 				effect_tooltip = { add_extra_state_shared_building_slots = -1 }
 				hidden_effect = { add_state_modifier = { modifier = { local_building_slots = -1 } } }
 				
-				set_temp_variable = { lvl = COG_loyalty_lvl_var } # ?
-				add_to_temp_variable = { lvl = 1 }
-				clamp_temp_variable = { var = lvl min = 1 max = 5 } #?
-				custom_effect_tooltip = COG_increase_loyalty_lvl
-				
-				add_to_variable = { COG_loyalty_lvl_var = 1 }
-				clamp_variable = { var = COG_loyalty_lvl_var min = 1 max = 5 } #?
+				set_temp_variable = { level = 1 }
+				COG_tribal_loyalty_effect = yes
 				
 				if = {
 					limit = { has_dynamic_modifier = { modifier = COG_tribal_system } }
@@ -6305,7 +6292,7 @@ focus_tree = {
 	}
 	focus = {
 		id = COG_turn_to_brothers_in_america
-		icon = GFX_goal_support_fascism
+		icon = GFX_z_goal_COG_turn_to_brothers_in_america
 		cost = 5
 		prerequisite = {
 			focus = COG_banish_the_white_man
@@ -6323,7 +6310,7 @@ focus_tree = {
 	}
 	focus = {
 		id = COG_immigrants_from_america
-		icon = GFX_z_goal_USA_trade
+		icon = GFX_z_goal_COG_immigrants_from_america
 		cost = 10
 		prerequisite = {
 			focus = COG_turn_to_brothers_in_america
