@@ -1,12 +1,10 @@
-# (перед созданием флага chinese_integration_of_province_flag необходимо применить этот эффект: china_integrate_province_set_cost_array = yes, иначе не будет стоимости интеграции) !!!
+# пояснялки, как использовать меху интеграции провинций
+# ищите в china_integrate_province_Example в файле NW_china_region_scripted_effects.txt
 
-# увеличение стоимости/времени интеграции (для country): добавляем скрытый динамический модификатор china_integration_of_province_dyn и изменяем переменные china_integration_of_province_cost_var/china_integration_of_province_time_var на нужный процент (0.25, 0.75 etc.)
-# увеличение стоимости интеграции (для state): умножаем переменную china_integrate_province_cost_array^NUM на нужный процент + 1 (1.25, 1.75 etc.), где NUM - индекс китайской провинции в данном массиве (его можно узнать в NW_china_scripted_effects.txt)
+# включить меху объединения страны (завоевания):
+# set_country_flag = chinese_reunification_flag
 
 chinese_reunification = { 
-	
-	# set_country_flag = chinese_integration_of_province_flag - интеграция провинций
-	# set_country_flag = chinese_reunification_flag - завоевания
 	
 	china_declare_government = {
 		icon = generic_speech
@@ -15,7 +13,7 @@ chinese_reunification = {
 			is_literally_china = yes
 		}
 		
-		visible = {
+		visible = { # TODO улучшить триггеры!!
 			owns_state = 608 #Beijing
 			owns_state = 613 #Nanjing
 			NOT = { has_country_flag = china_declare_government_flag }
@@ -41,9 +39,7 @@ chinese_reunification = {
 				set_country_flag = china_declare_government_flag
 				if = {
 					limit = { NOT = { has_country_flag = chinese_integration_of_province_flag } }
-					set_country_flag = chinese_integration_of_province_flag # tooltip ?
-					add_dynamic_modifier = { modifier = china_integration_of_province_dyn }
-					china_integrate_province_set_cost_array = yes
+					activate_china_integrate_province = yes # TODO tooltip?
 				}
 			}
 			news_event = NW_chinese_reunification.1 #?
@@ -57,7 +53,7 @@ chinese_reunification = {
 	
 	china_integrate_province = {
 		icon = generic_nationalism
-		allowed = { always = no } # Activated by scripted effect
+		allowed = { always = no } # Activated by effect
 		
 		visible = {
 			has_country_flag = chinese_integration_of_province_flag
@@ -76,12 +72,6 @@ chinese_reunification = {
 
 				check_variable = { has_political_power > cost }
 			}
-			any_of_scopes = {
-				array = FROM.FROM.chinese_province
-				tooltip = any_state_chinese_province
-				
-				NOT = { is_core_of = ROOT }
-			}
 			all_of_scopes = {
 				array = FROM.FROM.chinese_province
 				tooltip = all_state_chinese_province
@@ -89,29 +79,26 @@ chinese_reunification = {
 				is_controlled_by = ROOT
 			} 
 		}
+		target_trigger = {
+			any_of_scopes = {
+				array = FROM.FROM.chinese_province
+				# tooltip = any_state_chinese_province
+				
+				NOT = { is_core_of = ROOT }
+			}
+		}
 
 		on_map_mode = map_and_decisions_view #map_only
 
 		state_target = yes
 		
 		#cost = FROM.china_integration_of_province_cost
-
-		days_remove = china_integration_of_province_time?120 # ?
+		#days_remove = china_integration_of_province_time?120
 		
-		fire_only_once = yes
-		
-		ai_will_do = { #?
-			factor = 100
-		}
-
-		modifier = {
-			political_power_gain = -0.25 
-			stability_weekly = -0.003 
-		}
+		fire_only_once = yes # TODO check если проебли миссию, решение заново появится? !!
 
 		complete_effect = {
-			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision china_integrate_province target: [From.GetName]"
-			
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision china_integrate_province target: [From.GetName] ([From.GetID])"
 			# state
 			set_temp_variable = { index = FROM.china_capital_of_province_index }
 			set_temp_variable = { cost = china_integrate_province_cost_array^index }
@@ -123,29 +110,69 @@ chinese_reunification = {
 			
 			multiply_temp_variable = { cost = -1 }
 			add_political_power = cost
+			
+			# effect tooltip
+			set_temp_variable = { mission_days_remove = 120 }
+			set_temp_variable = { multiplier = 1 }
+			add_to_temp_variable = { multiplier = modifier@china_integration_of_province_time_modifier }
+			add_to_temp_variable = { multiplier = china_integrate_province_time_array^index }
+			multiply_temp_variable = { mission_days_remove = multiplier }
+			set_variable = { china_integration_of_province_time = mission_days_remove }
+			activate_targeted_decision = { decision = china_integrate_province_mission target = FROM }
+			
+			custom_effect_tooltip = COG_target_mission_days_remove
+			effect_tooltip = {
+				china_integrate_province_effect = yes
+			}
 		}
+		
+		ai_will_do = { #?
+			factor = 100
+		}
+	}
+	china_integrate_province_mission = {
+		icon = generic_nationalism
+		allowed = { always = no } # Activated by effect
+		activation = { always = no }
+		
+		visible = {
+			has_country_flag = chinese_integration_of_province_flag
+		}
+		available = {
+			any_of_scopes = {
+				array = FROM.FROM.chinese_province  # TODO !!
+				tooltip = any_state_chinese_province
 
-		remove_effect = {
-			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): remove decision china_integrate_province target: [From.GetName]"
-			every_state = {
-				limit = {
-					#is_in_array = { global.chinese_state = THIS }
-					check_variable = { china_capital_of_province = FROM.china_capital_of_province }
-					NOT = { is_core_of = ROOT }
-				}
-				add_core_of = ROOT
-			}
-			hidden_effect = {
-				if = {
-					limit = { is_in_array = { chinese_integrate_province_state_map = FROM.FROM:china_capital_of_province.id } }
-					for_each_loop = {
-						array = FROM.FROM.china_capital_of_province:chinese_province
-						value = state
-						
-						remove_from_array = { chinese_integrate_province_state_map = state }
-					}
-				}
-			}
+				NOT = { is_controlled_by = ROOT }
+			} 
+			# all_of_scopes = {
+				# array = FROM.FROM.chinese_province
+				# tooltip = any_state_chinese_province
+				
+				# is_core_of = ROOT
+			# }
+		}
+		state_target = yes
+
+		on_map_mode = map_and_decisions_view #map_only
+
+		is_good = yes
+		selectable_mission = no
+		days_mission_timeout = china_integration_of_province_time
+
+		fire_only_once = yes
+
+		# modifier = { TODO !!!
+			# political_power_gain = -0.25 
+			# stability_weekly = -0.003 
+		# }
+
+		complete_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision china_integrate_province target: [From.GetName]"
+		}
+		timeout_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): timeout decision china_integrate_province target: [From.GetName]"
+			china_integrate_province_effect = yes
 		}
 	}
 	

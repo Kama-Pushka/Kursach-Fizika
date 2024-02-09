@@ -2,21 +2,8 @@
 
 on_actions = { # Общекитайские мехи
 	
-	on_daily = {
-		effect = {
-			if = { # ??
-				limit = { has_country_flag = chinese_integration_of_province_flag }
-				set_variable = { china_integration_of_province_time = 120 }
-				
-				set_temp_variable = { multiplier = 1 }
-				add_to_temp_variable = { multiplier = modifier@china_integration_of_province_time_modifier }
-				multiply_variable = { china_integration_of_province_time = multiplier }
-			}
-		}
-	}
-	
 	# ROOT is new controller, FROM is old controller, FROM.FROM is state ID. 
-	on_state_control_changed = {
+	on_state_control_changed = { # china_integrate_province
 		effect = {
 			if = {
 				limit = { is_in_array = { global.chinese_state = FROM.FROM } }
@@ -58,6 +45,30 @@ on_actions = { # Общекитайские мехи
 					}
 				}
 				log = "[GetDateText]: [FROM.FROM.GetName] [FROM.FROM.GetID]: check china_integrate_province decision trigger (ROOT: [ROOT.GetTag] FROM: [FROM.GetTag])"
+			}
+		}
+	}
+	
+	# ROOT is attacker, FROM is defender
+	on_war_relation_added = { # attack_against_communists
+		effect = {
+			if = {
+				limit = {
+					check_variable = { NW_attack_against_communists > 0 }
+					FROM = { has_government = communism }
+				}
+				set_temp_variable = { enemy = FROM }
+				set_attack_against_communists_bonus = yes
+			}
+			else_if = {
+				limit = {
+					FROM = { check_variable = { NW_attack_against_communists > 0 } }
+					has_government = communism
+				}
+				FROM = {
+					set_temp_variable = { enemy = ROOT }
+					set_attack_against_communists_bonus = yes
+				}
 			}
 		}
 	}
@@ -672,6 +683,83 @@ on_actions = { # Китайские страны, с небольшим кол-�
 					}
 				}
 				ROOT = { activate_mission = HNA_insurrection }
+			}
+		}
+	}
+	
+	### YCP ##
+	
+	on_weekly_YCP = {
+		effect = {
+			if = { # TODO has_start_date?
+				limit = { # TODO дополнительные условия?
+					surrender_progress > 0.8 # TODO !!
+					has_war_with = MAN
+				}
+				country_event = ycp.3
+			}
+			
+			if = {
+				limit = { has_idea = YCP_communist_logistic }
+				add_equipment_to_stockpile = {
+					type = infantry_equipment
+					amount = 21
+				}
+			}
+		}
+	}
+	
+	on_monthly_YCP = {
+		effect = {
+			if = { # TODO has_start_date?
+				limit = { # TODO дополнительные условия? !!
+					any_neighbor_country = {
+						is_literally_china = yes # TODO not japan bitch (MAN CSR EHB) BUT ??
+						OR = { controls_state = 608 controls_state = 1132 } 
+					} 
+				}
+				country_event = ycp.1
+				country_event = { id = ycp.2 } # days = 1
+			}
+		}
+	}
+	
+	on_war_relation_added = { # on_declare_war 
+		effect = {
+			if = {
+				limit = {
+					OR = {
+						AND = {
+							FROM = { original_tag = JAP }
+							original_tag = CHI
+						}
+						AND = {
+							original_tag = JAP 
+							FROM = { original_tag = CHI }
+						}
+					}
+				}
+				CHI = { country_event = { id = ycp.5 days = 50 } }
+			}
+		}
+	}
+	
+	on_join_faction = { 
+		effect = {
+			if = {
+				limit = {
+					OR = { # TODO такая хуйня была у другого китайца, исправить !!
+						AND = {
+							FROM = { original_tag = PRC }
+							original_tag = CHI
+						}
+						AND = {
+							original_tag = PRC
+							FROM = { original_tag = CHI }
+						}
+					}
+				}
+				CHI = { country_event = { id = ycp.6 days = 30 } }
 			}
 		}
 	}
