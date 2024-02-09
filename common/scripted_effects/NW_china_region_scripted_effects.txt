@@ -148,27 +148,90 @@ NEA_war_with_bureaucracy_dyn_effects = {
 
 ### YCP ###
 
-YCP_provisional_parliament_update = { # TODO а как же поддержка от других групп??
-	set_variable = { YCP_num_of_deputies = YCP_ycp_deputies }
+YCP_provisional_parliament_update = {
+	set_variable = { YCP_num_of_deputies = 0 }
+	add_to_variable = { YCP_num_of_deputies = YCP_ycp_deputies }
 	add_to_variable = { YCP_num_of_deputies = YCP_ssp_deputies }
+	add_to_variable = { YCP_num_of_deputies = YCP_kdu_deputies }
+	add_to_variable = { YCP_num_of_deputies = YCP_federalist_deputies }
 	add_to_variable = { YCP_num_of_deputies = YCP_other_parties_deputies }
 	add_to_variable = { YCP_num_of_deputies = YCP_professional_groups_deputies }
 	add_to_variable = { YCP_num_of_deputies = YCP_independent_deputies }
 	
+	set_variable = { YCP_ruling_coalition_deputies = 0 }
 	if = {
-		limit = { is_in_array = { YCP_coaliltion_array = 1 } } # МКП
+		limit = { is_in_array = { YCP_coalition_array = 1 } } # МКП
 		add_to_variable = { YCP_ruling_coalition_deputies = YCP_ycp_deputies }
 	}
+	if = {
+		limit = { is_in_array = { YCP_coalition_array = 2 } } # ПГС
+		add_to_variable = { YCP_ruling_coalition_deputies = YCP_ssp_deputies }
+	}
+	if = {
+		limit = { is_in_array = { YCP_coalition_array = 3 } } # ДСГ
+		add_to_variable = { YCP_ruling_coalition_deputies = YCP_kdu_deputies }
+	}
+	if = {
+		limit = { is_in_array = { YCP_coalition_array = 4 } } # Федералисты
+		add_to_variable = { YCP_ruling_coalition_deputies = YCP_federalist_deputies }
+	}
+	add_to_variable = { YCP_ruling_coalition_deputies = YCP_independent_support }
+	add_to_variable = { YCP_ruling_coalition_deputies = YCP_professional_groups_support }
+	add_to_variable = { YCP_ruling_coalition_deputies = YCP_other_parties_support }
 	
-	set_temp_variable = { value = YCP_ruling_coalition_deputies }
-	divide_temp_variable = { value = YCP_num_of_deputies }
-	multiply_temp_variable = { value = -50 }
-	add_to_temp_variable = { value = 50 }
-	multiply_temp_variable = { value = -1 }
-	log = "[GetDateText]: [THIS.GetName] ([THIS.GetTag]): YCP_provisional_parliament_update curr: [?YCP_pp_political_power_gain] new: [?value]"
+	set_temp_variable = { temp_value = YCP_ruling_coalition_deputies }
+	divide_temp_variable = { temp_value = YCP_num_of_deputies }
+	multiply_temp_variable = { temp_value = -50 }
+	add_to_temp_variable = { temp_value = 50 }
+	multiply_temp_variable = { temp_value = -1 }
+	log = "[GetDateText]: [THIS.GetName] ([THIS.GetTag]): YCP_provisional_parliament_update curr: [?YCP_pp_political_power_gain] new: [?temp_value]"
 	
-	set_variable = { YCP_pp_political_power_gain = value }
+	set_variable = { YCP_pp_political_power_factor = temp_value }
 	force_update_dynamic_modifier = yes
+}
+
+YCP_integrate_province_state_effect = {
+	if = {
+		limit = { 
+			state = var:china_capital_of_province
+			ROOT = { has_completed_focus = YCP_update_bureaucratic_apparatus } 
+		}
+		YCP_update_bureaucratic_apparatus_effect = yes
+	}
+	if = {
+		limit = { 
+			state = var:china_capital_of_province
+			ROOT = { has_completed_focus = YCP_abandoning_traditional_ties } 
+		}
+		YCP_abandoning_traditional_ties_effect = yes
+	}
+}
+YCP_abandoning_traditional_ties_effect = {
+	add_extra_state_shared_building_slots = 1
+}
+YCP_update_bureaucratic_apparatus_effect = {
+	random_list = {
+		1 = { 
+			add_building_construction = {
+				type = infrastructure
+				level = 1 # TODO bug?
+				instant_build = yes
+			}
+		}
+		1 = {
+			add_building_construction = {
+				type = hospital
+				level = 1
+				instant_build = yes
+			}
+		}
+		1 = {
+			ROOT = {
+				add_stability = 0.02
+				add_political_power = 50 # 75
+			}
+		}
+	}
 }
 
 ### Mechanics
@@ -189,7 +252,14 @@ china_integrate_province_effect = {
 			NOT = { is_core_of = ROOT }
 		}
 		add_core_of = ROOT
+		meta_effect = {
+			text = { 
+				NW_china_integrate_[PROVINCE]_state_effect = yes
+			}
+			PROVINCE = "[FROM.ChinaGetProvinceName]"
+		}
 	}
+	custom_effect_tooltip = empty_line_tooltip
 	meta_effect = {
 		text = { 
 			set_country_flag = NW_china_integrate_[PROVINCE] 
@@ -209,11 +279,13 @@ china_integrate_province_effect = {
 		}
 	}
 }
+
+# README сейчас здесь представлены не все провинции, по мере необходимости добавляйте (меняйте в названии провинцию)
 NW_china_integrate_xinjiang_effect = {
 	if = {
 		limit = { original_tag = YCP }
 		if = {
-			limit = { has_completed_focus = Поддержать_республику_пяти_наций }
+			limit = { has_completed_focus = YCP_support_republic_of_five_nations }
 			add_to_variable = { YCP_ycp_deputies = 3 tooltip = YCP_add_ycp_deputies }
 			add_to_variable = { YCP_other_parties_deputies = 3 tooltip = YCP_add_other_parties_deputies }
 			add_to_variable = { YCP_independent_deputies = 2 tooltip = YCP_add_independent_deputies }
@@ -224,11 +296,18 @@ NW_china_integrate_xinjiang_effect = {
 		}
 	}
 }
+NW_china_integrate_xinjiang_state_effect = {
+	if = {
+		limit = { ROOT = { original_tag = YCP } }
+		YCP_integrate_province_state_effect = yes
+	}
+}
+
 NW_china_integrate_outer_mongolia_effect = {
 	if = {
 		limit = { original_tag = YCP }
 		if = {
-			limit = { has_completed_focus = Поддержать_республику_пяти_наций }
+			limit = { has_completed_focus = YCP_support_republic_of_five_nations }
 			add_to_variable = { YCP_ycp_deputies = 1 tooltip = YCP_add_ycp_deputies }
 			add_to_variable = { YCP_independent_deputies = 1 tooltip = YCP_add_independent_deputies }
 		}
@@ -237,11 +316,18 @@ NW_china_integrate_outer_mongolia_effect = {
 		}
 	}
 }
+NW_china_integrate_outer_mongolia_state_effect = {
+	if = {
+		limit = { ROOT = { original_tag = YCP } }
+		YCP_integrate_province_state_effect = yes
+	}
+}
+
 NW_china_integrate_tibet_effect = {
 	if = {
 		limit = { original_tag = YCP }
 		if = {
-			limit = { has_completed_focus = Поддержать_республику_пяти_наций }
+			limit = { has_completed_focus = YCP_support_republic_of_five_nations }
 			add_to_variable = { YCP_ycp_deputies = 2 tooltip = YCP_add_ycp_deputies }
 			add_to_variable = { YCP_independent_deputies = 4 tooltip = YCP_add_independent_deputies }
 		}
@@ -250,11 +336,18 @@ NW_china_integrate_tibet_effect = {
 		}
 	}
 }
+NW_china_integrate_tibet_state_effect = {
+	if = {
+		limit = { ROOT = { original_tag = YCP } }
+		YCP_integrate_province_state_effect = yes
+	}
+}
+
 NW_china_integrate_suiyuan_effect = {
 	if = {
 		limit = { original_tag = YCP }
 		if = {
-			limit = { has_completed_focus = Поддержать_республику_пяти_наций }
+			limit = { has_completed_focus = YCP_support_republic_of_five_nations }
 			add_to_variable = { YCP_ycp_deputies = 1 tooltip = YCP_add_ycp_deputies }
 			add_to_variable = { YCP_independent_deputies = 2 tooltip = YCP_add_independent_deputies }
 		}
@@ -263,11 +356,18 @@ NW_china_integrate_suiyuan_effect = {
 		}
 	}
 }
+NW_china_integrate_suiyuan_state_effect = {
+	if = {
+		limit = { ROOT = { original_tag = YCP } }
+		YCP_integrate_province_state_effect = yes
+	}
+}
+
 NW_china_integrate_chahar_effect = {
 	if = {
 		limit = { original_tag = YCP }
 		if = {
-			limit = { has_completed_focus = Поддержать_республику_пяти_наций }
+			limit = { has_completed_focus = YCP_support_republic_of_five_nations }
 			add_to_variable = { YCP_ycp_deputies = 1 tooltip = YCP_add_ycp_deputies }
 			add_to_variable = { YCP_independent_deputies = 2 tooltip = YCP_add_independent_deputies }
 		}
@@ -276,11 +376,18 @@ NW_china_integrate_chahar_effect = {
 		}
 	}
 }
+NW_china_integrate_chahar_state_effect = {
+	if = {
+		limit = { ROOT = { original_tag = YCP } }
+		YCP_integrate_province_state_effect = yes
+	}
+}
+
 NW_china_integrate_ningxia_effect = {
 	if = {
 		limit = { original_tag = YCP }
 		if = {
-			limit = { has_completed_focus = Поддержать_республику_пяти_наций }
+			limit = { has_completed_focus = YCP_support_republic_of_five_nations }
 			add_to_variable = { YCP_ycp_deputies = 1 tooltip = YCP_add_ycp_deputies }
 			add_to_variable = { YCP_independent_deputies = 1 tooltip = YCP_add_independent_deputies }
 		}
@@ -289,11 +396,18 @@ NW_china_integrate_ningxia_effect = {
 		}
 	}
 }
+NW_china_integrate_ningxia_state_effect = {
+	if = {
+		limit = { ROOT = { original_tag = YCP } }
+		YCP_integrate_province_state_effect = yes
+	}
+}
+
 NW_china_integrate_hebei_effect = {
 	if = {
 		limit = { original_tag = YCP }
 		if = {
-			limit = { has_completed_focus = Либеральное_образование has_completed_focus = Синтез_либерализма_и_конфуцианства }
+			limit = { has_completed_focus = YCP_liberal_education has_completed_focus = YCP_synthesis_of_liberalism_and_confucianism }
 			add_to_variable = { YCP_ycp_deputies = 25 tooltip = YCP_add_ycp_deputies }
 			add_to_variable = { YCP_professional_groups_deputies = 12 tooltip = YCP_add_professional_groups_deputies }
 			add_to_variable = { YCP_independent_deputies = 19 tooltip = YCP_add_independent_deputies }
@@ -307,11 +421,18 @@ NW_china_integrate_hebei_effect = {
 		}
 	}
 }
+NW_china_integrate_hebei_state_effect = {
+	if = {
+		limit = { ROOT = { original_tag = YCP } }
+		YCP_integrate_province_state_effect = yes
+	}
+}
+
 NW_china_integrate_yunnan_effect = {
 	if = {
 		limit = { original_tag = YCP }
 		if = {
-			limit = { has_completed_focus = Институт_народовластия }
+			limit = { has_completed_focus = YCP_institute_of_democracy }
 			add_to_variable = { YCP_ycp_deputies = 8 tooltip = YCP_add_ycp_deputies }
 			add_to_variable = { YCP_ssp_deputies = 2 tooltip = YCP_add_ssp_deputies }
 			add_to_variable = { YCP_other_parties_deputies = 4 tooltip = YCP_add_other_parties_deputies }
@@ -325,11 +446,18 @@ NW_china_integrate_yunnan_effect = {
 		}
 	}
 }
+NW_china_integrate_yunnan_state_effect = {
+	if = {
+		limit = { ROOT = { original_tag = YCP } }
+		YCP_integrate_province_state_effect = yes
+	}
+}
+
 NW_china_integrate_jiangxi_effect = {
 	if = {
 		limit = { original_tag = YCP }
 		if = {
-			limit = { has_completed_focus = Оформить_демократический_откол_Гоминьдана }
+			limit = { has_completed_focus = YCP_democratic_breakaway_of_kuomintang }
 			add_to_variable = { YCP_kdu_deputies = 14 tooltip = YCP_add_kdu_deputies }
 			add_to_variable = { YCP_ycp_deputies = 3 tooltip = YCP_add_ycp_deputies }
 			add_to_variable = { YCP_other_parties_deputies = 3 tooltip = YCP_add_other_parties_deputies }
@@ -344,11 +472,18 @@ NW_china_integrate_jiangxi_effect = {
 		}
 	}
 }
+NW_china_integrate_jiangxi_state_effect = {
+	if = {
+		limit = { ROOT = { original_tag = YCP } }
+		YCP_integrate_province_state_effect = yes
+	}
+}
+
 NW_china_integrate_jiangsu_effect = {
 	if = {
 		limit = { original_tag = YCP }
 		if = {
-			limit = { has_completed_focus = Оформить_демократический_откол_Гоминьдана }
+			limit = { has_completed_focus = YCP_democratic_breakaway_of_kuomintang }
 			add_to_variable = { YCP_kdu_deputies = 20 tooltip = YCP_add_kdu_deputies }
 			add_to_variable = { YCP_ycp_deputies = 10 tooltip = YCP_add_ycp_deputies }
 			add_to_variable = { YCP_other_parties_deputies = 5 tooltip = YCP_add_other_parties_deputies }
@@ -365,11 +500,18 @@ NW_china_integrate_jiangsu_effect = {
 		}
 	}
 }
+NW_china_integrate_jiangsu_state_effect = {
+	if = {
+		limit = { ROOT = { original_tag = YCP } }
+		YCP_integrate_province_state_effect = yes
+	}
+}
+
 NW_china_integrate_hubei_effect = {
 	if = {
 		limit = { original_tag = YCP }
 		if = {
-			limit = { has_completed_focus = Оформить_демократический_откол_Гоминьдана }
+			limit = { has_completed_focus = YCP_democratic_breakaway_of_kuomintang }
 			add_to_variable = { YCP_kdu_deputies = 25 tooltip = YCP_add_kdu_deputies }
 			add_to_variable = { YCP_ycp_deputies = 7 tooltip = YCP_add_ycp_deputies }
 			add_to_variable = { YCP_ssp_deputies = 4 tooltip = YCP_add_ssp_deputies }
@@ -377,19 +519,25 @@ NW_china_integrate_hubei_effect = {
 			add_to_variable = { YCP_independent_deputies = 9 tooltip = YCP_add_independent_deputies }
 		}
 		else = {
-			# add_to_variable = { YCP_kdu_deputies = 25 tooltip = YCP_add_kdu_deputies } TODO потерялось
-			# add_to_variable = { YCP_ycp_deputies = 7 tooltip = YCP_add_ycp_deputies }
-			# add_to_variable = { YCP_ssp_deputies = 4 tooltip = YCP_add_ssp_deputies }
-			# add_to_variable = { YCP_professional_groups_deputies = 5 tooltip = YCP_add_professional_groups_deputies }
-			# add_to_variable = { YCP_independent_deputies = 9 tooltip = YCP_add_independent_deputies }
+			add_to_variable = { YCP_ycp_deputies = 15 tooltip = YCP_add_ycp_deputies }
+			add_to_variable = { YCP_ssp_deputies = 8 tooltip = YCP_add_ssp_deputies }
+			add_to_variable = { YCP_professional_groups_deputies = 5 tooltip = YCP_add_professional_groups_deputies }
+			add_to_variable = { YCP_independent_deputies = 22 tooltip = YCP_add_independent_deputies }
 		}
 	}
 }
+NW_china_integrate_hubei_state_effect = {
+	if = {
+		limit = { ROOT = { original_tag = YCP } }
+		YCP_integrate_province_state_effect = yes
+	}
+}
+
 NW_china_integrate_shandong_effect = {
 	if = {
 		limit = { original_tag = YCP }
 		if = {
-			limit = { has_completed_focus = Использовать_научные_методы }
+			limit = { has_completed_focus = YCP_use_scientific_methods }
 			add_to_variable = { YCP_ycp_deputies = 46 tooltip = YCP_add_ycp_deputies }
 			add_to_variable = { YCP_professional_groups_deputies = 12 tooltip = YCP_add_professional_groups_deputies }
 			add_to_variable = { YCP_ssp_deputies = 10 tooltip = YCP_add_ssp_deputies }
@@ -405,11 +553,18 @@ NW_china_integrate_shandong_effect = {
 		}
 	}
 }
+NW_china_integrate_shandong_state_effect = {
+	if = {
+		limit = { ROOT = { original_tag = YCP } }
+		YCP_integrate_province_state_effect = yes
+	}
+}
+
 NW_china_integrate_henan_effect = {
 	if = {
 		limit = { original_tag = YCP }
 		if = {
-			limit = { has_completed_focus = Всенародное_благосостояние }
+			limit = { has_completed_focus = YCP_nationwide_welfare }
 			add_to_variable = { YCP_ycp_deputies = 30 tooltip = YCP_add_ycp_deputies }
 			add_to_variable = { YCP_professional_groups_deputies = 8 tooltip = YCP_add_professional_groups_deputies }
 			add_to_variable = { YCP_other_parties_deputies = 8 tooltip = YCP_add_other_parties_deputies }
@@ -423,11 +578,18 @@ NW_china_integrate_henan_effect = {
 		}
 	}
 }
+NW_china_integrate_henan_state_effect = {
+	if = {
+		limit = { ROOT = { original_tag = YCP } }
+		YCP_integrate_province_state_effect = yes
+	}
+}
+
 NW_china_integrate_shansi_effect = {
 	if = {
 		limit = { original_tag = YCP }
 		if = {
-			limit = { has_completed_focus = Всенародное_благосостояние }
+			limit = { has_completed_focus = YCP_nationwide_welfare }
 			add_to_variable = { YCP_ycp_deputies = 12 tooltip = YCP_add_ycp_deputies }
 			add_to_variable = { YCP_professional_groups_deputies = 2 tooltip = YCP_add_professional_groups_deputies }
 			add_to_variable = { YCP_other_parties_deputies = 8 tooltip = YCP_add_other_parties_deputies }
@@ -439,11 +601,18 @@ NW_china_integrate_shansi_effect = {
 		}
 	}
 }
+NW_china_integrate_shansi_state_effect = {
+	if = {
+		limit = { ROOT = { original_tag = YCP } }
+		YCP_integrate_province_state_effect = yes
+	}
+}
+
 NW_china_integrate_shensi_effect = {
 	if = {
 		limit = { original_tag = YCP }
 		if = {
-			limit = { has_completed_focus = Всенародное_благосостояние }
+			limit = { has_completed_focus = YCP_nationwide_welfare }
 			add_to_variable = { YCP_ycp_deputies = 7 tooltip = YCP_add_ycp_deputies }
 			add_to_variable = { YCP_professional_groups_deputies = 2 tooltip = YCP_add_professional_groups_deputies }
 			add_to_variable = { YCP_independent_deputies = 9 tooltip = YCP_add_independent_deputies }
@@ -456,11 +625,18 @@ NW_china_integrate_shensi_effect = {
 		}
 	}
 }
+NW_china_integrate_shensi_state_effect = {
+	if = {
+		limit = { ROOT = { original_tag = YCP } }
+		YCP_integrate_province_state_effect = yes
+	}
+}
+
 NW_china_integrate_hunan_effect = {
 	if = {
 		limit = { original_tag = YCP }
 		if = {
-			limit = { has_completed_focus = Письменный_конституционализм }
+			limit = { has_completed_focus = YCP_written_constitutionalism }
 			add_to_variable = { YCP_ycp_deputies = 30 tooltip = YCP_add_ycp_deputies }
 			add_to_variable = { YCP_professional_groups_deputies = 6 tooltip = YCP_add_professional_groups_deputies }
 			add_to_variable = { YCP_ssp_deputies = 8 tooltip = YCP_add_ssp_deputies }
@@ -477,11 +653,18 @@ NW_china_integrate_hunan_effect = {
 		}
 	}
 }
+NW_china_integrate_hunan_state_effect = {
+	if = {
+		limit = { ROOT = { original_tag = YCP } }
+		YCP_integrate_province_state_effect = yes
+	}
+}
+
 NW_china_integrate_sichuan_effect = {
 	if = {
 		limit = { original_tag = YCP }
 		if = {
-			limit = { has_completed_focus = Всенародное_правление }
+			limit = { has_completed_focus = YCP_nationwide_government }
 			add_to_variable = { YCP_ycp_deputies = 75 tooltip = YCP_add_ycp_deputies }
 			add_to_variable = { YCP_professional_groups_deputies = 15 tooltip = YCP_add_professional_groups_deputies }
 			add_to_variable = { YCP_ssp_deputies = 5 tooltip = YCP_add_ssp_deputies }
@@ -508,11 +691,18 @@ NW_china_integrate_sichuan_effect = {
 		}
 	}
 }
+NW_china_integrate_sichuan_state_effect = {
+	if = {
+		limit = { ROOT = { original_tag = YCP } }
+		YCP_integrate_province_state_effect = yes
+	}
+}
+
 NW_china_integrate_sikan_effect = {
 	if = {
 		limit = { original_tag = YCP }
 		if = {
-			limit = { has_completed_focus = Всенародное_правление }
+			limit = { has_completed_focus = YCP_nationwide_government }
 			add_to_variable = { YCP_ycp_deputies = 1 tooltip = YCP_add_ycp_deputies }
 			add_to_variable = { YCP_independent_deputies = 1 tooltip = YCP_add_independent_deputies }
 		}
@@ -521,11 +711,18 @@ NW_china_integrate_sikan_effect = {
 		}
 	}
 }
+NW_china_integrate_sikan_state_effect = {
+	if = {
+		limit = { ROOT = { original_tag = YCP } }
+		YCP_integrate_province_state_effect = yes
+	}
+}
+
 NW_china_integrate_fujian_effect = {
 	if = {
 		limit = { original_tag = YCP }
 		if = {
-			limit = { has_completed_focus = Всенародное_благосостояние }
+			limit = { has_completed_focus = YCP_nationwide_welfare }
 			add_to_variable = { YCP_ycp_deputies = 8 tooltip = YCP_add_ycp_deputies }
 			add_to_variable = { YCP_ssp_deputies = 4 tooltip = YCP_add_ssp_deputies }
 			add_to_variable = { YCP_other_parties_deputies = 8 tooltip = YCP_add_other_parties_deputies }
@@ -541,11 +738,18 @@ NW_china_integrate_fujian_effect = {
 		}
 	}
 }
+NW_china_integrate_fujian_state_effect = {
+	if = {
+		limit = { ROOT = { original_tag = YCP } }
+		YCP_integrate_province_state_effect = yes
+	}
+}
+
 NW_china_integrate_anhui_effect = {
 	if = {
 		limit = { original_tag = YCP }
 		if = {
-			limit = { has_completed_focus = Всенародное_благосостояние }
+			limit = { has_completed_focus = YCP_nationwide_welfare }
 			add_to_variable = { YCP_ycp_deputies = 16 tooltip = YCP_add_ycp_deputies }
 			add_to_variable = { YCP_professional_groups_deputies = 9 tooltip = YCP_add_professional_groups_deputies }
 			add_to_variable = { YCP_ssp_deputies = 11 tooltip = YCP_add_ssp_deputies }
@@ -559,11 +763,18 @@ NW_china_integrate_anhui_effect = {
 		}
 	}
 }
+NW_china_integrate_anhui_state_effect = {
+	if = {
+		limit = { ROOT = { original_tag = YCP } }
+		YCP_integrate_province_state_effect = yes
+	}
+}
+
 NW_china_integrate_zhejiang_effect = {
 	if = {
 		limit = { original_tag = YCP }
 		if = {
-			limit = { has_completed_focus = Оформить_демократический_откол_Гоминьдана }
+			limit = { has_completed_focus = YCP_democratic_breakaway_of_kuomintang }
 			add_to_variable = { YCP_ycp_deputies = 15 tooltip = YCP_add_ycp_deputies }
 			add_to_variable = { YCP_kdu_deputies = 20 tooltip = YCP_add_kdu_deputies }
 			add_to_variable = { YCP_professional_groups_deputies = 5 tooltip = YCP_add_professional_groups_deputies }
@@ -578,11 +789,18 @@ NW_china_integrate_zhejiang_effect = {
 		}
 	}
 }
+NW_china_integrate_zhejiang_state_effect = {
+	if = {
+		limit = { ROOT = { original_tag = YCP } }
+		YCP_integrate_province_state_effect = yes
+	}
+}
+
 NW_china_integrate_shanghai_effect = {
 	if = {
 		limit = { original_tag = YCP }
 		if = {
-			limit = { has_completed_focus = Создание_среднего_класса }
+			limit = { has_completed_focus = YCP_creating_middle_class }
 			add_to_variable = { YCP_ycp_deputies = 4 tooltip = YCP_add_ycp_deputies }
 			add_to_variable = { YCP_ssp_deputies = 2 tooltip = YCP_add_ssp_deputies }
 		}
@@ -593,11 +811,18 @@ NW_china_integrate_shanghai_effect = {
 		}
 	}
 }
+NW_china_integrate_shanghai_state_effect = {
+	if = {
+		limit = { ROOT = { original_tag = YCP } }
+		YCP_integrate_province_state_effect = yes
+	}
+}
+
 NW_china_integrate_hong_kong_effect = {
 	if = {
 		limit = { original_tag = YCP }
 		if = {
-			limit = { has_completed_focus = Прогрессивный_подоходный_налог }
+			limit = { has_completed_focus = YCP_progressive_income_tax }
 			add_to_variable = { YCP_federalist_deputies = 3 tooltip = YCP_add_federalist_deputies }
 		}
 		else = {
@@ -606,11 +831,18 @@ NW_china_integrate_hong_kong_effect = {
 		}
 	}
 }
+NW_china_integrate_hong_kong_state_effect = {
+	if = {
+		limit = { ROOT = { original_tag = YCP } }
+		YCP_integrate_province_state_effect = yes
+	}
+}
+
 NW_china_integrate_qinghai_effect = {
 	if = {
 		limit = { original_tag = YCP }
 		if = {
-			limit = { has_completed_focus = Поддержать_республику_пяти_наций }
+			limit = { has_completed_focus = YCP_support_republic_of_five_nations }
 			add_to_variable = { YCP_ycp_deputies = 1 tooltip = YCP_add_ycp_deputies }
 			add_to_variable = { YCP_independent_deputies = 2 tooltip = YCP_add_independent_deputies }
 		}
@@ -619,11 +851,18 @@ NW_china_integrate_qinghai_effect = {
 		}
 	}
 }
+NW_china_integrate_qinghai_state_effect = {
+	if = {
+		limit = { ROOT = { original_tag = YCP } }
+		YCP_integrate_province_state_effect = yes
+	}
+}
+
 NW_china_integrate_gansu_effect = {
 	if = {
 		limit = { original_tag = YCP }
 		if = {
-			limit = { has_completed_focus = Замена_неорганизованности_на_дисциплину }
+			limit = { has_completed_focus = YCP_replace_disorganization_with_discipline }
 			add_to_variable = { YCP_ycp_deputies = 4 tooltip = YCP_add_ycp_deputies }
 			add_to_variable = { YCP_professional_groups_deputies = 1 tooltip = YCP_add_professional_groups_deputies }
 			add_to_variable = { YCP_independent_deputies = 6 tooltip = YCP_add_independent_deputies }
@@ -635,11 +874,18 @@ NW_china_integrate_gansu_effect = {
 		}
 	}
 }
+NW_china_integrate_gansu_state_effect = {
+	if = {
+		limit = { ROOT = { original_tag = YCP } }
+		YCP_integrate_province_state_effect = yes
+	}
+}
+
 NW_china_integrate_guizhou_effect = {
 	if = {
 		limit = { original_tag = YCP }
 		if = {
-			limit = { has_completed_focus = Использовать_преимущества_системы_баоцзя }
+			limit = { has_completed_focus = YCP_take_benefits_of_baojia_system }
 			add_to_variable = { YCP_ycp_deputies = 10 tooltip = YCP_add_ycp_deputies }
 			add_to_variable = { YCP_professional_groups_deputies = 2 tooltip = YCP_add_professional_groups_deputies }
 			add_to_variable = { YCP_independent_deputies = 6 tooltip = YCP_add_independent_deputies }
@@ -652,11 +898,18 @@ NW_china_integrate_guizhou_effect = {
 		}
 	}
 }
+NW_china_integrate_guizhou_state_effect = {
+	if = {
+		limit = { ROOT = { original_tag = YCP } }
+		YCP_integrate_province_state_effect = yes
+	}
+}
+
 NW_china_integrate_guangxi_effect = {
 	if = {
 		limit = { original_tag = YCP }
 		if = {
-			limit = { has_completed_focus = Оформить_демократический_откол_Гоминьдана }
+			limit = { has_completed_focus = YCP_democratic_breakaway_of_kuomintang }
 			add_to_variable = { YCP_ycp_deputies = 12 tooltip = YCP_add_ycp_deputies }
 			add_to_variable = { YCP_professional_groups_deputies = 3 tooltip = YCP_add_professional_groups_deputies }
 			add_to_variable = { YCP_kdu_deputies = 15 tooltip = YCP_add_kdu_deputies }
@@ -669,11 +922,18 @@ NW_china_integrate_guangxi_effect = {
 		}
 	}
 }
+NW_china_integrate_guangxi_state_effect = {
+	if = {
+		limit = { ROOT = { original_tag = YCP } }
+		YCP_integrate_province_state_effect = yes
+	}
+}
+
 NW_china_integrate_guangdong_effect = {
 	if = {
 		limit = { original_tag = YCP }
 		if = {
-			limit = { has_completed_focus = Оформить_демократический_откол_Гоминьдана }
+			limit = { has_completed_focus = YCP_democratic_breakaway_of_kuomintang }
 			add_to_variable = { YCP_ycp_deputies = 20 tooltip = YCP_add_ycp_deputies }
 			add_to_variable = { YCP_professional_groups_deputies = 10 tooltip = YCP_add_professional_groups_deputies }
 			add_to_variable = { YCP_kdu_deputies = 40 tooltip = YCP_add_kdu_deputies }
@@ -688,11 +948,18 @@ NW_china_integrate_guangdong_effect = {
 		}
 	}
 }
+NW_china_integrate_guangdong_state_effect = {
+	if = {
+		limit = { ROOT = { original_tag = YCP } }
+		YCP_integrate_province_state_effect = yes
+	}
+}
+
 NW_china_integrate_taiwan_effect = {
 	if = {
 		limit = { original_tag = YCP }
 		if = {
-			limit = { has_completed_focus = Замена_власти_людей_властью_закона }
+			limit = { has_completed_focus = YCP_rule_of_law }
 			add_to_variable = { YCP_ycp_deputies = 5 tooltip = YCP_add_ycp_deputies }
 			add_to_variable = { YCP_professional_groups_deputies = 1 tooltip = YCP_add_professional_groups_deputies }
 			add_to_variable = { YCP_independent_deputies = 3 tooltip = YCP_add_independent_deputies }
@@ -704,11 +971,18 @@ NW_china_integrate_taiwan_effect = {
 		}
 	}
 }
+NW_china_integrate_taiwan_state_effect = {
+	if = {
+		limit = { ROOT = { original_tag = YCP } }
+		YCP_integrate_province_state_effect = yes
+	}
+}
+
 NW_china_integrate_guangzhouwan_effect = {
 	if = {
 		limit = { original_tag = YCP }
 		if = {
-			limit = { has_completed_focus = Ввести_протекционистские_тарифы }
+			limit = { has_completed_focus = YCP_protectionist_tariffs }
 			add_to_variable = { YCP_ycp_deputies = 1 tooltip = YCP_add_ycp_deputies }
 		}
 		else = {
@@ -716,11 +990,18 @@ NW_china_integrate_guangzhouwan_effect = {
 		}
 	}
 }
+NW_china_integrate_guangzhouwan_state_effect = {
+	if = {
+		limit = { ROOT = { original_tag = YCP } }
+		YCP_integrate_province_state_effect = yes
+	}
+}
+
 NW_china_integrate_macau_effect = {
 	if = {
 		limit = { original_tag = YCP }
 		if = {
-			limit = { has_completed_focus = Ввести_протекционистские_тарифы }
+			limit = { has_completed_focus = YCP_protectionist_tariffs }
 			add_to_variable = { YCP_ycp_deputies = 1 tooltip = YCP_add_ycp_deputies }
 		}
 		else = {
@@ -728,16 +1009,29 @@ NW_china_integrate_macau_effect = {
 		}
 	}
 }
+NW_china_integrate_macau_state_effect = {
+	if = {
+		limit = { ROOT = { original_tag = YCP } }
+		YCP_integrate_province_state_effect = yes
+	}
+}
+
 NW_china_integrate_dalian_effect = {
 	if = {
 		limit = { original_tag = YCP }
 		if = {
-			limit = { has_completed_focus = Ввести_протекционистские_тарифы }
+			limit = { has_completed_focus = YCP_protectionist_tariffs }
 			add_to_variable = { YCP_ycp_deputies = 1 tooltip = YCP_add_ycp_deputies }
 		}
 		else = {
 			add_to_variable = { YCP_ssp_deputies = 1 tooltip = YCP_add_ssp_deputies }
 		}
+	}
+}
+NW_china_integrate_dalian_state_effect = {
+	if = {
+		limit = { ROOT = { original_tag = YCP } }
+		YCP_integrate_province_state_effect = yes
 	}
 }
 

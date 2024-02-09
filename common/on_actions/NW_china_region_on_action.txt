@@ -691,19 +691,22 @@ on_actions = { # Китайские страны, с небольшим кол-�
 	
 	on_weekly_YCP = {
 		effect = {
-			if = { # TODO has_start_date?
-				limit = { # TODO дополнительные условия?
-					surrender_progress > 0.8 # TODO !!
-					has_war_with = MAN
-				}
-				country_event = ycp.3
-			}
-			
 			if = {
-				limit = { has_idea = YCP_communist_logistic }
-				add_equipment_to_stockpile = {
-					type = infantry_equipment
-					amount = 21
+				limit = { has_start_date < 1936.01.02 }
+				if = {
+					limit = {
+						surrender_progress > 0.8 # TODO balance
+						has_war_with = MAN
+					}
+					country_event = ycp.3
+				}
+				
+				if = {
+					limit = { has_idea = YCP_communist_logistic_idea }
+					add_equipment_to_stockpile = {
+						type = infantry_equipment
+						amount = 21
+					}
 				}
 			}
 		}
@@ -711,15 +714,19 @@ on_actions = { # Китайские страны, с небольшим кол-�
 	
 	on_monthly_YCP = {
 		effect = {
-			if = { # TODO has_start_date?
-				limit = { # TODO дополнительные условия? !!
-					any_neighbor_country = {
-						is_literally_china = yes # TODO not japan bitch (MAN CSR EHB) BUT ??
-						OR = { controls_state = 608 controls_state = 1132 } 
-					} 
+			if = {
+				limit = { has_start_date < 1936.01.02 }
+				if = {
+					limit = {
+						any_neighbor_country = {
+							is_literally_china = yes
+							NOT = { is_subject_of = JAP } # not japan bitches (MAN CSR EHB)
+							OR = { controls_state = 608 controls_state = 1132 } 
+						} 
+					}
+					country_event = { id = ycp.1 }
+					country_event = { id = ycp.2 } # TODO days = 1
 				}
-				country_event = ycp.1
-				country_event = { id = ycp.2 } # days = 1
 			}
 		}
 	}
@@ -748,7 +755,7 @@ on_actions = { # Китайские страны, с небольшим кол-�
 		effect = {
 			if = {
 				limit = {
-					OR = { # TODO такая хуйня была у другого китайца, исправить !!
+					OR = {
 						AND = {
 							FROM = { original_tag = PRC }
 							original_tag = CHI
@@ -760,6 +767,30 @@ on_actions = { # Китайские страны, с небольшим кол-�
 					}
 				}
 				CHI = { country_event = { id = ycp.6 days = 30 } }
+			}
+		}
+	}
+	
+	on_annex = { # on_civil_war_end
+		effect = {
+			if = {
+				limit = {
+					FROM = { original_tag = YCP }
+					original_tag = MAN
+				}
+				FROM = { # TODO возвращать в случае повторного появления YCP?
+					every_character = { ## FROM characters return to ROOT ##
+						limit = {
+							OR = {
+								is_character = YCP_zeng_qi 
+								is_character = YCP_li_huan 
+								is_character = YCP_zuo_shunsheng 
+							}
+						}
+						set_nationality = ROOT
+						log = "[GetDateText]: [THIS.GetName]: character set_nationality = [Root.GetTag]"
+					}
+				}
 			}
 		}
 	}

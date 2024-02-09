@@ -10,7 +10,7 @@ YCP_zhao_dong_seek_help = {
 			always = no 
 		}
 		available = {
-			surrender_progress > 0.94 # TODO !!
+			surrender_progress > 0.94 # TODO balance
 		}
 		
 		is_good = yes
@@ -42,7 +42,13 @@ YCP_the_grandma_two_guns = {
 				controls_province = 9835
 			}
 		}
-		# TODO cancel?
+		cancel_trigger = {
+			NOT = {
+				controls_province = 11886
+				controls_province = 6837
+				controls_province = 9835
+			}
+		}
 		
 		custom_cost_trigger = {
 			set_temp_variable = { pp_cost = 45 }
@@ -62,6 +68,9 @@ YCP_the_grandma_two_guns = {
 				add_command_power = -15
 			}
 		}
+		cancel_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): cancel decision YCP_transfer_weapons_by_sea"
+		}
 		remove_effect = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): remove decision YCP_transfer_weapons_by_sea"
 			add_equipment_to_stockpile = {
@@ -76,7 +85,8 @@ YCP_the_grandma_two_guns = {
 
 		available = {
 			any_neighbor_country = {
-				is_literally_china = yes # TODO not japan bitch (MAN CSR EHB) BUT ??
+				is_literally_china = yes
+				NOT = { is_subject_of = JAP } # not japan bitches (MAN CSR EHB)
 				OR = { controls_state = 608 controls_state = 1132 } 
 			} 
 		}
@@ -112,7 +122,7 @@ YCP_the_grandma_two_guns = {
 	YCP_arrange_meeting_with_grandma = {
 		icon = eng_propaganda_campaigns
 		
-		custom_cost_trigger = { # TODO ??
+		custom_cost_trigger = {
 			set_temp_variable = { cp_cost = 35 }
 			check_variable = { var = command_power value = cp_cost }
 		}
@@ -236,7 +246,6 @@ YCP_provisional_parliament_category = {
 			add_power_balance_value = {
 				id = YCP_power_balance
 				value = 0.15
-				tooltip_side = my_bop_side # TODO !!
 			}
 			set_temp_variable = { party = 2 }
 			custom_effect_tooltip = YCP_add_party_in_coalition
@@ -271,7 +280,6 @@ YCP_provisional_parliament_category = {
 			add_power_balance_value = {
 				id = YCP_power_balance
 				value = 0.15
-				tooltip_side = my_bop_side # TODO !!
 			}
 			set_temp_variable = { party = 3 }
 			custom_effect_tooltip = YCP_add_party_in_coalition
@@ -306,7 +314,6 @@ YCP_provisional_parliament_category = {
 			add_power_balance_value = {
 				id = YCP_power_balance
 				value = 0.15
-				tooltip_side = my_bop_side # TODO !!
 			}
 			set_temp_variable = { party = 4 }
 			custom_effect_tooltip = YCP_add_party_in_coalition
@@ -320,10 +327,10 @@ YCP_provisional_parliament_category = {
 		
 		available = {
 			set_temp_variable = { party = 5 }
-			set_temp_variable = { value = 10 }
+			set_temp_variable = { temp_value = YCP_independent_deputies }
 			custom_trigger_tooltip = {
-				tooltip = YCP_party_support_less_than_value # TODO не робит!
-				check_variable = { YCP_independent_support < value }
+				tooltip = YCP_party_support_less_than_value
+				check_variable = { YCP_independent_support < temp_value }
 			}
 		}
 		
@@ -332,7 +339,7 @@ YCP_provisional_parliament_category = {
 		complete_effect = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision YCP_corrupt_an_independents"
 			add_to_variable = { YCP_independent_support = 1 tooltip = YCP_independent_support_tooltip }
-			clamp_variable = { var = YCP_independent_support max = 10 }
+			clamp_variable = { var = YCP_independent_support max = YCP_independent_deputies }
 			YCP_provisional_parliament_update = yes
 		}
 	}
@@ -342,10 +349,10 @@ YCP_provisional_parliament_category = {
 		
 		available = {
 			set_temp_variable = { party = 6 }
-			set_temp_variable = { value = 10 }
+			set_temp_variable = { temp_value = YCP_professional_groups_deputies }
 			custom_trigger_tooltip = {
 				tooltip = YCP_party_support_less_than_value
-				check_variable = { YCP_professional_groups_support < value }
+				check_variable = { YCP_professional_groups_support < temp_value }
 			}
 		}
 		
@@ -354,7 +361,7 @@ YCP_provisional_parliament_category = {
 		complete_effect = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision YCP_corrupt_an_professional_groups_deputies"
 			add_to_variable = { YCP_professional_groups_support = 1 tooltip = YCP_professional_groups_support_tooltip }
-			clamp_variable = { var = YCP_professional_groups_support max = 10 }
+			clamp_variable = { var = YCP_professional_groups_support max = YCP_professional_groups_deputies }
 			YCP_provisional_parliament_update = yes
 		}
 	}
@@ -364,10 +371,10 @@ YCP_provisional_parliament_category = {
 		
 		available = {
 			set_temp_variable = { party = 7 }
-			set_temp_variable = { value = 2 }
+			set_temp_variable = { temp_value = YCP_other_parties_deputies }
 			custom_trigger_tooltip = {
 				tooltip = YCP_party_support_less_than_value
-				check_variable = { YCP_other_parties_support < value }
+				check_variable = { YCP_other_parties_support < temp_value }
 			}
 		}
 		
@@ -376,13 +383,13 @@ YCP_provisional_parliament_category = {
 		complete_effect = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision YCP_corrupt_an_professional_groups_deputies"
 			add_to_variable = { YCP_other_parties_support = 1 tooltip = YCP_other_parties_support_tooltip }
-			clamp_variable = { var = YCP_other_parties_support max = 2 }
+			clamp_variable = { var = YCP_other_parties_support max = YCP_other_parties_deputies }
 			YCP_provisional_parliament_update = yes
 		}
 	}
 }
 
-YCP_old_connections = {
+YCP_old_connections_category = {
 	
 	YCP_offer_governors_deal = {
 		icon = eng_propaganda_campaigns
@@ -401,7 +408,7 @@ YCP_old_connections = {
 				}
 				else_if = {
 					limit = { original_tag = YUN }
-					has_country_leader = { character = YUN_long_yun } # TODO ??
+					has_country_leader = { character = YUN_long_yun }
 				}
 			}
 		}
@@ -411,7 +418,7 @@ YCP_old_connections = {
 		
 		on_map_mode = map_and_decisions_view
 		targets = { SHX SHA SIH YUN }
-		# targets_dynamic = yes TODO ?? !!
+		# targets_dynamic = yes TODO?
 		
 		cost = 15
 		
