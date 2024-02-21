@@ -132,6 +132,153 @@ CSR_relationship_with_son_category = {
 	}
 }
 
+CSR_plot_preparation_category = {
+
+	CSR_send_regent_to_kuomintang_government = {
+		icon = generic_decision
+		available = {
+			country_exists = CHI
+		}
+		visible = {
+			country_exists = CHI
+		}
+		cost = 50
+		days_remove = 90
+		fire_only_once = yes
+		ai_will_do = {
+			factor = 20
+		}
+		remove_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): remove decisions CSR_send_regent_to_kuomintang_government"
+			country_event = { id = NWchandong.20 }
+			set_country_flag = CSR_send_regent_to_kuomintang_government_flag
+		}
+	}
+	CSR_plot_preparation = {
+		icon = generic_decision
+		available = {
+			if = {
+				limit = {
+					has_completed_focus = CSR_iron_blood_alliance
+				}
+				OR = {
+					power_balance_value = { id = CSR_power_balance value < -0.5 }
+					power_balance_value = { id = CSR_power_balance value > 0.5 }
+				}
+			}
+			else = {
+				OR = {
+					power_balance_value = { id = CSR_power_balance value < -0.7 }
+					power_balance_value = { id = CSR_power_balance value > 0.7 }
+				}
+			}
+		}
+		cancel_trigger = {
+			if = {
+				limit = {
+					has_completed_focus = CSR_iron_blood_alliance
+				}
+				OR = {
+					power_balance_value = { id = CSR_power_balance value > -0.5 }
+					power_balance_value = { id = CSR_power_balance value < 0.5 }
+				}
+			}
+			else = {
+				OR = {
+					power_balance_value = { id = CSR_power_balance value > -0.7 }
+					power_balance_value = { id = CSR_power_balance value < 0.7 }
+				}
+			}
+		}
+		visible = {
+		}
+		cost = 100
+		days_remove = 300
+		fire_only_once = yes
+		ai_will_do = {
+			factor = 20
+		}
+		cancel_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): remove decisions CSR_plot_preparation"
+			country_event = { id = NWchandong.21 }
+		}
+		remove_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): remove decisions CSR_plot_preparation"
+			country_event = { id = NWchandong.26 }
+		}
+	}
+	CSR_start_an_uprising = {
+		icon = generic_decision
+		available = {
+			has_country_flag = NWchandong_26_flag
+			is_subject = yes
+		}
+		visible = {
+		}
+		custom_cost_trigger = {
+			set_temp_variable = { command_power_temp_cost = 25 }
+			command_power > command_power_temp_cost
+		}
+		custom_cost_text = command_power_cost
+		fire_only_once = yes
+		ai_will_do = {
+			factor = 20
+		}
+		complete_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decisions CSR_start_an_uprising"
+			hidden_effect = {
+				add_command_power = -25
+				every_country = {
+					limit = {
+						OR = {
+							tag = ROOT
+							tag = JAP
+							is_literally_china = yes
+						}
+					}
+					news_event = { id = trworldnews.212 hours = 2 }
+				}
+				if = {
+					limit = { power_balance_value = { id = CSR_power_balance value < 0.0 } }
+					country_event = { id = NWchandong.27 hours = 1 }
+				}
+			}
+			OVERLORD = {
+				end_puppet = ROOT
+				if = {
+					limit = {
+						is_in_faction_with = PREV
+					}
+					leave_faction = yes
+				}
+				declare_war_on = {
+					target = PREV
+					type = independence_wargoal 
+				}
+			}
+			if = {
+				limit = {
+					has_country_flag = CSR_send_regent_to_kuomintang_government_flag
+					CHI = { is_faction_leader = yes }
+				}
+				CHI = {
+					add_to_faction = ROOT
+					add_ai_strategy = {
+						type = alliance
+						id = ROOT
+						value = 200
+					}
+				}
+				add_ai_strategy = {
+					type = alliance
+					id = "CHI"
+					value = 200
+				}
+			}
+		}
+	}
+}
+
 
 
 
