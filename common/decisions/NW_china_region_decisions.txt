@@ -57,6 +57,7 @@ chinese_reunification = {
 		
 		visible = {
 			has_country_flag = chinese_integration_of_province_flag
+			has_dynamic_modifier = { modifier = china_integration_of_province_dyn }
 		}
 		available = {
 			custom_trigger_tooltip = {
@@ -108,6 +109,7 @@ chinese_reunification = {
 			add_to_temp_variable = { multiplier = modifier@china_integration_of_province_cost_modifier }
 			multiply_temp_variable = { cost = multiplier }
 			
+			set_temp_variable = { cost_tooltip = cost }
 			multiply_temp_variable = { cost = -1 }
 			add_political_power = cost
 			
@@ -120,10 +122,18 @@ chinese_reunification = {
 			set_variable = { china_integration_of_province_time = mission_days_remove }
 			activate_targeted_decision = { decision = china_integrate_province_mission target = FROM }
 			
-			custom_effect_tooltip = COG_target_mission_days_remove
+			custom_effect_tooltip = NW_target_mission_timeout
+			custom_effect_tooltip = empty_line_tooltip
+			custom_effect_tooltip = NW_target_mission_modifiers
+			add_to_variable = { china_iop_political_power_gain = -0.25 tooltip = political_power_gain_tooltip }
+			add_to_variable = { china_iop_stability_weekly = -0.003 tooltip = stability_weekly_tooltip }
+			force_update_dynamic_modifier = yes
+			custom_effect_tooltip = empty_line_tooltip
+			custom_effect_tooltip = NW_target_mission_timeout_effect
 			effect_tooltip = {
 				china_integrate_province_effect = yes
 			}
+			custom_effect_tooltip = china_integrate_province_cost_tooltip
 		}
 		
 		ai_will_do = { #?
@@ -137,6 +147,7 @@ chinese_reunification = {
 		
 		visible = {
 			has_country_flag = chinese_integration_of_province_flag
+			has_dynamic_modifier = { modifier = china_integration_of_province_dyn }
 		}
 		available = {
 			any_of_scopes = {
@@ -162,16 +173,14 @@ chinese_reunification = {
 
 		fire_only_once = yes
 
-		# modifier = { TODO !!!
-			# political_power_gain = -0.25 
-			# stability_weekly = -0.003 
-		# }
-
 		complete_effect = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision china_integrate_province target: [From.GetName]"
 		}
 		timeout_effect = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): timeout decision china_integrate_province target: [From.GetName]"
+			add_to_variable = { china_iop_political_power_gain = 0.25 }
+			add_to_variable = { china_iop_stability_weekly = 0.003 }
+			force_update_dynamic_modifier = yes
 			china_integrate_province_effect = yes
 		}
 	}
@@ -180,7 +189,7 @@ chinese_reunification = {
 		icon = generic_prepare_civil_war
 
 		available = {
-			NOT = { has_rule = can_not_declare_war } 
+			can_declare_war_on = FROM
 			OR = {
 				is_neighbor_of = FROM
 				any_subject_country = { is_neighbor_of = FROM }
@@ -190,11 +199,13 @@ chinese_reunification = {
 
 		visible = {
 			has_country_flag = chinese_reunification_flag
-			can_declare_war_on = FROM
 			is_subject = no
 		}
 
 		target_array = neighbors
+		target_root_trigger = {
+			NOT = { has_rule = can_not_declare_war } 
+		}
 		target_trigger = {
 			FROM = {
 				is_literally_china = yes
@@ -208,7 +219,13 @@ chinese_reunification = {
 			}
 		}
 
-		cost = 20
+		custom_cost_trigger = {
+			set_temp_variable = { pp_cost = 50 }
+			set_temp_variable = { cp_cost = 50 }
+			check_variable = { var = political_power value = pp_cost }
+			check_variable = { var = command_power value = cp_cost }
+		}
+		custom_cost_text = PP_CP_COST
 		
 		days_remove = 20
 		
