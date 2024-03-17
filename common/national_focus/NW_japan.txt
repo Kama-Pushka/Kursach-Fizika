@@ -260,7 +260,7 @@ focus_tree = {
 		y = 1
 		cost = 5
 		ai_will_do = { factor = 10 }
-		search_filters = { FOCUS_FILTER_STABILITY FOCUS_FILTER_POLITICAL }
+		search_filters = { FOCUS_FILTER_STABILITY FOCUS_FILTER_POLITICAL FOCUS_FILTER_INDUSTRY }
 		bypass = {  }
 		available = { has_country_leader = { character = JAP_Hirota_Koki ruling_only = yes } }
 		prerequisite = { focus = JAP_create_an_Imperial_Headquarters focus = JAP_reassure_the_military }
@@ -269,10 +269,7 @@ focus_tree = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus JAP_support_financial_groups"
 			add_stability = 0.03
 			add_popularity = { ideology = neutrality popularity = 0.03 }
-			swap_ideas = {
-				remove_idea = JAP_economic_stagnation
-				add_idea = JAP_economic_stagnation1
-			}
+			add_timed_idea = { idea = JAP_support_financial_groups_idea days = 250 }
 		}
 	}
 	
@@ -777,6 +774,8 @@ focus_tree = {
 		relative_position_id = JAP_continue_investing_in_Korea
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus JAP_restore_liberal_rule_in_Korea"
+			custom_effect_tooltip = JAP_restore_liberal_rule_in_Korea2_tt
+			unlock_decision_tooltip = JAP_support_pro_Japanese_Korean_culture
 		}
 	}
 	
@@ -1198,10 +1197,6 @@ focus_tree = {
 				value = 0.25
 				tooltip_side = JAP_supporters_of_the_status_quo
 			}
-			swap_ideas = {
-				remove_idea = JAP_economic_stagnation1
-				add_idea = JAP_economic_stagnation2
-			}
 		}
 	}
 	
@@ -1285,19 +1280,36 @@ focus_tree = {
 		y = 1
 		cost = 8
 		ai_will_do = { factor = 10 }
-		search_filters = { FOCUS_FILTER_BALANCE_OF_POWER FOCUS_FILTER_STABILITY FOCUS_FILTER_INDUSTRY }
+		search_filters = { FOCUS_FILTER_BALANCE_OF_POWER FOCUS_FILTER_INDUSTRY FOCUS_FILTER_STABILITY }
 		available = {  }
 		bypass = {  }
 		prerequisite = { focus = JAP_restoration_of_agriculture }
 		relative_position_id = JAP_restoration_of_agriculture
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus JAP_support_for_small_and_medium_sized_businesses"
+			add_popularity = { ideology = democratic popularity = 0.03 }
 			add_power_balance_value = {
 				id = JAP_Hirota_Koki_power_balance
 				value = 0.15
 				tooltip_side = JAP_supporters_of_the_status_quo
 			}
-			remove_ideas = JAP_economic_stagnation1
+			random_owned_controlled_state = {
+				limit = {
+					is_core_of = ROOT
+					free_building_slots = {
+						building = industrial_complex
+						size > 0
+						include_locked = yes
+					}
+				}
+				add_extra_state_shared_building_slots = 1
+				add_building_construction = {
+					type = industrial_complex
+					level = 1
+					instant_build = yes		
+				}
+			}
+			add_timed_idea = { idea = JAP_support_for_small_and_medium_sized_businesses_idea days = 750 }
 		}
 	}
 	
@@ -2412,14 +2424,32 @@ focus_tree = {
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus JAP_maintaining_a_parliament_oriented_policy"
 			add_popularity = { ideology = democratic popularity = 0.07 }
-			add_to_variable = { JAP_Minseito_popularity = 5 tooltip = JAP_Minseito_popularity_tt }
-			add_to_variable = { JAP_Sayukai_Reformists_popularity = 5 tooltip = JAP_Sayukai_Reformists_popularity_tt }
-			add_to_variable = { JAP_Sayukai_Orthodox_popularity = -5 tooltip = JAP_Sayukai_Orthodox_popularity_tt }
-			add_to_variable = { JAP_Shakai_Taishuto_popularity = -3 tooltip = JAP_Shakai_Taishuto_popularity_tt }
-			add_to_variable = { JAP_Tohokai_popularity = -2 tooltip = JAP_Tohokai_popularity_tt }
-			JAP_Machid_Chunji_office_effect = yes
+			if = {
+				limit = { has_active_mission = JAP_agitation_of_rivals_mission }
+				if = {
+					limit = { has_variable = JAP_shinshinto_popularity }
+					add_to_variable = { JAP_shinshinto_popularity = 5 tooltip = JAP_shinshinto_popularity_tt }
+				}
+				else = {
+					add_to_variable = { JAP_rikken_minseito_popularity = 5 tooltip = JAP_rikken_minseito_popularity_tt }
+				}
+				if = {
+					limit = { NOT = { has_variable = JAP_rikken_sayukai_popularity } }
+					add_to_variable = { JAP_sayukai_reformists_popularity = 5 tooltip = JAP_sayukai_reformists_popularity_tt }
+					add_to_variable = { JAP_sayukai_ortodox_popularity = -5 tooltip = JAP_sayukai_ortodox_popularity_tt }
+				}
+				if = {
+					limit = { has_variable = JAP_kakushin_shinto_popularity }
+					add_to_variable = { JAP_kakushin_shinto_popularity = -5 tooltip = JAP_kakushin_shinto_popularity_tt }
+				}
+				else = {
+					add_to_variable = { JAP_tohokai_popularity = -2 tooltip = JAP_tohokai_popularity_tt }
+					add_to_variable = { JAP_shakai_taishuto_popularity = -3 tooltip = JAP_shakai_taishuto_popularity_tt }
+				}
+				JAP_Machid_Chunji_office_effect = yes
+				hidden_effect = { country_event = { id = NW_JAP.236 days = 30 } }
+			}
 			hidden_effect = {
-				country_event = { id = NW_JAP.236 days = 30 }
 				if = {
 					limit = { NOT = { has_completed_focus = JAP_restoration_of_party_offices } }
 					country_event = { id = NW_JAP.237 days = 100 }
@@ -2443,10 +2473,31 @@ focus_tree = {
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus JAP_to_complete_the_emancipation_of_women"
 			add_stability = 0.15
-			add_to_variable = { JAP_Minseito_popularity = -10 tooltip = JAP_Minseito_popularity_tt }
-			add_to_variable = { JAP_Sayukai_Reformists_popularity = 5 tooltip = JAP_Sayukai_Reformists_popularity_tt }
-			add_to_variable = { JAP_Tohokai_popularity = 5 tooltip = JAP_Tohokai_popularity_tt }
-			JAP_Machid_Chunji_office_effect = yes
+			if = {
+				limit = { has_active_mission = JAP_agitation_of_rivals_mission }
+				if = {
+					limit = { has_variable = JAP_shinshinto_popularity }
+					add_to_variable = { JAP_shinshinto_popularity = -10 tooltip = JAP_shinshinto_popularity_tt }
+				}
+				else = {
+					add_to_variable = { JAP_rikken_minseito_popularity = -10 tooltip = JAP_rikken_minseito_popularity_tt }
+				}
+				if = {
+					limit = { NOT = { has_variable = JAP_rikken_sayukai_popularity } }
+					add_to_variable = { JAP_sayukai_reformists_popularity = 5 tooltip = JAP_sayukai_reformists_popularity_tt }
+				}
+				else = {
+					add_to_variable = { JAP_rikken_sayukai_popularity = 5 tooltip = JAP_rikken_sayukai_popularity_tt }
+				}
+				if = {
+					limit = { has_variable = JAP_kakushin_shinto_popularity }
+					add_to_variable = { JAP_kakushin_shinto_popularity = 5 tooltip = JAP_kakushin_shinto_popularity_tt }
+				}
+				else = {
+					add_to_variable = { JAP_tohokai_popularity = 5 tooltip = JAP_tohokai_popularity_tt }
+				}
+				JAP_Machid_Chunji_office_effect = yes
+			}
 		}
 	}
 	
@@ -2465,10 +2516,31 @@ focus_tree = {
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus JAP_progressive_social_policy"
 			add_stability = 0.15
-			add_to_variable = { JAP_Minseito_popularity = -10 tooltip = JAP_Minseito_popularity_tt }
-			add_to_variable = { JAP_Shakai_Taishuto_popularity = 5 tooltip = JAP_Shakai_Taishuto_popularity_tt }
-			add_to_variable = { JAP_Sayukai_Orthodox_popularity = 5 tooltip = JAP_Sayukai_Orthodox_popularity_tt }
-			JAP_Machid_Chunji_office_effect = yes
+			if = {
+				limit = { has_active_mission = JAP_agitation_of_rivals_mission }
+				if = {
+					limit = { has_variable = JAP_shinshinto_popularity }
+					add_to_variable = { JAP_shinshinto_popularity = -10 tooltip = JAP_shinshinto_popularity_tt }
+				}
+				else = {
+					add_to_variable = { JAP_rikken_minseito_popularity = -10 tooltip = JAP_rikken_minseito_popularity_tt }
+				}
+				if = {
+					limit = { NOT = { has_variable = JAP_rikken_sayukai_popularity } }
+					add_to_variable = { JAP_sayukai_ortodox_popularity = 5 tooltip = JAP_sayukai_ortodox_popularity_tt }
+				}
+				else = {
+					add_to_variable = { JAP_rikken_sayukai_popularity = 5 tooltip = JAP_rikken_sayukai_popularity_tt }
+				}
+				if = {
+					limit = { has_variable = JAP_kakushin_shinto_popularity }
+					add_to_variable = { JAP_kakushin_shinto_popularity = 5 tooltip = JAP_kakushin_shinto_popularity_tt }
+				}
+				else = {
+					add_to_variable = { JAP_shakai_taishuto_popularity = 5 tooltip = JAP_shakai_taishuto_popularity_tt }
+				}
+				JAP_Machid_Chunji_office_effect = yes
+			}		
 		}
 	}
 	
@@ -2486,12 +2558,39 @@ focus_tree = {
 		relative_position_id = JAP_maintaining_a_parliament_oriented_policy
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus JAP_support_for_small_and_medium_sized_businesses2"
-			add_to_variable = { JAP_Minseito_popularity = 5 tooltip = JAP_Minseito_popularity_tt }
-			add_to_variable = { JAP_Sayukai_Reformists_popularity = 5 tooltip = JAP_Sayukai_Reformists_popularity_tt }
-			add_to_variable = { JAP_Shakai_Taishuto_popularity = -5 tooltip = JAP_Shakai_Taishuto_popularity_tt }
-			add_to_variable = { JAP_Tohokai_popularity = -5 tooltip = JAP_Tohokai_popularity_tt }
-			JAP_Machid_Chunji_office_effect = yes
-			add_ideas = JAP_support_for_small_and_medium_sized_businesses2_idea
+			if = {
+				limit = { has_active_mission = JAP_agitation_of_rivals_mission }
+				if = {
+					limit = { has_variable = JAP_shinshinto_popularity }
+					add_to_variable = { JAP_shinshinto_popularity = 5 tooltip = JAP_shinshinto_popularity_tt }
+				}
+				else = {
+					add_to_variable = { JAP_rikken_minseito_popularity = 5 tooltip = JAP_rikken_minseito_popularity_tt }
+				}
+				if = {
+					limit = { has_variable = JAP_rikken_sayukai_popularity }
+					add_to_variable = { JAP_rikken_sayukai_popularity = 5 tooltip = JAP_rikken_sayukai_popularity_tt }
+				}
+				else = {
+					add_to_variable = { JAP_sayukai_reformists_popularity = 5 tooltip = JAP_sayukai_reformists_popularity_tt }
+				}
+				if = {
+					limit = { has_variable = JAP_kakushin_shinto_popularity }
+					add_to_variable = { JAP_kakushin_shinto_popularity = -10 tooltip = JAP_kakushin_shinto_popularity_tt }
+				}
+				else = {
+					add_to_variable = { JAP_tohokai_popularity = -5 tooltip = JAP_tohokai_popularity_tt }
+					add_to_variable = { JAP_shakai_taishuto_popularity = -5 tooltip = JAP_shakai_taishuto_popularity_tt }
+				}
+				JAP_Machid_Chunji_office_effect = yes
+			}
+			if = {
+				limit = { has_idea = JAP_support_for_small_and_medium_sized_businesses_idea }
+				modify_timed_idea = { idea = JAP_support_for_small_and_medium_sized_businesses_idea days = 750 }
+			}
+			else = {
+				add_timed_idea = { idea = JAP_support_for_small_and_medium_sized_businesses_idea days = 750 }
+			}
 		}
 	}
 	
@@ -2509,11 +2608,32 @@ focus_tree = {
 		relative_position_id = JAP_maintaining_a_parliament_oriented_policy
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus JAP_continue_forming_a_two_party_system"
-			add_to_variable = { JAP_Shakai_Taishuto_popularity = 5 tooltip = JAP_Shakai_Taishuto_popularity_tt }
-			add_to_variable = { JAP_Sayukai_Orthodox_popularity = 6 tooltip = JAP_Sayukai_Orthodox_popularity_tt }
-			add_to_variable = { JAP_Minseito_popularity = -5 tooltip = JAP_Minseito_popularity_tt }
-			add_to_variable = { JAP_Tohokai_popularity = -6 tooltip = JAP_Tohokai_popularity_tt }
-			JAP_Machid_Chunji_office_effect = yes
+			if = {
+				limit = { has_active_mission = JAP_agitation_of_rivals_mission }
+				if = {
+					limit = { has_variable = JAP_shinshinto_popularity }
+					add_to_variable = { JAP_shinshinto_popularity = -5 tooltip = JAP_shinshinto_popularity_tt }
+				}
+				else = {
+					add_to_variable = { JAP_rikken_minseito_popularity = -5 tooltip = JAP_rikken_minseito_popularity_tt }
+				}
+				if = {
+					limit = { has_variable = JAP_rikken_sayukai_popularity }
+					add_to_variable = { JAP_rikken_sayukai_popularity = 6 tooltip = JAP_rikken_sayukai_popularity_tt }
+				}
+				else = {
+					add_to_variable = { JAP_sayukai_ortodox_popularity = 6 tooltip = JAP_sayukai_ortodox_popularity_tt }
+				}
+				if = {
+					limit = { has_variable = JAP_kakushin_shinto_popularity }
+					add_to_variable = { JAP_kakushin_shinto_popularity = -1 tooltip = JAP_kakushin_shinto_popularity_tt }
+				}
+				else = {
+					add_to_variable = { JAP_tohokai_popularity = -6 tooltip = JAP_tohokai_popularity_tt }
+					add_to_variable = { JAP_shakai_taishuto_popularity = 5 tooltip = JAP_shakai_taishuto_popularity_tt }
+				}
+				JAP_Machid_Chunji_office_effect = yes
+			}
 			add_popularity = { ideology = democratic popularity = 0.06 }
 			add_popularity = { ideology = neutrality popularity = 0.04 }
 			add_popularity = { ideology = monarchy popularity = -0.05 }
@@ -2534,6 +2654,8 @@ focus_tree = {
 		relative_position_id = JAP_continue_forming_a_two_party_system
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus JAP_restore_liberal_rule_in_Korea2"
+			custom_effect_tooltip = JAP_restore_liberal_rule_in_Korea2_tt
+			unlock_decision_tooltip = JAP_support_pro_Japanese_Korean_culture
 		}
 	}
 	
@@ -2553,9 +2675,24 @@ focus_tree = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus JAP_propose_a_constitutional_amendment"
 			add_command_power = 50
 			add_political_power = 50
-			add_to_variable = { JAP_Sayukai_Orthodox_popularity = 7 tooltip = JAP_Sayukai_Orthodox_popularity_tt }
-			add_to_variable = { JAP_Minseito_popularity = -7 tooltip = JAP_Minseito_popularity_tt }
-			JAP_Machid_Chunji_office_effect = yes
+			if = {
+				limit = { has_active_mission = JAP_agitation_of_rivals_mission }
+				if = {
+					limit = { has_variable = JAP_shinshinto_popularity }
+					add_to_variable = { JAP_shinshinto_popularity = -7 tooltip = JAP_shinshinto_popularity_tt }
+				}
+				else = {
+					add_to_variable = { JAP_rikken_minseito_popularity = -7 tooltip = JAP_rikken_minseito_popularity_tt }
+				}
+				if = {
+					limit = { has_variable = JAP_rikken_sayukai_popularity }
+					add_to_variable = { JAP_rikken_sayukai_popularity = 7 tooltip = JAP_rikken_sayukai_popularity_tt }
+				}
+				else = {
+					add_to_variable = { JAP_sayukai_ortodox_popularity = 7 tooltip = JAP_sayukai_ortodox_popularity_tt }
+				}
+				JAP_Machid_Chunji_office_effect = yes
+			}
 		}
 	}
 	
@@ -3228,8 +3365,8 @@ focus_tree = {
 			add_popularity = { ideology = trozkism popularity = 0.03 }
 			add_power_balance_value = {
 				id = JAP_Machida_Chuji_power_balance
-				value = 1
-				tooltip_side = JAP_opponents_of_democratization
+				value = -0.2
+				tooltip_side = JAP_Rikken_Mineito
 			}
 		}
 	}
@@ -3279,8 +3416,8 @@ focus_tree = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus JAP_release_political_prisoners"
 			add_power_balance_value = {
 				id = JAP_Machida_Chuji_power_balance
-				value = 0.5
-				tooltip_side = JAP_opponents_of_democratization
+				value = -0.2
+				tooltip_side = JAP_Rikken_Mineito
 			}
 			add_ideas = JAP_release_political_prisoners_idea
 		}
@@ -3308,8 +3445,8 @@ focus_tree = {
 			add_command_power = 100
 			add_power_balance_value = {
 				id = JAP_Machida_Chuji_power_balance
-				value = 1.5
-				tooltip_side = JAP_opponents_of_democratization
+				value = -0.2
+				tooltip_side = JAP_Rikken_Mineito
 			}
 		}
 	}
@@ -4765,16 +4902,28 @@ focus_tree = {
 		y = 1
 		cost = 5
 		ai_will_do = { factor = 10 }
-		search_filters = { FOCUS_FILTER_STABILITY FOCUS_FILTER_INDUSTRY }
+		search_filters = { FOCUS_FILTER_INDUSTRY }
 		available = { has_country_leader = { character = JAP_Sendzuro_Hayasi ruling_only = yes } }
 		bypass = {  }
 		prerequisite = { focus = JAP_Hayasi_office }
 		relative_position_id = JAP_Hayasi_office
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus JAP_cancel_financial_assistance"
-			swap_ideas = {
-				remove_idea = JAP_economic_stagnation1
-				add_idea = JAP_economic_stagnation1_1
+			random_owned_controlled_state = {
+				limit = {
+					is_core_of = ROOT
+					free_building_slots = {
+						building = arms_factory
+						size > 0
+						include_locked = yes
+					}
+				}
+				add_extra_state_shared_building_slots = 1
+				add_building_construction = {
+					type = arms_factory
+					level = 1
+					instant_build = yes		
+				}
 			}
 			hidden_effect = {
 				if = {
@@ -8686,7 +8835,6 @@ focus_tree = {
 		relative_position_id = JAP_Miyadzaki_plan
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus JAP_stabilization_of_people_living_standards"
-			remove_ideas = JAP_economic_stagnation
 			add_ideas = JAP_stabilization_of_people_living_standards_idea
 		}
 	}
@@ -10336,7 +10484,7 @@ focus_tree = {
 		y = 1
 		cost = 10
 		ai_will_do = { factor = 10 }
-		search_filters = { FOCUS_FILTER_POLITICAL FOCUS_FILTER_INDUSTRY FOCUS_FILTER_STABILITY }
+		search_filters = { FOCUS_FILTER_INDUSTRY }
 		available = {
 			OR = {
 				has_country_leader = { character = JAP_Ikki_Kita ruling_only = yes }
@@ -10348,8 +10496,11 @@ focus_tree = {
 		relative_position_id = JAP_sejm_of_National_Reorganization
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus JAP_proclaim_State_socialism"
-			add_popularity = { ideology = monarchy popularity = 0.15 }
-			remove_ideas = JAP_economic_stagnation
+			if = {
+				limit = { has_active_mission = JAP_the_threat_of_a_counter_coup }
+				add_days_mission_timeout = { mission = JAP_the_threat_of_a_counter_coup days = -50 }
+			}
+			add_ideas = JAP_proclaim_State_socialism_idea
 		}
 	}
 	
@@ -10372,7 +10523,10 @@ focus_tree = {
 		relative_position_id = JAP_proclaim_State_socialism
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus JAP_transfer_city_lands_to_municipalities"
-			add_days_mission_timeout = { mission = JAP_the_threat_of_a_counter_coup days = -30 }
+			if = {
+				limit = { has_active_mission = JAP_the_threat_of_a_counter_coup }
+				add_days_mission_timeout = { mission = JAP_the_threat_of_a_counter_coup days = -30 }
+			}
 			every_core_state = {
 				limit = {
 					free_building_slots = {
@@ -10835,9 +10989,8 @@ focus_tree = {
 		y = 1
 		cost = 10
 		ai_will_do = { factor = 10 }
-		search_filters = { FOCUS_FILTER_STABILITY FOCUS_FILTER_INDUSTRY }
+		search_filters = { FOCUS_FILTER_STABILITY FOCUS_FILTER_POLITICAL }
 		available = {
-			has_idea = JAP_economic_stagnation
 			OR = {
 				has_country_leader = { character = JAP_Yasuhito ruling_only = yes }
 				has_country_leader = { character = JAP_Machida_Chuji ruling_only = yes }
@@ -10848,7 +11001,7 @@ focus_tree = {
 		relative_position_id = JAP_surround_yourself_with_reformers
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus JAP_establish_progressive_taxation"
-			remove_ideas = JAP_economic_stagnation
+			add_ideas = JAP_establish_progressive_taxation_idea
 		}
 	}
 	
