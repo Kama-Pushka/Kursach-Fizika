@@ -1216,6 +1216,7 @@ on_actions = {
 					country_event = { id = NW_JAP.342 days = 1183 }
 					country_event = { id = NW_JAP.370 days = 1417 }
 					country_event = { id = NW_JAP.371 days = 1711 }
+					country_event = { id = NW_JAP.381 days = 401 }
 				}
 				USA = {
 					country_event = { id = NWzatyk.9 days = 307 }
@@ -1509,116 +1510,141 @@ on_actions = {
 #					country_event = { id = cog.7 }
 #				}
 #			}
+
+#ЯПОНСКИЙ СЕКТОР#
+		#Миссия на мир#							#TODO: фикс будет позже, сюда не лезть нахуй
 			if = {
 				limit = {
-					NOT = { country_exists = SHA }
-					FROM.FROM = { OR = { state = 597 state = 743 } }
-					597 = { controller = { OR = { tag = JAP is_subject_of = JAP } } }
-					743 = { controller = { OR = { tag = JAP is_subject_of = JAP } } }
-					ROOT = { 
-						tag = JAP
-						NOT = { has_country_flag = JAP_actions_of_the_Kwantung_Army_in_Shandong_BLOCK_flag has_country_flag = JAP_missions_BLOCK_flag }
+					FROM = { OR = { tag = JAP is_subject_of = JAP is_in_faction_with = JAP } }
+					ROOT = { is_literally_china = yes }
+					FROM.FROM = {
+						OR = {
+							is_core_of = KOR
+							is_in_array = { global.chinese_state = THIS }
+						}
 					}
 				}
-				ROOT = { activate_mission = JAP_actions_of_the_Kwantung_Army_in_Shandong }
-			}
-			if = {
-				limit = { FROM.FROM = { state = 608 } }
 				if = {
-					limit = { ROOT = { OR = { tag = JAP is_subject_of = JAP } } }
-					#Действия Квантунской армии в Центральном Китае#
-					if = {
-						limit = { ROOT = { NOT = { has_country_flag = JAP_actions_of_the_Kwantung_Army_in_Central_China_BLOCK_flag has_country_flag = JAP_missions_BLOCK_flag } } }
-						ROOT = { activate_mission = JAP_actions_of_the_Kwantung_Army_in_Central_China }
+					limit = {
+						all_of_scopes = {
+							array = global.chinese_state
+							controller = { NOT = { tag = JAP is_subject_of = JAP is_in_faction_with = JAP } }
+						}
+						all_of_scopes = {
+							array = KOR.core_states
+							controller = { NOT = { tag = JAP is_subject_of = JAP is_in_faction_with = JAP } }
+						}
 					}
-					#Падение Бэйпина#
-					if = {
-						limit = { ROOT = { NOT = { is_in_faction_with = CHI has_global_flag = JAP_the_fall_of_Beipin_flag } } }
-						ROOT = {
-							set_global_flag = JAP_the_fall_of_Beipin_flag
-							news_event = { id = NW_JAP_news.42 hours = 12 }
+					ROOT = {
+						if = {
+							limit = {
+								has_country_flag = china_declare_government_flag
+								has_war_with = FROM
+								NOT = { has_active_mission = JAP_holding_positions_mission }
+							}
+							activate_mission = JAP_holding_positions_mission
 						}
 					}
 				}
 			}
+		#Ивенты и миссии по Китаю и колониям#
 			if = {
-				limit = {
-					FROM.FROM = { state = 613 }
-					ROOT = {
-						tag = JAP
-						NOT = { has_country_flag = JAP_mass_killings_in_Nanjing_country_flag }
-						check_variable = { JAP_the_level_of_insubordination_var > 0 }
+				limit = { ROOT = { tag = JAP } }
+				if = {
+					limit = { FROM = { is_literally_china = yes } }
+					if = {
+						limit = {
+							FROM.FROM = { OR = { state = 597 state = 743 } }
+							597 = { controller = { tag = ROOT } }
+							743 = { controller = { tag = ROOT } }
+							NOT = { country_exists = SHA }
+						}
+						ROOT = {
+							#Действия Квантунской армии в Шаньдуне#
+							if = {
+								limit = { NOT = { has_country_flag = JAP_actions_of_the_Kwantung_Army_in_Shandong_BLOCK_flag has_country_flag = JAP_missions_BLOCK_flag } }
+								activate_mission = JAP_actions_of_the_Kwantung_Army_in_Shandong
+							}
+						}
+					}
+					if = {
+						limit = { FROM.FROM = { state = 608 } }
+						ROOT = {
+							#Действия Квантунской армии в Центральном Китае#
+							if = {
+								limit = { NOT = { has_country_flag = JAP_actions_of_the_Kwantung_Army_in_Central_China_BLOCK_flag has_country_flag = JAP_missions_BLOCK_flag } }
+								activate_mission = JAP_actions_of_the_Kwantung_Army_in_Central_China
+							}
+							#Падение Бэйпина#
+							if = {
+								limit = { NOT = { has_global_flag = JAP_the_fall_of_Beipin_flag } }
+								set_global_flag = JAP_the_fall_of_Beipin_flag
+								news_event = { id = NW_JAP_news.42 hours = 12 }
+							}
+						}
+					}
+					if = {
+						limit = { FROM.FROM = { state = 613 } }
+						ROOT = {
+							#Массовые убийства в Нанкине#
+							if = {
+								limit = {
+									NOT = { has_country_flag = JAP_mass_killings_in_Nanjing_country_flag }
+									check_variable = { JAP_the_level_of_insubordination_var > 0 }
+								}
+								set_country_flag = JAP_mass_killings_in_Nanjing_country_flag
+								country_event = { id = NW_JAP.273 hours = 12 }
+							}
+							#Падение Нанкина#
+							if = {
+								limit = { NOT = { has_global_flag = JAP_the_fall_of_Nanking_flag } }
+								set_global_flag = JAP_the_fall_of_Nanking_flag
+								news_event = { id = NW_JAP_news.44 hours = 12 }
+							}
+						}
+					}
+					if = {
+						limit = { FROM.FROM = { state = 1145 } }
+						ROOT = {
+							#Падение Шанхая#
+							if = {
+								limit = { NOT = { has_global_flag = JAP_the_fall_of_Shanghai_flag } }
+								set_global_flag = JAP_the_fall_of_Shanghai_flag
+								news_event = { id = NW_JAP_news.43 hours = 12 }
+							}
+						}
+					}
+					if = {
+						limit = {
+							#Ухань/Тайюань/Чанша/Гуанчжоу/Куньмин/Сиань/Чунцин#
+							FROM.FROM = {
+								OR = { state = 620 state = 615 state = 602 state = 592 state = 325 state = 744 state = 1182 }
+								NOT = { has_state_flag = JAP_state_event_CHI_target_flag }
+							}
+						}
+						FROM.FROM = {
+							set_state_flag = JAP_state_event_CHI_target_flag
+							save_event_target_as = JAP_state_event_CHI_target
+						}
+						ROOT = { news_event = { id = NW_JAP_news.45 hours = 12 } }
 					}
 				}
-				ROOT = {
-					set_country_flag = JAP_mass_killings_in_Nanjing_country_flag
-					country_event = NW_JAP.273
-				}
-			}
-			#Падение Шанхая#
-			if = {
-				limit = {
-					FROM.FROM = { state = 1145 }
-					ROOT = {
-						OR = { tag = JAP is_subject_of = JAP }
-						NOT = { is_in_faction_with = CHI has_global_flag = JAP_the_fall_of_Shanghai_flag }
+				else_if = {
+					#Сингапур/Манила/Батавия/Калькутта/Коломбо#
+					limit = {
+						FROM.FROM = {
+							OR = { state = 336 state = 327 state = 335 state = 431 state = 1092 }
+							NOT = { has_state_flag = JAP_state_event_colonial_target_flag }
+						}
 					}
-				}
-				ROOT = {
-					set_global_flag = JAP_the_fall_of_Shanghai_flag
-					news_event = { id = NW_JAP_news.43 hours = 12 }
-				}
-			}
-			#Падение Нанкина#
-			if = {
-				limit = {
-					FROM.FROM = { state = 613 }
-					ROOT = {
-						OR = { tag = JAP is_subject_of = JAP }
-						NOT = { is_in_faction_with = CHI has_global_flag = JAP_the_fall_of_Nanking_flag }
-					}
-				}
-				ROOT = {
-					set_global_flag = JAP_the_fall_of_Nanking_flag
-					news_event = { id = NW_JAP_news.44 hours = 12 }
-				}
-			}
-			#Ухань/Тайюань/Чанша/Гуанчжоу/Куньмин/Сиань/Чунцин#
-			if = {
-				limit = {
 					FROM.FROM = {
-						NOT = { has_state_flag = JAP_state_event_CHI_target_flag }
-						OR = { state = 620 state = 615 state = 602 state = 592 state = 325 state = 744 state = 1182 }
+						set_state_flag = JAP_state_event_colonial_target_flag
+						save_event_target_as = JAP_state_event_colonial_target
 					}
-					ROOT = {
-						OR = { tag = JAP is_subject_of = JAP }
-						NOT = { is_in_faction_with = CHI }
-					}
+					ROOT = { news_event = { id = NW_JAP_news.46 hours = 12 } }
 				}
-				FROM.FROM = {
-					set_state_flag = JAP_state_event_CHI_target_flag
-					save_event_target_as = JAP_state_event_CHI_target
-				}
-				ROOT = { news_event = { id = NW_JAP_news.45 hours = 12 } }
 			}
-			#Сингапур/Манила/Батавия/Калькутта/Коломбо#
-			if = {
-				limit = {
-					FROM.FROM = {
-						NOT = { has_state_flag = JAP_state_event_colonial_target_flag }
-						OR = { state = 336 state = 327 state = 335 state = 431 state = 1092 }
-					}
-					ROOT = {
-						OR = { tag = JAP is_subject_of = JAP }
-						NOT = { is_in_faction_with = CHI }
-					}
-				}
-				FROM.FROM = {
-					set_state_flag = JAP_state_event_colonial_target_flag
-					save_event_target_as = JAP_state_event_colonial_target
-				}
-				ROOT = { news_event = { id = NW_JAP_news.46 hours = 12 } }
-			}
+			
 			#Ивент для BRM
 			if = {
 				limit = {
@@ -5247,24 +5273,14 @@ on_actions = {
 						country_event = { id = NW_JAP.12 days = 180 }
 					}
 					if = {
-						limit = {
-							NOT = {
-								has_country_flag = JAP_event21_flag
-								has_country_flag = JAP_event22_flag
-								has_country_flag = JAP_event298_flag
-							}
-						}
-						set_country_flag = JAP_event21_flag
-						set_country_flag = JAP_event22_flag
-						set_country_flag = JAP_event298_flag
-						country_event = { id = NW_JAP.21 days = 250 }
-						country_event = { id = NW_JAP.22 days = 910 }
-						country_event = { id = NW_JAP.298 days = 300 }
-					}
-					if = {
-						limit = { NOT = { has_country_flag = JAP_event307_flag } }
-						set_country_flag = JAP_event307_flag
-						country_event = { id = NW_JAP.307 days = 750 }
+						limit = { NOT = { has_country_flag = JAP_chinese_war_events_flag } }
+						set_country_flag = JAP_chinese_war_events_flag
+						country_event = { id = NW_JAP.21 days = 250 }		# Почему Сайто молчит?
+						country_event = { id = NW_JAP.22 days = 910 }		# Антивоенная речь Сайто
+						country_event = { id = NW_JAP.298 days = 300 }		# Сигео Иванами публично осудил войну
+						country_event = { id = NW_JAP.307 days = 750 }		# Создание Лиги Восточной Азии
+						country_event = { id = NW_JAP.379 days = 700 }		# Тайное выступление принца Микасы
+						country_event = { id = NW_JAP.380 days = 800 }		# Разговор между братьями
 					}
 				}
 			}
