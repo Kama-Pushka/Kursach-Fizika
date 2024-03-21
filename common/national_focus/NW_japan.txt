@@ -711,7 +711,7 @@ focus_tree = {
 		cost = 8
 		ai_will_do = { factor = 10 }
 		available = { has_country_leader = { character = JAP_Kadsucige_Ugaki ruling_only = yes } }
-		search_filters = {  }
+		search_filters = { FOCUS_FILTER_POLITICAL }
 		bypass = {  }
 		prerequisite = { focus = JAP_use_the_liberal_image_of_the_general }
 		relative_position_id = JAP_use_the_liberal_image_of_the_general
@@ -754,6 +754,7 @@ focus_tree = {
 		mutually_exclusive = { focus = JAP_lead_the_conservatives }
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus JAP_gain_the_trust_of_reformers"
+			
 		}
 	}
 	
@@ -765,13 +766,19 @@ focus_tree = {
 		cost = 8
 		ai_will_do = { factor = 10 }
 		search_filters = {  }
-		available = { has_country_leader = { character = JAP_Kadsucige_Ugaki ruling_only = yes } }
+		available = {
+			has_country_leader = { character = JAP_Kadsucige_Ugaki ruling_only = yes }
+			has_idea = JAP_movement_for_One_Party
+		}
 		bypass = {  }
 		prerequisite = { focus = JAP_lead_the_conservatives focus = JAP_gain_the_trust_of_reformers }
 		relative_position_id = JAP_lead_the_conservatives
 		mutually_exclusive = { focus = JAP_condemn_the_movement_in_one_party }
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus JAP_reformat_the_movement_in_one_party"
+			remove_ideas = JAP_movement_for_One_Party
+			custom_effect_tooltip = add_dem_in_coalition
+			add_to_array = { coalition_array = token:democratic }
 		}
 	}
 	
@@ -783,13 +790,20 @@ focus_tree = {
 		cost = 8
 		ai_will_do = { factor = 10 }
 		search_filters = {  }
-		available = { has_country_leader = { character = JAP_Kadsucige_Ugaki ruling_only = yes } }
+		available = {
+			has_country_leader = { character = JAP_Kadsucige_Ugaki ruling_only = yes }
+			has_idea = JAP_movement_for_One_Party
+		}
 		bypass = {  }
 		prerequisite = { focus = JAP_lead_the_conservatives focus = JAP_gain_the_trust_of_reformers }
 		relative_position_id = JAP_gain_the_trust_of_reformers
 		mutually_exclusive = { focus = JAP_reformat_the_movement_in_one_party }
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus JAP_condemn_the_movement_in_one_party"
+			add_political_power = 75
+			add_stability = -0.4
+			add_popularity = { ideology = neutrality popularity = 0.1 }
+			remove_ideas = JAP_movement_for_One_Party
 		}
 	}
 	
@@ -1205,13 +1219,12 @@ focus_tree = {
 		y = 1
 		cost = 8
 		ai_will_do = { factor = 10 }
-		search_filters = { FOCUS_FILTER_INDUSTRY FOCUS_FILTER_STABILITY }
+		search_filters = {  }
 		available = {
+			has_completed_focus = JAP_resettlement_program_in_manchukuo
 			MAN = {
 				is_subject_of = ROOT
-				controls_state = 328
-				controls_state = 715
-				controls_state = 716
+				has_civil_war = no
 			}
 		}
 		bypass = {  }
@@ -1220,54 +1233,9 @@ focus_tree = {
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus JAP_immigration_plan_to_Manchuria"
 			custom_effect_tooltip = JAP_immigration_plan_to_Manchuria_tt
-			add_stability = 0.125
-			every_controlled_state = {
-				limit = { OR = { state = 528 state = 529 state = 530 state = 531 state = 532 state = 533 state = 534 state = 535 state = 536 state = 282 } }
-				add_manpower = -10000
-			}
-			328 = { add_manpower = 35000 }
-			715 = {
-				add_manpower = 35000
-				if = {
-					limit = {
-						free_building_slots = {
-							building = industrial_complex
-							size > 0
-							include_locked = yes
-						}
-					}
-					add_extra_state_shared_building_slots = 1
-					add_building_construction = {
-						type = industrial_complex
-						level = 1
-						instant_build = yes		
-					}
-				}
-			}
-			716 = {
-				add_manpower = 35000
-				if = {
-					limit = {
-						free_building_slots = {
-							building = industrial_complex
-							size > 0
-							include_locked = yes
-						}
-					}
-					add_extra_state_shared_building_slots = 1
-					add_building_construction = {
-						type = industrial_complex
-						level = 1
-						instant_build = yes		
-					}
-				}
-			}
-			MAN = {
-				add_autonomy_score = {
-					value = -250
-					localization = JAP_immigration_plan_to_Manchuria
-				}
-			}
+			set_variable = { JAP_send_a_young_group_of_settlers_to_manchukuo_cost_var = 50 }
+			set_variable = { JAP_create_a_youth_volunteer_corps_for_the_development_of_manchuria_cost_var = 50 }
+			set_variable = { JAP_send_a_group_of_settlers_to_manchukuo_cost_var = 75 }
 		}
 	}
 	
@@ -2734,9 +2702,18 @@ focus_tree = {
 		ai_will_do = { factor = 10 }
 		available = {
 			has_country_leader = { character = JAP_Machida_Chuji ruling_only = yes }
-			custom_trigger_tooltip = {
-				tooltip = JAP_new_parliamentary_elections_tt
-				always = no
+			if = {
+				limit = { NOT = { has_country_flag = NW_JAP_9_event_flag } }
+				custom_trigger_tooltip = {
+					tooltip = JAP_new_parliamentary_elections_tt
+					always = no
+				}
+			}
+			else = {
+				custom_trigger_tooltip = {
+					tooltip = JAP_new_parliamentary_elections_tt_2
+					always = no
+				}
 			}
 		}
 		bypass = {  }
@@ -4360,6 +4337,7 @@ focus_tree = {
 		relative_position_id = JAP_Nakano_office
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus JAP_general_plan_of_national_recovery"
+			hidden_effect = { country_event = { id = NW_JAP.389 days = 1 } }
 			add_ideas = JAP_general_plan_of_national_recovery_idea
 		}
 	}
@@ -4539,6 +4517,7 @@ focus_tree = {
 		relative_position_id = JAP_revisiting_Capitalism
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus JAP_advisory_Body_of_interest_groups"
+			hidden_effect = { country_event = { id = NW_JAP.388 days = 1 } }
 			add_stability = 0.2
 			swap_ideas = {
 				remove_idea = JAP_scared_zaibatsus
@@ -6120,10 +6099,15 @@ focus_tree = {
 		ai_will_do = { factor = 10 }
 		search_filters = { FOCUS_FILTER_POLITICAL }
 		available = {
-			OR = {
-				can_be_country_leader = JAP_Nobuyuki_Abe
-				can_be_country_leader = JAP_kuniaki_koiso
-				can_be_country_leader = JAP_Dziro_Minami
+			has_country_flag = JAP_Abe_office_UNLOCK_flag
+			if = {
+				limit = { has_country_leader = { character = JAP_Dziro_Minami ruling_only = yes } }
+			}
+			else_if = {
+				limit = { has_country_leader = { character = JAP_kuniaki_koiso ruling_only = yes } }
+			}
+			else = {
+				has_country_leader = { character = JAP_Nobuyuki_Abe ruling_only = yes }
 			}
 		}
 		bypass = {  }
@@ -6140,18 +6124,6 @@ focus_tree = {
 			show_ideas_tooltip = JAP_Dzengo_Yosida
 			show_ideas_tooltip = JAP_Naoshi_Ohara
 			show_ideas_tooltip = JAP_Kadzuo_Aoki
-			if = {
-				limit = { can_be_country_leader = JAP_Nobuyuki_Abe }
-				promote_character = JAP_Nobuyuki_Abe
-			}
-			else_if = {
-				limit = { can_be_country_leader = JAP_kuniaki_koiso }
-				promote_character = JAP_kuniaki_koiso
-			}
-			else_if = {
-				limit = { can_be_country_leader = JAP_Dziro_Minami }
-				promote_character = JAP_Dziro_Minami
-			}
 			unlock_decision_category_tooltip = JAP_Abe_office_category
 			activate_mission = JAP_finding_for_support_mission
 		}
@@ -9830,6 +9802,7 @@ focus_tree = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus JAP_restore_the_harmony_of_society"
 			add_days_mission_timeout = { mission = JAP_the_threat_of_a_counter_coup days = 25 }
 			add_days_mission_timeout = { mission = JAP_the_threat_of_radicalization_of_young_officers days = 100 }
+			add_ideas = JAP_restore_the_harmony_of_society_idea
 		}
 	}
 	
@@ -9866,7 +9839,7 @@ focus_tree = {
 		y = 1
 		cost = 10
 		ai_will_do = { factor = 10 }
-		search_filters = {  }
+		search_filters = { FOCUS_FILTER_WAR_SUPPORT }
 		available = {
 			OR = {
 				has_country_leader = { character = JAP_Gondo_Seike ruling_only = yes }
@@ -9878,7 +9851,7 @@ focus_tree = {
 		relative_position_id = JAP_abolish_the_meiji_land_tax
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus JAP_fighting_the_extreme_influence_of_the_west"
-
+			add_timed_idea = { idea = JAP_fighting_the_extreme_influence_of_the_west_idea days = 200 }
 		}
 	}
 	
@@ -9922,6 +9895,7 @@ focus_tree = {
 				has_country_leader = { character = JAP_Jinzaburo_Masaki ruling_only = yes }
 			}
 			has_active_mission = JAP_the_threat_of_radicalization_of_young_officers
+			has_active_mission = JAP_the_threat_of_a_counter_coup
 		}
 		bypass = {  }
 		prerequisite = { focus = JAP_fight_against_statism }
@@ -10093,12 +10067,14 @@ focus_tree = {
 		y = 1
 		cost = 10
 		ai_will_do = { factor = 10 }
-		search_filters = {  }
+		search_filters = { FOCUS_FILTER_STABILITY FOCUS_FILTER_WAR_SUPPORT }
 		available = {
 			OR = {
 				has_country_leader = { character = JAP_Gondo_Seike ruling_only = yes }
 				has_country_leader = { character = JAP_Jinzaburo_Masaki ruling_only = yes }
 			}
+			power_balance_value = { id = JAP_fight_against_statism_power_balance value > 0.85 }
+			has_active_mission = JAP_the_threat_of_a_counter_coup
 		}
 		bypass = {  }
 		prerequisite = { focus = JAP_increase_the_production_of_agricultural_products }
@@ -10107,7 +10083,12 @@ focus_tree = {
 		relative_position_id = JAP_increase_the_production_of_agricultural_products
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus JAP_the_joint_rule_of_the_emperor_and_the_people"
-
+			add_stability = 0.1
+			add_war_support = 0.1
+			if = {
+				limit = { has_active_mission = JAP_the_threat_of_a_counter_coup }
+				remove_mission = JAP_the_threat_of_a_counter_coup
+			}
 		}
 	}
 	
@@ -12742,7 +12723,7 @@ focus_tree = {
 			unlock_decision_tooltip = JAP_create_a_Yakut_State
 			unlock_decision_tooltip = JAP_create_the_Ukrainian_Far_Eastern_Republic
 			unlock_decision_tooltip = JAP_annex_Outer_Manchuria_to_Manchukuo
-			unlock_decision_tooltip = JAP_increase_the_territory_of_the_Jewish_state
+#			unlock_decision_tooltip = JAP_increase_the_territory_of_the_Jewish_state		#TODO:
 		}
 	}
 	
@@ -12852,60 +12833,99 @@ focus_tree = {
 		y = 1
 		cost = 7
 		ai_will_do = { factor = 10 }
-		search_filters = { FOCUS_FILTER_MANPOWER }
-		available = { has_war = yes }
+		search_filters = { FOCUS_FILTER_MANPOWER FOCUS_FILTER_INDUSTRY }
+		available = {
+			has_war = yes
+			if = {
+				limit = { has_country_leader = { character = JAP_Seigo_Nakano ruling_only = yes } }
+				has_country_flag = JAP_dictatorial_powers_from_the_House_of_Representatives_category_BLOCK_flag
+			}
+		}
 		bypass = {  }
+		select_effect = { country_event = { id = NW_JAP.173 days = 30 } }
 		prerequisite = { focus = JAP_cabinet_Planning_Council }
 		relative_position_id = JAP_cabinet_Planning_Council
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus JAP_the_Law_on_the_General_Mobilization_of_the_Nation"
-			hidden_effect = {
-				if = {
-					limit = { NOT = { has_government = fascism has_government = monarchy } }
-					country_event = NW_JAP.173
-				}
-			}
 			if = {
-				limit = { has_idea = disarmed_nation }
-				swap_ideas = {
-					remove_idea = disarmed_nation
-					add_idea = volunteer_only
+				limit = {
+					OR = {
+						has_government = fascism
+						has_government = monarchy
+						has_government = technocracy
+					}
+				}
+				hidden_effect = { news_event = { id = NW_JAP_news.56 days = 2 } }
+				#MANPOWER LAW#
+				if = {
+					limit = { has_idea = disarmed_nation }
+					swap_ideas = {
+						remove_idea = disarmed_nation
+						add_idea = volunteer_only
+					}
+				}
+				else_if = {
+					limit = { has_idea = volunteer_only }
+					swap_ideas = {
+						remove_idea = volunteer_only
+						add_idea = limited_conscription
+					}
+				}
+				else_if = {
+					limit = { has_idea = limited_conscription }
+					swap_ideas = {
+						remove_idea = limited_conscription
+						add_idea = extensive_conscription
+					}
+				}
+				else_if = {
+					limit = { has_idea = extensive_conscription }
+					swap_ideas = {
+						remove_idea = extensive_conscription
+						add_idea = service_by_requirement
+					}
+				}
+				else_if = {
+					limit = { has_idea = service_by_requirement }
+					swap_ideas = {
+						remove_idea = service_by_requirement
+						add_idea = all_adults_serve
+					}
+				}
+				else_if = {
+					limit = { has_idea = all_adults_serve }
+					swap_ideas = {
+						remove_idea = all_adults_serve
+						add_idea = scraping_the_barrel
+					}
+				}
+				#ECONOMIC LAW#
+				if = {
+					limit = { has_idea = free_trade }
+					swap_ideas = {
+						remove_idea = free_trade
+						add_idea = export_focus
+					}
+				}
+				else_if = {
+					limit = { has_idea = export_focus }
+					swap_ideas = {
+						remove_idea = export_focus
+						add_idea = limited_exports
+					}
+				}
+				else_if = {
+					limit = { has_idea = limited_exports }
+					swap_ideas = {
+						remove_idea = limited_exports
+						add_idea = closed_economy
+					}
 				}
 			}
-			else_if = {
-				limit = { has_idea = volunteer_only }
-				swap_ideas = {
-					remove_idea = volunteer_only
-					add_idea = limited_conscription
-				}
-			}
-			else_if = {
-				limit = { has_idea = limited_conscription }
-				swap_ideas = {
-					remove_idea = limited_conscription
-					add_idea = extensive_conscription
-				}
-			}
-			else_if = {
-				limit = { has_idea = extensive_conscription }
-				swap_ideas = {
-					remove_idea = extensive_conscription
-					add_idea = service_by_requirement
-				}
-			}
-			else_if = {
-				limit = { has_idea = service_by_requirement }
-				swap_ideas = {
-					remove_idea = service_by_requirement
-					add_idea = all_adults_serve
-				}
-			}
-			else_if = {
-				limit = { has_idea = all_adults_serve }
-				swap_ideas = {
-					remove_idea = all_adults_serve
-					add_idea = scraping_the_barrel
-				}
+			else = {
+				unlock_decision_category_tooltip = JAP_the_Law_on_the_General_Mobilization_of_the_Nation_category
+				activate_mission = JAP_adoption_of_the_law_on_national_mobilization_mission
+				set_variable = { JAP_consent_of_the_sejm_var = 15 }
 			}
 		}
 	}
@@ -13149,13 +13169,52 @@ focus_tree = {
 		cost = 7
 		ai_will_do = { factor = 10 }
 		search_filters = { FOCUS_FILTER_INDUSTRY }
-		available = {  }
+		available = {
+			MAN = {
+				is_subject_of = ROOT
+				has_civil_war = no
+				controls_state = 714
+				controls_state = 717
+				controls_state = 761
+			}
+		}
 		bypass = {  }
+		select_effect = { country_event = { id = NW_JAP.396 days = 30 } }
 		prerequisite = { focus = JAP_cabinet_Planning_Council }
 		relative_position_id = JAP_cabinet_Planning_Council
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus JAP_resettlement_program_in_manchukuo"
-
+			unlock_decision_category_tooltip = JAP_resettlement_program_in_manchukuo_category
+			set_variable = { JAP_send_a_young_group_of_settlers_to_manchukuo_cost_var = 100 }
+			set_variable = { JAP_create_a_youth_volunteer_corps_for_the_development_of_manchuria_cost_var = 100 }
+			set_variable = { JAP_send_a_group_of_settlers_to_manchukuo_cost_var = 150 }
+			set_variable = { JAP_local_supplies_for_controller_var = 0.05 }
+			set_variable = { JAP_attrition_for_controller_var = -0.05 }
+			set_variable = { JAP_state_production_speed_supply_node_factor_var = 0.05 }
+			custom_effect_tooltip = JAP_resettlement_program_in_manchukuo_tt
+			hidden_effect = {
+				714 = {
+					set_variable = { JAP_local_supplies_for_controller_var = 0.05 }
+					set_variable = { JAP_attrition_for_controller_var = -0.05 }
+					set_variable = { JAP_state_production_speed_supply_node_factor_var = 0.05 }
+					add_dynamic_modifier = { modifier = JAP_japanese_colonists_modifier }
+					force_update_dynamic_modifier = yes
+				}
+				717 = {
+					set_variable = { JAP_local_supplies_for_controller_var = 0.05 }
+					set_variable = { JAP_attrition_for_controller_var = -0.05 }
+					set_variable = { JAP_state_production_speed_supply_node_factor_var = 0.05 }
+					add_dynamic_modifier = { modifier = JAP_japanese_colonists_modifier }
+					force_update_dynamic_modifier = yes
+				}
+				761 = {
+					set_variable = { JAP_local_supplies_for_controller_var = 0.05 }
+					set_variable = { JAP_attrition_for_controller_var = -0.05 }
+					set_variable = { JAP_state_production_speed_supply_node_factor_var = 0.05 }
+					add_dynamic_modifier = { modifier = JAP_japanese_colonists_modifier }
+					force_update_dynamic_modifier = yes
+				}
+			}
 		}
 	}
 	
