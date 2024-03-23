@@ -9407,16 +9407,32 @@ focus_tree = {
 			show_ideas_tooltip = JAP_Rehei_Uchida
 			custom_effect_tooltip = remove_political_advisor
 			show_ideas_tooltip = JAP_Hirota_Koki
-			CHI = {
-				add_opinion_modifier = {
-					modifier = JAP_to_attract_right_wing_political_societies_to_the_Foreign_Ministry_op
-					target = ROOT
-				}
-				reverse_add_opinion_modifier = {
-					modifier = JAP_to_attract_right_wing_political_societies_to_the_Foreign_Ministry_op
-					target = ROOT
-				}
+			swap_ideas = {
+				remove_idea = JAP_Amur_River_Society
+				add_idea = JAP_Amur_River_Society_1
 			}
+			unlock_decision_category_tooltip = JAP_to_attract_right_wing_political_societies_to_the_Foreign_Ministry_category
+		}
+	}
+	
+	focus = {
+		id = JAP_protection_of_all_peoples_of_color
+		icon = GFX_z_goal_JAP_trial_on_sabura_aizawa
+		x = -1
+		y = 1
+		cost = 10
+		ai_will_do = { factor = 10 }
+		search_filters = { FOCUS_FILTER_POLITICAL }
+		available = {
+			is_faction_leader = yes
+			has_country_leader = { character = JAP_Jinzaburo_Masaki ruling_only = yes }
+		}
+		prerequisite = { focus = JAP_to_attract_right_wing_political_societies_to_the_Foreign_Ministry }
+		relative_position_id = JAP_to_attract_right_wing_political_societies_to_the_Foreign_Ministry
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus JAP_protection_of_all_peoples_of_color"
+			set_faction_name = JAP_great_sphere_of_co_flowering
+			custom_effect_tooltip = JAP_protection_of_all_peoples_of_color_tt
 		}
 	}
 	
@@ -10786,6 +10802,113 @@ focus_tree = {
 	}
 	
 	focus = {
+		id = JAP_alliance_with_france
+		icon = GFX_z_goal_JAP_trial_on_sabura_aizawa
+		x = 0
+		y = 2
+		cost = 10
+		ai_will_do = { factor = 10 }
+		search_filters = { FOCUS_FILTER_ANNEXATION }
+		available = { has_country_leader = { character = JAP_Ikki_Kita ruling_only = yes } }
+		bypass = {
+			OR = {
+				NOT = { country_exists = event_target:NW_france_scope }
+				NOT = { country_exists = SOV }
+				SOV = { NOT = { has_government = communism } }
+				event_target:NW_france_scope = { has_government = communism }
+			}
+		}
+		prerequisite = { focus = JAP_new_Lands_of_the_Empire }
+		relative_position_id = JAP_new_Lands_of_the_Empire
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus JAP_alliance_with_france"
+			unlock_decision_category_tooltip = JAP_alliance_with_france_category
+		}
+	}
+	
+	
+	focus = {
+		id = JAP_exile_beyond_suez
+		icon = GFX_z_goal_JAP_trial_on_sabura_aizawa
+		x = 0
+		y = 2
+		cost = 10
+		ai_will_do = { factor = 10 }
+		search_filters = { FOCUS_FILTER_ANNEXATION }
+		available = { has_country_leader = { character = JAP_Ikki_Kita ruling_only = yes } }
+		bypass = { 1064 = { controller = { OR = { tag = ROOT is_subject_of = ROOT has_war_with = ROOT } } } }
+		prerequisite = { focus = JAP_alliance_with_france }
+		relative_position_id = JAP_alliance_with_france
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus JAP_exile_beyond_suez"
+			unlock_decision_tooltip = JAP_exile_beyond_suez_decision
+		}
+	}
+	
+	focus = {
+		id = JAP_settling_in_australia
+		icon = GFX_z_goal_JAP_trial_on_sabura_aizawa
+		x = -1
+		y = 1
+		cost = 10
+		ai_will_do = { factor = 10 }
+		search_filters = { FOCUS_FILTER_ANNEXATION }
+		available = {
+			has_country_leader = { character = JAP_Ikki_Kita ruling_only = yes }
+			OR = {
+				has_subject = AST
+				AND = {
+					controls_state = 523
+					controls_state = 1030
+					controls_state = 737
+				}
+			}
+		}
+		prerequisite = { focus = JAP_exile_beyond_suez }
+		prerequisite = { focus = JAP_give_rights_to_non_Japanese_people }
+		relative_position_id = JAP_exile_beyond_suez
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus JAP_settling_in_australia"
+			if = {
+				limit = { has_subject = AST }
+				AST = {
+					add_autonomy_score = { value = -250 }
+					add_ideas = JAP_settling_in_australia_idea
+				}
+			}
+			else = {
+				if = {
+					limit = {
+						all_controlled_state = {
+							if = {
+								limit = { OR = { state = 528 state = 529 state = 530 state = 531 state = 532 state = 533 state = 534 state = 535 state = 536 state = 282 } }
+								add_to_temp_variable = { JAP_sum_of_manpower = 7500 }
+							}
+						}
+					}
+				}
+				every_controlled_state = {
+					limit = { OR = { state = 528 state = 529 state = 530 state = 531 state = 532 state = 533 state = 534 state = 535 state = 536 state = 282 } }
+					add_manpower = -7500
+				}
+				divide_temp_variable = { JAP_sum_of_manpower = 3 }
+				523 = {
+					add_core_of = ROOT
+					add_manpower = JAP_sum_of_manpower
+				}
+				1030 = {
+					add_core_of = ROOT
+					add_manpower = JAP_sum_of_manpower
+				}
+				737 = {
+					add_core_of = ROOT
+					add_manpower = JAP_sum_of_manpower
+				}
+			}
+		}
+	}
+	
+	focus = {
 		id = JAP_give_rights_to_non_Japanese_people
 		icon = GFX_z_goal_JAP_trial_on_sabura_aizawa
 		x = -1
@@ -11050,7 +11173,6 @@ focus_tree = {
 			OR = {
 				has_country_leader = { character = JAP_Ikki_Kita ruling_only = yes }
 				has_country_leader = { character = JAP_Yasuhito ruling_only = yes }
-				has_country_leader = { character = JAP_Shumei_Okawa ruling_only = yes }
 			}
 		}
 		bypass = {  }
@@ -12190,6 +12312,44 @@ focus_tree = {
 	}
 	
 	focus = {
+		id = JAP_friend_of_islam
+		icon = GFX_z_goal_JAP_trial_on_sabura_aizawa
+		x = -3
+		y = 5
+		cost = 10
+		ai_will_do = { factor = 10 }
+		search_filters = { FOCUS_FILTER_POLITICAL }
+		available = { is_faction_leader = yes }
+		bypass = {  }
+		prerequisite = { focus = JAP_hokusin_rock focus = JAP_nansin_rock }
+		relative_position_id = JAP_diplomatic_expansion
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus JAP_friend_of_islam"
+			set_faction_name = JAP_great_sphere_of_co_flowering
+			custom_effect_tooltip = JAP_friend_of_islam_tt
+			unlock_decision_category_tooltip = JAP_friend_of_islam_category
+		}
+	}
+	
+	focus = {
+		id = JAP_creation_of_Governments_of_liberated_peoples
+		icon = GFX_z_goal_JAP_trial_on_sabura_aizawa
+		x = -2
+		y = 0
+		cost = 10
+		ai_will_do = { factor = 10 }
+		search_filters = {  }
+		available = { is_subject = no }
+		bypass = {  }
+		prerequisite = { focus = JAP_liberation_of_Asians_from_colonizers focus = JAP_sun_of_freedom_rises_in_the_east }
+		relative_position_id = JAP_friend_of_islam
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus JAP_creation_of_Governments_of_liberated_peoples"
+			unlock_decision_category_tooltip = JAP_creation_of_Governments_of_liberated_peoples_category
+		}
+	}
+	
+	focus = {
 		id = JAP_expand_participation_in_proxy_wars
 		icon = GFX_z_goal_JAP_trial_on_sabura_aizawa
 		x = -2
@@ -12548,29 +12708,6 @@ focus_tree = {
 	}
 	
 	focus = {
-		id = JAP_creation_of_Governments_of_liberated_peoples
-		icon = GFX_z_goal_JAP_trial_on_sabura_aizawa
-		x = 1
-		y = 1
-		cost = 10
-		ai_will_do = { factor = 10 }
-		search_filters = {  }
-		available = {  }
-		bypass = {  }
-		prerequisite = { focus = JAP_liberation_of_Asians_from_colonizers focus = JAP_clockwise_strike }
-		relative_position_id = JAP_liberation_of_Asians_from_colonizers
-		completion_reward = {
-			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus JAP_creation_of_Governments_of_liberated_peoples"
-			unlock_decision_tooltip = JAP_proclaim_the_Second_Philippine_Republic
-			unlock_decision_tooltip = JAP_proclaim_the_Vietnamise_Empire
-			unlock_decision_tooltip = JAP_proclaim_the_Kingdom_of_Kampuchea
-			unlock_decision_tooltip = JAP_proclaim_the_State_of_Laos
-			unlock_decision_tooltip = JAP_proclaim_the_State_of_Malaya
-			unlock_decision_tooltip = JAP_proclaim_the_Indonesian_Federation
-		}
-	}
-	
-	focus = {
 		id = JAP_hokusin_rock
 		icon = GFX_z_goal_JAP_trial_on_sabura_aizawa
 		x = 8
@@ -12676,6 +12813,140 @@ focus_tree = {
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus JAP_continue_negotiations_with_Poland"
 			unlock_decision_tooltip = JAP_offer_Poland_an_anti_Soviet_secret_alliance
+		}
+	}
+	
+	focus = {
+		id = JAP_turanist_union
+		icon = GFX_z_goal_JAP_trial_on_sabura_aizawa
+		x = 6
+		y = 1
+		cost = 10
+		ai_will_do = { factor = 10 }
+		search_filters = {  }
+		available = {
+			is_faction_leader = yes
+			custom_trigger_tooltip = {
+				tooltip = JAP_turanist_union_trigger_tt
+				all_allied_country = {
+					OR = {
+						original_tag = PRC
+						original_tag = GXC
+						original_tag = YUN
+						original_tag = SHX
+						original_tag = XSM
+						original_tag = SIK
+						original_tag = SIH
+						original_tag = XIK
+						original_tag = SHA
+						original_tag = NEA
+						original_tag = TNG
+						original_tag = KAS
+						original_tag = DZH
+						original_tag = KUM
+						original_tag = NGX
+						original_tag = YUL
+						original_tag = HCP
+						original_tag = GND
+						original_tag = YCP
+						original_tag = YSC
+						original_tag = FSR
+						original_tag = HNA
+						original_tag = MAN
+						original_tag = MEN
+					}	
+				}
+			}
+			NOT = { is_in_faction_with = CHI }
+		}
+		bypass = {  }
+		prerequisite = { focus = JAP_hokusin_rock }
+		relative_position_id = JAP_hokusin_rock
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus JAP_turanist_union"
+			custom_effect_tooltip = JAP_turanist_union_tt
+			set_faction_name = JAP_pan_turanian_sphere_of_co_flowering
+			unlock_decision_category_tooltip = JAP_turanist_union_category
+		}
+	}
+	
+	focus = {
+		id = JAP_recognize_the_turanian_theory
+		icon = GFX_z_goal_JAP_trial_on_sabura_aizawa
+		x = 0
+		y = 2
+		cost = 10
+		ai_will_do = { factor = 10 }
+		search_filters = {  }
+		available = {
+			is_faction_leader = yes
+			OR = {
+				is_in_faction_with = FIN
+				is_in_faction_with = TUR
+				is_in_faction_with = HUN
+			}
+		}
+		bypass = {  }
+		prerequisite = { focus = JAP_turanist_union }
+		relative_position_id = JAP_turanist_union
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus JAP_recognize_the_turanian_theory"
+			if = {
+				limit = {
+					525 = {
+						is_owned_and_controlled_by = ROOT
+						NOT = { is_core_of = ROOT }
+					}
+					527 = {
+						is_owned_and_controlled_by = ROOT
+						NOT = { is_core_of = ROOT }
+					}
+				}
+				add_to_variable = { JAP_the_level_of_integration_var = 5 tooltip = JAP_the_level_of_integration_var_tt }
+				JAP_the_level_of_integration = yes
+			}
+			every_other_country = {
+				limit = {
+					is_in_faction_with = ROOT
+					OR = { original_tag = FIN original_tag = TUR original_tag = HUN }
+				}
+				add_opinion_modifier = {
+					modifier = JAP_recognize_the_turanian_theory_op
+					target = ROOT
+				}
+				reverse_add_opinion_modifier = {
+					modifier = JAP_recognize_the_turanian_theory_op
+					target = ROOT
+				}
+			}
+		}
+	}
+	
+	focus = {
+		id = JAP_native_japanese_lands
+		icon = GFX_z_goal_JAP_trial_on_sabura_aizawa
+		x = 1
+		y = 1
+		cost = 5
+		ai_will_do = { factor = 10 }
+		search_filters = { FOCUS_FILTER_ANNEXATION }
+		available = {
+			controls_state = 562
+			controls_state = 887
+			controls_state = 637
+			controls_state = 763
+			controls_state = 655
+		}
+		bypass = {  }
+		prerequisite = { focus = JAP_turanist_union }
+		relative_position_id = JAP_turanist_union
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus JAP_native_japanese_lands"
+			add_state_core = 562
+			add_state_core = 887
+			add_state_core = 637
+			add_state_core = 763
+			add_state_core = 655
 		}
 	}
 	
@@ -12800,6 +13071,93 @@ focus_tree = {
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus JAP_our_goals_are_fulfilled"
 			unlock_decision_tooltip = JAP_start_peace_talks_with_Moscow
+		}
+	}
+	
+	focus = {
+		id = JAP_sun_of_freedom_rises_in_the_east
+		icon = GFX_z_goal_JAP_trial_on_sabura_aizawa
+		x = 1
+		y = 1
+		cost = 10
+		ai_will_do = { factor = 10 }
+		search_filters = { FOCUS_FILTER_ANNEXATION }
+		available = {
+			is_subject = no
+			NOT = {
+				has_completed_focus = JAP_turanist_union
+				has_war_with = SOV
+			}
+			408 = { controller = { OR = { tag = ROOT is_subject_of = ROOT is_in_faction_with = ROOT } } }
+			409 = { controller = { OR = { tag = ROOT is_subject_of = ROOT is_in_faction_with = ROOT } } }
+			984 = { controller = { OR = { tag = ROOT is_subject_of = ROOT is_in_faction_with = ROOT } } }
+		}
+		bypass = {  }
+		prerequisite = { focus = JAP_the_destruction_of_the_Communist_Beast focus = JAP_our_goals_are_fulfilled }
+		relative_position_id = JAP_the_destruction_of_the_Communist_Beast
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus JAP_sun_of_freedom_rises_in_the_east"
+			unlock_decision_category_tooltip = JAP_liberation_of_asia_category
+		}
+	}
+	
+	focus = {
+		id = JAP_apocalypse
+		icon = GFX_z_goal_JAP_trial_on_sabura_aizawa
+		x = 0
+		y = 1
+		cost = 10
+		ai_will_do = { factor = 10 }
+		search_filters = { FOCUS_FILTER_ANNEXATION }
+		available = {
+			OR = {
+				has_country_leader = { character = JAP_Kanji_Ishiwara ruling_only = yes }
+				has_country_leader = { character = JAP_Kimura_Takeo ruling_only = yes }
+			}
+			is_subject = no
+			num_of_factories > 125
+			can_declare_war_on = USA
+		}
+		bypass = {  }
+		prerequisite = { focus = JAP_sun_of_freedom_rises_in_the_east }
+		relative_position_id = JAP_sun_of_freedom_rises_in_the_east
+		will_lead_to_war_with = USA
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus JAP_apocalypse"
+			declare_war_on = { target = USA type = topple_government }
+		}
+	}
+	
+	focus = {
+		id = JAP_world_peace
+		icon = GFX_z_goal_JAP_trial_on_sabura_aizawa
+		x = 0
+		y = 1
+		cost = 10
+		ai_will_do = { factor = 10 }
+		search_filters = { FOCUS_FILTER_ANNEXATION }
+		available = {
+			OR = {
+				has_country_leader = { character = JAP_Kanji_Ishiwara ruling_only = yes }
+				has_country_leader = { character = JAP_Kimura_Takeo ruling_only = yes }
+			}
+			is_subject = no
+			has_completed_focus = JAP_restoration_of_the_sowing_is_a_great_transformation
+		}
+		bypass = {  }
+		prerequisite = { focus = JAP_apocalypse }
+		relative_position_id = JAP_apocalypse
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus JAP_world_peace"
+			custom_effect_tooltip = JAP_world_peace_tt
+			every_other_country = {
+				limit = { NOT = { is_in_faction_with = ROOT has_war_with = ROOT is_subject_of = ROOT } }
+				ROOT = {
+					create_wargoal = { type = puppet_wargoal_focus target = PREV expire = 0 }
+					add_ai_strategy = { type = antagonize id = PREV value = 200 }
+					add_ai_strategy = { type = declare_war id = PREV value = 200 }
+				}
+			}
 		}
 	}
 

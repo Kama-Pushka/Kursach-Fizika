@@ -1183,12 +1183,30 @@ JAP_war_operations = {
 	JAP_attack_on_the_USSR = {
 		priority = 1500
 		icon = border_war
-		allowed = { always = no }
+		activation = { always = no }
 		available = { hidden_trigger = { always = no } }
 		cancel_trigger = {
 			OR = {
-				JAP = { has_war_with = SOV }
-				POL = { has_war_with = SOV }
+				NOT = { country_exists = SOV }
+				JAP = {
+					OR = {
+						exists = no
+						is_subject = yes
+						has_war_with = SOV
+						is_in_faction_with = SOV
+						is_subject_of = SOV
+					}
+				}
+				POL = {
+					OR = {
+						exists = no
+						is_subject = yes
+						has_war_with = SOV
+						is_in_faction_with = SOV
+						is_subject_of = SOV
+						has_war_with = JAP
+					}
+				}
 			}
 		}
 		cancel_effect = {
@@ -1196,20 +1214,71 @@ JAP_war_operations = {
 		}
 		days_mission_timeout = 60
 		is_good = no
-		fire_only_once = yes
 		selectable_mission = no
 		war_with_on_timeout = SOV
 		timeout_effect = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): timeout mission JAP_attack_on_the_USSR"
 			if = {
 				limit = { original_tag = JAP }
-				declare_war_on = { target = SOV type = annex_everything }
-				effect_tooltip = { POL = { declare_war_on = { target = SOV type = annex_everything } } }
+				declare_war_on = { target = SOV type = topple_government }
+				effect_tooltip = { POL = { declare_war_on = { target = SOV type = topple_government } } }
 			}
 			if = {
 				limit = { original_tag = POL }
-				declare_war_on = { target = SOV type = annex_everything }
-				effect_tooltip = { JAP = { declare_war_on = { target = SOV type = annex_everything } } }
+				declare_war_on = { target = SOV type = topple_government }
+				effect_tooltip = { JAP = { declare_war_on = { target = SOV type = topple_government } } }
+			}
+		}
+		ai_will_do = { base = 0 }
+	}
+	
+	JAP_attack_on_the_USSR_2 = {
+		priority = 1500
+		icon = border_war
+		activation = { always = no }
+		available = { hidden_trigger = { always = no } }
+		cancel_trigger = {
+			OR = {
+				NOT = { country_exists = SOV }
+				JAP = {
+					OR = {
+						exists = no
+						is_subject = yes
+						has_war_with = SOV
+						is_in_faction_with = SOV
+						is_subject_of = SOV
+					}
+				}
+				event_target:NW_france_scope = {
+					OR = {
+						exists = no
+						is_subject = yes
+						has_war_with = SOV
+						is_in_faction_with = SOV
+						is_subject_of = SOV
+						has_war_with = JAP
+					}
+				}
+			}
+		}
+		cancel_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): cancel mission JAP_attack_on_the_USSR_2"
+		}
+		days_mission_timeout = 60
+		is_good = no
+		selectable_mission = no
+		war_with_on_timeout = SOV
+		timeout_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): timeout mission JAP_attack_on_the_USSR_2"
+			if = {
+				limit = { original_tag = JAP }
+				declare_war_on = { target = SOV type = topple_government }
+				effect_tooltip = { event_target:NW_france_scope = { declare_war_on = { target = SOV type = topple_government } } }
+			}
+			if = {
+				limit = { original_tag = event_target:NW_france_scope }
+				declare_war_on = { target = SOV type = topple_government }
+				effect_tooltip = { JAP = { declare_war_on = { target = SOV type = topple_government } } }
 			}
 		}
 		ai_will_do = { base = 0 }
@@ -2272,6 +2341,26 @@ JAP_Asia_for_Asians_category = {
 		}
 		target_trigger = {
 			FROM = {
+				OR = {
+					original_tag = BRM
+					original_tag = PHI
+					original_tag = KAS
+					original_tag = TNG
+					original_tag = RAJ
+					original_tag = CHI
+					original_tag = PAK
+					original_tag = BHU
+					original_tag = NEP
+					original_tag = SKM
+					original_tag = KAZ
+					original_tag = AFG
+					original_tag = UZB
+					original_tag = DZH
+					original_tag = KYR
+					original_tag = TMS
+					original_tag = TAJ
+					original_tag = TIB
+				}
 				has_capitulated = no
 				has_civil_war = no
 				is_in_faction = no
@@ -2285,7 +2374,7 @@ JAP_Asia_for_Asians_category = {
 		days_re_enable = 360
 		complete_effect = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision JAP_invite_to_alliance"
-			FROM = { country_event = generic.5 }
+			FROM = { country_event = { id = generic.5 days = 1 } }
 		}
 	}
 }
@@ -2395,10 +2484,18 @@ JAP_nansin_rock_category = {
 		available = { FROM = { NOT = { OR = { has_war_with = ROOT is_in_faction_with = ROOT is_subject_of = ROOT has_non_aggression_pact_with = ROOT } } } }
 		visible = { has_completed_focus = JAP_liberation_of_Asians_from_colonizers }
 		targets = { ENG HOL event_target:NW_france_scope }
+		target_trigger = {
+			FROM = {
+				OR = {
+					original_tag = ENG
+					original_tag = HOL
+					original_tag = event_target:NW_france_scope
+				}
+			}
+		}
 		targets_dynamic = yes
 		cost = 25
-		fire_only_once = no
-		days_re_enable = 360
+		fire_only_once = yes
 		complete_effect = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision JAP_liberation_of_Asians_from_colonizers_decision"
 			declare_war_on = { target = FROM type = annex_everything }
@@ -2415,198 +2512,6 @@ JAP_nansin_rock_category = {
 		complete_effect = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision JAP_pacify_a_helpless_dragon_decision"
 			declare_war_on = { target = CHI type = annex_everything }
-		}
-	}
-	
-	JAP_proclaim_the_Second_Philippine_Republic = {
-		priority = 750
-		icon = GFX_decision_generic_political_discourse
-		allowed = { original_tag = JAP }
-		available = {
-			controls_state = 327
-			controls_state = 623
-			controls_state = 624
-			controls_state = 625
-			controls_state = 626
-			controls_state = 627
-			controls_state = 628
-		}
-		visible = { has_completed_focus = JAP_creation_of_Governments_of_liberated_peoples }
-		fire_only_once = yes
-		complete_effect = {
-			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision JAP_proclaim_the_Second_Philippine_Republic"
-			PHI = {
-				transfer_state = 327
-				transfer_state = 623
-				transfer_state = 624
-				transfer_state = 625
-				transfer_state = 626
-				transfer_state = 627
-				transfer_state = 628
-				ROOT = {
-					if = {
-						limit = { has_dlc = "Waking the Tiger" }
-						set_autonomy = { target = PREV autonomy_state = autonomy_wtt_imperial_subject }
-						else = { puppet = PREV }
-					}
-					hidden_effect = { set_nationality = { target_country = PREV character = JAP_Hose_Laurel } }
-				}
-				set_politics = { ruling_party = neutrality elections_allowed = no }
-				promote_character = JAP_Hose_Laurel
-			}
-		}
-	}
-	
-	JAP_proclaim_the_Vietnamise_Empire = {
-		priority = 650
-		icon = GFX_decision_generic_political_discourse
-		allowed = { original_tag = JAP }
-		available = {
-			controls_state = 671
-			controls_state = 286
-			controls_state = 1194
-		}
-		visible = { has_completed_focus = JAP_creation_of_Governments_of_liberated_peoples }
-		fire_only_once = yes
-		complete_effect = {
-			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision JAP_proclaim_the_Vietnamise_Empire"
-			VIN = {
-				transfer_state = 671
-				transfer_state = 286
-				transfer_state = 1194
-				ROOT = {
-					if = {
-						limit = { has_dlc = "Waking the Tiger" }
-						set_autonomy = { target = PREV autonomy_state = autonomy_wtt_imperial_subject }
-						else = { puppet = PREV }
-					}
-					hidden_effect = { set_nationality = { target_country = PREV character = JAP_Bao_Dai } }
-				}
-				set_politics = { ruling_party = monarchy elections_allowed = no }
-				promote_character = JAP_Bao_Dai
-			}
-		}
-	}
-	
-	JAP_proclaim_the_Kingdom_of_Kampuchea = {
-		priority = 600
-		icon = GFX_decision_generic_political_discourse
-		allowed = { original_tag = JAP }
-		available = { controls_state = 741 }
-		visible = { has_completed_focus = JAP_creation_of_Governments_of_liberated_peoples }
-		fire_only_once = yes
-		complete_effect = {
-			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision JAP_proclaim_the_Kingdom_of_Kampuchea"
-			CAM = {
-				transfer_state = 741
-				ROOT = {
-					if = {
-						limit = { has_dlc = "Waking the Tiger" }
-						set_autonomy = { target = PREV autonomy_state = autonomy_wtt_imperial_subject }
-						else = { puppet = PREV }
-					}
-					hidden_effect = { set_nationality = { target_country = PREV character = JAP_Norodom_Sianuk } }
-				}
-				set_politics = { ruling_party = monarchy elections_allowed = no }
-				promote_character = JAP_Norodom_Sianuk
-			}
-		}
-	}
-	
-	JAP_proclaim_the_State_of_Laos = {
-		priority = 550
-		icon = GFX_decision_generic_political_discourse
-		allowed = { original_tag = JAP }
-		available = { controls_state = 670 }
-		visible = { has_completed_focus = JAP_creation_of_Governments_of_liberated_peoples }
-		fire_only_once = yes
-		complete_effect = {
-			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision JAP_proclaim_the_State_of_Laos"
-			LAO = {
-				transfer_state = 670
-				ROOT = {
-					if = {
-						limit = { has_dlc = "Waking the Tiger" }
-						set_autonomy = { target = PREV autonomy_state = autonomy_wtt_imperial_subject }
-						else = { puppet = PREV }
-					}
-					hidden_effect = { set_nationality = { target_country = PREV character = JAP_Sisavang_Vong } }
-				}
-				set_politics = { ruling_party = monarchy elections_allowed = no }
-				promote_character = JAP_Sisavang_Vong
-			}
-		}
-	}
-	
-	JAP_proclaim_the_State_of_Malaya = {
-		priority = 500
-		icon = GFX_decision_generic_political_discourse
-		allowed = { original_tag = JAP }
-		available = {
-			controls_state = 333
-			controls_state = 1184
-			controls_state = 1183
-			controls_state = 336
-		}
-		visible = { has_completed_focus = JAP_creation_of_Governments_of_liberated_peoples }
-		fire_only_once = yes
-		complete_effect = {
-			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision JAP_proclaim_the_State_of_Malaya"
-			MAL = {
-				transfer_state = 333
-				transfer_state = 1184
-				transfer_state = 1183
-				transfer_state = 336
-				ROOT = {
-					if = {
-						limit = { has_dlc = "Waking the Tiger" }
-						set_autonomy = { target = PREV autonomy_state = autonomy_wtt_imperial_subject }
-						else = { puppet = PREV }
-					}
-					hidden_effect = { set_nationality = { target_country = PREV character = JAP_Ibragim_Yakob } }
-				}
-				set_politics = { ruling_party = neutrality elections_allowed = no }
-				promote_character = JAP_Ibragim_Yakob
-			}
-		}
-	}
-	
-	JAP_proclaim_the_Indonesian_Federation = {
-		priority = 450
-		icon = GFX_decision_generic_political_discourse
-		allowed = { original_tag = JAP }
-		available = {
-			controls_state = 667
-			controls_state = 668
-			controls_state = 669
-			controls_state = 673
-			controls_state = 672
-			controls_state = 335
-			controls_state = 334
-		}
-		visible = { has_completed_focus = JAP_creation_of_Governments_of_liberated_peoples }
-		fire_only_once = yes
-		complete_effect = {
-			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision JAP_proclaim_the_Indonesian_Federation"
-			INS = {
-				transfer_state = 667
-				transfer_state = 668
-				transfer_state = 669
-				transfer_state = 673
-				transfer_state = 672
-				transfer_state = 335
-				transfer_state = 334
-				ROOT = {
-					if = {
-						limit = { has_dlc = "Waking the Tiger" }
-						set_autonomy = { target = PREV autonomy_state = autonomy_wtt_imperial_subject }
-						else = { puppet = PREV }
-					}
-					hidden_effect = { set_nationality = { target_country = PREV character = JAP_Sukarno } }
-				}
-				set_politics = { ruling_party = neutrality elections_allowed = no }
-				promote_character = JAP_Sukarno
-			}
 		}
 	}
 	
@@ -2755,17 +2660,37 @@ JAP_hokusin_rock_category = {
 		allowed = { original_tag = JAP }
 		available = {
 			has_completed_focus = JAP_continue_negotiations_with_Poland
-			country_exists = POL
-			POL = { NOT = { is_in_faction_with = SOV is_subject_of = SOV has_war_with = SOV has_war_with = ROOT } }
-			country_exists = SOV
-			SOV = { NOT = { is_in_faction_with = ROOT has_war_with = ROOT is_subject_of = ROOT } }
 			is_subject = no
+			SOV = {
+				exists = yes
+				NOT = {
+					has_war_with = ROOT
+					is_in_faction_with = ROOT
+					is_subject_of = ROOT
+				}
+			}
+			POL = {
+				exists = yes
+				NOT = {
+					has_war_with = ROOT
+					is_subject_of = ROOT
+					is_in_faction_with = SOV
+					is_subject_of = SOV
+					has_war_with = SOV
+				}
+			}
 		}
 		fire_only_once = yes
+		cost = 25
 		complete_effect = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision JAP_offer_Poland_an_anti_Soviet_secret_alliance"
 			POL = { country_event = NW_JAP.166 }
 			custom_effect_tooltip = JAP_offer_Poland_an_anti_Soviet_secret_alliance_tt
+			effect_tooltip = {
+				activate_mission = JAP_attack_on_the_USSR
+				POL = { activate_mission = JAP_attack_on_the_USSR }
+			}
+			custom_effect_tooltip = JAP_propose_an_anti_bolshevik_alliance_to_france_tt_2
 		}
 	}
 	
@@ -3110,16 +3035,25 @@ JAP_diplomatic_expansion_category = {
 	JAP_recognize_independence = {
 		priority = 1000
 		icon = GFX_decision_generic_political_discourse
-		allowed = { original_tag = JAP }
 		available = { FROM = { is_subject = no is_in_faction = no NOT = { has_war_with = ROOT } } }
 		visible = { has_completed_focus = JAP_support_for_a_multi_state_plan_in_India }
 		targets = { TIB KAS MON TNG }
 		targets_dynamic = yes
+		target_trigger = {
+			FROM = {
+				OR = {
+					original_tag = TIB
+					original_tag = KAS
+					original_tag = MON
+					original_tag = TNG
+				}
+			}
+		}
 		fire_only_once = yes
 		complete_effect = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision JAP_recognize_independence_of_Tibet"
 			FROM = {
-				country_event = generic.5
+				country_event = { id = generic.5 days = 1 }
 				add_opinion_modifier = {
 					modifier = JAP_recognize_independence_op
 					target = ROOT
@@ -3197,6 +3131,14 @@ JAP_diplomatic_expansion_category = {
 		fire_only_once = yes
 		targets = { BRM PAK }
 		targets_dynamic = yes
+		target_trigger = {
+			FROM = {
+				OR = {
+					original_tag = BRM
+					original_tag = PAK
+				}
+			}
+		}
 		complete_effect = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision JAP_recognize_independence2"
 			FROM = {
@@ -5395,85 +5337,6 @@ JAP_negotiations_with_the_Japanese_Empire_category = {
 	}
 }
 
-JAP_establishing_dominance_in_asia_category = {
-	
-	JAP_establishing_dominance_in_asia_decision = {
-		priority = 1000
-		icon = GFX_decision_generic_political_discourse
-		fire_only_once = yes
-		available = {
-			custom_trigger_tooltip = {
-				tooltip = BRM_form_the_taungu_empire_brm_required_states_tt
-				all_of_scopes = {
-					array = BRM.core_states
-					is_controlled_by = PREV
-				}
-			}
-		}
-		cost = 100
-		complete_effect = {
-			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision JAP_establishing_dominance_in_asia_decision"
-			hidden_effect = {
-				news_event = { id = NW_JAP_news.48 days = 1 }
-			}
-			BRM = {
-				ROOT = {
-					hidden_effect = {
-						release_on_controlled = PREV
-						JAP_Ba_Maw = { set_nationality = PREV.PREV }
-					}
-					if = {
-						limit = { has_dlc = "Waking the Tiger" }
-						set_autonomy = { target = PREV autonomy_state = autonomy_wtt_imperial_subject }
-						else = { puppet = PREV }
-					}
-				}
-				if = {
-					limit = { has_government = fascism }
-					add_country_leader_role = {
-						character = JAP_Ba_Maw
-						promote_leader = yes
-						country_leader = {
-							ideology = fascism_ideology
-							expire = "1965.1.1.1"
-							traits = {  }
-						}
-					}
-				}
-				else_if = {
-					limit = { has_government = monarchy }
-					add_country_leader_role = {
-						character = JAP_Ba_Maw
-						promote_leader = yes
-						country_leader = {
-							ideology = monarchy_ideology
-							expire = "1965.1.1.1"
-							traits = {  }
-						}
-					}
-				}
-				else = {
-					add_country_leader_role = {
-						character = JAP_Ba_Maw
-						promote_leader = yes
-						country_leader = {
-							ideology = militarism_ideology
-							expire = "1965.1.1.1"
-							traits = {  }
-						}
-					}
-				}
-				drop_cosmetic_tag = yes
-				set_cosmetic_tag = BRM_pro_japan_burma
-				mark_focus_tree_layout_dirty = yes
-			}
-		}
-		ai_will_do = {
-			base = 150
-		}
-	}
-}
-
 JAP_radicals_Set_new_Rules_category = {
 	
 	JAP_negotiate_with_akamatsu = {
@@ -7584,6 +7447,463 @@ JAP_resettlement_program_in_manchukuo_category = {
 					force_update_dynamic_modifier = yes
 				}
 			}
+		}
+	}
+}
+
+JAP_alliance_with_france_category = {
+	
+	JAP_propose_an_anti_bolshevik_alliance_to_france = {
+		priority = 1000
+		available = {
+			is_subject = no
+			SOV = {
+				exists = yes
+				has_government = communism
+				NOT = {
+					has_war_with = ROOT
+					is_in_faction_with = ROOT
+					is_subject_of = ROOT
+				}
+			}
+			event_target:NW_france_scope = {
+				exists = yes
+				NOT = {
+					has_government = communism
+					has_war_with = ROOT
+					is_subject_of = ROOT
+					is_in_faction_with = SOV
+					is_subject_of = SOV
+					has_war_with = SOV
+				}
+			}
+		}
+		visible = { NOT = { has_country_flag = NW_JAP_399_event_flag } }
+		cost = 25
+		fire_only_once = no
+		days_re_enable = 365
+		complete_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision JAP_create_urban_kyodotai_in_the_region"
+			event_target:NW_france_scope = { country_event = { id = NW_JAP.398 days = 1 } }
+			custom_effect_tooltip = JAP_propose_an_anti_bolshevik_alliance_to_france_tt
+			effect_tooltip = {
+				activate_mission = JAP_attack_on_the_USSR_2
+				event_target:NW_france_scope = { activate_mission = JAP_attack_on_the_USSR_2 }
+			}
+			custom_effect_tooltip = JAP_propose_an_anti_bolshevik_alliance_to_france_tt_2
+		}
+	}
+	
+	JAP_exile_beyond_suez_decision = {
+		priority = 900
+		available = {
+			is_subject = no
+			1064 = {
+				controller = {
+					NOT = {
+						OR = {
+							tag = ROOT
+							has_war_with = ROOT
+							is_subject_of = ROOT
+							is_in_faction_with = ROOT
+							has_non_aggression_pact_with = ROOT
+						}
+					}
+				}
+			}
+		}
+		visible = { has_completed_focus = JAP_exile_beyond_suez }
+		cost = 25
+		fire_only_once = no
+		days_re_enable = 365
+		complete_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision JAP_exile_beyond_suez_decision"
+			declare_war_on = { target = 1064.controller type = annex_everything }
+		}
+	}
+}
+
+JAP_turanist_union_category = {
+	
+	JAP_invite_to_alliance_2 = {
+		priority = 50
+		icon = GFX_decision_generic_political_discourse
+		available = {
+			is_faction_leader = yes
+			NOT = { has_war_with = FROM }
+		}
+		target_trigger = {
+			FROM = {
+				OR = {
+					original_tag = FIN
+					original_tag = TUR
+					original_tag = HUN
+				}
+				has_capitulated = no
+				has_civil_war = no
+				is_in_faction = no
+				is_subject = no
+			}
+		}
+		targets = { FIN TUR HUN }
+		targets_dynamic = yes
+		cost = 25
+		fire_only_once = no
+		days_re_enable = 365
+		complete_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision JAP_invite_to_alliance_2"
+			FROM = { country_event = { id = NW_JAP.401 days = 1 } }
+		}
+	}
+}
+
+JAP_to_attract_right_wing_political_societies_to_the_Foreign_Ministry_category = {
+	
+	JAP_provide_support_to_ethiopia = {
+		priority = 100
+		available = {
+			is_subject = no
+			ETH = {
+				has_war_with = ITA
+				NOT = { has_war_with = ROOT }
+				all_enemy_country = { NOT = { is_in_faction_with = ROOT is_subject_of = ROOT } }
+			}
+		}
+		visible = { ETH = { has_war_with = ITA } }
+		custom_cost_trigger = {
+			set_temp_variable = { rifles_temp_cost = 1000 }
+			check_variable = { var = num_equipment@infantry_equipment value = rifles_temp_cost compare = greater_than_or_equals }
+		}
+		custom_cost_text = rifles_cost
+		fire_only_once = no
+		days_re_enable = 60
+		complete_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision JAP_provide_support_to_ethiopia"
+			hidden_effect = { add_equipment_to_stockpile = { type = infantry_equipment amount = -1000 } }
+			ETH = { country_event = { id = NW_JAP.403 days = 1 } }
+		}
+	}
+	
+	JAP_invite_to_alliance_3 = {
+		priority = 50
+		icon = GFX_decision_generic_political_discourse
+		available = {
+			is_faction_leader = yes
+			NOT = { has_war_with = FROM }
+		}
+		visible = { has_completed_focus = JAP_protection_of_all_peoples_of_color }
+		target_trigger = {
+			FROM = {
+				has_capitulated = no
+				has_civil_war = no
+				is_in_faction = no
+				is_subject = no
+			}
+		}
+		target_array = global.country_in_africa
+		targets_dynamic = yes
+		cost = 25
+		fire_only_once = no
+		days_re_enable = 365
+		complete_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision JAP_invite_to_alliance_3"
+			FROM = { country_event = { id = generic.5 days = 1 } }
+		}
+	}
+}
+
+JAP_friend_of_islam_category = {
+	
+	JAP_invite_to_alliance_4 = {
+		priority = 50
+		icon = GFX_decision_generic_political_discourse
+		available = {
+			is_faction_leader = yes
+			NOT = { has_war_with = FROM }
+		}
+		target_trigger = {
+			FROM = {
+				has_capitulated = no
+				has_civil_war = no
+				is_in_faction = no
+				is_subject = no
+			}
+		}
+		target_array = global.is_middle_east_nation
+		targets_dynamic = yes
+		cost = 25
+		fire_only_once = no
+		days_re_enable = 365
+		complete_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision JAP_invite_to_alliance_4"
+			FROM = { country_event = { id = generic.5 days = 1 } }
+		}
+	}
+}
+
+JAP_creation_of_Governments_of_liberated_peoples = {
+	
+	JAP_proclaim_the_Second_Philippine_Republic = {
+		priority = 750
+		icon = GFX_decision_generic_political_discourse
+		available = {
+			controls_state = 327
+			controls_state = 623
+			controls_state = 624
+			controls_state = 625
+			controls_state = 626
+			controls_state = 627
+			controls_state = 628
+		}
+		fire_only_once = yes
+		complete_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision JAP_proclaim_the_Second_Philippine_Republic"
+			PHI = {
+				transfer_state = 327
+				transfer_state = 623
+				transfer_state = 624
+				transfer_state = 625
+				transfer_state = 626
+				transfer_state = 627
+				transfer_state = 628
+				ROOT = {
+					if = {
+						limit = { has_dlc = "Waking the Tiger" }
+						set_autonomy = { target = PREV autonomy_state = autonomy_wtt_imperial_subject }
+						else = { puppet = PREV }
+					}
+					hidden_effect = { set_nationality = { target_country = PREV character = JAP_Hose_Laurel } }
+				}
+				set_politics = { ruling_party = neutrality elections_allowed = no }
+				promote_character = JAP_Hose_Laurel
+			}
+		}
+	}
+	
+	JAP_proclaim_the_Vietnamise_Empire = {
+		priority = 650
+		icon = GFX_decision_generic_political_discourse
+		available = {
+			controls_state = 671
+			controls_state = 286
+			controls_state = 1194
+		}
+		fire_only_once = yes
+		complete_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision JAP_proclaim_the_Vietnamise_Empire"
+			VIN = {
+				transfer_state = 671
+				transfer_state = 286
+				transfer_state = 1194
+				ROOT = {
+					if = {
+						limit = { has_dlc = "Waking the Tiger" }
+						set_autonomy = { target = PREV autonomy_state = autonomy_wtt_imperial_subject }
+						else = { puppet = PREV }
+					}
+					hidden_effect = { set_nationality = { target_country = PREV character = JAP_Bao_Dai } }
+				}
+				set_politics = { ruling_party = monarchy elections_allowed = no }
+				promote_character = JAP_Bao_Dai
+			}
+		}
+	}
+	
+	JAP_proclaim_the_Kingdom_of_Kampuchea = {
+		priority = 600
+		icon = GFX_decision_generic_political_discourse
+		available = { controls_state = 741 }
+		fire_only_once = yes
+		complete_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision JAP_proclaim_the_Kingdom_of_Kampuchea"
+			CAM = {
+				transfer_state = 741
+				ROOT = {
+					if = {
+						limit = { has_dlc = "Waking the Tiger" }
+						set_autonomy = { target = PREV autonomy_state = autonomy_wtt_imperial_subject }
+						else = { puppet = PREV }
+					}
+					hidden_effect = { set_nationality = { target_country = PREV character = JAP_Norodom_Sianuk } }
+				}
+				set_politics = { ruling_party = monarchy elections_allowed = no }
+				promote_character = JAP_Norodom_Sianuk
+			}
+		}
+	}
+	
+	JAP_proclaim_the_State_of_Laos = {
+		priority = 550
+		icon = GFX_decision_generic_political_discourse
+		available = { controls_state = 670 }
+		fire_only_once = yes
+		complete_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision JAP_proclaim_the_State_of_Laos"
+			LAO = {
+				transfer_state = 670
+				ROOT = {
+					if = {
+						limit = { has_dlc = "Waking the Tiger" }
+						set_autonomy = { target = PREV autonomy_state = autonomy_wtt_imperial_subject }
+						else = { puppet = PREV }
+					}
+					hidden_effect = { set_nationality = { target_country = PREV character = JAP_Sisavang_Vong } }
+				}
+				set_politics = { ruling_party = monarchy elections_allowed = no }
+				promote_character = JAP_Sisavang_Vong
+			}
+		}
+	}
+	
+	JAP_proclaim_the_State_of_Malaya = {
+		priority = 500
+		icon = GFX_decision_generic_political_discourse
+		available = {
+			controls_state = 333
+			controls_state = 1184
+			controls_state = 1183
+			controls_state = 336
+		}
+		fire_only_once = yes
+		complete_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision JAP_proclaim_the_State_of_Malaya"
+			MAL = {
+				transfer_state = 333
+				transfer_state = 1184
+				transfer_state = 1183
+				transfer_state = 336
+				ROOT = {
+					if = {
+						limit = { has_dlc = "Waking the Tiger" }
+						set_autonomy = { target = PREV autonomy_state = autonomy_wtt_imperial_subject }
+						else = { puppet = PREV }
+					}
+					hidden_effect = { set_nationality = { target_country = PREV character = JAP_Ibragim_Yakob } }
+				}
+				set_politics = { ruling_party = neutrality elections_allowed = no }
+				promote_character = JAP_Ibragim_Yakob
+			}
+		}
+	}
+	
+	JAP_proclaim_the_Indonesian_Federation = {
+		priority = 450
+		icon = GFX_decision_generic_political_discourse
+		available = {
+			controls_state = 667
+			controls_state = 668
+			controls_state = 669
+			controls_state = 673
+			controls_state = 672
+			controls_state = 335
+			controls_state = 334
+		}
+		fire_only_once = yes
+		complete_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision JAP_proclaim_the_Indonesian_Federation"
+			INS = {
+				transfer_state = 667
+				transfer_state = 668
+				transfer_state = 669
+				transfer_state = 673
+				transfer_state = 672
+				transfer_state = 335
+				transfer_state = 334
+				ROOT = {
+					if = {
+						limit = { has_dlc = "Waking the Tiger" }
+						set_autonomy = { target = PREV autonomy_state = autonomy_wtt_imperial_subject }
+						else = { puppet = PREV }
+					}
+					hidden_effect = { set_nationality = { target_country = PREV character = JAP_Sukarno } }
+				}
+				set_politics = { ruling_party = neutrality elections_allowed = no }
+				promote_character = JAP_Sukarno
+			}
+		}
+	}
+	
+	JAP_establishing_dominance_in_asia_decision = {
+		priority = 425
+		icon = GFX_decision_generic_political_discourse
+		fire_only_once = yes
+		available = {
+			custom_trigger_tooltip = {
+				tooltip = BRM_form_the_taungu_empire_brm_required_states_tt
+				all_of_scopes = {
+					array = BRM.core_states
+					is_controlled_by = PREV
+				}
+			}
+		}
+		visible = {
+			OR = {
+				has_government = fascism
+				has_government = monarchy
+				has_government = neutrality
+			}
+			NOT = { has_subject = BRM }
+		}
+		cost = 100
+		complete_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision JAP_establishing_dominance_in_asia_decision"
+			hidden_effect = {
+				news_event = { id = NW_JAP_news.48 days = 1 }
+			}
+			BRM = {
+				ROOT = {
+					hidden_effect = {
+						release_on_controlled = PREV
+						JAP_Ba_Maw = { set_nationality = PREV.PREV }
+					}
+					if = {
+						limit = { has_dlc = "Waking the Tiger" }
+						set_autonomy = { target = PREV autonomy_state = autonomy_wtt_imperial_subject }
+						else = { puppet = PREV }
+					}
+				}
+				if = {
+					limit = { has_government = fascism }
+					add_country_leader_role = {
+						character = JAP_Ba_Maw
+						promote_leader = yes
+						country_leader = {
+							ideology = fascism_ideology
+							expire = "1965.1.1.1"
+							traits = {  }
+						}
+					}
+				}
+				else_if = {
+					limit = { has_government = monarchy }
+					add_country_leader_role = {
+						character = JAP_Ba_Maw
+						promote_leader = yes
+						country_leader = {
+							ideology = monarchy_ideology
+							expire = "1965.1.1.1"
+							traits = {  }
+						}
+					}
+				}
+				else = {
+					add_country_leader_role = {
+						character = JAP_Ba_Maw
+						promote_leader = yes
+						country_leader = {
+							ideology = militarism_ideology
+							expire = "1965.1.1.1"
+							traits = {  }
+						}
+					}
+				}
+				drop_cosmetic_tag = yes
+				set_cosmetic_tag = BRM_pro_japan_burma
+				mark_focus_tree_layout_dirty = yes
+			}
+		}
+		ai_will_do = {
+			base = 150
 		}
 	}
 }
