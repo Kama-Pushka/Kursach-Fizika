@@ -8153,6 +8153,7 @@ country_event = {
 		ai_chance = {
 			base = 6
 		}
+		load_focus_tree = nw_japan_looser_focus
 		hidden_effect = {
 			news_event = { id = NW_JAP_news.47 days = 1 }
 			FROM = { country_event = { id = NW_JAP.297 days = 2 } }
@@ -8161,17 +8162,17 @@ country_event = {
 			limit = { OR = { is_literally_china = yes is_in_faction_with = FROM is_subject_of = FROM } }
 			white_peace = { tag = ROOT }
 		}
-		every_other_country = {
-			limit = { OR = { is_literally_china = yes tag = KOR } }
-			every_core_state = {
-				limit = { is_controlled_by = ROOT }
-				ROOT = { transfer_state_to = FROM }
-			}
-		}
 		every_subject_country = {
 			limit = { capital_scope = { is_on_continent = asia } NOT = { original_tag = MAN } }
 			ROOT = { end_puppet = PREV }
 			FROM = { annex_country = { target = PREV transfer_troops = yes } }
+		}
+		every_other_country = {
+			limit = { OR = { is_literally_china = yes tag = KOR } }
+			every_core_state = {
+				limit = { is_controlled_by = ROOT }
+				transfer_state_to = FROM
+			}
 		}
 	}
 	option = {
@@ -8231,32 +8232,29 @@ news_event = {
 	}
 }
 
-# Судьба Корейского полуострова
+# CHI Судьба Корейского полуострова
 country_event = {
 	id = NW_JAP.297
 	title = NW_JAP.297.t
 	desc = NW_JAP.297.d
 	picture = GFX_report_event_hol_cabinet_de_geer
 	is_triggered_only = yes
+	trigger = { any_controlled_state = { is_core_of = KOR } }
 	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_JAP.297" }
 	option = {
 		name = NW_JAP.297.a
-		load_focus_tree = nw_japan_looser_focus
 		every_controlled_state = {
 			limit = { is_core_of = KOR }
 			transfer_state_to = KOR
 		}
-		FROM = {
-			if = {
-				limit = { OR = { has_dlc = "Together for Victory" has_dlc = "Man the Guns" } }
-				set_autonomy = { target = KOR autonomy_state = autonomy_integrated_puppet }
-				else = { puppet = KOR }
-			}
+		if = {
+			limit = { OR = { has_dlc = "Together for Victory" has_dlc = "Man the Guns" } }
+			set_autonomy = { target = KOR autonomy_state = autonomy_integrated_puppet }
+			else = { puppet = KOR }
 		}
 	}
 	option = {
 		name = NW_JAP.297.b
-		load_focus_tree = nw_japan_looser_focus
 		add_stability = -0.05
 		add_political_power = -50
 		every_controlled_state = {
@@ -8266,7 +8264,6 @@ country_event = {
 	}
 	option = {
 		name = NW_JAP.297.c
-		load_focus_tree = nw_japan_looser_focus
 		add_stability = -0.15
 		add_political_power = -35
 	}
