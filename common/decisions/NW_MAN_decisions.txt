@@ -1,6 +1,105 @@
 @MAN_HUNT_BANDITS_EQUIPMENT_COST_TRIGGER = 499
 @MAN_HUNT_BANDITS_EQUIPMENT_COST_EFFECT = -500
- 
+
+MAN_opposition_within_kwantung_army_bop = {
+	
+	MAN_send_memorandum_to_command_of_kwantung_army = {
+	    icon = generic_prepare_civil_war
+		
+		cost = 15
+		
+		days_remove = 1
+		days_re_enable = 30 #TODO tooltip
+		
+		remove_effect = { 
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): remove decision MAN_opposition_within_kwantung_army_bop"
+			add_power_balance_value = {
+				id = MAN_power_balance
+				value = -0.01 # TODO ?
+			}
+		}
+	}
+	MAN_convince_command_of_need_for_reforms = {
+	    icon = generic_prepare_civil_war
+		
+		cost = 25
+		
+		days_remove = 1
+		days_re_enable = 30 #TODO tooltip
+		
+		remove_effect = { 
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): remove decision MAN_convince_command_of_need_for_reforms"
+			random_list = {
+				1 = { 
+					add_power_balance_value = {
+						id = MAN_power_balance
+						value = -0.01
+					}
+				}
+				1 = { 
+					add_power_balance_value = {
+						id = MAN_power_balance
+						value = 0.01
+					}
+				}
+				2 = {}
+			}
+		}
+	}
+	MAN_find_allies_inside_manchuria = {
+	    icon = generic_prepare_civil_war
+		
+		cost = 50
+		
+		days_remove = 1
+		days_re_enable = 50 #TODO tooltip
+		
+		remove_effect = { 
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): remove decision MAN_find_allies_inside_manchuria"
+			add_power_balance_value = {
+				id = MAN_power_balance
+				value = -0.03
+			}
+		}
+	}
+	MAN_condemn_corruption_of_officers = {
+	    icon = generic_prepare_civil_war
+		
+		custom_cost_trigger = {
+			set_temp_variable = { cp_cost = 5 }
+			check_variable = { var = command_power value = cp_cost }
+		}
+		custom_cost_text = CP_COST
+		
+		days_remove = 1
+		days_re_enable = 30 #TODO tooltip
+		
+		remove_effect = { 
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): remove decision MAN_condemn_corruption_of_officers"
+			add_power_balance_value = {
+				id = MAN_power_balance
+				value = 0.01
+			}
+		}
+	}
+	MAN_condemn_arrogant_behavior_of_military = {
+	    icon = generic_prepare_civil_war
+		
+		cost = 5
+		
+		days_remove = 1
+		days_re_enable = 30 #TODO tooltip
+		
+		remove_effect = { 
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): remove decision MAN_condemn_arrogant_behavior_of_military"
+			add_power_balance_value = {
+				id = MAN_power_balance
+				value = 0.01
+			}
+		}
+	}
+}
+
 MAN_banditry_category = {
 	
 #  #  ##  ###  ### #  # ### ###  #  # 
@@ -10,30 +109,29 @@ MAN_banditry_category = {
 #  #  ##  #  #  #  #  # ### #  # #  #	
 	
 	MAN_pacify_bandits_in_the_northern_countryside = {
-	
 		icon = generic_oppression
 		
 		visible = {
 			NOT = { has_active_mission = MAN_maintain_northern_control }
 		}
-		
 		available = {
 			divisions_in_state = {
 				state = 714	
 				size > 5
 			}
 		}
-
 		highlight_states = {
-			highlight_state_targets = {
-				state = 714
-			} 
+			highlight_state_targets = { state = 714 } 
 		}
-
-		cost = 0
 		
 		is_good = yes
 
+		complete_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision MAN_pacify_bandits_in_the_northern_countryside"
+			activate_mission = MAN_maintain_northern_control
+			custom_effect_tooltip = MAN_pacify_bandits_mission_explanation
+		}
+		
 		ai_will_do = {
 			factor = 0
 			modifier = {
@@ -44,43 +142,19 @@ MAN_banditry_category = {
 				}
 			}
 		}
-
-		complete_effect = {
-			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision MAN_pacify_bandits_in_the_northern_countryside"
-			activate_mission = MAN_maintain_northern_control
-			custom_effect_tooltip = MAN_pacify_bandits_mission_explanation
-		}
 	}
 	MAN_hunt_down_northern_bandits = {
-	
 		icon = generic_oppression
 
 		available = {
 			has_equipment = { infantry_equipment > @MAN_HUNT_BANDITS_EQUIPMENT_COST_TRIGGER }
 		}
-
 		highlight_states = {
-			highlight_state_targets = {
-				state = 714
-			} 
+			highlight_state_targets = { state = 714 } 
 		}
-		
-		cost = 0
 		
 		days_remove = 45
-		
 		is_good = yes
-
-		ai_will_do = {
-			factor = 0
-			modifier = {
-				add = 200
-				divisions_in_state = {
-					state = 714	
-					size < 6
-				}
-			}
-		}
 		
 		complete_effect = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision MAN_hunt_down_northern_bandits"
@@ -101,15 +175,23 @@ MAN_banditry_category = {
 			add_to_variable = { MAN_strength_of_partisan_movement_var = 0.05 tooltip = stability_factor_tooltip }
 			#custom_effect_tooltip = empty_line_tooltip
 		}
+		
+		ai_will_do = {
+			factor = 0
+			modifier = {
+				add = 200
+				divisions_in_state = {
+					state = 714	
+					size < 6
+				}
+			}
+		}
 	}
 	MAN_maintain_northern_control = {
-	
 	    icon = generic_civil_support
 		
 		available = { always = no }
-		
 		activation = { always = no }
-		
 		cancel_trigger = {
 			OR = {
 				divisions_in_state = {
@@ -140,24 +222,19 @@ MAN_banditry_category = {
 ### #  # ##   #  ### #  # #  # 
 	
 	MAN_pacify_bandits_in_the_eastern_countryside = {
-	
 		icon = generic_oppression
 		
 		visible = {
 			NOT = { has_active_mission = MAN_maintain_eastern_control }
 		}
-		
 		available = {
 			divisions_in_state = {
 				state = 717	
 				size > 5
 			}
 		}
-
 		highlight_states = {
-			highlight_state_targets = {
-				state = 717
-			} 
+			highlight_state_targets = { state = 717 } 
 		}
 
 		cost = 0
@@ -182,35 +259,17 @@ MAN_banditry_category = {
 		}
 	}
 	MAN_hunt_down_eastern_bandits = {
-	
 		icon = generic_oppression
 
 		available = {
 			has_equipment = { infantry_equipment > @MAN_HUNT_BANDITS_EQUIPMENT_COST_TRIGGER }
 		}
-
 		highlight_states = {
-			highlight_state_targets = {
-				state = 717
-			} 
+			highlight_state_targets = { state = 717 } 
 		}
-		
-		cost = 0
 		
 		days_remove = 45
-		
-		is_good = yes
-
-		ai_will_do = {
-			factor = 0
-			modifier = {
-				add = 200
-				divisions_in_state = {
-					state = 717	
-					size < 6
-				}
-			}
-		}
+		is_good = yes # TODO !!
 		
 		complete_effect = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision MAN_hunt_down_eastern_bandits"
@@ -231,15 +290,23 @@ MAN_banditry_category = {
 			add_to_variable = { MAN_strength_of_partisan_movement_var = 0.05 tooltip = stability_factor_tooltip }
 			#custom_effect_tooltip = empty_line_tooltip
 		}
+		
+		ai_will_do = {
+			factor = 0
+			modifier = {
+				add = 200
+				divisions_in_state = {
+					state = 717	
+					size < 6
+				}
+			}
+		}
 	}
 	MAN_maintain_eastern_control = {
-	
 	    icon = generic_civil_support
 		
 		available = { always = no }
-		
 		activation = { always = no }
-		
 		cancel_trigger = {
 			OR = {
 				divisions_in_state = {
@@ -269,30 +336,29 @@ MAN_banditry_category = {
  # #  ### ##   #  ### #  # #  # 
 	
 	MAN_pacify_bandits_in_the_western_countryside = {
-	
 		icon = generic_oppression
 		
 		visible = {
 			NOT = { has_active_mission = MAN_maintain_western_control }
 		}
-		
 		available = {
 			divisions_in_state = {
 				state = 610
 				size > 5
 			}
 		}
-
 		highlight_states = {
-			highlight_state_targets = {
-				state = 610
-			} 
+			highlight_state_targets = { state = 610 } 
 		}
-
-		cost = 0
 		
 		is_good = yes
 
+		complete_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision MAN_pacify_bandits_in_the_western_countryside"
+			activate_mission = MAN_maintain_western_control
+			custom_effect_tooltip = MAN_pacify_bandits_mission_explanation
+		}
+		
 		ai_will_do = {
 			factor = 0
 			modifier = {
@@ -303,43 +369,19 @@ MAN_banditry_category = {
 				}
 			}
 		}
-
-		complete_effect = {
-			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision MAN_pacify_bandits_in_the_western_countryside"
-			activate_mission = MAN_maintain_western_control
-			custom_effect_tooltip = MAN_pacify_bandits_mission_explanation
-		}
 	}
 	MAN_hunt_down_western_bandits = {
-	
 		icon = generic_oppression
 
 		available = {
 			has_equipment = { infantry_equipment > @MAN_HUNT_BANDITS_EQUIPMENT_COST_TRIGGER }
 		}
-
 		highlight_states = {
-			highlight_state_targets = {
-				state = 610
-			} 
+			highlight_state_targets = { state = 610 } 
 		}
-		
-		cost = 0
 		
 		days_remove = 45
-		
 		is_good = yes
-
-		ai_will_do = {
-			factor = 0
-			modifier = {
-				add = 200
-				divisions_in_state = {
-					state = 610	
-					size < 6
-				}
-			}
-		}
 		
 		complete_effect = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision MAN_hunt_down_western_bandits"
@@ -360,15 +402,23 @@ MAN_banditry_category = {
 			add_to_variable = { MAN_strength_of_partisan_movement_var = 0.05 tooltip = stability_factor_tooltip }
 			#custom_effect_tooltip = empty_line_tooltip
 		}
+		
+		ai_will_do = {
+			factor = 0
+			modifier = {
+				add = 200
+				divisions_in_state = {
+					state = 610	
+					size < 6
+				}
+			}
+		}
 	}
 	MAN_maintain_western_control = {
-	
 	    icon = generic_civil_support
 		
 		available = { always = no }
-		
 		activation = { always = no }
-		
 		cancel_trigger = {
 			OR = {
 				divisions_in_state = {
@@ -392,23 +442,18 @@ MAN_banditry_category = {
 	}
 
 	MAN_bandit_raids = {
-	
 		icon = generic_civil_support
 
 		available = { 
 			NOT = { has_dynamic_modifier = { modifier =  MAN_banditry } }
 		}
-
-		days_mission_timeout = 90
-
 		activation = {
 			has_dynamic_modifier = { modifier = MAN_banditry }
-		}	
+		}
 
+		days_mission_timeout = 90
 		fixed_random_seed = no
-
 		fire_only_once = no
-
 		is_good = no
 
 		timeout_effect = {
@@ -421,6 +466,238 @@ MAN_banditry_category = {
 				25 = { country_event = wtt_manchukou_bandit_sabotage.22 }
 				25 = { country_event = wtt_manchukou_bandit_sabotage.23 }
 				25 = {}
+			}
+		}
+	}
+}
+
+MAN_racial_harmony_category_bop = {
+	
+	MAN_promote_chinese_in_concordia_association = {
+	    icon = generic_prepare_civil_war
+		
+		cost = 30
+		
+		days_remove = 1
+		days_re_enable = 30 #TODO tooltip
+		
+		remove_effect = { 
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): remove decision MAN_promote_chinese_in_concordia_association"
+			add_power_balance_value = {
+				id = MAN_racial_harmony
+				value = -0.01
+			}
+		}
+	}
+	MAN_promote_japanese_in_concordia_association = {
+	    icon = generic_prepare_civil_war
+		
+		cost = 30
+		
+		days_remove = 1
+		days_re_enable = 30 #TODO tooltip
+		
+		remove_effect = { 
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): remove decision MAN_promote_japanese_in_concordia_association"
+			add_power_balance_value = {
+				id = MAN_racial_harmony
+				value = 0.01
+			}
+		}
+	}
+	MAN_promote_koreans_in_concordia_association = {
+	    icon = generic_prepare_civil_war
+		
+		available = {
+			power_balance_value = {
+				id = MAN_racial_harmony
+				value < -0.3
+			}
+		}
+		
+		cost = 60
+		
+		days_remove = 1
+		days_re_enable = 50 #TODO tooltip
+		
+		remove_effect = { 
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): remove decision MAN_promote_koreans_in_concordia_association"
+			add_power_balance_value = {
+				id = MAN_racial_harmony
+				value = 0.01
+			}
+		}
+	}
+	MAN_promote_mongols_in_concordia_association = {
+	    icon = generic_prepare_civil_war
+		
+		available = {
+			OR = {
+				power_balance_value = {
+					id = MAN_racial_harmony
+					value < -0.3
+				}
+				power_balance_value = {
+					id = MAN_racial_harmony
+					value > 0.3
+				}
+			}
+		}
+		
+		cost = 40
+		
+		days_remove = 1
+		days_re_enable = 45 #TODO tooltip
+		
+		remove_effect = { 
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): remove decision MAN_promote_mongols_in_concordia_association"
+			if = {
+				limit = { # TODO tooltip
+					power_balance_value = {
+						id = MAN_racial_harmony
+						value > 0
+					} 
+				}
+				add_power_balance_value = {
+					id = MAN_racial_harmony
+					value = -0.01
+				}
+			}
+			else = {
+				add_power_balance_value = {
+					id = MAN_racial_harmony
+					value = 0.01
+				}
+			}
+		}
+	}
+	MAN_promote_manchus_in_concordia_association = {
+	    icon = generic_prepare_civil_war
+		
+		available = {
+			OR = {
+				power_balance_value = {
+					id = MAN_racial_harmony
+					value < -0.3
+				}
+				power_balance_value = {
+					id = MAN_racial_harmony
+					value > 0.3
+				}
+			}
+		}
+		
+		cost = 50
+		
+		days_remove = 1
+		days_re_enable = 60 #TODO tooltip
+		
+		remove_effect = { 
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): remove decision MAN_promote_manchus_in_concordia_association"
+			if = {
+				limit = { # TODO tooltip
+					power_balance_value = {
+						id = MAN_racial_harmony
+						value > 0
+					} 
+				}
+				add_power_balance_value = {
+					id = MAN_racial_harmony
+					value = -0.01
+				}
+			}
+			else = {
+				add_power_balance_value = {
+					id = MAN_racial_harmony
+					value = 0.01
+				}
+			}
+		}
+	}
+	MAN_promote_russians_in_concordia_association = {
+	    icon = generic_prepare_civil_war
+		
+		available = {
+			OR = {
+				power_balance_value = {
+					id = MAN_racial_harmony
+					value < -0.3
+				}
+				power_balance_value = {
+					id = MAN_racial_harmony
+					value > 0.3
+				}
+			}
+		}
+		
+		cost = 75
+		
+		days_remove = 1
+		days_re_enable = 50 #TODO tooltip
+		
+		remove_effect = { 
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): remove decision MAN_promote_russians_in_concordia_association"
+			if = {
+				limit = { # TODO tooltip
+					power_balance_value = {
+						id = MAN_racial_harmony
+						value > 0
+					} 
+				}
+				add_power_balance_value = {
+					id = MAN_racial_harmony
+					value = -0.01
+				}
+			}
+			else = {
+				add_power_balance_value = {
+					id = MAN_racial_harmony
+					value = 0.01
+				}
+			}
+		}
+	}
+	MAN_promote_jews_in_concordia_association = {
+	    icon = generic_prepare_civil_war
+		
+		available = {
+			has_completed_focus = MAN_jews_are_another_race # TODO visible?
+			OR = {
+				power_balance_value = {
+					id = MAN_racial_harmony
+					value < -0.3
+				}
+				power_balance_value = {
+					id = MAN_racial_harmony
+					value > 0.3
+				}
+			}
+		}
+		
+		cost = 35
+		
+		days_remove = 1
+		days_re_enable = 50 #TODO tooltip
+		
+		remove_effect = { 
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): remove decision MAN_promote_jews_in_concordia_association"
+			if = {
+				limit = { # TODO tooltip
+					power_balance_value = {
+						id = MAN_racial_harmony
+						value > 0
+					} 
+				}
+				add_power_balance_value = {
+					id = MAN_racial_harmony
+					value = -0.01
+				}
+			}
+			else = {
+				add_power_balance_value = {
+					id = MAN_racial_harmony
+					value = 0.01
+				}
 			}
 		}
 	}
@@ -940,7 +1217,56 @@ MAN_land_reform = {
 	}
 }
 
-MAN_pressure_on_emperor_Puyi = {
+MAN_drug_baron = {
+	
+	MAN_distribute_drugs = {
+		icon = generic_form_nation
+		
+		target_trigger = {
+			FROM = { is_literally_china = yes }
+		}
+		available = {
+			has_war_with = FROM
+			NOT = { has_idea = MAN_distribution_of_opium }
+			
+			set_temp_variable = { cost = FROM.num_controlled_states }
+			clamp_temp_variable = { var = cost min = 1 }
+			multiply_temp_variable = { cost = 20 }
+			custom_trigger_tooltip = {
+				tooltip = NW_has_political_power_more_than_cost_tt
+				
+				check_variable = { has_political_power > cost }
+			}
+		}
+		
+		on_map_mode = map_and_decisions_view
+		target_array = neighbors
+		
+		days_remove = 50
+
+		complete_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision MAN_distribute_drugs (From [FROM.GetTag])"
+			set_temp_variable = { cost = FROM.num_controlled_states }
+			clamp_temp_variable = { var = cost min = 1 }
+			multiply_temp_variable = { cost = -20 }
+			add_political_power = cost
+		}
+		remove_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): remove decision MAN_distribute_drugs (From [FROM.GetTag])"
+			FROM = {
+				add_timed_idea = { idea = MAN_distribution_of_opium days = 150 }
+			}
+		}
+
+		ai_will_do = {
+			factor = 100
+		}
+	}
+}
+
+### MGM ###
+
+MAN_pressure_on_emperor_Puyi = { # TODO rework
 
 	rotate_the_government = {
 	    icon = generic_prepare_civil_war
@@ -1260,7 +1586,7 @@ MAN_discontent_of_peasants = {
 	}
 }
 
-MAN_mandate_of_heaven = { #placeholder !
+MAN_mandate_of_heaven = { # TODO
 	
 	empty_empty = { 
 	    icon = generic_prepare_civil_war
