@@ -9135,23 +9135,21 @@ country_event = {
 		name = NW_JAP.326.a
 		hidden_effect = {
 			if = {
-				limit = {
-					has_country_leader = { character = JAP_Machida_Chuji ruling_only = yes }
-					if = {
-						limit = {
-							has_country_flag = NW_JAP_9_event_flag
-							democratic > 0.6
-						}
-						country_event = { id = NW_JAP.330 days = 1 }				#Коноэ возглавит Новую Обновленческую партию
+				limit = { has_country_leader = { character = JAP_Machida_Chuji ruling_only = yes } }
+				if = {
+					limit = {
+						has_country_flag = NW_JAP_9_event_flag
+						democratic > 0.6
 					}
-					else_if = {
-						limit = {
-							NOT = { has_country_flag = NW_JAP_9_event_flag }
-							has_completed_focus = JAP_parliamentary_elections
-							democratic > 0.6
-						}
-						country_event = { id = NW_JAP.330 days = 1 }				#Коноэ возглавит Новую Обновленческую партию
+					country_event = { id = NW_JAP.330 days = 1 }				#Коноэ возглавит Новую Обновленческую партию
+				}
+				else_if = {
+					limit = {
+						NOT = { has_country_flag = NW_JAP_9_event_flag }
+						has_completed_focus = JAP_parliamentary_elections
+						democratic > 0.6
 					}
+					country_event = { id = NW_JAP.330 days = 1 }				#Коноэ возглавит Новую Обновленческую партию
 				}
 			}
 			else = {
@@ -9452,8 +9450,20 @@ country_event = {
 	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_JAP.336" }
 	option = {
 		name = NW_JAP.336.a
-		custom_effect_tooltip = NW_JAP_336_tt
-		#TODO
+		if = {
+			limit = {
+				has_active_mission = JAP_agitation_of_rivals_mission
+				check_variable = { JAP_innovation_alliance_popularity > 0 }
+			}
+			custom_effect_tooltip = NW_JAP_336_tt
+			set_temp_variable = { JAP_innovation_alliance_popularity_temp = JAP_innovation_alliance_popularity }
+			divide_temp_variable = { JAP_innovation_alliance_popularity_temp = 2 }
+			round_temp_variable = JAP_innovation_alliance_popularity_temp
+			add_to_variable = { JAP_rikken_minseito_popularity = JAP_innovation_alliance_popularity_temp tooltip = JAP_rikken_minseito_popularity_tt }
+			subtract_from_variable = { JAP_innovation_alliance_popularity_temp = JAP_innovation_alliance_popularity_temp }
+			JAP_Machid_Chunji_office_effect = yes
+		}
+		hidden_effect = { country_event = { id = NW_JAP.337 days = 1 } }
 	}
 }
 
@@ -11367,5 +11377,397 @@ country_event = {
 	option = {
 		name = NW_JAP.428.a
 		load_focus_tree = nw_japan_looser_focus
+	}
+}
+
+# Формирование новых партий
+country_event = {
+	id = NW_JAP.429
+	title = NW_JAP.429.t
+	desc = NW_JAP.429.d
+	picture = GFX_report_event_hol_cabinet_de_geer
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_JAP.429" }
+	option = {
+		name = NW_JAP.429.a
+		set_party_name = { ideology = democratic long_name = JAP_democratic_party9_long name = JAP_democratic_party9 }
+	}
+}
+
+# Самоубийство Коноэ
+country_event = {
+	id = NW_JAP.430
+	title = NW_JAP.430.t
+	desc = NW_JAP.430.d
+	picture = GFX_report_event_hol_cabinet_de_geer
+	is_triggered_only = yes
+	trigger = { has_character = JAP_Fumimaro_Konoe }
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_JAP.430" }
+	option = {
+		name = NW_JAP.430.a
+	}
+}
+
+# OVERLORD Токийский трибунал
+country_event = {
+	id = NW_JAP.431
+	title = NW_JAP.431.t
+	desc = NW_JAP.431.d
+	picture = GFX_report_event_hol_cabinet_de_geer
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_JAP.431" }
+	option = {
+		name = NW_JAP.431.a
+		set_country_flag = NW_JAP_431_a_event_flag
+		hidden_effect = {
+			news_event = { id = NW_JAP_news.58 days = 3 }
+			FROM = { country_event = { id = NW_JAP.432 days = 1 } }
+		}
+	}
+	option = {
+		name = NW_JAP.431.b
+		hidden_effect = {
+			news_event = { id = NW_JAP_news.58 days = 3 }
+			FROM = { country_event = { id = NW_JAP.432 days = 1 } }
+		}
+	}
+}
+
+# Токийский трибунал
+news_event = {
+	id = NW_JAP_news.58
+	title = NW_JAP_news.58.t
+	desc = NW_JAP_news.58.d
+	picture = GFX_news_event_dutch_soldiers_indonesia
+	major = yes
+	is_triggered_only = yes
+	option = {
+		name = NW_JAP_news.58.a
+		trigger = { tag = JAP }
+	}
+	option = {
+		name = NW_JAP_news.58.b
+		trigger = { NOT = { tag = JAP } }
+	}
+}
+
+# Казнь преступников
+country_event = {
+	id = NW_JAP.432
+	title = NW_JAP.432.t
+	desc = NW_JAP.432.d
+	picture = GFX_report_event_hol_cabinet_de_geer
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_JAP.432" }
+	option = {
+		name = NW_JAP.432.a
+		if = {
+			limit = { FROM = { has_country_flag = NW_JAP_431_a_event_flag } }
+			add_stability = -0.1
+		}
+		else = {
+			add_stability = -0.05
+		}
+	}
+}
+
+# OVERLORD Новая конституция в Японии
+country_event = {
+	id = NW_JAP.433
+	title = NW_JAP.433.t
+	desc = NW_JAP.433.d
+	picture = GFX_report_event_hol_cabinet_de_geer
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_JAP.433" }
+	option = {
+		name = NW_JAP.433.a
+		hidden_effect = { news_event = { id = NW_JAP_news.59 days = 3 } }
+		FROM = { country_event = { id = NW_JAP.434 days = 1 } }
+	}
+	option = {
+		name = NW_JAP.433.b
+		FROM = { country_event = { id = NW_JAP.435 days = 1 } }
+	}
+	option = {
+		name = NW_JAP.433.c
+		FROM = { country_event = { id = NW_JAP.436 days = 1 } }
+	}
+}
+
+# Японская монархия отменена
+news_event = {
+	id = NW_JAP_news.59
+	title = NW_JAP_news.59.t
+	desc = NW_JAP_news.59.d
+	picture = GFX_news_event_dutch_soldiers_indonesia
+	major = yes
+	is_triggered_only = yes
+	option = {
+		name = NW_JAP_news.59.a
+		trigger = { has_subject = JAP }
+	}
+	option = {
+		name = NW_JAP_news.59.b
+		trigger = { NOT = { has_subject = JAP tag = JAP } }
+	}
+	option = {
+		name = NW_JAP_news.59.c
+		trigger = { tag = JAP }
+	}
+}
+
+# Отмена монархии
+country_event = {
+	id = NW_JAP.434
+	title = NW_JAP.434.t
+	desc = NW_JAP.434.d
+	picture = GFX_report_event_hol_cabinet_de_geer
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_JAP.434" }
+	option = {
+		name = NW_JAP.434.a
+		add_country_leader_role = {
+			character = JAP_Ivasaburo_Takano
+			promote_leader = yes
+			country_leader = {
+				ideology = socialism
+				expire = "1965.1.1.1"
+				traits = {  }
+			}
+		}
+		if = {
+			limit = { has_idea = JAP_Seva }
+			remove_ideas = JAP_Seva
+		}
+		else_if = {
+			limit = { has_idea = JAP_restavration_of_Seva }
+			remove_ideas = JAP_restavration_of_Seva
+		}
+		else_if = {
+			limit = { has_idea = JAP_restavration_of_Seva1 }
+			remove_ideas = JAP_restavration_of_Seva1
+		}
+		else_if = {
+			limit = { has_idea = JAP_restavration_of_Seva2 }
+			remove_ideas = JAP_restavration_of_Seva2
+		}
+		else_if = {
+			limit = { has_idea = JAP_restavration_of_Seva3 }
+			remove_ideas = JAP_restavration_of_Seva3
+		}
+		else_if = {
+			limit = { has_idea = JAP_Reiva }
+			remove_ideas = JAP_Reiva
+		}
+		else_if = {
+			limit = { has_idea = JAP_restavration_of_Reiva }
+			remove_ideas = JAP_restavration_of_Reiva
+		}
+		else_if = {
+			limit = { has_idea = JAP_restavration_of_Reiva1 }
+			remove_ideas = JAP_restavration_of_Reiva1
+		}
+		else_if = {
+			limit = { has_idea = JAP_restavration_of_Reiva2 }
+			remove_ideas = JAP_restavration_of_Reiva2
+		}
+		else_if = {
+			limit = { has_idea = JAP_restavration_of_Reiva3 }
+			remove_ideas = JAP_restavration_of_Reiva3
+		}
+		add_ideas = JAP_mass_defiance_of_the_occupation_idea
+		#TODO: гражданка
+	}
+}
+
+# Первые выборы по новой конституции
+country_event = {
+	id = NW_JAP.435
+	title = NW_JAP.435.t
+	desc = NW_JAP.435.d
+	picture = GFX_report_event_hol_cabinet_de_geer
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_JAP.435" }
+	option = {
+		name = NW_JAP.435.a
+		add_country_leader_role = {
+			character = JAP_Ichiro_Hatoyama
+			promote_leader = yes
+			country_leader = {
+				ideology = liberalism
+				expire = "1965.1.1.1"
+				traits = {  }
+			}
+		}
+	}
+}
+
+# Принята конституция Сидэхары
+country_event = {
+	id = NW_JAP.436
+	title = NW_JAP.436.t
+	desc = NW_JAP.436.d
+	picture = GFX_report_event_hol_cabinet_de_geer
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_JAP.436" }
+	option = {
+		name = NW_JAP.436.a
+		add_political_power = 50
+	}
+}
+
+# Освобождение политических заключённых
+country_event = {
+	id = NW_JAP.437
+	title = NW_JAP.437.t
+	desc = NW_JAP.437.d
+	picture = GFX_report_event_hol_cabinet_de_geer
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_JAP.437" }
+	option = {
+		name = NW_JAP.437.a
+		add_popularity = { ideology = democratic popularity = 0.05 }
+		add_popularity = { ideology = communism popularity = 0.03 }
+		add_popularity = { ideology = trozkism popularity = 0.01 }
+		add_popularity = { ideology = anarchism popularity = 0.01 }
+		set_party_name = { ideology = communism long_name = JAP_communism_party1_long name = JAP_communism_party1 }
+		set_party_name = { ideology = trozkism long_name = JAP_trozkism_party2_long name = JAP_trozkism_party2 }
+		set_party_name = { ideology = anarchism long_name = JAP_anarchism_party1_long name = JAP_anarchism_party1 }
+		JAP_Kyuichi_Tokuda = { promote_character = yes }
+	}
+}
+
+# Отречение японского императора
+news_event = {
+	id = NW_JAP_news.60
+	title = NW_JAP_news.60.t
+	desc = NW_JAP_news.60.d
+	picture = GFX_news_event_dutch_soldiers_indonesia
+	major = yes
+	is_triggered_only = yes
+	option = {
+		name = NW_JAP_news.60.a
+		trigger = { tag = JAP }
+	}
+	option = {
+		name = NW_JAP_news.60.b
+		trigger = { NOT = { tag = JAP } }
+	}
+}
+
+# Чистка Хатоямы
+country_event = {
+	id = NW_JAP.438
+	title = NW_JAP.438.t
+	desc = NW_JAP.438.d
+	picture = GFX_report_event_hol_cabinet_de_geer
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_JAP.438" }
+	option = {
+		name = NW_JAP.438.a
+		retire_country_leader = yes
+		add_country_leader_role = {
+			character = JAP_Sigeru_Esida
+			promote_leader = yes
+			country_leader = {
+				ideology = national_liberalism
+				expire = "1965.1.1.1"
+				traits = { JAP_a_skilled_diplomat }
+			}
+		}
+	}
+}
+
+# Победа Социалистической партии
+country_event = {
+	id = NW_JAP.439
+	title = NW_JAP.439.t
+	desc = NW_JAP.439.d
+	picture = GFX_report_event_hol_cabinet_de_geer
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_JAP.439" }
+	option = {
+		name = NW_JAP.439.a
+		retire_country_leader = yes
+		add_country_leader_role = {
+			character = JAP_Tetsu_Katayama
+			promote_leader = yes
+			country_leader = {
+				ideology = socialism
+				expire = "1965.1.1.1"
+				traits = { JAP_minister_of_Health }
+			}
+		}
+	}
+}
+
+# Победа Либеральной партии
+country_event = {
+	id = NW_JAP.440
+	title = NW_JAP.440.t
+	desc = NW_JAP.440.d
+	picture = GFX_report_event_hol_cabinet_de_geer
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_JAP.440" }
+	option = {
+		name = NW_JAP.440.a
+		trigger = { has_completed_focus = JAP_purge_of_right_wing_politicians }
+		if = {
+			limit = { NOT = { has_country_leader = { character = JAP_Sigeru_Esida ruling_only = yes } } }
+			retire_country_leader = yes
+			add_country_leader_role = {
+				character = JAP_Sigeru_Esida
+				promote_leader = yes
+				country_leader = {
+					ideology = national_liberalism
+					expire = "1965.1.1.1"
+					traits = { JAP_a_skilled_diplomat }
+				}
+			}
+		}
+	}
+	option = {
+		name = NW_JAP.440.b
+		trigger = { NOT = { has_completed_focus = JAP_purge_of_right_wing_politicians } }
+		if = {
+			limit = { NOT = { has_country_leader = { character = JAP_Ichiro_Hatoyama ruling_only = yes } } }
+			retire_country_leader = yes
+			add_country_leader_role = {
+				character = JAP_Ichiro_Hatoyama
+				promote_leader = yes
+				country_leader = {
+					ideology = liberalism
+					expire = "1965.1.1.1"
+					traits = {  }
+				}
+			}
+		}
+	}
+}
+
+# Победа Прогрессивной партии
+country_event = {
+	id = NW_JAP.441
+	title = NW_JAP.441.t
+	desc = NW_JAP.441.d
+	picture = GFX_report_event_hol_cabinet_de_geer
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_JAP.441" }
+	option = {
+		name = NW_JAP.441.a
+		retire_country_leader = yes
+		if = {
+			limit = { NOT = { can_be_country_leader = JAP_Machida_Chuji } }
+			add_country_leader_role = {
+				character = JAP_Machida_Chuji
+				promote_leader = yes
+				country_leader = {
+					ideology = social_liberalism
+					expire = "1965.1.1.1"
+					traits = { JAP_a_staunch_commoner JAP_progressive }
+				}
+			}
+		}
+		else = { promote_character = JAP_Machida_Chuji }
 	}
 }
