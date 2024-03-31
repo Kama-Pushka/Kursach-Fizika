@@ -401,35 +401,81 @@ chinese_reunification = {
 				limit = { original_tag = YSC }
 				FROM = { country_event = hebei.16 }
 			}
+			else_if = {
+				limit = { is_manchurian_warlord = yes }
+				FROM = {
+					declare_war_on = {
+						target = YCP
+						type = annex_everything
+					}
+				}
+				activate_targeted_decision = { decision = china_capitulation_decision target = FROM }
+			}
 		}
 	}
 	
 	china_capitulation_timer = {
 		icon = revolt
 		
-		allowed = { always = no } # activated by effects
-		available = { always = no }
-		cancel_trigger = {
-			OR = {
-				has_war = no
-				is_subject = yes
-				has_capitulated = yes
-			}
+		allowed = { 
+			always = no # activated by effects
+		}
+		target_root_trigger = {
+			is_subject = no
+			has_capitulated = no
+		}
+		target_trigger = {
+			has_war_with = FROM
+		}
+		available = { 
+			always = no 
 		}
 
 		is_good = yes
 		fire_only_once = yes
 		days_mission_timeout = 180
 
-		cancel_effect = {
-			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): cancel decision china_capitulation_timer"
-		}
 		timeout_effect = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): timeout decision china_capitulation_timer"
 			if = {
 				limit = { original_tag = YSC }
 				FROM = { country_event = hebei.17 }
 			}
+			else_if = {
+				limit = { is_manchurian_warlord = yes }
+				FROM = { country_event = manchukou.124 }
+			}
+		}
+	}
+	
+	china_capitulation_decision = { # Переговоры с государством [FROM.GetName]
+		icon = generic_prepare_civil_war
+
+		allowed = {
+			always = no
+		}
+		target_trigger = {
+			has_war_with = FROM
+		}
+		available = {
+			if = {
+				limit = { is_manchurian_warlord = yes }
+				# controls_province = TODO
+			}
+		}
+
+		cost = 10
+
+		complete_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision china_capitulation_decision target: [From.GetName]"
+			if = {
+				limit = { is_manchurian_warlord = yes }
+				FROM = { country_event = ycp.39 }
+			}
+		}
+
+		ai_will_do = {
+			factor = 100
 		}
 	}
 	

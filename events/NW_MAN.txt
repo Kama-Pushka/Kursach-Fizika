@@ -379,12 +379,12 @@ country_event = { #Маньчжурское восстание I
 			start_civil_war = {
 				ideology = monarchy
 				size = 1
-				keep_all_characters = yes
 				states = all
 				states_filter = {
 					is_capital = no
 					NOT = { state = 716 } #state = 328
 				}
+				keep_all_characters = yes
 				
 				load_focus_tree = nw_MAN_focus
 				set_cosmetic_tag = MAN_manchurian_revolt 
@@ -417,8 +417,6 @@ country_event = { #Маньчжурское восстание I
 				set_political_party = { ideology = communism popularity = 15 }
 				set_political_party = { ideology = trozkism popularity = 5 }
 				set_political_party = { ideology = anarchism popularity = 3 }
-				NW_legitimacy_check = yes
-				NW_migration_check = yes
 				
 				PREV = { 
 					MAN_aisin_gioro_puyi = { #leader
@@ -437,7 +435,10 @@ country_event = { #Маньчжурское восстание I
 	
 	option = {
 		name = manchukou.20.a
-		JAP = { country_event = { id = manchukou.22 days = 2 } } #days ?
+		if = { 
+			limit = { OR = { is_puppet_of = JAP is_in_faction_with = JAP } }
+			JAP = { country_event = { id = manchukou.22 days = 2 } }
+		}
 	}
 	option = {
 		name = manchukou.20.b
@@ -448,7 +449,10 @@ country_event = { #Маньчжурское восстание I
 			}
 			change_tag_from = ROOT
 		}
-		JAP = { country_event = { id = manchukou.22 days = 2 } } #days ?
+		if = { 
+			limit = { OR = { is_puppet_of = JAP is_in_faction_with = JAP } }
+			JAP = { country_event = { id = manchukou.22 days = 2 } }
+		}
 	}
 }
 
@@ -591,7 +595,7 @@ country_event = { #Маньчжурское восстание II
 	}
 }
 
-country_event = { #Крупномасштабное восстание в Маньчжоу-Го - JAP
+country_event = { #Крупномасштабное восстание в Маньчжоу-Го // JAP
 	id = manchukou.22
 	title = manchukou.22.t
 	desc = manchukou.22.d
@@ -614,37 +618,58 @@ country_event = { #Крупномасштабное восстание в Ман
 		}
 		add_stability = -0.07
 		add_political_power = -20
-		every_country = {
-			limit = { original_tag = MAN NOT = { tag = MAN } }
-			ROOT = {
-				declare_war_on = {
-					target = PREV 
-					type = annex_everything #?
+		custom_effect_tooltip = MAN_war_timer
+		MAN = {
+			every_enemy_country = {
+				limit = { is_manchurian_warlord = yes }
+				ROOT = {
+					declare_war_on = {
+						target = PREV 
+						type = annex_everything # TODO
+					}
+				}
+				hidden_effect = {
+					if = {
+						limit = { NOT = { tag = MGM } } 
+						country_event = manchukou.123
+					}
+					else = {
+						activate_targeted_decision = { target = JAP decision = china_capitulation_timer }
+						country_event = { id = manchukou.125 days = 90 }
+					}
 				}
 			}
 		}
-		if = { #переделать всех маньчжурских под Затяжную кампанию ? А если идет война с еще одним китай-тегом, то Затяжная кампания заменяется на общий таймер ?
-			limit = {
-				NOT = { 
-					has_active_mission = JAP_capitulation_timer_MGM
-					has_active_mission = JAP_capitulation_timer
-				}
-			}
-			#set_variable = { JAP_capitulation_timeout = 90 }
-			custom_effect_tooltip = MAN_war_timer
-			hidden_effect = { activate_mission = JAP_capitulation_timer_MGM }
-		}
-		#country_event = { id = manchukou.66 days = 90 } #60 - не актуально, убрать ! (или оставить ?)
 	}
 	option = {
-		ai_chance = { factor = 0 }
 		name = manchukou.22.b
+		ai_chance = { 
+			factor = 0 
+			# TODO для мирного япа?
+		}
 		add_stability = -0.07
 		add_political_power = -20
 	}
 }
 
-country_event = { #Сроки срываются - JAP
+country_event = { #Ещё немного
+	id = manchukou.125
+	title = manchukou.125.t
+	desc = manchukou.125.d
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event manchukou.125" }
+	
+	trigger = {
+		has_war_with = JAP
+	}
+	
+	option = {
+		name = manchukou.125.a
+		JAP = { country_event = manchukou.66 }
+	}
+}
+
+country_event = { #Ухудшающееся положение армии // JAP
 	id = manchukou.66
 	title = manchukou.66.t
 	desc = manchukou.66.d
@@ -652,18 +677,13 @@ country_event = { #Сроки срываются - JAP
 	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event manchukou.66" }
 	
 	trigger = {
-		has_war_with = MGM
+		any_enemy_country = {
+			is_manchurian_warlord = yes
+		}
 	}
 	
 	option = {
 		name = manchukou.66.a
-		ai_chance = { #?
-			factor = 2
-			modifier = {
-				has_idea = JAP_protracted_military_campaign_3
-				factor = 0
-			}
-		}
 		add_stability = -0.03
 		add_war_support = -0.05
 		add_political_power = -10
@@ -682,14 +702,7 @@ country_event = { #Сроки срываются - JAP
 			}
 		}
 		else_if = {
-			limit = { has_idea = JAP_protracted_military_campaign_2 }
-			swap_ideas = {
-				remove_idea = JAP_protracted_military_campaign_2
-				add_idea = JAP_protracted_military_campaign_3
-			}
-		}
-		else_if = {
-			limit = { NOT = { has_idea = JAP_protracted_military_campaign_3 } }
+			limit = { NOT = { has_idea = JAP_protracted_military_campaign_2 } }
 			add_ideas = JAP_protracted_military_campaign
 		}
 		hidden_effect = {
@@ -698,26 +711,62 @@ country_event = { #Сроки срываются - JAP
 	}
 	option = {
 		name = manchukou.66.b
-		ai_chance = { #?
-			factor = 1
-			modifier = {
-				NOT = { has_idea = JAP_protracted_military_campaign has_idea = JAP_protracted_military_campaign_1 has_idea = JAP_protracted_military_campaign_2 has_idea = JAP_protracted_military_campaign_3 }
-				factor = 0
-			}
-			#modifier = {
-			#	has_idea = JAP_protracted_military_campaign_3
-			#	factor = 100
-			#}
+		ai_chance = {
+			factor = 0.1
+			# TODO мирная япа?
 		}
-		set_country_flag = JAP_will_surrender_MGM
-		add_stability = -0.05
-		add_war_support = -0.07
-		add_political_power = -15
-		MGM = { country_event = manchukou.67 }
+		add_political_power = -50
+		every_enemy_country = {
+			limit = { is_manchurian_warlord = yes }
+			country_event = manchukou.67
+		}
 	}
 }
 
-country_event = { #Квантунская армия отступает
+country_event = { #Ситуация изменилась // is_manchurian_warlord
+	id = manchukou.123
+	title = manchukou.123.t
+	desc = manchukou.123.d
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event manchukou.123" }
+	
+	option = {
+		name = manchukou.123.a
+		remove_targeted_decision = { target = JAP decision = china_capitulation_decision } # TODO ?
+		activate_targeted_decision = { target = JAP decision = china_capitulation_timer }
+	}
+}
+
+country_event = { #Крах Маньчжоу-Го // JAP
+	id = manchukou.124
+	title = manchukou.124.t
+	desc = manchukou.124.d
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event manchukou.124" }
+	
+	fire_only_once = yes
+	
+	option = {
+		name = manchukou.124.a
+		add_political_power = -150
+		every_enemy_country = {
+			limit = { is_manchurian_warlord = yes }
+			country_event = manchukou.67
+		}
+	}
+	option = {
+		name = manchukou.124.b
+		ai_chance = {
+			factor = 0
+			# TODO агрессивная япа?
+		}
+		add_political_power = -100
+		add_stability = -0.15
+		add_war_support = 0.05
+	}
+}
+
+country_event = { #Квантунская армия отступает // is_manchurian_warlord
 	id = manchukou.67
 	title = manchukou.67.t
 	desc = manchukou.67.d
@@ -726,43 +775,23 @@ country_event = { #Квантунская армия отступает
 	
 	option = {
 		name = manchukou.67.a
-		#hidden_effect = {
+		add_stability = 0.1
+		hidden_effect = {
 			if = {
 				limit = { tag = MGM NOT = { has_completed_focus = MGM_manchurian_revolt_focus } }
 				complete_national_focus = MGM_manchurian_revolt_focus
 			}
-		#}
+		}
 		white_peace = JAP
-		every_country = { 
-			limit = {
-				OR = {
-					is_subject_of = JAP 
-					is_in_faction_with = JAP 
-				}
-				has_war_with = ROOT 
-				# NOT = { tag = MAN } ?
-			} 
-			white_peace = ROOT 
-		}
-		#hidden_effect = { 
-			if = { #?
-				limit = { YCP = { exists = yes } }
-				YCP = { white_peace = JAP }
-				declare_war_on = {
-					target = YCP
-					type = annex_everything
-				}
-			}
-		#}
-	}
-	option = {
-		name = manchukou.67.b
-		ai_chance = {
-			factor = 0
-		}
-		#hidden_effect = {
-			#JAP = { country_event = { id = manchukou.66 days = 30 } } - не актуально, убрать
-		#}
+		# every_enemy_country = { 
+			# limit = {
+				# OR = {
+					# is_subject_of = JAP 
+					# is_in_faction_with = JAP 
+				# }
+			# } 
+			# white_peace = ROOT 
+		# }
 	}
 }
 
