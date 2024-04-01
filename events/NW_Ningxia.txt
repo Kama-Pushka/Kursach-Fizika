@@ -254,21 +254,14 @@ country_event = {
 			character = NGX_ma_tingxian
 			promote_leader = yes
 			country_leader = {
-				desc="POLITICS_MA_TINGXIAN_DESC"
-				ideology=militarism_ideology
-				traits={}
-				expire="1965.1.1.1"
-				id=-1
+				desc = "POLITICS_MA_TINGXIAN_DESC"
+				ideology = militarism_ideology
+				traits = {  }
+				expire = "1965.1.1.1"
 			}
 		}
-		set_party_name = {
-			ideology = neutrality
-			long_name = NGX_neutrality_tingxian
-			name = NGX_neutrality_tingxian
-		}
-		NGX = {
-			mark_focus_tree_layout_dirty = yes
-		}
+		set_party_name = { ideology = neutrality long_name = NGX_neutrality_tingxian name = NGX_neutrality_tingxian }
+		mark_focus_tree_layout_dirty = yes
 		hidden_effect = {
 			remove_ideas = {
 				NGX_hongkui_style
@@ -324,11 +317,9 @@ country_event = {
 	is_triggered_only = yes
 	
 	trigger = {
-		owns_state = 1125
-		NGX_ma_tingxian = {
-			is_country_leader = yes
-		}
+		NGX_ma_tingxian = { is_country_leader = yes }
 		1125 = {
+			is_owned_by = ROOT
 			has_dynamic_modifier = { modifier = NGX_gansu_autonomy }
 		}
 	}
@@ -336,53 +327,65 @@ country_event = {
 	immediate = {
 		log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event ningxia.12"
 		hidden_effect = {
-			1125 = {
-				transfer_state_to = GAN
-				remove_dynamic_modifier = { modifier = NGX_gansu_autonomy }
-			}
-			NGX = {
-				declare_war_on = {
-					target = GAN
-					type = civil_war
-				}
-				transfer_units_fraction= {
-					target = GAN
-					size = 0.4
-					keep_unit_leaders_trigger = {
-						always = yes
+			1125 = { remove_dynamic_modifier = { modifier = NGX_gansu_autonomy } }
+			GAN = {
+				transfer_state = 1125
+				ROOT = {
+					declare_war_on = {
+						target = PREV
+						type = civil_war
+					}
+					add_civil_war_target = PREV
+					PREV = { add_civil_war_target = PREV }
+					transfer_units_fraction= {
+						target = PREV
+						size = 0.4
+						keep_unit_leaders_trigger = { always = yes }
+					}
+					set_nationality = {
+						target_country = PREV
+						character = NGX_ma_hongbin
+					}
+					set_nationality = {
+						target_country = PREV
+						character = NGX_ma_chiang_liang
+					}
+					set_nationality = {
+						target_country = PREV
+						character = NGX_ma_dunjing
+					}
+					set_nationality = {
+						target_country = PREV
+						character = NGX_ma_dunjing2
+					}
+					set_nationality = {
+						target_country = PREV
+						character = NGX_ma_tengjiao
+					}
+					set_nationality = {
+						target_country = PREV
+						character = NGX_ma_dienbang
 					}
 				}
-			}
-			set_nationality = {
-				target_country = GAN
-				character = NGX_ma_hongbin
-			}
-			set_nationality = {
-				target_country = GAN
-				character = NGX_ma_chiang_liang
-			}
-			set_nationality = {
-				target_country = GAN
-				character = NGX_ma_dunjing
-			}
-			set_nationality = {
-				target_country = GAN
-				character = NGX_ma_dunjing2
-			}
-			set_nationality = {
-				target_country = GAN
-				character = NGX_ma_tengjiao
-			}
-			set_nationality = {
-				target_country = GAN
-				character = NGX_ma_dienbang
-			}
-			add_country_leader_role = {
-				character = NGX_ma_hongbin
-				promote_leader = yes
-				country_leader = {
-					ideology = militarism_ideology
-					expire = "1965.1.1.1"
+				every_enemy_country = {
+					every_state = {
+						limit = {
+							NOT = { is_fully_controlled_by = PREV }
+							controller = { tag = PREV.PREV }
+						}
+						teleport_armies = {
+							limit = { tag = PREV }
+							to_state_array = controlled_states
+						}
+					}
+				}
+				add_country_leader_role = {
+					character = NGX_ma_hongbin
+					promote_leader = yes
+					country_leader = {
+						ideology = militarism_ideology
+						expire = "1965.1.1.1"
+					}
 				}
 			}
 		}
@@ -393,7 +396,7 @@ country_event = {
 	}
 	option = {
 		name = ningxia.12.b
-		GAN = { change_tag_from = NGX }
+		GAN = { change_tag_from = ROOT }
 	}
 }
 

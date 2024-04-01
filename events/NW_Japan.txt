@@ -2484,6 +2484,13 @@ country_event = {
 		unlock_decision_category_tooltip = JAP_special_military_court_category
 		hidden_effect = { activate_mission = JAP_time_of_the_court }
 		activate_mission = JAP_interrogation_of_all_participants_of_the_uprising
+		if = {
+			limit = {
+				is_ai = yes
+				is_historical_focus_on = yes
+			}
+			set_country_flag = JAP_purge_of_Toseiha_members_in_the_Army_UNLOCK_flag
+		}
 	}
 }
 
@@ -10957,6 +10964,13 @@ country_event = {
 	desc = NW_JAP.404.d
 	picture = GFX_report_event_hol_cabinet_de_geer
 	is_triggered_only = yes
+	trigger = {
+		MAN = {
+			has_war = no
+			has_civil_war = no
+			is_subject_of = FROM
+		}
+	}
 	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_JAP.404" }
 	option = {
 		name = NW_JAP.404.a
@@ -11021,21 +11035,17 @@ country_event = {
 			id = asia
 			value = 200
 		}
-		add_ai_strategy = {
-			type = prepare_for_war
-			id = FROM
-			value = 100
-		}
-		add_ai_strategy = {
-			type = prepare_for_war
-			id = CHI
-			value = 150
-		}
-		CHI = {
-			add_ai_strategy = {
-				type = prepare_for_war
-				id = ROOT
-				value = 250
+		every_other_country = {
+			limit = {
+				is_literally_china = yes
+				can_declare_war_on = ROOT
+			}
+			add_ai_strategy = { type = prepare_for_war id = ROOT value = 300 }
+			ROOT = {
+				add_ai_strategy = { type = prepare_for_war id = PREV value = 300 }
+				every_subject_country = {
+					PREV.PREV = { add_ai_strategy = { type = prepare_for_war id = PREV value = 200 } }
+				}
 			}
 		}
 	}
@@ -11316,6 +11326,16 @@ country_event = {
 		ai_chance = { base = 1 }
 		declare_war_on = { target = JAP type = annex_everything }
 		hidden_effect = { news_event = { id = NW_JAP_news.57 days = 1 } }
+		create_faction = CHI_the_chinese_united_front
+		every_other_country = {
+			limit = {
+				is_literally_china = yes
+				is_JAP_or_ally_of_JAP = no
+				ROOT = { can_declare_war_on = PREV }
+			}
+			add_ai_strategy = { type = alliance id = ROOT value = 500 }
+			country_event = { id = generic.5 hours = 12 }
+		}
 	}
 	option = {
 		name = NW_JAP.417.b
