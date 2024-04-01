@@ -42,8 +42,9 @@ chinese_reunification = {
 					activate_china_integrate_province = yes # TODO tooltip?
 				}
 			}
-			news_event = NW_chinese_reunification.1 #?
-			set_cosmetic_tag = CHI # TODO!
+			custom_effect_tooltip = news_event_NW_chinese_reunification.1
+			hidden_effect = { news_event = NW_chinese_reunification.1 }
+			# set_cosmetic_tag = CHI TODO
 		}
 		
 		ai_will_do = { #?
@@ -448,7 +449,7 @@ chinese_reunification = {
 		}
 	}
 	
-	china_capitulation_decision = { # Переговоры с государством [FROM.GetName]
+	china_capitulation_decision = {
 		icon = generic_prepare_civil_war
 
 		allowed = {
@@ -460,7 +461,7 @@ chinese_reunification = {
 		available = {
 			if = {
 				limit = { is_manchurian_warlord = yes }
-				# controls_province = TODO
+				controls_province = 4052
 			}
 		}
 
@@ -476,261 +477,6 @@ chinese_reunification = {
 
 		ai_will_do = {
 			factor = 100
-		}
-	}
-	
-	# JAP legacy
-	
-	JAP_capitulation_timer = { #universal	 #from KR	
-		icon = revolt
-
-		allowed = { always = no } #activated by NW_JAP_surrender.0
-
-		cancel_trigger = {
-			OR = {
-				has_war = no
-				is_subject = yes
-				has_capitulated = yes
-				AND = {
-					525 = { owner = { has_full_control_of_state = PREV } }
-					527 = { owner = { has_full_control_of_state = PREV } }
-				}
-			}
-		}
-
-		is_good = no
-		days_mission_timeout = 180
-		selectable_mission = yes
-
-		cancel_effect = {
-			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): cancel decision JAP_capitulation_timer"
-			hidden_effect = {
-				every_country = {
-					limit = { has_active_mission = JAP_capitulation_timer_enemy }
-					remove_mission = JAP_capitulation_timer_enemy
-				}
-			}
-		}
-		
-		ai_will_do = {
-			factor = 0
-			modifier = {
-				add = 1000
-				has_global_flag = JAP_will_surrender
-			}
-		}
-
-		complete_effect = {
-			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision JAP_capitulation_timer"
-			every_country = {
-				limit = { has_active_mission = JAP_capitulation_timer_enemy }
-				country_event = NW_JAP_surrender.1
-				hidden_effect = { remove_mission = JAP_capitulation_timer_enemy }
-			}
-		}
-
-		timeout_effect = {
-			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): timeout decision JAP_capitulation_timer"
-			if = {
-				limit = { is_ai = no }
-				add_stability = -0.1
-				add_war_support = -0.1
-				hidden_effect = {
-					activate_mission = JAP_capitulation_timer
-					every_enemy_country = {
-						limit = {
-							#is_ai = no
-							OR = {
-								is_literally_china = yes
-								original_tag = MAN
-							}
-						}
-						activate_mission = JAP_capitulation_timer_enemy
-					}
-				}
-			}
-			else = {
-				set_global_flag = JAP_will_surrender
-				activate_mission = JAP_capitulation_timer
-			}
-		}
-	}
-	JAP_capitulation_timer_enemy = { #from KR	
-		icon = revolt
-
-		allowed = { always = no } 
-		
-		available = { always = no }
-
-		cancel_trigger = {
-			OR = {
-				has_war = no
-				is_subject = yes
-				has_capitulated = yes
-				AND = {
-					525 = { owner = { has_full_control_of_state = PREV } }
-					527 = { owner = { has_full_control_of_state = PREV } }
-				}
-			}
-		}
-
-		is_good = yes
-		days_mission_timeout = 180
-
-		cancel_effect = {
-			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): cancel decision JAP_capitulation_timer_enemy"
-		}
-
-		timeout_effect = {
-			#log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): timeout decision JAP_capitulation_timer_enemy"
-			effect_tooltip = {
-				if = {
-					limit = { JAP = { is_ai = no } }
-					JAP = {
-						add_stability = -0.1
-						add_war_support = -0.1
-					}
-				}
-				else = {
-					country_event = NW_JAP_surrender.1
-				}
-			}
-		}
-	}
-	JAP_intervention_timer = { #of communist MAN
-		icon = generic_prepare_civil_war
-
-		allowed = { always = no } #activated after surrender of pro-jap MAN
-		
-		available = { always = no }
-		
-		cancel_trigger = {
-			OR = {
-				is_subject = yes
-				has_capitulated = yes
-				has_country_flag = JAP_will_surrender_MGM
-				has_global_flag = JAP_will_surrender
-			}
-		}
-
-		is_good = no
-		days_mission_timeout = 30
-
-		cancel_effect = {
-			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): cancel decision JAP_intervention_timer"
-		}
-
-		timeout_effect = {
-			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): timeout decision JAP_intervention_timer"
-			if = {
-				limit = { tag = JAP }
-				every_country = {
-					limit = { has_country_flag = JAP_intervention_flag } 
-					if = {
-						limit = { is_subject = no has_capitulated = no }
-						JAP = {
-							declare_war_on = {
-								target = PREV
-								type = annex_everything
-							}
-						}
-					}
-					clr_country_flag = JAP_intervention_flag
-				}
-			}
-			else = {
-				effect_tooltip = {
-					every_country = {
-						limit = { has_country_flag = JAP_intervention_flag } 
-						JAP = {
-							declare_war_on = {
-								target = PREV
-								type = annex_everything
-							}
-						}
-					}
-				}
-			}
-		}
-	}
-	JAP_capitulation_timer_MGM = { #?	from KR	
-		icon = revolt
-
-		allowed = { always = no } #activated by manchukou.22
-
-		cancel_trigger = {
-			OR = {
-				NOT = { has_war_with = MGM } #has_war
-				is_subject = yes
-				has_capitulated = yes
-				#has_active_mission = JAP_capitulation_timer
-			}
-		}
-
-		is_good = no
-		days_mission_timeout = JAP_capitulation_timeout?90
-		selectable_mission = yes
-
-		cancel_effect = {
-			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): cancel decision JAP_capitulation_timer_MGM"
-		}
-		
-		ai_will_do = {
-			factor = 0
-			modifier = {
-				add = 1000
-				OR = {
-					has_country_flag = JAP_will_surrender_MGM
-					has_global_flag = JAP_will_surrender
-				}
-			}
-		}
-
-		complete_effect = {
-			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision JAP_capitulation_timer_MGM"
-			set_country_flag = JAP_will_surrender_MGM
-			add_stability = -0.05
-			add_war_support = -0.07
-			add_political_power = -15
-			every_country = {
-				limit = { original_tag = MAN NOT = { tag = MAN } }
-				country_event = manchukou.67 
-			} 
-		}
-
-		timeout_effect = {
-			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): timeout decision JAP_capitulation_timer_MGM"
-			add_stability = -0.03
-			add_war_support = -0.05
-			add_political_power = -10
-			if = {
-				limit = { has_idea = JAP_protracted_military_campaign }
-				swap_ideas = {
-					remove_idea = JAP_protracted_military_campaign
-					add_idea = JAP_protracted_military_campaign_1
-				}
-			}
-			else_if = {
-				limit = { has_idea = JAP_protracted_military_campaign_1 }
-				swap_ideas = {
-					remove_idea = JAP_protracted_military_campaign_1
-					add_idea = JAP_protracted_military_campaign_2
-				}
-			}
-			else_if = {
-				limit = { has_idea = JAP_protracted_military_campaign_2 }
-				swap_ideas = {
-					remove_idea = JAP_protracted_military_campaign_2
-					add_idea = JAP_protracted_military_campaign_3
-				}
-				set_country_flag = JAP_will_surrender_MGM
-			}
-			else_if = {
-				limit = { NOT = { has_idea = JAP_protracted_military_campaign_3 } }
-				add_ideas = JAP_protracted_military_campaign
-			}
-			set_variable = { JAP_capitulation_timeout = 30 }
-			activate_mission = JAP_capitulation_timer_MGM
 		}
 	}
 }
