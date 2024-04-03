@@ -1,0 +1,486 @@
+focus_tree = {
+	
+	id = nw_kashgar_focus
+	country = {
+		factor = 0	
+		modifier = {
+			add = 10
+			tag = KAS
+		}
+	}
+	default = no
+	continuous_focus_position = { x = 2000 y = 1250 }
+	
+	###   ##  #   ### ### ###  ##   ##  #       ### ###  ### ### 
+	#  # #  # #    #   #   #  #  # #  # #        #  #  # #   #   
+	###  #  # #    #   #   #  #    #### #        #  ###  ##  ##  
+	#    #  # #    #   #   #  #  # #  # #        #  #  # #   #   
+	#     ##  ### ###  #  ###  ##  #  # ###      #  #  # ### ###
+	
+	focus = {
+		id = KAS_governor_liu_ping
+		icon = GFX_z_goal_JAP_trial_on_sabura_aizawa
+		x = 0
+		y = 0
+		cost = 8
+		ai_will_do = { factor = 10 }
+		search_filters = { FOCUS_FILTER_POLITICAL }
+		available = { has_country_leader = { character = KAS_liu_pin ruling_only = yes } }
+		bypass = {  }
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus KAS_governor_liu_ping"
+			add_political_power = 150
+			if = {
+				limit = { is_subject = yes }
+				add_autonomy_score = { value = -50 }
+			}
+		}
+	}
+	
+	focus = {
+		id = KAS_atheism_propaganda_program
+		icon = GFX_z_goal_JAP_trial_on_sabura_aizawa
+		x = -1
+		y = 1
+		cost = 8
+		ai_will_do = { factor = 10 }
+		search_filters = {  }
+		available = { has_country_leader = { character = KAS_liu_pin ruling_only = yes } }
+		bypass = {  }
+		prerequisite = { focus = KAS_governor_liu_ping }
+		relative_position_id = KAS_governor_liu_ping
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus KAS_atheism_propaganda_program"
+			add_stability = -0.05
+			if = {
+				limit = { is_subject = yes }
+				add_autonomy_score = { value = -50 }
+			}
+			add_popularity = { ideology = neutrality popularity = 0.05 }
+		}
+	}
+	
+	focus = {
+		id = KAS_educational_reforms
+		icon = GFX_z_goal_JAP_trial_on_sabura_aizawa
+		x = 1
+		y = 1
+		cost = 8
+		ai_will_do = { factor = 10 }
+		search_filters = { FOCUS_FILTER_RESEARCH }
+		available = {
+			has_country_leader = { character = KAS_liu_pin ruling_only = yes }
+			has_idea = KAS_illiterate_population_idea
+		}
+		bypass = {  }
+		prerequisite = { focus = KAS_governor_liu_ping }
+		relative_position_id = KAS_governor_liu_ping
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus KAS_educational_reforms"
+			add_stability = -0.05
+			swap_ideas = {
+				remove_idea = KAS_illiterate_population_idea
+				add_idea = KAS_poorly_educated_population_idea
+			}
+		}
+	}
+	
+	focus = {
+		id = KAS_agitation_among_uighur_soldiers
+		icon = GFX_z_goal_JAP_trial_on_sabura_aizawa
+		x = -1
+		y = 1
+		cost = 8
+		ai_will_do = { factor = 10 }
+		search_filters = { FOCUS_FILTER_STABILITY }
+		available = { has_country_leader = { character = KAS_liu_pin ruling_only = yes } }
+		bypass = {  }
+		prerequisite = { focus = KAS_atheism_propaganda_program }
+		relative_position_id = KAS_atheism_propaganda_program
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus KAS_agitation_among_uighur_soldiers"
+			custom_effect_tooltip = KAS_agitation_among_uighur_soldiers_tt
+			add_stability = 0.05
+			add_popularity = { ideology = communism popularity = 0.05 }
+		}
+	}
+	
+	focus = {
+		id = KAS_training_with_the_assistance_of_soviet_specialists
+		icon = GFX_z_goal_JAP_trial_on_sabura_aizawa
+		x = 0
+		y = 1
+		cost = 8
+		ai_will_do = { factor = 10 }
+		search_filters = { FOCUS_FILTER_RESEARCH FOCUS_FILTER_ARMY_XP }
+		available = {
+			has_country_leader = { character = KAS_liu_pin ruling_only = yes }
+			SOV = {
+				NOT = { has_war_with = ROOT }
+				has_government = communism
+			}
+		}
+		bypass = { NOT = { country_exists = SOV } }
+		prerequisite = { focus = KAS_agitation_among_uighur_soldiers }
+		relative_position_id = KAS_agitation_among_uighur_soldiers
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus KAS_training_with_the_assistance_of_soviet_specialists"
+			army_experience = 50
+			add_doctrine_cost_reduction = {
+				name = KAS_training_with_the_assistance_of_soviet_specialists
+				cost_reduction = 0.35
+				uses = 2
+				category = land_doctrine
+			}
+			add_tech_bonus = {
+				name = KAS_training_with_the_assistance_of_soviet_specialists
+				bonus = 0.5
+				uses = 1
+				category = cat_production
+			}
+		}
+	}
+	
+	focus = {
+		id = KAS_land_redistribution
+		icon = GFX_z_goal_JAP_trial_on_sabura_aizawa
+		x = 1
+		y = 1
+		cost = 8
+		ai_will_do = { factor = 10 }
+		search_filters = { FOCUS_FILTER_STABILITY FOCUS_FILTER_INDUSTRY }
+		available = {
+			has_country_leader = { character = KAS_liu_pin ruling_only = yes }
+			controls_state = 619
+			controls_state = 1122
+		}
+		bypass = {  }
+		prerequisite = { focus = KAS_atheism_propaganda_program }
+		prerequisite = { focus = KAS_educational_reforms }
+		relative_position_id = KAS_atheism_propaganda_program
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus KAS_land_redistribution"
+			add_stability = 0.05
+			add_popularity = { ideology = communism popularity = 0.1 }
+			every_controlled_state = {
+				limit = {
+					OR = { state = 619 state = 1122 }
+					free_building_slots = {
+						building = fuel_silo
+						size > 0
+						include_locked = yes
+					}
+				}
+				add_extra_state_shared_building_slots = 1
+			}
+		}
+	}
+	
+	focus = {
+		id = KAS_refurbishment_of_mosques
+		icon = GFX_z_goal_JAP_trial_on_sabura_aizawa
+		x = 0
+		y = 1
+		cost = 8
+		ai_will_do = { factor = 10 }
+		search_filters = { FOCUS_FILTER_INDUSTRY }
+		available = { has_country_leader = { character = KAS_liu_pin ruling_only = yes } }
+		bypass = {  }
+		prerequisite = { focus = KAS_land_redistribution }
+		relative_position_id = KAS_land_redistribution
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus KAS_refurbishment_of_mosques"
+			add_stability = -0.05
+			add_popularity = { ideology = neutrality popularity = 0.1 }
+			random_owned_controlled_state = {
+				prioritize = { 1122 }
+				limit = {
+					is_core_of = ROOT
+					free_building_slots = {
+						building = industrial_complex
+						size > 0
+						include_locked = yes
+					}
+				}
+				add_extra_state_shared_building_slots = 1
+				add_building_construction = {
+					type = industrial_complex
+					level = 1
+					instant_build = yes		
+				}
+			}
+		}
+	}
+	
+	focus = {
+		id = KAS_building_schools
+		icon = GFX_z_goal_JAP_trial_on_sabura_aizawa
+		x = 1
+		y = 1
+		cost = 8
+		ai_will_do = { factor = 10 }
+		search_filters = { FOCUS_FILTER_RESEARCH }
+		available = { has_country_leader = { character = KAS_liu_pin ruling_only = yes } }
+		bypass = {  }
+		prerequisite = { focus = KAS_educational_reforms }
+		relative_position_id = KAS_educational_reforms
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus KAS_building_schools"
+			add_research_slot = 1
+		}
+	}
+	
+	focus = {
+		id = KAS_closure_of_muslim_schools_and_madrassas
+		icon = GFX_z_goal_JAP_trial_on_sabura_aizawa
+		x = 0
+		y = 1
+		cost = 8
+		ai_will_do = { factor = 10 }
+		search_filters = { FOCUS_FILTER_RESEARCH }
+		available = { has_country_leader = { character = KAS_liu_pin ruling_only = yes } }
+		bypass = {  }
+		prerequisite = { focus = KAS_building_schools }
+		relative_position_id = KAS_building_schools
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus KAS_closure_of_muslim_schools_and_madrassas"
+			add_popularity = { ideology = neutrality popularity = 0.1 }
+			add_ideas = KAS_closure_of_muslim_schools_and_madrassas_idea
+		}
+	}
+	
+	focus = {
+		id = KAS_joining_xinjiang
+		icon = GFX_z_goal_JAP_trial_on_sabura_aizawa
+		x = 0
+		y = 1
+		cost = 8
+		ai_will_do = { factor = 10 }
+		search_filters = {  }
+		available = {
+			has_country_leader = { character = KAS_liu_pin ruling_only = yes }
+			is_subject_of = SIK
+		}
+		bypass = {  }
+		prerequisite = { focus = KAS_training_with_the_assistance_of_soviet_specialists }
+		prerequisite = { focus = KAS_refurbishment_of_mosques }
+		prerequisite = { focus = KAS_closure_of_muslim_schools_and_madrassas }
+		relative_position_id = KAS_refurbishment_of_mosques
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus KAS_joining_xinjiang"
+			custom_effect_tooltip = KAS_joining_xinjiang_tt
+			hidden_effect = {
+				country_event = { id = NW_KAS.1 hours = 12 }
+				every_other_country = {
+					limit = { OR = { original_tag = SIK original_tag = KUM original_tag = DZH } }
+					country_event = { id = NW_KAS.1 days = 1 }
+				}
+			}
+		}
+	}
+	
+	focus = {
+		id = KAS_last_uprising
+		icon = GFX_z_goal_JAP_trial_on_sabura_aizawa
+		x = 12
+		y = 0
+		cost = 2
+		ai_will_do = { factor = 10 }
+		search_filters = {  }
+		available = {
+			OR = {
+				has_country_leader = { character = KAS_mahmud_muhiti ruling_only = yes }
+				has_country_leader = { character = KAS_abdullah_niyaz ruling_only = yes }
+			}
+			has_war_with = SIK
+		}
+		bypass = {  }
+		relative_position_id = KAS_governor_liu_ping
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus KAS_last_uprising"
+			add_timed_idea = { idea = KAS_last_chance_idea days = 365 }
+		}
+	}
+	
+	focus = {
+		id = KAS_set_the_whole_province_on_fire
+		icon = GFX_z_goal_JAP_trial_on_sabura_aizawa
+		x = -1
+		y = 1
+		cost = 2
+		ai_will_do = { factor = 10 }
+		search_filters = {  }
+		available = {
+			OR = {
+				has_country_leader = { character = KAS_mahmud_muhiti ruling_only = yes }
+				has_country_leader = { character = KAS_abdullah_niyaz ruling_only = yes }
+			}
+			has_war_with = SIK
+		}
+		bypass = {  }
+		prerequisite = { focus = KAS_last_uprising }
+		relative_position_id = KAS_last_uprising
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus KAS_set_the_whole_province_on_fire"
+			every_other_country = {
+				limit = {
+					OR = { original_tag = TNG original_tag = KUM original_tag = DZH }
+					NOT = { has_war_with = SIK }
+					OR = {
+						is_subject_of = SIK
+						is_subject = no
+					}
+				}
+				country_event = { id = NW_KAS.6 days = 1 }
+			}
+			custom_effect_tooltip = KAS_set_the_whole_province_on_fire_tt
+		}
+	}
+
+	focus = {
+		id = KAS_quick_raids
+		icon = GFX_z_goal_JAP_trial_on_sabura_aizawa
+		x = 1
+		y = 1
+		cost = 2
+		ai_will_do = { factor = 10 }
+		search_filters = {  }
+		available = {
+			OR = {
+				has_country_leader = { character = KAS_mahmud_muhiti ruling_only = yes }
+				has_country_leader = { character = KAS_abdullah_niyaz ruling_only = yes }
+			}
+			has_war_with = SIK
+		}
+		bypass = {  }
+		prerequisite = { focus = KAS_last_uprising }
+		relative_position_id = KAS_last_uprising
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus KAS_quick_raids"
+			add_timed_idea = { idea = KAS_quick_raids_idea days = 250 }
+		}
+	}
+	
+	focus = {
+		id = KAS_storming_cities
+		icon = GFX_z_goal_JAP_trial_on_sabura_aizawa
+		x = 1
+		y = 1
+		cost = 2
+		ai_will_do = { factor = 10 }
+		search_filters = {  }
+		available = {
+			OR = {
+				has_country_leader = { character = KAS_mahmud_muhiti ruling_only = yes }
+				has_country_leader = { character = KAS_abdullah_niyaz ruling_only = yes }
+			}
+			has_war_with = SIK
+		}
+		bypass = {  }
+		prerequisite = { focus = KAS_quick_raids }
+		relative_position_id = KAS_quick_raids
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus KAS_storming_cities"
+			add_timed_idea = { idea = KAS_storming_cities_idea days = 250 }
+		}
+	}
+	
+	focus = {
+		id = KAS_mobilize_ethnic_militias
+		icon = GFX_z_goal_JAP_trial_on_sabura_aizawa
+		x = -1
+		y = 1
+		cost = 2
+		ai_will_do = { factor = 10 }
+		search_filters = { FOCUS_FILTER_MANPOWER }
+		available = {
+			OR = {
+				has_country_leader = { character = KAS_mahmud_muhiti ruling_only = yes }
+				has_country_leader = { character = KAS_abdullah_niyaz ruling_only = yes }
+			}
+			has_war_with = SIK
+		}
+		bypass = {  }
+		prerequisite = { focus = KAS_set_the_whole_province_on_fire }
+		relative_position_id = KAS_set_the_whole_province_on_fire
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus KAS_storming_cities"
+			if = {
+				limit = { NOT = { has_template = "Uighur Nationalists" } }
+				division_template = {
+					name = "Uighur Nationalists"
+					is_locked = no
+					division_names_group = CHI_INF_01
+					regiments = {
+						infantry = { x = 0 y = 0 }
+						infantry = { x = 0 y = 1 }
+						infantry = { x = 1 y = 0 }
+						infantry = { x = 1 y = 1 }
+					}
+				}
+			}
+			capital_scope = {
+				create_unit = {
+					division = "division_template = \"Uighur Nationalists\" start_experience_factor = 0.2"
+					owner = ROOT
+					count = 3
+				}
+			}
+		}
+	}
+	
+	focus = {
+		id = KAS_recreate_the_uighur_government
+		icon = GFX_z_goal_JAP_trial_on_sabura_aizawa
+		x = 1
+		y = 1
+		cost = 2
+		ai_will_do = { factor = 10 }
+		search_filters = {  }
+		available = {
+			OR = {
+				has_country_leader = { character = KAS_mahmud_muhiti ruling_only = yes }
+				has_country_leader = { character = KAS_abdullah_niyaz ruling_only = yes }
+			}
+		}
+		bypass = {  }
+		prerequisite = { focus = KAS_set_the_whole_province_on_fire }
+		prerequisite = { focus = KAS_quick_raids }
+		relative_position_id = KAS_set_the_whole_province_on_fire
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus KAS_recreate_the_uighur_government"
+			set_cosmetic_tag = KAS_east_turkestan
+		}
+	}
+	
+	focus = {
+		id = KAS_there_is_no_longer_a_common_enemy
+		icon = GFX_z_goal_JAP_trial_on_sabura_aizawa
+		x = 0
+		y = 1
+		cost = 2
+		ai_will_do = { factor = 10 }
+		search_filters = { FOCUS_FILTER_ANNEXATION }
+		available = {
+			OR = {
+				has_country_leader = { character = KAS_mahmud_muhiti ruling_only = yes }
+				has_country_leader = { character = KAS_abdullah_niyaz ruling_only = yes }
+			}
+			is_subject = no
+			SIK = {
+				OR = {
+					has_capitulated = yes
+					exists = no
+				}
+			}
+		}
+		bypass = {  }
+		prerequisite = { focus = KAS_recreate_the_uighur_government }
+		relative_position_id = KAS_recreate_the_uighur_government
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus KAS_there_is_no_longer_a_common_enemy"
+			custom_effect_tooltip = KAS_there_is_no_longer_a_common_enemy_tt
+			unlock_decision_category_tooltip = KAS_there_is_no_longer_a_common_enemy_category
+		}
+	}
+}
