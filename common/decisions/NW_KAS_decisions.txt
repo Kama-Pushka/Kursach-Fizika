@@ -400,3 +400,224 @@ KAS_stimulate_the_development_of_national_culture_category = {
 		}
 	}
 }
+
+KAS_finish_the_craziest_plan_category = {
+	
+	KAS_arrival_of_the_monarch = {
+		icon = GFX_decision_activate_the_combat_cell_anarchist
+		priority = 1000
+		activation = { always = no }
+		available = { hidden_trigger = { always = no } }
+		cancel_trigger = {
+			set_temp_variable = { KAS_legitimacy_of_the_crown_var_temp_var_for_check = 0 }
+			custom_trigger_tooltip = {
+				check_variable = { var = KAS_legitimacy_of_the_crown_var value = KAS_legitimacy_of_the_crown_var_temp_var_for_check compare = equals }
+				tooltip = KAS_legitimacy_of_the_crown_var_check_less
+			}
+		}
+		cancel_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): cancel mission KAS_arrival_of_the_monarch"
+		}
+		is_good = yes
+		days_mission_timeout = 200
+		selectable_mission = no
+		timeout_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): timeout mission KAS_arrival_of_the_monarch"
+			country_event = NW_KAS.19
+		}
+	}
+	
+	KAS_support_prime_minister_mahmoud_mukhiti = {
+		priority = 900
+		icon = GFX_decision_generic_political_discourse
+		cost = 10
+		fire_only_once = no
+		days_re_enable = 30
+		complete_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision KAS_support_prime_minister_mahmoud_mukhiti"
+			add_to_variable = { KAS_legitimacy_of_the_crown_var = 1 tooltip = KAS_legitimacy_of_the_crown_var_tt }
+			KAS_legitimacy_of_the_crown_effect = yes
+			add_popularity = { ideology = neutrality popularity = 0.003 }
+		}
+	}
+	
+	KAS_call_for_the_democratization_of_politics = {
+		priority = 800
+		icon = GFX_decision_generic_political_discourse
+		cost = 10
+		fire_only_once = no
+		days_re_enable = 50
+		complete_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision KAS_call_for_the_democratization_of_politics"
+			add_popularity = { ideology = democratic popularity = 0.003 }
+			add_popularity = { ideology = neutrality popularity = -0.003 }
+			custom_effect_tooltip = KAS_call_for_the_democratization_of_politics_tt
+			if = {
+				limit = { neutrality > democratic }
+				add_to_variable = { KAS_legitimacy_of_the_crown_var = 1 tooltip = KAS_legitimacy_of_the_crown_var_tt }
+			}
+			else = {
+				add_to_variable = { KAS_legitimacy_of_the_crown_var = -1 tooltip = KAS_legitimacy_of_the_crown_var_tt }
+			}
+			KAS_legitimacy_of_the_crown_effect = yes
+		}
+	}
+	
+	KAS_visit_poor_neighborhoods_of_cities = {
+		priority = 700
+		icon = GFX_decision_generic_political_discourse
+		cost = 5
+		fire_only_once = no
+		days_re_enable = 30
+		complete_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision KAS_visit_poor_neighborhoods_of_cities"
+			add_stability = 0.01
+			add_to_variable = { KAS_legitimacy_of_the_crown_var = 1 tooltip = KAS_legitimacy_of_the_crown_var_tt }
+			KAS_legitimacy_of_the_crown_effect = yes
+		}
+	}
+	
+	KAS_support_the_leaders_of_the_current_opposition = {
+		priority = 600
+		icon = GFX_decision_generic_political_discourse
+		visible = { has_dynamic_modifier = { modifier = KAS_unity_of_the_nation_modifier } }
+		custom_cost_trigger = {
+			set_temp_variable = { custom_cost_pp = 10 }
+			set_temp_variable = { KAS_unity_of_the_nation_temp = 1 }			
+			check_variable = { var = has_political_power value = custom_cost_pp compare = greater_than_or_equals }
+			check_variable = { var = KAS_unity_of_the_nation value = KAS_unity_of_the_nation_temp compare = greater_than_or_equals }
+		}
+		custom_cost_text = KAS_pol_and_unity_cost
+		fire_only_once = no
+		days_re_enable = 30
+		complete_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision KAS_support_the_leaders_of_the_current_opposition"
+			hidden_effect = {
+				add_political_power = -10
+				add_to_variable = { KAS_unity_of_the_nation = -1 }
+				KAS_unity_of_the_nation_effect = yes
+			}
+			add_stability = 0.01
+			custom_effect_tooltip = KAS_support_the_leaders_of_the_current_opposition_tt
+			set_temp_variable = { KAS_neutrality_temp_var = party_popularity_100@neutrality }
+			set_temp_variable = { KAS_democratic_temp_var = party_popularity_100@democratic }
+			divide_temp_variable = { KAS_neutrality_temp_var = KAS_democratic_temp_var }
+			if = {
+				limit = { check_variable = { KAS_neutrality_temp_var < 3 } }
+				add_to_variable = { KAS_legitimacy_of_the_crown_var = 1 tooltip = KAS_legitimacy_of_the_crown_var_tt }
+			}
+			else = {
+				add_to_variable = { KAS_legitimacy_of_the_crown_var = -1 tooltip = KAS_legitimacy_of_the_crown_var_tt }
+			}
+			KAS_legitimacy_of_the_crown_effect = yes
+		}
+	}
+	
+	KAS_build_a_mosque = {
+		priority = 500
+		icon = GFX_decision_generic_political_discourse
+		visible = { has_completed_focus = KAS_patron_king }
+		custom_cost_trigger = {
+			set_temp_variable = { custom_cost_pp = 50 }
+			set_temp_variable = { num_of_civilian_factories_temp = 2 }
+			check_variable = { var = has_political_power value = custom_cost_pp compare = greater_than_or_equals }
+			check_variable = { var = num_of_civilian_factories_available_for_projects value = num_of_civilian_factories_temp compare = greater_than_or_equals }
+		}
+		custom_cost_text = pol_and_civ_factory_cost
+		fire_only_once = no
+		days_remove = 300
+		modifier = { civilian_factory_use = 2 }
+		complete_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision KAS_build_a_mosque"
+			hidden_effect = { add_political_power = -50 }			
+		}
+		remove_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): remove decision KAS_build_a_mosque"
+			add_stability = 0.03
+			add_to_variable = { KAS_legitimacy_of_the_crown_var = 3 tooltip = KAS_legitimacy_of_the_crown_var_tt }
+			KAS_legitimacy_of_the_crown_effect = yes
+		}
+	}
+	
+	KAS_build_a_hospital = {
+		priority = 400
+		icon = GFX_decision_generic_political_discourse
+		visible = { has_completed_focus = KAS_patron_king }
+		custom_cost_trigger = {
+			set_temp_variable = { custom_cost_pp = 50 }
+			set_temp_variable = { num_of_civilian_factories_temp = 2 }
+			check_variable = { var = has_political_power value = custom_cost_pp compare = greater_than_or_equals }
+			check_variable = { var = num_of_civilian_factories_available_for_projects value = num_of_civilian_factories_temp compare = greater_than_or_equals }
+		}
+		custom_cost_text = pol_and_civ_factory_cost
+		fire_only_once = no
+		days_remove = 300
+		modifier = { civilian_factory_use = 2 }
+		complete_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision KAS_build_a_hospital"
+			hidden_effect = { add_political_power = -50 }			
+		}
+		remove_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): remove decision KAS_build_a_hospital"
+			add_stability = 0.025
+			add_to_variable = { KAS_legitimacy_of_the_crown_var = 2 tooltip = KAS_legitimacy_of_the_crown_var_tt }
+			KAS_legitimacy_of_the_crown_effect = yes
+			random_owned_controlled_state = {
+				limit = {
+					is_core_of = ROOT
+					hospital < 5
+				}
+				add_building_construction = {
+					type = hospital
+					level = 1
+					instant_build = yes		
+				}
+			}
+		}
+	}
+	
+	KAS_build_a_school = {
+		priority = 300
+		icon = GFX_decision_generic_political_discourse
+		visible = { has_completed_focus = KAS_patron_king }
+		custom_cost_trigger = {
+			set_temp_variable = { custom_cost_pp = 50 }
+			set_temp_variable = { num_of_civilian_factories_temp = 2 }
+			check_variable = { var = has_political_power value = custom_cost_pp compare = greater_than_or_equals }
+			check_variable = { var = num_of_civilian_factories_available_for_projects value = num_of_civilian_factories_temp compare = greater_than_or_equals }
+		}
+		custom_cost_text = pol_and_civ_factory_cost
+		fire_only_once = no
+		days_remove = 350
+		modifier = { civilian_factory_use = 2 }
+		complete_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision KAS_build_a_school"
+			hidden_effect = { add_political_power = -50 }			
+		}
+		remove_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): remove decision KAS_build_a_school"
+			add_stability = 0.05
+			add_to_variable = { KAS_legitimacy_of_the_crown_var = 4 tooltip = KAS_legitimacy_of_the_crown_var_tt }
+			KAS_legitimacy_of_the_crown_effect = yes
+		}
+	}
+	
+	KAS_support_local_artists = {
+		priority = 200
+		icon = GFX_decision_generic_political_discourse
+		visible = { has_completed_focus = KAS_patron_king }
+		cost = 30
+		fire_only_once = no
+		days_re_enable = 100
+		complete_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision KAS_support_local_artists"
+			add_to_variable = { KAS_legitimacy_of_the_crown_var = 1 tooltip = KAS_legitimacy_of_the_crown_var_tt }
+			KAS_legitimacy_of_the_crown_effect = yes
+			if = {
+				limit = { has_dynamic_modifier = { modifier = KAS_unity_of_the_nation_modifier } }
+				add_to_variable = { KAS_unity_of_the_nation = 1 tooltip = KAS_unity_of_the_nation_tt }
+				KAS_unity_of_the_nation_effect = yes
+			}
+		}
+	}
+}
