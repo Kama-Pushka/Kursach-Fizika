@@ -2,170 +2,560 @@
 # Soviet Events
 ###########################
 
-add_namespace = soviet
+add_namespace = finland
 
-# Border Skirmish with the Japanese
+# Soviet Ultimatum - Event for FIN
 country_event = {
-	id = soviet.1
-	title = soviet.1.t
-	desc = soviet.1.d
-	picture = GFX_report_event_japanese_transport_soldiers
+	id = finland.1
+	title = finland.1.t
+	desc = finland.1.d
+	picture = GFX_report_event_soviet_tanks_snow
 	
 	is_triggered_only = yes
 	
-	option = { # Push back
-		name = soviet.1.a
-		ai_chance = { factor = 75 }
-		add_political_power = -25
-		hidden_effect = {
-			random_list = {
-				60 = {
-					JAP = {
-						country_event = { days = 1 id = japan.3 }
+	option = { # Accept demands
+		name = finland.1.a
+		ai_chance = { 
+			base = 25
+			modifier = { # Don't accept if in a faction that can protect them
+				factor = 0
+				NOT = { is_in_faction_with = FROM }
+				NOT = { is_subject_of = FROM }
+				OR = {
+					any_other_country = {
+						is_major = yes
+						OR = {
+							is_in_faction_with = FIN
+							has_guaranteed = FIN
+						}
 					}
+					FIN_is_historical_ai = yes # Finland expected to resist on historical
+					has_idea = anti_soviet_pact
 				}
-				40 = {
-					JAP = {
-						country_event = { days = 1 id = japan.4 }
+			}
+		}
+		FROM = {
+			country_event = { days = 5 id = soviet.12 }
+			effect_tooltip = {
+				transfer_state = 146
+				custom_effect_tooltip = FIN_remove_soviet_claims_in_other_states_tt
+			}
+		}
+		hidden_effect = {
+			FROM = {
+				add_ai_strategy = { 
+					type = antagonize 
+					id = ROOT
+					value = -100
+				}
+				add_ai_strategy = { 
+					type = conquer 
+					id = ROOT
+					value = -100
+				}
+			}
+		}
+	}
+	option = { # Refuse
+		name = finland.1.b
+		ai_chance = {
+			base = 75
+			modifier = {
+				factor = 0
+				OR = {
+					is_in_faction_with = FROM
+					is_subject_of = FROM
+				}
+			}
+		}
+		FROM = {
+			country_event = { days = 5 id = soviet.13 }
+			effect_tooltip = {
+				create_wargoal = {
+					type = take_state
+					target = FIN
+					generator = { 146 }
+				}
+			}
+		}
+	}
+}
+
+add_namespace = poland
+
+# Soviet Union Demands the East
+country_event = {
+	id = poland.2
+	title = poland.2.t
+	desc = poland.2.d
+	picture = GFX_report_event_polish_tanks_01
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = poland.2.a
+		ai_chance = { 
+			factor = 30 
+			modifier = {
+				factor = 0
+				OR = {
+					any_other_country = {
+						is_major = yes
+						OR = {
+							is_in_faction_with = POL
+							has_guaranteed = POL
+						}
 					}
+					has_idea = anti_soviet_pact
 				}
 			}
 		}
 		effect_tooltip = {
-			random_list = {
-				60 = {
-					country_event = soviet.2
+			every_owned_state = {
+				limit = {
+					OR = { state = 89 state = 91 state = 93 state = 94 state = 95 state = 96 state = 97 state = 771 state = 774 state = 837 state = 908 state = 939 state = 997 state = 1023 state = 1029 }
+					is_controlled_by = PREV
 				}
-				40 = {
-					country_event = soviet.3
-				}
+				transfer_state_to = FROM
 			}
 		}
+		FROM = {country_event = { id = poland.3} }
 	}
-	option = { # Yield
-		name = soviet.1.b
-		ai_chance = { factor = 25 }
-		JAP = {
-			effect_tooltip = {
-				add_stability = 0.05
+
+	option = {
+		name = poland.2.b
+		ai_chance = { factor = 70 }
+		effect_tooltip = {
+			FROM = {
+				create_wargoal = {
+					type = take_state_focus
+					target = POL
+					generator = { 89 91 93 94 95 96 97 771 774 837 908 939 997 1023 1029 }
+				}
 			}
-			country_event = { days = 1 id = japan.5 }
 		}
+		FROM = { country_event = { id = poland.4 } }
 	}
 }
 
-# Successful Raid
+# Poland Cedes the East
 country_event = {
-	id = soviet.2
-	title = soviet.2.t
-	desc = soviet.2.d
-	picture = GFX_report_event_dead_soldiers
+	id = poland.3
+	title = poland.3.t
+	desc = poland.3.d
+	picture = GFX_report_event_polish_tanks_01
 	
 	is_triggered_only = yes
 	
 	option = {
-		name = soviet.2.a
-		if = {
-			limit = {
-				561 = { 
-					is_owned_by = SOV 
-					any_neighbor_state = { 
-						OR = {
-							is_owned_by = JAP							
-							is_owned_by = MAN								
-						}
-					} 
+		name = poland.3.a
+		FROM = {
+			every_owned_state = {
+				limit = {
+					OR = { state = 89 state = 91 state = 93 state = 94 state = 95 state = 96 state = 97 state = 771 state = 774 state = 837 state = 908 state = 939 state = 997 state = 1023 state = 1029 }
+					is_controlled_by = PREV
 				}
-			}
-			561 = { add_manpower = -30000 }
-		}		
-		if = {
-			limit = { 
-				NOT = { 
-					561 = { 
-						is_owned_by = SOV 
-						any_neighbor_state = { 
-							OR = {
-								is_owned_by = JAP
-								is_owned_by = MAN
-							} 	
-						}
-					}
-				}
-			}
-			random_owned_state = {
-				limit = { 
-					any_neighbor_state = { 
-						OR = {
-							is_owned_by = JAP
-							is_owned_by = MAN
-						}
-					} 
-				} 
-				add_manpower = -30000
+				transfer_state_to = ROOT
 			}
 		}
-
-		army_experience = 10
+		hidden_effect = {
+			news_event = { id = news.194 }
+		}
 	}
 }
 
-# Failed Raid
+# Poland Refuses to Cede the East
 country_event = {
-	id = soviet.3
-	title = soviet.3.t
-	desc = soviet.3.d
-	picture = GFX_report_event_dead_soldiers
+	id = poland.4
+	title = poland.4.t
+	desc = poland.4.d
+	picture = GFX_report_event_polish_tanks_01
 	
 	is_triggered_only = yes
 	
 	option = {
-		if = {
-			limit = {
-				561 = { 
-					is_owned_by = SOV 
-					any_neighbor_state = { 
-						OR = {
-							is_owned_by = JAP
-							is_owned_by = MAN							
-						} 
-					} 
-				}
-			}
-			561 = { add_manpower = -20000 }
-		}		
-		if = {
-			limit = { 
-				NOT = { 
-					561 = { 
-						is_owned_by = SOV 
-						any_neighbor_state = { 
-							OR = {
-								is_owned_by = JAP
-								is_owned_by = MAN
-							}
-						}
-					}
-				}
-			}
-			random_owned_state = {
-				limit = { 
-					any_neighbor_state = { 
-						OR = {
-							is_owned_by = JAP
-							is_owned_by = MAN
-						}
-					} 
-				}
-				add_manpower = -20000
-			}
+		name = poland.4.a
+		create_wargoal = {
+			type = take_state_focus
+			target = POL
+			generator = { 89 91 93 94 95 96 97 771 774 837 908 939 997 1023 1029 }
 		}
-
-		add_political_power = -25
-		army_experience = 5
-		name = soviet.3.a
 	}
 }
+
+
+# Soviet Union Offers Protection
+country_event = {
+	id = poland.5
+	title = poland.5.t
+	desc = poland.5.d
+	picture = GFX_report_event_polish_tanks_01
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = poland.5.a
+		ai_chance = {
+			base = 40
+			modifier = {
+				factor = 0
+				is_subject = yes
+				NOT = { is_subject_of = FROM }
+			}
+		}
+		effect_tooltip = {
+			add_state_claim = 5
+			add_state_claim = 981
+			add_state_claim = 885
+			add_state_claim = 63
+			add_state_claim = 800
+			add_state_claim = 66
+			add_state_claim = 67
+			custom_effect_tooltip = SOV_offer_poland_protection_tt
+			every_owned_state = {
+				limit = {
+					OR = { state = 89 state = 91 state = 93 state = 94 state = 95 state = 96 state = 97 state = 771 state = 774 state = 837 state = 908 state = 939 state = 997 state = 1023 state = 1029 }
+					is_controlled_by = PREV
+				}
+				transfer_state_to = FROM
+			}
+		}
+		hidden_effect = {
+			#SOV and POL more keen on cooperation
+			add_ai_strategy = {
+				type = alliance
+				id = FROM		
+				value = 10
+			}
+			add_ai_strategy = {
+				type = befriend
+				id = FROM		
+				value = 5
+			}
+			FROM = {
+				add_ai_strategy = {
+					type = alliance
+					id = ROOT		
+					value = 10
+				}
+				add_ai_strategy = {
+					type = befriend
+					id = ROOT		
+					value = 5
+				}
+			}
+		}
+		FROM = { country_event = { id = poland.6 } }
+	}
+
+	option = {
+		name = poland.5.b
+		ai_chance = {
+			base = 60
+			modifier = {
+				factor = 0
+				is_in_faction_with = FROM
+				OR = {
+					is_subject = no
+					is_subject_of = FROM
+				}
+				is_faction_leader = no
+			}
+		}
+		effect_tooltip = {
+			FROM = {
+				create_wargoal = {
+					type = take_state_focus
+					target = POL
+					generator = { 89 91 93 94 95 96 97 771 774 837 908 939 997 1023 1029 }
+				}
+			}
+		}
+		FROM = { country_event = { id = poland.7 } }
+	}
+}
+
+# Poland Accepts Protection
+country_event = {
+	id = poland.6
+	title = poland.6.t
+	desc = poland.6.d
+	picture = GFX_report_event_polish_tanks_01
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = poland.6.a
+		POL = {
+			add_state_claim = 5
+			add_state_claim = 981
+			add_state_claim = 885
+			add_state_claim = 63
+			add_state_claim = 800
+			add_state_claim = 66
+			add_state_claim = 67
+			set_country_flag = POL_accepted_soviet_protection
+		}
+		custom_effect_tooltip = SOV_offer_poland_protection_tt
+		FROM = {
+			every_owned_state = {
+				limit = {
+					OR = { state = 89 state = 91 state = 93 state = 94 state = 95 state = 96 state = 97 state = 771 state = 774 state = 837 state = 908 state = 939 state = 997 state = 1023 state = 1029 }
+					is_controlled_by = PREV
+				}
+				transfer_state_to = ROOT
+			}
+		}
+		hidden_effect = {
+			news_event = { id = news.194 }
+		}
+	}
+}
+
+# Poland Refuses Protection
+country_event = {
+	id = poland.7
+	title = poland.7.t
+	desc = poland.7.d
+	picture = GFX_report_event_polish_tanks_01
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = poland.7.a
+		create_wargoal = {
+			type = take_state_focus
+			target = POL
+			generator = { 89 91 93 94 95 96 97 771 774 837 908 939 997 1023 1029 }
+		}
+	}
+}
+
+# Poland Granted Eastern Germany
+country_event = {
+	id = poland.8
+	title = poland.8.t
+	desc = poland.8.d
+	picture = GFX_report_event_polish_tanks_01
+	
+	trigger = {
+		tag = POL
+		POL = { has_country_flag = POL_accepted_soviet_protection }
+		SOV = {
+			OR = {	
+				owns_state = 5
+				owns_state = 981
+				owns_state = 885
+				owns_state = 63
+				owns_state = 800
+				owns_state = 66
+				owns_state = 67
+			}
+		}
+	}
+
+	immediate = {
+		clr_country_flag = POL_accepted_soviet_protection
+	}
+
+	fire_only_once = yes
+
+	mean_time_to_happen = {
+		days = 40
+	}
+	
+	option = {
+		name = poland.8.a
+		SOV = {
+			every_owned_state = {
+				limit = { OR = { state = 5 state = 981 state = 885 state = 63 state = 800 state = 66 state = 67 } }
+				transfer_state_to = POL
+			}
+			country_event = { id = poland.9 }
+		}
+	}
+}
+
+country_event = {
+	id = poland.9
+	title = poland.8.t
+	desc = poland.8.d
+	picture = GFX_report_event_polish_tanks_01
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = poland.9.a
+		hidden_effect = {
+			news_event = { id = news.195 }
+		}
+	}
+}
+
+add_namespace = soviet
+
+# Border Skirmish with the Japanese		TODO
+# country_event = {
+	# id = soviet.1
+	# title = soviet.1.t
+	# desc = soviet.1.d
+	# picture = GFX_report_event_japanese_transport_soldiers
+	
+	# is_triggered_only = yes
+	
+	# option = { # Push back
+		# name = soviet.1.a
+		# ai_chance = { factor = 75 }
+		# add_political_power = -25
+		# hidden_effect = {
+			# random_list = {
+				# 60 = {
+					# JAP = {
+						# country_event = { days = 1 id = japan.3 }
+					# }
+				# }
+				# 40 = {
+					# JAP = {
+						# country_event = { days = 1 id = japan.4 }
+					# }
+				# }
+			# }
+		# }
+		# effect_tooltip = {
+			# random_list = {
+				# 60 = {
+					# country_event = soviet.2
+				# }
+				# 40 = {
+					# country_event = soviet.3
+				# }
+			# }
+		# }
+	# }
+	# option = { # Yield
+		# name = soviet.1.b
+		# ai_chance = { factor = 25 }
+		# JAP = {
+			# effect_tooltip = {
+				# add_stability = 0.05
+			# }
+			# country_event = { days = 1 id = japan.5 }
+		# }
+	# }
+# }
+
+# Successful Raid	TODO
+# country_event = {
+	# id = soviet.2
+	# title = soviet.2.t
+	# desc = soviet.2.d
+	# picture = GFX_report_event_dead_soldiers
+	
+	# is_triggered_only = yes
+	
+	# option = {
+		# name = soviet.2.a
+		# if = {
+			# limit = {
+				# 561 = { 
+					# is_owned_by = SOV 
+					# any_neighbor_state = { 
+						# OR = {
+							# is_owned_by = JAP							
+							# is_owned_by = MAN								
+						# }
+					# } 
+				# }
+			# }
+			# 561 = { add_manpower = -30000 }
+		# }		
+		# if = {
+			# limit = { 
+				# NOT = { 
+					# 561 = { 
+						# is_owned_by = SOV 
+						# any_neighbor_state = { 
+							# OR = {
+								# is_owned_by = JAP
+								# is_owned_by = MAN
+							# } 	
+						# }
+					# }
+				# }
+			# }
+			# random_owned_state = {
+				# limit = { 
+					# any_neighbor_state = { 
+						# OR = {
+							# is_owned_by = JAP
+							# is_owned_by = MAN
+						# }
+					# } 
+				# } 
+				# add_manpower = -30000
+			# }
+		# }
+
+		# army_experience = 10
+	# }
+# }
+
+# Failed Raid	TODO
+# country_event = {
+	# id = soviet.3
+	# title = soviet.3.t
+	# desc = soviet.3.d
+	# picture = GFX_report_event_dead_soldiers
+	
+	# is_triggered_only = yes
+	
+	# option = {
+		# if = {
+			# limit = {
+				# 561 = { 
+					# is_owned_by = SOV 
+					# any_neighbor_state = { 
+						# OR = {
+							# is_owned_by = JAP
+							# is_owned_by = MAN							
+						# } 
+					# } 
+				# }
+			# }
+			# 561 = { add_manpower = -20000 }
+		# }		
+		# if = {
+			# limit = { 
+				# NOT = { 
+					# 561 = { 
+						# is_owned_by = SOV 
+						# any_neighbor_state = { 
+							# OR = {
+								# is_owned_by = JAP
+								# is_owned_by = MAN
+							# }
+						# }
+					# }
+				# }
+			# }
+			# random_owned_state = {
+				# limit = { 
+					# any_neighbor_state = { 
+						# OR = {
+							# is_owned_by = JAP
+							# is_owned_by = MAN
+						# }
+					# } 
+				# }
+				# add_manpower = -20000
+			# }
+		# }
+
+		# add_political_power = -25
+		# army_experience = 5
+		# name = soviet.3.a
+	# }
+# }
 
 
 # Estonia Surrenders
@@ -522,144 +912,6 @@ country_event = {
 				level = 5
 			}
 		}
-	}
-}
-
-# Xi'an Incident
-country_event = {
-	id = soviet.18
-	title = soviet.18.t
-	desc = soviet.18.d
-	picture = GFX_report_event_china_politicians_captured
-	
-	trigger = {
-		date > 1936.11.1
-		tag = CHI
-		has_opinion_modifier = hostile_status
-		NOT = { has_dlc = "Waking the Tiger" }
-	}
-
-	fire_only_once = yes
-
-	mean_time_to_happen = {
-		days = 50
-	}
-	
-	# Enter negotiations with Communist China
-	option = {
-		name = soviet.18.a
-		PRC = { country_event = { id = soviet.19 days = 1 } }
-	}
-
-	# Refuse to negotiate
-	option = {
-		name = soviet.18.b
-		#SOV = { country_event = { id = soviet.20 days = 1 } }
-		ai_chance = { factor = 0 }
-		set_global_flag = CHI_no_national_front_flag
-		custom_effect_tooltip = CHI_no_united_front
-	}
-}
-
-# Xi'an Incident - Communist China
-country_event = {
-	id = soviet.19
-	title = soviet.19.t
-	desc = soviet.19.d
-	picture = GFX_report_event_japanese_chinese_surrender
-	
-	is_triggered_only = yes
-	
-	# Agree to a truce
-	option = {
-		name = soviet.19.a
-		remove_opinion_modifier = { target = CHI modifier = hostile_status }
-		CHI = {
-			remove_opinion_modifier = { target = PRC modifier = hostile_status }
-			country_event = { id = soviet.21 days = 1 }
-		}
-		hidden_effect = {
-			605 = {
-				if = {
-					limit = { is_border_conflict = yes }
-					set_border_war = no
-				}
-			}
-			620 = {
-				if = {
-					limit = { is_border_conflict = yes }
-					set_border_war = no
-				}
-			}
-			607 = {
-				if = {
-					limit = { is_border_conflict = yes }
-					set_border_war = no
-				}
-			}
-			622 = {
-				if = {
-					limit = { is_border_conflict = yes }
-					set_border_war = no
-				}
-			}
-		}
-		#SOV = { country_event = { id = soviet.21 days = 1 } }
-	}
-
-	# Refuse to negotiate
-	option = {
-		name = soviet.19.b
-		SOV = { country_event = { id = soviet.22 days = 1 } }
-		set_global_flag = CHI_no_national_front_flag
-		ai_chance = { factor = 0 }
-		custom_effect_tooltip = CHI_no_united_front
-	}
-}
-
-# Xi'an Incident - Kuomintang Refuses
-country_event = {
-	id = soviet.20
-	title = soviet.20.t
-	desc = soviet.20.d
-	picture = GFX_report_event_nationalist_china_machinegun_firing
-	
-	is_triggered_only = yes
-	
-	option = {
-		name = soviet.20.a
-	}
-}
-
-# Xi'an Incident - Truce
-country_event = {
-	id = soviet.21
-	title = soviet.21.t
-	desc = soviet.21.d
-	picture = GFX_report_event_chinese_japanese_handshake
-	
-	is_triggered_only = yes
-	
-	option = {
-		name = soviet.21.a
-		effect_tooltip = {
-			PRC = { remove_opinion_modifier = { target = CHI modifier = hostile_status } }
-			CHI = { remove_opinion_modifier = { target = PRC modifier = hostile_status } }
-		}
-	}
-}
-
-# Xi'an Incident - Communists Refuse
-country_event = {
-	id = soviet.22
-	title = soviet.22.t
-	desc = soviet.22.d
-	picture = GFX_report_event_chinese_officers
-	
-	is_triggered_only = yes
-	
-	option = {
-		name = soviet.22.a
 	}
 }
 
