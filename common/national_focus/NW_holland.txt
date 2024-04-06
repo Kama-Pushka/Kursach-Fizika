@@ -990,9 +990,10 @@ focus_tree = {
 		search_filters = { FOCUS_FILTER_ANNEXATION }
 		ai_will_do = { factor = 10 }
 		available = {
+			is_subject = no
 			OR = {
-				GER = { has_government = fascism exists = yes NOT = { is_in_faction_with = ROOT is_subject_of = ROOT has_war_with = ROOT } }
-				ITA = { has_government = fascism exists = yes NOT = { is_in_faction_with = ROOT is_subject_of = ROOT has_war_with = ROOT } }
+				GER = { has_government = fascism exists = yes ROOT = { can_declare_war_on = PREV } }
+				ITA = { has_government = fascism exists = yes ROOT = { can_declare_war_on = PREV } }
 			}
 		}
 		prerequisite = { focus = HOL_form_a_united_front_with_the_Comintern focus = HOL_strengthen_relations_with_the_countries_of_the_democratic_bloc }
@@ -1000,7 +1001,7 @@ focus_tree = {
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus HOL_a_preemptive_strike_against_Nazism"
 			if = {
-				limit = { ITA = { exists = yes has_government = fascism NOT = { is_in_faction_with = ROOT is_subject_of = ROOT has_war_with = ROOT } } }
+				limit = { ITA = { exists = yes has_government = fascism ROOT = { can_declare_war_on = PREV } } }
 				create_wargoal = {
 					type = topple_government
 					target = ITA
@@ -1018,7 +1019,7 @@ focus_tree = {
 				}
 			}
 			if = {
-				limit = { GER = { exists = yes has_government = fascism NOT = { is_in_faction_with = ROOT is_subject_of = ROOT has_war_with = ROOT } } }
+				limit = { GER = { exists = yes has_government = fascism ROOT = { can_declare_war_on = PREV } } }
 				create_wargoal = {
 					type = topple_government
 					target = GER
@@ -1487,7 +1488,7 @@ focus_tree = {
 			1165 = { add_claim_by = ROOT }
 			every_other_country = {
 				limit = {
-					NOT = { is_in_faction_with = ROOT is_subject_of = ROOT has_war_with = ROOT }
+					ROOT = { can_declare_war_on = PREV }
 					OR = { controls_state = 1037 controls_state = 1038 controls_state = 29 controls_state = 1165 }
 				}
 				ROOT = {
@@ -2136,7 +2137,7 @@ focus_tree = {
 			6 = { add_claim_by = ROOT }
 			every_other_country = {
 				limit = {
-					NOT = { is_in_faction_with = ROOT is_subject_of = ROOT has_war_with = ROOT }
+					ROOT = { can_declare_war_on = PREV }
 					OR = { controls_state = 973 controls_state = 34 controls_state = 766 controls_state = 1061 controls_state = 975 controls_state = 6 }
 				}
 				ROOT = {
@@ -2170,7 +2171,7 @@ focus_tree = {
 		ai_will_do = { factor = 10 }
 		available = {
 			is_subject = no
-			8 = { controller = { NOT = { OR = { tag = ROOT is_subject_of = ROOT has_war_with = ROOT is_in_faction_with = ROOT } } } }
+			can_declare_war_on = 8.controller
 		}
 		bypass = {  }
 		prerequisite = { focus = HOL_striving_for_the_Great_Netherlands focus = HOL_the_pursuit_of_Ditland }
@@ -2178,27 +2179,11 @@ focus_tree = {
 		will_lead_to_war_with = LUX
 		completion_reward = { 
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus HOL_capture_Luxembourg"
-			8 = {
-				add_claim_by = ROOT
-				controller = {
-					ROOT = {
-						create_wargoal = {
-							type = take_state_focus
-							target = PREV
-							expire = 0
-						}
-						add_ai_strategy = {
-							type = antagonize
-							id = PREV
-							value = 200
-						}
-						add_ai_strategy = {
-							type = declare_war
-							id = PREV
-							value = 200
-						}
-					}
-				}
+			add_state_claim = 8
+			create_wargoal = {
+				type = take_state_focus
+				target = 8.controller
+				expire = 0
 			}
 		}		
 	}
@@ -2258,7 +2243,7 @@ focus_tree = {
 		search_filters = { FOCUS_FILTER_INDUSTRY FOCUS_FILTER_WAR_SUPPORT FOCUS_FILTER_ANNEXATION }
 		available = {
 			is_subject = no
-			USA = { NOT = { is_in_faction_with = ROOT has_war_with = ROOT is_subject_of = ROOT } }
+			can_declare_war_on = USA
 		}
 		bypass = {
 			controls_state = 357
@@ -2301,34 +2286,18 @@ focus_tree = {
 		will_lead_to_war_with = FRC
 		will_lead_to_war_with = FRR
 		will_lead_to_war_with = ENG
+		will_lead_to_war_with = SRL
 		prerequisite = { focus = HOL_striving_for_the_Great_Netherlands focus = HOL_the_pursuit_of_Ditland }
 		relative_position_id = HOL_the_pursuit_of_Ditland
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus HOL_taking_back_our_old_colonies"
-			every_state = {
-				limit = { OR = { state = 694 state = 308 state = 1142 state = 692 state = 691 state = 916 state = 310 state = 918 state = 919 state = 687 state = 920 state = 274 state = 1093 state = 1092 state = 1094 state = 422 } }
-				add_claim_by = ROOT
-				controller = {
-					if = {
-						limit = { NOT = { tag = ROOT has_war_with = ROOT is_in_faction_with = ROOT is_subject_of = ROOT } }
-						ROOT = {
-							create_wargoal = {
-								type = take_state_focus
-								target = PREV
-								expire = 0
-							}
-							add_ai_strategy = {
-								type = antagonize
-								id = PREV
-								value = 200
-							}
-							add_ai_strategy = {
-								type = declare_war
-								id = PREV
-								value = 200
-							}
-						}
-					}
+			custom_effect_tooltip = HOL_imperial_ambitions_tt
+			for_each_scope_loop = {
+				array = global.HOL_old_colonies
+				add_claim_by = PREV
+				if = {
+					limit = { PREV = { can_declare_war_on = PREV.controller } }
+					PREV = { create_wargoal = { type = take_state_focus target = PREV.controller expire = 0 } }
 				}
 			}
 		}
@@ -2380,7 +2349,7 @@ focus_tree = {
 				add_claim_by = ROOT
 				controller = {
 					if = {
-						limit = { NOT = { tag = ROOT has_war_with = ROOT is_in_faction_with = ROOT is_subject_of = ROOT } }
+						limit = { ROOT = { can_declare_war_on = PREV } }
 						ROOT = {
 							create_wargoal = {
 								type = take_state_focus
@@ -3239,7 +3208,11 @@ focus_tree = {
 		y = 1
 		search_filters = { FOCUS_FILTER_ANNEXATION }
 		ai_will_do = { factor = 10 }
-		available = { NOT = { is_in_faction_with = GER is_in_faction_with = ENG is_subject = yes } }
+		available = {
+			is_subject = no
+			can_declare_war_on = GER
+			can_declare_war_on = ENG
+		}
 		will_lead_to_war_with = GER
 		will_lead_to_war_with = ENG
 		prerequisite = { focus = HOL_foundations_for_a_european_union }
@@ -3946,7 +3919,7 @@ focus_tree = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus HOL_minimum_wage"
 			set_temp_variable = { HOL_support_for_the_trozkism_party_var_temp = 5 }
 			add_to_variable = { HOL_support_for_the_trozkism_party_var = HOL_support_for_the_trozkism_party_var_temp tooltip = HOL_support_for_the_trozkism_party_var_tt }
-			HOL_checking_vars_gui_effect = yes		
+			HOL_checking_vars_gui_effect = yes
 			add_ideas = HOL_minimum_wage_idea
 		}
 	}
@@ -4556,9 +4529,10 @@ focus_tree = {
 		ai_will_do = { factor = 10 }
 		prerequisite = { focus = HOL_support_for_the_group_Against_the_current }
 		relative_position_id = HOL_support_for_the_group_Against_the_current
-		available = { 
+		available = {
+			is_subject = no
 			has_government = trozkism
-			GER = { exists = yes has_government = fascism NOT = { is_in_faction_with = ROOT is_subject_of = ROOT has_war_with = ROOT } }
+			GER = { has_government = fascism ROOT = { can_declare_war_on = PREV } }
 		}
 		will_lead_to_war_with = GER
 		completion_reward = { 
@@ -4595,9 +4569,13 @@ focus_tree = {
 		ai_will_do = { factor = 10 }
 		prerequisite = { focus = HOL_support_for_the_group_Against_the_current }
 		relative_position_id = HOL_support_for_the_group_Against_the_current
-		available = { 
+		available = {
+			is_subject = no
 			has_government = trozkism
-			LUX = { exists = yes NOT = { has_war_with = ROOT is_in_faction_with = ROOT is_subject_of = ROOT has_government = communism } }
+			LUX = {
+				ROOT = { can_declare_war_on = PREV }
+				NOT = { has_government = communism }
+			}
 		}
 		will_lead_to_war_with = LUX
 		completion_reward = { 
@@ -4736,15 +4714,12 @@ focus_tree = {
 		prerequisite = { focus = HOL_protection_of_revolutionary_principles focus = HOL_support_for_the_group_Against_the_current }
 		relative_position_id = HOL_protection_of_revolutionary_principles
 		mutually_exclusive = { focus = HOL_a_call_for_the_protection_of_the_workers_State }
-		available = { 
+		available = {
+			is_subject = no
 			has_government = trozkism
-			SOV = { 
-				exists = yes
+			SOV = {
 				has_country_leader = { character = SOV_iosif_stalin ruling_only = yes }
-				NOT = { 
-					is_in_faction_with = ROOT 
-					is_subject_of = ROOT
-				} 
+				ROOT = { can_declare_war_on = PREV }
 			}
 		}
 		will_lead_to_war_with = SOV
@@ -5325,9 +5300,8 @@ focus_tree = {
 		continue_if_invalid = yes
 		bypass = {
 			OR = {
-				NOT = { country_exists = GER }
 				is_subject = yes
-				GER = { OR = { has_war_with = ROOT is_subject_of = ROOT is_in_faction_with = ROOT } }
+				NOT = { can_declare_war_on = GER }
 			}
 		}
 		will_lead_to_war_with = GER
@@ -5388,9 +5362,8 @@ focus_tree = {
 		continue_if_invalid = yes
 		bypass = {
 			OR = {
-				NOT = { country_exists = BEL }
 				is_subject = yes
-				BEL = { OR = { has_war_with = ROOT is_subject_of = ROOT is_in_faction_with = ROOT } }
+				NOT = { can_declare_war_on = BEL }
 			}
 		}
 		will_lead_to_war_with = BEL
@@ -5450,9 +5423,8 @@ focus_tree = {
 		}
 		bypass = {
 			OR = {
-				NOT = { country_exists = DEN }
 				is_subject = yes
-				DEN = { OR = { has_war_with = ROOT is_subject_of = ROOT is_in_faction_with = ROOT } }
+				NOT = { can_declare_war_on = DEN }
 			}
 		}
 		continue_if_invalid = yes
@@ -5513,9 +5485,8 @@ focus_tree = {
 		}
 		bypass = {
 			OR = {
-				NOT = { country_exists = HUN }
 				is_subject = yes
-				HUN = { OR = { has_war_with = ROOT is_subject_of = ROOT is_in_faction_with = ROOT } }
+				NOT = { can_declare_war_on = HUN }
 			}
 		}
 		continue_if_invalid = yes
@@ -5576,9 +5547,8 @@ focus_tree = {
 		}
 		bypass = {
 			OR = {
-				NOT = { country_exists = LUX }
 				is_subject = yes
-				LUX = { OR = { has_war_with = ROOT is_subject_of = ROOT is_in_faction_with = ROOT } }
+				NOT = { can_declare_war_on = LUX }
 			}
 		}
 		continue_if_invalid = yes
@@ -5668,8 +5638,7 @@ focus_tree = {
 		bypass = { 
 			OR = {
 				is_subject = yes
-				NOT = { country_exists = SOV }
-				SOV = { OR = { has_war_with = ROOT is_subject_of = ROOT is_in_faction_with = ROOT } }
+				NOT = { can_declare_war_on = SOV }
 			}
 		}
 		continue_if_invalid = yes
@@ -6102,6 +6071,7 @@ focus_tree = {
 			}
 		}
 		available = {
+			is_subject = no
 			has_government = communism
 			OR = {
 				ENG = { NOT = { has_government = communism } }
@@ -6109,9 +6079,9 @@ focus_tree = {
 				USA = { NOT = { has_government = communism } }
 			}
 			OR = {
-				NOT = { is_in_faction_with = ENG }
-				NOT = { is_in_faction_with = event_target:NW_france_scope }
-				NOT = { is_in_faction_with = USA }
+				can_declare_war_on = ENG
+				can_declare_war_on = event_target:NW_france_scope
+				can_declare_war_on = USA
 			}
 		}
 		will_lead_to_war_with = ENG
@@ -6125,7 +6095,7 @@ focus_tree = {
 				limit = {
 					ENG = {
 						NOT = { has_government = communism }
-						NOT = { is_in_faction_with = HOL }
+						ROOT = { can_declare_war_on = PREV }
 					}
 				}
 				create_wargoal = {
@@ -6138,7 +6108,7 @@ focus_tree = {
 				limit = {
 					event_target:NW_france_scope = {
 						NOT = { has_government = communism }
-						NOT = { is_in_faction_with = HOL }
+						ROOT = { can_declare_war_on = PREV }
 					}
 				}
 				create_wargoal = {
@@ -6151,7 +6121,7 @@ focus_tree = {
 				limit = {
 					USA = {
 						NOT = { has_government = communism }
-						NOT = { is_in_faction_with = HOL }
+						ROOT = { can_declare_war_on = PREV }
 					}
 				}
 				create_wargoal = {
@@ -6201,8 +6171,12 @@ focus_tree = {
 		search_filters = { FOCUS_FILTER_ANNEXATION FOCUS_FILTER_WAR_SUPPORT }
 		ai_will_do = { factor = 10 }
 		available = {
+			is_subject = no
 			has_government = communism
-			NOT = { is_in_faction_with = BEL is_in_faction_with = LUX }
+			OR = {
+				can_declare_war_on = BEL
+				can_declare_war_on = LUX
+			}
 			custom_trigger_tooltip = {
 				tooltip = HOL_pre_empt_venezuelan_aggression_tt
 				NOT = {
@@ -6215,10 +6189,6 @@ focus_tree = {
 					}
 				}
 			}
-		}
-		bypass = {
-			BEL = { exists = no }
-			LUX = { exists = no }
 		}	
 		will_lead_to_war_with = BEL
 		will_lead_to_war_with = LUX
@@ -6227,15 +6197,21 @@ focus_tree = {
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus HOL_bring_socialism_south"
 			add_war_support = 0.1
-			create_wargoal = {
-			    type = puppet_wargoal_focus
-			    target = BEL
-			    expire = 0
+			if = {
+				limit = { can_declare_war_on = BEL }			
+				create_wargoal = {
+					type = puppet_wargoal_focus
+					target = BEL
+					expire = 0
+				}
 			}
-			create_wargoal = {
-			    type = puppet_wargoal_focus
-			    target = LUX
-			    expire = 0
+			if = {
+				limit = { can_declare_war_on = LUX }			
+				create_wargoal = {
+					type = puppet_wargoal_focus
+					target = LUX
+					expire = 0
+				}
 			}
 		}
 	}
@@ -6401,10 +6377,10 @@ focus_tree = {
 		search_filters = { FOCUS_FILTER_ANNEXATION }
 		ai_will_do = { factor = 10 }
 		available = { 
-			NOT = { is_in_faction_with = GER }
+			is_subject = no
+			can_declare_war_on = GER
 			has_government = communism
 		}
-		bypass = { has_war_with = GER }
 		will_lead_to_war_with = GER
 		prerequisite = { focus = HOL_soviet_technical_teams }
 		relative_position_id = HOL_soviet_technical_teams
@@ -8990,6 +8966,9 @@ focus_tree = {
 		y = 1
 		ai_will_do = { factor = 10 }
 		available = {
+			is_subject = no
+			can_declare_war_on = VEN
+			has_capitulated = no
 			custom_trigger_tooltip = {
 				tooltip = HOL_pre_empt_venezuelan_aggression_tt
 				NOT = {
@@ -9003,13 +8982,6 @@ focus_tree = {
 				}
 			}
 			NOT = { has_idea = HOL_aloof_neutrality }
-		}
-		bypass = { 
-			OR = {
-				is_subject = yes
-				VEN = { OR = { exists = no is_subject_of = ROOT has_war_with = ROOT is_in_faction_with = ROOT } }
-				has_capitulated = yes
-			}
 		}
 		will_lead_to_war_with = VEN
 		prerequisite = { focus = HOL_antilles_defenses }	
