@@ -73,8 +73,8 @@ JAP_we_need_civ_factories_0 = {
 	}
 	abort_when_not_enabled = yes
 	
-	ai_strategy = { type = building_target id = industrial_complex 		value = 100 }
-	ai_strategy = { type = added_military_to_civilian_factory_ratio		value = -500 }
+	ai_strategy = { type = building_target id = industrial_complex 							value = 100 }
+	ai_strategy = { type = added_military_to_civilian_factory_ratio							value = -500 }
 }
 
 JAP_we_need_arms_factories_0 = {
@@ -88,8 +88,8 @@ JAP_we_need_arms_factories_0 = {
 	}
 	abort_when_not_enabled = yes
 	
-	ai_strategy = { type = building_target id = arms_factory 			value = 100 }
-	ai_strategy = { type = added_military_to_civilian_factory_ratio		value = 500 }
+	ai_strategy = { type = building_target id = arms_factory 								value = 100 }
+	ai_strategy = { type = added_military_to_civilian_factory_ratio							value = 500 }
 }
 
 JAP_production_supply_0 = {
@@ -98,8 +98,46 @@ JAP_production_supply_0 = {
 	abort_when_not_enabled = yes
 	
 	ai_strategy = { type = equipment_production_min_factories 	id = train 					value = 1 }
-	ai_strategy = { type = min_wanted_supply_trains value = 1000 }
-	ai_strategy = { type = min_wanted_supply_trucks value = 1500 }
+	ai_strategy = { type = min_wanted_supply_trains 										value = 1500 }
+	ai_strategy = { type = min_wanted_supply_trucks 										value = 1500 }
+}
+
+JAP_production_aviation_transport = {
+	allowed = { original_tag = JAP }
+	enable = { always = yes }
+	
+	ai_strategy = { type = equipment_production_factor			id = air_transport			value = -10000 }
+}
+
+JAP_production_aviation_fighters = {
+	allowed = { original_tag = JAP }
+	enable = { has_deployed_air_force_size = { size < 2000 type = fighter } }
+	abort_when_not_enabled = yes
+	
+	ai_strategy = { type = equipment_production_factor			id = fighter				value = 300 }
+	ai_strategy = { type = equipment_variant_production_factor	id = small_plane_airframe	value = 150 }
+	ai_strategy = { type = build_airplane						id = fighter				value = 10000 }
+	ai_strategy = { type = unit_ratio							id = fighter				value = 2000 }
+	ai_strategy = { type = equipment_production_min_factories 	id = fighter 				value = 2 }
+}
+
+JAP_production_aviation_carriers = {
+	allowed = { original_tag = JAP }
+	enable = { has_navy_size = { size > 0 unit = carrier } }
+	abort_when_not_enabled = yes
+	
+	ai_strategy = { type = equipment_variant_production_factor	id = cv_small_plane_airframe	value = 150 }
+	
+	ai_strategy = { type = equipment_production_factor			id = cv_fighter					value = 250 }
+	ai_strategy = { type = equipment_production_factor			id = cv_naval_bomber			value = 200 }
+	
+	ai_strategy = { type = build_airplane						id = cv_fighter					value = 10000 }
+	ai_strategy = { type = unit_ratio							id = cv_fighter					value = 2000 }
+	ai_strategy = { type = equipment_production_min_factories 	id = cv_fighter 				value = 1 }
+	
+	ai_strategy = { type = build_airplane						id = cv_naval_bomber			value = 10000 }
+	ai_strategy = { type = unit_ratio							id = cv_naval_bomber			value = 2000 }
+	ai_strategy = { type = equipment_production_min_factories 	id = cv_naval_bomber 			value = 1 }
 }
 
 JAP_production_0 = {
@@ -130,7 +168,7 @@ JAP_production_0 = {
 	
 	ai_strategy = { type = build_army 							id = infantry				value = 80 }
 	ai_strategy = { type = build_army 							id = marines				value = 20 }
-	ai_strategy = { type = build_army 							id = armor					value = 10 }
+	ai_strategy = { type = build_army 							id = armor					value = 0 }
 	ai_strategy = { type = force_build_armies												value = 1500 }
 }
 
@@ -170,62 +208,47 @@ JAP_production_1 = {
 	ai_strategy = { type = role_ratio							id = medium_armor_role		value = 50 }
 }
 
-
 ########################################################################################	CHI-JAP WAR SECTION		#####################################################################################
 
-JAP_unit_buffer_for_home_islands_invasion_force = {
+JAP_unit_buffer_for_1117_state = {
 	allowed = { tag = JAP }
 	enable = { NOT = { has_war_with = CHI } }
 	abort_when_not_enabled = yes
 
 	ai_strategy = {
 		type = put_unit_buffers
-		ratio = 0.1
+		ratio = 0.3
 		states = {
-			528
-			529
-			530
-			531
-			532
-			535
-			534
-			282
-			533
-			536
+			1117
 		}
-		area = asia
-		subtract_invasions_from_need = yes
-		subtract_fronts_from_need = no
 	}
 }
 
-JAP_rush_in_sixty_days = {
+JAP_attack_china_0 = {
 	allowed = { tag = JAP }
-	enable = {
-		has_war_with = CHI
-		has_active_mission = JAP_chinese_incident
-	}
+	enable = { has_war_with = CHI }
 	abort_when_not_enabled = yes
 	
-	ai_strategy = { type = naval_invasion_focus value = -1500 }
 	ai_strategy = { type = front_unit_request tag = CHI value = 250 }
 	ai_strategy = {
 		type = front_control
 		country_trigger = {
 			is_literally_china = yes
 			has_war_with = ROOT
-			NOT = { original_tag = CHI }
 		}
-		priority = 500
+		priority = 150
 		ordertype = front
-		execution_type = rush
+		execution_type = rush_weak
 		execute_order = yes
 		manual_attack = yes
 	}
 	ai_strategy = {
 		type = front_control
-		original_tag = CHI
-		priority = 1000
+		country_trigger = {
+			is_literally_china = yes
+			owns_state = 1117
+		}
+		priority = 200
 		ordertype = front
 		execution_type = rush
 		execute_order = yes
@@ -233,37 +256,57 @@ JAP_rush_in_sixty_days = {
 	}
 }
 
-JAP_slow_attack = {
+JAP_naval_invasions_0 = {
 	allowed = { tag = JAP }
 	enable = {
+		OR = {
+			num_divisions < 85
+			date < 1938.06.01
+		}
+	}
+	abort_when_not_enabled = yes
+	
+	ai_strategy = { type = naval_invasion_focus value = -1500 }
+}
+
+JAP_naval_invasions_1 = {
+	allowed = { tag = JAP }
+	enable = {
+		OR = {
+			num_divisions > 85
+			date > 1938.06.01
+		}
 		has_war_with = CHI
 		NOT = { has_active_mission = JAP_chinese_incident }
 	}
 	abort_when_not_enabled = yes
 	
-	ai_strategy = { type = invade id = CHI value = 100 }
-	ai_strategy = { type = naval_invasion_focus value = 150 }
-	ai_strategy = { type = front_unit_request tag = CHI value = 500 }
-	ai_strategy = {
-		type = front_control
-		country_trigger = {
-			is_literally_china = yes
-			has_war_with = ROOT
-		}
-		priority = 1000
-		ordertype = front
-		execution_type = balanced
-		execute_order = yes
-		manual_attack = yes
-	}
+	ai_strategy = { type = naval_invasion_focus value = 125 }
 	ai_strategy = {
 		type = front_control
 		state_trigger = {
-			is_controlled_by = CHI
 			is_coastal = yes
 		}
-		priority = 300
+		priority = 150
 		ordertype = invasion
 		execute_order = yes
+	}
+}
+
+########################################################################################	INTELL. AGENCY		#########################################################################################
+
+JAP_network_on_CHI = {
+	allowed = {
+		tag = JAP
+		has_dlc = "La Resistance"
+	}	
+	enable = { has_intelligence_agency = yes }
+	abort_when_not_enabled = yes
+
+	ai_strategy = {
+		type = operative_mission
+		mission = build_intel_network
+		value = 3000
+		mission_target = CHI
 	}
 }
