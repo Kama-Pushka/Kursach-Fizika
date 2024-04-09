@@ -11760,6 +11760,13 @@ country_event = {
 				}
 			}
 			activate_mission = JAP_activities_of_communist_underground_mission
+			every_other_country = {
+				limit = {
+					is_major = yes
+					has_government = communism
+				}
+				country_event = { id = NW_JAP.452 days = 1 }
+			}
 		}
 		if = {
 			limit = {
@@ -11769,6 +11776,13 @@ country_event = {
 				}
 			}
 			activate_mission = JAP_activities_of_anarchist_underground_mission
+			every_other_country = {
+				limit = {
+					is_major = yes
+					has_government = anarchism
+				}
+				country_event = { id = NW_JAP.453 days = 1 }
+			}
 		}
 	}
 }
@@ -12385,5 +12399,548 @@ country_event = {
 	option = {
 		name = NW_JAP.447.a
 		set_country_flag = NW_JAP_447_event_flag
+	}
+}
+
+# Восстание крестьян
+country_event = {
+	id = NW_JAP.448
+	title = NW_JAP.448.t
+	desc = NW_JAP.448.d
+	picture = GFX_report_event_hol_cabinet_de_geer
+	is_triggered_only = yes
+	immediate = {
+		log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_JAP.448"
+		hidden_effect = {
+			MPJ = {
+				if = {
+					limit = {
+						any_country_with_original_tag = {
+							original_tag_to_check = ROOT 
+							has_character = JAP_Masanobu_Cudzi
+						}
+					}
+					random_other_country = {
+						limit = {
+							original_tag = ROOT
+							has_character = JAP_Masanobu_Cudzi
+						}
+						JAP_Masanobu_Cudzi = {
+							set_nationality = PREV.PREV
+							add_country_leader_role = {
+								promote_leader = yes
+								country_leader = {
+									ideology = absolute_monarchy
+									expire = "1965.1.1.1"
+									traits = {  }
+								}
+							}
+						}
+					}
+				}
+				else = {
+					promote_character = JAP_Takusiro_Hattori
+				}
+				inherit_technology = ROOT
+				if = {
+					limit = { NOT = { has_template = "Showa Defenders" } }
+					division_template = {
+						name = "Showa Defenders"
+						is_locked = yes
+						division_names_group = JAP_INF_01
+						regiments = {
+							infantry = { x = 0 y = 0 }
+							infantry = { x = 0 y = 1 }
+							infantry = { x = 1 y = 0 }
+							infantry = { x = 1 y = 1 }
+						}
+					}
+				}
+				ROOT = {
+					every_core_state = { add_core_of = PREV.PREV }
+					transfer_units_fraction = {
+						target = PREV
+						size = 0.5
+						stockpile_ratio = 0.4
+						army_ratio = 0.5
+						air_ratio = 0.4
+						navy_ratio = 0.4
+						keep_unit_leaders_trigger = {
+							OR = {
+								is_country_leader = yes
+								is_advisor = yes
+							}
+						}
+					}
+					set_temp_variable = { JAP_num_controlled_states_temp = num_controlled_states }
+					if = {
+						limit = { check_variable = { JAP_power_of_resistance_var > 7 } }
+						divide_temp_variable = { JAP_num_controlled_states_temp = 1.66 }
+						PREV = { set_temp_variable = { JAP_num_divisions_for_spam_temp = 20 } }
+					}
+					else_if = {
+						limit = { check_variable = { JAP_power_of_resistance_var > 3 } }
+						divide_temp_variable = { JAP_num_controlled_states_temp = 2 }
+						PREV = { set_temp_variable = { JAP_num_divisions_for_spam_temp = 13 } }
+					}
+					else = {
+						divide_temp_variable = { JAP_num_controlled_states_temp = 3 }
+						PREV = { set_temp_variable = { JAP_num_divisions_for_spam_temp = 8 } }
+					}
+					while_loop_effect = {
+						limit = { check_variable = { JAP_num_controlled_states_temp > 0 } }
+						add_to_temp_variable = { JAP_num_controlled_states_temp = -1 }
+						random_controlled_state = {
+							transfer_state_to = PREV.PREV
+						}
+					}
+					PREV = {
+						while_loop_effect = {
+							limit = { check_variable = { JAP_num_divisions_for_spam_temp > 0 } }
+							add_to_temp_variable = { JAP_num_divisions_for_spam_temp = -1 }
+							random_controlled_state = {
+								create_unit = {
+									division = "name = \"Righteous Army\" division_template = \"Showa Defenders\" start_experience_factor = 0.4"
+									owner = PREV
+									count = 1
+								}
+							}
+						}
+					}
+					declare_war_on = { target = PREV type = civil_war }
+					add_civil_war_target = PREV
+				}
+				every_other_country = {
+					limit = { original_tag = ROOT NOT = { tag = ROOT } }
+					declare_war_on = {
+						target = PREV
+						type = civil_war
+					}
+					add_civil_war_target = PREV
+					PREV = { add_civil_war_target = PREV }
+				}
+				add_civil_war_target = ROOT
+				every_enemy_country = {
+					every_state = {
+						limit = {
+							NOT = { is_fully_controlled_by = PREV }
+							controller = { tag = PREV.PREV }
+						}
+						teleport_armies = {
+							limit = { tag = PREV }
+							to_state_array = controlled_states
+						}
+					}
+				}
+			}
+		}
+	}
+	option = {
+		name = NW_JAP.448.a		
+	}
+	option = {
+		name = NW_JAP.448.b
+		MPJ = { change_tag_from = ROOT }
+	}
+}
+
+# Восстание секты Нитирэн
+country_event = {
+	id = NW_JAP.449
+	title = NW_JAP.449.t
+	desc = NW_JAP.449.d
+	picture = GFX_report_event_hol_cabinet_de_geer
+	is_triggered_only = yes
+	immediate = {
+		log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_JAP.449"
+		hidden_effect = {
+			FPJ = {
+				transfer_state = 535
+				set_province_controller = 4100
+				set_province_controller = 7016
+				random_other_country = {
+					limit = {
+						original_tag = ROOT
+						has_character = JAP_Nisse_Inoye
+					}
+					set_nationality = { target_country = PREV character = JAP_Nisse_Inoye }
+				}
+				random_other_country = {
+					limit = {
+						original_tag = ROOT
+						has_character = JAP_Kanji_Ishiwara
+					}
+					set_nationality = { target_country = PREV character = JAP_Kanji_Ishiwara }									
+				}
+				add_country_leader_role = {
+					character = JAP_Nisse_Inoye
+					promote_leader = yes
+					country_leader = {
+						ideology = nithirenism
+						expire = "1965.1.1.1"
+						traits = {  }
+					}
+				}
+				inherit_technology = ROOT
+				if = {
+					limit = { NOT = { has_template = "Nithirenists" } }
+					division_template = {
+						name = "Nithirenists"
+						is_locked = yes
+						division_names_group = JAP_INF_01
+						regiments = {
+							infantry = { x = 0 y = 0 }
+							infantry = { x = 0 y = 1 }
+							infantry = { x = 1 y = 0 }
+							infantry = { x = 1 y = 1 }
+						}
+					}
+				}
+				set_temp_variable = { JAP_num_divisions_for_spam_temp = 4 }
+				while_loop_effect = {
+					limit = { check_variable = { JAP_num_divisions_for_spam_temp > 0 } }
+					add_to_temp_variable = { JAP_num_divisions_for_spam_temp = -1 }
+					random_controlled_state = {
+						create_unit = {
+							division = "division_template = \"Nithirenists\" start_experience_factor = 0.4"
+							owner = PREV
+							count = 1
+						}
+					}
+				}				
+				ROOT = {
+					every_core_state = { add_core_of = PREV.PREV }
+					declare_war_on = { target = PREV type = civil_war }
+					add_civil_war_target = PREV
+				}
+				every_other_country = {
+					limit = { original_tag = ROOT NOT = { tag = ROOT } }
+					declare_war_on = {
+						target = PREV
+						type = civil_war
+					}
+					add_civil_war_target = PREV
+					PREV = { add_civil_war_target = PREV }
+				}
+				add_civil_war_target = ROOT
+				every_enemy_country = {
+					every_state = {
+						limit = {
+							NOT = { is_fully_controlled_by = PREV }
+							controller = { tag = PREV.PREV }
+						}
+						teleport_armies = {
+							limit = { tag = PREV }
+							to_state_array = controlled_states
+						}
+					}
+				}
+			}
+		}
+	}
+	option = {
+		name = NW_JAP.449.a		
+	}
+	option = {
+		name = NW_JAP.449.b
+		FPJ = { change_tag_from = ROOT }
+	}
+}
+
+# Восстание коммунистов
+country_event = {
+	id = NW_JAP.450
+	title = NW_JAP.450.t
+	desc = NW_JAP.450.d
+	picture = GFX_report_event_hol_cabinet_de_geer
+	is_triggered_only = yes
+	immediate = {
+		log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_JAP.450"
+		hidden_effect = {
+			CPJ = {
+				if = {
+					limit = { ROOT = { has_completed_focus = JAP_political_and_religious_freedoms } }
+					ROOT = {
+						JAP_Kyuichi_Tokuda = {
+							set_nationality = PREV.PREV
+							promote_character = yes
+						}
+					}
+				}
+				else_if = {
+					limit = {
+						any_country_with_original_tag = {
+							original_tag_to_check = ROOT 
+							has_character = JAP_Kenzo_Yamamoto
+						}
+					}
+					random_other_country = {
+						limit = {
+							original_tag = ROOT
+							has_character = JAP_Kenzo_Yamamoto
+						}
+						JAP_Kenzo_Yamamoto = {
+							set_nationality = PREV.PREV
+							add_country_leader_role = {
+								promote_leader = yes
+								country_leader = {
+									ideology = marxism
+									expire = "1965.1.1.1"
+									traits = {  }
+								}
+							}
+						}
+					}
+				}
+				else = {
+					promote_character = JAP_Sandzo_Nosaka
+				}
+				inherit_technology = ROOT
+				if = {
+					limit = { NOT = { has_template = "Red Brigades" } }
+					division_template = {
+						name = "Red Brigades"
+						is_locked = yes
+						division_names_group = JAP_INF_01
+						regiments = {
+							infantry = { x = 0 y = 0 }
+							infantry = { x = 0 y = 1 }
+							infantry = { x = 1 y = 0 }
+							infantry = { x = 1 y = 1 }
+						}
+					}
+				}
+				ROOT = {
+					if = {
+						limit = {
+							check_variable = { JAP_num_helpls_for_commi_var > 4 }
+							num_controlled_states > 4
+						}
+						set_temp_variable = { JAP_num_controlled_states_temp = 4 }
+					}
+					else_if = {
+						limit = {
+							check_variable = { JAP_num_helpls_for_commi_var > 2 }
+							num_controlled_states > 3
+						}
+						set_temp_variable = { JAP_num_controlled_states_temp = 3 }
+					}
+					else_if = {
+						limit = {
+							check_variable = { JAP_num_helpls_for_commi_var > 0 }
+							num_controlled_states > 2
+						}
+						set_temp_variable = { JAP_num_controlled_states_temp = 2 }
+					}
+					else = {
+						set_temp_variable = { JAP_num_controlled_states_temp = 1 }
+					}
+					while_loop_effect = {
+						limit = { check_variable = { JAP_num_controlled_states_temp > 0 } }
+						add_to_temp_variable = { JAP_num_controlled_states_temp = -1 }
+						random_controlled_state = {
+							transfer_state_to = PREV.PREV
+						}
+					}
+				}
+				set_temp_variable = { JAP_num_divisions_for_spam_temp = 3 }
+				add_to_temp_variable = { JAP_num_divisions_for_spam_temp = ROOT.JAP_num_helpls_for_commi_var }
+				while_loop_effect = {
+					limit = { check_variable = { JAP_num_divisions_for_spam_temp > 0 } }
+					add_to_temp_variable = { JAP_num_divisions_for_spam_temp = -1 }
+					random_controlled_state = {
+						create_unit = {
+							division = "division_template = \"Red Brigades\" start_experience_factor = 0.4"
+							owner = PREV
+							count = 1
+						}
+					}
+				}			
+				ROOT = {
+					every_core_state = { add_core_of = PREV.PREV }
+					declare_war_on = { target = PREV type = civil_war }
+					add_civil_war_target = PREV
+				}
+				every_other_country = {
+					limit = { original_tag = ROOT NOT = { tag = ROOT } }
+					declare_war_on = {
+						target = PREV
+						type = civil_war
+					}
+					add_civil_war_target = PREV
+					PREV = { add_civil_war_target = PREV }
+				}
+				add_civil_war_target = ROOT
+				every_enemy_country = {
+					every_state = {
+						limit = {
+							NOT = { is_fully_controlled_by = PREV }
+							controller = { tag = PREV.PREV }
+						}
+						teleport_armies = {
+							limit = { tag = PREV }
+							to_state_array = controlled_states
+						}
+					}
+				}
+			}
+		}
+	}
+	option = {
+		name = NW_JAP.450.a		
+	}
+	option = {
+		name = NW_JAP.450.b
+		CPJ = { change_tag_from = ROOT }
+	}
+}
+
+# Восстание коммунистов
+country_event = {
+	id = NW_JAP.451
+	title = NW_JAP.451.t
+	desc = NW_JAP.451.d
+	picture = GFX_report_event_hol_cabinet_de_geer
+	is_triggered_only = yes
+	immediate = {
+		log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_JAP.451"
+		hidden_effect = {
+			APJ = {
+				promote_character = JAP_Sandzo_Nosaka
+				inherit_technology = ROOT
+				if = {
+					limit = { NOT = { has_template = "Red Brigades" } }
+					division_template = {
+						name = "Red Brigades"
+						is_locked = yes
+						division_names_group = JAP_INF_01
+						regiments = {
+							infantry = { x = 0 y = 0 }
+							infantry = { x = 0 y = 1 }
+							infantry = { x = 1 y = 0 }
+							infantry = { x = 1 y = 1 }
+						}
+					}
+				}
+				ROOT = {
+					if = {
+						limit = {
+							check_variable = { JAP_num_helpls_for_anarchists_var > 4 }
+							num_controlled_states > 4
+						}
+						set_temp_variable = { JAP_num_controlled_states_temp = 4 }
+					}
+					else_if = {
+						limit = {
+							check_variable = { JAP_num_helpls_for_anarchists_var > 2 }
+							num_controlled_states > 3
+						}
+						set_temp_variable = { JAP_num_controlled_states_temp = 3 }
+					}
+					else_if = {
+						limit = {
+							check_variable = { JAP_num_helpls_for_anarchists_var > 0 }
+							num_controlled_states > 2
+						}
+						set_temp_variable = { JAP_num_controlled_states_temp = 2 }
+					}
+					else = {
+						set_temp_variable = { JAP_num_controlled_states_temp = 1 }
+					}
+					while_loop_effect = {
+						limit = { check_variable = { JAP_num_controlled_states_temp > 0 } }
+						add_to_temp_variable = { JAP_num_controlled_states_temp = -1 }
+						random_controlled_state = {
+							transfer_state_to = PREV.PREV
+						}
+					}
+				}
+				set_temp_variable = { JAP_num_divisions_for_spam_temp = 3 }
+				add_to_temp_variable = { JAP_num_divisions_for_spam_temp = ROOT.JAP_num_helpls_for_anarchists_var }
+				while_loop_effect = {
+					limit = { check_variable = { JAP_num_divisions_for_spam_temp > 0 } }
+					add_to_temp_variable = { JAP_num_divisions_for_spam_temp = -1 }
+					random_controlled_state = {
+						create_unit = {
+							division = "division_template = \"Red Brigades\" start_experience_factor = 0.4"
+							owner = PREV
+							count = 1
+						}
+					}
+				}			
+				ROOT = {
+					every_core_state = { add_core_of = PREV.PREV }
+					declare_war_on = { target = PREV type = civil_war }
+					add_civil_war_target = PREV
+				}
+				every_other_country = {
+					limit = { original_tag = ROOT NOT = { tag = ROOT } }
+					declare_war_on = {
+						target = PREV
+						type = civil_war
+					}
+					add_civil_war_target = PREV
+					PREV = { add_civil_war_target = PREV }
+				}
+				add_civil_war_target = ROOT
+				every_enemy_country = {
+					every_state = {
+						limit = {
+							NOT = { is_fully_controlled_by = PREV }
+							controller = { tag = PREV.PREV }
+						}
+						teleport_armies = {
+							limit = { tag = PREV }
+							to_state_array = controlled_states
+						}
+					}
+				}
+			}
+		}
+	}
+	option = {
+		name = NW_JAP.451.a		
+	}
+	option = {
+		name = NW_JAP.451.b
+		APJ = { change_tag_from = ROOT }
+	}
+}
+
+# Коммунистическое подполье в Японии
+country_event = {
+	id = NW_JAP.452
+	title = NW_JAP.452.t
+	desc = NW_JAP.452.d
+	picture = GFX_report_event_hol_cabinet_de_geer
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_JAP.452" }
+	option = {
+		name = NW_JAP.452.a
+		unlock_decision_category_tooltip = JAP_assistance_to_the_japanese_communists_category
+		hidden_effect = {
+			activate_targeted_decision = { target = FROM decision = JAP_send_weapons }
+			activate_targeted_decision = { target = FROM decision = JAP_help_financially }
+		}
+	}
+}
+
+# Анархическое подполье в Японии
+country_event = {
+	id = NW_JAP.453
+	title = NW_JAP.453.t
+	desc = NW_JAP.453.d
+	picture = GFX_report_event_hol_cabinet_de_geer
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_JAP.453" }
+	option = {
+		name = NW_JAP.453.a
+		unlock_decision_category_tooltip = JAP_assistance_to_the_japanese_anarchists_category
+		hidden_effect = {
+			FROM = {
+				activate_targeted_decision = { target = ROOT decision = JAP_send_weapons_1 }
+				activate_targeted_decision = { target = ROOT decision = JAP_help_financially_1 }
+			}
+		}
 	}
 }
