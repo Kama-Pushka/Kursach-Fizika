@@ -8186,10 +8186,13 @@ JAP_the_fight_against_the_monarchist_underground_category = {
 		activation = { always = no }
 		available = { hidden_trigger = { always = no } }
 		cancel_trigger = {
-			custom_trigger_tooltip = {
-				tooltip = JAP_cancel_civil_war_missions_tt
-				check_variable = { JAP_power_of_resistance_var < 1 }
-			}	
+			OR = {
+				custom_trigger_tooltip = {
+					tooltip = JAP_cancel_civil_war_missions_tt
+					check_variable = { JAP_power_of_resistance_var < 1 }
+				}
+				has_country_flag = JAP_arrest_religious_radicals_flag
+			}
 		}
 		cancel_effect = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): cancel mission JAP_activities_of_religious_radicals_mission"
@@ -8268,5 +8271,68 @@ JAP_the_fight_against_the_monarchist_underground_category = {
 			country_event = NW_JAP.451
 		}
 		ai_will_do = { base = 0 }
+	}
+	
+	JAP_arrange_raids_on_the_mountains = {
+		priority = 1400
+		icon = GFX_decision_generic_political_discourse
+		cost = 50
+		fire_only_once = no
+		days_re_enable = 30
+		visible = { has_active_mission = JAP_discontent_of_the_peasants_mission }
+		complete_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision JAP_arrange_raids_on_the_mountains"
+			add_days_mission_timeout = { mission = JAP_discontent_of_the_peasants_mission days = 25 }
+		}
+	}
+	
+	JAP_checking_the_population_for_weapons = {
+		priority = 1300
+		icon = GFX_decision_generic_political_discourse
+		cost = 30
+		fire_only_once = no
+		days_re_enable = 60
+		complete_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision JAP_checking_the_population_for_weapons"
+			add_to_variable = { JAP_power_of_resistance_var = -1 tooltip = JAP_power_of_resistance_var_tt }
+		}
+	}
+	
+	JAP_control_coastal_smuggling = {
+		priority = 1200
+		icon = GFX_decision_generic_political_discourse
+		cost = 65
+		fire_only_once = no
+		days_re_enable = 30
+		visible = {
+			OR = {
+				has_active_mission = JAP_activities_of_anarchist_underground_mission
+				has_active_mission = JAP_activities_of_communist_underground_mission
+			}
+		}
+		complete_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision JAP_control_coastal_smuggling"
+			if = {
+				limit = { has_active_mission = JAP_activities_of_anarchist_underground_mission }
+				add_days_mission_timeout = { mission = JAP_activities_of_anarchist_underground_mission days = 25 }
+			}
+			if = {
+				limit = { has_active_mission = JAP_activities_of_communist_underground_mission }
+				add_days_mission_timeout = { mission = JAP_activities_of_communist_underground_mission days = 25 }
+			}
+		}
+	}
+	
+	JAP_arrest_religious_radicals = {
+		priority = 1100
+		icon = GFX_decision_generic_political_discourse
+		cost = 100
+		fire_only_once = yes
+		visible = { has_active_mission = JAP_activities_of_religious_radicals_mission }
+		complete_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision JAP_arrest_religious_radicals"
+			set_country_flag = JAP_arrest_religious_radicals_flag
+			remove_mission = JAP_activities_of_religious_radicals_mission
+		}
 	}
 }
