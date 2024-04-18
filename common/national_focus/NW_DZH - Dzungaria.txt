@@ -1008,6 +1008,7 @@ focus_tree = {
 					traits = { DZH_progressive_modernizer DZH_heir_of_genghis_khan }
 				}
 			}
+			effect_tooltip = { unlock_national_focus = DZH_throw_off_the_mask_of_bolshevism }
 		}
 	}
 	
@@ -1147,7 +1148,7 @@ focus_tree = {
 		y = 1
 		cost = 9
 		ai_will_do = { factor = 10 }
-		search_filters = { FOCUS_FILTER_BALANCE_OF_POWER FOCUS_FILTER_INDUSTRY }
+		search_filters = { FOCUS_FILTER_BALANCE_OF_POWER }
 		available = {	
 			has_country_leader = { character = DZH_sharipkhan_kogedaiuly ruling_only = yes }
 			custom_trigger_tooltip = {
@@ -1168,8 +1169,8 @@ focus_tree = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus DZH_final_break_with_china"
 			remove_power_balance = { id = DZH_politics_of_two_chairs_power_balance }
 			if = {
-				limit = { NOT = { has_government = communism } }
-				set_politics = { ruling_party = communism elections_allowed = no }
+				limit = { any_allied_country = { is_literally_china = yes } }
+				leave_faction = yes
 			}
 			every_other_country = {
 				limit = {
@@ -1178,6 +1179,476 @@ focus_tree = {
 				}
 				diplomatic_relation = { country = ROOT relation = military_access active = no }
 			}
+			every_other_country = {
+				limit = { is_literally_china = yes }
+				add_ai_strategy = { type = alliance id = ROOT value = -300 }
+				ROOT = { add_ai_strategy = { type = alliance id = PREV value = -300 } }
+			}
+			effect_tooltip = { unlock_national_focus = DZH_kazakh_people_republic }
+		}
+	}
+	
+	focus = {
+		id = DZH_kazakh_people_republic
+		icon = GFX_z_goal_JAP_trial_on_sabura_aizawa
+		x = 7
+		y = 0
+		cost = 10
+		ai_will_do = { factor = 10 }
+		search_filters = { FOCUS_FILTER_BALANCE_OF_POWER }
+		available = {	
+			has_country_leader = { character = DZH_sharipkhan_kogedaiuly ruling_only = yes }
+			has_completed_focus = DZH_final_break_with_china
+			communism > 0.5
+			SOV = {
+				exists = yes
+				NOT = { has_war_with = ROOT }
+				has_civil_war = no
+			}
+			OR = {
+				SIK = { all_core_state = { is_controlled_by = ROOT } }
+				AND = {
+					KAS = {
+						exists = yes
+						NOT = { has_war_with = ROOT }
+					}
+					has_country_flag = NW_DZH_event_37_flag
+				}
+			}
+		}
+		bypass = {  }
+		relative_position_id = DZH_de_facto_new_duban_province
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus DZH_kazakh_people_republic"
+			custom_effect_tooltip = DZH_bring_the_coalition_government_to_life_category_end_tt
+			clear_variable = DZH_sum_of_coalitions
+			if = {
+				limit = { has_active_mission = DZH_discontent_of_the_uighurs_mission }
+				remove_mission = DZH_discontent_of_the_uighurs_mission
+			}
+			if = {
+				limit = { has_active_mission = DZH_discontent_of_other_nations_mission }
+				remove_mission = DZH_discontent_of_other_nations_mission
+			}
+			set_power_balance = { id = DZH_reuniting_with_the_brothers_power_balance set_default = yes }
+			SOV = {
+				unlock_decision_category_tooltip = DZH_kazakh_people_republic_category
+				hidden_effect = {
+					activate_targeted_decision = { target = ROOT decision = DZH_support_altaians }
+					activate_targeted_decision = { target = ROOT decision = DZH_support_annexationists }
+				}
+			}
+		}
+	}
+	
+	focus = {
+		id = DZH_create_a_party
+		icon = GFX_z_goal_JAP_trial_on_sabura_aizawa
+		x = -1
+		y = 1
+		cost = 10
+		ai_will_do = { factor = 10 }
+		search_filters = { FOCUS_FILTER_POLITICAL }
+		available = { has_country_leader = { character = DZH_sharipkhan_kogedaiuly ruling_only = yes } }
+		bypass = {  }
+		prerequisite = { focus = DZH_kazakh_people_republic }
+		relative_position_id = DZH_kazakh_people_republic
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus DZH_create_a_party"
+			add_political_power = 50
+			add_popularity = { ideology = communism popularity = 0.07 }
+			set_party_name = { ideology = communism long_name = DZH_communism_party1_long name = DZH_communism_party1 }
+		}
+	}
+	
+	focus = {
+		id = DZH_give_freedom_to_the_uighurs
+		icon = GFX_z_goal_JAP_trial_on_sabura_aizawa
+		x = 3
+		y = 1
+		cost = 10
+		ai_will_do = { factor = 10 }
+		search_filters = {  }
+		available = {	
+			has_country_leader = { character = DZH_sharipkhan_kogedaiuly ruling_only = yes }
+			controls_state = 287
+			controls_state = 759
+			controls_state = 760
+			controls_state = 619
+			controls_state = 1046
+			controls_state = 1047
+			controls_state = 1120
+			controls_state = 1122
+		}
+		bypass = {  }
+		prerequisite = { focus = DZH_kazakh_people_republic focus = DZH_throw_off_the_mask_of_bolshevism }
+		relative_position_id = DZH_kazakh_people_republic
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus DZH_give_freedom_to_the_uighurs"
+			UYG = {
+				617 = {
+					if = {
+						limit = { is_claimed_by = PREV }
+						remove_claim_by = PREV
+					}
+				}
+				618 = {
+					if = {
+						limit = { is_claimed_by = PREV }
+						remove_claim_by = PREV
+					}
+				}
+				1121 = {
+					if = {
+						limit = { is_claimed_by = PREV }
+						remove_claim_by = PREV
+					}
+				}
+				ROOT = {
+					every_controlled_state = {
+						limit = { OR = { state = 287 state = 759 state = 760 state = 619 state = 1046 state = 1047 state = 1120 state = 1122 } }
+						remove_claim_by = PREV
+						transfer_state_to = PREV.PREV
+					}
+					if = {
+						limit = { OR = { has_dlc = "Together for Victory" has_dlc = "Man the Guns" } }
+						set_autonomy = { target = PREV autonomy_state = autonomy_integrated_puppet }
+					}
+					else = { puppet = PREV }
+					if = {
+						limit = { has_completed_focus = DZH_kazakh_people_republic }
+						PREV = {
+							UYG_Ehmetjan_Qasim = {
+								if = {
+									limit = { has_ideology_group = communism }
+									promote_character = yes
+								}
+								else = {
+									add_country_leader_role = {
+										promote_leader = yes
+										country_leader = {
+											desc = "UYG_Ehmetjan_Qasim_desc"
+											ideology = stalinism
+											expire = "1965.1.1.1"
+											traits = { UYG_educated_politician }
+										}
+									}
+								}
+							}
+						}
+					}
+					else = {
+						PREV = {
+							UYG_Elihan_Tore = {
+								if = {
+									limit = { has_ideology_group = neutrality }
+									promote_character = yes
+								}
+								else = {
+									add_country_leader_role = {
+										promote_leader = yes
+										country_leader = {
+											desc = "UYG_Elihan_Tore_desc"
+											ideology = authoritarian_democracy
+											expire = "1965.1.1.1"
+											traits = { UYG_popular_religious_figure }
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}		
+		}
+	}
+	
+	focus = {
+		id = DZH_kazakh_university
+		icon = GFX_z_goal_JAP_trial_on_sabura_aizawa
+		x = 5
+		y = 1
+		cost = 10
+		ai_will_do = { factor = 10 }
+		search_filters = { FOCUS_FILTER_RESEARCH }
+		available = { has_country_leader = { character = DZH_sharipkhan_kogedaiuly ruling_only = yes } }
+		bypass = {  }
+		prerequisite = { focus = DZH_kazakh_people_republic focus = DZH_throw_off_the_mask_of_bolshevism }
+		relative_position_id = DZH_kazakh_people_republic
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus DZH_kazakh_university"
+			add_research_slot = 1
+		}
+	}
+	
+	focus = {
+		id = DZH_nomad_support_program
+		icon = GFX_z_goal_JAP_trial_on_sabura_aizawa
+		x = -1
+		y = 1
+		cost = 10
+		ai_will_do = { factor = 10 }
+		search_filters = { FOCUS_FILTER_STABILITY }
+		available = { has_country_leader = { character = DZH_sharipkhan_kogedaiuly ruling_only = yes } }
+		bypass = {  }
+		prerequisite = { focus = DZH_create_a_party }
+		relative_position_id = DZH_create_a_party
+		mutually_exclusive = { focus = DZH_urge_kazakhs_to_settle_down }
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus DZH_nomad_support_program"
+			add_ideas = DZH_nomad_support_program_idea
+		}
+	}
+	
+	focus = {
+		id = DZH_urge_kazakhs_to_settle_down
+		icon = GFX_z_goal_JAP_trial_on_sabura_aizawa
+		x = 1
+		y = 1
+		cost = 10
+		ai_will_do = { factor = 10 }
+		search_filters = { FOCUS_FILTER_RESEARCH FOCUS_FILTER_INDUSTRY }
+		available = { has_country_leader = { character = DZH_sharipkhan_kogedaiuly ruling_only = yes } }
+		bypass = {  }
+		prerequisite = { focus = DZH_create_a_party }
+		relative_position_id = DZH_create_a_party
+		mutually_exclusive = { focus = DZH_nomad_support_program }
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus DZH_urge_kazakhs_to_settle_down"
+			add_ideas = DZH_urge_kazakhs_to_settle_down_idea
+		}
+	}
+	
+	focus = {
+		id = DZH_revolution_of_the_princes
+		icon = GFX_z_goal_JAP_trial_on_sabura_aizawa
+		x = 1
+		y = 1
+		cost = 10
+		ai_will_do = { factor = 10 }
+		search_filters = { FOCUS_FILTER_BALANCE_OF_POWER FOCUS_FILTER_STABILITY }
+		available = { has_country_leader = { character = DZH_sharipkhan_kogedaiuly ruling_only = yes } }
+		bypass = {  }
+		prerequisite = { focus = DZH_kazakh_people_republic }
+		relative_position_id = DZH_kazakh_people_republic
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus DZH_revolution_of_the_princes"
+			add_power_balance_value = {
+				id = DZH_reuniting_with_the_brothers_power_balance
+				value = 0.1
+				tooltip_side = DZH_altaians
+			}
+			add_country_leader_trait = DZH_communist_prince
+		}
+	}
+	
+	focus = {
+		id = DZH_national_revival
+		icon = GFX_z_goal_JAP_trial_on_sabura_aizawa
+		x = 1
+		y = 1
+		cost = 10
+		ai_will_do = { factor = 10 }
+		search_filters = { FOCUS_FILTER_POLITICAL FOCUS_FILTER_STABILITY FOCUS_FILTER_WAR_SUPPORT FOCUS_FILTER_RESEARCH }
+		available = { has_country_leader = { character = DZH_sharipkhan_kogedaiuly ruling_only = yes } }
+		bypass = {  }
+		prerequisite = { focus = DZH_create_a_party }
+		prerequisite = { focus = DZH_revolution_of_the_princes }
+		relative_position_id = DZH_revolution_of_the_princes
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus DZH_national_revival"
+			add_timed_idea = { idea = DZH_national_revival_idea days = 600 }
+		}
+	}
+	
+	focus = {
+		id = DZH_kazakh_film_studio
+		icon = GFX_z_goal_JAP_trial_on_sabura_aizawa
+		x = -2
+		y = 1
+		cost = 10
+		ai_will_do = { factor = 10 }
+		search_filters = { FOCUS_FILTER_BALANCE_OF_POWER FOCUS_FILTER_STABILITY FOCUS_FILTER_WAR_SUPPORT }
+		available = { has_country_leader = { character = DZH_sharipkhan_kogedaiuly ruling_only = yes } }
+		bypass = {  }
+		prerequisite = { focus = DZH_national_revival }
+		relative_position_id = DZH_national_revival
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus DZH_kazakh_film_studio"
+			add_stability = 0.15
+			add_war_support = 0.15
+			add_popularity = { ideology = communism popularity = 0.05 }
+			add_power_balance_value = {
+				id = DZH_reuniting_with_the_brothers_power_balance
+				value = 0.05
+				tooltip_side = DZH_altaians
+			}
+		}
+	}
+	
+	focus = {
+		id = DZH_training_of_our_own_specialists
+		icon = GFX_z_goal_JAP_trial_on_sabura_aizawa
+		x = 0
+		y = 1
+		cost = 10
+		ai_will_do = { factor = 10 }
+		search_filters = { FOCUS_FILTER_BALANCE_OF_POWER FOCUS_FILTER_ARMY_XP }
+		available = { has_country_leader = { character = DZH_sharipkhan_kogedaiuly ruling_only = yes } }
+		bypass = {  }
+		prerequisite = { focus = DZH_national_revival }
+		relative_position_id = DZH_national_revival
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus DZH_training_of_our_own_specialists"
+			army_experience = 25
+			add_power_balance_value = {
+				id = DZH_reuniting_with_the_brothers_power_balance
+				value = 0.1
+				tooltip_side = DZH_altaians
+			}
+			add_timed_idea = { idea = DZH_training_of_our_own_specialists_idea days = 300 }
+		}
+	}
+	
+	focus = {
+		id = DZH_fate_of_the_imperialists_and_colonialists
+		icon = GFX_z_goal_JAP_trial_on_sabura_aizawa
+		x = -1
+		y = 1
+		cost = 10
+		ai_will_do = { factor = 10 }
+		search_filters = { FOCUS_FILTER_POLITICAL }
+		available = {	
+			has_country_leader = { character = DZH_sharipkhan_kogedaiuly ruling_only = yes }
+			controls_state = 618
+			controls_state = 1121
+		}
+		bypass = {  }
+		prerequisite = { focus = DZH_training_of_our_own_specialists }
+		relative_position_id = DZH_training_of_our_own_specialists
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus DZH_fate_of_the_imperialists_and_colonialists"
+			add_timed_idea = { idea = DZH_fate_of_the_imperialists_and_colonialists_idea days = 200 }
+			618 = { add_manpower = -10000 }
+			1121 = { add_manpower = -3000 }
+		}
+	}
+	
+	focus = {
+		id = DZH_take_over_the_management_of_public_safety
+		icon = GFX_z_goal_JAP_trial_on_sabura_aizawa
+		x = 0
+		y = 1
+		cost = 10
+		ai_will_do = { factor = 10 }
+		search_filters = { FOCUS_FILTER_POLITICAL }
+		available = {	
+			has_country_leader = { character = DZH_sharipkhan_kogedaiuly ruling_only = yes }
+			has_intelligence_agency = no
+		}
+		bypass = {  }
+		prerequisite = { focus = DZH_fate_of_the_imperialists_and_colonialists }
+		relative_position_id = DZH_fate_of_the_imperialists_and_colonialists
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus DZH_take_over_the_management_of_public_safety"
+			create_intelligence_agency = { name = "Management of Public Safety" }
+		}
+	}
+	
+	focus = {
+		id = DZH_print_tenge
+		icon = GFX_z_goal_JAP_trial_on_sabura_aizawa
+		x = 0
+		y = 1
+		cost = 10
+		ai_will_do = { factor = 10 }
+		search_filters = { FOCUS_FILTER_INDUSTRY FOCUS_FILTER_POLITICAL }
+		available = { has_country_leader = { character = DZH_sharipkhan_kogedaiuly ruling_only = yes } }
+		bypass = { NOT = { has_idea = DZH_financial_chaos_idea } }
+		prerequisite = { focus = DZH_nomad_support_program focus = DZH_urge_kazakhs_to_settle_down }
+		relative_position_id = DZH_nomad_support_program
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus DZH_print_tenge"
+			remove_ideas = DZH_financial_chaos_idea
+		}
+	}
+	
+	focus = {
+		id = DZH_continue_the_tradition_of_three_year_plans
+		icon = GFX_z_goal_JAP_trial_on_sabura_aizawa
+		x = 1
+		y = 1
+		cost = 10
+		ai_will_do = { factor = 10 }
+		search_filters = { FOCUS_FILTER_INDUSTRY }
+		available = { has_country_leader = { character = DZH_sharipkhan_kogedaiuly ruling_only = yes } }
+		bypass = {  }
+		prerequisite = { focus = DZH_print_tenge }
+		relative_position_id = DZH_print_tenge
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus DZH_continue_the_tradition_of_three_year_plans"
+			add_ideas = DZH_continue_the_tradition_of_three_year_plans_idea
+		}
+	}
+	
+	focus = {
+		id = DZH_own_processing_enterprises
+		icon = GFX_z_goal_JAP_trial_on_sabura_aizawa
+		x = 0
+		y = 1
+		cost = 10
+		ai_will_do = { factor = 10 }
+		search_filters = { FOCUS_FILTER_INDUSTRY FOCUS_FILTER_RESEARCH }
+		available = { has_country_leader = { character = DZH_sharipkhan_kogedaiuly ruling_only = yes } }
+		bypass = {  }
+		prerequisite = { focus = DZH_continue_the_tradition_of_three_year_plans }
+		relative_position_id = DZH_continue_the_tradition_of_three_year_plans
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus DZH_own_processing_enterprises"
+			unlock_decision_category_tooltip = DZH_own_processing_enterprises_category
+		}
+	}
+	
+	focus = {
+		id = DZH_throw_off_the_mask_of_bolshevism
+		icon = GFX_z_goal_JAP_trial_on_sabura_aizawa
+		x = 7
+		y = 0
+		cost = 10
+		ai_will_do = { factor = 10 }
+		search_filters = { FOCUS_FILTER_INDUSTRY FOCUS_FILTER_RESEARCH }
+		available = {
+			has_country_leader = { character = DZH_sharipkhan_kogedaiuly ruling_only = yes }
+			has_completed_focus = DZH_replace_the_npa_with_the_kuomintang
+			neutrality > 0.5
+			OR = {
+				SIK = { all_core_state = { is_controlled_by = ROOT } }
+				AND = {
+					KAS = {
+						exists = yes
+						NOT = { has_war_with = ROOT }
+					}
+					has_country_flag = NW_DZH_event_37_flag
+				}
+			}
+		}
+		bypass = {  }
+		relative_position_id = DZH_kazakh_people_republic
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus DZH_throw_off_the_mask_of_bolshevism"
+			custom_effect_tooltip = DZH_bring_the_coalition_government_to_life_category_end_tt
+			clear_variable = DZH_sum_of_coalitions
+			if = {
+				limit = { has_active_mission = DZH_discontent_of_the_uighurs_mission }
+				remove_mission = DZH_discontent_of_the_uighurs_mission
+			}
+			if = {
+				limit = { has_active_mission = DZH_discontent_of_other_nations_mission }
+				remove_mission = DZH_discontent_of_other_nations_mission
+			}
+			set_cosmetic_tag = SIK_neutrality
+			add_popularity = { ideology = neutrality popularity = 0.25 }
+			set_party_name = { ideology = neutrality long_name = DZH_neutrality_party3 name = DZH_neutrality_party3 }
 		}
 	}
 }
