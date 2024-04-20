@@ -1,0 +1,1805 @@
+﻿add_namespace = NW_SIK
+add_namespace = NW_SIK_news
+
+# В Синьцзяне провозглашена советская республика
+news_event = {
+	id = NW_SIK_news.0
+	title = NW_SIK_news.0.t
+	desc = NW_SIK_news.0.d
+	picture = GFX_news_event_dutch_soldiers_indonesia
+	major = yes
+	show_major = {
+		OR = {
+			is_literally_china = yes
+			original_tag = SOV
+		}
+	}
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_SIK_news.0" }
+	option = {
+		name = NW_SIK_news.0.a
+		trigger = { original_tag = CHI }
+		add_opinion_modifier = { modifier = SIK_declare_a_soviet_republic_op_2 target = FROM }
+	}
+	option = {
+		name = NW_SIK_news.0.b
+		trigger = { original_tag = SOV }
+		add_opinion_modifier = { modifier = SIK_declare_a_soviet_republic_op target = FROM }
+	}
+	option = {
+		name = NW_SIK_news.0.c
+		trigger = { NOT = { original_tag = SOV original_tag = CHI } }		
+	}
+}
+
+# В Синьцзяне провозглашена советская республика
+news_event = {
+	id = NW_SIK_news.1
+	title = NW_SIK_news.1.t
+	desc = NW_SIK_news.1.d
+	picture = GFX_news_event_dutch_soldiers_indonesia
+	major = yes
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_SIK_news.1" }
+	option = {
+		name = NW_SIK_news.1.a
+	}
+}
+
+# Прекращение поддержки валюты из СССР
+country_event = {
+	id = NW_SIK.0
+	title = NW_SIK.0.t
+	desc = NW_SIK.0.d
+	picture = GFX_report_event_hol_cabinet_de_geer
+	fire_only_once = yes
+	mean_time_to_happen = { days = 20 }
+	trigger = {
+		tag = SIK
+		OR = {
+			has_government = neutrality
+			SOV = {
+				OR = {
+					exists = no
+					has_civil_war = yes
+					has_war_with = ROOT
+				}
+			}
+		}
+	}
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_SIK.0" }
+	option = {
+		name = NW_SIK.0.a
+		if = {
+			limit = {
+				has_idea = SIK_support_for_the_currency_of_xinjiang_ussr
+			}
+			remove_ideas = SIK_support_for_the_currency_of_xinjiang_ussr
+		}
+		else_if = {
+			limit = {
+				has_idea = SIK_support_for_the_currency_of_xinjiang_ussr_2
+			}
+			remove_ideas = SIK_support_for_the_currency_of_xinjiang_ussr_2
+		}
+		else_if = {
+			limit = {
+				has_idea = SIK_support_for_the_currency_of_xinjiang_ussr_3
+			}
+			remove_ideas = SIK_support_for_the_currency_of_xinjiang_ussr_3
+			add_ideas = SIK_consequences_of_linking_the_currency_to_the_ussr_state_bank
+		}
+		else_if = {
+			limit = {
+				has_idea = SIK_support_for_the_currency_of_xinjiang_ussr_4
+			}
+			remove_ideas = SIK_support_for_the_currency_of_xinjiang_ussr_4
+		}
+		else_if = {
+			limit = {
+				has_idea = SIK_support_for_the_currency_of_xinjiang_ussr_5
+			}
+			remove_ideas = SIK_support_for_the_currency_of_xinjiang_ussr_5
+		}
+		add_ideas = SIK_consequences_of_linking_the_currency_to_the_ussr_state_bank
+		set_country_flag = SIK_reform_of_financial_system_category_BLOCK_flag
+		custom_effect_tooltip = SIK_reform_of_financial_system_category_BLOCK_tt
+	}
+}
+
+# Пульсар
+country_event = {
+	hidden = yes
+    id = NW_SIK.1
+	is_triggered_only = yes
+	immediate = {
+		log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): hidden event NW_SIK.1"
+		if = {
+			limit = { 618 = { controller = { controls_state = 618 } } }
+			618 = { controller = { country_event = NW_SIK.2 } }
+		}
+		else = {
+			618 = { controller = { country_event = NW_SIK.2 } }
+			1047 = { controller = { country_event = NW_SIK.2 } }
+		}
+	}
+}
+
+# Вспышка чумы на границе с СССР
+country_event = {
+	id = NW_SIK.2
+	title = NW_SIK.2.t
+	desc = NW_SIK.2.d
+	picture = GFX_report_event_hol_cabinet_de_geer
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_SIK.2" }
+	option = {
+		name = NW_SIK.2.a
+		618 = {
+			if = {
+				limit = { controller = { tag = ROOT } }
+				set_state_flag = { flag = SIK_outbreak_of_the_plague_flag days = 720 value = 1 }
+				add_dynamic_modifier = { modifier = SIK_outbreak_of_the_plague_modifier }
+			}
+		}
+		1047 = {
+			if = {
+				limit = { controller = { tag = ROOT } }
+				set_state_flag = { flag = SIK_outbreak_of_the_plague_flag days = 720 value = 1 }
+				add_dynamic_modifier = { modifier = SIK_outbreak_of_the_plague_modifier }
+			}
+		}
+		unlock_decision_category_tooltip = SIK_outbreak_of_the_plague_category
+		hidden_effect = {
+			activate_targeted_decision = { target = ROOT decision = SIK_open_the_anti_plague_station }
+			activate_targeted_decision = { target = ROOT decision = SIK_start_vaccination_of_the_population_in_dzungaria }
+			activate_targeted_decision = { target = ROOT decision = SIK_start_vaccination_of_the_population_in_aksu }
+			activate_targeted_decision = { target = ROOT decision = SIK_destroy_rodents_in_settlements }
+		}
+		activate_mission = SIK_outbreak_of_the_plague_mission
+	}
+}
+
+# Переговоры с генералом Тунганистана
+country_event = {
+	id = NW_SIK.3
+	title = NW_SIK.3.t
+	desc = NW_SIK.3.d
+	picture = GFX_report_event_hol_cabinet_de_geer
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_SIK.3" }
+	option = {
+		name = NW_SIK.3.b
+		add_political_power = -100
+		TNG = {
+			TNG_ma_shenggui = { set_nationality = ROOT }
+			hidden_effect = { country_event = { id = NW_SIK.4 hours = 12 } }
+		}
+		set_country_flag = SIK_ma_shengui_flag
+	}
+	option = {
+		name = NW_SIK.3.a	
+	}
+}
+
+# TNG Дезертирство Ма Шэнкуэя
+country_event = {
+	id = NW_SIK.4
+	title = NW_SIK.4.t
+	desc = NW_SIK.4.d
+	picture = GFX_report_event_hol_cabinet_de_geer
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_SIK.4" }
+	option = {
+		name = NW_SIK.4.a
+		add_stability = -0.02
+		add_war_support = -0.03
+	}
+}
+
+# Исчезновение Ма Шэнкуэя
+country_event = {
+	id = NW_SIK.5
+	title = NW_SIK.5.t
+	desc = NW_SIK.5.d
+	picture = GFX_report_event_hol_cabinet_de_geer
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_SIK.5" }
+	option = {
+		name = NW_SIK.5.a
+		retire_character = TNG_ma_shenggui
+	}
+}
+
+# Возвращение Ма Шаоу
+country_event = {
+	id = NW_SIK.6
+	title = NW_SIK.6.t
+	desc = NW_SIK.6.d
+	picture = GFX_report_event_hol_cabinet_de_geer
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_SIK.6" }
+	option = {
+		name = NW_SIK.6.a
+		add_advisor_role = {
+			character = SIK_Ma_Shaou
+			advisor = {
+				slot = political_advisor
+				cost = 200
+				idea_token = SIK_Ma_Shaou
+				traits = { SIK_progressive_politician SIK_invalid }
+			}
+		}
+	}
+}
+
+# Заключение секретного соглашения
+country_event = {
+	id = NW_SIK.7
+	title = NW_SIK.7.t
+	desc = NW_SIK.7.d
+	picture = GFX_report_event_hol_cabinet_de_geer
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_SIK.7" }
+	option = {
+		name = NW_SIK.7.a
+		SOV = {
+			add_opinion_modifier = { modifier = SIK_conclusion_of_a_secret_agreement_op target = ROOT }
+			reverse_add_opinion_modifier = { modifier = SIK_conclusion_of_a_secret_agreement_op target = ROOT }
+		}
+	}
+}
+
+# Киргизское восстание в Куче
+country_event = {
+	id = NW_SIK.8
+	title = NW_SIK.8.t
+	desc = NW_SIK.8.d
+	picture = GFX_report_event_hol_cabinet_de_geer
+	is_triggered_only = yes
+	trigger = { controls_state = 1047 }
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_SIK.8" }
+	option = {
+		name = NW_SIK.8.a
+		add_stability = -0.03
+		1047 = { add_manpower = -3000 }
+	}
+}
+
+# Установка памятника погибшим русским воинам
+country_event = {
+	id = NW_SIK.9
+	title = NW_SIK.9.t
+	desc = NW_SIK.9.d
+	picture = GFX_report_event_hol_cabinet_de_geer
+	fire_only_once = yes
+	mean_time_to_happen = { days = 20 }
+	trigger = {
+		tag = SIK
+		has_war = no
+		controls_state = 619
+		controls_state = 287
+		controls_state = 759
+	}
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_SIK.9" }
+	option = {
+		name = NW_SIK.9.a
+		add_political_power = 15
+		add_stability = 0.05
+	}
+}
+
+# CHI Приглашение нашего дипломата в Синьцзянь
+country_event = {
+	id = NW_SIK.10
+	title = NW_SIK.10.t
+	desc = NW_SIK.10.d
+	picture = GFX_report_event_hol_cabinet_de_geer
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_SIK.10" }
+	option = {
+		name = NW_SIK.10.a
+		FROM = {
+			add_opinion_modifier = { modifier = SIK_building_relationships_op target = ROOT }
+			reverse_add_opinion_modifier = { modifier = SIK_building_relationships_op target = ROOT }
+		}
+	}
+}
+
+# CHI Посещение делегацией чиновников Урумчи
+country_event = {
+	id = NW_SIK.11
+	title = NW_SIK.11.t
+	desc = NW_SIK.11.d
+	picture = GFX_report_event_hol_cabinet_de_geer
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_SIK.11" }
+	option = {
+		name = NW_SIK.11.a
+		FROM = {
+			add_opinion_modifier = { modifier = SIK_building_relationships_op_2 target = ROOT }
+			reverse_add_opinion_modifier = { modifier = SIK_building_relationships_op_2 target = ROOT }
+		}
+	}
+}
+
+# SIK/SOV Смерть Шэна Шики
+country_event = {
+	id = NW_SIK.12
+	title = NW_SIK.12.t
+	desc = NW_SIK.12.d
+	picture = GFX_report_event_hol_cabinet_de_geer
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_SIK.12" }
+	option = {
+		name = NW_SIK.12.a
+		trigger = { original_tag = FROM }
+		if = {
+			limit = { check_variable = { SIK_soviet_influence_var > 0 } }
+			add_to_variable = { SIK_soviet_influence_var = -5 tooltip = SIK_soviet_influence_var_tt }
+			SIK_soviet_influence_effect = yes
+		}
+		retire_character = SIK_Sheng_Shiqi
+	}
+	option = {
+		name = NW_SIK.12.b
+		trigger = { NOT = { original_tag = FROM } }
+	}
+}
+
+# Арест Мао Цзэминя
+country_event = {
+	id = NW_SIK.13
+	title = NW_SIK.13.t
+	desc = NW_SIK.13.d
+	picture = GFX_report_event_hol_cabinet_de_geer
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_SIK.13" }
+	option = {
+		name = NW_SIK.13.a
+		if = {
+			limit = {
+				has_completed_focus = SIK_invite_the_CCP_bureaucratic_staff
+				NOT = { has_completed_focus = SIK_purge_the_Communists_from_the_government }
+			}
+			custom_effect_tooltip = remove_political_advisor
+			show_ideas_tooltip = SIK_Mao_Zemin
+			show_ideas_tooltip = SIK_Du_Junan
+			show_ideas_tooltip = SIK_Chang_Tanzu
+			show_ideas_tooltip = SIK_Lil_Zcily
+			show_ideas_tooltip = SIK_Huan_Huocin
+			hidden_effect = {
+				retire_character = SIK_Mao_Zemin
+				retire_character = SIK_Du_Junan
+				retire_character = SIK_Chang_Tanzu
+				retire_character = SIK_Lil_Zcily
+				retire_character = SIK_Huan_Huocin
+			}
+		}
+		else = {
+			retire_character = SIK_Mao_Zemin
+		}
+	}
+	option = {
+		name = NW_SIK.13.b
+	}
+}
+
+# Разговор с братом
+country_event = {
+	id = NW_SIK.14
+	title = NW_SIK.14.t
+	desc = NW_SIK.14.d
+	picture = GFX_report_event_hol_cabinet_de_geer
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_SIK.14" }
+	option = {
+		name = NW_SIK.14.a
+		add_to_variable = { SIK_soviet_influence_var = -5 tooltip = SIK_soviet_influence_var_tt }
+		SIK_soviet_influence_effect = yes
+	}
+}
+
+# SOV Донесения из Синьцзяна
+country_event = {
+	id = NW_SIK.15
+	title = NW_SIK.15.t
+	desc = NW_SIK.15.d
+	picture = GFX_report_event_hol_cabinet_de_geer
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_SIK.15" }
+	option = {
+		name = NW_SIK.15.a
+		set_country_flag = SOV_soviet_influence_in_xinjiang_category_unlock_flag
+		unlock_decision_category_tooltip = SOV_soviet_influence_in_xinjiang_category
+	}
+}
+
+# SOV/SIK/CHI Смерть Шэна Шицая
+country_event = {
+	id = NW_SIK.16
+	title = NW_SIK.16.t
+	desc = NW_SIK.16.d
+	picture = GFX_report_event_hol_cabinet_de_geer
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_SIK.16" }
+	option = {
+		name = NW_SIK.16.a
+		if = {
+			limit = { original_tag = SIK }
+			kill_country_leader = yes
+			add_country_leader_role = {
+				character = SIK_Sheng_Shiqi
+				promote_leader = yes
+				country_leader = {
+					desc = "POLITICS_SHENG_SHIQI_DESC"
+					ideology = stalinism
+					expire = "1965.1.1.1"
+					traits = { SIK_pro_moscow_polician }
+				}
+			}
+			complete_national_focus = SIK_death_of_the_Prince_of_Xinjiang
+		}
+		else = {
+			effect_tooltip = {
+				SIK = {
+					kill_country_leader = yes
+					add_country_leader_role = {
+						character = SIK_Sheng_Shiqi
+						promote_leader = yes
+						country_leader = {
+							desc = "POLITICS_SHENG_SHIQI_DESC"
+							ideology = stalinism
+							expire = "1965.1.1.1"
+							traits = { SIK_pro_moscow_polician }
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+# Презентация Молотова
+country_event = {
+	id = NW_SIK.17
+	title = NW_SIK.17.t
+	desc = NW_SIK.17.d
+	picture = GFX_report_event_hol_cabinet_de_geer
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_SIK.17" }
+	option = {
+		name = NW_SIK.17.a
+		add_to_variable = { SIK_soviet_influence_var = 5 tooltip = SIK_soviet_influence_var_tt }
+		SIK_soviet_influence_effect = yes
+		FROM = { country_event = { id = NW_SIK.19 hours = 12 } }
+	}
+}
+
+# SOV/SIK/CHI Переворот в Синьцзяне
+country_event = {
+	id = NW_SIK.18
+	title = NW_SIK.18.t
+	desc = NW_SIK.18.d
+	picture = GFX_report_event_hol_cabinet_de_geer
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_SIK.18" }
+	option = {
+		name = NW_SIK.18.a
+		trigger = { original_tag = SIK }
+		kill_country_leader = yes
+		add_country_leader_role = {
+			character = SIK_Mao_Zemin
+			promote_leader = yes
+			country_leader = {
+				desc = "POLITICS_MAO_ZEMIN_DESC"
+				ideology = stalinism
+				expire = "1965.1.1.1"
+				traits = {  }
+			}
+		}
+		complete_national_focus = SIK_death_of_the_Prince_of_Xinjiang
+	}
+	option = {
+		name = NW_SIK.18.b
+		trigger = { NOT = { original_tag = SIK } }
+		effect_tooltip = {
+			SIK = {
+				kill_country_leader = yes
+				add_country_leader_role = {
+					character = SIK_Mao_Zemin
+					promote_leader = yes
+					country_leader = {
+						desc = "POLITICS_MAO_ZEMIN_DESC"
+						ideology = stalinism
+						expire = "1965.1.1.1"
+						traits = {  }
+					}
+				}
+			}
+		}	
+	}
+}
+
+# SOV Жёсткая реакция Шэна Шицая
+country_event = {
+	id = NW_SIK.19
+	title = NW_SIK.19.t
+	desc = NW_SIK.19.d
+	picture = GFX_report_event_hol_cabinet_de_geer
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_SIK.19" }
+	option = {
+		name = NW_SIK.19.a
+		FROM = {
+			add_opinion_modifier = { modifier = SIK_molotov_presentation_op target = ROOT }
+			reverse_add_opinion_modifier = { modifier = SIK_molotov_presentation_op target = ROOT }
+		}
+	}
+}
+
+# Уйгуры раскрыли наши планы
+country_event = {
+	id = NW_SIK.20
+	title = NW_SIK.20.t
+	desc = NW_SIK.20.d
+	picture = GFX_report_event_hol_cabinet_de_geer
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_SIK.20" }
+	option = {
+		name = NW_SIK.20.a
+		KAS = {
+			set_politics = { ruling_party = neutrality elections_allowed = no }
+			if = {
+				limit = { KAS_mahmud_muhiti = { is_country_leader = no } }
+				promote_character = KAS_mahmud_muhiti
+			}
+			hidden_effect = { ROOT = { end_puppet = PREV } }
+			ROOT = { declare_war_on = { target = PREV type = topple_government } }
+		}
+	}
+	option = {
+		name = NW_SIK.20.b
+		trigger = { country_exists = SOV }
+		SOV = { country_event = { id = NW_SIK.21 days = 1 } }
+	}
+}
+
+# SOV Ситуация в Синьцзяне накаляется
+country_event = {
+	id = NW_SIK.21
+	title = NW_SIK.21.t
+	desc = NW_SIK.21.d
+	picture = GFX_report_event_hol_cabinet_de_geer
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_SIK.21" }
+	option = {
+		name = NW_SIK.21.a
+		FROM = { country_event = { id = NW_SIK.22 days = 1 } }
+	}
+	option = {
+		name = NW_SIK.21.b
+		FROM = { country_event = { id = NW_SIK.23 days = 1 } }
+	}
+}
+
+# Советский Союз одобрил уничтожение 6-ой дивизии
+country_event = {
+	id = NW_SIK.22
+	title = NW_SIK.22.t
+	desc = NW_SIK.22.d
+	picture = GFX_report_event_hol_cabinet_de_geer
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_SIK.22" }
+	option = {
+		name = NW_SIK.22.a
+		KAS = {
+			set_politics = { ruling_party = neutrality elections_allowed = no }
+			if = {
+				limit = { KAS_mahmud_muhiti = { is_country_leader = no } }
+				promote_character = KAS_mahmud_muhiti
+			}
+			hidden_effect = { ROOT = { end_puppet = PREV } }
+			ROOT = { declare_war_on = { target = PREV type = topple_government } }
+		}
+	}
+}
+
+# СССР посылает в Кашгар миротворческую миссию
+country_event = {
+	id = NW_SIK.23
+	title = NW_SIK.23.t
+	desc = NW_SIK.23.d
+	picture = GFX_report_event_hol_cabinet_de_geer
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_SIK.23" }
+	option = {
+		name = NW_SIK.23.a
+		if = {
+			limit = { JAP = { has_completed_focus = JAP_adventure_in_Xinjiang } }			
+			country_event = { id = NW_KAS.1 days = 1 }
+			every_other_country = {
+				limit = { OR = { original_tag = KAS original_tag = KUM original_tag = DZH } }
+				country_event = { id = NW_KAS.1 days = 1 }
+			}
+		}
+		else = {
+			country_event = { id = NW_SIK.24 days = 10 }
+		}
+	}
+}
+
+# Конфликт разрешился мирным путём
+country_event = {
+	id = NW_SIK.24
+	title = NW_SIK.24.t
+	desc = NW_SIK.24.d
+	picture = GFX_report_event_hol_cabinet_de_geer
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_SIK.24" }
+	option = {
+		name = NW_SIK.24.a
+		
+	}
+}
+
+# Арест Ма Шаоу
+country_event = {
+    id = NW_SIK.25
+	title = NW_SIK.25.t
+    desc = NW_SIK.25.d
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_SIK.25" }		
+	option = {
+        name = NW_SIK.25.a
+		add_stability = 0.01
+		custom_effect_tooltip = remove_political_advisor
+		show_ideas_tooltip = SIK_Ma_Shaou
+		hidden_effect =  { retire_character = SIK_Ma_Shaou }
+	}
+}
+
+# Арест Ходжи Нияза
+country_event = {
+    id = NW_SIK.26
+	title = NW_SIK.26.t
+    desc = NW_SIK.26.d   
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_SIK.26" }		
+	option = {
+        name = NW_SIK.26.a
+		add_stability = 0.01
+		custom_effect_tooltip = remove_political_advisor
+		show_ideas_tooltip = SIK_Khoja_Niyaz
+		hidden_effect =  { retire_character = SIK_Khoja_Niyaz }
+	}
+}
+
+# Арест Бурхана Шахиди
+country_event = {
+    id = NW_SIK.27
+	title = NW_SIK.27.t
+    desc = NW_SIK.27.d   
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_SIK.27" }		
+	option = {
+        name = NW_SIK.27.a
+		add_stability = 0.01
+		custom_effect_tooltip = remove_political_advisor
+		show_ideas_tooltip = SIK_Burhan_Shahidi
+		hidden_effect =  { retire_character = SIK_Burhan_Shahidi }
+	}
+}
+
+# Сведения на Апресова
+country_event = {
+    id = NW_SIK.28
+	title = NW_SIK.28.t
+    desc = NW_SIK.28.d  
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_SIK.28" }		
+	option = {
+        name = NW_SIK.28.a
+		add_stability = 0.01
+		custom_effect_tooltip = remove_political_advisor
+		show_ideas_tooltip = SIK_Garegin_Apresov
+		hidden_effect =  { retire_character = SIK_Garegin_Apresov }
+	}
+}
+
+# Троцкисты в НАА
+country_event = {
+    id = NW_SIK.29
+	title = NW_SIK.29.t
+    desc = NW_SIK.29.d   
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_SIK.29" }		
+	option = {
+        name = NW_SIK.29.a
+		add_stability = 0.01
+		custom_effect_tooltip = remove_political_advisor
+		show_ideas_tooltip = SIK_Ui_Susun
+		hidden_effect =  { retire_character = SIK_Ui_Susun }
+	}
+}
+
+# Массовые аресты в Урумчи
+country_event = {
+    id = NW_SIK.30
+	title = NW_SIK.30.t
+    desc = NW_SIK.30.d   
+	is_triggered_only = yes
+	trigger = { controls_state = 617 }
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_SIK.30" }		
+	option = {
+        name = NW_SIK.30.a
+		add_stability = 0.01
+		617 = { add_manpower = -20000 }
+	}
+}
+
+# Массовые аресты в Джунгарии
+country_event = {
+    id = NW_SIK.31
+	title = NW_SIK.31.t
+    desc = NW_SIK.31.d
+    is_triggered_only = yes
+	trigger = { controls_state = 618 }
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_SIK.31" }		
+	option = {
+        name = NW_SIK.31.a
+		add_stability = 0.01
+		618 = { add_manpower = -20000 }
+	}
+}
+
+# Массовые аресты в Аксу
+country_event = {
+    id = NW_SIK.32
+	title = NW_SIK.32.t
+    desc = NW_SIK.32.d    
+	is_triggered_only = yes
+	trigger = { controls_state = 1047 }
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_SIK.32" }		
+	option = {
+        name = NW_SIK.32.a
+		add_stability = 0.01
+		1047 = { add_manpower = -20000 }
+	}
+}
+
+# Подозрение к Бехтееву
+country_event = {
+    id = NW_SIK.33
+	title = NW_SIK.33.t
+    desc = NW_SIK.33.d   
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_SIK.33" }		
+	option = {
+        name = NW_SIK.33.a
+		add_stability = 0.01
+		custom_effect_tooltip = remove_political_advisor
+		show_ideas_tooltip = SIK_Nikolai_Behteev
+		hidden_effect =  { retire_character = SIK_Nikolai_Behteev }
+	}
+}
+
+# Подозрение к армии
+country_event = {
+    id = NW_SIK.34
+	title = NW_SIK.34.t
+    desc = NW_SIK.34.d   
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_SIK.34" }		
+	option = {
+        name = NW_SIK.34.a
+		custom_effect_tooltip = SIK_Isakbek_Monuev_tt
+		SIK_Isakbek_Monuev = { set_character_flag = SIK_Isakbek_Monuev_block_flag }
+		add_advisor_role = {
+			character = SIK_Isakbek_Monuev
+			advisor = {
+				slot = political_advisor
+				cost = 150
+				idea_token = SIK_Isakbek_Monuev
+				traits = { SIK_kirgiz_politician }
+			}
+		}
+	}
+}
+
+# Арест Шарипхана
+country_event = {
+    id = NW_SIK.35
+	title = NW_SIK.35.t
+    desc = NW_SIK.35.d   
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_SIK.35" }		
+	option = {
+        name = NW_SIK.35.a
+		add_political_power = -50
+		add_stability = -0.05
+		annex_country = { target = DZH transfer_troops = yes }
+		hidden_effect = {
+			country_event = { id = NW_SIK.36 days = 720 }
+			country_event = { id = NW_SIK.37 days = 30 }
+		}
+	}
+}
+
+# Шарипхан погиб в тюрьме
+country_event = {
+    id = NW_SIK.36
+	title = NW_SIK.36.t
+    desc = NW_SIK.36.d   
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_SIK.36" }		
+	option = {
+        name = NW_SIK.36.a
+	}
+}
+
+# Волнения на Алтае
+country_event = {
+    id = NW_SIK.37
+	title = NW_SIK.37.t
+    desc = NW_SIK.37.d   
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_SIK.37" }		
+	option = {
+        name = NW_SIK.37.a
+		add_political_power = -30
+		add_stability = 0.01
+		hidden_effect = { country_event = { id = NW_SIK.38 days = 10 } }
+	}
+}
+
+# Волнения на Алтае
+country_event = {
+    id = NW_SIK.38
+	title = NW_SIK.38.t
+    desc = NW_SIK.38.d   
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_SIK.38" }		
+	option = {
+        name = NW_SIK.38.a
+		add_political_power = -20
+		add_stability = -0.03
+		hidden_effect = { country_event = { id = NW_SIK.39 days = 10 } }
+	}
+}
+
+# Восстание на Алтае
+country_event = {
+    id = NW_SIK.39
+	title = NW_SIK.39.t
+    desc = NW_SIK.39.d   
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_SIK.39" }		
+	option = {
+        name = NW_SIK.39.a
+		add_political_power = -25
+		add_stability = -0.05
+		hidden_effect = { country_event = { id = NW_SIK.40 days = 20 } }
+	}
+	option = {
+        name = NW_SIK.39.b
+		hidden_effect = { country_event = { id = NW_SIK.41 days = 10 } }
+	}
+}
+
+# Неудачная схватка с казахами
+country_event = {
+    id = NW_SIK.40
+	title = NW_SIK.40.t
+    desc = NW_SIK.40.d   
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_SIK.40" }		
+	option = {
+        name = NW_SIK.40.a
+		
+		hidden_effect = { country_event = { id = NW_SIK.41 days = 10 } }
+	}
+}
+
+# Соглашение о прекращении огня
+country_event = {
+    id = NW_SIK.41
+	title = NW_SIK.41.t
+    desc = NW_SIK.41.d   
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_SIK.41" }		
+	option = {
+        name = NW_SIK.41.a
+		add_stability = 0.05
+		hidden_effect = { country_event = { id = NW_SIK.42 days = 1 } }
+	}
+	option = {
+        name = NW_SIK.41.b
+		add_stability = 0.05
+		hidden_effect = { country_event = { id = NW_SIK.42 days = 30 } }
+	}
+}
+
+# Нарушение соглашения
+country_event = {
+    id = NW_SIK.42
+	title = NW_SIK.42.t
+    desc = NW_SIK.42.d   
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_SIK.42" }		
+	option = {
+        name = NW_SIK.42.a
+		hidden_effect = { country_event = { id = NW_SIK.43 days = 5 } }
+	}
+	option = {
+        name = NW_SIK.42.b
+		hidden_effect = { country_event = { id = NW_SIK.44 days = 10 } }
+	}
+}
+
+# Настоящая война
+country_event = {
+    id = NW_SIK.43
+	title = NW_SIK.43.t
+    desc = NW_SIK.43.d   
+	is_triggered_only = yes
+	trigger = {
+		controls_state = 1121
+		NOT = { country_exists = DZH }
+	}
+	immediate = {
+		log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_SIK.43"
+		hidden_effect = {
+			DZH = {
+				transfer_state = 1121
+				set_politics = { ruling_party = neutrality elections_allowed = no }
+				if = {
+					limit = { DZH_ospan_batyr = { is_country_leader = no } }
+					promote_character = DZH_ospan_batyr
+				}
+				set_party_name = { ideology = neutrality long_name = DZH_neutrality_party1 name = DZH_neutrality_party1 }
+				add_ideas = DZH_uprising_of_the_kazakhs_idea
+				add_ideas = DZH_illiterate_population_idea
+				add_ideas = DZH_nomadism_of_the_kazakhs_idea
+				if = {
+					limit = { NOT = { has_idea = chine_clique } }
+					add_ideas = chine_clique
+					NW_chine_clique_unrecognized_effect = yes
+				}
+				declare_war_on = { target = ROOT type = liberate_wargoal }
+				load_focus_tree = nw_dzungaria_ospan_batyr_focus
+				remove_ideas = {
+					DZH_restoration_of_mosques_madrassas_idea
+					DZH_victory_over_illiteracy_idea
+					DZH_administrative_hierarchy_of_bao_hya_idea
+					DZH_heyday_of_the_kazakh_intelligentsia_idea
+					DZH_influence_of_kazakh_nationalism_idea
+					DZH_soviet_aid_idea
+					DZH_payment_for_goods_idea
+					DZH_smoldering_chances_idea
+					DZH_financial_chaos_idea
+					DZH_form_a_multinational_army_idea
+					DZH_building_K_road_idea
+					DZH_preserve_the_positions_of_local_elites_idea
+					DZH_additional_reliance_on_soviet_supplies_idea
+					DZH_nomad_support_program_idea
+					DZH_urge_kazakhs_to_settle_down_idea
+					DZH_national_revival_idea
+					DZH_training_of_our_own_specialists_idea
+					DZH_fate_of_the_imperialists_and_colonialists_idea
+					DZH_continue_the_tradition_of_three_year_plans_idea
+					DZH_sharipkhan_idea
+					DZH_restoration_of_kugedaev_idea
+					DZH_kazakh_army_idea
+					DZH_kazakh_army_idea_1_0
+					DZH_kazakh_army_idea_1_1					
+					DZH_kazakh_army_idea_2_0
+					DZH_kazakh_army_idea_2_1
+				}
+			}
+		}
+	}		
+	option = {
+        name = NW_SIK.43.a
+	}
+	option = {
+        name = NW_SIK.43.b
+		DZH = { change_tag_from = ROOT }
+	}
+}
+
+# Условия казахов
+country_event = {
+    id = NW_SIK.44
+	title = NW_SIK.44.t
+    desc = NW_SIK.44.d   
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_SIK.44" }		
+	option = {
+        name = NW_SIK.44.a
+		hidden_effect = { country_event = { id = NW_SIK.43 days = 10 } }
+	}
+}
+
+# Торгутское восстание
+country_event = {
+    id = NW_SIK.45
+	title = NW_SIK.45.t
+    desc = NW_SIK.45.d   
+	is_triggered_only = yes
+	trigger = {
+		controls_province = 10545
+		controls_province = 7792
+		controls_province = 10614
+	}
+	immediate = {
+		log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_SIK.45"
+#		hidden_effect = {
+#			SMN = {
+#				set_province_controller = 10545
+#				set_province_controller = 7792
+#				set_province_controller = 10614
+#				set_politics = { ruling_party = neutrality elections_allowed = no }
+#				if = {
+#					limit = { SMN_Manchugjab = { is_country_leader = no } }
+#					promote_character = SMN_Manchugjab
+#				}
+#				if = {
+#					limit = { NOT = { has_idea = chine_clique } }
+#					add_ideas = chine_clique
+#					NW_chine_clique_unrecognized_effect = yes
+#				}
+#				declare_war_on = { target = ROOT type = liberate_wargoal }
+#			}
+#		}
+	}		
+	option = {
+        name = NW_SIK.45.a
+	}
+	option = {
+        name = NW_SIK.45.b
+#		SMN = { change_tag_from = ROOT }
+	}
+}
+
+# Арест монгольской знати
+country_event = {
+    id = NW_SIK.46
+	title = NW_SIK.46.t
+    desc = NW_SIK.46.d   
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_SIK.46" }		
+	option = {
+        name = NW_SIK.46.a
+		hidden_effect = { country_event = { id = NW_SIK.47 days = 30 } }
+#		617 = { remove_core_of = SMN }
+	}
+}
+
+# Массовые кочевания монгольского населения
+country_event = {
+    id = NW_SIK.47
+	title = NW_SIK.47.t
+    desc = NW_SIK.47.d   
+	is_triggered_only = yes
+	trigger = { controls_state = 617 }
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_SIK.46" }		
+	option = {
+        name = NW_SIK.47.a
+		617 = { add_manpower = -30000 }
+		hidden_effect = { country_event = { id = NW_SIK.48 days = 90 } }
+	}
+}
+
+# Пульсар
+country_event = {
+	hidden = yes
+    id = NW_SIK.48
+	is_triggered_only = yes
+	immediate = {
+		log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): hidden event NW_SIK.48"
+		604 = { controller = { country_event = NW_SIK.49 } }
+		1133 = { controller = { country_event = NW_SIK.50 } }
+	}
+}
+
+# Кочёвка монголов-торгутов I
+country_event = {
+    id = NW_SIK.49
+	title = NW_SIK.49.t
+    desc = NW_SIK.49.d   
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_SIK.49" }		
+	option = {
+        name = NW_SIK.49.a
+		604 = { add_manpower = 8000 }
+	}
+}
+
+# Кочёвка монголов-торгутов II
+country_event = {
+    id = NW_SIK.50
+	title = NW_SIK.50.t
+    desc = NW_SIK.50.d   
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_SIK.50" }		
+	option = {
+        name = NW_SIK.50.a
+		1133 = { add_manpower = 12000 }
+	}
+}
+
+# SOV Вопрос вступление Шэна Шицая в КПК
+country_event = {
+    id = NW_SIK.51
+	title = NW_SIK.51.t
+    desc = NW_SIK.51.d   
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_SIK.51" }		
+	option = {
+        name = NW_SIK.51.a
+		FROM = { country_event = { id = NW_SIK.52 days = 1 } }
+	}
+	option = {
+        name = NW_SIK.51.b
+		FROM = { country_event = { id = NW_SIK.53 days = 1 } }
+	}
+}
+
+# Предложение вступить в ВКП(б)
+country_event = {
+    id = NW_SIK.52
+	title = NW_SIK.52.t
+    desc = NW_SIK.52.d   
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_SIK.52" }		
+	option = {
+        name = NW_SIK.52.a
+		hidden_effect = {
+			country_event = { id = NW_SIK.54 days = 15 }
+			SOV = { country_event = { id = NW_SIK.54 days = 15 } }
+		}
+	}
+}
+
+# Советская сторона одобрила вступление Шэна в КПК
+country_event = {
+    id = NW_SIK.53
+	title = NW_SIK.53.t
+    desc = NW_SIK.53.d   
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_SIK.53" }		
+	option = {
+        name = NW_SIK.53.a
+		CHI = {
+			if = {
+				limit = { exists = yes }
+				country_event = { id = NW_SIK.56 days = 1 }
+				effect_tooltip = {
+					add_opinion_modifier = { modifier = SIK_member_of_the_cpc_op_2 target = ROOT }
+					reverse_add_opinion_modifier = { modifier = SIK_member_of_the_cpc_op_2 target = ROOT }
+				}
+			}
+		}
+		PRC = {
+			if = {
+				limit = {
+					exists = yes
+					has_government = communism
+				}
+				country_event = { id = NW_SIK.55 days = 1 }
+				effect_tooltip = {
+					add_opinion_modifier = { modifier = SIK_member_of_the_cpc_op target = ROOT }
+					reverse_add_opinion_modifier = { modifier = SIK_member_of_the_cpc_op target = ROOT }
+				}
+			}
+		}
+	}
+	option = {
+        name = NW_SIK.53.b
+		PRC = {
+			if = {
+				limit = { has_government = communism }
+				country_event = { id = NW_SIK.55 days = 1 }
+				effect_tooltip = {
+					add_opinion_modifier = { modifier = SIK_member_of_the_cpc_op target = ROOT }
+					reverse_add_opinion_modifier = { modifier = SIK_member_of_the_cpc_op target = ROOT }
+				}
+			}
+		}
+	}
+}
+
+# SIK/SOV Тайное вручение партбилета Шэну
+country_event = {
+    id = NW_SIK.54
+	title = NW_SIK.54.t
+    desc = NW_SIK.54.d   
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_SIK.54" }		
+	option = {
+        name = NW_SIK.54.a
+		if = {
+			limit = { original_tag = FROM }
+			add_opinion_modifier = { modifier = SIK_member_of_the_cpsub_op target = SOV }
+			effect_tooltip = { SOV = { add_opinion_modifier = { modifier = SIK_member_of_the_cpsub_op target = SOV } } }
+		}
+		else = {
+			add_opinion_modifier = { modifier = SIK_member_of_the_cpsub_op target = FROM }
+			effect_tooltip = { FROM = { add_opinion_modifier = { modifier = SIK_member_of_the_cpsub_op target = ROOT } } }
+		}
+	}
+}
+
+# PRC Шэн Шицай вступил в нашу партию
+country_event = {
+    id = NW_SIK.55
+	title = NW_SIK.55.t
+    desc = NW_SIK.55.d   
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_SIK.55" }		
+	option = {
+        name = NW_SIK.55.a
+		FROM = {
+			add_opinion_modifier = { modifier = SIK_member_of_the_cpc_op target = ROOT }
+			reverse_add_opinion_modifier = { modifier = SIK_member_of_the_cpc_op target = ROOT }
+		}
+	}
+}
+
+# CHI Шэн Шицай вступил в КПК
+country_event = {
+    id = NW_SIK.56
+	title = NW_SIK.56.t
+    desc = NW_SIK.56.d   
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_SIK.56" }		
+	option = {
+        name = NW_SIK.56.a
+		trigger = { has_war_with = JAP }
+	}
+	option = {
+        name = NW_SIK.56.b
+		trigger = { NOT = { has_war_with = JAP } }
+		FROM = {
+			country_event = { id = NW_SIK.57 days = 1 }
+			add_opinion_modifier = { modifier = SIK_member_of_the_cpc_op_2 target = ROOT }
+			reverse_add_opinion_modifier = { modifier = SIK_member_of_the_cpc_op_2 target = ROOT }
+		}
+	}
+}
+
+# Обрыв связей с центром
+country_event = {
+    id = NW_SIK.57
+	title = NW_SIK.57.t
+    desc = NW_SIK.57.d   
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_SIK.57" }		
+	option = {
+        name = NW_SIK.57.a
+	}
+}
+
+# Учёба брата в Москве
+country_event = {
+    id = NW_SIK.58
+	title = NW_SIK.58.t
+    desc = NW_SIK.58.d   
+	is_triggered_only = yes
+	immediate = {
+		log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_SIK.58"
+		set_country_flag = SIK_learning_in_Moscow_flag
+	}		
+	option = {
+        name = NW_SIK.58.a
+		custom_effect_tooltip = SIK_learning_in_Moscow_tt
+		hidden_effect = { country_event = { id = NW_SIK.59 days = 1400 } }
+	}
+}
+
+# Возвращение брата
+country_event = {
+    id = NW_SIK.59
+	title = NW_SIK.59.t
+    desc = NW_SIK.59.d   
+	is_triggered_only = yes
+	immediate = {
+		log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_SIK.59"
+		clr_country_flag = SIK_learning_in_Moscow_flag
+	}		
+	option = {
+        name = NW_SIK.59.a
+		custom_effect_tooltip = SIK_learning_in_Moscow_tt_2
+		SIK_Sheng_Shiqi = { gain_xp = 2000 }
+		if = {
+			limit = { SIK_Sheng_Shiqi = { is_corps_commander = yes } }
+			add_trait = {
+				character = SIK_Sheng_Shiqi
+				slot = corps_commander
+				trait = panzer_leader
+			}
+		}
+		else = {
+			add_trait = {
+				character = SIK_Sheng_Shiqi
+				slot = field_marshal
+				trait = panzer_leader
+			}
+		}
+	}
+}
+
+# SOV Геологоразведка в Синьцзяне
+country_event = {
+    id = NW_SIK.60
+	title = NW_SIK.60.t
+    desc = NW_SIK.60.d   
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_SIK.60" }		
+	option = {
+        name = NW_SIK.60.a
+	}
+}
+
+# Восстание казахов
+country_event = {
+    id = NW_SIK.80
+	title = NW_SIK.80.t
+    desc = NW_SIK.80.d   
+	is_triggered_only = yes
+	trigger = {
+		controls_state = 1121
+		NOT = { country_exists = DZH }
+	}
+	immediate = {
+		log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_SIK.80"
+		hidden_effect = {
+			DZH = {
+				transfer_state = 1121
+				set_politics = { ruling_party = neutrality elections_allowed = no }
+				if = {
+					limit = { DZH_ospan_batyr = { is_country_leader = no } }
+					promote_character = DZH_ospan_batyr
+				}
+				set_party_name = { ideology = neutrality long_name = DZH_neutrality_party1 name = DZH_neutrality_party1 }
+				add_ideas = DZH_uprising_of_the_kazakhs_idea
+				add_ideas = DZH_illiterate_population_idea
+				add_ideas = DZH_nomadism_of_the_kazakhs_idea
+				if = {
+					limit = { NOT = { has_idea = chine_clique } }
+					add_ideas = chine_clique
+					NW_chine_clique_unrecognized_effect = yes
+				}
+				declare_war_on = { target = ROOT type = liberate_wargoal }
+				load_focus_tree = nw_dzungaria_ospan_batyr_focus
+				remove_ideas = {
+					DZH_restoration_of_mosques_madrassas_idea
+					DZH_victory_over_illiteracy_idea
+					DZH_administrative_hierarchy_of_bao_hya_idea
+					DZH_heyday_of_the_kazakh_intelligentsia_idea
+					DZH_influence_of_kazakh_nationalism_idea
+					DZH_soviet_aid_idea
+					DZH_payment_for_goods_idea
+					DZH_smoldering_chances_idea
+					DZH_financial_chaos_idea
+					DZH_form_a_multinational_army_idea
+					DZH_building_K_road_idea
+					DZH_preserve_the_positions_of_local_elites_idea
+					DZH_additional_reliance_on_soviet_supplies_idea
+					DZH_nomad_support_program_idea
+					DZH_urge_kazakhs_to_settle_down_idea
+					DZH_national_revival_idea
+					DZH_training_of_our_own_specialists_idea
+					DZH_fate_of_the_imperialists_and_colonialists_idea
+					DZH_continue_the_tradition_of_three_year_plans_idea
+					DZH_sharipkhan_idea
+					DZH_restoration_of_kugedaev_idea
+					DZH_kazakh_army_idea
+					DZH_kazakh_army_idea_1_0
+					DZH_kazakh_army_idea_1_1					
+					DZH_kazakh_army_idea_2_0
+					DZH_kazakh_army_idea_2_1
+				}
+			}
+		}
+	}		
+	option = {
+        name = NW_SIK.80.a
+	}
+	option = {
+        name = NW_SIK.80.b
+		DZH = { change_tag_from = ROOT }
+	}
+}
+
+# Успешное завершение финансовой реформы
+country_event = {
+    id = NW_SIK.61
+	title = NW_SIK.61.t
+    desc = NW_SIK.61.d   
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_SIK.61" }		
+	option = {
+        name = NW_SIK.61.a
+		set_country_flag = SIK_reform_of_financial_system_category_BLOCK_flag
+		set_country_flag = SIK_financial_remorm_flag
+		remove_ideas = SIK_support_for_the_currency_of_Xinjiang_USSR_4
+	}
+}
+
+# Неудачная финансовая реформа
+country_event = {
+    id = NW_SIK.62
+	title = NW_SIK.62.t
+    desc = NW_SIK.62.d   
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_SIK.62" }		
+	option = {
+        name = NW_SIK.62.a
+		set_country_flag = SIK_reform_of_financial_system_category_BLOCK_flag
+		set_country_flag = SIK_financial_remorm_flag
+		swap_ideas = {
+			remove_idea = SIK_support_for_the_currency_of_Xinjiang_USSR_4
+			add_idea = SIK_support_for_the_currency_of_Xinjiang_USSR_5
+		}
+	}
+}
+
+# PRC Синьцзянь готов воссоединиться с нами
+country_event = {
+    id = NW_SIK.63
+	title = NW_SIK.63.t
+    desc = NW_SIK.63.d   
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_SIK.63" }		
+	option = {
+        name = NW_SIK.63.a
+	}
+}
+
+# SOV Делегация в Москву
+country_event = {
+    id = NW_SIK.64
+	title = NW_SIK.64.t
+    desc = NW_SIK.64.d   
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_SIK.64" }		
+	option = {
+        name = NW_SIK.64.a
+		FROM = { country_event = { id = NW_SIK.65 hours = 12 } }
+	}
+	option = {
+        name = NW_SIK.64.b
+		trigger = { NOT = { country_exists = PRC } }
+		FROM = { country_event = { id = NW_SIK.66 hours = 12 } }
+	}
+	option = {
+        name = NW_SIK.64.c
+		trigger = { country_exists = PRC }
+		FROM = { country_event = { id = NW_SIK.67 hours = 12 } }
+	}
+}
+
+# Последнее решение Москвы
+country_event = {
+    id = NW_SIK.65
+	title = NW_SIK.65.t
+    desc = NW_SIK.65.d   
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_SIK.65" }		
+	option = {
+        name = NW_SIK.65.a
+		set_country_flag = SIK_last_Moscow_decide_flag
+		effect_tooltip = { unlock_national_focus = SIK_proclaim_the_People_Republic }
+	}
+}
+
+# Возрождение коммунистического движения
+country_event = {
+    id = NW_SIK.66
+	title = NW_SIK.66.t
+    desc = NW_SIK.66.d   
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_SIK.66" }		
+	option = {
+        name = NW_SIK.66.a
+		set_country_flag = SIK_last_Moscow_decide_flag_2
+		effect_tooltip = { unlock_national_focus = SIK_new_soviet_district }
+	}
+}
+
+# Синьцзянь должен присоединиться к коммунистическому движению в Китае
+country_event = {
+    id = NW_SIK.67
+	title = NW_SIK.67.t
+    desc = NW_SIK.67.d   
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_SIK.67" }		
+	option = {
+        name = NW_SIK.67.a
+		set_country_flag = SIK_last_Moscow_decide_flag_2
+		effect_tooltip = { unlock_national_focus = SIK_new_soviet_district }
+	}
+}
+
+# SOV Синьцзянь присоединился к нам
+country_event = {
+    id = NW_SIK.68
+	title = NW_SIK.68.t
+    desc = NW_SIK.68.d   
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_SIK.68" }		
+	option = {
+        name = NW_SIK.68.a
+	}
+}
+
+# SOV Беспорядки на юге Синьцзяня
+country_event = {
+    id = NW_SIK.69
+	title = NW_SIK.69.t
+    desc = NW_SIK.69.d   
+	is_triggered_only = yes
+	trigger = {
+		NOT = { country_exists = KAS }
+		controls_state = 619
+		controls_state = 1122
+		controls_state = 1046
+		controls_state = 1120
+		controls_state = 287
+	}
+	immediate = {
+		log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_SIK.69"
+		hidden_effect = {
+			KAS = {
+				transfer_state = 619
+				transfer_state = 1122
+				transfer_state = 1046
+				transfer_state = 1120
+				transfer_state = 287
+				declare_war_on = { target = ROOT type = topple_government }
+			}
+		}
+	}		
+	option = {
+        name = NW_SIK.69.a
+	}
+	option = {
+        name = NW_SIK.69.b
+		KAS = { change_tag_from = ROOT }
+	}
+}
+
+# Казахское восстание
+country_event = {
+    id = NW_SIK.70
+	title = NW_SIK.70.t
+    desc = NW_SIK.70.d   
+	is_triggered_only = yes
+	trigger = {
+		controls_state = 1121
+		NOT = { country_exists = DZH }
+	}
+	immediate = {
+		log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_SIK.70"
+		hidden_effect = {
+			DZH = {
+				transfer_state = 1121
+				set_politics = { ruling_party = neutrality elections_allowed = no }
+				if = {
+					limit = { DZH_ospan_batyr = { is_country_leader = no } }
+					promote_character = DZH_ospan_batyr
+				}
+				set_party_name = { ideology = neutrality long_name = DZH_neutrality_party1 name = DZH_neutrality_party1 }
+				add_ideas = DZH_uprising_of_the_kazakhs_idea
+				add_ideas = DZH_illiterate_population_idea
+				add_ideas = DZH_nomadism_of_the_kazakhs_idea
+				if = {
+					limit = { NOT = { has_idea = chine_clique } }
+					add_ideas = chine_clique
+					NW_chine_clique_unrecognized_effect = yes
+				}
+				declare_war_on = { target = ROOT type = liberate_wargoal }
+				load_focus_tree = nw_dzungaria_ospan_batyr_focus
+				remove_ideas = {
+					DZH_restoration_of_mosques_madrassas_idea
+					DZH_victory_over_illiteracy_idea
+					DZH_administrative_hierarchy_of_bao_hya_idea
+					DZH_heyday_of_the_kazakh_intelligentsia_idea
+					DZH_influence_of_kazakh_nationalism_idea
+					DZH_soviet_aid_idea
+					DZH_payment_for_goods_idea
+					DZH_smoldering_chances_idea
+					DZH_financial_chaos_idea
+					DZH_form_a_multinational_army_idea
+					DZH_building_K_road_idea
+					DZH_preserve_the_positions_of_local_elites_idea
+					DZH_additional_reliance_on_soviet_supplies_idea
+					DZH_nomad_support_program_idea
+					DZH_urge_kazakhs_to_settle_down_idea
+					DZH_national_revival_idea
+					DZH_training_of_our_own_specialists_idea
+					DZH_fate_of_the_imperialists_and_colonialists_idea
+					DZH_continue_the_tradition_of_three_year_plans_idea
+					DZH_sharipkhan_idea
+					DZH_restoration_of_kugedaev_idea
+					DZH_kazakh_army_idea
+					DZH_kazakh_army_idea_1_0
+					DZH_kazakh_army_idea_1_1					
+					DZH_kazakh_army_idea_2_0
+					DZH_kazakh_army_idea_2_1
+				}
+			}
+		}
+	}		
+	option = {
+        name = NW_SIK.70.a
+	}
+	option = {
+        name = NW_SIK.70.b
+		DZH = { change_tag_from = ROOT }
+	}
+}
+
+# CHI Синьцзянь переход под наш контроль
+country_event = {
+    id = NW_SIK.71
+	title = NW_SIK.71.t
+    desc = NW_SIK.71.d   
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_SIK.71" }		
+	option = {
+        name = NW_SIK.71.a
+	}
+}
+
+# SOV Неожиданное раскаяние
+country_event = {
+    id = NW_SIK.72
+	title = NW_SIK.72.t
+    desc = NW_SIK.72.d   
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_SIK.72" }		
+	option = {
+        name = NW_SIK.72.a
+		FROM = { country_event = { id = NW_SIK.73 hours = 12 } }
+	}
+	option = {
+        name = NW_SIK.72.b
+		trigger = { country_exists = CHI }
+		CHI = { country_event = { id = NW_SIK.74 hours = 12 } }
+	}
+	option = {
+        name = NW_SIK.72.c
+		FROM = { country_event = { id = NW_SIK.75 hours = 12 } }
+	}
+}
+
+# Согласие Москвы
+country_event = {
+    id = NW_SIK.73
+	title = NW_SIK.73.t
+    desc = NW_SIK.73.d   
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_SIK.73" }		
+	option = {
+        name = NW_SIK.73.a
+		set_country_flag = SIK_entering_USSR_unlock_flag
+		effect_tooltip = { unlock_national_focus = SIK_entering_USSR }
+	}
+}
+
+# CHI Очередное предательство Шэна Шицая
+country_event = {
+    id = NW_SIK.74
+	title = NW_SIK.74.t
+    desc = NW_SIK.74.d   
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_SIK.74" }		
+	option = {
+        name = NW_SIK.74.a
+		declare_war_on = { target = SIK type = annex_everything }
+		SIK = { country_event = { id = NW_SIK.76 hours = 12 } }
+	}
+	option = {
+        name = NW_SIK.74.b
+		SIK = { country_event = { id = NW_SIK.77 hours = 12 } }
+	}
+}
+
+# Отсутствие ответа от Москвы
+country_event = {
+    id = NW_SIK.75
+	title = NW_SIK.75.t
+    desc = NW_SIK.75.d   
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_SIK.75" }		
+	option = {
+        name = NW_SIK.75.a
+		set_country_flag = SIK_last_letter_to_Moscow_flag
+		uncomplete_national_focus = { focus = SIK_last_letter_to_Moscow }
+		effect_tooltip = { unlock_national_focus = SIK_maintain_loyalty_to_the_central_government }
+	}
+}
+
+# Раскрытие информации о письме
+country_event = {
+    id = NW_SIK.76
+	title = NW_SIK.76.t
+    desc = NW_SIK.76.d   
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_SIK.76" }		
+	option = {
+        name = NW_SIK.76.a
+		add_stability = -0.15
+		add_war_support = -0.15
+	}
+}
+
+# Печальный конец
+country_event = {
+    id = NW_SIK.77
+	title = NW_SIK.77.t
+    desc = NW_SIK.77.d   
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_SIK.77" }		
+	option = {
+        name = NW_SIK.77.a
+		FROM = { country_event = { id = NW_SIK.78 hours = 12 } }
+	}
+}
+
+# CHI Согласие Шэна
+country_event = {
+    id = NW_SIK.78
+	title = NW_SIK.78.t
+    desc = NW_SIK.78.d   
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_SIK.78" }		
+	option = {
+        name = NW_SIK.78.a
+		FROM = { country_event = { id = NW_SIK.79 hours = 12 } }
+		country_event = { id = NW_SIK.79 hours = 12 }
+	}
+}
+
+# SIK/CHI Согласие Шэна
+country_event = {
+    id = NW_SIK.79
+	title = NW_SIK.79.t
+    desc = NW_SIK.79.d   
+	is_triggered_only = yes
+	immediate = {
+		log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_SIK.79"
+		hidden_effect = {
+			if = {
+				limit = { original_tag = FROM }
+				SIK = { SIK_Sheng_Shicai = { set_nationality = ROOT } }
+			}
+			else = {
+				promote_character = SIK_Wu_Zhongxin
+				load_focus_tree = SIK_focus_governors
+			}
+		}
+	}		
+	option = {
+        name = NW_SIK.79.a
+		trigger = { NOT = { original_tag = FROM } }
+		effect_tooltip = { promote_character = SIK_Wu_Zhongxin }
+		add_ideas = SIK_legacy_of_Sheng_Shicai
+	}
+	option = {
+        name = NW_SIK.79.b
+		trigger = { original_tag = FROM }
+		add_advisor_role = {
+			character = SIK_Sheng_Shicai
+			advisor = {
+				slot = political_advisor
+				cost = 150
+				idea_token = SIK_Sheng_Shicai
+				traits = { SIK_progressive_politician SIK_invalid }
+			}
+		}
+	}
+}

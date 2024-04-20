@@ -697,26 +697,26 @@ on_actions = { # Китайские страны, с небольшим кол-�
 	on_startup = {
 		effect = {
 			if = {
-				limit = {
-					has_start_date < 1936.01.02
-					NOT = {
-						618 = { controller = { controls_state = 1047 } }
-					}
+				limit = { has_start_date < 1936.01.02 }
+				SIK = {
+					country_event = { id = NW_SIK.1 days = 763 }
+					country_event = { id = NW_SIK.6 days = 153 }
+					country_event = NW_SIK.7
 				}
-				618 = { controller = { country_event = { id = NW_SIK.3 days = 1 } } }			#Вспышка чумы на границе с СССР#
-				1047 = { controller = { country_event = { id = NW_SIK.3 days = 1 } } }
 			}
-			else = {
-				618 = { controller = { country_event = { id = NW_SIK.3 days = 1 } } } 			#Вспышка чумы на границе с СССР#
-			}
+		}
+	}
+	on_capitulation = {
+		effect = {
 			if = {
 				limit = {
-					has_start_date < 1936.01.02
+					ROOT = { original_tag = TNG }
+					FROM = {
+						original_tag = SIK
+						has_country_flag = SIK_ma_shengui_flag
+					}
 				}
-				SIK = {
-					country_event = { id = NW_SIK.6 days = 10 }									#Возвращение Ма Шаоу#
-					country_event = { id = NW_SIK.8 hours = 12 }								#Заключение секретного соглашения#
-				}
+				FROM = { country_event = { id = NW_SIK.5 days = 1 } }
 			}
 		}
 	}
@@ -724,69 +724,79 @@ on_actions = { # Китайские страны, с небольшим кол-�
 		effect = {
 			if = {
 				limit = {
-					FROM = { original_tag = TNG }
+					OR = {
+						FROM = { original_tag = SIK	}
+						ROOT = { original_tag = SIK	}
+					}
+					SIK = { has_idea = SIK_sending_students_to_the_ussr_idea }
+				}
+				SIK = {
+					swap_ideas = {
+						remove_idea = SIK_sending_students_to_the_ussr_idea
+						add_idea = SIK_sending_students_to_the_ussr_idea_1
+					}
+				}
+			}
+			if = {
+				limit = {
+					FROM = {
+						original_tag = TNG
+						has_character = TNG_ma_shenggui
+					}
 					ROOT = { 
 						original_tag = SIK 
 						has_country_leader = { character = SIK_Sheng_Shicai ruling_only = yes }
 					}	
 				}
-				ROOT = { country_event = { id = NW_SIK.4 days = 2 }	}							#Переговоры с генералом Тунганистана#
+				ROOT = { country_event = { id = NW_SIK.3 days = 1 }	}
 			}
 			if = {
 				limit = {
-					ROOT = { original_tag = TNG }
+					ROOT = {
+						original_tag = TNG
+						has_character = TNG_ma_shenggui
+					}
 					FROM = { 
 						original_tag = SIK 
 						has_country_leader = { character = SIK_Sheng_Shicai ruling_only = yes }
 					}
 				}
-				FROM = { country_event = { id = NW_SIK.4 days = 2 }	}							#Переговоры с генералом Тунганистана#
+				FROM = { country_event = { id = NW_SIK.3 days = 2 }	}
 			}  
 			if = {
 				limit = { 
 					FROM = { original_tag = KAS }
 					ROOT = {
 						original_tag = SIK
-						controls_state = 1047
+						NOT = { has_country_flag = NW_SIK_event_8_block_flag }
 					}
 				}
-				ROOT = { country_event = { id = NW_SIK.9 days = 15 } }							#Киргизское восстание в Куче#
+				ROOT = {
+					set_country_flag = NW_SIK_event_8_block_flag
+					country_event = { id = NW_SIK.8 days = 15 }
+				}
 			}
 			if = {
 				limit = { 
 					ROOT = { original_tag = KAS }
 					FROM = {
 						original_tag = SIK
-						controls_state = 1047
+						NOT = { has_country_flag = NW_SIK_event_8_block_flag }
 					}
 				}
-				FROM = { country_event = { id = NW_SIK.9 days = 15 } }							#Киргизское восстание в Куче#
+				FROM = {
+					set_country_flag = NW_SIK_event_8_block_flag
+					country_event = { id = NW_SIK.8 days = 15 }
+				}
 			}
 		}
 	}
 	on_daily_SIK = { 
 		effect = { 
 			if = {
-				limit = {
-					has_country_flag = SIK_start_collecting_information_on_officials_flag_2
-				}
-				add_to_variable = {
-					var = soviet_influence
-					value = -0.15
-					tooltip = SIK_minus_to_var_tt
-				}
-			}
-			if = {
-				limit = {
-					check_variable = { soviet_influence < 88 }
-				}
-				country_event = { id = NW_SIK.28 }												#Разговор с братом#
-			}
-			if = {
-				limit = {
-					check_variable = { soviet_influence < 85 }
-				}
-				SOV = { country_event = { id = NW_SIK_SOV.17 } }								#Донесения из Синьцзяна#
+				limit = { has_country_flag = SIK_start_collecting_information_on_officials_flag }
+				add_to_variable = { SIK_soviet_influence_var = -0.15 }
+				SIK_soviet_influence_effect = yes
 			}
 		}
 	}
