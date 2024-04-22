@@ -610,10 +610,38 @@ country_event = {
 	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_FSR.20" }
 	option = {
 		name = NW_FSR.20.a
+		hidden_effect = {
+			XIK = {
+				if = {
+					limit = { exists = yes }
+					country_event = { id = NW_FSR.59 days = 1 }
+				}
+			}
+		}
+		994 = {
+			if = {
+				limit = { is_demilitarized_zone = yes }
+				set_demilitarized_zone = no
+			}
+		}
 	}
 	option = {
 		name = NW_FSR.20.b
-		hidden_effect = { country_event = { id = NW_FSR.21 days = 10 } }							#Разговоры за часуймой
+		994 = {
+			if = {
+				limit = { is_demilitarized_zone = yes }
+				set_demilitarized_zone = no
+			}
+		}
+		hidden_effect = {
+			country_event = { id = NW_FSR.21 days = 10 }							#Разговоры за часуймой
+			XIK = {
+				if = {
+					limit = { exists = yes }
+					country_event = { id = NW_FSR.59 days = 1 }
+				}
+			}
+		}
 	}
 }
 
@@ -663,8 +691,11 @@ country_event = {
 	immediate = {
 		log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_FSR.23"
 		hidden_effect = {
-			random_other_country = {
-				limit = { has_character = XIK_norla_khutukta }
+			every_possible_country = {
+				limit = {
+					original_tag = XIK
+					has_character = XIK_norla_khutukta
+				}
 				XIK_norla_khutukta = { set_nationality = ROOT }
 			}
 		}
@@ -1086,7 +1117,6 @@ country_event = {
 	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_FSR.38" }
 	option = {
 		name = NW_FSR.38.a
-		#TODO: станут доступны для выполнения фокусы «Поворот на Синьцзянь» и «Сформировать армию Западного маршрута»
 	}
 }
 
@@ -1098,7 +1128,11 @@ country_event = {
 	immediate = {
 		log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): hidden event NW_FSR.39"
 		if = {
-			limit = { NOT = { has_completed_focus = FSR_united_army } }
+			limit = {
+				is_subject = no
+				is_neighbor_of = PRC
+				NOT = { has_completed_focus = FSR_united_army }
+			}
 			complete_national_focus = FSR_united_army
 		}
 	}
@@ -1575,5 +1609,76 @@ country_event = {
 	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_FSR.58" }
 	option = {
 		name = NW_FSR.58.a
+	}
+}
+
+# XIK Лучший исход
+country_event = {
+	id = NW_FSR.59
+	title = NW_FSR.59.t
+	desc = NW_FSR.59.d
+	picture = GFX_report_event_hol_cabinet_de_geer
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_FSR.59" }
+	option = {
+		name = NW_FSR.59.a
+	}
+}
+
+# FSR\PRC Прибытие колонны Чжана Готао в Советский район
+country_event = {
+	id = NW_FSR.60
+	title = NW_FSR.60.t
+	desc = NW_FSR.60.d
+	picture = GFX_report_event_hol_cabinet_de_geer
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_FSR.60" }
+	option = {
+		name = NW_FSR.60.a
+		trigger = { NOT = { original_tag = FROM } }
+	}
+	option = {
+		name = NW_FSR.60.b
+		trigger = {
+			original_tag = FROM
+			check_variable = { num_armies > PRC.num_armies }
+		}
+		PRC = {
+			country_event = { id = NW_FSR.61 days = 1 }
+			hidden_effect = { FSR_zhang_guotao = { set_nationality = PREV } }
+			if = {
+				limit = { is_ai = yes }
+				change_tag_from = ROOT	
+			}
+			annex_country = { target = ROOT transfer_troops = yes }
+		}
+	}
+	option = {
+		name = NW_FSR.60.c
+		trigger = {
+			original_tag = FROM
+			check_variable = { var = num_armies value = PRC.num_armies compare = less_than_or_equals }
+		}
+		PRC = {
+			if = {
+				limit = { is_ai = yes }
+				change_tag_from = ROOT	
+			}
+			annex_country = { target = ROOT transfer_troops = yes }
+		}
+	}
+}
+
+# PRC Срочное заседание ЦК КПК
+country_event = {
+	id = NW_FSR.61
+	title = NW_FSR.61.t
+	desc = NW_FSR.61.d
+	picture = GFX_report_event_hol_cabinet_de_geer
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_FSR.61" }
+	option = {
+		name = NW_FSR.61.a
+		promote_character = FSR_zhang_guotao
 	}
 }
