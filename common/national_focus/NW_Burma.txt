@@ -2234,14 +2234,33 @@ focus_tree = {
 		y = 1
 		cost = 5
 		ai_will_do = { factor = 10 }
-		search_filters = {  }
-		available = {  }
+		search_filters = { FOCUS_FILTER_STABILITY }
+		available = {
+			OR = {
+				has_government = monarchy
+				has_government = neutrality
+			}
+		}
 		bypass = {  }
 		prerequisite = { focus = BRM_abolish_the_abolition_of_the_throne_of_burma }
 		prerequisite = { focus = BRM_implementation_of_reforms }
 		relative_position_id = BRM_abolish_the_abolition_of_the_throne_of_burma
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BRM_proclaim_a_dualistic_monarchy"
+			add_popularity = { ideology = monarchy popularity = 0.1 }
+			if = {
+				limit = { NOT = { has_government = monarchy } }
+				set_politics = { ruling_party = monarchy elections_allowed = no }
+			}
+			if = {
+				limit = { date < 1940.05.06 }
+				set_country_leader_ideology = dual_monarchy
+				custom_effect_tooltip = BRM_dual_monarchy_tt
+				country_event = NW_BRM.102
+			}
+			else = {
+				country_event = NW_BRM.103
+			}
 		}
 	}
 	
@@ -2331,7 +2350,7 @@ focus_tree = {
 		available = {
 			has_government = monarchy
 			is_subject = no
-			1176 = { controller = { NOT = { OR = { tag = ROOT is_subject_of = ROOT is_in_faction_with = ROOT has_war_with = ROOT } } } }
+			can_declare_war_on = 1176.controller
 		}
 		bypass = {  }
 		prerequisite = { focus = BRM_reclaim_the_empire }
@@ -2339,21 +2358,8 @@ focus_tree = {
 		will_lead_to_war_with = RAJ
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BRM_return_manipur"
-			1176 = {
-				add_claim_by = ROOT
-				controller = {
-					ROOT = {
-						create_wargoal = {
-							type = take_state_focus
-							target = PREV
-							generator = { 1176 }
-							expire = 0
-						}
-						add_ai_strategy = { type = antagonize id = PREV value = 200 }
-						add_ai_strategy = { type = declare_war id = PREV value = 200 }
-					}
-				}
-			}
+			add_state_claim = 1176
+			create_wargoal = { target = 1176.controller type = take_state_focus generator = { 1176 } expire = 0 }
 		}
 	}
 	
@@ -2368,7 +2374,7 @@ focus_tree = {
 		available = {
 			has_government = monarchy
 			is_subject = no
-			NOT = { OR = { is_in_faction_with = SIA has_subject = SIA } }
+			can_declare_war_on = SIA
 		}
 		bypass = {
 			OR = {
@@ -2403,7 +2409,7 @@ focus_tree = {
 		available = {
 			has_government = monarchy
 			is_subject = no
-			747 = { controller = { NOT = { OR = { tag = ROOT is_subject_of = ROOT is_in_faction_with = ROOT has_war_with = ROOT } } } }
+			can_declare_war_on = 747.controller
 		}
 		bypass = {  }
 		prerequisite = { focus = BRM_reclaim_the_empire }
@@ -2411,21 +2417,8 @@ focus_tree = {
 		will_lead_to_war_with = YUN
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BRM_return_koshanpai"
-			747 = {
-				add_claim_by = ROOT
-				controller = {
-					ROOT = {
-						create_wargoal = {
-							type = take_state_focus
-							target = PREV
-							generator = { 1176 }
-							expire = 0
-						}
-						add_ai_strategy = { type = antagonize id = PREV value = 200 }
-						add_ai_strategy = { type = declare_war id = PREV value = 200 }
-					}
-				}
-			}
+			add_state_claim = 747
+			create_wargoal = { target = 747.controller type = take_state_focus generator = { 747 } expire = 0 }
 		}
 	}
 	
@@ -2454,7 +2447,7 @@ focus_tree = {
 			add_state_claim = 1180
 			LAO = {
 				every_core_state = {
-					limit = { controller = { NOT = { tag = ROOT is_subject_of = ROOT is_in_faction_with = ROOT has_war_with = ROOT } } }
+					limit = { controller = { ROOT = { can_declare_war_on = PREV } } }
 					controller = {
 						ROOT = {
 							create_wargoal = { type = annex_everything target = PREV expire = 0 }
@@ -3531,7 +3524,7 @@ focus_tree = {
 		available = {
 			has_government = fascism
 			is_subject = no
-			RAJ = { NOT = { OR = { is_in_faction_with = ROOT is_subject_of = ROOT } } }
+			can_declare_war_on = RAJ
 		}
 		bypass = {
 			OR = {
@@ -3561,8 +3554,7 @@ focus_tree = {
 		available = {
 			has_government = fascism
 			is_subject = no
-			country_exists = SRL
-			SRL = { NOT = { OR = { has_war_with = ROOT is_in_faction_with = ROOT is_subject_of = ROOT } } }
+			can_declare_war_on = SRL
 		}
 		bypass = {  }
 		prerequisite = { focus = BRM_revenge_on_the_hindus }
@@ -3587,7 +3579,7 @@ focus_tree = {
 		available = {
 			has_government = fascism
 			is_subject = no
-			BHU = { NOT = { OR = { is_in_faction_with = ROOT is_subject_of = ROOT } } }
+			can_declare_war_on = BHU
 		}
 		bypass = {
 			OR = {
@@ -3617,8 +3609,7 @@ focus_tree = {
 		available = {
 			has_government = fascism
 			is_subject = no
-			country_exists = SKM
-			SKM = { NOT = { OR = { has_war_with = ROOT is_in_faction_with = ROOT is_subject_of = ROOT } } }
+			can_declare_war_on = SKM
 		}
 		bypass = {  }
 		prerequisite = { focus = BRM_capture_of_bhutan }
@@ -3643,8 +3634,7 @@ focus_tree = {
 		available = {
 			has_government = fascism
 			is_subject = no
-			country_exists = TIB
-			TIB = { NOT = { OR = { has_war_with = ROOT is_in_faction_with = ROOT is_subject_of = ROOT } } }
+			can_declare_war_on = TIB
 		}
 		bypass = {  }
 		prerequisite = { focus = BRM_capture_of_bhutan }
@@ -3669,8 +3659,7 @@ focus_tree = {
 		available = {
 			has_government = fascism
 			is_subject = no
-			country_exists = NEP
-			NEP = { NOT = { OR = { has_war_with = ROOT is_in_faction_with = ROOT is_subject_of = ROOT } } }
+			can_declare_war_on = NEP
 		}
 		bypass = {  }
 		prerequisite = { focus = BRM_capture_of_bhutan }
@@ -3695,7 +3684,7 @@ focus_tree = {
 		available = {
 			has_government = fascism
 			is_subject = no
-			SIA = { NOT = { OR = { is_in_faction_with = ROOT is_subject_of = ROOT } } }
+			can_declare_war_on = SIA
 		}
 		bypass = {
 			OR = {
@@ -3743,7 +3732,7 @@ focus_tree = {
 			add_state_claim = 1180
 			LAO = {
 				every_core_state = {
-					limit = { controller = { NOT = { tag = ROOT is_subject_of = ROOT is_in_faction_with = ROOT has_war_with = ROOT } } }
+					limit = { controller = { ROOT = { can_declare_war_on = PREV } } }
 					controller = {
 						ROOT = {
 							create_wargoal = { type = annex_everything target = PREV expire = 0 }
@@ -3767,7 +3756,7 @@ focus_tree = {
 		available = {
 			has_government = fascism
 			is_subject = no
-			MAL = { NOT = { OR = { is_in_faction_with = ROOT is_subject_of = ROOT } } }
+			can_declare_war_on = MAL
 		}
 		bypass = {
 			OR = {
@@ -3797,8 +3786,7 @@ focus_tree = {
 		available = {
 			has_government = fascism
 			is_subject = no
-			country_exists = INS
-			INS = { NOT = { OR = { has_war_with = ROOT is_in_faction_with = ROOT is_subject_of = ROOT } } }
+			can_declare_war_on = INS
 		}
 		bypass = {  }
 		prerequisite = { focus = BRM_pick_up_malaysia focus = BRM_return_the_western_lands_of_indochina }
@@ -4208,7 +4196,7 @@ focus_tree = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BRM_subjugate_indochina"
 			LAO = {
 				every_core_state = {
-					limit = { controller = { NOT = { tag = ROOT is_subject_of = ROOT is_in_faction_with = ROOT has_war_with = ROOT } } }
+					limit = { controller = { ROOT = { can_declare_war_on = PREV } } }
 					controller = {
 						ROOT = {
 							create_wargoal = { type = puppet_wargoal_focus target = PREV expire = 0 }
@@ -6432,7 +6420,7 @@ focus_tree = {
 		ai_will_do = { factor = 10 }
 		search_filters = { FOCUS_FILTER_ANNEXATION }
 		available = {
-			1152 = { controller = { NOT = { OR = { tag = ROOT is_subject_of = ROOT } } } }
+			can_declare_war_on = 1152.controller
 			NOT = { has_country_flag = BRM_unification_of_burma_into_a_multinational_state_decision_COMPLETE_flag }
 		}
 		bypass = {  }
@@ -6494,7 +6482,7 @@ focus_tree = {
 		search_filters = { FOCUS_FILTER_ANNEXATION }
 		available = {
 			has_country_flag = BRM_unification_of_burma_into_a_multinational_state_decision_COMPLETE_flag
-			289 = { controller = { NOT = { OR = { tag = ROOT is_subject_of = ROOT } } } }
+			can_declare_war_on = 289.controller
 		}
 		bypass = {  }
 		prerequisite = { focus = BRM_KRN_four_principles }
