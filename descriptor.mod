@@ -1,4 +1,4 @@
-version="0.7.0"
+version="0.8.0"
 replace_path="common/abilities"
 replace_path="common/ai_areas"
 # -- replace_path="common/ai_equipment"
