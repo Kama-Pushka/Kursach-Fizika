@@ -529,13 +529,8 @@ CHI_movement_for_a_new_life_category = {
 		cost = 50
 		fire_only_once = no
 		days_re_enable = 120
-		target_array = core_states
+		targets = { 598 607 749 596 600 595 620 608 592 }
 		state_target = yes
-		target_trigger = {
-			FROM = {
-				is_controlled_by = ROOT
-			}
-		}
 		on_map_mode = map_only
 		complete_effect = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision CHI_popularize_the_movement_among_the_peasants"
@@ -551,6 +546,12 @@ CHI_movement_for_a_new_life_category = {
 				add_to_variable = { CHI_movement_for_a_new_life_var = 5000 tooltip = CHI_movement_for_a_new_life_var_tt }
 			}
 			CHI_movement_for_a_new_life_effect = yes
+			FROM = {
+				if = {
+					limit = { controller = { NOT = { tag = ROOT } } }
+					controller = { add_stability = -0.005 }
+				}
+			}
 		}
 	}
 	
@@ -566,13 +567,8 @@ CHI_movement_for_a_new_life_category = {
 		custom_cost_text = pol_and_stability_cost
 		fire_only_once = no
 		days_re_enable = 360
-		target_array = core_states
+		targets = { 598 607 749 596 600 595 620 608 592 }
 		state_target = yes
-		target_trigger = {
-			FROM = {
-				is_controlled_by = ROOT
-			}
-		}
 		on_map_mode = map_only
 		complete_effect = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision CHI_attract_students"
@@ -592,13 +588,8 @@ CHI_movement_for_a_new_life_category = {
 		cost = 30
 		fire_only_once = no
 		days_re_enable = 100
-		target_array = core_states
+		targets = { 598 607 749 596 600 595 620 608 592 }
 		state_target = yes
-		target_trigger = {
-			FROM = {
-				is_controlled_by = ROOT
-			}
-		}
 		on_map_mode = map_only
 		complete_effect = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision CHI_strengthen_the_organization_of_blue_shirts"
@@ -627,5 +618,70 @@ CHI_struggle_for_guizhou_category = {
 			clamp_variable = { var = CHI.CHI_loyalty_of_the_governor_of_guizhou min = 0 max = 100 }
 		}
 		ai_will_do = { factor = 50 }
+	}
+}
+
+CHI_preparing_for_evacuation_category = {
+	
+	CHI_preparing_for_evacuation_decision = {
+		priority = 998
+		icon = GFX_decision_generic_political_discourse
+		custom_cost_trigger = {
+			set_temp_variable = { custom_cost_pp = 50 }
+			set_temp_variable = { num_of_civilian_factories_temp = 1 }
+			check_variable = { var = has_political_power value = custom_cost_pp compare = greater_than_or_equals }
+			check_variable = { var = num_of_civilian_factories_available_for_projects value = num_of_civilian_factories_temp compare = greater_than_or_equals }
+		}
+		custom_cost_text = pol_and_civ_factory_cost
+		available = {
+			has_war = no
+			FROM = {
+				is_controlled_by = ROOT
+				arms_factory > 0
+				industrial_complex > 1
+			}
+			620 = {
+				is_controlled_by = ROOT
+				free_building_slots = {
+					building = industrial_complex
+					size > 1
+					include_locked = yes
+				}
+			}
+		}
+		cancel_trigger = {
+			OR = {
+				NOT = { controls_state = FROM }
+				NOT = { controls_state = 620 }
+				has_war = yes
+			}
+		}
+		targets = { 613 1145 607 }
+		state_target = yes		
+		fire_only_once = yes
+		days_remove = 250
+		modifier = { civilian_factory_use = 1 }
+		cancel_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): cancel decision CHI_preparing_for_evacuation_decision"
+		}
+		complete_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision CHI_preparing_for_evacuation_decision"
+			hidden_effect = { add_political_power = -50 }
+		}
+		remove_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): remove decision CHI_preparing_for_evacuation_decision"
+			FROM = {
+				remove_building = { type = industrial_complex level = 2 }
+				remove_building = { type = arms_factory level = 1 }
+			}
+			620 = {
+				add_extra_state_shared_building_slots = 2
+				add_building_construction = {
+					type = industrial_complex
+					level = 2
+					instant_build = yes
+				}
+			}			
+		}
 	}
 }
