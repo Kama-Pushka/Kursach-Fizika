@@ -357,10 +357,19 @@ CHI_factionalism_of_the_army_category = {
 		}
 		custom_cost_text = command_power_cost
 		available = {
-			set_temp_variable = { CHI_influence_of_he_yingqin_var_temp = 37 }
-			set_temp_variable = { CHI_influence_of_hu_zongnan_var_temp = 1 }
-			set_temp_variable = { CHI_influence_of_chen_cheng_var_temp = 1 }
-			set_temp_variable = { CHI_influence_of_tu_yuming_var_temp = 1 }
+			if = {
+				limit = { NOT = { has_completed_focus = CHI_dominating_the_vampire_clique } }
+				set_temp_variable = { CHI_influence_of_he_yingqin_var_temp = 37 }
+				set_temp_variable = { CHI_influence_of_hu_zongnan_var_temp = 1 }
+				set_temp_variable = { CHI_influence_of_chen_cheng_var_temp = 1 }
+				set_temp_variable = { CHI_influence_of_tu_yuming_var_temp = 1 }
+			}
+			else = {
+				set_temp_variable = { CHI_influence_of_he_yingqin_var_temp = 34 }
+				set_temp_variable = { CHI_influence_of_hu_zongnan_var_temp = 2 }
+				set_temp_variable = { CHI_influence_of_chen_cheng_var_temp = 2 }
+				set_temp_variable = { CHI_influence_of_tu_yuming_var_temp = 2 }
+			}
 			custom_trigger_tooltip = {
 				tooltip = CHI_influence_of_he_yingqin_var_less_than_or_equals
 				check_variable = { var = CHI_influence_of_he_yingqin_var value = CHI_influence_of_he_yingqin_var_temp compare = less_than_or_equals }
@@ -383,10 +392,19 @@ CHI_factionalism_of_the_army_category = {
 		complete_effect = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision CHI_promote_he_yingqin_faction"
 			hidden_effect = { add_command_power = -20 }
-			add_to_variable = { CHI_influence_of_he_yingqin_var = 3 tooltip = CHI_influence_of_he_yingqin_var_tt }
-			add_to_variable = { CHI_influence_of_hu_zongnan_var = -1 tooltip = CHI_influence_of_hu_zongnan_var_tt }
-			add_to_variable = { CHI_influence_of_chen_cheng_var = -1 tooltip = CHI_influence_of_chen_cheng_var_tt }
-			add_to_variable = { CHI_influence_of_tu_yuming_var = -1 tooltip = CHI_influence_of_tu_yuming_var_tt }
+			if = {
+				limit = { NOT = { has_completed_focus = CHI_dominating_the_vampire_clique } }
+				add_to_variable = { CHI_influence_of_he_yingqin_var = 3 tooltip = CHI_influence_of_he_yingqin_var_tt }
+				add_to_variable = { CHI_influence_of_hu_zongnan_var = -1 tooltip = CHI_influence_of_hu_zongnan_var_tt }
+				add_to_variable = { CHI_influence_of_chen_cheng_var = -1 tooltip = CHI_influence_of_chen_cheng_var_tt }
+				add_to_variable = { CHI_influence_of_tu_yuming_var = -1 tooltip = CHI_influence_of_tu_yuming_var_tt }
+			}
+			else = {
+				add_to_variable = { CHI_influence_of_he_yingqin_var = 6 tooltip = CHI_influence_of_he_yingqin_var_tt }
+				add_to_variable = { CHI_influence_of_hu_zongnan_var = -2 tooltip = CHI_influence_of_hu_zongnan_var_tt }
+				add_to_variable = { CHI_influence_of_chen_cheng_var = -2 tooltip = CHI_influence_of_chen_cheng_var_tt }
+				add_to_variable = { CHI_influence_of_tu_yuming_var = -2 tooltip = CHI_influence_of_tu_yuming_var_tt }
+			}
 			CHI_factionalism_of_the_army_effect = yes
 		}
 	}
@@ -701,7 +719,7 @@ CHI_search_for_foreign_loans_category = {
 		}
 		complete_effect = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision CHI_search_for_foreign_loans_decision"
-			FROM = { country_event = NW_CHI.22 days = 1 }
+			FROM = { country_event = { id = NW_CHI.22 days = 1 } }
 			custom_effect_tooltip = CHI_search_for_foreign_loans_decision_tt
 			effect_tooltip = { add_ideas = CHI_foreign_loan_idea }
 		}
@@ -1038,6 +1056,59 @@ CHI_national_constituent_assembly_category = {
 		timeout_effect = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): timeout mission CHI_national_constituent_assembly_mission"
 			country_event = NW_CHI.17
+		}
+	}
+}
+
+CHI_fascist_reorganization_of_the_party_category = {
+	
+	CHI_exclude_disloyal_members_from_the_party = {
+		icon = GFX_decision_generic_political_discourse
+		priority = 1000
+		cost = 0
+		fire_only_once = no
+		days_re_enable = 30
+		complete_effect	= {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision CHI_exclude_disloyal_members_from_the_party"
+			add_popularity = { ideology = fascism popularity = -0.01 }
+			add_to_variable = { CHI_unity_of_the_party_var = 1 tooltip = CHI_unity_of_the_party_var_tt }
+			CHI_unity_of_the_party_effect = yes
+		}
+	}
+	
+	CHI_arrest_the_lower_party_corrupt_officials = {
+		icon = GFX_decision_generic_political_discourse
+		priority = 900
+		custom_cost_trigger = {
+			set_temp_variable = { custom_cost_pp = 50 }
+			set_temp_variable = { stability_cost = 0.01 }
+			check_variable = { var = political_power value = custom_cost_pp compare = greater_than_or_equals }
+			check_variable = { var = stability value = stability_cost compare = greater_than_or_equals }
+		}
+		custom_cost_text = pol_and_stability_cost
+		fire_only_once = no
+		days_re_enable = 30
+		complete_effect	= {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision CHI_arrest_the_lower_party_corrupt_officials"
+			hidden_effect = {
+				add_political_power = -50
+				add_stability = -0.01
+			}
+			add_to_variable = { CHI_unity_of_the_party_var = 1 tooltip = CHI_unity_of_the_party_var_tt }
+			CHI_unity_of_the_party_effect = yes
+		}
+	}
+	
+	CHI_arrange_an_inspection_of_officials = {
+		icon = GFX_decision_generic_political_discourse
+		priority = 800
+		cost = 30
+		fire_only_once = no
+		days_re_enable = 30
+		complete_effect	= {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision CHI_arrange_an_inspection_of_officials"
+			add_to_variable = { CHI_unity_of_the_party_var = 1 tooltip = CHI_unity_of_the_party_var_tt }
+			CHI_unity_of_the_party_effect = yes
 		}
 	}
 }

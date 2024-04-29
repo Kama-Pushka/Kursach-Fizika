@@ -156,6 +156,21 @@ CHI_factionalism_of_the_army_effect = {
 	}
 }
 
+CHI_unity_of_the_party_effect = {
+	
+	hidden_effect = {
+		clamp_variable = { var = CHI_unity_of_the_party_var min = 0 max = 100 }
+		
+		set_temp_variable = { CHI_temp_1 = 80 }
+		set_temp_variable = { CHI_unity_of_the_party_var_temp = CHI_unity_of_the_party_var }
+		subtract_from_temp_variable = { CHI_temp_1 = CHI_unity_of_the_party_var_temp }
+		divide_temp_variable = { CHI_temp_1 = -100 }
+		set_variable = { CHI_stability_factor_var = CHI_temp_1 }
+		set_variable = { CHI_war_support_factor_var = CHI_temp_1 }
+		force_update_dynamic_modifier = yes
+	}
+}
+
 CHI_movement_for_a_new_life_effect = {
 	
 	hidden_effect = {
@@ -588,11 +603,16 @@ activate_china_integrate_province = {
 
 china_integrate_province_effect = {
 	if = {
-		limit = {
-			original_tag = CHI
-			has_completed_focus = CHI_support_reliance_on_landowners_and_financiers
+		limit = { original_tag = CHI }
+		if = {
+			limit = { has_completed_focus = CHI_support_reliance_on_landowners_and_financiers }
+			add_stability = -0.05
 		}
-		add_stability = -0.05
+		if = {
+			limit = { has_dynamic_modifier = { modifier = CHI_unity_of_the_party_modifier } }
+			add_to_variable = { CHI_unity_of_the_party_var = -5 tooltip = CHI_unity_of_the_party_var_tt }
+			CHI_unity_of_the_party_effect = yes
+		}
 	}
 	every_state = {
 		limit = {

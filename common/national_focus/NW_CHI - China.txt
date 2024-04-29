@@ -22,7 +22,7 @@ focus_tree = {
 		}
 	}
 	default = no
-	continuous_focus_position = { x = 1030 y = 2000 }
+	continuous_focus_position = { x = 1600 y = 1300 }
 	
 	###   ##  #   ### ### ###  ##   ##  #       ### ###  ### ### 
 	#  # #  # #    #   #   #  #  # #  # #        #  #  # #   #   
@@ -33,8 +33,8 @@ focus_tree = {
 	focus = {
 		id = CHI_continue_the_centralization_of_management
 		icon = GFX_z_goal_JAP_trial_on_sabura_aizawa
-		x = 0
-		y = 15
+		x = 10
+		y = 10
 		cost = 5
 		ai_will_do = { factor = 10 }
 		search_filters = { FOCUS_FILTER_POLITICAL }
@@ -121,7 +121,7 @@ focus_tree = {
 		cost = 5
 		ai_will_do = { factor = 10 }
 		search_filters = {  }
-		available = {  } #TODO: Доступен если не выполнил фокус «Фашистская реорганизация партии»
+		available = { NOT = { has_completed_focus = CHI_fascist_reorganization_of_the_party } }
 		bypass = {  }
 		prerequisite = { focus = CHI_continue_the_centralization_of_management }
 		relative_position_id = CHI_continue_the_centralization_of_management
@@ -373,7 +373,7 @@ focus_tree = {
 				has_completed_focus = JAP_the_Three_Principles_of_Hirota_Coca
 				is_in_faction = no
 				is_subject = no
-				NOT = { has_war_with = ROOT }				
+				NOT = { has_war_with = ROOT }	
 			}
 			has_country_flag = CHI_accept_the_japanese_offer_UNLOCK_flag
 			is_in_faction = no
@@ -402,17 +402,20 @@ focus_tree = {
 					}
 				}
 			}
-			every_other_country = {
-				limit = {
-					is_literally_china = yes
-					is_subject = no
-					is_in_faction = no
-					NOT = {
-						has_war_with = ROOT
-						has_war_with = JAP
+			if = {
+				limit = { NOT = { has_completed_focus = CHI_fascist_reorganization_of_the_party } }
+				every_other_country = {
+					limit = {
+						is_literally_china = yes
+						is_subject = no
+						is_in_faction = no
+						NOT = {
+							has_war_with = ROOT
+							has_war_with = JAP
+						}
 					}
+					country_event = { id = NW_CHI.12 days = 1 }
 				}
-				country_event = { id = NW_CHI.12 days = 1 }
 			}
 		}
 	}
@@ -929,13 +932,14 @@ focus_tree = {
 	focus = {
 		id = CHI_acknowledge_the_failure_of_the_movement_for_a_new_life
 		icon = GFX_z_goal_JAP_trial_on_sabura_aizawa
-		x = 18
+		x = 26
 		y = 0
 		cost = 8
 		ai_will_do = { factor = 10 }
 		search_filters = {  }
 		available = {  }
 		bypass = {  }
+		mutually_exclusive = { focus = CHI_fascist_reorganization_of_the_party }
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus CHI_acknowledge_the_failure_of_the_movement_for_a_new_life"
 			custom_effect_tooltip = CHI_movement_for_a_new_life_category_BLOCK_tt
@@ -1054,7 +1058,7 @@ focus_tree = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus CHI_ministry_of_social_affairs"
 			add_to_variable = { CHI_influence_of_the_cc_clique_var = 6 tooltip = CHI_influence_of_the_cc_clique_var_tt }
 			add_to_variable = { CHI_influence_of_the_political_research_clique_var = -3 tooltip = CHI_influence_of_the_political_research_clique_var_tt }
-			add_to_variable = { CHI_influence_of_vampire_clique_var = -3 tooltip = CHI_influence_of_vampire_clique_var_tt }		
+			add_to_variable = { CHI_influence_of_vampire_clique_var = -3 tooltip = CHI_influence_of_vampire_clique_var_tt }
 			CHI_factionalism_of_the_party_effect = yes
 			CHI_Ju_Tsyahua = {
 				if = {
@@ -1257,10 +1261,12 @@ focus_tree = {
 		relative_position_id = CHI_national_constituent_assembly
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus CHI_dominance_of_the_cc_clique"
-			swap_ideas = {
-				remove_idea = CHI_corruption_of_the_state_apparatus_idea
-				add_idea = CHI_corruption_of_the_state_apparatus_idea_1
-			}
+			custom_effect_tooltip = CHI_corruption_of_the_state_apparatus_modifier_tt
+			add_to_variable = { CHI_political_power_factor_var_2 = -0.1 tooltip = political_power_factor_tooltip }
+			add_to_variable = { CHI_industrial_capacity_factory_var = -0.08 tooltip = industrial_capacity_factory_tooltip }
+			add_to_variable = { CHI_industrial_capacity_dockyard_var = -0.08 tooltip = industrial_capacity_dockyard_tooltip }
+			add_to_variable = { CHI_land_reinforce_rate_var = -0.05 tooltip = land_reinforce_rate_tooltip }
+			force_update_dynamic_modifier = yes
 		}
 	}
 	
@@ -1391,10 +1397,11 @@ focus_tree = {
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus CHI_discredit_the_military"
 			add_popularity = { ideology = neutrality popularity = 0.2 }
-			swap_ideas = {
-				remove_idea = CHI_corruption_of_the_state_apparatus_idea_1
-				add_idea = CHI_corruption_of_the_state_apparatus_idea_2
-			}
+			custom_effect_tooltip = CHI_corruption_of_the_state_apparatus_modifier_tt
+			add_to_variable = { CHI_army_org_factor_var = -0.05 tooltip = army_org_factor_tooltip }
+			add_to_variable = { CHI_land_reinforce_rate_var = -0.1 tooltip = land_reinforce_rate_tooltip }
+			add_to_variable = { CHI_command_power_gain_mult_var_2 = -0.15 tooltip = command_power_gain_mult_tooltip }
+			force_update_dynamic_modifier = yes
 		}
 	}
 	
@@ -1420,11 +1427,1264 @@ focus_tree = {
 			add_to_variable = { china_integration_of_province_cost_var = -0.1 tooltip = china_integration_of_province_cost_tooltip }
 			add_to_variable = { china_integration_of_province_time_var = -0.1 tooltip = china_integration_of_province_time_tooltip }
 			custom_effect_tooltip = CHI_support_reliance_on_landowners_and_financiers_tt
+			custom_effect_tooltip = CHI_corruption_of_the_state_apparatus_modifier_tt
+			add_to_variable = { CHI_production_speed_buildings_factor = -0.05 tooltip = production_speed_buildings_tooltip }
 			force_update_dynamic_modifier = yes
-			swap_ideas = {
-				remove_idea = CHI_corruption_of_the_state_apparatus_idea_2
-				add_idea = CHI_corruption_of_the_state_apparatus_idea_3
+		}
+	}
+	
+	focus = {
+		id = CHI_vaccination_against_communism
+		icon = GFX_z_goal_JAP_trial_on_sabura_aizawa
+		x = 1
+		y = 1
+		cost = 8
+		ai_will_do = { factor = 10 }
+		search_filters = {  }
+		available = {
+			set_temp_variable = { CHI_influence_of_the_cc_clique_var_temp = 50 }
+			custom_trigger_tooltip = {
+				tooltip = CHI_influence_of_the_cc_clique_var_greater_than_or_equals
+				check_variable = { var = CHI_influence_of_the_cc_clique_var value = CHI_influence_of_the_cc_clique_var_temp compare = greater_than_or_equals }
 			}
+			all_other_country = {
+				OR = {
+					exists = no
+					is_subject_of = ROOT
+				}
+				OR = {
+					original_tag = PRC
+					original_tag = GXC
+					original_tag = YUN
+					original_tag = SHX
+					original_tag = XSM
+					original_tag = SIK
+					original_tag = SIH
+					original_tag = XIK
+					original_tag = SHA
+					original_tag = NEA
+					original_tag = TNG
+					original_tag = KAS
+					original_tag = DZH
+					original_tag = KUM
+					original_tag = NGX
+					original_tag = YUL
+					original_tag = HCP
+					original_tag = GND
+					original_tag = YCP
+					original_tag = YSC
+					original_tag = FSR
+					original_tag = HNA
+					original_tag = MAN
+					original_tag = MEN
+				}
+			}
+		}
+		prerequisite = { focus = CHI_new_rivals }
+		prerequisite = { focus = CHI_support_reliance_on_landowners_and_financiers }
+		relative_position_id = CHI_new_rivals
+		mutually_exclusive = { focus = CHI_embodiment_of_the_ideal_chan_state focus = CHI_board_of_experts_and_specialists focus = CHI_land_is_for_the_plowman focus = CHI_second_is_almost_the_first }
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus CHI_vaccination_against_communism"
+			country_event = NW_CHI.24
+		}
+	}
+	
+	focus = {
+		id = CHI_dominance_of_the_political_science_clique
+		icon = GFX_z_goal_JAP_trial_on_sabura_aizawa
+		x = -5
+		y = 1
+		cost = 8
+		ai_will_do = { factor = 10 }
+		search_filters = { FOCUS_FILTER_POLITICAL }
+		available = {
+			set_temp_variable = { CHI_influence_of_the_political_research_clique_var_temp = 50 }
+			custom_trigger_tooltip = {
+				tooltip = CHI_influence_of_the_political_research_clique_var_greater_than_or_equals
+				check_variable = { var = CHI_influence_of_the_political_research_clique_var value = CHI_influence_of_the_political_research_clique_var_temp compare = greater_than_or_equals }
+			}
+		}
+		bypass = {  }
+		prerequisite = { focus = CHI_national_constituent_assembly }
+		relative_position_id = CHI_national_constituent_assembly
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus CHI_dominance_of_the_political_science_clique"
+			add_political_power = 125
+		}
+	}
+	
+	focus = {
+		id = CHI_implement_hubei_policy_in_other_provinces
+		icon = GFX_z_goal_JAP_trial_on_sabura_aizawa
+		x = 1
+		y = 1
+		cost = 8
+		ai_will_do = { factor = 10 }
+		search_filters = { FOCUS_FILTER_INDUSTRY }
+		available = {
+			set_temp_variable = { CHI_influence_of_the_political_research_clique_var_temp = 50 }
+			custom_trigger_tooltip = {
+				tooltip = CHI_influence_of_the_political_research_clique_var_greater_than_or_equals
+				check_variable = { var = CHI_influence_of_the_political_research_clique_var value = CHI_influence_of_the_political_research_clique_var_temp compare = greater_than_or_equals }
+			}
+		}
+		bypass = {  }
+		prerequisite = { focus = CHI_dominance_of_the_political_science_clique }
+		relative_position_id = CHI_dominance_of_the_political_science_clique
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus CHI_implement_hubei_policy_in_other_provinces"
+			add_timed_idea = { idea = CHI_implement_hubei_policy_in_other_provinces_idea days = 400 }
+		}
+	}
+	
+	focus = {
+		id = CHI_fighting_the_legacy_of_warlords
+		icon = GFX_z_goal_JAP_trial_on_sabura_aizawa
+		x = 0
+		y = 1
+		cost = 8
+		ai_will_do = { factor = 10 }
+		search_filters = {  }
+		available = {
+			set_temp_variable = { CHI_influence_of_the_political_research_clique_var_temp = 50 }
+			custom_trigger_tooltip = {
+				tooltip = CHI_influence_of_the_political_research_clique_var_greater_than_or_equals
+				check_variable = { var = CHI_influence_of_the_political_research_clique_var value = CHI_influence_of_the_political_research_clique_var_temp compare = greater_than_or_equals }
+			}
+		}
+		bypass = {  }
+		prerequisite = { focus = CHI_implement_hubei_policy_in_other_provinces }
+		relative_position_id = CHI_implement_hubei_policy_in_other_provinces
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus CHI_fighting_the_legacy_of_warlords"
+			add_to_variable = { china_integration_of_province_cost_var = 0.07 tooltip = china_integration_of_province_cost_tooltip }
+			add_to_variable = { china_integration_of_province_time_var = -0.25 tooltip = china_integration_of_province_time_tooltip }
+			force_update_dynamic_modifier = yes
+		}
+	}
+	
+	focus = {
+		id = CHI_fight_against_waste_of_money
+		icon = GFX_z_goal_JAP_trial_on_sabura_aizawa
+		x = 0
+		y = 1
+		cost = 8
+		ai_will_do = { factor = 10 }
+		search_filters = { FOCUS_FILTER_INDUSTRY FOCUS_FILTER_POLITICAL }
+		available = {
+			set_temp_variable = { CHI_influence_of_the_political_research_clique_var_temp = 50 }
+			set_temp_variable = { CHI_influence_of_the_cc_clique_var_temp = 20 }
+			custom_trigger_tooltip = {
+				tooltip = CHI_influence_of_the_political_research_clique_var_greater_than_or_equals
+				check_variable = { var = CHI_influence_of_the_political_research_clique_var value = CHI_influence_of_the_political_research_clique_var_temp compare = greater_than_or_equals }
+			}
+			custom_trigger_tooltip = {
+				tooltip = CHI_influence_of_the_cc_clique_var_less_than_or_equals
+				check_variable = { var = CHI_influence_of_the_cc_clique_var value = CHI_influence_of_the_cc_clique_var_temp compare = less_than_or_equals }
+			}
+		}
+		bypass = {  }
+		prerequisite = { focus = CHI_fighting_the_legacy_of_warlords }
+		relative_position_id = CHI_fighting_the_legacy_of_warlords
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus CHI_fight_against_waste_of_money"
+			custom_effect_tooltip = CHI_corruption_of_the_state_apparatus_modifier_tt
+			add_to_variable = { CHI_political_power_factor_var_2 = 0.1 tooltip = political_power_factor_tooltip }
+			add_to_variable = { CHI_industrial_capacity_factory_var = 0.07 tooltip = industrial_capacity_factory_tooltip }
+			add_to_variable = { CHI_industrial_capacity_dockyard_var = 0.07 tooltip = industrial_capacity_dockyard_tooltip }
+			add_to_variable = { CHI_army_org_factor_var = 0.05 tooltip = army_org_factor_tooltip }
+			force_update_dynamic_modifier = yes
+		}
+	}
+	
+	focus = {
+		id = CHI_alliance_with_the_vampire_clique
+		icon = GFX_z_goal_JAP_trial_on_sabura_aizawa
+		x = -1
+		y = 1
+		cost = 8
+		ai_will_do = { factor = 10 }
+		search_filters = {  }
+		available = {
+			set_temp_variable = { CHI_influence_of_the_political_research_clique_var_temp = 50 }
+			custom_trigger_tooltip = {
+				tooltip = CHI_influence_of_the_political_research_clique_var_greater_than_or_equals
+				check_variable = { var = CHI_influence_of_the_political_research_clique_var value = CHI_influence_of_the_political_research_clique_var_temp compare = greater_than_or_equals }
+			}
+		}
+		bypass = {
+			set_temp_variable = { CHI_influence_of_vampire_clique_var_temp = 10 }
+			custom_trigger_tooltip = {
+				tooltip = CHI_influence_of_vampire_clique_var_less_than_or_equals
+				check_variable = { var = CHI_influence_of_vampire_clique_var value = CHI_influence_of_vampire_clique_var_temp compare = less_than_or_equals }
+			}
+		}
+		prerequisite = { focus = CHI_dominance_of_the_political_science_clique }
+		relative_position_id = CHI_dominance_of_the_political_science_clique
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus CHI_alliance_with_the_vampire_clique"
+			add_to_variable = { CHI_influence_of_the_cc_clique_var = 10 tooltip = CHI_influence_of_the_cc_clique_var_tt }
+			add_to_variable = { CHI_influence_of_vampire_clique_var = -10 tooltip = CHI_influence_of_vampire_clique_var_tt }
+			CHI_factionalism_of_the_party_effect = yes
+		}
+	}
+	
+	focus = {
+		id = CHI_direct_loyalty_to_the_leader_and_only_to_him
+		icon = GFX_z_goal_JAP_trial_on_sabura_aizawa
+		x = 0
+		y = 1
+		cost = 8
+		ai_will_do = { factor = 10 }
+		search_filters = {  }
+		available = {
+			set_temp_variable = { CHI_influence_of_the_political_research_clique_var_temp = 50 }
+			custom_trigger_tooltip = {
+				tooltip = CHI_influence_of_the_political_research_clique_var_greater_than_or_equals
+				check_variable = { var = CHI_influence_of_the_political_research_clique_var value = CHI_influence_of_the_political_research_clique_var_temp compare = greater_than_or_equals }
+			}
+		}
+		bypass = {  }
+		prerequisite = { focus = CHI_alliance_with_the_vampire_clique }
+		relative_position_id = CHI_alliance_with_the_vampire_clique
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus CHI_direct_loyalty_to_the_leader_and_only_to_him"
+			add_popularity = { ideology = neutrality popularity = 0.1 }
+			add_popularity = { ideology = democratic popularity = 0.05 }
+		}
+	}
+	
+	focus = {
+		id = CHI_include_small_parties_in_the_government
+		icon = GFX_z_goal_JAP_trial_on_sabura_aizawa
+		x = 0
+		y = 1
+		cost = 8
+		ai_will_do = { factor = 10 }
+		search_filters = {  }
+		available = {
+			set_temp_variable = { CHI_influence_of_the_political_research_clique_var_temp = 50 }
+			custom_trigger_tooltip = {
+				tooltip = CHI_influence_of_the_political_research_clique_var_greater_than_or_equals
+				check_variable = { var = CHI_influence_of_the_political_research_clique_var value = CHI_influence_of_the_political_research_clique_var_temp compare = greater_than_or_equals }
+			}
+		}
+		bypass = {  }
+		prerequisite = { focus = CHI_direct_loyalty_to_the_leader_and_only_to_him }
+		relative_position_id = CHI_direct_loyalty_to_the_leader_and_only_to_him
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus CHI_include_small_parties_in_the_government"
+			custom_effect_tooltip = add_dem_in_coalition
+			add_to_array = { coalition_array = token:democratic }
+			NW_legitimacy_check = yes
+		}
+	}
+	
+	focus = {
+		id = CHI_board_of_experts_and_specialists
+		icon = GFX_z_goal_JAP_trial_on_sabura_aizawa
+		x = 1
+		y = 1
+		cost = 8
+		ai_will_do = { factor = 10 }
+		search_filters = { FOCUS_FILTER_RESEARCH FOCUS_FILTER_INDUSTRY }
+		available = {
+			set_temp_variable = { CHI_influence_of_the_political_research_clique_var_temp = 50 }
+			custom_trigger_tooltip = {
+				tooltip = CHI_influence_of_the_political_research_clique_var_greater_than_or_equals
+				check_variable = { var = CHI_influence_of_the_political_research_clique_var value = CHI_influence_of_the_political_research_clique_var_temp compare = greater_than_or_equals }
+			}
+			all_other_country = {
+				OR = {
+					exists = no
+					is_subject_of = ROOT
+				}
+				OR = {
+					original_tag = PRC
+					original_tag = GXC
+					original_tag = YUN
+					original_tag = SHX
+					original_tag = XSM
+					original_tag = SIK
+					original_tag = SIH
+					original_tag = XIK
+					original_tag = SHA
+					original_tag = NEA
+					original_tag = TNG
+					original_tag = KAS
+					original_tag = DZH
+					original_tag = KUM
+					original_tag = NGX
+					original_tag = YUL
+					original_tag = HCP
+					original_tag = GND
+					original_tag = YCP
+					original_tag = YSC
+					original_tag = FSR
+					original_tag = HNA
+					original_tag = MAN
+					original_tag = MEN
+				}
+			}
+		}
+		prerequisite = { focus = CHI_include_small_parties_in_the_government }
+		prerequisite = { focus = CHI_fight_against_waste_of_money }
+		relative_position_id = CHI_include_small_parties_in_the_government
+		mutually_exclusive = { focus = CHI_embodiment_of_the_ideal_chan_state focus = CHI_vaccination_against_communism focus = CHI_land_is_for_the_plowman focus = CHI_second_is_almost_the_first }
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus CHI_board_of_experts_and_specialists"
+			country_event = NW_CHI.25
+		}
+	}
+	
+	focus = {
+		id = CHI_dominance_of_chen_cheng_faction
+		icon = GFX_z_goal_JAP_trial_on_sabura_aizawa
+		x = 0
+		y = 1
+		cost = 8
+		ai_will_do = { factor = 10 }
+		search_filters = {  }
+		available = {
+			set_temp_variable = { CHI_influence_of_vampire_clique_var_temp = 50 }
+			custom_trigger_tooltip = {
+				tooltip = CHI_influence_of_vampire_clique_var_greater_than_or_equals
+				check_variable = { var = CHI_influence_of_vampire_clique_var value = CHI_influence_of_vampire_clique_var_temp compare = greater_than_or_equals }
+			}
+			custom_trigger_tooltip = {
+				tooltip = CHI_influence_of_chen_cheng_var_dominance
+				check_variable = { CHI_influence_of_chen_cheng_var > CHI_influence_of_he_yingqin_var }
+				check_variable = { CHI_influence_of_chen_cheng_var > CHI_influence_of_hu_zongnan_var }
+				check_variable = { CHI_influence_of_chen_cheng_var > CHI_influence_of_tu_yuming_var }
+			}
+		}
+		bypass = {  }
+		prerequisite = { focus = CHI_national_constituent_assembly }
+		relative_position_id = CHI_national_constituent_assembly
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus CHI_dominance_of_chen_cheng_faction"
+			add_advisor_role = {
+				character = CHI_chen_cheng
+				advisor = {
+					slot = political_advisor
+					cost = 100
+					idea_token = CHI_chen_cheng_political_advisor
+					traits = { CHI_chiang_kaishek_friend CHI_former_secretary_deng_yanda }
+				}
+			}
+		}
+	}
+	
+	focus = {
+		id = CHI_return_of_the_left_wing_officers
+		icon = GFX_z_goal_JAP_trial_on_sabura_aizawa
+		x = -1
+		y = 1
+		cost = 8
+		ai_will_do = { factor = 10 }
+		search_filters = {  }
+		available = {
+			set_temp_variable = { CHI_influence_of_vampire_clique_var_temp = 50 }
+			custom_trigger_tooltip = {
+				tooltip = CHI_influence_of_vampire_clique_var_greater_than_or_equals
+				check_variable = { var = CHI_influence_of_vampire_clique_var value = CHI_influence_of_vampire_clique_var_temp compare = greater_than_or_equals }
+			}
+			custom_trigger_tooltip = {
+				tooltip = CHI_influence_of_chen_cheng_var_dominance
+				check_variable = { CHI_influence_of_chen_cheng_var > CHI_influence_of_he_yingqin_var }
+				check_variable = { CHI_influence_of_chen_cheng_var > CHI_influence_of_hu_zongnan_var }
+				check_variable = { CHI_influence_of_chen_cheng_var > CHI_influence_of_tu_yuming_var }
+			}
+		}
+		bypass = {
+			NOT = {
+				has_character = CHI_li_jishen
+				has_character = CHI_hu_jiang
+			}
+		}
+		prerequisite = { focus = CHI_dominance_of_chen_cheng_faction }
+		relative_position_id = CHI_dominance_of_chen_cheng_faction
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus CHI_return_of_the_left_wing_officers"
+			if = {
+				limit = { has_character = CHI_li_jishen }
+				add_corps_commander_role = {
+					Character = CHI_li_jishen
+					skill = 3
+					attack_skill = 3
+					defense_skill = 3
+					planning_skill = 4
+					logistics_skill = 3
+					traits = { politically_connected infantry_leader trait_reckless }
+				}
+			}
+			if = {
+				limit = { has_character = CHI_hu_jiang }
+				add_corps_commander_role = {
+					Character = CHI_hu_jiang
+					skill = 3
+					attack_skill = 4
+					defense_skill = 3
+					planning_skill = 2
+					logistics_skill = 4
+					traits = { media_personality politically_connected thorough_planner }
+				}
+			}
+		}
+	}
+	
+	focus = {
+		id = CHI_restoration_of_the_left_wing
+		icon = GFX_z_goal_JAP_trial_on_sabura_aizawa
+		x = 0
+		y = 1
+		cost = 8
+		ai_will_do = { factor = 10 }
+		search_filters = {  }
+		available = {
+			set_temp_variable = { CHI_influence_of_vampire_clique_var_temp = 50 }
+			custom_trigger_tooltip = {
+				tooltip = CHI_influence_of_vampire_clique_var_greater_than_or_equals
+				check_variable = { var = CHI_influence_of_vampire_clique_var value = CHI_influence_of_vampire_clique_var_temp compare = greater_than_or_equals }
+			}
+			custom_trigger_tooltip = {
+				tooltip = CHI_influence_of_chen_cheng_var_dominance
+				check_variable = { CHI_influence_of_chen_cheng_var > CHI_influence_of_he_yingqin_var }
+				check_variable = { CHI_influence_of_chen_cheng_var > CHI_influence_of_hu_zongnan_var }
+				check_variable = { CHI_influence_of_chen_cheng_var > CHI_influence_of_tu_yuming_var }
+			}
+		}
+		bypass = {  }
+		prerequisite = { focus = CHI_return_of_the_left_wing_officers }
+		relative_position_id = CHI_return_of_the_left_wing_officers
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus CHI_restoration_of_the_left_wing"
+			add_popularity = { ideology = democratic popularity = 0.07 }
+			add_popularity = { ideology = neutrality popularity = 0.08 }
+			add_popularity = { ideology = fascism popularity = -0.15 }
+			add_advisor_role = {
+				character = CHI_Chen_Gunbo
+				advisor = {
+					slot = political_advisor
+					cost = 150
+					idea_token = CHI_Chen_Gunbo
+					traits = { CHI_ideologue_of_reorganization }
+				}
+			}
+		}
+	}
+	
+	focus = {
+		id = CHI_accelerate_the_preparation_of_the_population_for_politics
+		icon = GFX_z_goal_JAP_trial_on_sabura_aizawa
+		x = 1
+		y = 1
+		cost = 8
+		ai_will_do = { factor = 10 }
+		search_filters = {  }
+		available = {
+			set_temp_variable = { CHI_influence_of_vampire_clique_var_temp = 50 }
+			custom_trigger_tooltip = {
+				tooltip = CHI_influence_of_vampire_clique_var_greater_than_or_equals
+				check_variable = { var = CHI_influence_of_vampire_clique_var value = CHI_influence_of_vampire_clique_var_temp compare = greater_than_or_equals }
+			}
+			custom_trigger_tooltip = {
+				tooltip = CHI_influence_of_chen_cheng_var_dominance
+				check_variable = { CHI_influence_of_chen_cheng_var > CHI_influence_of_he_yingqin_var }
+				check_variable = { CHI_influence_of_chen_cheng_var > CHI_influence_of_hu_zongnan_var }
+				check_variable = { CHI_influence_of_chen_cheng_var > CHI_influence_of_tu_yuming_var }
+			}
+		}
+		bypass = {  }
+		prerequisite = { focus = CHI_dominance_of_chen_cheng_faction }
+		relative_position_id = CHI_dominance_of_chen_cheng_faction
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus CHI_accelerate_the_preparation_of_the_population_for_politics"
+			add_timed_idea = { idea = CHI_accelerate_the_preparation_of_the_population_for_politics_idea days = 350 }
+		}
+	}
+	
+	focus = {
+		id = CHI_put_into_effect_the_land_law
+		icon = GFX_z_goal_JAP_trial_on_sabura_aizawa
+		x = 0
+		y = 1
+		cost = 8
+		ai_will_do = { factor = 10 }
+		search_filters = { FOCUS_FILTER_INDUSTRY FOCUS_FILTER_STABILITY }
+		available = {
+			set_temp_variable = { CHI_influence_of_vampire_clique_var_temp = 50 }
+			custom_trigger_tooltip = {
+				tooltip = CHI_influence_of_vampire_clique_var_greater_than_or_equals
+				check_variable = { var = CHI_influence_of_vampire_clique_var value = CHI_influence_of_vampire_clique_var_temp compare = greater_than_or_equals }
+			}
+			custom_trigger_tooltip = {
+				tooltip = CHI_influence_of_chen_cheng_var_dominance
+				check_variable = { CHI_influence_of_chen_cheng_var > CHI_influence_of_he_yingqin_var }
+				check_variable = { CHI_influence_of_chen_cheng_var > CHI_influence_of_hu_zongnan_var }
+				check_variable = { CHI_influence_of_chen_cheng_var > CHI_influence_of_tu_yuming_var }
+			}
+		}
+		bypass = {  }
+		prerequisite = { focus = CHI_accelerate_the_preparation_of_the_population_for_politics }
+		relative_position_id = CHI_accelerate_the_preparation_of_the_population_for_politics
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus CHI_put_into_effect_the_land_law"
+			add_ideas = CHI_put_into_effect_the_land_law_idea
+		}
+	}
+	
+	focus = {
+		id = CHI_reorganization_of_chen_army
+		icon = GFX_z_goal_JAP_trial_on_sabura_aizawa
+		x = 1
+		y = 1
+		cost = 8
+		ai_will_do = { factor = 10 }
+		search_filters = { FOCUS_FILTER_ARMY_XP FOCUS_FILTER_RESEARCH }
+		available = {
+			set_temp_variable = { CHI_influence_of_vampire_clique_var_temp = 50 }
+			custom_trigger_tooltip = {
+				tooltip = CHI_influence_of_vampire_clique_var_greater_than_or_equals
+				check_variable = { var = CHI_influence_of_vampire_clique_var value = CHI_influence_of_vampire_clique_var_temp compare = greater_than_or_equals }
+			}
+			custom_trigger_tooltip = {
+				tooltip = CHI_influence_of_chen_cheng_var_dominance
+				check_variable = { CHI_influence_of_chen_cheng_var > CHI_influence_of_he_yingqin_var }
+				check_variable = { CHI_influence_of_chen_cheng_var > CHI_influence_of_hu_zongnan_var }
+				check_variable = { CHI_influence_of_chen_cheng_var > CHI_influence_of_tu_yuming_var }
+			}
+		}
+		bypass = {  }
+		prerequisite = { focus = CHI_restoration_of_the_left_wing }
+		prerequisite = { focus = CHI_put_into_effect_the_land_law }
+		relative_position_id = CHI_restoration_of_the_left_wing
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus CHI_reorganization_of_chen_army"
+			army_experience = 50
+			add_doctrine_cost_reduction = {
+				name = CHI_reorganization_of_chen_army
+				cost_reduction = 0.35
+				uses = 3
+				category = land_doctrine
+			}
+			add_tech_bonus = {
+				name = CHI_reorganization_of_chen_army
+				bonus = 0.5
+				uses = 1
+				category = support_tech
+			}
+			add_tech_bonus = {
+				name = CHI_reorganization_of_chen_army
+				bonus = 0.5
+				uses = 1
+				category = engineers_tech
+			}
+		}
+	}
+	
+	focus = {
+		id = CHI_land_is_for_the_plowman
+		icon = GFX_z_goal_JAP_trial_on_sabura_aizawa
+		x = 0
+		y = 1
+		cost = 8
+		ai_will_do = { factor = 10 }
+		search_filters = { FOCUS_FILTER_STABILITY }
+		available = {
+			set_temp_variable = { CHI_influence_of_vampire_clique_var_temp = 50 }
+			custom_trigger_tooltip = {
+				tooltip = CHI_influence_of_vampire_clique_var_greater_than_or_equals
+				check_variable = { var = CHI_influence_of_vampire_clique_var value = CHI_influence_of_vampire_clique_var_temp compare = greater_than_or_equals }
+			}
+			custom_trigger_tooltip = {
+				tooltip = CHI_influence_of_chen_cheng_var_dominance
+				check_variable = { CHI_influence_of_chen_cheng_var > CHI_influence_of_he_yingqin_var }
+				check_variable = { CHI_influence_of_chen_cheng_var > CHI_influence_of_hu_zongnan_var }
+				check_variable = { CHI_influence_of_chen_cheng_var > CHI_influence_of_tu_yuming_var }
+			}
+			all_other_country = {
+				OR = {
+					exists = no
+					is_subject_of = ROOT
+				}
+				OR = {
+					original_tag = PRC
+					original_tag = GXC
+					original_tag = YUN
+					original_tag = SHX
+					original_tag = XSM
+					original_tag = SIK
+					original_tag = SIH
+					original_tag = XIK
+					original_tag = SHA
+					original_tag = NEA
+					original_tag = TNG
+					original_tag = KAS
+					original_tag = DZH
+					original_tag = KUM
+					original_tag = NGX
+					original_tag = YUL
+					original_tag = HCP
+					original_tag = GND
+					original_tag = YCP
+					original_tag = YSC
+					original_tag = FSR
+					original_tag = HNA
+					original_tag = MAN
+					original_tag = MEN
+				}
+			}
+		}
+		bypass = {  }
+		prerequisite = { focus = CHI_reorganization_of_chen_army }
+		relative_position_id = CHI_reorganization_of_chen_army
+		mutually_exclusive = { focus = CHI_embodiment_of_the_ideal_chan_state focus = CHI_vaccination_against_communism focus = CHI_board_of_experts_and_specialists focus = CHI_second_is_almost_the_first }
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus CHI_land_is_for_the_plowman"
+			country_event = NW_CHI.26
+			hidden_effect = { country_event = { id = NW_CHI.27 days = 1200 } }
+			add_timed_idea = { idea = CHI_land_is_for_the_plowman_idea days = 1200 }
+		}
+	}
+	
+	focus = {
+		id = CHI_dominance_of_he_yingqin_faction
+		icon = GFX_z_goal_JAP_trial_on_sabura_aizawa
+		x = 5
+		y = 1
+		cost = 8
+		ai_will_do = { factor = 10 }
+		search_filters = {  }
+		available = {
+			set_temp_variable = { CHI_influence_of_vampire_clique_var_temp = 50 }
+			custom_trigger_tooltip = {
+				tooltip = CHI_influence_of_vampire_clique_var_greater_than_or_equals
+				check_variable = { var = CHI_influence_of_vampire_clique_var value = CHI_influence_of_vampire_clique_var_temp compare = greater_than_or_equals }
+			}
+			custom_trigger_tooltip = {
+				tooltip = CHI_influence_of_he_yingqin_var_dominance
+				check_variable = { CHI_influence_of_he_yingqin_var > CHI_influence_of_chen_cheng_var }
+				check_variable = { CHI_influence_of_he_yingqin_var > CHI_influence_of_hu_zongnan_var }
+				check_variable = { CHI_influence_of_he_yingqin_var > CHI_influence_of_tu_yuming_var }
+			}
+		}
+		bypass = {  }
+		prerequisite = { focus = CHI_national_constituent_assembly }
+		relative_position_id = CHI_national_constituent_assembly
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus CHI_dominance_of_he_yingqin_faction"
+			add_command_power = 50
+		}
+	}
+	
+	focus = {
+		id = CHI_glorify_the_great_generals_of_the_country
+		icon = GFX_z_goal_JAP_trial_on_sabura_aizawa
+		x = 1
+		y = 1
+		cost = 8
+		ai_will_do = { factor = 10 }
+		search_filters = {  }
+		available = {
+			set_temp_variable = { CHI_influence_of_vampire_clique_var_temp = 50 }
+			custom_trigger_tooltip = {
+				tooltip = CHI_influence_of_vampire_clique_var_greater_than_or_equals
+				check_variable = { var = CHI_influence_of_vampire_clique_var value = CHI_influence_of_vampire_clique_var_temp compare = greater_than_or_equals }
+			}
+			custom_trigger_tooltip = {
+				tooltip = CHI_influence_of_he_yingqin_var_dominance
+				check_variable = { CHI_influence_of_he_yingqin_var > CHI_influence_of_chen_cheng_var }
+				check_variable = { CHI_influence_of_he_yingqin_var > CHI_influence_of_hu_zongnan_var }
+				check_variable = { CHI_influence_of_he_yingqin_var > CHI_influence_of_tu_yuming_var }
+			}
+		}
+		bypass = {  }
+		prerequisite = { focus = CHI_dominance_of_he_yingqin_faction }
+		relative_position_id = CHI_dominance_of_he_yingqin_faction
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus CHI_glorify_the_great_generals_of_the_country"
+			CHI_he_yingqin = {
+				gain_xp = 250
+				add_trait = {
+					slot = field_marshal
+					trait = media_personality
+				}
+			}
+		}
+	}
+	
+	focus = {
+		id = CHI_alliance_with_the_political_science_clique
+		icon = GFX_z_goal_JAP_trial_on_sabura_aizawa
+		x = -1
+		y = 1
+		cost = 8
+		ai_will_do = { factor = 10 }
+		search_filters = { FOCUS_FILTER_POLITICAL }
+		available = {
+			set_temp_variable = { CHI_influence_of_vampire_clique_var_temp = 50 }
+			custom_trigger_tooltip = {
+				tooltip = CHI_influence_of_vampire_clique_var_greater_than_or_equals
+				check_variable = { var = CHI_influence_of_vampire_clique_var value = CHI_influence_of_vampire_clique_var_temp compare = greater_than_or_equals }
+			}
+			custom_trigger_tooltip = {
+				tooltip = CHI_influence_of_he_yingqin_var_dominance
+				check_variable = { CHI_influence_of_he_yingqin_var > CHI_influence_of_chen_cheng_var }
+				check_variable = { CHI_influence_of_he_yingqin_var > CHI_influence_of_hu_zongnan_var }
+				check_variable = { CHI_influence_of_he_yingqin_var > CHI_influence_of_tu_yuming_var }
+			}
+		}
+		bypass = {
+			set_temp_variable = { CHI_influence_of_the_political_research_clique_var_temp = 10 }
+			custom_trigger_tooltip = {
+				tooltip = CHI_influence_of_the_political_research_clique_var_less_than_or_equals
+				check_variable = { var = CHI_influence_of_the_political_research_clique_var value = CHI_influence_of_the_political_research_clique_var_temp compare = less_than_or_equals }
+			}
+		}
+		prerequisite = { focus = CHI_dominance_of_he_yingqin_faction }
+		relative_position_id = CHI_dominance_of_he_yingqin_faction
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus CHI_alliance_with_the_political_science_clique"
+			add_political_power = 125
+			add_to_variable = { CHI_influence_of_vampire_clique_var = 10 tooltip = CHI_influence_of_vampire_clique_var_tt }
+			add_to_variable = { CHI_influence_of_the_political_research_clique_var = -10 tooltip = CHI_influence_of_the_political_research_clique_var_tt }
+			CHI_factionalism_of_the_party_effect = yes
+		}
+	}
+	
+	focus = {
+		id = CHI_purging_corrupt_officials
+		icon = GFX_z_goal_JAP_trial_on_sabura_aizawa
+		x = 0
+		y = 1
+		cost = 8
+		ai_will_do = { factor = 10 }
+		search_filters = { FOCUS_FILTER_POLITICAL }
+		available = {
+			set_temp_variable = { CHI_influence_of_vampire_clique_var_temp = 50 }
+			custom_trigger_tooltip = {
+				tooltip = CHI_influence_of_vampire_clique_var_greater_than_or_equals
+				check_variable = { var = CHI_influence_of_vampire_clique_var value = CHI_influence_of_vampire_clique_var_temp compare = greater_than_or_equals }
+			}
+			custom_trigger_tooltip = {
+				tooltip = CHI_influence_of_he_yingqin_var_dominance
+				check_variable = { CHI_influence_of_he_yingqin_var > CHI_influence_of_chen_cheng_var }
+				check_variable = { CHI_influence_of_he_yingqin_var > CHI_influence_of_hu_zongnan_var }
+				check_variable = { CHI_influence_of_he_yingqin_var > CHI_influence_of_tu_yuming_var }
+			}
+		}
+		bypass = {  }
+		prerequisite = { focus = CHI_alliance_with_the_political_science_clique }
+		relative_position_id = CHI_alliance_with_the_political_science_clique
+		mutually_exclusive = { focus = CHI_alliance_with_corrupt_elements }
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus CHI_purging_corrupt_officials"
+			custom_effect_tooltip = CHI_corruption_of_the_state_apparatus_modifier_tt
+			add_to_variable = { CHI_political_power_factor_var_2 = 0.05 tooltip = political_power_factor_tooltip }
+			add_to_variable = { CHI_army_org_factor_var = 0.05 tooltip = army_org_factor_tooltip }
+			add_to_variable = { CHI_land_reinforce_rate_var = 0.05 tooltip = land_reinforce_rate_tooltip }
+			add_to_variable = { CHI_command_power_gain_mult_var_2 = 0.1 tooltip = command_power_gain_mult_tooltip }
+			force_update_dynamic_modifier = yes
+		}
+	}
+	
+	focus = {
+		id = CHI_alliance_with_corrupt_elements
+		icon = GFX_z_goal_JAP_trial_on_sabura_aizawa
+		x = 0
+		y = 1
+		cost = 8
+		ai_will_do = { factor = 10 }
+		search_filters = {  }
+		available = {
+			set_temp_variable = { CHI_influence_of_vampire_clique_var_temp = 50 }
+			custom_trigger_tooltip = {
+				tooltip = CHI_influence_of_vampire_clique_var_greater_than_or_equals
+				check_variable = { var = CHI_influence_of_vampire_clique_var value = CHI_influence_of_vampire_clique_var_temp compare = greater_than_or_equals }
+			}
+			custom_trigger_tooltip = {
+				tooltip = CHI_influence_of_he_yingqin_var_dominance
+				check_variable = { CHI_influence_of_he_yingqin_var > CHI_influence_of_chen_cheng_var }
+				check_variable = { CHI_influence_of_he_yingqin_var > CHI_influence_of_hu_zongnan_var }
+				check_variable = { CHI_influence_of_he_yingqin_var > CHI_influence_of_tu_yuming_var }
+			}
+		}
+		bypass = {  }
+		prerequisite = { focus = CHI_glorify_the_great_generals_of_the_country }
+		relative_position_id = CHI_glorify_the_great_generals_of_the_country
+		mutually_exclusive = { focus = CHI_purging_corrupt_officials }
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus CHI_alliance_with_corrupt_elements"
+			custom_effect_tooltip = CHI_corruption_of_the_state_apparatus_modifier_tt
+			add_to_variable = { CHI_political_power_factor_var_2 = -0.05 tooltip = political_power_factor_tooltip }
+			add_to_variable = { CHI_army_org_factor_var = -0.05 tooltip = army_org_factor_tooltip }
+			add_to_variable = { CHI_land_reinforce_rate_var = -0.05 tooltip = land_reinforce_rate_tooltip }
+			add_to_variable = { CHI_command_power_gain_mult_var_2 = -0.1 tooltip = command_power_gain_mult_tooltip }
+			force_update_dynamic_modifier = yes
+		}
+	}
+	
+	focus = {
+		id = CHI_dominating_the_vampire_clique
+		icon = GFX_z_goal_JAP_trial_on_sabura_aizawa
+		x = 0
+		y = 1
+		cost = 8
+		ai_will_do = { factor = 10 }
+		search_filters = {  }
+		available = {
+			set_temp_variable = { CHI_influence_of_vampire_clique_var_temp = 50 }
+			custom_trigger_tooltip = {
+				tooltip = CHI_influence_of_vampire_clique_var_greater_than_or_equals
+				check_variable = { var = CHI_influence_of_vampire_clique_var value = CHI_influence_of_vampire_clique_var_temp compare = greater_than_or_equals }
+			}
+			custom_trigger_tooltip = {
+				tooltip = CHI_influence_of_he_yingqin_var_dominance
+				check_variable = { CHI_influence_of_he_yingqin_var > CHI_influence_of_chen_cheng_var }
+				check_variable = { CHI_influence_of_he_yingqin_var > CHI_influence_of_hu_zongnan_var }
+				check_variable = { CHI_influence_of_he_yingqin_var > CHI_influence_of_tu_yuming_var }
+			}
+		}
+		bypass = {  }
+		prerequisite = { focus = CHI_purging_corrupt_officials focus = CHI_alliance_with_corrupt_elements }
+		relative_position_id = CHI_alliance_with_corrupt_elements
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus CHI_dominating_the_vampire_clique"
+			custom_effect_tooltip = CHI_dominating_the_vampire_clique_tt
+		}
+	}
+	
+	focus = {
+		id = CHI_finish_off_the_influence_of_the_blue_shirts
+		icon = GFX_z_goal_JAP_trial_on_sabura_aizawa
+		x = 0
+		y = 1
+		cost = 8
+		ai_will_do = { factor = 10 }
+		search_filters = {  }
+		available = {
+			set_temp_variable = { CHI_influence_of_vampire_clique_var_temp = 50 }
+			custom_trigger_tooltip = {
+				tooltip = CHI_influence_of_vampire_clique_var_greater_than_or_equals
+				check_variable = { var = CHI_influence_of_vampire_clique_var value = CHI_influence_of_vampire_clique_var_temp compare = greater_than_or_equals }
+			}
+			custom_trigger_tooltip = {
+				tooltip = CHI_influence_of_he_yingqin_var_dominance
+				check_variable = { CHI_influence_of_he_yingqin_var > CHI_influence_of_chen_cheng_var }
+				check_variable = { CHI_influence_of_he_yingqin_var > CHI_influence_of_hu_zongnan_var }
+				check_variable = { CHI_influence_of_he_yingqin_var > CHI_influence_of_tu_yuming_var }
+			}
+		}
+		bypass = {  }
+		prerequisite = { focus = CHI_purging_corrupt_officials focus = CHI_alliance_with_corrupt_elements }
+		relative_position_id = CHI_purging_corrupt_officials
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus CHI_finish_off_the_influence_of_the_blue_shirts"
+			add_popularity = { ideology = neutrality popularity = 0.15 }
+		}
+	}
+	
+	focus = {
+		id = CHI_second_is_almost_the_first
+		icon = GFX_z_goal_JAP_trial_on_sabura_aizawa
+		x = 1
+		y = 1
+		cost = 8
+		ai_will_do = { factor = 10 }
+		search_filters = {  }
+		available = {
+			set_temp_variable = { CHI_influence_of_vampire_clique_var_temp = 50 }
+			custom_trigger_tooltip = {
+				tooltip = CHI_influence_of_vampire_clique_var_greater_than_or_equals
+				check_variable = { var = CHI_influence_of_vampire_clique_var value = CHI_influence_of_vampire_clique_var_temp compare = greater_than_or_equals }
+			}
+			custom_trigger_tooltip = {
+				tooltip = CHI_influence_of_he_yingqin_var_dominance
+				check_variable = { CHI_influence_of_he_yingqin_var > CHI_influence_of_chen_cheng_var }
+				check_variable = { CHI_influence_of_he_yingqin_var > CHI_influence_of_hu_zongnan_var }
+				check_variable = { CHI_influence_of_he_yingqin_var > CHI_influence_of_tu_yuming_var }
+			}
+			all_other_country = {
+				OR = {
+					exists = no
+					is_subject_of = ROOT
+				}
+				OR = {
+					original_tag = PRC
+					original_tag = GXC
+					original_tag = YUN
+					original_tag = SHX
+					original_tag = XSM
+					original_tag = SIK
+					original_tag = SIH
+					original_tag = XIK
+					original_tag = SHA
+					original_tag = NEA
+					original_tag = TNG
+					original_tag = KAS
+					original_tag = DZH
+					original_tag = KUM
+					original_tag = NGX
+					original_tag = YUL
+					original_tag = HCP
+					original_tag = GND
+					original_tag = YCP
+					original_tag = YSC
+					original_tag = FSR
+					original_tag = HNA
+					original_tag = MAN
+					original_tag = MEN
+				}
+			}
+		}
+		bypass = {  }
+		prerequisite = { focus = CHI_finish_off_the_influence_of_the_blue_shirts }
+		prerequisite = { focus = CHI_dominating_the_vampire_clique }
+		relative_position_id = CHI_finish_off_the_influence_of_the_blue_shirts
+		mutually_exclusive = { focus = CHI_embodiment_of_the_ideal_chan_state focus = CHI_vaccination_against_communism focus = CHI_board_of_experts_and_specialists focus = CHI_land_is_for_the_plowman }
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus CHI_second_is_almost_the_first"
+			country_event = NW_CHI.28
+		}
+	}
+	
+	focus = {
+		id = CHI_dominance_of_hu_zongnan_faction
+		icon = GFX_z_goal_JAP_trial_on_sabura_aizawa
+		x = 10
+		y = 1
+		cost = 8
+		ai_will_do = { factor = 10 }
+		search_filters = {  }
+		available = {
+			set_temp_variable = { CHI_influence_of_vampire_clique_var_temp = 50 }
+			custom_trigger_tooltip = {
+				tooltip = CHI_influence_of_vampire_clique_var_greater_than_or_equals
+				check_variable = { var = CHI_influence_of_vampire_clique_var value = CHI_influence_of_vampire_clique_var_temp compare = greater_than_or_equals }
+			}
+			custom_trigger_tooltip = {
+				tooltip = CHI_influence_of_hu_zongnan_var_dominance
+				check_variable = { CHI_influence_of_hu_zongnan_var > CHI_influence_of_chen_cheng_var }
+				check_variable = { CHI_influence_of_hu_zongnan_var > CHI_influence_of_he_yingqin_var }
+				check_variable = { CHI_influence_of_hu_zongnan_var > CHI_influence_of_tu_yuming_var }
+			}
+		}
+		bypass = {  }
+		prerequisite = { focus = CHI_national_constituent_assembly }
+		relative_position_id = CHI_national_constituent_assembly
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus CHI_dominance_of_hu_zongnan_faction"
+
+		}
+	}
+	
+	focus = {
+		id = CHI_restoring_the_reputation_of_vamp_graduates
+		icon = GFX_z_goal_JAP_trial_on_sabura_aizawa
+		x = 0
+		y = 1
+		cost = 8
+		ai_will_do = { factor = 10 }
+		search_filters = {  }
+		available = {
+			set_temp_variable = { CHI_influence_of_vampire_clique_var_temp = 50 }
+			custom_trigger_tooltip = {
+				tooltip = CHI_influence_of_vampire_clique_var_greater_than_or_equals
+				check_variable = { var = CHI_influence_of_vampire_clique_var value = CHI_influence_of_vampire_clique_var_temp compare = greater_than_or_equals }
+			}
+			custom_trigger_tooltip = {
+				tooltip = CHI_influence_of_hu_zongnan_var_dominance
+				check_variable = { CHI_influence_of_hu_zongnan_var > CHI_influence_of_chen_cheng_var }
+				check_variable = { CHI_influence_of_hu_zongnan_var > CHI_influence_of_he_yingqin_var }
+				check_variable = { CHI_influence_of_hu_zongnan_var > CHI_influence_of_tu_yuming_var }
+			}
+		}
+		bypass = {  }
+		prerequisite = { focus = CHI_dominance_of_hu_zongnan_faction }
+		relative_position_id = CHI_dominance_of_hu_zongnan_faction
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus CHI_restoring_the_reputation_of_vamp_graduates"
+			every_unit_leader = {
+				limit = { has_trait = CHI_chiang_kaishek_thirteen_sons }
+				gain_xp = 250
+			}
+		}
+	}
+	
+	focus = {
+		id = CHI_adopt_a_eugenic_demographic_policy
+		icon = GFX_z_goal_JAP_trial_on_sabura_aizawa
+		x = -1
+		y = 1
+		cost = 8
+		ai_will_do = { factor = 10 }
+		search_filters = { FOCUS_FILTER_RESEARCH }
+		available = {
+			set_temp_variable = { CHI_influence_of_vampire_clique_var_temp = 50 }
+			custom_trigger_tooltip = {
+				tooltip = CHI_influence_of_vampire_clique_var_greater_than_or_equals
+				check_variable = { var = CHI_influence_of_vampire_clique_var value = CHI_influence_of_vampire_clique_var_temp compare = greater_than_or_equals }
+			}
+			custom_trigger_tooltip = {
+				tooltip = CHI_influence_of_hu_zongnan_var_dominance
+				check_variable = { CHI_influence_of_hu_zongnan_var > CHI_influence_of_chen_cheng_var }
+				check_variable = { CHI_influence_of_hu_zongnan_var > CHI_influence_of_he_yingqin_var }
+				check_variable = { CHI_influence_of_hu_zongnan_var > CHI_influence_of_tu_yuming_var }
+			}
+		}
+		bypass = {  }
+		prerequisite = { focus = CHI_restoring_the_reputation_of_vamp_graduates }
+		relative_position_id = CHI_restoring_the_reputation_of_vamp_graduates
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus CHI_adopt_a_eugenic_demographic_policy"
+			add_ideas = CHI_adopt_a_eugenic_demographic_policy_idea
+			USA = {
+				if = {
+					limit = { exists = yes }
+					add_opinion_modifier = { target = ROOT modifier = CHI_adopt_a_eugenic_demographic_policy_op }
+					reverse_add_opinion_modifier = { target = ROOT modifier = CHI_adopt_a_eugenic_demographic_policy_op }
+				}
+			}
+			ENG = {
+				if = {
+					limit = { exists = yes }
+					add_opinion_modifier = { target = ROOT modifier = CHI_adopt_a_eugenic_demographic_policy_op }
+					reverse_add_opinion_modifier = { target = ROOT modifier = CHI_adopt_a_eugenic_demographic_policy_op }
+				}
+			}
+			GER = {
+				if = {
+					limit = { exists = yes }
+					add_opinion_modifier = { target = ROOT modifier = CHI_adopt_a_eugenic_demographic_policy_op_2 }
+					reverse_add_opinion_modifier = { target = ROOT modifier = CHI_adopt_a_eugenic_demographic_policy_op_2 }
+				}
+			}
+			SWE = {
+				if = {
+					limit = { exists = yes }
+					add_opinion_modifier = { target = ROOT modifier = CHI_adopt_a_eugenic_demographic_policy_op_2 }
+					reverse_add_opinion_modifier = { target = ROOT modifier = CHI_adopt_a_eugenic_demographic_policy_op_2 }
+				}
+			}
+		}
+	}
+	
+	focus = {
+		id = CHI_tighten_the_law_on_abortion
+		icon = GFX_z_goal_JAP_trial_on_sabura_aizawa
+		x = 0
+		y = 1
+		cost = 8
+		ai_will_do = { factor = 10 }
+		search_filters = {  }
+		available = {
+			set_temp_variable = { CHI_influence_of_vampire_clique_var_temp = 50 }
+			custom_trigger_tooltip = {
+				tooltip = CHI_influence_of_vampire_clique_var_greater_than_or_equals
+				check_variable = { var = CHI_influence_of_vampire_clique_var value = CHI_influence_of_vampire_clique_var_temp compare = greater_than_or_equals }
+			}
+			custom_trigger_tooltip = {
+				tooltip = CHI_influence_of_hu_zongnan_var_dominance
+				check_variable = { CHI_influence_of_hu_zongnan_var > CHI_influence_of_chen_cheng_var }
+				check_variable = { CHI_influence_of_hu_zongnan_var > CHI_influence_of_he_yingqin_var }
+				check_variable = { CHI_influence_of_hu_zongnan_var > CHI_influence_of_tu_yuming_var }
+			}
+		}
+		bypass = {  }
+		prerequisite = { focus = CHI_adopt_a_eugenic_demographic_policy }
+		relative_position_id = CHI_adopt_a_eugenic_demographic_policy
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus CHI_tighten_the_law_on_abortion"
+			swap_ideas = {
+				remove_idea = CHI_adopt_a_eugenic_demographic_policy_idea
+				add_idea = CHI_adopt_a_eugenic_demographic_policy_idea_1
+			}
+		}
+	}
+	
+	focus = {
+		id = CHI_total_state_control
+		icon = GFX_z_goal_JAP_trial_on_sabura_aizawa
+		x = 1
+		y = 1
+		cost = 8
+		ai_will_do = { factor = 10 }
+		search_filters = { FOCUS_FILTER_POLITICAL }
+		available = {
+			set_temp_variable = { CHI_influence_of_vampire_clique_var_temp = 50 }
+			custom_trigger_tooltip = {
+				tooltip = CHI_influence_of_vampire_clique_var_greater_than_or_equals
+				check_variable = { var = CHI_influence_of_vampire_clique_var value = CHI_influence_of_vampire_clique_var_temp compare = greater_than_or_equals }
+			}
+			custom_trigger_tooltip = {
+				tooltip = CHI_influence_of_hu_zongnan_var_dominance
+				check_variable = { CHI_influence_of_hu_zongnan_var > CHI_influence_of_chen_cheng_var }
+				check_variable = { CHI_influence_of_hu_zongnan_var > CHI_influence_of_he_yingqin_var }
+				check_variable = { CHI_influence_of_hu_zongnan_var > CHI_influence_of_tu_yuming_var }
+			}
+		}
+		bypass = {  }
+		prerequisite = { focus = CHI_restoring_the_reputation_of_vamp_graduates }
+		relative_position_id = CHI_restoring_the_reputation_of_vamp_graduates
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus CHI_total_state_control"
+			add_ideas = CHI_total_state_control_idea
+		}
+	}
+	
+	focus = {
+		id = CHI_order_is_like_in_a_barracks
+		icon = GFX_z_goal_JAP_trial_on_sabura_aizawa
+		x = 0
+		y = 1
+		cost = 8
+		ai_will_do = { factor = 10 }
+		search_filters = { FOCUS_FILTER_POLITICAL }
+		available = {
+			set_temp_variable = { CHI_influence_of_vampire_clique_var_temp = 50 }
+			custom_trigger_tooltip = {
+				tooltip = CHI_influence_of_vampire_clique_var_greater_than_or_equals
+				check_variable = { var = CHI_influence_of_vampire_clique_var value = CHI_influence_of_vampire_clique_var_temp compare = greater_than_or_equals }
+			}
+			custom_trigger_tooltip = {
+				tooltip = CHI_influence_of_hu_zongnan_var_dominance
+				check_variable = { CHI_influence_of_hu_zongnan_var > CHI_influence_of_chen_cheng_var }
+				check_variable = { CHI_influence_of_hu_zongnan_var > CHI_influence_of_he_yingqin_var }
+				check_variable = { CHI_influence_of_hu_zongnan_var > CHI_influence_of_tu_yuming_var }
+			}
+		}
+		bypass = {  }
+		prerequisite = { focus = CHI_total_state_control }
+		relative_position_id = CHI_total_state_control
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus CHI_order_is_like_in_a_barracks"
+			swap_ideas = {
+				remove_idea = CHI_total_state_control_idea
+				add_idea = CHI_order_is_like_in_a_barracks_idea
+			}
+		}
+	}
+	
+	focus = {
+		id = CHI_embodiment_of_the_ideal_chan_state
+		icon = GFX_z_goal_JAP_trial_on_sabura_aizawa
+		x = 1
+		y = 1
+		cost = 8
+		ai_will_do = { factor = 10 }
+		search_filters = {  }
+		available = {
+			set_temp_variable = { CHI_influence_of_vampire_clique_var_temp = 50 }
+			custom_trigger_tooltip = {
+				tooltip = CHI_influence_of_vampire_clique_var_greater_than_or_equals
+				check_variable = { var = CHI_influence_of_vampire_clique_var value = CHI_influence_of_vampire_clique_var_temp compare = greater_than_or_equals }
+			}
+			custom_trigger_tooltip = {
+				tooltip = CHI_influence_of_hu_zongnan_var_dominance
+				check_variable = { CHI_influence_of_hu_zongnan_var > CHI_influence_of_chen_cheng_var }
+				check_variable = { CHI_influence_of_hu_zongnan_var > CHI_influence_of_he_yingqin_var }
+				check_variable = { CHI_influence_of_hu_zongnan_var > CHI_influence_of_tu_yuming_var }
+			}
+			all_other_country = {
+				OR = {
+					exists = no
+					is_subject_of = ROOT
+				}
+				OR = {
+					original_tag = PRC
+					original_tag = GXC
+					original_tag = YUN
+					original_tag = SHX
+					original_tag = XSM
+					original_tag = SIK
+					original_tag = SIH
+					original_tag = XIK
+					original_tag = SHA
+					original_tag = NEA
+					original_tag = TNG
+					original_tag = KAS
+					original_tag = DZH
+					original_tag = KUM
+					original_tag = NGX
+					original_tag = YUL
+					original_tag = HCP
+					original_tag = GND
+					original_tag = YCP
+					original_tag = YSC
+					original_tag = FSR
+					original_tag = HNA
+					original_tag = MAN
+					original_tag = MEN
+				}
+			}
+		}
+		bypass = {  }
+		prerequisite = { focus = CHI_tighten_the_law_on_abortion }
+		prerequisite = { focus = CHI_order_is_like_in_a_barracks }
+		relative_position_id = CHI_tighten_the_law_on_abortion
+		mutually_exclusive = { focus = CHI_vaccination_against_communism focus = CHI_board_of_experts_and_specialists focus = CHI_land_is_for_the_plowman focus = CHI_second_is_almost_the_first }
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus CHI_embodiment_of_the_ideal_chan_state"
+			country_event = NW_CHI.29
+		}
+	}
+	
+	focus = {
+		id = CHI_fascist_reorganization_of_the_party
+		icon = GFX_z_goal_JAP_trial_on_sabura_aizawa
+		x = -23
+		y = 0
+		cost = 8
+		ai_will_do = { factor = 10 }
+		search_filters = {  }
+		available = {
+			NOT = { has_completed_focus = CHI_disband_the_blue_shirt_society }
+			set_temp_variable = { CHI_movement_for_a_new_life_var_temp = 2000000 }
+			custom_trigger_tooltip = {
+				tooltip = CHI_movement_for_a_new_life_var_equals
+				check_variable = { var = CHI_movement_for_a_new_life_var value = CHI_movement_for_a_new_life_var_temp compare = greater_than_or_equals }
+			}
+		}
+		bypass = {  }
+		relative_position_id = CHI_acknowledge_the_failure_of_the_movement_for_a_new_life
+		mutually_exclusive = { focus = CHI_acknowledge_the_failure_of_the_movement_for_a_new_life }
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus CHI_fascist_reorganization_of_the_party"
+			hidden_effect = { news_event = { id = NW_CHI_news.7 days = 1 } }
+			set_politics = { ruling_party = fascism elections_allowed = no }
+			add_country_leader_role = {
+				character = CHI_chiang_kaishek
+				promote_leader = yes
+				country_leader = {
+					ideology = sunyatsenism_ideology
+					expire = "1965.1.1.1"
+					traits = { leader_of_kuomintang_and_china generallissimo }
+				}
+			}
+			if = {
+				limit = { NOT = { has_completed_focus = CHI_accept_the_japanese_offer } }
+				every_other_country = {
+					limit = {
+						is_literally_china = yes
+						is_subject = no
+						is_in_faction = no
+						NOT = {
+							has_war_with = ROOT
+							has_war_with = JAP
+						}
+					}
+					country_event = { id = NW_CHI.30 days = 1 }
+				}
+			}
+			custom_effect_tooltip = CHI_fascist_reorganization_of_the_party_tt
+			unlock_decision_category_tooltip = CHI_fascist_reorganization_of_the_party_category
+			set_variable = { CHI_unity_of_the_party_var = 25 }
+			set_variable = { CHI_unity_of_the_party_modifier_def_var = -1 }
+			CHI_unity_of_the_party_effect = yes
+			custom_effect_tooltip = CHI_unity_of_the_party_modifier_add_tt
+			hidden_effect = { add_dynamic_modifier = { modifier = CHI_unity_of_the_party_modifier } }
 		}
 	}
 }
