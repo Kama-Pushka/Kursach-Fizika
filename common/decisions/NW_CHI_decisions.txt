@@ -2247,3 +2247,51 @@ CHI_organization_of_arms_supplies_category = {
 		}
 	}
 }
+
+CHI_american_plan_of_30_divisions_category = {
+	
+	CHI_supply_equipment_for_the_division = {
+		allowed = { always = no }
+		priority = 1000
+		custom_cost_trigger = {
+			set_temp_variable = { rifles_temp_cost = 5000 }
+			set_temp_variable = { artillery_temp_cost = 100 }
+			check_variable = { var = num_equipment@infantry_equipment value = rifles_temp_cost compare = greater_than_or_equals }
+			check_variable = { var = num_equipment@artillery_equipment value = artillery_temp_cost compare = greater_than_or_equals }
+		}
+		custom_cost_text = rifles_and_artillery_cost
+		available = {
+			FROM = {
+				NOT = { has_war_with = ROOT }
+				has_war_with = JAP
+			}
+		}
+		target_trigger = {
+			FROM = {
+				NOT = { has_war_with = ROOT }
+				has_war_with = JAP
+			}
+		}
+		target_root_trigger = { check_variable = { CHI_supply_equipment_for_the_division_var > 0 } }
+		fire_only_once = no
+		days_remove = 20
+		complete_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision CHI_supply_equipment_for_the_division"
+			hidden_effect = {
+				add_equipment_to_stockpile = { type = infantry_equipment amount = -5000 }
+				add_equipment_to_stockpile = { type = artillery_equipment amount = -100 }
+			}
+		}
+		remove_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): remove decision CHI_supply_equipment_for_the_division"
+			add_to_variable = { CHI_supply_equipment_for_the_division_var = -1 }
+			FROM = {
+				add_equipment_to_stockpile = { type = infantry_equipment amount = 5000 producer = ROOT }
+				add_equipment_to_stockpile = { type = artillery_equipment amount = 100 producer = ROOT }
+			}
+		}
+		ai_will_do = {
+			base = 150
+		}
+	}
+}
