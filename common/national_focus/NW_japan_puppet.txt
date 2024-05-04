@@ -567,7 +567,7 @@ focus_tree = {
 				remove_ideas = JAP_limited_zaibatsus
 			}
 			else_if = {
-				limit = { has_idea = JAP_limited_zaibatsus }
+				limit = { has_idea = JAP_limited_zaibatsus2 }
 				remove_ideas = JAP_limited_zaibatsus2
 			}
 		}
@@ -2268,12 +2268,9 @@ focus_tree = {
 		relative_position_id = JAP_impossible_dream_of_the_people
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus JAP_nationalize_zaibatsu"
-			if = {
-				limit = { has_government = communism }
-				add_popularity = { ideology = communism popularity = 0.05 }
-			}
-			else = {
-				add_popularity = { ideology = trozkism popularity = 0.05 }
+			meta_effect = {
+				text = { add_popularity = { ideology = [RULING_IDEOLOGY] popularity = 0.05 } }
+				RULING_IDEOLOGY = "[?current_party_ideology_group.GetTokenKey]"
 			}
 			random_owned_controlled_state = {
 				limit = {
@@ -2344,9 +2341,154 @@ focus_tree = {
 				remove_ideas = JAP_limited_zaibatsus
 			}
 			else_if = {
-				limit = { has_idea = JAP_limited_zaibatsus }
+				limit = { has_idea = JAP_limited_zaibatsus2 }
 				remove_ideas = JAP_limited_zaibatsus2
 			}
+		}
+	}
+	
+	focus = {
+		id = JAP_purging_the_enemies_of_the_people
+		icon = GFX_z_goal_JAP_parliament_elections
+		x = 1
+		y = 1
+		cost = 5
+		ai_will_do = { factor = 10 }
+		search_filters = {  }
+		available = { is_subject = yes }
+		bypass = {  }
+		prerequisite = { focus = JAP_fate_of_the_monarchy_2 }
+		prerequisite = { focus = JAP_nationalize_zaibatsu }
+		relative_position_id = JAP_fate_of_the_monarchy_2
+		select_effect = { country_event = { id = NW_JAP.430 days = 10 } }
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus JAP_purging_the_enemies_of_the_people"
+			every_unit_leader = {
+				limit = {
+					OR = {
+						is_character = JAP_kenji_doihara
+						is_character = JAP_Seishiro_Itagaki
+						is_character = JAP_akira_muto
+						is_character = JAP_yoshijiro_umezu
+						is_character = JAP_Hideki_Todze
+						is_character = JAP_iwane_matsui
+						is_character = JAP_Sadao_Araki
+						is_character = JAP_Kingoro_Hasimoto
+						is_character = JAP_Sunroku_Hata
+						is_character = JAP_kuniaki_koiso
+						is_character = JAP_Dziro_Minami
+						is_character = JAP_Tomoyuki_Yamashita
+						is_character = JAP_Hisao_Tani
+						is_character = JAP_Ko_Sieku
+						is_character = JAP_masaharu_homma
+						is_character = JAP_Teiichi_Suzuki
+					}
+				}
+				custom_effect_tooltip = JAP_purge_of_Kodoha_members_in_the_Army_tt
+				hidden_effect = { retire = yes }
+			}
+			hidden_effect = { OVERLORD = { country_event = { id = NW_JAP.431 days = 100 } } }
+		}
+	}
+	
+	focus = {
+		id = JAP_fate_of_the_imperial_family
+		icon = GFX_z_goal_JAP_parliament_elections
+		x = -1
+		y = 1
+		cost = 5
+		ai_will_do = { factor = 10 }
+		search_filters = {  }
+		available = { is_subject = yes }
+		bypass = { has_country_flag = NW_JAP_447_event_flag }
+		prerequisite = { focus = JAP_fate_of_the_monarchy_2 }
+		relative_position_id = JAP_fate_of_the_monarchy_2
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus JAP_fate_of_the_imperial_family"
+			country_event = { id = NW_JAP.455 hours = 12 }
+		}
+	}
+	
+	focus = {
+		id = JAP_nationalize_the_land
+		icon = GFX_z_goal_JAP_parliament_elections
+		x = 1
+		y = 1
+		cost = 5
+		ai_will_do = { factor = 10 }
+		search_filters = { FOCUS_FILTER_INDUSTRY }
+		available = { is_subject = yes }
+		bypass = {  }
+		prerequisite = { focus = JAP_nationalize_zaibatsu }
+		relative_position_id = JAP_nationalize_zaibatsu
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus JAP_nationalize_the_land"
+			meta_effect = {
+				text = { add_popularity = { ideology = [RULING_IDEOLOGY] popularity = 0.1 } }
+				RULING_IDEOLOGY = "[?current_party_ideology_group.GetTokenKey]"
+			}
+			every_controlled_state = {
+				limit = {
+					free_building_slots = {
+						building = fuel_silo
+						size > 0
+						include_locked = yes
+					}
+				}
+				add_extra_state_shared_building_slots = 1
+			}
+		}
+	}
+	
+	focus = {
+		id = JAP_red_kempeitai
+		icon = GFX_z_goal_JAP_parliament_elections
+		x = 1
+		y = 1
+		cost = 5
+		ai_will_do = { factor = 10 }
+		search_filters = {  }
+		available = { is_subject = yes }
+		bypass = { NOT = { has_character = JAP_Sandzo_Nosaka } }
+		prerequisite = { focus = JAP_fate_of_the_imperial_family }
+		prerequisite = { focus = JAP_purging_the_enemies_of_the_people }
+		relative_position_id = JAP_fate_of_the_imperial_family
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus JAP_red_kempeitai"
+			if = {
+				limit = { NOT = { has_country_leader = { character = JAP_Sandzo_Nosaka ruling_only = yes } } }
+				add_advisor_role = {
+					character = JAP_Sandzo_Nosaka
+					advisor = {
+						slot = political_advisor
+						cost = 150
+						idea_token = JAP_Sandzo_Nosaka
+						traits = { JAP_head_of_the_secret_police }
+					}
+				}
+			}
+			else = {
+				add_country_leader_trait = JAP_head_of_the_secret_police
+			}
+		}
+	}
+	
+	focus = {
+		id = JAP_re_education_system
+		icon = GFX_z_goal_JAP_parliament_elections
+		x = 1
+		y = 1
+		cost = 5
+		ai_will_do = { factor = 10 }
+		search_filters = { FOCUS_FILTER_POLITICAL }
+		available = { is_subject = yes }
+		bypass = { NOT = { has_character = JAP_Sandzo_Nosaka } }
+		prerequisite = { focus = JAP_purging_the_enemies_of_the_people }
+		prerequisite = { focus = JAP_nationalize_the_land }
+		relative_position_id = JAP_purging_the_enemies_of_the_people
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus JAP_re_education_system"
+			add_ideas = JAP_re_education_system_idea
 		}
 	}
 }
