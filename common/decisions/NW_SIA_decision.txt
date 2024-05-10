@@ -405,6 +405,7 @@ SIA_confrontation_between_the_police_and_the_army_power_balance_category = {
 		available = {
 			NOT = { has_government = fascism }
 		}
+		visible = { NOT = { has_country_flag = SIA_allow_phraya_songsuradet_to_return_to_politics_block_flag } }
 		complete_effect = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision SIA_allow_phraya_songsuradet_to_return_to_politics"
 			add_power_balance_value = {
@@ -421,6 +422,12 @@ SIA_confrontation_between_the_police_and_the_army_power_balance_category = {
 				planning_skill = 5
 				logistics_skill = 2
 				traits = { trait_engineer SIA_army_general }
+			}
+			hidden_effect = {
+				if = {
+					limit = { has_active_mission = SIA_conduct_of_elections_mission }
+					country_event = { id = NW_SIA.18 days = 1 }
+				}
 			}
 		}
 		ai_will_do = {
@@ -440,6 +447,7 @@ SIA_confrontation_between_the_police_and_the_army_power_balance_category = {
 		available = {
 			NOT = { has_government = fascism }
 		}
+		visible = { NOT = { has_country_flag = SIA_return_to_the_service_of_praya_tefasadin_block_flag } }
 		complete_effect = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision SIA_return_to_the_service_of_praya_tefasadin"
 			add_power_balance_value = {
@@ -456,6 +464,20 @@ SIA_confrontation_between_the_police_and_the_army_power_balance_category = {
 				planning_skill = 2
 				logistics_skill = 3
 				traits = { war_hero SIA_army_general SIA_loyal_to_the_crown }
+			}
+			hidden_effect = {
+				if = {
+					limit = {
+						has_active_mission = SIA_conduct_of_elections_mission
+						SIA_Phraya_Songsuradet = {
+							OR = {
+								is_corps_commander = yes
+								is_field_marshal = yes
+							}
+						}
+					}
+					country_event = { id = NW_SIA.19 days = 1 }
+				}
 			}
 		}
 		ai_will_do = {
@@ -519,6 +541,186 @@ SIA_royal_navy_orders_category = {
 		timeout_effect = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): timeout mission SIA_construction_of_battleships_mission"
 			country_event = NW_SIA.14
+		}
+	}
+}
+
+SIA_new_crisis_category = {
+	
+	SIA_new_crisis_mission = {
+		icon = generic_merge_plant_ship
+		priority = 1000
+		allowed = { always = no }
+		activation = { always = no }
+		available = { hidden_trigger = { always = no } }
+		is_good = no
+		days_mission_timeout = 588
+		selectable_mission = no
+		timeout_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): timeout mission SIA_new_crisis_mission"
+			if = {
+				limit = { has_completed_focus = SIA_betting_on_army_forces }
+				country_event = NW_SIA.17
+			}
+			else = {
+				country_event = NW_SIA.15
+			}
+		}
+	}
+}
+
+SIA_elections_to_the_house_of_representatives_category = {
+	
+	SIA_conduct_of_elections_mission = {
+		icon = generic_merge_plant_ship
+		priority = 1000
+		allowed = { always = no }
+		activation = { always = no }
+		available = { hidden_trigger = { always = no } }
+		is_good = no
+		days_mission_timeout = 62
+		selectable_mission = no
+		timeout_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): timeout mission SIA_conduct_of_elections_mission"
+			country_event = NW_SIA.16
+		}
+	}
+}
+
+SIA_politics_of_ultranationalism_category = {
+	
+	SIA_politics_of_ultranationalism_decision = {
+		priority = 1000
+		icon = GFX_decision_generic_political_discourse
+		custom_cost_trigger = {
+			set_temp_variable = { SIA_thai_unity_temp = 100 }
+			check_variable = { var = SIA_thai_unity_var value = SIA_thai_unity_temp compare = greater_than_or_equals }
+		}
+		custom_cost_text = SIA_thai_unity_cost
+		fire_only_once = yes
+		targets = { FIC MAL BRM GXC LAO CAM VIN }
+		available = {
+			if = {
+				limit = { FROM = { original_tag = FIC } }
+				has_completed_focus = SIA_invasion_of_indochina
+			}
+			else_if = {
+				limit = { FROM = { original_tag = LAO } }
+				has_completed_focus = SIA_invasion_of_indochina
+			}
+			else_if = {
+				limit = { FROM = { original_tag = CAM } }
+				has_completed_focus = SIA_invasion_of_indochina
+			}
+			else_if = {
+				limit = { FROM = { original_tag = VIN } }
+				has_completed_focus = SIA_unification_of_the_vietnamese_peoples
+			}
+			else_if = {
+				limit = { FROM = { original_tag = MAL } }
+				has_completed_focus = SIA_reclaiming_the_north_of_malaya				
+			}
+			else_if = {
+				limit = { FROM = { original_tag = BRM } }
+				has_completed_focus = SIA_save_the_thais_from_burma				
+			}
+			else_if = {
+				limit = { FROM = { original_tag = GXC } }
+				has_completed_focus = SIA_return_the_homeland_of_thais			
+			}
+			core_compliance = {
+				occupied_country_tag = FROM
+				value > 40
+			}
+		}
+		complete_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision SIA_politics_of_ultranationalism_decision"
+			hidden_effect = { add_to_variable = { SIA_thai_unity_var = -100 } }
+			FROM = { every_core_state = { add_core_of = ROOT } }
+		}
+		ai_will_do = { base = 100 }
+	}
+}
+
+SIA_carrying_out_a_nationalist_policy_category = {
+	
+	SIA_national_propaganda_against = {
+		priority = 1000
+		icon = GFX_decision_generic_political_discourse
+		custom_cost_trigger = {
+			set_temp_variable = { SIA_thai_unity_temp = 30 }
+			check_variable = { var = SIA_thai_unity_var value = SIA_thai_unity_temp compare = greater_than_or_equals }
+		}
+		custom_cost_text = SIA_thai_unity_cost
+		fire_only_once = no
+		days_remove = -1
+		available = { has_war = yes }
+		cancel_trigger = { has_war = no }
+		modifier = {
+			army_attack_factor = 0.1
+			army_defence_factor = 0.05
+		}
+		complete_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision SIA_national_propaganda_against"
+			hidden_effect = { add_to_variable = { SIA_thai_unity_var = -30 } }
+		}
+	}
+	
+	SIA_carry_out_nationalist_propaganda = {
+		priority = 900
+		icon = GFX_decision_generic_political_discourse
+		cost = 40
+		days_remove = 30
+		target_array = core_states
+		state_target = yes
+		fire_only_once = no
+		target_trigger = {
+			FROM = {
+				is_controlled_by = ROOT
+				NOT = { has_dynamic_modifier = { modifier = SIA_rise_of_nationalist_sentiment_modifier } }
+			}
+		}
+		available = { has_war_support > 0.5 }
+		cancel_trigger = { NOT = { controls_state = FROM } }
+		cancel_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): cancel decision SIA_carry_out_nationalist_propaganda"
+		}
+		remove_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): remove decision SIA_carry_out_nationalist_propaganda"
+			FROM = {
+				random_list = {
+					50 = {
+						modifier = {
+							factor = 1.9
+							ROOT = { SIA_Luang_Wichitwathakan = { is_political_advisor = yes } }
+						}
+						state_event = { id = NW_SIA.24 trigger_for = controller }
+						custom_effect_tooltip = empty_line_tooltip
+						if = {
+							limit = { has_dynamic_modifier = { modifier = SIA_decline_of_nationalist_sentiment_modifier } }
+							remove_dynamic_modifier = { modifier = SIA_decline_of_nationalist_sentiment_modifier }
+						}
+						else = {
+							add_dynamic_modifier = { modifier = SIA_rise_of_nationalist_sentiment_modifier }
+						}
+						custom_effect_tooltip = empty_line_tooltip
+					}
+					50 = {
+						state_event = { id = NW_SIA.25 trigger_for = controller }
+						custom_effect_tooltip = empty_line_tooltip
+						if = {
+							limit = { NOT = { has_dynamic_modifier = { modifier = SIA_decline_of_nationalist_sentiment_modifier } } }
+							add_dynamic_modifier = { modifier = SIA_decline_of_nationalist_sentiment_modifier }
+						}
+						else = {
+							ROOT = {
+								add_stability = -0.01
+								add_war_support = -0.01
+							}
+						}
+					}
+				}
+			}
 		}
 	}
 }

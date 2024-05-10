@@ -545,11 +545,11 @@ country_event = {
 				remove_ideas = SIA_debts_to_japan_idea_2
 			}
 		}
-#		if = {
-#			limit = { has_active_mission =  }
-#			custom_effect_tooltip = empty_line_tooltip
-#			add_days_mission_timeout = { mission =  days = 100 }
-#		}
+		if = {
+			limit = { has_active_mission = SIA_new_crisis_mission }
+			custom_effect_tooltip = empty_line_tooltip
+			add_days_mission_timeout = { mission = SIA_new_crisis_mission days = 100 }
+		}
 	}
 }
 
@@ -683,11 +683,11 @@ country_event = {
 				remove_ideas = SIA_debts_to_japan_idea_2
 			}
 		}
-#		if = {
-#			limit = { has_active_mission =  }
-#			custom_effect_tooltip = empty_line_tooltip
-#			add_days_mission_timeout = { mission =  days = 50 }
-#		}
+		if = {
+			limit = { has_active_mission = SIA_new_crisis_mission }
+			custom_effect_tooltip = empty_line_tooltip
+			add_days_mission_timeout = { mission = SIA_new_crisis_mission days = 50 }
+		}
 	}
 }
 
@@ -775,7 +775,7 @@ country_event = {
 	desc = NW_SIA.14.d
 	picture = GFX_report_event_hol_cabinet_de_geer
 	is_triggered_only = yes
-	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_SIA.15" }
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_SIA.14" }
 	option = {
 		name = NW_SIA.14.a
 		if = {
@@ -802,6 +802,496 @@ country_event = {
 				equipment_variant = "Nagato Class"
 				creator = JAP
 			}
+		}
+	}
+}
+
+# Проблемы бюджета
+country_event = {
+	id = NW_SIA.15
+	title = NW_SIA.15.t
+	desc = NW_SIA.15.d
+	picture = GFX_report_event_hol_cabinet_de_geer
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_SIA.15" }
+	option = {
+		name = NW_SIA.15.a
+		add_timed_idea = { idea = SIA_budget_crisis_idea days = 365 }
+		custom_effect_tooltip = empty_line_tooltip
+		set_variable = { SIA_pibun_songcram_var = 40 }
+		set_variable = { SIA_phraya_songsuradet_var = 10 }
+		set_variable = { SIA_pridi_banomyong_var = 30 }
+		set_variable = { SIA_kuang_apaivong_var = 20 }
+		unlock_decision_category_tooltip = SIA_elections_to_the_house_of_representatives_category
+		activate_mission = SIA_conduct_of_elections_mission
+		hidden_effect = {
+			if = {
+				limit = {
+					SIA_Phraya_Songsuradet = {
+						OR = {
+							is_corps_commander = yes
+							is_field_marshal = yes
+						}
+					}
+				}
+				country_event = { id = NW_SIA.18 days = 1 }
+			}
+		}
+	}
+}
+
+# Выборы в палату представителей окончены
+country_event = {
+	id = NW_SIA.16
+	title = NW_SIA.16.t
+	desc = NW_SIA.16.desc
+	picture = GFX_report_event_hol_cabinet_de_geer
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_SIA.16" }
+	option = {
+		name = NW_SIA.16.a
+		trigger = {
+			check_variable = { SIA_pibun_songcram_var > SIA_phraya_songsuradet_var }
+			check_variable = { SIA_pibun_songcram_var > SIA_pridi_banomyong_var }
+			check_variable = { SIA_pibun_songcram_var > SIA_kuang_apaivong_var }
+		}
+		set_country_flag = SIA_pibun_songcram_victory_flag
+		country_event = { id = NW_SIA.20 days = 10 }
+	}
+	option = {
+		name = NW_SIA.16.b
+		trigger = {
+			check_variable = { SIA_phraya_songsuradet_var > SIA_pibun_songcram_var }
+			check_variable = { SIA_phraya_songsuradet_var > SIA_pridi_banomyong_var }
+			check_variable = { SIA_phraya_songsuradet_var > SIA_kuang_apaivong_var }
+		}
+		set_country_flag = SIA_phraya_songsuradet_victory_flag
+		country_event = { id = NW_SIA.20 days = 10 }
+	}
+	option = {
+		name = NW_SIA.16.c
+		trigger = {
+			check_variable = { SIA_pridi_banomyong_var > SIA_pibun_songcram_var }
+			check_variable = { SIA_pridi_banomyong_var > SIA_phraya_songsuradet_var }
+			check_variable = { SIA_pridi_banomyong_var > SIA_kuang_apaivong_var }
+		}
+		set_country_flag = SIA_pridi_banomyong_victory_flag
+		country_event = { id = NW_SIA.20 days = 10 }
+	}
+	option = {
+		name = NW_SIA.16.d
+		trigger = {
+			check_variable = { SIA_kuang_apaivong_var > SIA_phraya_songsuradet_var }
+			check_variable = { SIA_kuang_apaivong_var > SIA_pridi_banomyong_var }
+			check_variable = { SIA_kuang_apaivong_var > SIA_pibun_songcram_var }
+		}
+		set_country_flag = SIA_kuang_apaivong_victory_flag
+		country_event = { id = NW_SIA.20 days = 10 }
+	}
+}
+
+# Переворот Сонгкрама
+country_event = {
+	id = NW_SIA.17
+	title = NW_SIA.17.t
+	desc = NW_SIA.17.d
+	picture = GFX_report_event_hol_cabinet_de_geer
+	is_triggered_only = yes
+	immediate = {
+		log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_SIA.17"
+		hidden_effect = {
+			if = {
+				limit = { has_active_mission = SIA_conduct_of_elections_mission }
+				remove_mission = SIA_conduct_of_elections_mission
+			}
+		}
+	}
+	option = {
+		name = NW_SIA.17.a
+		add_stability = -0.1		
+		add_popularity = { ideology = fascism popularity = 0.35 }
+		set_politics = { ruling_party = fascism elections_allowed = no }
+		custom_effect_tooltip = empty_line_tooltip
+		effect_tooltip = { unlock_national_focus = SIA_uprising_of_the_eighteen_corpses }
+		hidden_effect = { country_event = { id = NW_SIA.22 days = 10 } }
+	}
+}
+
+# Популярность Сонгсурадета
+country_event = {
+	id = NW_SIA.18
+	title = NW_SIA.18.t
+	desc = NW_SIA.18.d
+	picture = GFX_report_event_hol_cabinet_de_geer
+	is_triggered_only = yes
+	trigger = {
+		check_variable = { SIA_kuang_apaivong_var > 4 }
+		check_variable = { SIA_pridi_banomyong_var > 4 }
+		check_variable = { SIA_pibun_songcram_var > 4 }
+	}
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_SIA.18" }
+	option = {
+		name = NW_SIA.18.a
+		add_to_variable = { SIA_kuang_apaivong_var = -5 tooltip = SIA_kuang_apaivong_var_tt }
+		add_to_variable = { SIA_pridi_banomyong_var = -5 tooltip = SIA_pridi_banomyong_var_tt }
+		add_to_variable = { SIA_pibun_songcram_var = -5 tooltip = SIA_pibun_songcram_var_tt }
+		add_to_variable = { SIA_phraya_songsuradet_var = 15 tooltip = SIA_phraya_songsuradet_var_tt }
+		hidden_effect = {
+			if = {
+				limit = {
+					SIA_Phraya_Tefasadin = {
+						OR = {
+							is_corps_commander = yes
+							is_field_marshal = yes
+						}
+					}
+				}
+				country_event = { id = NW_SIA.19 days = 1 }
+			}
+		}
+	}
+}
+
+# Поддержка роялистов
+country_event = {
+	id = NW_SIA.19
+	title = NW_SIA.19.t
+	desc = NW_SIA.19.d
+	picture = GFX_report_event_hol_cabinet_de_geer
+	is_triggered_only = yes
+	trigger = {
+		check_variable = { SIA_kuang_apaivong_var > 4 }
+		check_variable = { SIA_pibun_songcram_var > 4 }
+	}
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_SIA.19" }
+	option = {
+		name = NW_SIA.19.a
+		add_to_variable = { SIA_kuang_apaivong_var = -5 tooltip = SIA_kuang_apaivong_var_tt }
+		add_to_variable = { SIA_pibun_songcram_var = -5 tooltip = SIA_pibun_songcram_var_tt }
+		add_to_variable = { SIA_phraya_songsuradet_var = 10 tooltip = SIA_phraya_songsuradet_var_tt }
+	}
+}
+
+# Заявление премьер-министра
+country_event = {
+	id = NW_SIA.20
+	title = NW_SIA.20.t
+	desc = NW_SIA.20.d
+	picture = GFX_report_event_hol_cabinet_de_geer
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_SIA.20" }
+	option = {
+		name = NW_SIA.20.a
+		SIA_phraya_phahon = { remove_unit_leader_role = yes }
+		custom_effect_tooltip = empty_line_tooltip
+		country_event = { id = NW_SIA.21 days = 14 }
+	}
+}
+
+# Заседание во дворце Парускван
+country_event = {
+	id = NW_SIA.21
+	title = NW_SIA.21.t
+	desc = {
+		text = NW_SIA.21.d.a
+		trigger = { has_country_flag = SIA_pibun_songcram_victory_flag }
+	}
+	desc = {
+		text = NW_SIA.21.d.b
+		trigger = { has_country_flag = SIA_phraya_songsuradet_victory_flag }
+	}
+	desc = {
+		text = NW_SIA.21.d.c
+		trigger = { has_country_flag = SIA_pridi_banomyong_victory_flag }
+	}
+	desc = {
+		text = NW_SIA.21.d.d
+		trigger = { has_country_flag = SIA_kuang_apaivong_victory_flag }
+	}
+	picture = GFX_report_event_hol_cabinet_de_geer
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_SIA.21" }
+	option = {
+		name = NW_SIA.21.a
+		trigger = {
+			OR = {
+				AND = {
+					is_ai = no
+					has_country_flag = SIA_pibun_songcram_victory_flag
+				}
+				AND = {
+					is_ai = yes
+					has_country_flag = NW_SIA_AI_HISTORICAL_PLAN
+				}
+			}
+		}
+		add_popularity = { ideology = fascism popularity = 0.35 }
+		set_politics = { ruling_party = fascism elections_allowed = no }
+		custom_effect_tooltip = empty_line_tooltip
+		effect_tooltip = { unlock_national_focus = SIA_uprising_of_the_eighteen_corpses }
+		hidden_effect = { country_event = { id = NW_SIA.22 days = 10 } }
+	}
+	option = {
+		name = NW_SIA.21.b
+		trigger = {
+			OR = {
+				AND = {
+					is_ai = no
+					has_country_flag = SIA_phraya_songsuradet_victory_flag
+				}
+				AND = {
+					is_ai = yes
+					has_country_flag = NW_SIA_AI_NEUTRALITY_PLAN
+				}
+			}
+		}
+#		effect_tooltip = { unlock_national_focus =  } Военное правительство Прайи Сонгсурадета
+	}
+	option = {
+		name = NW_SIA.21.c
+		trigger = {
+			OR = {
+				AND = {
+					is_ai = no
+					has_country_flag = SIA_pridi_banomyong_victory_flag
+				}
+				AND = {
+					is_ai = yes
+					has_country_flag = NW_SIA_AI_DEMOCRATIC_SOCIALIST_PLAN
+				}
+			}
+		}
+		add_popularity = { ideology = democratic popularity = 0.35 }
+		set_politics = { ruling_party = democratic elections_allowed = yes }
+#		effect_tooltip = { unlock_national_focus =  } Третий путь
+	}
+	option = {
+		name = NW_SIA.21.d
+		trigger = {
+			OR = {
+				AND = {
+					is_ai = no
+					has_country_flag = SIA_kuang_apaivong_victory_flag
+				}
+				AND = {
+					is_ai = yes
+					has_country_flag = NW_SIA_AI_DEMOCRATIC_PLAN
+				}
+			}
+		}
+		add_popularity = { ideology = democratic popularity = 0.35 }
+		set_politics = { ruling_party = democratic elections_allowed = yes }
+#		effect_tooltip = { unlock_national_focus =  } Умеренный путь
+	}
+}
+
+# Требование Прайи Сонгсурадета
+country_event = {
+	id = NW_SIA.22
+	title = NW_SIA.22.t
+	desc = NW_SIA.22.d
+	picture = GFX_report_event_hol_cabinet_de_geer
+	is_triggered_only = yes
+	trigger = {
+		OR = {
+			SIA_Phraya_Songsuradet = {
+				OR = {
+					is_corps_commander = yes
+					is_field_marshal = yes
+				}
+			}
+			has_power_balance = { id = SIA_confrontation_between_the_police_and_the_army_power_balance }
+		}
+	}
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_SIA.22" }
+	option = {
+		name = NW_SIA.22.a
+		if = {
+			limit = {
+				SIA_Phraya_Songsuradet = {
+					OR = {
+						is_corps_commander = yes
+						is_field_marshal = yes
+					}
+				}
+			}
+			SIA_Phraya_Songsuradet = { remove_unit_leader_role = yes }
+		}
+		else = {
+			set_country_flag = SIA_allow_phraya_songsuradet_to_return_to_politics_block_flag
+			custom_effect_tooltip = SIA_allow_phraya_songsuradet_to_return_to_politics_block_tt
+		}
+	}
+}
+
+# Подавление восстания
+country_event = {
+	id = NW_SIA.23
+	title = NW_SIA.23.t
+	desc = NW_SIA.23.d
+	picture = GFX_report_event_hol_cabinet_de_geer
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_SIA.23" }
+	option = {
+		name = NW_SIA.23.a
+		add_popularity = { ideology = fascism popularity = 0.1 }
+		custom_effect_tooltip = empty_line_tooltip
+		if = {
+			limit = {
+				SIA_Phraya_Songsuradet = {
+					OR = {
+						is_corps_commander = yes
+						is_field_marshal = yes
+					}
+				}
+			}
+			SIA_Phraya_Songsuradet = { remove_unit_leader_role = yes }
+		}
+		else_if = {
+			limit = { has_power_balance = { id = SIA_confrontation_between_the_police_and_the_army_power_balance } }
+			set_country_flag = SIA_allow_phraya_songsuradet_to_return_to_politics_block_flag
+			custom_effect_tooltip = SIA_allow_phraya_songsuradet_to_return_to_politics_block_tt
+		}
+		if = {
+			limit = {
+				SIA_Phraya_Tefasadin = {
+					OR = {
+						is_corps_commander = yes
+						is_field_marshal = yes
+					}
+				}
+			}
+			SIA_Phraya_Tefasadin = { remove_unit_leader_role = yes }
+		}
+		else_if = {
+			limit = { has_power_balance = { id = SIA_confrontation_between_the_police_and_the_army_power_balance } }
+			set_country_flag = SIA_return_to_the_service_of_praya_tefasadin_block_flag
+			custom_effect_tooltip = SIA_return_to_the_service_of_praya_tefasadin_block_tt
+		}
+	}
+}
+
+# Успех ультранационалистической политики
+state_event = {
+	id = NW_SIA.24
+	title = NW_SIA.24.t
+	desc = NW_SIA.24.d
+	picture = GFX_report_event_hol_54_55
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_SIA.24" }
+	option = {
+		name = NW_SIA.24.a
+	}
+}
+
+# Провал ультранационалистической политики
+state_event = {
+	id = NW_SIA.25
+	title = NW_SIA.25.t
+	desc = NW_SIA.25.d
+	picture = GFX_report_event_hol_54_55
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_SIA.25" }
+	option = {
+		name = NW_SIA.25.a
+	}
+}
+
+# Речь Пибуна
+country_event = {
+	id = NW_SIA.26
+	title = NW_SIA.26.t
+	desc = NW_SIA.26.d
+	picture = GFX_report_event_hol_cabinet_de_geer
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_SIA.26" }
+	option = {
+		name = NW_SIA.26.a
+		add_war_support = 0.05
+	}
+}
+
+# Культурная революция
+country_event = {
+	id = NW_SIA.27
+	title = NW_SIA.27.t
+	desc = NW_SIA.27.d
+	picture = GFX_report_event_hol_cabinet_de_geer
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_SIA.27" }
+	option = {
+		name = NW_SIA.27.a
+		add_stability = -0.03
+		every_other_country = {
+			limit = { NOT = { has_war_with = ROOT } capital_scope = { is_on_continent = europe } }
+			add_opinion_modifier = { modifier = SIA_cultural_revolution_op target = ROOT }
+		}
+	}
+}
+
+# FIC Предложение гарантий от Сиама
+country_event = {
+	id = NW_SIA.28
+	title = NW_SIA.28.t
+	desc = NW_SIA.28.d
+	picture = GFX_report_event_hol_cabinet_de_geer
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_SIA.28" }
+	option = {
+		name = NW_SIA.28.a
+		ai_chance = {
+			base = 1
+			modifier = {
+				add = -1
+				is_ai = yes
+			}
+		}
+		FROM = { country_event = { id = NW_SIA.29 days = 1 } }
+	}
+	option = {
+		name = NW_SIA.28.b
+		ai_chance = { base = 1 }
+		FROM = {
+			country_event = { id = NW_SIA.30 days = 1 }
+			custom_effect_tooltip = empty_line_tooltip
+			give_guarantee = ROOT
+			custom_effect_tooltip = empty_line_tooltip
+			transfer_state = 1181
+			transfer_state = 670
+			transfer_state = 1180
+		}
+	}
+}
+
+# Отказ Индокитая
+country_event = {
+	id = NW_SIA.29
+	title = NW_SIA.29.t
+	desc = NW_SIA.29.d
+	picture = GFX_report_event_hol_cabinet_de_geer
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_SIA.29" }
+	option = {
+		name = NW_SIA.29.a
+	}
+}
+
+# Согласие Индокитая
+country_event = {
+	id = NW_SIA.30
+	title = NW_SIA.30.t
+	desc = NW_SIA.30.d
+	picture = GFX_report_event_hol_cabinet_de_geer
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_SIA.30" }
+	option = {
+		name = NW_SIA.30.a
+		effect_tooltip = {
+			give_guarantee = FROM
+			custom_effect_tooltip = empty_line_tooltip
+			transfer_state = 1181
+			transfer_state = 670
+			transfer_state = 1180
 		}
 	}
 }
