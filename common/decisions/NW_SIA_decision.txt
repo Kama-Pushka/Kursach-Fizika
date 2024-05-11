@@ -724,3 +724,167 @@ SIA_carrying_out_a_nationalist_policy_category = {
 		}
 	}
 }
+
+SIA_resurrect_the_yellow_book_project_category = {
+	
+	SIA_nationalization_of_land_by_the_state = {
+		priority = 1000
+		icon = GFX_decision_generic_political_discourse
+		cost = 50
+		days_remove = 30
+		fire_only_once = yes
+		remove_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): remove decision SIA_nationalization_of_land_by_the_state"
+			set_country_flag = SIA_nationalization_of_land_by_the_state_COMPLETE_flag
+			hidden_effect = {
+				if = {
+					limit = {
+						has_country_flag = SIA_discontent_of_the_monarchists_flag
+						has_country_flag = SIA_creation_of_a_cooperative_economy_COMPLETE_flag
+					}
+					country_event = { id = NW_SIA.40 days = 1 }
+				}
+			}
+			every_core_state = {
+				limit = {
+					is_controlled_by = ROOT
+					free_building_slots = {
+						building = fuel_silo
+						size > 0
+						include_locked = yes
+					}
+				}
+				add_extra_state_shared_building_slots = 1
+			}
+			custom_effect_tooltip = empty_line_tooltip
+			set_temp_variable = { SIA_stability_temp = num_controlled_states }
+			divide_temp_variable = { SIA_stability_temp = -100 }
+			add_stability = SIA_stability_temp
+		}
+		ai_will_do = {
+			base = 100
+			modifier = {
+				add = 900
+				has_country_flag = NW_SIA_AI_MONARCHY_PLAN
+			}
+		}
+	}
+	
+	SIA_creation_of_a_cooperative_economy = {
+		priority = 900
+		icon = GFX_decision_generic_political_discourse
+		cost = 50
+		days_remove = 30
+		fire_only_once = yes
+		remove_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): remove decision SIA_creation_of_a_cooperative_economy"
+			set_country_flag = SIA_creation_of_a_cooperative_economy_COMPLETE_flag
+			hidden_effect = {
+				if = {
+					limit = {
+						has_country_flag = SIA_discontent_of_the_monarchists_flag
+						has_country_flag = SIA_nationalization_of_land_by_the_state_COMPLETE_flag
+					}
+					country_event = { id = NW_SIA.40 days = 1 }
+				}
+			}
+			country_event = NW_SIA.38
+			custom_effect_tooltip = empty_line_tooltip
+			add_ideas = SIA_creation_of_a_cooperative_economy_idea
+		}
+		ai_will_do = {
+			base = 100
+			modifier = {
+				add = 900
+				has_country_flag = NW_SIA_AI_MONARCHY_PLAN
+			}
+		}
+	}
+	
+	SIA_allocate_unused_land_to_workers = {
+		priority = 850
+		icon = GFX_decision_generic_political_discourse
+		cost = 50
+		days_remove = 30
+		fire_only_once = yes
+		available = {
+			has_country_flag = SIA_nationalization_of_land_by_the_state_COMPLETE_flag
+			has_country_flag = SIA_creation_of_a_cooperative_economy_COMPLETE_flag
+		}
+		remove_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): remove decision SIA_allocate_unused_land_to_workers"
+			set_country_flag = SIA_allocate_unused_land_to_workers_COMPLETE_flag
+			country_event = NW_SIA.39
+			custom_effect_tooltip = empty_line_tooltip
+			swap_ideas = {
+				remove_idea = SIA_creation_of_a_cooperative_economy_idea
+				add_idea = SIA_creation_of_a_cooperative_economy_idea_1
+			}
+		}
+		ai_will_do = { base = 100 }
+	}
+}
+
+SIA_creation_of_the_federation_of_southeast_asia_category = {
+	
+	SIA_creation_of_the_federation_of_southeast_asia_decision = {
+		priority = 1000
+		icon = GFX_decision_generic_political_discourse
+		cost = 100
+		target_array = allies
+		fire_only_once = yes
+		days_remove = 70
+		target_trigger = {
+			FROM = {
+				OR = {
+					original_tag = INS
+					original_tag = LAO
+					original_tag = CAM
+					original_tag = VIN
+					original_tag = BRM
+					original_tag = KRN
+					original_tag = MAL
+					original_tag = FIC
+					original_tag = PHI
+				}
+			}
+		}
+		cancel_trigger = { NOT = { is_in_faction_with = FROM } }
+		cancel_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): cancel decision SIA_creation_of_the_federation_of_southeast_asia_decision"
+		}
+		remove_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): remove decision SIA_creation_of_the_federation_of_southeast_asia_decision"
+			FROM = { country_event = { id = NW_SIA.41 days = 1 } }
+			custom_effect_tooltip = empty_line_tooltip
+			custom_effect_tooltip = SIA_creation_of_the_federation_of_southeast_asia_decision_tt
+			custom_effect_tooltip = empty_line_tooltip
+			effect_tooltip = { annex_country = { target = FROM transfer_troops = yes } }
+		}
+	}
+}
+
+SIA_finding_allies_in_the_free_world_category = {
+	
+	SIA_finding_allies_in_the_free_world_decision = {
+		priority = 1000
+		icon = GFX_decision_generic_political_discourse
+		cost = 50
+		target_array = global.is_democratic
+		fire_only_once = yes
+		target_trigger = {
+			FROM = {
+				is_faction_leader = yes
+				NOT = { has_war_with = ROOT }
+			}
+		}
+		available = {
+			is_subject = no
+			is_in_faction = no
+		}
+		complete_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision SIA_finding_allies_in_the_free_world_decision"
+			FROM = { country_event = { id = generic.2 days = 1 } }
+		}
+	}
+}
