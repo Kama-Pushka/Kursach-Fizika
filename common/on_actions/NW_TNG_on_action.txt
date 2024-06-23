@@ -1,0 +1,100 @@
+on_actions = {
+	### TNG ###
+	
+	on_startup = {
+		effect = {
+			#Тунганистан стартпак
+			if = {
+				limit = {
+					has_start_date < 1936.1.2
+				}
+				TNG = {
+					country_event = { id = NWtunganistan.0 days = 166 }	#Новости с Тартарии: путешествие из Пекина в Кашмир
+					country_event = { id = NWtunganistan.300 days = 486 }	#Терпение кончилось 1 мая 1937
+				}
+			}
+		}
+	}
+	
+	on_daily_TNG = {
+		effect = {
+			#Опиумная зависимость армии
+			if = {
+				limit = { num_divisions < 6 }
+				set_variable = { opium_var_daily = -4 }
+				else_if = {
+					limit = { num_divisions < 11 }
+					set_variable = { opium_var_daily = -4 }
+				}
+				else_if = {
+					limit = { num_divisions < 25 }
+					set_variable = { opium_var_daily = -8 }
+				}
+				else_if = {
+					limit = { num_divisions < 51 }
+					set_variable = { opium_var_daily = -16 }
+				}
+				else_if = {
+					limit = { num_divisions > 50 }
+					set_variable = { opium_var_daily = -32 }
+				}
+			}
+			if = {
+				limit = {
+					check_variable = { TNG_opium_total = 0 }
+					NOT = { has_idea = TNG_lack_of_opium_for_the_army }
+				}
+				add_ideas = TNG_lack_of_opium_for_the_army
+			}
+			if = {
+				limit = {
+					check_variable = { TNG_opium_total > 0 }
+					NOT = { has_dynamic_modifier = { modifier = TNG_army_opium_addiction_dyn } }
+				}
+				add_dynamic_modifier = { modifier = TNG_army_opium_addiction_dyn }
+			}
+			if = {
+				limit = {
+					has_dynamic_modifier = { modifier = TNG_army_opium_addiction_dyn }
+					NOT = { check_variable = { modifier@opium_bonus = 0 } }
+				}
+				add_to_variable = { TNG_opium_total = modifier@opium_bonus }
+				clamp_variable = { var = TNG_opium_total min = 0 max = 99999 }
+			}
+		}
+	}
+	
+	#ROOT = country that joined a war
+	on_war = {
+		effect = {
+			if = {
+				limit = {
+					tag = TNG
+					has_war_with = SIK
+					NOT = { has_country_flag = TNG_patience_is_over_flag }
+					has_country_leader = { character = TNG_ma_hushan ruling_only = yes }
+				}
+				country_event = { id = NWtunganistan.3 }
+			}
+		}
+	}
+	
+	#ROOT is winner #FROM is loser
+	on_peaceconference_ended = {
+		effect = {
+			if = {
+				limit = {
+					FROM = { tag = SIK }
+					ROOT = {
+						tag = TNG
+						has_completed_focus = TNG_smash_the_traitor_shitsai
+					}
+				}
+				ROOT = {
+					set_capital = { state = 617 }
+					set_cosmetic_tag = SIK
+				}
+			}
+		}
+	}
+}

@@ -1,0 +1,97 @@
+on_actions = {
+	### DZH ###
+	
+	on_startup = {
+		effect = {
+			if = {
+				limit = {
+					has_start_date < 1936.01.02
+				}
+				DZH = {
+					country_event = NW_DZH.27
+					country_event = { id = NW_DZH.32 days = 360 }
+				}
+			}
+		}
+	}
+	on_monthly_DZH = {
+		effect = {
+			if = {
+				limit = { check_variable = { modifier@DZH_kazakh_nationalism_modifier > 0 } }
+				add_to_variable = { DZH_kazakh_nationalism_var = modifier@DZH_kazakh_nationalism_modifier }
+				DZH_kazakh_nationalism_effect = yes
+			}
+			if = {
+				limit = { has_idea = DZH_transfer_of_ammunition_and_equipment_idea }
+				add_equipment_to_stockpile = { type = infantry_equipment amount = 150 producer = USA }
+				add_equipment_to_stockpile = { type = support_equipment amount = 90 producer = USA }
+			}
+			if = {
+				limit = { has_idea = DZH_weapons_from_the_kuomintang_idea }
+				add_equipment_to_stockpile = { type = infantry_equipment amount = 200 producer = CHI }
+			}
+			if = {
+				limit = { has_idea = DZH_maintaining_our_existence_idea }
+				add_equipment_to_stockpile = { type = infantry_equipment amount = 40 producer = MON }
+			}
+		}
+	}
+	on_declare_war = {
+		effect = {
+			if = {
+				limit = {
+					ROOT = {
+						original_tag = DZH
+						UYG = { has_character = UYG_Dalelhan_Sugurbaev }
+						NOT = { has_country_flag = NW_DZH_events_BLOCK_flag }
+					}
+				}
+				ROOT = {
+					set_country_flag = NW_DZH_events_BLOCK_flag
+					country_event = { id = NW_DZH.24 days = 1 }
+				}
+				MON = {
+					if = {
+						limit = { exists = yes }
+						country_event = { id = NW_DZH.26 days = 1 }
+					}
+				}
+			}
+		}
+	}
+	on_state_control_changed = {
+		effect = {
+			if = {
+				limit = {
+					FROM.FROM = { OR = { state = 654 state = 954 state = 588 } }
+					ROOT = {
+						original_tag = DZH
+						has_completed_focus = DZH_restore_control_over_altai
+						has_country_leader = { character = DZH_ospan_batyr ruling_only = yes }
+						NOT = { has_country_flag = DZH_restore_control_over_altai_mission_BLOCK_mission_flag }
+						OR = {
+							has_war_with = 654.owner
+							has_war_with = 954.owner
+							has_war_with = 588.owner
+						}
+						OR = {
+							AND = {
+								controls_state = 654
+								controls_state = 954
+							}
+							AND = {
+								controls_state = 654
+								controls_state = 588
+							}
+							AND = {
+								controls_state = 954
+								controls_state = 588
+							}
+						}
+					}
+				}
+				ROOT = { activate_mission = DZH_restore_control_over_altai_mission }
+			}
+		}
+	}
+}

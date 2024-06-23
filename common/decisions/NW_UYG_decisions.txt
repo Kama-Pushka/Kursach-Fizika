@@ -1,0 +1,114 @@
+UYG_collectivization_category = {
+
+	UYG_complete_collectivization = {	
+		visible = {
+		}
+		state_target = yes
+		targets = { 617 618 1121 1047 760 619 1122 759 287 }
+		target_trigger = {
+			FROM = {
+				is_controlled_by = ROOT
+			}
+		}
+		fire_only_once = yes
+		on_map_mode = map_and_decisions_view
+		icon = my_icon
+		custom_cost_trigger = {
+			set_temp_variable = { custom_cost_pp = 50 }
+			set_temp_variable = { rifles_temp_cost = 100 }
+			has_political_power > custom_cost_pp
+			has_equipment = { infantry_equipment > rifles_temp_cost }
+		}
+		custom_cost_text = pol_and_rifles_cost
+		complete_effect = {
+			ROOT = {
+				add_political_power = -50
+				add_equipment_to_stockpile = {
+				type = infantry_equipment
+				amount = -100
+				}
+				add_popularity = {
+					ideology = communism
+					popularity = -0.05
+				}
+				add_stability = -0.03
+				custom_effect_tooltip = collectivaztion_event_tt
+				if = {
+					limit = {
+						has_stability < 0.35
+					}
+					country_event = { id = NW_UYG.6 }
+				}
+			}
+			FROM = {
+				add_extra_state_shared_building_slots = 2
+				add_building_construction = {
+					type = industrial_complex
+					level = 2
+					instant_build = yes		
+				}
+			}
+		}
+	}
+}
+
+###Восстановления влияния в Синьцзяне###
+
+SOV_restoring_influence_in_Xinjiang_category = {
+
+	SOV_preparation_of_the_uprising_in_Kuldzha = {
+        icon = decision_category_generic_trozkism
+		cost = 100
+        fire_only_once = yes
+        days_remove = 200
+        modifier = {
+            civilian_factory_use = 2
+			military_factory_donations = -2			
+        }
+        remove_effect = {
+			set_country_flag = SOV_shots_fired_at_the_embassy_flag
+        }
+        ai_will_do {
+			factor = 1
+		}	
+    }
+	
+	SOV_shots_fired_at_the_embassy = {
+		visible = {
+			has_country_flag = SOV_shots_fired_at_the_embassy
+		}
+		icon = decision_category_generic_trozkism
+        fire_only_once = yes
+        complete_effect = {
+			clr_country_flag = SOV_shots_fired_at_the_embassy_flag
+			hidden_effect = {
+				every_other_country = {
+					limit = { 
+						OR = {
+							controls_state = 287	
+							controls_state = 759	
+							controls_state = 760	
+							controls_state = 1046	
+							controls_state = 1047	
+							controls_state = 617	
+							controls_state = 619		
+							controls_state = 1120	
+							controls_state = 1121	
+							controls_state = 1122		
+						}
+					}
+				country_event = NW_UYG_SOV.1
+				}
+				every_other_country = {
+					limit = {
+						controls_state = 618
+					}
+				country_event = NW_UYG_SOV.0
+				}
+			}
+        }
+        ai_will_do {
+			factor = 1
+		}	
+    }
+}

@@ -1,0 +1,171 @@
+on_actions = {
+	### NGX ###
+	
+	on_monthly_NGX = {
+		effect = {
+			if = {
+				limit = {
+					has_completed_focus = NGX_birth_of_a_new_nation
+					NOT = { has_country_flag = NGX_hui_nation_formed }
+				}
+				if = {
+					limit = {
+						NOT = { check_variable = { modifier@hui_nationalism_gain = 0 } }
+					}
+					add_to_variable = { NGX_hui_nationalism = modifier@hui_nationalism_gain }
+					clamp_variable = {
+						var = NGX_hui_nationalism
+						max = 100
+						min = 0
+					}
+				}
+				if = {
+					limit = {
+						check_variable = { NGX_hui_nationalism < 20 }
+					}
+					remove_ideas = {
+						NGX_very_weak_hui_nationalism
+						NGX_weak_hui_nationalism
+						NGX_growing_hui_nationalism
+						NGX_strong_hui_nationalism
+					}
+					add_ideas = NGX_no_hui_nationalism
+					add_ideas = very_low_legitimacy
+				}
+				if = {
+					limit = {
+						AND = {
+							check_variable = { NGX_hui_nationalism > 20 }
+							check_variable = { NGX_hui_nationalism < 41 }
+						}
+					}
+					remove_ideas = {
+						NGX_no_hui_nationalism
+						NGX_weak_hui_nationalism
+						NGX_growing_hui_nationalism
+						NGX_strong_hui_nationalism
+					}
+					add_ideas = NGX_very_weak_hui_nationalism
+					add_ideas = low_legitimacy
+				}
+				if = {
+					limit = {
+						AND = {
+							check_variable = { NGX_hui_nationalism > 40 }
+							check_variable = { NGX_hui_nationalism < 61 }
+						}
+					}
+					remove_ideas = {
+						NGX_no_hui_nationalism
+						NGX_very_weak_hui_nationalism
+						NGX_growing_hui_nationalism
+						NGX_strong_hui_nationalism
+					}
+					add_ideas = NGX_weak_hui_nationalism
+					add_ideas = normal_legitimacy
+				}
+				if = {
+					limit = {
+						AND = {
+							check_variable = { NGX_hui_nationalism > 60 }
+							check_variable = { NGX_hui_nationalism < 81 }
+						}
+					}
+					remove_ideas = {
+						NGX_no_hui_nationalism
+						NGX_very_weak_hui_nationalism
+						NGX_weak_hui_nationalism
+						NGX_strong_hui_nationalism
+					}
+					add_ideas = NGX_growing_hui_nationalism
+				}
+				if = {
+					limit = {
+						check_variable = { NGX_hui_nationalism > 80 }
+					}
+					remove_ideas = {
+						NGX_no_hui_nationalism
+						NGX_very_weak_hui_nationalism
+						NGX_weak_hui_nationalism
+						NGX_growing_hui_nationalism
+					}
+					add_ideas = NGX_strong_hui_nationalism
+				}
+			}
+		}
+	}
+	
+	on_state_control_changed = {
+		effect = {
+			if = {
+				limit = {
+					FROM.FROM = {
+						has_state_flag = NGX_resistance_to_hui_nationalism_flag
+					}
+				}
+				if = {
+					limit = { ROOT = { NOT = { original_tag = NGX } } }
+					FROM.FROM = {
+						remove_dynamic_modifier = {
+							modifier = NGX_resistance_to_hui_nationalism
+						}
+					}
+					add_to_variable = {
+						var = NGX.resisting_states
+						value = 1
+					}
+				}
+				else_if = {
+					limit = {
+						ROOT = {
+							original_tag = NGX
+							has_completed_focus = NGX_birth_of_a_new_nation
+							OR = {
+								has_idea = NGX_no_hui_nationalism
+								has_idea = NGX_very_weak_hui_nationalism
+								has_idea = NGX_weak_hui_nationalism
+								has_idea = NGX_growing_hui_nationalism
+								has_idea = NGX_strong_hui_nationalism
+							}
+						}
+					}
+					FROM.FROM = {
+						add_dynamic_modifier = {
+							modifier = NGX_resistance_to_hui_nationalism
+						}
+					}
+					add_to_variable = {
+						var = NGX.resisting_states
+						value = -1
+					}
+				}					
+			}
+			if = {
+				limit = {
+					FROM.FROM = { state = 1125 }
+				}
+				if = {
+					limit = { ROOT = { NOT = { original_tag = NGX } } }
+					FROM.FROM = {
+						remove_dynamic_modifier = {
+							modifier = NGX_gansu_autonomy
+						}
+					}
+				}
+				else_if = {
+					limit = {
+						ROOT = {
+							original_tag = NGX
+							has_character = NGX_ma_hongbin
+						}
+					}
+					FROM.FROM = {
+						add_dynamic_modifier = {
+							modifier = NGX_gansu_autonomy
+						}
+					}
+				}					
+			}
+		}
+	}
+}
