@@ -1,0 +1,1684 @@
+﻿add_namespace = NW_FSR
+add_namespace = NW_FSR_news
+
+# Ещё одна советская республика
+country_event = {
+	id = NW_FSR.0
+	title = NW_FSR.0.t
+	desc = NW_FSR.0.d
+	picture = GFX_report_event_hol_cabinet_de_geer
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_FSR.0" }
+	option = {
+		name = NW_FSR.0.a
+	}
+}
+
+# YUN Приближение коммунистических партизан к границе
+country_event = {
+	id = NW_FSR.1
+	title = NW_FSR.1.t
+	desc = NW_FSR.1.d
+	picture = GFX_report_event_hol_cabinet_de_geer
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_FSR.1" }
+	option = {
+		name = NW_FSR.1.a
+		add_timed_idea = { idea = FSR_movement_of_the_red_army_through_yunnan_idea days = 180 }
+		hidden_effect = { country_event = { id = NW_FSR.2 days = 150 } }							#Коммунисты покидают Юньнань
+	}
+	option = {
+		name = NW_FSR.1.b
+		hidden_effect = { country_event = { id = NW_FSR.7 days = 30 } }								#Победа над армией коммунистов
+	}
+}
+
+# YUN Коммунисты покидают Юньнань
+country_event = {
+	id = NW_FSR.2
+	title = NW_FSR.2.t
+	desc = NW_FSR.2.d
+	picture = GFX_report_event_hol_cabinet_de_geer
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_FSR.2" }
+	option = {
+		name = NW_FSR.2.a
+		if = {
+			limit = { country_exists = XIK }
+			XIK = { country_event = { id = NW_FSR.3 days = 1 } }									#Другая часть Красной армии у границ
+		}
+		else_if = {
+			limit = { country_exists = FSR }
+			FSR = { country_event = { id = NW_FSR.4 days = 1 } }									#Прибытие других армий
+		}
+	}
+}
+
+# XIK Другая часть Красной армии у границ
+country_event = {
+	id = NW_FSR.3
+	title = NW_FSR.3.t
+	desc = NW_FSR.3.d
+	picture = GFX_report_event_hol_cabinet_de_geer
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_FSR.3" }
+	option = {
+		name = NW_FSR.3.a
+		hidden_effect = { FSR = { country_event = { id = NW_FSR.4 days = 20 } } }					#Прибытие других армий
+	}
+	option = {
+		name = NW_FSR.3.b
+		trigger = {
+			FSR = {
+				exists = yes
+				controls_state = 752
+			}
+		}
+		hidden_effect = { FSR = { country_event = { id = NW_FSR.5 days = 1 } } }					#Помощь Красной армии
+	}
+}
+
+# Прибытие других армий
+country_event = {
+	id = NW_FSR.4
+	title = NW_FSR.4.t
+	desc = NW_FSR.4.d
+	picture = GFX_report_event_hol_cabinet_de_geer
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_FSR.4" }
+	option = {
+		name = NW_FSR.4.a
+		hidden_effect = {
+			if = {
+				limit = { SOV = { has_civil_war = no } }
+				SOV = { country_event = { id = NW_FSR.10 days = 1 } }								#Раскол в КПК
+			}
+			else = {
+				country_event = { id = NW_FSR.12 days = 10 }										#Конференция в [столица FSR] II
+			}
+		}
+		add_corps_commander_role = {
+			Character = FSR_he_long
+			skill = 4
+			attack_skill = 3
+			defense_skill = 1
+			planning_skill = 3
+			logistics_skill = 2
+			traits = { infantry_officer guerilla_fighter trickster }
+		}
+		add_advisor_role = {
+			character = FSR_he_long
+			advisor = {
+				slot = high_command
+				cost = 100
+				idea_token = FSR_he_long
+				traits = { army_logistics_3 }
+			}
+		}
+		add_advisor_role = {
+			character = FSR_Jen_Bishi
+			advisor = {
+				slot = political_advisor
+				cost = 150
+				idea_token = FSR_Jen_Bishi
+				traits = { silent_workhorse }
+			}
+		}
+		if = {
+			limit = { NOT = { has_template = "Ren Bishi's Army" } }
+			division_template = {
+				name = "Ren Bishi's Army"
+				is_locked = no
+				division_names_group = PRC_INF_01
+				regiments = {
+					infantry = { x = 0 y = 0 }
+					infantry = { x = 0 y = 1 }
+					infantry = { x = 1 y = 0 }
+					infantry = { x = 1 y = 1 }
+				}
+			}
+		}
+		capital_scope = {
+			create_unit = {
+				division = "division_template = \"Ren Bishi's Army\" start_experience_factor = 0.4"
+				owner = ROOT
+				count = 5
+			}
+		}
+	}
+}
+
+# Помощь Красной армии
+country_event = {
+	id = NW_FSR.5
+	title = NW_FSR.5.t
+	desc = NW_FSR.5.d
+	picture = GFX_report_event_hol_cabinet_de_geer
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_FSR.5" }
+	option = {
+		name = NW_FSR.5.a
+		hidden_effect = { FROM = { country_event = { id = NW_FSR.6 days = 1 } } }					#Удар в спину
+	}
+	option = {
+		name = NW_FSR.5.b
+		hidden_effect = { FROM = { country_event = { id = NW_FSR.9 days = 1 } } }					#Подавление коммунистов
+	}
+}
+
+# XIK Удар в спину
+country_event = {
+	id = NW_FSR.6
+	title = NW_FSR.6.t
+	desc = NW_FSR.6.d
+	picture = GFX_report_event_hol_cabinet_de_geer
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_FSR.6" }
+	option = {
+		name = NW_FSR.6.a
+		army_experience = 10
+		hidden_effect = { FROM = { country_event = { id = NW_FSR.4 days = 10 } } }					#Прибытие других армий
+	}
+	option = {
+		name = NW_FSR.6.b			
+		declare_war_on = { target = FROM type = annex_everything }
+		hidden_effect = {
+			FROM = {
+				add_corps_commander_role = {
+					Character = FSR_he_long
+					skill = 4
+					attack_skill = 3
+					defense_skill = 1
+					planning_skill = 3
+					logistics_skill = 2
+					traits = { infantry_officer guerilla_fighter trickster }
+				}
+				add_advisor_role = {
+					character = FSR_he_long
+					advisor = {
+						slot = high_command
+						cost = 100
+						idea_token = FSR_he_long
+						traits = { army_logistics_3 }
+					}
+				}
+				add_advisor_role = {
+					character = FSR_Jen_Bishi
+					advisor = {
+						slot = political_advisor
+						cost = 150
+						idea_token = FSR_Jen_Bishi
+						traits = { silent_workhorse }
+					}
+				}
+				if = {
+					limit = { NOT = { has_template = "Ren Bishi's Army" } }
+					division_template = {
+						name = "Ren Bishi's Army"
+						is_locked = no
+						division_names_group = PRC_INF_01
+						regiments = {
+							infantry = { x = 0 y = 0 }
+							infantry = { x = 0 y = 1 }
+							infantry = { x = 1 y = 0 }
+							infantry = { x = 1 y = 1 }
+						}
+					}
+				}
+				capital_scope = {
+					create_unit = {
+						division = "division_template = \"Ren Bishi's Army\" start_experience_factor = 0.4"
+						owner = ROOT
+						count = 2
+					}
+				}
+			}
+		}
+	}
+}
+
+# YUN Победа над армией коммунистов
+country_event = {
+	id = NW_FSR.7
+	title = NW_FSR.7.t
+	desc = NW_FSR.7.d
+	picture = GFX_report_event_hol_cabinet_de_geer
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_FSR.7" }
+	option = {
+		name = NW_FSR.7.a
+		army_experience = 20
+		hidden_effect = { FSR = { country_event = { id = NW_FSR.8 days = 55 } } }					#Прибытие остатков красных армий
+	}
+}
+
+# Прибытие остатков красных армий
+country_event = {
+	id = NW_FSR.8
+	title = NW_FSR.8.t
+	desc = NW_FSR.8.d
+	picture = GFX_report_event_hol_cabinet_de_geer
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_FSR.8" }
+	option = {
+		name = NW_FSR.8.a
+		add_corps_commander_role = {
+			Character = FSR_he_long
+			skill = 4
+			attack_skill = 3
+			defense_skill = 1
+			planning_skill = 3
+			logistics_skill = 2
+			traits = { infantry_officer guerilla_fighter trickster }
+		}
+		add_advisor_role = {
+			character = FSR_he_long
+			advisor = {
+				slot = high_command
+				cost = 100
+				idea_token = FSR_he_long
+				traits = { army_logistics_3 }
+			}
+		}
+		add_advisor_role = {
+			character = FSR_Jen_Bishi
+			advisor = {
+				slot = political_advisor
+				cost = 150
+				idea_token = FSR_Jen_Bishi
+				traits = { silent_workhorse }
+			}
+		}
+		if = {
+			limit = { NOT = { has_template = "Ren Bishi's Army" } }
+			division_template = {
+				name = "Ren Bishi's Army"
+				is_locked = no
+				division_names_group = PRC_INF_01
+				regiments = {
+					infantry = { x = 0 y = 0 }
+					infantry = { x = 0 y = 1 }
+					infantry = { x = 1 y = 0 }
+					infantry = { x = 1 y = 1 }
+				}
+			}
+		}
+		capital_scope = {
+			create_unit = {
+				division = "division_template = \"Ren Bishi's Army\" start_experience_factor = 0.4"
+				owner = ROOT
+				count = 1
+			}
+		}
+	}
+}
+
+# Подавление коммунистов
+country_event = {
+	id = NW_FSR.9
+	title = NW_FSR.9.t
+	desc = NW_FSR.9.d
+	picture = GFX_report_event_hol_cabinet_de_geer
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_FSR.9" }
+	option = {
+		name = NW_FSR.9.a
+		army_experience = 20
+		hidden_effect = { FROM = { country_event = { id = NW_FSR.8 days = 30 } } }					#Прибытие остатков красных армий
+	}
+}
+
+# SOV Раскол в КПК
+country_event = {
+	id = NW_FSR.10
+	title = NW_FSR.10.t
+	desc = NW_FSR.10.d
+	picture = GFX_report_event_hol_cabinet_de_geer
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_FSR.10" }
+	option = {
+		name = NW_FSR.10.a
+		hidden_effect = { FROM = { country_event = { id = NW_FSR.11 days = 1 } } }					#Конференция в [столица FSR] I
+	}
+	option = {
+		name = NW_FSR.10.b
+		hidden_effect = { FROM = { country_event = { id = NW_FSR.12 days = 1 } } }					#Конференция в [столица FSR] II
+	}
+}
+
+# Конференция в [столица FSR] I
+country_event = {
+	id = NW_FSR.11
+	title = NW_FSR.11.t
+	desc = NW_FSR.11.d
+	picture = GFX_report_event_hol_cabinet_de_geer
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_FSR.11" }
+	option = {
+		name = NW_FSR.11.a
+		remove_ideas = FSR_loss_of_communication_with_the_comintern_idea
+		set_country_flag = FSR_eliminate_the_parallel_apparatus_of_the_party_UNLOCK_flag
+		effect_tooltip = { unlock_national_focus = FSR_eliminate_the_parallel_apparatus_of_the_party }
+	}
+}
+
+# Конференция в [столица FSR] II
+country_event = {
+	id = NW_FSR.12
+	title = NW_FSR.12.t
+	desc = NW_FSR.12.d
+	picture = GFX_report_event_hol_cabinet_de_geer
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_FSR.12" }
+	option = {
+		name = NW_FSR.12.a
+		set_country_flag = FSR_banish_liu_wenhui_UNLOCK_flag
+		effect_tooltip = { unlock_national_focus = FSR_banish_liu_wenhui }
+	}
+	option = {
+		name = NW_FSR.12.b
+		set_country_flag = FSR_eliminate_the_parallel_apparatus_of_the_party_UNLOCK_flag
+		effect_tooltip = { unlock_national_focus = FSR_eliminate_the_parallel_apparatus_of_the_party }
+	}
+}
+
+# 752.controller Войска Чжана Готао
+country_event = {
+	id = NW_FSR.13
+	title = NW_FSR.13.t
+	desc = NW_FSR.13.d
+	picture = GFX_report_event_hol_cabinet_de_geer
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_FSR.13" }
+	option = {
+		name = NW_FSR.13.a
+		FROM = {
+			transfer_state = 752
+			country_event = { id = NW_FSR.14 hours = 12 }											#Успешное занятие района Чамдо
+		}
+	}
+	option = {
+		name = NW_FSR.13.b
+		start_border_war = {
+			change_state_after_war = no
+			attacker = {
+				state = 1131
+				num_provinces = 1
+				on_win = NW_FSR.16																	#Коммунисты прорываются в Сикан
+				on_lose = NW_FSR.17																	#Неудачное наступление коммунистов
+			}
+			defender = {
+				state = 752
+				num_provinces = 1
+				on_win = NW_FSR.17																	#Неудачное наступление коммунистов
+				on_lose = NW_FSR.16																	#Коммунисты прорываются в Сикан
+			}
+		}
+		activate_mission = FSR_battle_of_chamdo_mission
+		FROM = { activate_mission = FSR_battle_of_chamdo_mission }
+	}
+}
+
+# Успешное занятие района Чамдо
+country_event = {
+	id = NW_FSR.14
+	title = NW_FSR.14.t
+	desc = NW_FSR.14.d
+	picture = GFX_report_event_hol_cabinet_de_geer
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_FSR.14" }
+	option = {
+		name = NW_FSR.14.a
+		SIH = { transfer_state = 1131 }
+		hidden_effect = { CHI = { country_event = { id = NW_FSR.15 days = 1 } } }					#Коммунисты проникли в Сикан
+	}
+}
+
+# Коммунисты проникли в Сикан
+country_event = {
+	id = NW_FSR.15
+	title = NW_FSR.15.t
+	desc = NW_FSR.15.d
+	picture = GFX_report_event_hol_cabinet_de_geer
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_FSR.15" }
+	option = {
+		name = NW_FSR.15.a
+		XIK = { country_event = { id = NW_FSR.18 days = 1 } }										#Восстание Норлы Хутукту
+	}
+	option = {
+		name = NW_FSR.15.b
+		FSR = { country_event = { id = NW_FSR.19 days = 1 } }										#Сражение с отрядом Гоминьдана
+	}
+}
+
+# FSR/XIK Коммунисты прорываются в Сикан
+country_event = {
+	id = NW_FSR.16
+	title = NW_FSR.16.t
+	desc = NW_FSR.16.d
+	picture = GFX_report_event_hol_cabinet_de_geer
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_FSR.16" }
+	option = {
+		name = NW_FSR.16.a
+		trigger = { NOT = { original_tag = FSR } }
+		add_stability = -0.03
+		hidden_effect = { CHI = { country_event = { id = NW_FSR.15 days = 1 } } }					#Коммунисты проникли в Сикан
+	}
+	option = {
+		name = NW_FSR.16.b
+		trigger = { original_tag = FSR }
+		add_stability = 0.03
+		add_war_support = 0.03
+		transfer_state = 752
+		SIH = { transfer_state = 1131 }
+	}
+}
+
+# FSR/XIK Неудачное наступление коммунистов
+country_event = {
+	id = NW_FSR.17
+	title = NW_FSR.17.t
+	desc = NW_FSR.17.d
+	picture = GFX_report_event_hol_cabinet_de_geer
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_FSR.17" }
+	option = {
+		name = NW_FSR.17.a
+		trigger = { NOT = { original_tag = FSR } }
+		add_stability = 0.01
+		country_event = { id = NW_FSR.18 days = 1 }
+	}
+	option = {
+		name = NW_FSR.17.b
+		trigger = { original_tag = FSR }
+		add_stability = -0.03
+		add_war_support = -0.04
+		if = {
+			limit = { focus_progress = { focus = FSR_enter_the_sican progress < 1 } }
+			hidden_effect = { complete_national_focus = FSR_enter_the_sican }
+		}
+		uncomplete_national_focus = { focus = FSR_enter_the_sican }
+	}
+}
+
+# XIK Восстание Норлы Хутукту
+country_event = {
+	id = NW_FSR.18
+	title = NW_FSR.18.t
+	desc = NW_FSR.18.d
+	picture = GFX_report_event_hol_cabinet_de_geer
+	is_triggered_only = yes
+	immediate = {
+		log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_FSR.18"
+		hidden_effect = {
+			create_dynamic_country = {
+				original_tag = ROOT
+				copy_tag = ROOT
+				add_popularity = { ideology = neutrality popularity = 1 }
+				set_politics = { ruling_party = neutrality elections_allowed = no }
+				set_cosmetic_tag = XIK_kham_click
+				ROOT = {
+					random_controlled_state = {
+						limit = { is_demilitarized_zone = yes }
+						transfer_state_to = PREV.PREV
+						set_demilitarized_zone = no
+					}
+					transfer_units_fraction = {
+						target = PREV
+						size = 0.4
+						stockpile_ratio = 0.3
+						army_ratio = 0.3
+						air_ratio = 0.3
+						navy_ratio = 0.3
+						keep_unit_leaders_trigger = { always = yes }
+					}
+					declare_war_on = { target = PREV type = civil_war }
+					add_civil_war_target = PREV
+					XIK_norla_khutukta = { set_nationality = PREV.PREV }
+				}
+				every_other_country = {
+					limit = { 
+						original_tag = ROOT
+						NOT = { tag = ROOT }
+					}
+					declare_war_on = { target = PREV type = civil_war }
+					add_civil_war_target = PREV
+					PREV = { add_civil_war_target = PREV }
+				}
+				add_civil_war_target = ROOT
+				every_enemy_country = {
+					every_state = {
+						limit = {
+							NOT = { is_fully_controlled_by = PREV }
+							controller = { tag = PREV.PREV }
+						}
+						teleport_armies = {
+							limit = { tag = PREV }
+							to_state_array = controlled_states
+						}
+					}
+				}
+				add_country_leader_role = {
+					character = XIK_norla_khutukta
+					promote_leader = yes
+					country_leader = {
+						desc = "POLITICS_NORLA_KHUTUKTA_DESC"
+						ideology = authoritarian_democracy
+						expire = "1965.1.1.1"
+						traits = {  }
+					}
+				}
+				#TODO: у восставших загрузится дерево фокусов восстания
+			}
+		}
+	}
+	option = {
+		name = NW_FSR.18.a
+	}
+	option = {
+		name = NW_FSR.18.b
+		random_enemy_country = {
+			limit = { original_tag = ROOT }
+			change_tag_from = ROOT
+		}
+	}
+}
+
+# Сражение с отрядом Гоминьдана
+country_event = {
+	id = NW_FSR.19
+	title = NW_FSR.19.t
+	desc = NW_FSR.19.d
+	picture = GFX_report_event_hol_cabinet_de_geer
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_FSR.19" }
+	option = {
+		name = NW_FSR.19.a
+		hidden_effect = { country_event = { id = NW_FSR.20 days = 10 } }							#Хутукта пленён
+	}
+}
+
+# Хутукта пленён
+country_event = {
+	id = NW_FSR.20
+	title = NW_FSR.20.t
+	desc = NW_FSR.20.d
+	picture = GFX_report_event_hol_cabinet_de_geer
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_FSR.20" }
+	option = {
+		name = NW_FSR.20.a
+		hidden_effect = {
+			XIK = {
+				if = {
+					limit = { exists = yes }
+					country_event = { id = NW_FSR.59 days = 1 }
+				}
+			}
+		}
+		994 = {
+			if = {
+				limit = { is_demilitarized_zone = yes }
+				set_demilitarized_zone = no
+			}
+		}
+	}
+	option = {
+		name = NW_FSR.20.b
+		994 = {
+			if = {
+				limit = { is_demilitarized_zone = yes }
+				set_demilitarized_zone = no
+			}
+		}
+		hidden_effect = {
+			country_event = { id = NW_FSR.21 days = 10 }							#Разговоры за часуймой
+			XIK = {
+				if = {
+					limit = { exists = yes }
+					country_event = { id = NW_FSR.59 days = 1 }
+				}
+			}
+		}
+	}
+}
+
+# Разговоры за часуймой
+country_event = {
+	id = NW_FSR.21
+	title = NW_FSR.21.t
+	desc = NW_FSR.21.d
+	picture = GFX_report_event_hol_cabinet_de_geer
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_FSR.21" }
+	option = {
+		name = NW_FSR.21.a
+		add_stability = 0.05
+		set_country_flag = NW_FSR_event_21_flag
+	}
+}
+
+# Болезнь Хутукты
+country_event = {
+	id = NW_FSR.22
+	title = NW_FSR.22.t
+	desc = NW_FSR.22.d
+	picture = GFX_report_event_hol_cabinet_de_geer
+	is_triggered_only = yes
+	trigger = { has_country_flag = NW_FSR_event_21_flag }
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_FSR.22" }
+	option = {
+		name = NW_FSR.22.a
+		trigger = { NOT = { country_exists = XIK } }
+		hidden_effect = { country_event = { id = NW_FSR.23 days = 20 } }							#Выздоровление Хутукты
+	}
+	option = {
+		name = NW_FSR.22.b
+		trigger = { country_exists = XIK }
+		hidden_effect = { country_event = { id = NW_FSR.24 days = 20 } }							#Смерть ламы
+	}
+}
+
+# Выздоровление Хутукты
+country_event = {
+	id = NW_FSR.23
+	title = NW_FSR.23.t
+	desc = NW_FSR.23.d
+	picture = GFX_report_event_hol_cabinet_de_geer
+	is_triggered_only = yes
+	immediate = {
+		log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_FSR.23"
+		hidden_effect = {
+			every_possible_country = {
+				limit = {
+					original_tag = XIK
+					has_character = XIK_norla_khutukta
+				}
+				XIK_norla_khutukta = { set_nationality = ROOT }
+			}
+		}
+	}
+	option = {
+		name = NW_FSR.23.a
+		add_advisor_role = {
+			character = XIK_norla_khutukta
+			advisor = {
+				slot = political_advisor
+				cost = 150
+				idea_token = XIK_norla_khutukta
+				traits = { FSR_popular_tibetan_lama }
+			}
+		}
+	}
+}
+
+# Смерть ламы
+country_event = {
+	id = NW_FSR.24
+	title = NW_FSR.24.t
+	desc = NW_FSR.24.d
+	picture = GFX_report_event_hol_cabinet_de_geer
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_FSR.24" }
+	option = {
+		name = NW_FSR.24.a
+	}
+}
+
+# Конгресс тибетского народа
+country_event = {
+	id = NW_FSR.25
+	title = NW_FSR.25.t
+	desc = NW_FSR.25.d
+	picture = GFX_report_event_hol_cabinet_de_geer
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_FSR.25" }
+	option = {
+		name = NW_FSR.25.a
+		add_stability = 0.08
+		add_war_support = 0.04
+	}
+}
+
+# 1177.controller Приближение Красной армии
+country_event = {
+	id = NW_FSR.26
+	title = NW_FSR.26.t
+	desc = NW_FSR.26.d
+	picture = GFX_report_event_hol_cabinet_de_geer
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_FSR.26" }
+	option = {
+		name = NW_FSR.26.a
+		trigger = { XSM_Ma_Lin = { is_country_leader = yes } }
+		FROM = { transfer_state = 1177 }
+		if = {
+			limit = { country_exists = XIK }
+			XIK = { transfer_state = 752 }
+		}
+		else = {
+			SIH = { transfer_state = 752 }
+		}
+		if = {
+			limit = {
+				has_character = XSM_Ma_Bufang
+				NOT = { has_country_leader = { character = XSM_Ma_Bufang ruling_only = yes } }
+			}
+			country_event = { id = NW_FSR.27 days = 1 }
+		}
+	}
+	option = {
+		name = NW_FSR.26.b
+		start_border_war = {
+			change_state_after_war = no
+			attacker = {
+				state = 752
+				num_provinces = 2
+				on_win = NW_FSR.30																	#Коммунисты входят в Цинхай
+				on_lose = NW_FSR.31																	#Коммунисты остановлены
+			}
+			defender = {
+				state = 1177
+				num_provinces = 1
+				on_win = NW_FSR.31																	#Коммунисты остановлены
+				on_lose = NW_FSR.30																	#Коммунисты входят в Цинхай
+			}
+		}
+		activate_mission = FSR_battle_of_1177_mission
+		FROM = { activate_mission = FSR_battle_of_1177_mission }
+	}
+}
+
+# Скандал в руководстве
+country_event = {
+	id = NW_FSR.27
+	title = NW_FSR.27.t
+	desc = NW_FSR.27.d
+	picture = GFX_report_event_hol_cabinet_de_geer
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_FSR.27" }
+	option = {
+		name = NW_FSR.27.a
+		add_country_leader_role = {
+			character = XSM_Ma_Bufang
+			promote_leader = yes
+			country_leader = {
+				desc = "POLITICS_MA_BUFANG_DESC"
+				ideology = despotism
+				expire = "1965.1.1.1"
+				traits = {  }
+			}
+		}
+		start_border_war = {
+			change_state_after_war = no
+			attacker = {
+				state = 754
+				num_provinces = 3
+				on_win = NW_FSR.29																	#Последний шанс коммунистической колонны
+				on_lose = NW_FSR.28																	#Коммунисты сохранили свои позиции
+			}
+			defender = {
+				state = 1177
+				num_provinces = 1
+				on_win = NW_FSR.28																	#Коммунисты сохранили свои позиции
+				on_lose = NW_FSR.29																	#Последний шанс коммунистической колонны
+			}
+		}
+		activate_mission = FSR_battle_of_1177_mission_2
+		FSR = { activate_mission = FSR_battle_of_1177_mission_2 }
+	}
+}
+
+# Коммунисты сохранили свои позиции
+country_event = {
+	id = NW_FSR.28
+	title = NW_FSR.28.t
+	desc = NW_FSR.28.d
+	picture = GFX_report_event_hol_cabinet_de_geer
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_FSR.28" }
+	option = {
+		name = NW_FSR.28.a
+		trigger = { NOT = { original_tag = FSR } }
+		declare_war_on = { target = FSR type = annex_everything }
+	}
+	option = {
+		name = NW_FSR.28.b
+		trigger = { NOT = { original_tag = FSR } }
+	}
+	option = {
+		name = NW_FSR.28.c
+		trigger = { original_tag = FSR }
+	}
+}
+
+# Последний шанс коммунистической колонны
+country_event = {
+	id = NW_FSR.29
+	title = NW_FSR.29.t
+	desc = NW_FSR.29.d
+	picture = GFX_report_event_hol_cabinet_de_geer
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_FSR.29" }
+	option = {
+		name = NW_FSR.29.a
+		trigger = { NOT = { original_tag = FSR } }
+	}
+	option = {
+		name = NW_FSR.29.b
+		trigger = { original_tag = FSR }
+		declare_war_on = { target = 754.controller type = annex_everything }
+	}
+}
+
+# Коммунисты входят в Цинхай
+country_event = {
+	id = NW_FSR.30
+	title = NW_FSR.30.t
+	desc = NW_FSR.30.d
+	picture = GFX_report_event_hol_cabinet_de_geer
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_FSR.30" }
+	option = {
+		name = NW_FSR.30.a
+		trigger = { NOT = { original_tag = FSR } }
+	}
+	option = {
+		name = NW_FSR.30.b
+		trigger = { original_tag = FSR }
+		transfer_state = 1177
+		if = {
+			limit = { country_exists = XIK }
+			XIK = { transfer_state = 752 }
+		}
+		else = {
+			SIH = { transfer_state = 752 }
+		}
+	}
+}
+
+# Коммунисты остановлены
+country_event = {
+	id = NW_FSR.31
+	title = NW_FSR.31.t
+	desc = NW_FSR.31.d
+	picture = GFX_report_event_hol_cabinet_de_geer
+	is_triggered_only = yes
+	immediate = {
+		log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_FSR.31"
+		if = {
+			limit = { original_tag = FSR }
+			add_to_variable = { FSR_num_of_loses = 1 }
+		}
+	}
+	option = {
+		name = NW_FSR.31.a
+		trigger = { NOT = { original_tag = FSR } }
+	}
+	option = {
+		name = NW_FSR.31.b
+		trigger = {
+			original_tag = FSR
+			check_variable = { FSR_num_of_loses < 3 }
+		}
+		uncomplete_national_focus = { focus = FSR_continue_the_great_campaign }
+	}
+	option = {
+		name = NW_FSR.31.c
+		trigger = {
+			original_tag = FSR
+			check_variable = { FSR_num_of_loses > 2 }
+		}
+		country_event = NW_FSR.32
+	}
+}
+
+# Крах колонны Чжана Готао
+country_event = {
+	id = NW_FSR.32
+	title = NW_FSR.32.t
+	desc = NW_FSR.32.d
+	picture = GFX_report_event_hol_cabinet_de_geer
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_FSR.32" }
+	option = {
+		name = NW_FSR.32.a
+		custom_effect_tooltip = GAME_OVER_TT
+		751 = { controller = { annex_country = { target = ROOT transfer_troops = yes } } }
+	}
+}
+
+# 283.controller Прибытие остатков Красной армии
+country_event = {
+	id = NW_FSR.33
+	title = NW_FSR.33.t
+	desc = NW_FSR.33.d
+	picture = GFX_report_event_hol_cabinet_de_geer
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_FSR.33" }
+	option = {
+		name = NW_FSR.33.a
+		trigger = {
+			OR = {
+				original_tag = CHI
+				AND = {
+					original_tag = NEA
+					has_completed_focus = NEA_join_the_movement_for_a_new_life
+				}
+			}
+		}
+		start_border_war = {
+			change_state_after_war = no
+			attacker = {
+				state = 1177
+				num_provinces = 1
+				on_win = NW_FSR.34																	#Коммунисты заняли запад Шэньси
+				on_lose = NW_FSR.35																	#Коммунисты остановлены на границе Шэньси
+			}
+			defender = {
+				state = 283
+				num_provinces = 1
+				on_win = NW_FSR.35																	#Коммунисты остановлены на границе Шэньси
+				on_lose = NW_FSR.34																	#Коммунисты заняли запад Шэньси
+			}
+		}
+		activate_mission = FSR_battle_of_283_mission
+		FROM = { activate_mission = FSR_battle_of_283_mission }
+	}
+	option = {
+		name = NW_FSR.33.b
+		trigger = {
+			OR = {
+				AND = {
+					original_tag = NWA
+					is_neighbor_of = PRC
+				}
+				AND = {
+					original_tag = NEA
+					has_completed_focus = NEA_secret_agreement_with_the_communists
+				}
+			}
+		}
+		FROM = {
+			country_event = { id = NW_FSR.38 days = 1 }
+			hidden_effect = { country_event = { id = NW_FSR.39 days = 45 } }
+		}
+	}
+}
+
+# Коммунисты заняли запад Шэньси
+country_event = {
+	id = NW_FSR.34
+	title = NW_FSR.34.t
+	desc = NW_FSR.34.d
+	picture = GFX_report_event_hol_cabinet_de_geer
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_FSR.34" }
+	option = {
+		name = NW_FSR.34.a
+		trigger = {
+			NOT = {
+				original_tag = FSR
+				country_exists = PRC
+			}
+		}
+		declare_war_on = { target = FSR type = annex_everything }
+		hidden_effect = { FSR = { country_event = { id = NW_FSR.37 hours = 12 } } }
+	}
+	option = {
+		name = NW_FSR.34.b
+		trigger = { original_tag = FSR }
+		transfer_state = 283
+		754 = { controller = { transfer_state = 1177 } }
+	}
+	option = {
+		name = NW_FSR.34.c
+		trigger = {
+			NOT = { original_tag = FSR }
+			country_exists = PRC
+		}
+	}
+}
+
+# Коммунисты остановлены на границе Шэньси
+country_event = {
+	id = NW_FSR.35
+	title = NW_FSR.35.t
+	desc = NW_FSR.35.d
+	picture = GFX_report_event_hol_cabinet_de_geer
+	is_triggered_only = yes
+	immediate = {
+		log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_FSR.35"
+		if = {
+			limit = { original_tag = FSR }
+			add_to_variable = { FSR_num_of_loses_2 = 1 }
+		}
+	}
+	option = {
+		name = NW_FSR.35.a
+		trigger = { NOT = { original_tag = FSR } }
+	}
+	option = {
+		name = NW_FSR.35.b
+		trigger = {
+			original_tag = FSR
+			check_variable = { FSR_num_of_loses_2 < 2 }
+		}
+		uncomplete_national_focus = { focus = FSR_make_one_last_push }
+	}
+	option = {
+		name = NW_FSR.35.c
+		trigger = {
+			original_tag = FSR
+			check_variable = { FSR_num_of_loses_2 > 1 }
+		}
+		country_event = NW_FSR.36
+	}
+}
+
+# Крах колонны Чжана Готао II
+country_event = {
+	id = NW_FSR.36
+	title = NW_FSR.36.t
+	desc = NW_FSR.36.d
+	picture = GFX_report_event_hol_cabinet_de_geer
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_FSR.36" }
+	option = {
+		name = NW_FSR.36.a
+		custom_effect_tooltip = GAME_OVER_TT
+		754 = { controller = { annex_country = { target = ROOT transfer_troops = yes } } }
+	}
+}
+
+# Последняя надежда коммунизма
+country_event = {
+	id = NW_FSR.37
+	title = NW_FSR.37.t
+	desc = NW_FSR.37.d
+	picture = GFX_report_event_hol_cabinet_de_geer
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_FSR.37" }
+	option = {
+		name = NW_FSR.37.a
+		set_cosmetic_tag = FSR_chinese_soviet_federation
+	}
+}
+
+# Наши союзники
+country_event = {
+	id = NW_FSR.38
+	title = NW_FSR.38.t
+	desc = NW_FSR.38.d
+	picture = GFX_report_event_hol_cabinet_de_geer
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_FSR.38" }
+	option = {
+		name = NW_FSR.38.a
+	}
+}
+
+# Пульсар
+country_event = {
+	hidden = yes
+    id = NW_FSR.39
+	is_triggered_only = yes
+	immediate = {
+		log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): hidden event NW_FSR.39"
+		if = {
+			limit = {
+				is_subject = no
+				is_neighbor_of = PRC
+				NOT = { has_completed_focus = FSR_united_army }
+			}
+			complete_national_focus = FSR_united_army
+		}
+	}
+}
+
+# 1126.controller Войска коммунистов входят в коридор Хэси
+country_event = {
+	id = NW_FSR.40
+	title = NW_FSR.40.t
+	desc = NW_FSR.40.d
+	picture = GFX_report_event_hol_cabinet_de_geer
+	is_triggered_only = yes
+	immediate = {
+		log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_FSR.40"
+		set_country_flag = NW_FSR_event_40_opponent_flag
+	}
+	option = {
+		name = NW_FSR.40.a
+		FROM = {
+			transfer_state = 1126
+			declare_war_on = { target = ROOT type = annex_everything }
+			country_event = { id = NW_FSR.41 hours = 12 }
+		}
+		754 = { controller = { transfer_state = 1177 } }
+		283 = {
+			if = {
+				limit = { controller = { tag = FROM } }
+				transfer_state_to = 744.controller
+			}
+		}
+	}
+	option = {
+		name = NW_FSR.40.b
+		FROM = {
+			country_event = { id = NW_FSR.42 days = 1 }
+			hidden_effect = { country_event = { id = NW_FSR.43 days = 45 } }
+		}
+	}
+}
+
+# Прорыв через Хэси
+country_event = {
+	id = NW_FSR.41
+	title = NW_FSR.41.t
+	desc = NW_FSR.41.d
+	picture = GFX_report_event_hol_cabinet_de_geer
+	is_triggered_only = yes
+	immediate = {
+		log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_FSR.41"
+		set_country_flag = NW_FSR_event_41_flag
+	}
+	option = {
+		name = NW_FSR.41.a
+		
+	}
+}
+
+# Мирное урегулирование
+country_event = {
+	id = NW_FSR.42
+	title = NW_FSR.42.t
+	desc = NW_FSR.42.d
+	picture = GFX_report_event_hol_cabinet_de_geer
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_FSR.42" }
+	option = {
+		name = NW_FSR.42.a
+		custom_effect_tooltip = NW_FSR_42_tt
+		transfer_state = 756
+		754 = { controller = { transfer_state = 1177 } }
+		283 = {
+			if = {
+				limit = { controller = { tag = ROOT } }
+				transfer_state_to = 744.controller
+			}
+		}
+	}
+}
+
+# Пульсар
+country_event = {
+	hidden = yes
+    id = NW_FSR.43
+	is_triggered_only = yes
+	immediate = {
+		log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): hidden event NW_FSR.43"
+		760 = { controller = { country_event = { id = NW_FSR.47 days = 1 } } }							#Прибытие колонны коммунистов
+		transfer_state = 760
+		1126 = { controller = { transfer_state = 756 } }
+	}
+}
+
+# Неожиданный исход событий
+country_event = {
+	id = NW_FSR.44
+	title = NW_FSR.44.t
+	desc = NW_FSR.44.d
+	picture = GFX_report_event_hol_cabinet_de_geer
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_FSR.44" }
+	option = {
+		name = NW_FSR.44.a
+		set_cosmetic_tag = FSR_gansui_soviet_district
+	}
+}
+
+# Завершение похода на Синьцзянь
+country_event = {
+	id = NW_FSR.45
+	title = NW_FSR.45.t
+	desc = NW_FSR.45.d
+	picture = GFX_report_event_hol_cabinet_de_geer
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_FSR.45" }
+	option = {
+		name = NW_FSR.45.a
+		760 = {
+			controller = { country_event = { id = NW_FSR.47 days = 1 } }								#Прибытие колонны коммунистов
+			transfer_state_to = ROOT
+		}
+		if = {
+			limit = { has_war_with = XSM }
+			XSM = { country_event = { id = NW_FSR.49 days = 1 } }
+		}
+		else_if = {
+			limit = { has_war_with = NGX }
+			NGX = { country_event = { id = NW_FSR.49 days = 1 } }
+		}
+		every_enemy_country = {
+			limit = {
+				OR = {
+					original_tag = XSM
+					original_tag = NGX
+					is_subject_of = XSM
+					is_subject_of = NGX
+					is_in_faction_with = XSM
+					is_in_faction_with = NGX
+				}
+			}
+			white_peace = { tag = ROOT }
+		}
+		every_controlled_state = {
+			limit = { NOT = { is_core_of = ROOT } is_core_of = NGX }
+			transfer_state_to = NGX
+		}
+		every_controlled_state = {
+			limit = { NOT = { is_core_of = ROOT } is_core_of = XSM }
+			transfer_state_to = XSM
+		}
+	}
+}
+
+# Гибель армии Западного маршрута
+country_event = {
+	id = NW_FSR.46
+	title = NW_FSR.46.t
+	desc = NW_FSR.46.d
+	picture = GFX_report_event_hol_cabinet_de_geer
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_FSR.46" }
+	option = {
+		name = NW_FSR.46.a
+		760 = { controller = { country_event = { id = NW_FSR.48 days = 1 } } }							#Прибытие группы коммунистов
+	}
+}
+
+# NGX/XSM Уход колонны коммунистов
+country_event = {
+	id = NW_FSR.49
+	title = NW_FSR.49.t
+	desc = NW_FSR.49.d
+	picture = GFX_report_event_hol_cabinet_de_geer
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_FSR.49" }
+	option = {
+		name = NW_FSR.49.a
+	}
+}
+
+# 760.controller Прибытие группы коммунистов
+country_event = {
+	id = NW_FSR.48
+	title = NW_FSR.48.t
+	desc = NW_FSR.48.d
+	picture = GFX_report_event_hol_cabinet_de_geer
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_FSR.48" }
+	option = {
+		name = NW_FSR.48.a
+		trigger = { has_government = communism }
+	}
+	option = {
+		name = NW_FSR.48.b
+		trigger = {
+			original_tag = KUM
+			is_subject_of = SIK
+		}
+		SIK = { country_event = { id = NW_FSR.50 days = 1 } }
+	}
+	option = {
+		name = NW_FSR.48.c
+		trigger = {
+			NOT = {
+				is_subject_of = SIK
+				has_government = communism
+			}
+		}				
+	}
+}
+
+# SIK Бунт в Хами
+country_event = {
+	id = NW_FSR.50
+	title = NW_FSR.50.t
+	desc = NW_FSR.50.d
+	picture = GFX_report_event_hol_cabinet_de_geer
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_FSR.50" }
+	option = {
+		name = NW_FSR.50.a
+		hidden_effect = { end_puppet = KUM }
+		declare_war_on = { target = KUM type = annex_everything }
+	}
+}
+
+# 760.controller Прибытие колонны коммунистов
+country_event = {
+	id = NW_FSR.47
+	title = NW_FSR.47.t
+	desc = NW_FSR.47.desc
+	picture = GFX_report_event_hol_cabinet_de_geer
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_FSR.47" }
+	option = {
+		name = NW_FSR.47.a
+		trigger = {
+			country_exists = SOV
+			OR = {
+				original_tag = TNG
+				original_tag = SIK
+				original_tag = UYG
+			}
+			has_government = communism
+		}
+		SOV = { country_event = { id = NW_FSR.51 days = 1 } }
+	}
+	option = {
+		name = NW_FSR.47.b
+		trigger = {
+			NOT = { country_exists = SOV }
+			OR = {
+				original_tag = TNG
+				original_tag = SIK
+				original_tag = UYG
+				original_tag = DZH
+			}
+			has_government = communism
+		}
+		country_event = { id = NW_FSR.54 days = 1 }
+		FSR = { country_event = { id = NW_FSR.54 days = 1 } }
+	}
+	option = {
+		name = NW_FSR.47.c
+		trigger = {
+			NOT = { country_exists = SOV }
+			OR = {
+				original_tag = TNG
+				original_tag = SIK
+				original_tag = UYG
+			}
+			has_government = communism
+		}
+		declare_war_on = { target = FSR type = annex_everything }
+		FSR = { country_event = { id = NW_FSR.56 days = 1 } }
+	}
+	option = {
+		name = NW_FSR.47.d
+		trigger = {
+			original_tag = KUM
+			is_subject_of = SIK
+		}
+		OVERLORD = { end_puppet = ROOT }
+		declare_war_on = { target = FSR type = annex_everything }
+		SIK = { country_event = { id = NW_FSR.57 days = 1 } }
+		FSR = { country_event = { id = NW_FSR.58 days = 1 } }
+	}
+	option = {
+		name = NW_FSR.47.e
+		trigger = { is_subject = no }
+		declare_war_on = { target = FSR type = annex_everything }
+		FSR = { country_event = { id = NW_FSR.56 days = 1 } }
+	}
+}
+
+# SOV Чжан Готао добрался до Синьцзяна
+country_event = {
+	id = NW_FSR.51
+	title = NW_FSR.51.t
+	desc = NW_FSR.51.d
+	picture = GFX_report_event_hol_cabinet_de_geer
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_FSR.51" }
+	option = {
+		name = NW_FSR.51.a
+		every_other_country = {
+			limit = { has_government = communism OR = { original_tag = SIK original_tag = TNG original_tag = DZH original_tag = FSR } }
+			country_event = { id = NW_FSR.52 days = 1 }
+		}
+	}
+}
+
+# SIK, TNG, DZH, FSR Создание нового советского района
+country_event = {
+	id = NW_FSR.52
+	title = NW_FSR.52.t
+	desc = NW_FSR.52.d
+	picture = GFX_report_event_hol_cabinet_de_geer
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_FSR.52" }
+	option = {
+		name = NW_FSR.52.a
+		if = {
+			limit = { original_tag = FSR }
+			set_cosmetic_tag = FSR_chinese_federation_of_soviet_republics
+			every_other_country = {
+				limit = {
+					has_government = communism
+					OR = {
+						original_tag = SIK
+						original_tag = TNG
+						original_tag = DZH
+						is_subject_of = SIK
+						is_subject_of = TNG
+						is_subject_of = DZH
+					}
+				}
+				ROOT = { annex_country = { target = PREV transfer_troops = yes } }
+			}
+			every_other_country = {
+				limit = {
+					NOT = { has_government = communism }
+					OR = {
+						original_tag = SIK
+						original_tag = TNG
+						original_tag = KAS
+#						original_tag = SMN
+						original_tag = KUM
+						original_tag = DZH
+					}
+				}
+				country_event = { id = NW_FSR.53 days = 1 }
+				effect_tooltip = { declare_war_on = { target = ROOT type = annex_everything } }
+			}
+		}
+		else = {
+			custom_effect_tooltip = GAME_OVER_TT
+			effect_tooltip = { FSR = { annex_country = { target = ROOT transfer_troops = yes } } }
+		}
+	}
+}
+
+# SIK, TNG, KAS, SMN, KUM, DZH Коммунисты создают новый советский район
+country_event = {
+	id = NW_FSR.53
+	title = NW_FSR.53.t
+	desc = NW_FSR.53.d
+	picture = GFX_report_event_hol_cabinet_de_geer
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_FSR.53" }
+	option = {
+		name = NW_FSR.53.a
+		declare_war_on = { target = FROM type = annex_everything }
+	}
+}
+
+# SIK, TNG, KAS, SMN, KUM, DZH Обсуждение дальнейших действий
+country_event = {
+	id = NW_FSR.54
+	title = NW_FSR.54.t
+	desc = NW_FSR.54.d
+	picture = GFX_report_event_hol_cabinet_de_geer
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_FSR.54" }
+	option = {
+		name = NW_FSR.54.a
+		if = {
+			limit = { original_tag = FSR }
+			set_cosmetic_tag = FSR_chinese_federation_of_soviet_republics
+			every_other_country = {
+				limit = {
+					has_government = communism
+					OR = {
+						original_tag = SIK
+						original_tag = TNG
+						original_tag = DZH
+						is_subject_of = SIK
+						is_subject_of = TNG
+						is_subject_of = DZH
+					}
+				}
+				ROOT = { annex_country = { target = PREV transfer_troops = yes } }
+			}
+			every_other_country = {
+				limit = {
+					NOT = { has_government = communism }
+					OR = {
+						original_tag = SIK
+						original_tag = TNG
+						original_tag = KAS
+#						original_tag = SMN
+						original_tag = KUM
+						original_tag = DZH
+					}
+				}
+				country_event = { id = NW_FSR.55 days = 1 }
+				effect_tooltip = { declare_war_on = { target = ROOT type = annex_everything } }
+			}
+		}
+		else = {
+			custom_effect_tooltip = GAME_OVER_TT
+			effect_tooltip = { FSR = { annex_country = { target = ROOT transfer_troops = yes } } }
+		}
+	}
+}
+
+# SIK, TNG, KAS, SMN, KUM, DZH Коммунисты создают новый советский район
+country_event = {
+	id = NW_FSR.55
+	title = NW_FSR.55.t
+	desc = NW_FSR.55.d
+	picture = GFX_report_event_hol_cabinet_de_geer
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_FSR.55" }
+	option = {
+		name = NW_FSR.55.a
+		declare_war_on = { target = FROM type = annex_everything }
+	}
+}
+
+# Предательство в Синьцзяне
+country_event = {
+	id = NW_FSR.56
+	title = NW_FSR.56.t
+	desc = NW_FSR.56.d
+	picture = GFX_report_event_hol_cabinet_de_geer
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_FSR.56" }
+	option = {
+		name = NW_FSR.56.a
+	}
+}
+
+# SIK Бунт Юлбарс-хана
+country_event = {
+	id = NW_FSR.57
+	title = NW_FSR.57.t
+	desc = NW_FSR.57.d
+	picture = GFX_report_event_hol_cabinet_de_geer
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_FSR.57" }
+	option = {
+		name = NW_FSR.57.a
+		declare_war_on = { target = FROM type = annex_everything }
+	}
+}
+
+# Проблемы на границе
+country_event = {
+	id = NW_FSR.58
+	title = NW_FSR.58.t
+	desc = NW_FSR.58.d
+	picture = GFX_report_event_hol_cabinet_de_geer
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_FSR.58" }
+	option = {
+		name = NW_FSR.58.a
+	}
+}
+
+# XIK Лучший исход
+country_event = {
+	id = NW_FSR.59
+	title = NW_FSR.59.t
+	desc = NW_FSR.59.d
+	picture = GFX_report_event_hol_cabinet_de_geer
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_FSR.59" }
+	option = {
+		name = NW_FSR.59.a
+	}
+}
+
+# FSR\PRC Прибытие колонны Чжана Готао в Советский район
+country_event = {
+	id = NW_FSR.60
+	title = NW_FSR.60.t
+	desc = NW_FSR.60.d
+	picture = GFX_report_event_hol_cabinet_de_geer
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_FSR.60" }
+	option = {
+		name = NW_FSR.60.a
+		trigger = { NOT = { original_tag = FROM } }
+	}
+	option = {
+		name = NW_FSR.60.b
+		trigger = {
+			original_tag = FROM
+			check_variable = { num_armies > PRC.num_armies }
+		}
+		PRC = {
+			country_event = { id = NW_FSR.61 days = 1 }
+			hidden_effect = { FSR_zhang_guotao = { set_nationality = PREV } }
+			if = {
+				limit = { is_ai = yes }
+				change_tag_from = ROOT	
+			}
+			annex_country = { target = ROOT transfer_troops = yes }
+		}
+	}
+	option = {
+		name = NW_FSR.60.c
+		trigger = {
+			original_tag = FROM
+			check_variable = { var = num_armies value = PRC.num_armies compare = less_than_or_equals }
+		}
+		PRC = {
+			if = {
+				limit = { is_ai = yes }
+				change_tag_from = ROOT	
+			}
+			annex_country = { target = ROOT transfer_troops = yes }
+		}
+	}
+}
+
+# PRC Срочное заседание ЦК КПК
+country_event = {
+	id = NW_FSR.61
+	title = NW_FSR.61.t
+	desc = NW_FSR.61.d
+	picture = GFX_report_event_hol_cabinet_de_geer
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_FSR.61" }
+	option = {
+		name = NW_FSR.61.a
+		promote_character = FSR_zhang_guotao
+	}
+}
