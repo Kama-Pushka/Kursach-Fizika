@@ -17,6 +17,7 @@ focus_tree = {
 	focus = {
 		id = BHU_growing_centralization
 		icon = GFX_focus_rom_royal_dictatorship
+		search_filters = {FOCUS_FILTER_HISTORICAL}
 		
 		x = 18
 		y = 0
@@ -31,6 +32,7 @@ focus_tree = {
 			factor = 10
 		}
 		available = {
+			NOT = { has_completed_focus = BHU_split_among_penlops }
 		}
 		bypass = {
 		}
@@ -69,6 +71,7 @@ focus_tree = {
 			
 		}
 		bypass = {
+		    has_completed_focus = BHU_reincarnation_of_shabdrung
 		}
 		
 		completion_reward = {
@@ -277,6 +280,9 @@ focus_tree = {
 				}
 				is_subject = no
 			}
+			NOT = {
+		        has_completed_focus = BHU_tong_rebellion
+		    }
 		}
 		bypass = {
 			is_in_faction_with = JAP
@@ -284,6 +290,12 @@ focus_tree = {
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BHU_establish_contact_with_japan"
+			if = {
+				limit = {
+					has_completed_focus = BHU_reincarnation_of_shabdrung
+				}
+				add_stability = -0.25
+			}
 			add_opinion_modifier = { target = JAP modifier = emphasis_on_alliance }
 			JAP = {
 				add_opinion_modifier = { target = ROOT modifier = emphasis_on_alliance }
@@ -536,6 +548,9 @@ focus_tree = {
 		available = {
 			is_subject = no
 			is_in_faction = no
+			NOT = {
+		    	has_completed_focus = BHU_reincarnation_of_shabdrung
+			}
 		}
 		
 		completion_reward = {
@@ -1091,6 +1106,9 @@ focus_tree = {
 				check_variable = { investment_points_var > investment_points_trigger_var }
 				tooltip = investment_points_var_trigger_tt
 			}
+			NOT = {
+		    	has_completed_focus = BHU_reincarnation_of_shabdrung
+			}
 		}
 		bypass = {
 		}
@@ -1153,6 +1171,9 @@ focus_tree = {
 			custom_trigger_tooltip = {
 				check_variable = { investment_points_var > investment_points_trigger_var }
 				tooltip = investment_points_var_trigger_tt
+			}
+			NOT = {
+		    	has_completed_focus = BHU_reincarnation_of_shabdrung
 			}
 		}
 		bypass = {
@@ -1219,6 +1240,9 @@ focus_tree = {
 				check_variable = { investment_points_var > investment_points_trigger_var }
 				tooltip = investment_points_var_trigger_tt
 			}
+			NOT = {
+		    	has_completed_focus = BHU_reincarnation_of_shabdrung
+			}
 		}
 		bypass = {
 		}
@@ -1259,6 +1283,9 @@ focus_tree = {
 			custom_trigger_tooltip = {
 				check_variable = { investment_points_var > investment_points_trigger_var }
 				tooltip = investment_points_var_trigger_tt
+			}
+			NOT = {
+		    	has_completed_focus = BHU_reincarnation_of_shabdrung
 			}
 		}
 		bypass = {
@@ -1301,6 +1328,9 @@ focus_tree = {
 			custom_trigger_tooltip = {
 				check_variable = { investment_points_var > investment_points_trigger_var }
 				tooltip = investment_points_var_trigger_tt
+			}
+			NOT = {
+		    	has_completed_focus = BHU_reincarnation_of_shabdrung
 			}
 		}
 		bypass = {
@@ -1517,7 +1547,7 @@ focus_tree = {
 				add_extra_state_shared_building_slots = 1
 			}
 			custom_effect_tooltip = available_political_advisor
-			show_ideas_tooltip = generic_agrarian_minister_political_advisor
+			show_ideas_tooltip = generic_agrarian_minister_political_advisor # TODO че это
 		}
 	}
 	
@@ -1632,6 +1662,10 @@ focus_tree = {
 			
 		}
 		bypass = {
+		    NOT = {
+				has_government = monarchy
+				has_country_leader = { character = BHU_jemip_wangdi }
+			}
 		}
 		
 		completion_reward = {
@@ -1661,6 +1695,7 @@ focus_tree = {
 			
 		}
 		bypass = {
+		    owner = { NOT = { has_country_leader = { character = BHU_jigme_wangchuck }}} # TODO овнер чего?
 		}
 		
 		completion_reward = {
@@ -1818,16 +1853,22 @@ focus_tree = {
 			
 		}
 		bypass = {
+		    has_completed_focus = BHU_tong_rebellion
 		}
 		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BHU_military_courses_for_king"
 			army_experience = 15
-			BHU_jigme_wangchuck = {
-				gain_xp = 500
-				add_attack = 1
-				add_logistics = 1
-				add_unit_leader_trait = inspirational_leader
+			if = {
+				limit = {
+					has_country_leader = { character = BHU_jigme_wangchuck }
+				}
+				BHU_jigme_wangchuck = {
+					gain_xp = 500
+					add_attack = 1
+					add_logistics = 1
+					add_unit_leader_trait = inspirational_leader
+				}
 			}
 			add_doctrine_cost_reduction = {
 				name = BHU_military_courses_for_king
@@ -2123,6 +2164,7 @@ focus_tree = {
 					add_idea = limited_conscription
 				}
 			}
+			custom_effect_tooltip = BHU_start_creation_of_regular_army_tt
 		}
 	}
 	
@@ -2330,6 +2372,2307 @@ focus_tree = {
 			}
 			custom_effect_tooltip = mountain_warfare_effect
 			hidden_effect = { set_technology = { mountain_warfare = 1 } }
+		}
+	}
+	
+	focus = {
+		id = BHU_split_among_penlops
+		icon = GFX_z_goal_generic_papers
+		
+		x = 6
+		y = 7
+		relative_position_id = BHU_growing_centralization
+		
+		cost = 1
+		
+		cancel_if_invalid = no
+		continue_if_invalid = yes
+		available_if_capitulated = no
+		# allow_branch = {
+ 			# has_country_flag = BHU_split_among_penlops_cf
+        # }
+
+		ai_will_do = {
+			factor = 10
+		}
+		available = {
+		    custom_trigger_tooltip = {
+				tooltip = impossible_to_press_manually
+				always = no
+			}
+		}
+		bypass = {
+		}
+		select_effect = {
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BHU_split_among_penlops"
+			custom_effect_tooltip = TUR_focus_autocomplete_tt
+			hidden_effect = {
+				uncomplete_national_focus = {
+					focus = BHU_growing_centralization
+					uncomplete_children = yes
+				}
+			}
+		}
+	}
+	
+	focus = {
+		id = BHU_tong_rebellion
+		icon = GFX_z_goal_generic_papers
+		prerequisite = { focus = BHU_split_among_penlops }
+		x = 0
+		y = 1
+		relative_position_id = BHU_split_among_penlops
+		mutually_exclusive = { focus = BHU_reincarnation_of_shabdrung focus = BHU_power_tsering_penjor }
+		cost = 1
+		
+		cancel_if_invalid = no
+		continue_if_invalid = yes
+		available_if_capitulated = no
+
+		ai_will_do = {
+			factor = 10
+		}
+		available = {
+		    custom_trigger_tooltip = {
+				tooltip = impossible_to_press_manually
+				always = no
+			}
+		}
+		bypass = {
+		}
+		select_effect = {
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BHU_tong_rebellion"
+			custom_effect_tooltip = BHU_tong_rebellion_tt
+		}
+	}
+	
+	focus = {
+		id = BHU_complete_abolition_of_slavery
+		icon = GFX_z_goal_generic_papers
+		prerequisite = { focus = BHU_tong_rebellion }
+		x = -2
+		y = 1
+		relative_position_id = BHU_tong_rebellion
+		
+		cost = 10
+		
+		cancel_if_invalid = no
+		continue_if_invalid = yes
+		available_if_capitulated = no
+
+		ai_will_do = {
+			factor = 10
+		}
+		available = {
+		}
+		bypass = {
+		}
+		select_effect = {
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BHU_complete_abolition_of_slavery"
+			add_stability = 0.1
+			add_ideas = BHU_cancel_slavery_idea
+		}
+	}
+	
+	focus = {
+		id = BHU_support_lhotsampa
+		icon = GFX_z_goal_generic_papers
+		prerequisite = { focus = BHU_complete_abolition_of_slavery }
+		x = -3
+		y = 2
+		relative_position_id = BHU_tong_rebellion
+		
+		cost = 10
+		
+		cancel_if_invalid = no
+		continue_if_invalid = yes
+		available_if_capitulated = no
+
+		ai_will_do = {
+			factor = 10
+		}
+		available = {
+		}
+		bypass = {
+		}
+		select_effect = {
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BHU_support_lhotsampa"
+			add_ideas = BHU_lhotsampa_idea
+		}
+	}
+	
+	focus = {
+		id = BHU_basis_of_the_industry
+		icon = GFX_z_goal_generic_papers
+		prerequisite = { focus = BHU_complete_abolition_of_slavery }
+		x = -1
+		y = 2
+		relative_position_id = BHU_tong_rebellion
+		
+		cost = 10
+		
+		cancel_if_invalid = no
+		continue_if_invalid = yes
+		available_if_capitulated = no
+
+		ai_will_do = {
+			factor = 10
+		}
+		available = {
+		}
+		bypass = {
+		}
+		select_effect = {
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BHU_basis_of_the_industry"
+			random_controlled_state = {
+				add_extra_state_shared_building_slots = 2
+				add_building_construction = {
+                    type = industrial_complex
+                    level = 1
+                    instant_build = yes
+                }
+				add_building_construction = {
+                    type = arms_factory
+                    level = 1
+                    instant_build = yes
+                }
+			}
+		}
+	}
+	
+	focus = {
+		id = BHU_department_of_agriculture
+		icon = GFX_z_goal_generic_papers
+		prerequisite = { focus = BHU_tong_rebellion }
+		x = 2
+		y = 1
+		relative_position_id = BHU_tong_rebellion
+		
+		cost = 10
+		
+		cancel_if_invalid = no
+		continue_if_invalid = yes
+		available_if_capitulated = no
+
+		ai_will_do = {
+			factor = 10
+		}
+		available = {
+		}
+		bypass = {
+		}
+		select_effect = {
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BHU_department_of_agriculture"
+			add_tech_bonus = {
+				bonus = 1
+				uses = 1
+				category = industry
+				name = BHU_department_of_agriculture
+			}
+			add_tech_bonus = {
+				bonus = 1
+				uses = 1
+				category = electronics
+				name = BHU_department_of_agriculture
+			}
+			add_ideas = BHU_department_agriculture_idea
+		}
+	}
+	
+	focus = {
+		id = BHU_free_healthcare
+		icon = GFX_z_goal_generic_papers
+		prerequisite = { focus = BHU_department_of_agriculture }
+		x = 1
+		y = 2
+		relative_position_id = BHU_tong_rebellion
+		
+		cost = 10
+		
+		cancel_if_invalid = no
+		continue_if_invalid = yes
+		available_if_capitulated = no
+
+		ai_will_do = {
+			factor = 10
+		}
+		available = {
+		}
+		bypass = {
+		}
+		select_effect = {
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BHU_free_healthcare"
+			add_stability = 0.1
+			add_ideas = BHU_free_healthcare_idea
+		}
+	}
+	
+	focus = {
+		id = BHU_creation_of_tsonghags
+		icon = GFX_z_goal_generic_papers
+		prerequisite = { focus = BHU_department_of_agriculture }
+		x = 3
+		y = 2
+		relative_position_id = BHU_tong_rebellion
+		
+		cost = 10
+		
+		cancel_if_invalid = no
+		continue_if_invalid = yes
+		available_if_capitulated = no
+
+		ai_will_do = {
+			factor = 10
+		}
+		available = {
+		}
+		bypass = {
+		}
+		select_effect = {
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BHU_creation_of_tsonghags"
+			add_popularity = { ideology = var:ROOT.current_party_ideology_group popularity = 0.1 }
+			add_ideas = BHU_creation_dzongkhags_idea
+		}
+	}
+	
+	focus = {
+		id = BHU_district_development_committees
+		icon = GFX_z_goal_generic_papers
+		prerequisite = { focus = BHU_creation_of_tsonghags }
+		x = 3
+		y = 3
+		relative_position_id = BHU_tong_rebellion
+		
+		cost = 10
+		
+		cancel_if_invalid = no
+		continue_if_invalid = yes
+		available_if_capitulated = no
+
+		ai_will_do = {
+			factor = 10
+		}
+		available = {
+		}
+		bypass = {
+		}
+		select_effect = {
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BHU_district_development_committees"
+			add_ideas = BHU_district_development_committees_creation_dzongkhags_idea
+		}
+	}
+	
+	focus = {
+		id = BHU_people_militia
+		icon = GFX_z_goal_generic_papers
+		prerequisite = { focus = BHU_tong_rebellion }
+		x = -4
+		y = 1
+		relative_position_id = BHU_tong_rebellion
+		
+		cost = 7
+		
+		cancel_if_invalid = no
+		continue_if_invalid = yes
+		available_if_capitulated = no
+
+		ai_will_do = {
+			factor = 10
+		}
+		available = {
+		}
+		bypass = {
+		}
+		select_effect = {
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BHU_people_militia"
+			add_ideas = BHU_people_militia_idea
+		}
+	}
+	
+	focus = {
+		id = BHU_freedom_people
+		icon = GFX_z_goal_generic_papers
+		prerequisite = { focus = BHU_tong_rebellion }
+		x = 0
+		y = 3
+		relative_position_id = BHU_tong_rebellion
+		
+		cost = 10
+		
+		cancel_if_invalid = no
+		continue_if_invalid = yes
+		available_if_capitulated = no
+
+		ai_will_do = {
+			factor = 10
+		}
+		available = {
+		}
+		bypass = {
+		}
+		select_effect = {
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BHU_freedom_people"
+			add_ideas = BHU_freedom_people_idea
+		}
+	}
+	
+	focus = {
+		id = BHU_example_rus
+		icon = GFX_z_goal_generic_papers
+		prerequisite = { focus = BHU_freedom_people }
+		x = 1
+		y = 4
+		relative_position_id = BHU_tong_rebellion
+		mutually_exclusive = { focus = BHU_example_raj }
+		cost = 10
+		
+		cancel_if_invalid = no
+		continue_if_invalid = yes
+		available_if_capitulated = no
+
+		ai_will_do = {
+			factor = 5
+		}
+		available = {
+		    SOV = {
+				is_subject = no
+				NOT = {
+					has_government = monarchy
+					has_government = fascism
+					has_government = neutrality
+					has_government = anarchism
+					has_war_with = BHU
+				}
+			}
+		}
+		bypass = {
+		}
+		select_effect = {
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BHU_example_rus"
+			remove_ideas = BHU_lack_of_a_clear_political_program_idea
+			custom_effect_tooltip = BHU_example_ideology_sov_tt
+			SOV = {
+				add_opinion_modifier = { target = ROOT modifier = BHU_supported_us }
+			}
+			if = {
+				limit = {
+				    RAJ = {
+						is_faction_leader = yes
+					}
+					NOT = {
+						is_in_faction_with = SOV
+					}
+				}
+				SOV = {
+				    country_event = { id = NWbhutan.24 hours = 5 }
+				}
+			}
+			else_if = {
+				limit = {
+				    is_faction_leader = yes
+					NOT = {
+						is_in_faction_with = SOV
+					}
+				}
+				SOV = {
+				    country_event = { id = NWbhutan.26 hours = 5 }
+				}
+			}
+			hidden_effect = {
+				add_popularity = {
+					ideology = var:SOV.current_party_ideology_group 
+					popularity = 0.25
+				}
+				set_politics = {
+					ruling_party = var:SOV.current_party_ideology_group
+					elections_allowed = no
+					long_name = BHU_gurung_party
+					name = BHU_gurung_party
+				}
+				if = {
+					limit = {
+						SOV = { has_government = democratic }
+					}
+					add_country_leader_role = {
+						character = BHU_Garjaman_Gurung
+						promote_leader = yes
+						country_leader = {
+							ideology = national_conservatism
+							expire = "1965.1.1.1"
+							traits = { drug_desi }
+						}
+					}
+				}
+				else_if = {
+					limit = {
+						SOV = { has_government = communism }
+					}
+					add_country_leader_role = {
+						character = BHU_Garjaman_Gurung
+						promote_leader = yes
+						country_leader = {
+							ideology = marxism
+							expire = "1965.1.1.1"
+							traits = { drug_desi }
+						}
+					}
+				}
+				else_if = {
+					limit = {
+						SOV = { has_government = technocracy }
+					}
+					add_country_leader_role = {
+						character = BHU_Garjaman_Gurung
+						promote_leader = yes
+						country_leader = {
+							ideology = technocracy_ideology
+							expire = "1965.1.1.1"
+							traits = { drug_desi }
+						}
+					}
+				}
+				else_if = {
+					limit = {
+						SOV = { has_government = trozkism }
+					}
+					add_country_leader_role = {
+						character = BHU_Garjaman_Gurung
+						promote_leader = yes
+						country_leader = {
+							ideology = marxism1
+							expire = "1965.1.1.1"
+							traits = { drug_desi }
+						}
+					}
+				}
+				# else_if = {
+					# limit = {
+						# SOV = { has_government = anarchism }
+					# }
+					# add_country_leader_role = {
+						# character = BHU_Garjaman_Gurung
+						# promote_leader = yes
+						# country_leader = {
+							# ideology = anarchism_ideology
+							# expire = "1965.1.1.1"
+							# traits = { drug_desi }
+						# }
+					# }
+				# }
+			}
+		}
+	}
+	
+	focus = {
+		id = BHU_example_raj
+		icon = GFX_z_goal_generic_papers
+		prerequisite = { focus = BHU_freedom_people }
+		x = -1
+		y = 4
+		relative_position_id = BHU_tong_rebellion
+		mutually_exclusive = { focus = BHU_example_rus }
+		cost = 10
+		
+		cancel_if_invalid = no
+		continue_if_invalid = yes
+		available_if_capitulated = no
+
+		ai_will_do = {
+			factor = 30
+		}
+		available = {
+		    RAJ = {
+				is_subject = no
+				NOT = {
+					has_government = monarchy
+					has_government = anarchism
+					has_war_with = BHU
+				}
+			}
+		}
+		bypass = {
+		}
+		select_effect = {
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BHU_example_raj"
+			remove_ideas = BHU_lack_of_a_clear_political_program_idea
+			custom_effect_tooltip = BHU_example_ideology_raj_tt
+			RAJ = {
+				add_opinion_modifier = { target = ROOT modifier = BHU_supported_us }
+			}
+			if = {
+				limit = {
+				    RAJ = {
+						is_faction_leader = yes
+					}
+					NOT = {
+						is_in_faction_with = RAJ
+					}
+				}
+				RAJ = {
+				    country_event = { id = NWbhutan.24 hours = 5 }
+				}
+			}
+			else_if = {
+				limit = {
+				    is_faction_leader = yes
+					NOT = {
+						is_in_faction_with = RAJ
+					}
+				}
+				RAJ = {
+				    country_event = { id = NWbhutan.26 hours = 5 }
+				}
+			}
+			hidden_effect = {
+				add_popularity = {
+					ideology = var:RAJ.current_party_ideology_group 
+					popularity = 0.25
+				}
+				set_politics = {
+					ruling_party = var:RAJ.current_party_ideology_group
+					elections_allowed = no
+					long_name = BHU_gurung_party
+					name = BHU_gurung_party
+				}
+				if = {
+					limit = {
+						RAJ = { has_government = democratic }
+					}
+					add_country_leader_role = {
+						character = BHU_Garjaman_Gurung
+						promote_leader = yes
+						country_leader = {
+							ideology = national_conservatism
+							expire = "1965.1.1.1"
+							traits = { drug_desi }
+						}
+					}
+				}
+				else_if = {
+					limit = {
+						RAJ = { has_government = communism }
+					}
+					add_country_leader_role = {
+						character = BHU_Garjaman_Gurung
+						promote_leader = yes
+						country_leader = {
+							ideology = marxism
+							expire = "1965.1.1.1"
+							traits = { drug_desi }
+						}
+					}
+				}
+				else_if = {
+					limit = {
+						RAJ = { has_government = fascism }
+					}
+					add_country_leader_role = {
+						character = BHU_Garjaman_Gurung
+						promote_leader = yes
+						country_leader = {
+							ideology = national_conservatism
+							expire = "1965.1.1.1"
+							traits = { drug_desi }
+						}
+					}
+				}
+				else_if = {
+					limit = {
+						RAJ = { has_government = technocracy }
+					}
+					add_country_leader_role = {
+						character = BHU_Garjaman_Gurung
+						promote_leader = yes
+						country_leader = {
+							ideology = technocracy_ideology
+							expire = "1965.1.1.1"
+							traits = { drug_desi }
+						}
+					}
+				}
+				else_if = {
+					limit = {
+						RAJ = { has_government = trozkism }
+					}
+					add_country_leader_role = {
+						character = BHU_Garjaman_Gurung
+						promote_leader = yes
+						country_leader = {
+							ideology = marxism1
+							expire = "1965.1.1.1"
+							traits = { drug_desi }
+						}
+					}
+				}
+				# else_if = {
+					# limit = {
+						# RAJ = { has_government = anarchism }
+					# }
+					# add_country_leader_role = {
+						# character = BHU_Garjaman_Gurung
+						# promote_leader = yes
+						# country_leader = {
+							# ideology = anarchism_ideology
+							# expire = "1965.1.1.1"
+							# traits = { drug_desi }
+						# }
+					# }
+				# }
+			}
+		}
+	}
+	
+	focus = {
+		id = BHU_freedom_nepal
+		icon = GFX_z_goal_generic_papers
+		prerequisite = { focus = BHU_freedom_people }
+		prerequisite = { focus = BHU_support_lhotsampa }
+		x = -3
+		y = 4
+		relative_position_id = BHU_tong_rebellion
+		cost = 10
+		will_lead_to_war_with = NEP
+		cancel_if_invalid = no
+		continue_if_invalid = yes
+		available_if_capitulated = no
+
+		ai_will_do = {
+			factor = 10
+			modifier = {
+				is_in_faction = yes
+				is_faction_leader = no
+				factor = 0
+			}
+		}
+		available = {
+		    is_subject = no
+			NOT = {
+				has_war_with = NEP
+				is_ally_with = NEP
+			}
+		}
+		bypass = {
+		}
+		select_effect = {
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BHU_freedom_nepal"
+			create_wargoal = {
+ 				type = puppet_wargoal_focus
+ 				target = NEP
+			}
+		}
+	}
+	
+	focus = {
+		id = BHU_freedom_raj
+		icon = GFX_z_goal_generic_papers
+		prerequisite = { focus = BHU_freedom_people }
+		x = 3
+		y = 4
+		relative_position_id = BHU_tong_rebellion
+		cost = 10
+		will_lead_to_war_with = RAJ
+		cancel_if_invalid = no
+		continue_if_invalid = yes
+		available_if_capitulated = no
+
+		ai_will_do = {
+			factor = 0
+		}
+		available = {
+		    is_subject = no
+			NOT = {
+				has_war_with = RAJ
+				is_ally_with = RAJ
+				has_completed_focus = BHU_example_raj
+			}
+		}
+		bypass = {
+		}
+		select_effect = {
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BHU_freedom_raj"
+			create_wargoal = {
+ 				type = puppet_wargoal_focus
+ 				target = RAJ
+			}
+		}
+	}
+	
+	focus = {
+		id = BHU_support_the_party_of_members
+		icon = GFX_z_goal_generic_papers
+		prerequisite = { focus = BHU_freedom_people }
+		x = 0
+		y = 5
+		relative_position_id = BHU_tong_rebellion
+		cost = 10
+		
+		cancel_if_invalid = no
+		continue_if_invalid = yes
+		available_if_capitulated = no
+
+		ai_will_do = {
+			factor = 10
+			modifier = {
+			    OR = {
+					AND = {
+						is_in_faction = yes
+						is_faction_leader = no
+					}
+					SKM = {
+						is_subject = yes
+					}
+				}
+				factor = 0
+			}
+		}
+		available = {
+		    is_subject = no
+		    NOT = {
+				has_war_with = SKM
+				is_ally_with = SKM
+			}
+			if = {
+				limit = {
+				    SKM = {
+					    has_government = communism
+					}
+				}
+				is_faction_leader = yes
+			}
+		}
+		bypass = {
+		}
+		select_effect = {
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BHU_support_the_party_of_members"
+			if = {
+				limit = {
+				    SKM = {
+						has_government = communism
+					}
+				}
+				SKM = {
+				    country_event = { id = NWbhutan.26 hours = 5 }
+				}
+			}
+			else = {
+			    SKM = {
+					every_core_state = {
+						add_core_of = ROOT
+					}
+				}
+				create_wargoal = {
+ 					type = annex_everything
+ 					target = SKM
+				}
+			}
+		}
+	}
+	
+	focus = {
+		id = BHU_support_the_party_of_reforms_tib
+		icon = GFX_z_goal_generic_papers
+		prerequisite = { focus = BHU_freedom_people }
+		x = -2
+		y = 5
+		relative_position_id = BHU_tong_rebellion
+		cost = 10
+		
+		cancel_if_invalid = no
+		continue_if_invalid = yes
+		available_if_capitulated = no
+
+		ai_will_do = {
+			factor = 10
+		}
+		available = {
+		    is_subject = no
+		    NOT = {
+				has_war_with = TIB
+				is_ally_with = TIB
+			}
+			if = {
+				limit = {
+				    TIB = {
+						has_government = democratic
+					}
+				}
+				is_faction_leader = yes
+			}
+		}
+		bypass = {
+		}
+		select_effect = {
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BHU_support_the_party_of_reforms_tib"
+			if = {
+				limit = {
+				    TIB = {
+						has_government = democratic
+					}
+				}
+				TIB = {
+				    country_event = { id = NWbhutan.26 hours = 5 }
+				}
+			}
+			else = {
+			    TIB = {
+					every_core_state = {
+						add_core_of = ROOT
+					}
+				}
+				create_wargoal = {
+ 					type = annex_everything
+ 					target = TIB
+				}
+			}
+		}
+	}
+	
+	focus = {
+		id = BHU_freedom_gurkhas
+		icon = GFX_z_goal_generic_papers
+		prerequisite = { focus = BHU_freedom_people }
+		x = 2
+		y = 5
+		relative_position_id = BHU_tong_rebellion
+		cost = 10
+		
+		cancel_if_invalid = no
+		continue_if_invalid = yes
+		available_if_capitulated = no
+
+		ai_will_do = {
+			factor = 0
+		}
+		available = {
+		}
+		bypass = {
+		}
+		select_effect = {
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BHU_freedom_gurkhas"
+			902 = {
+				add_core_of = ROOT
+				owner = {
+					ROOT = {
+						create_wargoal = {
+							target = PREV
+							type = take_claimed_state    
+						}
+						add_ai_strategy = {
+							type = antagonize
+							id = PREV
+							value = 200
+						}
+						add_ai_strategy = {
+							type = conquer
+							id = PREV 
+							value = 100
+						}
+					}
+				}
+			}
+		}
+	}
+	
+	focus = {
+		id = BHU_power_tsering_penjor
+		icon = GFX_z_goal_generic_papers
+		prerequisite = { focus = BHU_split_among_penlops }
+		x = -9
+		y = 1
+		relative_position_id = BHU_split_among_penlops
+		mutually_exclusive = { focus = BHU_tong_rebellion focus = BHU_reincarnation_of_shabdrung }
+		cost = 1
+		
+		cancel_if_invalid = no
+		continue_if_invalid = yes
+		available_if_capitulated = no
+
+		ai_will_do = {
+			factor = 10
+		}
+		available = {
+		    custom_trigger_tooltip = {
+				tooltip = impossible_to_press_manually
+				always = no
+			}
+		}
+		bypass = {
+		}
+		select_effect = {
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BHU_power_tsering_penjor"
+			custom_effect_tooltip = TUR_focus_autocomplete_tt
+		}
+	}
+	
+	focus = {
+		id = BHU_renovation_of_tsongs
+		icon = GFX_z_goal_generic_papers
+		prerequisite = { focus = BHU_power_tsering_penjor }
+		x = 0
+		y = 1
+		relative_position_id = BHU_power_tsering_penjor
+		cost = 10
+		
+		cancel_if_invalid = no
+		continue_if_invalid = yes
+		available_if_capitulated = no
+
+		ai_will_do = {
+			factor = 10
+		}
+		available = {
+		}
+		bypass = {
+		}
+		select_effect = {
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BHU_renovation_of_tsongs"
+			add_political_power = 50
+			add_popularity = {  ideology = neutrality  popularity = 0.1 }
+			add_ideas = BHU_updated_dzongs_idea
+		}
+	}
+	
+	focus = {
+		id = BHU_modern_army
+		icon = GFX_z_goal_generic_papers
+		prerequisite = { focus = BHU_power_tsering_penjor focus = BHU_tong_rebellion }
+		x = 3
+		y = 1
+		relative_position_id = BHU_power_tsering_penjor
+		cost = 10
+		
+		cancel_if_invalid = no
+		continue_if_invalid = yes
+		available_if_capitulated = no
+
+		ai_will_do = {
+			factor = 10
+		}
+		available = {
+		}
+		bypass = {
+		}
+		select_effect = {
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BHU_modern_army"
+			army_experience = 20
+			add_tech_bonus = {
+				bonus = 1
+				uses = 2
+				category = infantry_weapons
+				name = BHU_modern_army
+			}
+			add_tech_bonus = {
+				bonus = 1
+				uses = 2
+				category = artillery
+				name = BHU_modern_army
+			}
+		}
+	}
+	
+	focus = {
+		id = BHU_development_of_military_infrastructure
+		icon = GFX_z_goal_generic_papers
+		prerequisite = { focus = BHU_modern_army }
+		x = 3
+		y = 2
+		relative_position_id = BHU_power_tsering_penjor
+		cost = 10
+		
+		cancel_if_invalid = no
+		continue_if_invalid = yes
+		available_if_capitulated = no
+
+		ai_will_do = {
+			factor = 10
+		}
+		available = {
+		}
+		bypass = {
+		}
+		select_effect = {
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BHU_development_of_military_infrastructure"
+			random_controlled_state = {
+				add_building_construction = {
+                    type = infrastructure
+                    level = 1
+                    instant_build = yes
+                }
+			}
+			add_ideas = BHU_development_military_infrastructure_idea
+		}
+	}
+	
+	focus = {
+		id = BHU_thimphu_construction
+		icon = GFX_z_goal_generic_papers
+		prerequisite = { focus = BHU_power_tsering_penjor focus = BHU_tong_rebellion }
+		x = 4
+		y = 3
+		relative_position_id = BHU_power_tsering_penjor
+		cost = 10
+		mutually_exclusive = { focus = BHU_transfer_capital_to_paro }
+		cancel_if_invalid = no
+		continue_if_invalid = yes
+		available_if_capitulated = no
+
+		ai_will_do = {
+			factor = 10
+		}
+		available = {
+		}
+		bypass = {
+		}
+		select_effect = {
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BHU_thimphu_construction"
+			324 = {
+				add_building_construction = {
+                    type = hospital
+                    level = 1
+                    instant_build = yes
+                }
+				add_extra_state_shared_building_slots = 1
+				add_building_construction = {
+                    type = industrial_complex
+                    level = 1
+                    instant_build = yes
+                }
+			}
+			set_province_name = { id = 8010 name = VICTORY_POINTS_8010_THIMPHU}
+			add_stability = -0.05
+		}
+	}
+	
+	focus = {
+		id = BHU_transfer_capital_to_paro
+		icon = GFX_z_goal_generic_papers
+		prerequisite = { focus = BHU_power_tsering_penjor focus = BHU_tong_rebellion }
+		x = 2
+		y = 3
+		relative_position_id = BHU_power_tsering_penjor
+		cost = 10
+		mutually_exclusive = { focus = BHU_thimphu_construction }
+		cancel_if_invalid = no
+		continue_if_invalid = yes
+		available_if_capitulated = no
+
+		ai_will_do = {
+			factor = 10
+		}
+		available = {
+		}
+		bypass = {
+		}
+		select_effect = {
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BHU_transfer_capital_to_paro"
+			add_ideas = BHU_capital_paro_idea
+			set_province_name = { id = 8010 name = VICTORY_POINTS_8010_PARO}
+		}
+	}
+	
+	focus = {
+		id = BHU_convene_a_national_assembly
+		icon = GFX_z_goal_generic_papers
+		prerequisite = { focus = BHU_transfer_capital_to_paro focus = BHU_thimphu_construction }
+		x = 3
+		y = 4
+		relative_position_id = BHU_power_tsering_penjor
+		cost = 10
+		cancel_if_invalid = no
+		continue_if_invalid = yes
+		available_if_capitulated = no
+
+		ai_will_do = {
+			factor = 10
+		}
+		available = {
+		}
+		bypass = {
+		}
+		select_effect = {
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BHU_convene_a_national_assembly"
+			add_ideas = BHU_national_assembly_idea
+		}
+	}
+	
+	focus = {
+		id = BHU_strengthen_foundations_of_bhutanese_culture
+		icon = GFX_z_goal_generic_papers
+		prerequisite = { focus = BHU_renovation_of_tsongs }
+		x = 0
+		y = 3
+		relative_position_id = BHU_power_tsering_penjor
+		cost = 7
+		
+		cancel_if_invalid = no
+		continue_if_invalid = yes
+		available_if_capitulated = no
+
+		ai_will_do = {
+			factor = 10
+		}
+		available = {
+		}
+		bypass = {
+		}
+		select_effect = {
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BHU_strengthen_foundations_of_bhutanese_culture"
+			add_ideas = BHU_strengthening_bhutanese_identity_idea
+		}
+	}
+	
+	focus = {
+		id = BHU_introduction_of_western_technology
+		icon = GFX_z_goal_generic_papers
+		prerequisite = { focus = BHU_renovation_of_tsongs }
+		x = -1
+		y = 2
+		relative_position_id = BHU_power_tsering_penjor
+		cost = 7
+		
+		cancel_if_invalid = no
+		continue_if_invalid = yes
+		available_if_capitulated = no
+
+		ai_will_do = {
+			factor = 10
+		}
+		available = {
+		}
+		bypass = {
+		}
+		select_effect = {
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BHU_introduction_of_western_technology"
+			add_tech_bonus = {
+				bonus = 1
+				uses = 1
+				category = industry
+				name = BHU_introduction_of_western_technology
+			}
+			add_tech_bonus = {
+				bonus = 1
+				uses = 1
+				category = artillery
+				name = BHU_introduction_of_western_technology
+			}
+			add_tech_bonus = {
+				bonus = 1
+				uses = 1
+				category = motorized_equipment
+				name = BHU_introduction_of_western_technology
+			}
+		}
+	}
+	
+	focus = {
+		id = BHU_calm_penlops
+		icon = GFX_z_goal_generic_papers
+		prerequisite = { focus = BHU_renovation_of_tsongs }
+		x = 1
+		y = 2
+		relative_position_id = BHU_power_tsering_penjor
+		cost = 7
+		
+		cancel_if_invalid = no
+		continue_if_invalid = yes
+		available_if_capitulated = no
+
+		ai_will_do = {
+			factor = 10
+		}
+		available = {
+		}
+		bypass = {
+		}
+		select_effect = {
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BHU_calm_penlops"
+			add_stability = 0.05
+			add_popularity = { ideology = monarchy popularity = 0.2 }
+			add_ideas = BHU_desire_for_expansion_idea
+		}
+	}
+	
+	focus = {
+		id = BHU_popularize_cinema
+		icon = GFX_z_goal_generic_papers
+		prerequisite = { focus = BHU_introduction_of_western_technology }
+		x = -1
+		y = 4
+		relative_position_id = BHU_power_tsering_penjor
+		cost = 7
+		
+		cancel_if_invalid = no
+		continue_if_invalid = yes
+		available_if_capitulated = no
+
+		ai_will_do = {
+			factor = 10
+		}
+		available = {
+		}
+		bypass = {
+		}
+		select_effect = {
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BHU_popularize_cinema"
+			add_tech_bonus = {
+				bonus = 1
+				uses = 2
+				category = electronics
+				name = BHU_popularize_cinema
+			}
+			add_stability = 0.05
+		}
+	}
+	
+	focus = {
+		id = BHU_appointment_of_district_trimpons
+		icon = GFX_z_goal_generic_papers
+		prerequisite = { focus = BHU_calm_penlops }
+		x = 1
+		y = 4
+		relative_position_id = BHU_power_tsering_penjor
+		cost = 7
+		
+		cancel_if_invalid = no
+		continue_if_invalid = yes
+		available_if_capitulated = no
+
+		ai_will_do = {
+			factor = 10
+		}
+		available = {
+		}
+		bypass = {
+		}
+		select_effect = {
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BHU_appointment_of_district_trimpons"
+			add_ideas = BHU_trimpons_idea
+		}
+	}
+	
+	focus = {
+		id = BHU_construction_ugyen_pelri
+		icon = GFX_z_goal_generic_papers
+		prerequisite = { focus = BHU_power_tsering_penjor }
+		x = -2
+		y = 1
+		relative_position_id = BHU_power_tsering_penjor
+		cost = 7
+		
+		cancel_if_invalid = no
+		continue_if_invalid = yes
+		available_if_capitulated = no
+
+		ai_will_do = {
+			factor = 10
+		}
+		available = {
+		}
+		bypass = {
+		}
+		select_effect = {
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BHU_construction_ugyen_pelri"
+			army_experience = 15
+			add_ideas = BHU_experience_ugyen_pelri_idea
+		}
+	}
+	
+	focus = {
+		id = BHU_trip_to_tib
+		icon = GFX_z_goal_generic_papers
+		prerequisite = { focus = BHU_power_tsering_penjor }
+		x = -4
+		y = 1
+		relative_position_id = BHU_power_tsering_penjor
+		cost = 10
+		
+		cancel_if_invalid = no
+		continue_if_invalid = yes
+		available_if_capitulated = no
+
+		ai_will_do = {
+			factor = 10
+			modifier = {
+				is_in_faction = yes
+				is_faction_leader = no
+				factor = 0
+			}
+		}
+		available = {
+		    ROOT = {
+				is_subject = no
+			}
+			TIB = {
+				exists = yes
+				NOT = {
+					is_ally_with = ROOT
+				}
+			}
+		}
+		bypass = {
+		}
+		select_effect = {
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BHU_trip_to_tib"
+			create_wargoal = {
+ 				type = annex_everything
+ 				target = TIB
+			}
+			TIB = {
+				every_core_state = {
+					add_core_of = ROOT
+				}
+			}
+		}
+	}
+	
+	focus = {
+		id = BHU_support_chi
+		icon = GFX_z_goal_generic_papers
+		prerequisite = { focus = BHU_trip_to_tib }
+		x = -5
+		y = 2
+		relative_position_id = BHU_power_tsering_penjor
+		cost = 10
+		
+		cancel_if_invalid = no
+		continue_if_invalid = yes
+		available_if_capitulated = no
+
+		ai_will_do = {
+			factor = 10
+		}
+		available = {
+		    is_subject = no
+			is_in_faction = no
+			NOT = {
+			    has_war_with = CHI
+			}
+			CHI = {
+				exists = yes
+				has_war_with = JAP
+			}
+			custom_trigger_tooltip = {
+				tooltip = BHU_support_chi_trigger
+				CHI = {
+					has_completed_focus = CHI_establish_a_united_front
+					is_faction_leader = yes
+				}
+			}
+		}
+		bypass = {
+		}
+		select_effect = {
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BHU_support_chi"
+			CHI = {
+			    add_opinion_modifier = { target = ROOT modifier = BHU_supported_us }
+				country_event = { id = NWbhutan.24 hours = 5 }
+			}
+		}
+	}
+	
+	focus = {
+		id = BHU_support_eng
+		icon = GFX_z_goal_generic_papers
+		prerequisite = { focus = BHU_trip_to_tib }
+		x = -3
+		y = 2
+		relative_position_id = BHU_power_tsering_penjor
+		cost = 10
+		
+		cancel_if_invalid = no
+		continue_if_invalid = yes
+		available_if_capitulated = no
+
+		ai_will_do = {
+			factor = 10
+		}
+		available = {
+		    is_subject = no
+			is_in_faction = no
+			NOT = {
+			    has_war_with = ENG
+				has_completed_focus = BHU_cancel_punakha_treaty
+			}
+			ENG = {
+				exists = yes
+				has_war_with = JAP
+				is_faction_leader = yes
+			}
+		}
+		bypass = {
+		}
+		select_effect = {
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BHU_support_eng"
+			remove_ideas = BHU_treaty_of_punakha
+			ENG = {
+			    add_opinion_modifier = { target = ROOT modifier = BHU_supported_us }
+				country_event = { id = NWbhutan.24 hours = 5 }
+			}
+		}
+	}
+	
+	focus = {
+		id = BHU_anti_japanese_propaganda
+		icon = GFX_z_goal_generic_papers
+		prerequisite = { focus = BHU_support_eng focus = BHU_support_chi }
+		x = -4
+		y = 3
+		relative_position_id = BHU_power_tsering_penjor
+		cost = 10
+		
+		cancel_if_invalid = no
+		continue_if_invalid = yes
+		available_if_capitulated = no
+
+		ai_will_do = {
+			factor = 10
+		}
+		available = {
+		    ROOT = {
+				NOT = {
+			        is_ally_with = JAP
+			    }
+			}
+		}
+		bypass = {
+		}
+		select_effect = {
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BHU_anti_japanese_propaganda"
+			add_ideas = BHU_anti_japanese_propaganda_idea
+		}
+	}
+	
+	focus = {
+		id = BHU_reincarnation_of_shabdrung
+		icon = GFX_z_goal_generic_papers
+		prerequisite = { focus = BHU_split_among_penlops }
+		x = 9
+		y = 1
+		relative_position_id = BHU_split_among_penlops
+		mutually_exclusive = { focus = BHU_tong_rebellion focus = BHU_power_tsering_penjor }
+		cost = 1
+		
+		cancel_if_invalid = no
+		continue_if_invalid = yes
+		available_if_capitulated = no
+
+		ai_will_do = {
+			factor = 10
+		}
+		available = {
+		    custom_trigger_tooltip = {
+				tooltip = impossible_to_press_manually
+				always = no
+			}
+		}
+		bypass = {
+		}
+		select_effect = {
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BHU_reincarnation_of_shabdrung"
+			custom_effect_tooltip = BHU_reincarnation_of_shabdrung_tt
+		}
+	}
+	
+	focus = {
+		id = BHU_ca_fig_chenmo
+		icon = GFX_z_goal_generic_papers
+		prerequisite = { focus = BHU_reincarnation_of_shabdrung }
+		x = -1
+		y = 1
+		relative_position_id = BHU_reincarnation_of_shabdrung
+		cost = 4
+		
+		cancel_if_invalid = no
+		continue_if_invalid = yes
+		available_if_capitulated = no
+
+		ai_will_do = {
+			factor = 10
+		}
+		available = {
+		}
+		bypass = {
+		}
+		select_effect = {
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BHU_ca_fig_chenmo"
+			add_stability = 0.2
+		}
+	}
+	
+	focus = {
+		id = BHU_cho_sid_ni
+		icon = GFX_z_goal_generic_papers
+		prerequisite = { focus = BHU_reincarnation_of_shabdrung }
+		x = 1
+		y = 1
+		relative_position_id = BHU_reincarnation_of_shabdrung
+		cost = 4
+		
+		cancel_if_invalid = no
+		continue_if_invalid = yes
+		available_if_capitulated = no
+
+		ai_will_do = {
+			factor = 10
+		}
+		available = {
+		}
+		bypass = {
+		}
+		select_effect = {
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BHU_cho_sid_ni"
+			add_ideas = BHU_cho_sid_ni_idea
+			country_event = { id = NWbhutan.22 hours = 0 }
+		}
+	}
+	
+	focus = {
+		id = BHU_rocket_mail
+		icon = GFX_z_goal_generic_papers
+		prerequisite = { focus = BHU_reincarnation_of_shabdrung }
+		x = -4
+		y = 1
+		relative_position_id = BHU_reincarnation_of_shabdrung
+		cost = 5
+		
+		cancel_if_invalid = no
+		continue_if_invalid = yes
+		available_if_capitulated = no
+
+		ai_will_do = {
+			factor = 10
+		}
+		available = {
+		}
+		bypass = {
+		}
+		select_effect = {
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BHU_rocket_mail"
+			add_ideas = SKM_rocket_post_idea
+		}
+	}
+	
+	focus = {
+		id = BHU_strengthen_borders
+		icon = GFX_z_goal_generic_papers
+		prerequisite = { focus = BHU_rocket_mail }
+		x = -4
+		y = 2
+		relative_position_id = BHU_reincarnation_of_shabdrung
+		cost = 10
+		
+		cancel_if_invalid = no
+		continue_if_invalid = yes
+		available_if_capitulated = no
+
+		ai_will_do = {
+			factor = 10
+		}
+		available = {
+		}
+		bypass = {
+		}
+		select_effect = {
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BHU_strengthen_borders"
+			add_ideas = BHU_strengthening_borders_idea
+		}
+	}
+	
+	focus = {
+		id = BHU_listen_gewogs 
+		icon = GFX_z_goal_generic_papers
+		prerequisite = { focus = BHU_reincarnation_of_shabdrung }
+		x = 4
+		y = 1
+		relative_position_id = BHU_reincarnation_of_shabdrung
+		cost = 5
+		
+		cancel_if_invalid = no
+		continue_if_invalid = yes
+		available_if_capitulated = no
+
+		ai_will_do = {
+			factor = 10
+		}
+		available = {
+		}
+		bypass = {
+		}
+		select_effect = {
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BHU_listen_gewogs"
+			random_controlled_state = {
+			    add_building_construction = {  type = arms_factory  level = 1  instant_build = yes }
+			}
+			add_ideas = BHU_cooperation_with_gewogs_idea
+		}
+	}
+	
+	focus = {
+		id = BHU_assign_trimpons
+		icon = GFX_z_goal_generic_papers
+		prerequisite = { focus = BHU_listen_gewogs }
+		x = 4
+		y = 2
+		relative_position_id = BHU_reincarnation_of_shabdrung
+		cost = 10
+		
+		cancel_if_invalid = no
+		continue_if_invalid = yes
+		available_if_capitulated = no
+
+		ai_will_do = {
+			factor = 10
+		}
+		available = {
+		}
+		bypass = {
+		}
+		select_effect = {
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BHU_assign_trimpons"
+			add_stability = 0.05
+			add_ideas = BHU_tripons_idea
+		}
+	}
+	
+	focus = {
+		id = BHU_supremacy_drug_desi
+		icon = GFX_z_goal_generic_papers
+		prerequisite = { focus = BHU_cho_sid_ni focus = BHU_ca_fig_chenmo }
+		mutually_exclusive = { focus = BHU_supremacy_shabdrunga }
+		x = -2
+		y = 2
+		relative_position_id = BHU_reincarnation_of_shabdrung
+		cost = 10
+		
+		cancel_if_invalid = no
+		continue_if_invalid = yes
+		available_if_capitulated = no
+
+		ai_will_do = {
+			factor = 10
+		}
+		available = {
+		}
+		bypass = {
+		}
+		select_effect = {
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BHU_supremacy_drug_desi"
+			add_stability = 0.1
+			add_popularity = {  ideology = neutrality  popularity = 0.1 }
+			random_controlled_state = {
+			    add_building_construction = {  type = industrial_complex  level = 1  instant_build = yes }
+			}
+		}
+	}
+	
+	focus = {
+		id = BHU_supremacy_shabdrunga
+		icon = GFX_z_goal_generic_papers
+		prerequisite = { focus = BHU_cho_sid_ni focus = BHU_ca_fig_chenmo }
+		mutually_exclusive = { focus = BHU_supremacy_drug_desi }
+		x = 2
+		y = 2
+		relative_position_id = BHU_reincarnation_of_shabdrung
+		cost = 10
+		
+		cancel_if_invalid = no
+		continue_if_invalid = yes
+		available_if_capitulated = no
+
+		ai_will_do = {
+			factor = 10
+		}
+		available = {
+		}
+		bypass = {
+		}
+		select_effect = {
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BHU_supremacy_shabdrunga"
+			add_stability = 0.1
+			set_politics = {
+				ruling_party = monarchy
+			}
+			custom_effect_tooltip = BHU_support_network_of_dzongs_tt
+			add_to_variable = { peoples_militia_var = 1 }
+			hidden_effect = {
+				set_cosmetic_tag = BHU_zhabdrung
+			}
+		}
+	}
+	
+	focus = {
+		id = BHU_return_to_tib
+		icon = GFX_z_goal_generic_papers
+		prerequisite = { focus = BHU_supremacy_shabdrunga focus = BHU_supremacy_drug_desi }
+		x = 0
+		y = 3
+		relative_position_id = BHU_reincarnation_of_shabdrung
+		cost = 4
+		
+		cancel_if_invalid = no
+		continue_if_invalid = yes
+		available_if_capitulated = no
+
+		ai_will_do = {
+			factor = 10
+		}
+		available = {
+		    is_subject = no
+		}
+		bypass = {
+		}
+		will_lead_to_war_with = TIB
+		select_effect = {
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BHU_return_to_tib"
+			TIB = {
+				every_core_state = {
+					add_core_of = ROOT
+				}
+			}
+			unlock_decision_tooltip = BHU_return_to_tib_d
+			if = {
+				limit = {
+					OR = {
+						has_idea = irregular_army
+						has_idea = partial_regular_army
+					}
+				}
+				custom_effect_tooltip = BHU_return_to_tib_tt
+			}
+		}
+	}
+	
+	focus = {
+		id = BHU_redistribute_dzongs
+		icon = GFX_z_goal_generic_papers
+		prerequisite = { focus = BHU_supremacy_drug_desi }
+		x = -3
+		y = 3
+		relative_position_id = BHU_reincarnation_of_shabdrung
+		cost = 10
+		
+		cancel_if_invalid = no
+		continue_if_invalid = yes
+		available_if_capitulated = no
+
+		ai_will_do = {
+			factor = 10
+		}
+		available = {
+		}
+		bypass = {
+		}
+		select_effect = {
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BHU_redistribute_dzongs"
+			add_political_power = 50
+			add_stability = 0.1
+			add_popularity = {  ideology = neutrality  popularity = 0.1 }
+			add_ideas = BHU_transformations_druk_desi_idea
+		}
+	}
+	
+	focus = {
+		id = BHU_allow_coolies
+		icon = GFX_z_goal_generic_papers
+		prerequisite = { focus = BHU_redistribute_dzongs }
+		x = -3
+		y = 4
+		relative_position_id = BHU_reincarnation_of_shabdrung
+		cost = 10
+		
+		cancel_if_invalid = no
+		continue_if_invalid = yes
+		available_if_capitulated = no
+
+		ai_will_do = {
+			factor = 10
+		}
+		available = {
+		}
+		bypass = {
+		}
+		select_effect = {
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BHU_allow_coolies"
+			swap_ideas = {
+				remove_idea = BHU_transformations_druk_desi_idea
+				add_idea = BHU_transformations_druk_desi_idea_1
+			}
+		}
+	}
+	
+	focus = {
+		id = BHU_srengthen_roots_dharma_Bhutan
+		icon = GFX_z_goal_generic_papers
+		prerequisite = { focus = BHU_supremacy_shabdrunga }
+		x = 3
+		y = 3
+		relative_position_id = BHU_reincarnation_of_shabdrung
+		cost = 10
+		
+		cancel_if_invalid = no
+		continue_if_invalid = yes
+		available_if_capitulated = no
+
+		ai_will_do = {
+			factor = 10
+		}
+		available = {
+		}
+		bypass = {
+		}
+		select_effect = {
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BHU_srengthen_roots_dharma_Bhutan"
+			add_ideas = BHU_transformations_shabdrung_idea
+		}
+	}
+	
+	focus = {
+		id = BHU_appointment_dzongpenov
+		icon = GFX_z_goal_generic_papers
+		prerequisite = { focus = BHU_srengthen_roots_dharma_Bhutan }
+		x = 3
+		y = 4
+		relative_position_id = BHU_reincarnation_of_shabdrung
+		cost = 10
+		
+		cancel_if_invalid = no
+		continue_if_invalid = yes
+		available_if_capitulated = no
+
+		ai_will_do = {
+			factor = 10
+		}
+		available = {
+		}
+		bypass = {
+		}
+		select_effect = {
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BHU_appointment_dzongpenov"
+			add_political_power = 70
+			add_popularity = {  ideology = monarchy  popularity = 0.1 }
+			swap_ideas = {
+				remove_idea = BHU_transformations_shabdrung_idea
+				add_idea = BHU_transformations_shabdrung_idea_1
+			}
+		}
+	}
+	
+	focus = {
+		id = BHU_integration_local_elites
+		icon = GFX_z_goal_generic_papers
+		prerequisite = { focus = BHU_return_to_tib }
+		x = 0
+		y = 4
+		relative_position_id = BHU_reincarnation_of_shabdrung
+		cost = 6
+		
+		cancel_if_invalid = no
+		continue_if_invalid = yes
+		available_if_capitulated = no
+
+		ai_will_do = {
+			factor = 10
+		}
+		available = {
+		}
+		bypass = {
+		}
+		select_effect = {
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BHU_integration_local_elites"
+			custom_effect_tooltip = BHU_integration_local_elites_tt
+		}
+	}
+	
+	focus = {
+		id = BHU_gathering_of_the_feudal_militia
+		icon = GFX_z_goal_generic_papers
+		prerequisite = { focus = BHU_integration_local_elites }
+		x = -1
+		y = 5
+		relative_position_id = BHU_reincarnation_of_shabdrung
+		cost = 8
+		
+		cancel_if_invalid = no
+		continue_if_invalid = yes
+		available_if_capitulated = no
+
+		ai_will_do = {
+			factor = 10
+		}
+		available = {
+		    OR = {
+				has_idea = irregular_army
+				has_idea = partial_regular_army
+			}
+		}
+		bypass = {
+		}
+		select_effect = {
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BHU_gathering_of_the_feudal_militia"
+			custom_effect_tooltip = BHU_gathering_of_the_feudal_militia_tt
+			add_to_variable = { peoples_militia_var = 4 }
+		}
+	}
+	
+	focus = {
+		id = BHU_reorganization_of_the_militia
+		icon = GFX_z_goal_generic_papers
+		prerequisite = { focus = BHU_gathering_of_the_feudal_militia }
+		x = -1
+		y = 6
+		relative_position_id = BHU_reincarnation_of_shabdrung
+		cost = 8
+		
+		cancel_if_invalid = no
+		continue_if_invalid = yes
+		available_if_capitulated = no
+
+		ai_will_do = {
+			factor = 10
+		}
+		available = {
+		    has_completed_focus = BHU_bet_on_militia
+		}
+		bypass = {
+		}
+		select_effect = {
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BHU_reorganization_of_the_militia"
+			add_command_power = 25
+			custom_effect_tooltip = BHU_reorganization_of_the_militia_tt
+		}
+	}
+	
+	focus = {
+		id = BHU_loyal_warriors
+		icon = GFX_z_goal_generic_papers
+		prerequisite = { focus = BHU_integration_local_elites }
+		x = 1
+		y = 5
+		relative_position_id = BHU_reincarnation_of_shabdrung
+		cost = 8
+		
+		cancel_if_invalid = no
+		continue_if_invalid = yes
+		available_if_capitulated = no
+
+		ai_will_do = {
+			factor = 10
+		}
+		available = {
+		}
+		bypass = {
+		}
+		select_effect = {
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BHU_loyal_warriors"
+			add_ideas = BHU_army_development_idea
+		}
+	}
+	
+	focus = {
+		id = BHU_guard_of_je_khempo
+		icon = GFX_z_goal_generic_papers
+		prerequisite = { focus = BHU_loyal_warriors }
+		x = 1
+		y = 6
+		relative_position_id = BHU_reincarnation_of_shabdrung
+		cost = 8
+		
+		cancel_if_invalid = no
+		continue_if_invalid = yes
+		available_if_capitulated = no
+
+		ai_will_do = {
+			factor = 10
+		}
+		available = {
+		}
+		bypass = {
+		}
+		select_effect = {
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BHU_guard_of_je_khempo"
+			swap_ideas = {
+				remove_idea = BHU_army_development_idea
+				add_idea = BHU_army_development_idea_1
+			}
+		}
+	}
+	
+	focus = {
+		id = BHU_trip_to_south
+		icon = GFX_z_goal_generic_papers
+		prerequisite = { focus = BHU_integration_local_elites }
+		x = -3
+		y = 6
+		relative_position_id = BHU_reincarnation_of_shabdrung
+		cost = 5
+		
+		cancel_if_invalid = no
+		continue_if_invalid = yes
+		available_if_capitulated = no
+        will_lead_to_war_with = SKM
+		will_lead_to_war_with = NEP
+		will_lead_to_war_with = RAJ
+		ai_will_do = {
+			factor = 10
+		}
+		available = {
+		    is_subject = no
+		}
+		bypass = {
+		}
+		select_effect = {
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BHU_trip_to_south"
+			unlock_decision_tooltip = BHU_return_to_skm_d
+			unlock_decision_tooltip = BHU_return_to_monyul_bengal_d
+			unlock_decision_tooltip = BHU_return_to_burma_d
+			if = {
+				limit = {
+					NEP = {
+						is_subject_of = ROOT
+					}
+				}
+				unlock_decision_tooltip = BHU_collab_to_nep_d
+			}
+			else = {
+				unlock_decision_tooltip = BHU_return_to_nep_d
+			}
+			custom_effect_tooltip = BHU_trip_to_south_tt
+		}
+	}
+	
+	focus = {
+		id = BHU_trip_to_north
+		icon = GFX_z_goal_generic_papers
+		prerequisite = { focus = BHU_integration_local_elites }
+		x = 3
+		y = 6
+		relative_position_id = BHU_reincarnation_of_shabdrung
+		cost = 5
+		
+		cancel_if_invalid = no
+		continue_if_invalid = yes
+		available_if_capitulated = no
+        will_lead_to_war_with = XIK
+		will_lead_to_war_with = XSM
+		ai_will_do = {
+			factor = 10
+		}
+		available = {
+		    is_subject = no
+		}
+		bypass = {
+		}
+		select_effect = {
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BHU_trip_to_north"
+			unlock_decision_tooltip = BHU_return_to_kham_d
+			unlock_decision_tooltip = BHU_return_to_amdo_d
+		}
+	}
+	
+	focus = {
+		id = BHU_shabdrung_empire 
+		icon = GFX_z_goal_generic_papers
+		prerequisite = { focus = BHU_trip_to_north }
+		prerequisite = { focus = BHU_trip_to_south }
+		x = 0
+		y = 7
+		relative_position_id = BHU_reincarnation_of_shabdrung
+		cost = 10
+		
+		cancel_if_invalid = no
+		continue_if_invalid = yes
+		available_if_capitulated = no
+
+		ai_will_do = {
+			factor = 10
+		}
+		available = {
+		    OR = {
+				has_government = neutrality
+				has_government = monarchy
+			}
+			custom_trigger_tooltip = {
+				tooltip = BHU_shabdrung_empire_trigger_tt
+				check_variable = { BHU_3_incarnations_shabdrung_picture_category_var = 3 }
+			}
+		}
+		bypass = {
+		}
+		select_effect = {
+		}
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BHU_shabdrung_empire"
+			add_ideas = BHU_shabdrung_empire_idea
+			set_cosmetic_tag = BHU_empire
 		}
 	}
 }
