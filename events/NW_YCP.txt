@@ -23,6 +23,12 @@ country_event = { #Новые командиры
 	
 	option = {
 		name = ycp.1.a
+		add_political_power = 50
+		add_manpower = 500
+		add_equipment_to_stockpile = {
+			type = infantry_equipment
+			amount = 500
+		}
 		add_corps_commander_role = {
 			character = YCP_gao_peng
 			traits = { air_controller }
@@ -64,7 +70,7 @@ country_event = { #Привет от Молодого маршала
 		add_political_power = 100
 		add_equipment_to_stockpile = {
 			type = infantry_equipment
-			amount = 300
+			amount = 1000
 		}
 	}
 }
@@ -203,7 +209,7 @@ country_event = { #Возвращение Чжао Дуна
 		promote_character = YCP_zhao_dong
 		add_equipment_to_stockpile = {
 			type = infantry_equipment
-			amount = 1000
+			amount = 1500
 		}
 		if = {
 			limit = { NOT = { has_template = "Renmin Jundui" } }
@@ -264,6 +270,10 @@ country_event = { #Предложение о сотрудничестве // EHB
 	
 	option = {
 		name = ycp.8.a
+		ai_chance = {
+			factor = 0
+			is_historical_focus_on = yes
+		}
 		FROM = {
 			annex_country = {
 				target = ROOT
@@ -358,16 +368,8 @@ country_event = { #Созыв Временного парламента
 	
 	option = {
 		name = ycp.13.a
-		set_variable = { YCP_ycp_deputies = 33 } # МКП
-		set_variable = { YCP_ssp_deputies = 5 } # ПГС
-		set_variable = { YCP_other_parties_deputies = 2 } # мелкие партии
-		set_variable = { YCP_professional_groups_deputies = 10 } # профессиональный группы
-		set_variable = { YCP_independent_deputies = 10 } # независимые депутаты
-		add_to_array = { YCP_coalition_array = 1 }
 		unlock_decision_category_tooltip = YCP_provisional_parliament_category
-		
-		YCP_provisional_parliament_update = yes
-		add_dynamic_modifier = { modifier = YCP_provisional_parliament }
+		YCP_provisional_parliament_activate = yes
 	}
 }
 
@@ -430,6 +432,10 @@ country_event = { #Судьба партийных заговорщиков
 	}
 	option = {
 		name = ycp.14.b
+		add_power_balance_value = {
+			id = YCP_power_balance
+			value = 0.05
+		}
 	}
 }
 
@@ -444,15 +450,17 @@ country_event = { #Статус наркоторговли
 	
 	option = {
 		name = ycp.15.a
-		add_political_power = -120 # -100
-		add_war_support = 0.05
+		add_political_power = -100
+		add_war_support = 0.04
 	}
 	option = {
 		name = ycp.15.b
-		subtract_from_variable = { YCP_ycp_deputies = 5 } # TODO
-		add_to_variable = { YCP_independent_deputies = 5 }
-		YCP_provisional_parliament_update = yes
 		custom_effect_tooltip = YCP_deputies_move_from_party_to_party
+		hidden_effect = {
+			var:YCP_ycp_party = { subtract_from_variable = { YCP_num_deputies = 5 } }
+			var:YCP_independent_party = { add_to_variable = { YCP_num_deputies = 5 } set_variable = { YCP_num_non_aligned_deputies = 5 } }
+			YCP_provisional_parliament_update = yes
+		}
 	}
 }
 
@@ -492,11 +500,11 @@ country_event = { #Флаг республики
 	
 	option = {
 		name = ycp.17.a
-		add_political_power = 15
+		add_political_power = 25
 		add_war_support = 0.05
 		add_power_balance_value = {
 			id = YCP_power_balance
-			value = -0.1
+			value = -0.03
 		}
 	}
 	option = {
@@ -553,7 +561,7 @@ country_event = { #Сказка с печальным концом
 		remove_power_balance = {
 			id = YCP_power_balance
 		}
-		remove_ideas = YCP_chinese_democracy # TODO?
+		remove_ideas = YCP_chinese_democracy_dummy # TODO? !!!
 		remove_dynamic_modifier = { modifier = YCP_provisional_parliament }
 	}
 }
@@ -600,7 +608,7 @@ country_event = { #Война закончена
 				}
 			}
 			add_ideas = YCP_corruption # TODO tooltip?
-			remove_ideas = YCP_chinese_democracy # TODO?
+			remove_ideas = YCP_chinese_democracy_dummy # TODO?
 		}
 		remove_power_balance = {
 			id = YCP_power_balance
@@ -621,7 +629,7 @@ country_event = { #Война закончена
 					value < 0.5
 				}
 			}
-			remove_ideas = YCP_chinese_democracy # TODO? TODO tooltip?
+			remove_ideas = YCP_chinese_democracy_dummy # TODO? TODO tooltip?
 		}
 		remove_power_balance = {
 			id = YCP_power_balance
@@ -1130,4 +1138,73 @@ news_event = { #Япония подписывает мирный договор
 	option = { name = ycp.42.a trigger = { NOT = { tag = JAP is_chinese_warlord = yes } } }
 	option = { name = ycp.42.b trigger = { tag = JAP } }
 	option = { name = ycp.42.c trigger = { is_chinese_warlord = yes } }
+}
+
+news_event = { #Падение Мукдена
+	id = ycp.43
+	title = ycp.43.t
+	desc = ycp.43.desc
+	picture = GFX_report_event_cog_31_32
+	immediate = { #? TODO
+		log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event ycp.43" 
+		716 = { set_state_flag = YCP_fall_of_mukden } 
+	}
+	
+	is_triggered_only = yes
+	major = yes
+	
+	option = { 
+		name = ycp.43.a 
+		trigger = { tag = YCP } 
+		effect_tooltip = {
+			MAN = {
+				if = {
+					limit = { has_dynamic_modifier = { modifier = MAN_banditry } }
+					custom_effect_tooltip = MAN_strength_of_partisan_movement_tooltip
+					add_to_variable = { MAN_strength_of_partisan_movement_var = -0.1 tooltip = stability_factor_tooltip }
+				}
+			}
+		}
+	}
+	option = { 
+		name = ycp.43.b 
+		trigger = { OR = { tag = MAN tag = JAP } } 
+		if = {
+			limit = { has_dynamic_modifier = { modifier = MAN_banditry } }
+			custom_effect_tooltip = MAN_strength_of_partisan_movement_tooltip
+			add_to_variable = { MAN_strength_of_partisan_movement_var = -0.1 tooltip = stability_factor_tooltip }
+		}
+		else = {
+			effect_tooltip = {
+				MAN = {
+					if = {
+						limit = { has_dynamic_modifier = { modifier = MAN_banditry } }
+						custom_effect_tooltip = MAN_strength_of_partisan_movement_tooltip
+						add_to_variable = { MAN_strength_of_partisan_movement_var = -0.1 tooltip = stability_factor_tooltip }
+					}
+				}
+			}
+		}
+	}
+	option = { name = ycp.43.c trigger = { NOT = { tag = YCP tag = MAN tag = JAP } } }
+}
+
+country_event = { #Коммунисты требуют представительства
+	id = ycp.44
+	title = ycp.44.t
+	desc = ycp.44.desc
+	picture = GFX_report_event_generic_rally_3
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event ycp.44" }
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = ycp.44.a
+		trigger = { NOT = { has_completed_focus = YCP_maintain_anticommunist_policy } }
+	}
+	option = {
+		name = ycp.44.b
+		custom_effect_tooltip = YCP_ssp_is_new_enemy_tt
+		set_country_flag = YCP_ssp_is_new_enemy_flag
+	}
 }
