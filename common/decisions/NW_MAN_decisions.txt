@@ -100,6 +100,180 @@ MAN_opposition_within_kwantung_army_bop = {
 	}
 }
 
+MAN_internal_leadership_of_manchukuo = {
+	
+	# TODO решение на специальный русский отряд
+	
+	MAN_increase_participation_of_kwantung_army = { # TODO лишнее?
+	    icon = generic_prepare_civil_war
+		
+		allowed = {
+			original_tag = MAN
+		}
+		visible = {
+			is_subject_of = JAP
+			OR = {
+				has_war_with = YCP
+				has_civil_war = yes
+			}
+		}
+		available = {
+			OR = {
+				# TODO фракция Тосейха
+				surrender_progress > 0.6
+				YCP = { has_country_flag = YCP_annex_EHB_flag }
+			}
+		}
+		
+		cost = 50
+		
+		days_remove = 7
+		fire_only_once = yes
+		
+		remove_effect = { 
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): remove decision MAN_increase_participation_of_kwantung_army"
+			add_power_balance_value = {
+				id = MAN_power_balance
+				value = 0.15
+			}
+			JAP = { country_event = ycp.46 }
+			custom_effect_tooltip = empty_line_tooltip
+			
+			custom_effect_tooltip = if_they_accept
+			event_option_tooltip = ycp.46.a
+		}
+		
+		ai_will_do = {
+			factor = 1
+			modifier = {
+				add = 200
+				check_variable = { YCP.YCP_war_escalation_level > 2 }
+			}
+		}
+	}
+	
+	JAP_material_support_MAN = { # TODO по одному разу это точно должно быть! ?
+	    icon = generic_prepare_civil_war
+		
+		allowed = {
+			original_tag = JAP
+		}
+		visible = {
+			check_variable = { YCP.YCP_war_escalation_level > 1 }
+			MAN = { has_war_with = YCP }
+			NOT = { has_war_with = YCP }
+		}
+		available = {
+			# TODO японские штуки?
+		}
+		
+		cost = 10
+		
+		days_remove = 7
+		days_re_enable = 60 # TODO tooltip
+		
+		remove_effect = { 
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): remove decision JAP_material_support_MAN"
+			MAN = {
+				add_manpower = 500
+			}
+			if = { # TODO ивент для MAN?
+				limit = { has_equipment = { infantry_equipment > 1000 } } # TODO ??
+				send_equipment = {
+					equipment = infantry_equipment
+					amount = 1000
+					target = MAN
+				}
+			}
+			else = {
+				MAN = {
+					add_equipment_to_stockpile = { 
+						type = infantry_equipment 
+						amount = 500
+						producer = JAP
+					}
+				}
+			}
+			
+			if = {
+				limit = { has_equipment = { support_equipment > 250 } }
+				send_equipment = {
+					equipment = support_equipment
+					amount = 250
+					target = MAN
+				}
+			}
+			else = {
+				MAN = {
+					add_equipment_to_stockpile = { 
+						type = support_equipment 
+						amount = 125
+						producer = JAP
+					}
+				}
+			}
+			hidden_effect = {
+				YCP = { country_event = ycp.48 }
+			}
+		}
+		
+		ai_will_do = {
+			factor = 10
+		}
+	}
+	JAP_strengthening_kwantung_army_MAN = { # TODO по одному разу это точно должно быть! ?
+	    icon = generic_prepare_civil_war
+		
+		allowed = {
+			original_tag = JAP
+		}
+		visible = {
+			check_variable = { YCP.YCP_war_escalation_level > 2 }
+			MAN = { has_war_with = YCP }
+			NOT = { has_war_with = YCP }
+		}
+		available = {
+			# TODO японские штуки?
+		}
+		
+		cost = 50
+		
+		days_remove = 14
+		days_re_enable = 100 # TODO tooltip
+		
+		remove_effect = { 
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): remove decision JAP_strengthening_kwantung_army_MAN"
+			MAN = { # TODO ивент для MAN?
+				division_template = {
+					name = "Kwantung Army Unit"
+					priority = 1
+					template_counter = 3
+					regiments = {
+						infantry = { x = 0 y = 0 }
+						infantry = { x = 0 y = 1 }
+						infantry = { x = 0 y = 2 }
+						infantry = { x = 1 y = 0 }
+						infantry = { x = 1 y = 1 }
+						infantry = { x = 1 y = 2 }
+					}
+				}
+				capital_scope = {
+					create_unit = { 
+						division = "name = \"Kwantung Army Unit\" division_template = \"Kwantung Army Unit\" start_experience_factor = 0.05 start_equipment_factor = 0.75" owner = PREV count = 4
+					}
+				}
+			}
+			hidden_effect = {
+				YCP = { country_event = ycp.49 }
+			}
+		}
+		
+		ai_will_do = {
+			factor = 10
+		}
+	}
+}
+
 MAN_banditry_category = {
 	
 #  #  ##  ###  ### #  # ### ###  #  # 

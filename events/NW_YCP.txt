@@ -271,8 +271,12 @@ country_event = { #Предложение о сотрудничестве // EHB
 	option = {
 		name = ycp.8.a
 		ai_chance = {
-			factor = 0
-			is_historical_focus_on = yes
+			factor = 1
+			modifier = {
+				factor = 0
+				has_war_together_with = overlord
+				# is_historical_focus_on = yes
+			}
 		}
 		FROM = {
 			annex_country = {
@@ -283,10 +287,12 @@ country_event = { #Предложение о сотрудничестве // EHB
 				limit = { is_ai = yes } # TODO ??
 				change_tag_from = ROOT
 			}
+			YCP_increase_war_escalation_level = yes
+			set_country_flag = YCP_annex_EHB_flag
 		}
 		hidden_effect = {
 			every_country = {
-				limit = { OR = { is_literally_china = yes tag = JAP } }
+				limit = { OR = { is_literally_china = yes tag = JAP tag = YCP } }
 				news_event = ycp.9
 			}
 		}
@@ -294,6 +300,25 @@ country_event = { #Предложение о сотрудничестве // EHB
 	
 	option = {
 		name = ycp.8.b
+		ai_chance = {
+			factor = 1
+			modifier = {
+				factor = 0.5
+				MAN = { surrender_progress > 0.25 }
+			}
+			modifier = {
+				factor = 0.5
+				MAN = { surrender_progress > 0.5 }
+			}
+			modifier = {
+				factor = 0.5
+				FROM = { controls_state = 610 }
+			}
+			modifier = {
+				factor = 0 # 0.1
+				NOT = { country_exists = MAN }
+			}
+		}
 		FROM = { country_event = ycp.10 }
 	}
 }
@@ -558,11 +583,14 @@ country_event = { #Сказка с печальным концом
 	option = {
 		name = ycp.20.a
 		add_ideas = YCP_corruption
+		remove_ideas = YCP_chinese_democracy_dummy
+		hidden_effect = {
+			remove_ideas = YCP_chinese_democracy_dummy_no_effects
+			remove_dynamic_modifier = { modifier = YCP_chinese_democracy }
+		}
 		remove_power_balance = {
 			id = YCP_power_balance
 		}
-		remove_ideas = YCP_chinese_democracy_dummy # TODO? !!!
-		remove_dynamic_modifier = { modifier = YCP_provisional_parliament }
 	}
 }
 
@@ -577,10 +605,16 @@ country_event = { #Самая большая демократия в мире
 	
 	option = {
 		name = ycp.21.a
+		add_ideas = YCP_chinese_democracy_idea
+		hidden_effect = {
+			remove_ideas = YCP_chinese_democracy_dummy
+			remove_ideas = YCP_chinese_democracy_dummy_no_effects
+			remove_dynamic_modifier = { modifier = YCP_chinese_democracy }
+		}
 		remove_power_balance = {
 			id = YCP_power_balance
 		}
-		remove_dynamic_modifier = { modifier = YCP_provisional_parliament }
+		# TODO бонус от оппозиции остается таким же, какой был
 		set_country_flag = YCP_largest_democracy_in_world
 	}
 }
@@ -609,11 +643,14 @@ country_event = { #Война закончена
 			}
 			add_ideas = YCP_corruption # TODO tooltip?
 			remove_ideas = YCP_chinese_democracy_dummy # TODO?
+			hidden_effect = {
+				remove_ideas = YCP_chinese_democracy_dummy_no_effects
+				remove_dynamic_modifier = { modifier = YCP_chinese_democracy }
+			}
 		}
 		remove_power_balance = {
 			id = YCP_power_balance
 		}
-		remove_dynamic_modifier = { modifier = YCP_provisional_parliament }
 		set_country_flag = YCP_largest_democracy_in_world # for correct trigger
 	}
 	option = {
@@ -629,12 +666,16 @@ country_event = { #Война закончена
 					value < 0.5
 				}
 			}
-			remove_ideas = YCP_chinese_democracy_dummy # TODO? TODO tooltip?
+			add_ideas = YCP_chinese_democracy_idea # TODO tooltip?
+			hidden_effect = {
+				remove_ideas = YCP_chinese_democracy_dummy
+				remove_ideas = YCP_chinese_democracy_dummy_no_effects
+				remove_dynamic_modifier = { modifier = YCP_chinese_democracy }
+			}
 		}
 		remove_power_balance = {
 			id = YCP_power_balance
 		}
-		remove_dynamic_modifier = { modifier = YCP_provisional_parliament }
 	}
 }
 
@@ -763,6 +804,17 @@ country_event = { #Чжан Цзюньмай избран президентом
 			long_name = MAN_party_of_state_socialism_long # TODO !!
 			ideology = democratic
 		}
+		
+		if = {
+			limit = { NOT = { check_variable = { YCP_current_rulling_party = YCP_ssp_party } } }
+			remove_from_array = { YCP_government_party = YCP_current_rulling_party }
+			add_to_array = { YCP_non_aligned_party = YCP_current_rulling_party }
+			set_variable = { YCP_current_rulling_party = YCP_ssp_party }
+			
+			remove_from_array = { YCP_non_aligned_party = YCP_current_rulling_party }
+			remove_from_array = { YCP_opposition_party = YCP_current_rulling_party }
+			add_to_array = { YCP_government_party = YCP_current_rulling_party }
+		}
 	}
 }
 
@@ -792,7 +844,19 @@ country_event = { #Сунь Фо избран президентом стран�
 		}
 		set_party_name = {
 			name = YCP_kdu_party
+			long_name = YCP_kdu_party_long
 			ideology = democratic
+		}
+		
+		if = {
+			limit = { NOT = { check_variable = { YCP_current_rulling_party = YCP_kdu_party } } }
+			remove_from_array = { YCP_government_party = YCP_current_rulling_party }
+			add_to_array = { YCP_non_aligned_party = YCP_current_rulling_party }
+			set_variable = { YCP_current_rulling_party = YCP_kdu_party }
+			
+			remove_from_array = { YCP_non_aligned_party = YCP_current_rulling_party }
+			remove_from_array = { YCP_opposition_party = YCP_current_rulling_party }
+			add_to_array = { YCP_government_party = YCP_current_rulling_party }
 		}
 	}
 }
@@ -1007,42 +1071,56 @@ country_event = { #Раскол в Гоминьдане
 	
 	option = {
 		name = ycp.37.a
-		set_country_flag = YCP_kdu_party_available_flag
+		# set_country_flag = YCP_kdu_party_available_flag # TODO
 		custom_effect_tooltip = YCP_kdu_party_available_tt
 	}
 }
 
-# ивент вырезан, возможно в будущем...
 country_event = { #Поражения в Маньчжурии // JAP
 	id = ycp.38
 	title = ycp.38.t
 	desc = ycp.38.desc
 	picture = GFX_report_event_generic_rally_3
-	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event ycp.38" }
+	immediate = { 
+		log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event ycp.38" 
+		MAN = { add_manpower = -657 }
+		hidden_effect = {
+			YCP = { 
+				country_event = ycp.45 
+				YCP_increase_war_escalation_level = yes
+			}
+		}
+	}
 	
 	is_triggered_only = yes
-	
 	fire_only_once = yes
 	
 	option = {
 		name = ycp.38.a
 		MAN = {
-			add_ideas = YCP_help_from_japanese_army
+			add_ideas = MAN_help_from_japanese_army
+		}
+		if = {
+			limit = { check_variable = { YCP.YCP_war_escalation_level > 2 } }
+			unlock_decision_tooltip = JAP_strengthening_kwantung_army_MAN
 		}
 	}
 	option = {
 		name = ycp.38.b
 		ai_chance = {
-			factor = 0.1
+			factor = 0.25
 			# TODO агрессивная япа?
 		}
-		declare_war_on = {
-			target = YCP
-			type = annex_everything
-		}
-		# YCP = { TODO
-			# activate_targeted_decision = { decision = china_capitulation_decision target = ROOT }
+		# declare_war_on = {
+			# target = YCP
+			# type = annex_everything
 		# }
+		YCP = { # TODO this also for CMA MGM
+			set_variable = { china_intervention_timer_timeout = 30 }
+			activate_targeted_decision = { decision = china_intervention_timer target = ROOT }
+			activate_targeted_decision = { decision = china_capitulation_decision target = ROOT } 
+			set_variable = { YCP_war_escalation_level = 4 }
+		}
 	}
 }
 
@@ -1081,7 +1159,6 @@ country_event = { #Крах Маньчжурии // JAP
 	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event ycp.40" }
 	
 	is_triggered_only = yes
-	
 	fire_only_once = yes
 	
 	option = {
@@ -1206,5 +1283,134 @@ country_event = { #Коммунисты требуют представител�
 		name = ycp.44.b
 		custom_effect_tooltip = YCP_ssp_is_new_enemy_tt
 		set_country_flag = YCP_ssp_is_new_enemy_flag
+	}
+}
+
+country_event = { #Японские поражения в Маньчжурии
+	id = ycp.45
+	title = ycp.45.t
+	desc = ycp.45.desc
+	picture = GFX_report_event_generic_rally_3
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event ycp.45" }
+	
+	is_triggered_only = yes
+	
+	trigger = { 
+		has_completed_focus = YCP_introduction_to_manchukuo_army
+	}
+	
+	option = {
+		name = ycp.45.a
+		add_war_support = 0.03
+		effect_tooltip = {
+			set_temp_variable = { YCP_war_escalation_level = 1 } # TODO сработает?
+			YCP_increase_war_escalation_level = yes
+		}
+	}
+}
+
+country_event = { #[FROM.GetName] запрашивает расширение Квантунской армии (MAN) // JAP
+	id = ycp.46
+	title = ycp.46.t
+	desc = ycp.46.desc
+	picture = GFX_report_event_generic_rally_3
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event ycp.46" }
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = ycp.46.a
+		ai_chance = {
+			factor = 1
+			modifier = {
+				factor = 0
+				is_historical_focus_on = yes
+				is_ai = yes
+			}
+		}
+		transfer_units_fraction = {
+			target = FROM
+			size = 0
+			army_ratio = 0.15
+			keep_unit_leaders_trigger = {
+				always = yes
+			}
+		}
+		hidden_effect = {
+			YCP = { 
+				country_event = ycp.47 
+				YCP_increase_war_escalation_level = yes
+			}
+		}
+	}
+	
+	option = {
+		name = ycp.46.b
+		ai_chance = {
+			factor = 1
+			modifier = {
+				factor = 0
+				is_ai = no
+			}
+		}
+		# TODO ycp.38.b?
+	}
+}
+
+country_event = { #Япония расширяет участие Квантунской армии
+	id = ycp.47
+	title = ycp.47.t
+	desc = ycp.47.desc
+	picture = GFX_report_event_generic_rally_3
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event ycp.47" }
+	
+	is_triggered_only = yes
+	
+	trigger = { 
+		has_completed_focus = YCP_introduction_to_manchukuo_army
+	}
+	
+	option = {
+		name = ycp.47.a
+		effect_tooltip = { # TODO в immediate?
+			set_temp_variable = { YCP_war_escalation_level = 1 } # TODO сработает?
+			YCP_increase_war_escalation_level = yes
+		}
+	}
+}
+
+country_event = { #Япония посылает снаряжение
+	id = ycp.48
+	title = ycp.48.t
+	desc = ycp.48.desc
+	picture = GFX_report_event_generic_rally_3
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event ycp.48" }
+	
+	is_triggered_only = yes
+	
+	trigger = { 
+		has_completed_focus = YCP_introduction_to_manchukuo_army
+	}
+	
+	option = {
+		name = ycp.48.a
+	}
+}
+
+country_event = { #Япония усиляет Квантунскую армию
+	id = ycp.49
+	title = ycp.49.t
+	desc = ycp.49.desc
+	picture = GFX_report_event_generic_rally_3
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event ycp.49" }
+	
+	is_triggered_only = yes
+	
+	trigger = { 
+		has_completed_focus = YCP_introduction_to_manchukuo_army
+	}
+	
+	option = {
+		name = ycp.49.a
 	}
 }

@@ -96,49 +96,6 @@ MGM_clear_psM_variables = {
 
 ### YCP ###
 
-# YCP_provisional_parliament_update = {
-	# set_variable = { YCP_num_of_deputies = 0 }
-	# add_to_variable = { YCP_num_of_deputies = YCP_ycp_deputies }
-	# add_to_variable = { YCP_num_of_deputies = YCP_ssp_deputies }
-	# add_to_variable = { YCP_num_of_deputies = YCP_kdu_deputies }
-	# add_to_variable = { YCP_num_of_deputies = YCP_federalist_deputies }
-	# add_to_variable = { YCP_num_of_deputies = YCP_other_parties_deputies }
-	# add_to_variable = { YCP_num_of_deputies = YCP_professional_groups_deputies }
-	# add_to_variable = { YCP_num_of_deputies = YCP_independent_deputies }
-	
-	# set_variable = { YCP_ruling_coalition_deputies = 0 }
-	# if = {
-		# limit = { is_in_array = { YCP_coalition_array = 1 } } # МКП
-		# add_to_variable = { YCP_ruling_coalition_deputies = YCP_ycp_deputies }
-	# }
-	# if = {
-		# limit = { is_in_array = { YCP_coalition_array = 2 } } # ПГС
-		# add_to_variable = { YCP_ruling_coalition_deputies = YCP_ssp_deputies }
-	# }
-	# if = {
-		# limit = { is_in_array = { YCP_coalition_array = 3 } } # ДСГ
-		# add_to_variable = { YCP_ruling_coalition_deputies = YCP_kdu_deputies }
-	# }
-	# if = {
-		# limit = { is_in_array = { YCP_coalition_array = 4 } } # Федералисты
-		# add_to_variable = { YCP_ruling_coalition_deputies = YCP_federalist_deputies }
-	# }
-	# add_to_variable = { YCP_ruling_coalition_deputies = YCP_independent_support }
-	# add_to_variable = { YCP_ruling_coalition_deputies = YCP_professional_groups_support }
-	# add_to_variable = { YCP_ruling_coalition_deputies = YCP_other_parties_support }
-	
-	# set_temp_variable = { temp_value = YCP_ruling_coalition_deputies }
-	# divide_temp_variable = { temp_value = YCP_num_of_deputies }
-	# multiply_temp_variable = { temp_value = -50 }
-	# add_to_temp_variable = { temp_value = 50 }
-	# multiply_temp_variable = { temp_value = -1 }
-	# log = "[GetDateText]: [THIS.GetName] ([THIS.GetTag]): YCP_provisional_parliament_update curr: [?YCP_pp_political_power_gain] new: [?temp_value]"
-	
-	# divide_temp_variable = { temp_value = 100 }
-	# set_variable = { YCP_pp_political_power_factor = temp_value }
-	# force_update_dynamic_modifier = yes
-# }
-
 YCP_integrate_province_state_effect = {
 	if = {
 		limit = { 
@@ -306,20 +263,32 @@ china_integrate_province_effect = {
 	}
 }
 
+YCP_add_enemy_party_deputies = {
+	if = {
+		limit = { has_country_flag = YCP_ssp_is_new_enemy_flag }
+		add_to_variable = { YCP_ssp_party:YCP_num_deputies = deputies tooltip = YCP_add_ssp_deputies }
+	}
+	else = {
+		add_to_variable = { YCP_cpc_party:YCP_num_deputies = deputies tooltip = YCP_add_cpc_deputies }
+	}
+}
+
 # README: сейчас здесь представлены не все провинции, по мере необходимости добавляйте (меняйте в названии провинцию)
 NW_china_integrate_xinjiang_effect = {
 	if = {
 		limit = { original_tag = YCP }
-		if = {
+		if = { # 8
 			limit = { has_completed_focus = YCP_support_republic_of_five_nations }
-			add_to_variable = { YCP_ycp_deputies = 3 tooltip = YCP_add_ycp_deputies }
-			add_to_variable = { YCP_other_parties_deputies = 3 tooltip = YCP_add_other_parties_deputies }
-			add_to_variable = { YCP_independent_deputies = 2 tooltip = YCP_add_independent_deputies }
+			add_to_variable = { YCP_ycp_party:YCP_num_deputies = 3 tooltip = YCP_add_ycp_deputies }
+			add_to_variable = { YCP_other_parties_party:YCP_num_deputies = 1 tooltip = YCP_add_other_parties_deputies } add_to_variable = { YCP_other_parties_party:YCP_num_non_aligned_deputies = 1 }
+			# add_to_variable = { YCP_independent_party:YCP_num_deputies = 0 tooltip = YCP_add_independent_deputies }
 		}
 		else = {
-			add_to_variable = { YCP_other_parties_deputies = 4 tooltip = YCP_add_other_parties_deputies }
-			add_to_variable = { YCP_independent_deputies = 4 tooltip = YCP_add_independent_deputies }
+			add_to_variable = { YCP_other_parties_party:YCP_num_deputies = 2 tooltip = YCP_add_other_parties_deputies } add_to_variable = { YCP_other_parties_party:YCP_num_non_aligned_deputies = 2 }
+			add_to_variable = { YCP_independent_party:YCP_num_deputies = 2 tooltip = YCP_add_independent_deputies } add_to_variable = { YCP_independent_party:YCP_num_non_aligned_deputies = 2 }
 		}
+		set_temp_variable = { deputies = 4 } 
+		YCP_add_enemy_party_deputies = yes
 	}
 }
 NW_china_integrate_xinjiang_state_effect = {
@@ -332,14 +301,16 @@ NW_china_integrate_xinjiang_state_effect = {
 NW_china_integrate_outer_mongolia_effect = {
 	if = {
 		limit = { original_tag = YCP }
-		if = {
+		if = { # 2
 			limit = { has_completed_focus = YCP_support_republic_of_five_nations }
-			add_to_variable = { YCP_ycp_deputies = 1 tooltip = YCP_add_ycp_deputies }
-			add_to_variable = { YCP_independent_deputies = 1 tooltip = YCP_add_independent_deputies }
+			add_to_variable = { YCP_ycp_party:YCP_num_deputies = 1 tooltip = YCP_add_ycp_deputies }
+			# add_to_variable = { YCP_independent_party:YCP_num_deputies = 0 tooltip = YCP_add_independent_deputies }
 		}
 		else = {
-			add_to_variable = { YCP_independent_deputies = 2 tooltip = YCP_add_independent_deputies }
+			add_to_variable = { YCP_independent_party:YCP_num_deputies = 1 tooltip = YCP_add_independent_deputies } add_to_variable = { YCP_independent_party:YCP_num_non_aligned_deputies = 1 }
 		}
+		set_temp_variable = { deputies = 1 } 
+		YCP_add_enemy_party_deputies = yes
 	}
 }
 NW_china_integrate_outer_mongolia_state_effect = {
@@ -352,14 +323,16 @@ NW_china_integrate_outer_mongolia_state_effect = {
 NW_china_integrate_tibet_effect = {
 	if = {
 		limit = { original_tag = YCP }
-		if = {
+		if = { # 6
 			limit = { has_completed_focus = YCP_support_republic_of_five_nations }
-			add_to_variable = { YCP_ycp_deputies = 2 tooltip = YCP_add_ycp_deputies }
-			add_to_variable = { YCP_independent_deputies = 4 tooltip = YCP_add_independent_deputies }
+			add_to_variable = { YCP_ycp_party:YCP_num_deputies = 2 tooltip = YCP_add_ycp_deputies }
+			add_to_variable = { YCP_independent_party:YCP_num_deputies = 1 tooltip = YCP_add_independent_deputies } add_to_variable = { YCP_independent_party:YCP_num_non_aligned_deputies = 1 }
 		}
 		else = {
-			add_to_variable = { YCP_independent_deputies = 6 tooltip = YCP_add_independent_deputies }
+			add_to_variable = { YCP_independent_party:YCP_num_deputies = 3 tooltip = YCP_add_independent_deputies } add_to_variable = { YCP_independent_party:YCP_num_non_aligned_deputies = 3 }
 		}
+		set_temp_variable = { deputies = 3 } 
+		YCP_add_enemy_party_deputies = yes
 	}
 }
 NW_china_integrate_tibet_state_effect = {
@@ -372,14 +345,16 @@ NW_china_integrate_tibet_state_effect = {
 NW_china_integrate_suiyuan_effect = {
 	if = {
 		limit = { original_tag = YCP }
-		if = {
+		if = { # 3
 			limit = { has_completed_focus = YCP_support_republic_of_five_nations }
-			add_to_variable = { YCP_ycp_deputies = 1 tooltip = YCP_add_ycp_deputies }
-			add_to_variable = { YCP_independent_deputies = 2 tooltip = YCP_add_independent_deputies }
+			add_to_variable = { YCP_ycp_party:YCP_num_deputies = 1 tooltip = YCP_add_ycp_deputies }
+			add_to_variable = { YCP_independent_party:YCP_num_deputies = 1 tooltip = YCP_add_independent_deputies } add_to_variable = { YCP_independent_party:YCP_num_non_aligned_deputies = 1 }
 		}
 		else = {
-			add_to_variable = { YCP_independent_deputies = 3 tooltip = YCP_add_independent_deputies }
+			add_to_variable = { YCP_independent_party:YCP_num_deputies = 2 tooltip = YCP_add_independent_deputies } add_to_variable = { YCP_independent_party:YCP_num_non_aligned_deputies = 2 }
 		}
+		set_temp_variable = { deputies = 1 } 
+		YCP_add_enemy_party_deputies = yes
 	}
 }
 NW_china_integrate_suiyuan_state_effect = {
@@ -392,14 +367,16 @@ NW_china_integrate_suiyuan_state_effect = {
 NW_china_integrate_chahar_effect = {
 	if = {
 		limit = { original_tag = YCP }
-		if = {
+		if = { # 3
 			limit = { has_completed_focus = YCP_support_republic_of_five_nations }
-			add_to_variable = { YCP_ycp_deputies = 1 tooltip = YCP_add_ycp_deputies }
-			add_to_variable = { YCP_independent_deputies = 2 tooltip = YCP_add_independent_deputies }
+			add_to_variable = { YCP_ycp_party:YCP_num_deputies = 1 tooltip = YCP_add_ycp_deputies }
+			add_to_variable = { YCP_independent_party:YCP_num_deputies = 1 tooltip = YCP_add_independent_deputies } add_to_variable = { YCP_independent_party:YCP_num_non_aligned_deputies = 1 }
 		}
 		else = {
-			add_to_variable = { YCP_independent_deputies = 3 tooltip = YCP_add_independent_deputies }
+			add_to_variable = { YCP_independent_party:YCP_num_deputies = 2 tooltip = YCP_add_independent_deputies } add_to_variable = { YCP_independent_party:YCP_num_non_aligned_deputies = 2 }
 		}
+		set_temp_variable = { deputies = 1 } 
+		YCP_add_enemy_party_deputies = yes
 	}
 }
 NW_china_integrate_chahar_state_effect = {
@@ -412,13 +389,13 @@ NW_china_integrate_chahar_state_effect = {
 NW_china_integrate_ningxia_effect = {
 	if = {
 		limit = { original_tag = YCP }
-		if = {
-			limit = { has_completed_focus = YCP_support_republic_of_five_nations } # TODO (убрать в основном фракции)
-			add_to_variable = { YCP_ycp_deputies = 1 tooltip = YCP_add_ycp_deputies }
-			add_to_variable = { YCP_independent_deputies = 1 tooltip = YCP_add_independent_deputies }
+		if = { # 2
+			limit = { has_completed_focus = YCP_support_republic_of_five_nations }
+			add_to_variable = { YCP_ycp_party:YCP_num_deputies = 1 tooltip = YCP_add_ycp_deputies }
+			add_to_variable = { YCP_independent_party:YCP_num_deputies = 1 tooltip = YCP_add_independent_deputies } add_to_variable = { YCP_independent_party:YCP_num_non_aligned_deputies = 1 }
 		}
 		else = {
-			add_to_variable = { YCP_independent_deputies = 2 tooltip = YCP_add_independent_deputies }
+			add_to_variable = { YCP_independent_party:YCP_num_deputies = 2 tooltip = YCP_add_independent_deputies } add_to_variable = { YCP_independent_party:YCP_num_non_aligned_deputies = 2 }
 		}
 	}
 }
@@ -432,19 +409,21 @@ NW_china_integrate_ningxia_state_effect = {
 NW_china_integrate_hebei_effect = {
 	if = {
 		limit = { original_tag = YCP }
-		if = {
+		if = { # 66
 			limit = { has_completed_focus = YCP_liberal_education has_completed_focus = YCP_synthesis_of_liberalism_and_confucianism }
-			add_to_variable = { YCP_ycp_deputies = 25 tooltip = YCP_add_ycp_deputies }
-			add_to_variable = { YCP_professional_groups_deputies = 12 tooltip = YCP_add_professional_groups_deputies }
-			add_to_variable = { YCP_independent_deputies = 19 tooltip = YCP_add_independent_deputies }
-			add_to_variable = { YCP_ssp_deputies = 10 tooltip = YCP_add_ssp_deputies }
+			add_to_variable = { YCP_ycp_party:YCP_num_deputies = 21 tooltip = YCP_add_ycp_deputies }
+			add_to_variable = { YCP_professional_groups_party:YCP_num_deputies = 5 tooltip = YCP_add_professional_groups_deputies } add_to_variable = { YCP_professional_groups_party:YCP_num_non_aligned_deputies = 5 }
+			add_to_variable = { YCP_independent_party:YCP_num_deputies = 4 tooltip = YCP_add_independent_deputies } add_to_variable = { YCP_independent_party:YCP_num_non_aligned_deputies = 4 }
+			add_to_variable = { YCP_ssp_party:YCP_num_deputies = 10 tooltip = YCP_add_ssp_deputies }
 		}
 		else = {
-			add_to_variable = { YCP_ycp_deputies = 17 tooltip = YCP_add_ycp_deputies }
-			add_to_variable = { YCP_professional_groups_deputies = 19 tooltip = YCP_add_professional_groups_deputies }
-			add_to_variable = { YCP_independent_deputies = 20 tooltip = YCP_add_independent_deputies }
-			add_to_variable = { YCP_ssp_deputies = 10 tooltip = YCP_add_ssp_deputies }
+			add_to_variable = { YCP_ycp_party:YCP_num_deputies = 17 tooltip = YCP_add_ycp_deputies }
+			add_to_variable = { YCP_professional_groups_party:YCP_num_deputies = 7 tooltip = YCP_add_professional_groups_deputies } add_to_variable = { YCP_professional_groups_party:YCP_num_non_aligned_deputies = 7 }
+			add_to_variable = { YCP_independent_party:YCP_num_deputies = 6 tooltip = YCP_add_independent_deputies } add_to_variable = { YCP_independent_party:YCP_num_non_aligned_deputies = 6 }
+			add_to_variable = { YCP_ssp_party:YCP_num_deputies = 10 tooltip = YCP_add_ssp_deputies }
 		}
+		set_temp_variable = { deputies = 20 } 
+		YCP_add_enemy_party_deputies = yes
 	}
 }
 NW_china_integrate_hebei_state_effect = {
@@ -457,19 +436,21 @@ NW_china_integrate_hebei_state_effect = {
 NW_china_integrate_yunnan_effect = {
 	if = {
 		limit = { original_tag = YCP }
-		if = {
+		if = { # 24
 			limit = { has_completed_focus = YCP_institute_of_democracy }
-			add_to_variable = { YCP_ycp_deputies = 8 tooltip = YCP_add_ycp_deputies }
-			add_to_variable = { YCP_ssp_deputies = 2 tooltip = YCP_add_ssp_deputies }
-			add_to_variable = { YCP_other_parties_deputies = 4 tooltip = YCP_add_other_parties_deputies }
-			add_to_variable = { YCP_independent_deputies = 10 tooltip = YCP_add_independent_deputies }
+			add_to_variable = { YCP_ycp_party:YCP_num_deputies = 8 tooltip = YCP_add_ycp_deputies }
+			add_to_variable = { YCP_ssp_party:YCP_num_deputies = 2 tooltip = YCP_add_ssp_deputies }
+			add_to_variable = { YCP_other_parties_party:YCP_num_deputies = 2 tooltip = YCP_add_other_parties_deputies } add_to_variable = { YCP_other_parties_party:YCP_num_non_aligned_deputies = 2 }
+			add_to_variable = { YCP_independent_party:YCP_num_deputies = 2 tooltip = YCP_add_independent_deputies } add_to_variable = { YCP_independent_party:YCP_num_non_aligned_deputies = 2 }
 		}
 		else = {
-			add_to_variable = { YCP_ycp_deputies = 3 tooltip = YCP_add_ycp_deputies }
-			add_to_variable = { YCP_ssp_deputies = 2 tooltip = YCP_add_ssp_deputies }
-			add_to_variable = { YCP_other_parties_deputies = 4 tooltip = YCP_add_other_parties_deputies }
-			add_to_variable = { YCP_independent_deputies = 15 tooltip = YCP_add_independent_deputies }
+			add_to_variable = { YCP_ycp_party:YCP_num_deputies = 3 tooltip = YCP_add_ycp_deputies }
+			add_to_variable = { YCP_ssp_party:YCP_num_deputies = 2 tooltip = YCP_add_ssp_deputies }
+			add_to_variable = { YCP_other_parties_party:YCP_num_deputies = 4 tooltip = YCP_add_other_parties_deputies } add_to_variable = { YCP_other_parties_party:YCP_num_non_aligned_deputies = 4 }
+			add_to_variable = { YCP_independent_party:YCP_num_deputies = 5 tooltip = YCP_add_independent_deputies } add_to_variable = { YCP_independent_party:YCP_num_non_aligned_deputies = 5 }
 		}
+		set_temp_variable = { deputies = 10 } 
+		YCP_add_enemy_party_deputies = yes
 	}
 }
 NW_china_integrate_yunnan_state_effect = {
@@ -482,19 +463,25 @@ NW_china_integrate_yunnan_state_effect = {
 NW_china_integrate_jiangxi_effect = {
 	if = {
 		limit = { original_tag = YCP }
-		if = {
+		if = { # 30
 			limit = { has_completed_focus = YCP_democratic_breakaway_of_kuomintang }
-			add_to_variable = { YCP_kdu_deputies = 14 tooltip = YCP_add_kdu_deputies }
-			add_to_variable = { YCP_ycp_deputies = 3 tooltip = YCP_add_ycp_deputies }
-			add_to_variable = { YCP_other_parties_deputies = 3 tooltip = YCP_add_other_parties_deputies }
-			add_to_variable = { YCP_ssp_deputies = 3 tooltip = YCP_add_ssp_deputies }
-			add_to_variable = { YCP_independent_deputies = 7 tooltip = YCP_add_independent_deputies }
+			add_to_variable = { YCP_kdu_party:YCP_num_deputies = 14 tooltip = YCP_add_kdu_deputies }
+			add_to_variable = { YCP_ycp_party:YCP_num_deputies = 3 tooltip = YCP_add_ycp_deputies }
+			add_to_variable = { YCP_other_parties_party:YCP_num_deputies = 3 tooltip = YCP_add_other_parties_deputies } add_to_variable = { YCP_other_parties_party:YCP_num_non_aligned_deputies = 3 }
+			add_to_variable = { YCP_ssp_party:YCP_num_deputies = 3 tooltip = YCP_add_ssp_deputies }
+			add_to_variable = { YCP_independent_party:YCP_num_deputies = 2 tooltip = YCP_add_independent_deputies } add_to_variable = { YCP_independent_party:YCP_num_non_aligned_deputies = 2 }
+			
+			set_temp_variable = { deputies = 5 } 
+			YCP_add_enemy_party_deputies = yes
 		}
 		else = {
-			add_to_variable = { YCP_ycp_deputies = 2 tooltip = YCP_add_ycp_deputies }
-			add_to_variable = { YCP_other_parties_deputies = 8 tooltip = YCP_add_other_parties_deputies }
-			add_to_variable = { YCP_ssp_deputies = 4 tooltip = YCP_add_ssp_deputies }
-			add_to_variable = { YCP_independent_deputies = 16 tooltip = YCP_add_independent_deputies }
+			add_to_variable = { YCP_ycp_party:YCP_num_deputies = 2 tooltip = YCP_add_ycp_deputies }
+			add_to_variable = { YCP_other_parties_party:YCP_num_deputies = 4 tooltip = YCP_add_other_parties_deputies } add_to_variable = { YCP_other_parties_party:YCP_num_non_aligned_deputies = 4 }
+			add_to_variable = { YCP_ssp_party:YCP_num_deputies = 4 tooltip = YCP_add_ssp_deputies }
+			add_to_variable = { YCP_independent_party:YCP_num_deputies = 8 tooltip = YCP_add_independent_deputies } add_to_variable = { YCP_independent_party:YCP_num_non_aligned_deputies = 8 }
+			
+			set_temp_variable = { deputies = 12 } 
+			YCP_add_enemy_party_deputies = yes
 		}
 	}
 }
@@ -508,21 +495,27 @@ NW_china_integrate_jiangxi_state_effect = {
 NW_china_integrate_jiangsu_effect = {
 	if = {
 		limit = { original_tag = YCP }
-		if = {
+		if = { # 60
 			limit = { has_completed_focus = YCP_democratic_breakaway_of_kuomintang }
-			add_to_variable = { YCP_kdu_deputies = 20 tooltip = YCP_add_kdu_deputies }
-			add_to_variable = { YCP_ycp_deputies = 10 tooltip = YCP_add_ycp_deputies }
-			add_to_variable = { YCP_other_parties_deputies = 5 tooltip = YCP_add_other_parties_deputies }
-			add_to_variable = { YCP_ssp_deputies = 10 tooltip = YCP_add_ssp_deputies }
-			add_to_variable = { YCP_professional_groups_deputies = 8 tooltip = YCP_add_professional_groups_deputies }
-			add_to_variable = { YCP_independent_deputies = 7 tooltip = YCP_add_independent_deputies }
+			add_to_variable = { YCP_kdu_party:YCP_num_deputies = 20 tooltip = YCP_add_kdu_deputies }
+			add_to_variable = { YCP_ycp_party:YCP_num_deputies = 10 tooltip = YCP_add_ycp_deputies }
+			add_to_variable = { YCP_other_parties_party:YCP_num_deputies = 3 tooltip = YCP_add_other_parties_deputies } add_to_variable = { YCP_other_parties_party:YCP_num_non_aligned_deputies = 3 }
+			add_to_variable = { YCP_ssp_party:YCP_num_deputies = 10 tooltip = YCP_add_ssp_deputies }
+			add_to_variable = { YCP_professional_groups_party:YCP_num_deputies = 7 tooltip = YCP_add_professional_groups_deputies } add_to_variable = { YCP_professional_groups_party:YCP_num_non_aligned_deputies = 7 }
+			add_to_variable = { YCP_independent_party:YCP_num_deputies = 4 tooltip = YCP_add_independent_deputies } add_to_variable = { YCP_independent_party:YCP_num_non_aligned_deputies = 4 }
+			
+			set_temp_variable = { deputies = 6 } 
+			YCP_add_enemy_party_deputies = yes
 		}
 		else = {
-			add_to_variable = { YCP_ycp_deputies = 10 tooltip = YCP_add_ycp_deputies }
-			add_to_variable = { YCP_other_parties_deputies = 7 tooltip = YCP_add_other_parties_deputies }
-			add_to_variable = { YCP_ssp_deputies = 10 tooltip = YCP_add_ssp_deputies }
-			add_to_variable = { YCP_professional_groups_deputies = 13 tooltip = YCP_add_professional_groups_deputies }
-			add_to_variable = { YCP_independent_deputies = 20 tooltip = YCP_add_independent_deputies }
+			add_to_variable = { YCP_ycp_party:YCP_num_deputies = 10 tooltip = YCP_add_ycp_deputies }
+			add_to_variable = { YCP_other_parties_party:YCP_num_deputies = 4 tooltip = YCP_add_other_parties_deputies } add_to_variable = { YCP_other_parties_party:YCP_num_non_aligned_deputies = 4 }
+			add_to_variable = { YCP_ssp_party:YCP_num_deputies = 10 tooltip = YCP_add_ssp_deputies }
+			add_to_variable = { YCP_professional_groups_party:YCP_num_deputies = 7 tooltip = YCP_add_professional_groups_deputies } add_to_variable = { YCP_professional_groups_party:YCP_num_non_aligned_deputies = 7 }
+			add_to_variable = { YCP_independent_party:YCP_num_deputies = 6 tooltip = YCP_add_independent_deputies } add_to_variable = { YCP_independent_party:YCP_num_non_aligned_deputies = 6 }
+			
+			set_temp_variable = { deputies = 23 } 
+			YCP_add_enemy_party_deputies = yes
 		}
 	}
 }
@@ -536,19 +529,25 @@ NW_china_integrate_jiangsu_state_effect = {
 NW_china_integrate_hubei_effect = {
 	if = {
 		limit = { original_tag = YCP }
-		if = {
+		if = { # 50
 			limit = { has_completed_focus = YCP_democratic_breakaway_of_kuomintang }
-			add_to_variable = { YCP_kdu_deputies = 25 tooltip = YCP_add_kdu_deputies }
-			add_to_variable = { YCP_ycp_deputies = 7 tooltip = YCP_add_ycp_deputies }
-			add_to_variable = { YCP_ssp_deputies = 4 tooltip = YCP_add_ssp_deputies }
-			add_to_variable = { YCP_professional_groups_deputies = 5 tooltip = YCP_add_professional_groups_deputies }
-			add_to_variable = { YCP_independent_deputies = 9 tooltip = YCP_add_independent_deputies }
+			add_to_variable = { YCP_kdu_party:YCP_num_deputies = 25 tooltip = YCP_add_kdu_deputies }
+			add_to_variable = { YCP_ycp_party:YCP_num_deputies = 7 tooltip = YCP_add_ycp_deputies }
+			add_to_variable = { YCP_ssp_party:YCP_num_deputies = 4 tooltip = YCP_add_ssp_deputies }
+			add_to_variable = { YCP_professional_groups_party:YCP_num_deputies = 2 tooltip = YCP_add_professional_groups_deputies } add_to_variable = { YCP_professional_groups_party:YCP_num_non_aligned_deputies = 2 }
+			add_to_variable = { YCP_independent_party:YCP_num_deputies = 2 tooltip = YCP_add_independent_deputies } add_to_variable = { YCP_independent_party:YCP_num_non_aligned_deputies = 2 }
+			
+			set_temp_variable = { deputies = 10 } 
+			YCP_add_enemy_party_deputies = yes
 		}
 		else = {
-			add_to_variable = { YCP_ycp_deputies = 15 tooltip = YCP_add_ycp_deputies }
-			add_to_variable = { YCP_ssp_deputies = 8 tooltip = YCP_add_ssp_deputies }
-			add_to_variable = { YCP_professional_groups_deputies = 5 tooltip = YCP_add_professional_groups_deputies }
-			add_to_variable = { YCP_independent_deputies = 22 tooltip = YCP_add_independent_deputies }
+			add_to_variable = { YCP_ycp_party:YCP_num_deputies = 15 tooltip = YCP_add_ycp_deputies }
+			add_to_variable = { YCP_ssp_party:YCP_num_deputies = 8 tooltip = YCP_add_ssp_deputies }
+			add_to_variable = { YCP_professional_groups_party:YCP_num_deputies = 5 tooltip = YCP_add_professional_groups_deputies } add_to_variable = { YCP_professional_groups_party:YCP_num_non_aligned_deputies = 5 }
+			add_to_variable = { YCP_independent_party:YCP_num_deputies = 5 tooltip = YCP_add_independent_deputies } add_to_variable = { YCP_independent_party:YCP_num_non_aligned_deputies = 5 }
+			
+			set_temp_variable = { deputies = 17 } 
+			YCP_add_enemy_party_deputies = yes
 		}
 	}
 }
@@ -562,21 +561,23 @@ NW_china_integrate_hubei_state_effect = {
 NW_china_integrate_shandong_effect = {
 	if = {
 		limit = { original_tag = YCP }
-		if = {
+		if = { # 78
 			limit = { has_completed_focus = YCP_use_scientific_methods }
-			add_to_variable = { YCP_ycp_deputies = 46 tooltip = YCP_add_ycp_deputies }
-			add_to_variable = { YCP_professional_groups_deputies = 12 tooltip = YCP_add_professional_groups_deputies }
-			add_to_variable = { YCP_ssp_deputies = 10 tooltip = YCP_add_ssp_deputies }
-			add_to_variable = { YCP_other_parties_deputies = 5 tooltip = YCP_add_other_parties_deputies }
-			add_to_variable = { YCP_independent_deputies = 5 tooltip = YCP_add_independent_deputies }
+			add_to_variable = { YCP_ycp_party:YCP_num_deputies = 21 tooltip = YCP_add_ycp_deputies }
+			add_to_variable = { YCP_professional_groups_party:YCP_num_deputies = 12 tooltip = YCP_add_professional_groups_deputies } add_to_variable = { YCP_professional_groups_party:YCP_num_non_aligned_deputies = 12 }
+			add_to_variable = { YCP_ssp_party:YCP_num_deputies = 10 tooltip = YCP_add_ssp_deputies }
+			add_to_variable = { YCP_other_parties_party:YCP_num_deputies = 5 tooltip = YCP_add_other_parties_deputies } add_to_variable = { YCP_other_parties_party:YCP_num_non_aligned_deputies = 5 }
+			add_to_variable = { YCP_independent_party:YCP_num_deputies = 5 tooltip = YCP_add_independent_deputies } add_to_variable = { YCP_independent_party:YCP_num_non_aligned_deputies = 5 }
 		}
 		else = {
-			add_to_variable = { YCP_ycp_deputies = 29 tooltip = YCP_add_ycp_deputies }
-			add_to_variable = { YCP_professional_groups_deputies = 16 tooltip = YCP_add_professional_groups_deputies }
-			add_to_variable = { YCP_ssp_deputies = 13 tooltip = YCP_add_ssp_deputies }
-			add_to_variable = { YCP_other_parties_deputies = 7 tooltip = YCP_add_other_parties_deputies }
-			add_to_variable = { YCP_independent_deputies = 13 tooltip = YCP_add_independent_deputies }
+			add_to_variable = { YCP_ycp_party:YCP_num_deputies = 17 tooltip = YCP_add_ycp_deputies }
+			add_to_variable = { YCP_professional_groups_party:YCP_num_deputies = 10 tooltip = YCP_add_professional_groups_deputies } add_to_variable = { YCP_professional_groups_party:YCP_num_non_aligned_deputies = 10 }
+			add_to_variable = { YCP_ssp_party:YCP_num_deputies = 13 tooltip = YCP_add_ssp_deputies }
+			add_to_variable = { YCP_other_parties_party:YCP_num_deputies = 7 tooltip = YCP_add_other_parties_deputies } add_to_variable = { YCP_other_parties_party:YCP_num_non_aligned_deputies = 7 }
+			add_to_variable = { YCP_independent_party:YCP_num_deputies = 6 tooltip = YCP_add_independent_deputies } add_to_variable = { YCP_independent_party:YCP_num_non_aligned_deputies = 6 }
 		}
+		set_temp_variable = { deputies = 25 } 
+		YCP_add_enemy_party_deputies = yes
 	}
 }
 NW_china_integrate_shandong_state_effect = {
@@ -589,19 +590,21 @@ NW_china_integrate_shandong_state_effect = {
 NW_china_integrate_henan_effect = {
 	if = {
 		limit = { original_tag = YCP }
-		if = {
+		if = { # 68
 			limit = { has_completed_focus = YCP_nationwide_welfare }
-			add_to_variable = { YCP_ycp_deputies = 30 tooltip = YCP_add_ycp_deputies }
-			add_to_variable = { YCP_professional_groups_deputies = 8 tooltip = YCP_add_professional_groups_deputies }
-			add_to_variable = { YCP_other_parties_deputies = 8 tooltip = YCP_add_other_parties_deputies }
-			add_to_variable = { YCP_independent_deputies = 22 tooltip = YCP_add_independent_deputies }
+			add_to_variable = { YCP_ycp_party:YCP_num_deputies = 20 tooltip = YCP_add_ycp_deputies }
+			add_to_variable = { YCP_professional_groups_party:YCP_num_deputies = 8 tooltip = YCP_add_professional_groups_deputies } add_to_variable = { YCP_professional_groups_party:YCP_num_non_aligned_deputies = 8 }
+			add_to_variable = { YCP_other_parties_party:YCP_num_deputies = 8 tooltip = YCP_add_other_parties_deputies } add_to_variable = { YCP_other_parties_party:YCP_num_non_aligned_deputies = 8 }
+			add_to_variable = { YCP_independent_party:YCP_num_deputies = 12 tooltip = YCP_add_independent_deputies } add_to_variable = { YCP_independent_party:YCP_num_non_aligned_deputies = 12 }
 		}
 		else = {
-			add_to_variable = { YCP_ycp_deputies = 15 tooltip = YCP_add_ycp_deputies }
-			add_to_variable = { YCP_professional_groups_deputies = 10 tooltip = YCP_add_professional_groups_deputies }
-			add_to_variable = { YCP_other_parties_deputies = 10 tooltip = YCP_add_other_parties_deputies }
-			add_to_variable = { YCP_independent_deputies = 33 tooltip = YCP_add_independent_deputies }
+			add_to_variable = { YCP_ycp_party:YCP_num_deputies = 12 tooltip = YCP_add_ycp_deputies }
+			add_to_variable = { YCP_professional_groups_party:YCP_num_deputies = 10 tooltip = YCP_add_professional_groups_deputies } add_to_variable = { YCP_professional_groups_party:YCP_num_non_aligned_deputies = 10 }
+			add_to_variable = { YCP_other_parties_party:YCP_num_deputies = 10 tooltip = YCP_add_other_parties_deputies } add_to_variable = { YCP_other_parties_party:YCP_num_non_aligned_deputies = 10 }
+			add_to_variable = { YCP_independent_party:YCP_num_deputies = 16 tooltip = YCP_add_independent_deputies } add_to_variable = { YCP_independent_party:YCP_num_non_aligned_deputies = 16 }
 		}
+		set_temp_variable = { deputies = 20 } 
+		YCP_add_enemy_party_deputies = yes
 	}
 }
 NW_china_integrate_henan_state_effect = {
@@ -614,17 +617,19 @@ NW_china_integrate_henan_state_effect = {
 NW_china_integrate_shansi_effect = {
 	if = {
 		limit = { original_tag = YCP }
-		if = {
+		if = { # 22
 			limit = { has_completed_focus = YCP_nationwide_welfare }
-			add_to_variable = { YCP_ycp_deputies = 12 tooltip = YCP_add_ycp_deputies }
-			add_to_variable = { YCP_professional_groups_deputies = 2 tooltip = YCP_add_professional_groups_deputies }
-			add_to_variable = { YCP_other_parties_deputies = 8 tooltip = YCP_add_other_parties_deputies }
+			add_to_variable = { YCP_ycp_party:YCP_num_deputies = 12 tooltip = YCP_add_ycp_deputies }
+			add_to_variable = { YCP_professional_groups_party:YCP_num_deputies = 1 tooltip = YCP_add_professional_groups_deputies } add_to_variable = { YCP_professional_groups_party:YCP_num_non_aligned_deputies = 1 }
+			add_to_variable = { YCP_other_parties_party:YCP_num_deputies = 1 tooltip = YCP_add_other_parties_deputies } add_to_variable = { YCP_other_parties_party:YCP_num_non_aligned_deputies = 1 }
 		}
 		else = {
-			add_to_variable = { YCP_ycp_deputies = 8 tooltip = YCP_add_ycp_deputies }
-			add_to_variable = { YCP_professional_groups_deputies = 2 tooltip = YCP_add_professional_groups_deputies }
-			add_to_variable = { YCP_other_parties_deputies = 12 tooltip = YCP_add_other_parties_deputies }
+			add_to_variable = { YCP_ycp_party:YCP_num_deputies = 8 tooltip = YCP_add_ycp_deputies }
+			add_to_variable = { YCP_professional_groups_party:YCP_num_deputies = 2 tooltip = YCP_add_professional_groups_deputies } add_to_variable = { YCP_professional_groups_party:YCP_num_non_aligned_deputies = 2 }
+			add_to_variable = { YCP_other_parties_party:YCP_num_deputies = 4 tooltip = YCP_add_other_parties_deputies } add_to_variable = { YCP_other_parties_party:YCP_num_non_aligned_deputies = 4 }
 		}
+		set_temp_variable = { deputies = 8 } 
+		YCP_add_enemy_party_deputies = yes
 	}
 }
 NW_china_integrate_shansi_state_effect = {
@@ -637,18 +642,20 @@ NW_china_integrate_shansi_state_effect = {
 NW_china_integrate_shensi_effect = {
 	if = {
 		limit = { original_tag = YCP }
-		if = {
+		if = { # 18
 			limit = { has_completed_focus = YCP_nationwide_welfare }
-			add_to_variable = { YCP_ycp_deputies = 7 tooltip = YCP_add_ycp_deputies }
-			add_to_variable = { YCP_professional_groups_deputies = 2 tooltip = YCP_add_professional_groups_deputies }
-			add_to_variable = { YCP_independent_deputies = 9 tooltip = YCP_add_independent_deputies }
+			add_to_variable = { YCP_ycp_party:YCP_num_deputies = 7 tooltip = YCP_add_ycp_deputies }
+			add_to_variable = { YCP_professional_groups_party:YCP_num_deputies = 2 tooltip = YCP_add_professional_groups_deputies } add_to_variable = { YCP_professional_groups_party:YCP_num_non_aligned_deputies = 2 }
+			add_to_variable = { YCP_independent_party:YCP_num_deputies = 3 tooltip = YCP_add_independent_deputies } add_to_variable = { YCP_independent_party:YCP_num_non_aligned_deputies = 3 }
 		}
 		else = {
-			add_to_variable = { YCP_ycp_deputies = 3 tooltip = YCP_add_ycp_deputies }
-			add_to_variable = { YCP_professional_groups_deputies = 2 tooltip = YCP_add_professional_groups_deputies }
-			add_to_variable = { YCP_other_parties_deputies = 3 tooltip = YCP_add_other_parties_deputies }
-			add_to_variable = { YCP_independent_deputies = 10 tooltip = YCP_add_independent_deputies }
+			add_to_variable = { YCP_ycp_party:YCP_num_deputies = 3 tooltip = YCP_add_ycp_deputies }
+			add_to_variable = { YCP_professional_groups_party:YCP_num_deputies = 2 tooltip = YCP_add_professional_groups_deputies } add_to_variable = { YCP_professional_groups_party:YCP_num_non_aligned_deputies = 2 }
+			add_to_variable = { YCP_other_parties_party:YCP_num_deputies = 3 tooltip = YCP_add_other_parties_deputies } add_to_variable = { YCP_other_parties_party:YCP_num_non_aligned_deputies = 3 }
+			add_to_variable = { YCP_independent_party:YCP_num_deputies = 4 tooltip = YCP_add_independent_deputies } add_to_variable = { YCP_independent_party:YCP_num_non_aligned_deputies = 4 }
 		}
+		set_temp_variable = { deputies = 6 } 
+		YCP_add_enemy_party_deputies = yes
 	}
 }
 NW_china_integrate_shensi_state_effect = {
@@ -661,22 +668,24 @@ NW_china_integrate_shensi_state_effect = {
 NW_china_integrate_hunan_effect = {
 	if = {
 		limit = { original_tag = YCP }
-		if = {
+		if = { # 68
 			limit = { has_completed_focus = YCP_written_constitutionalism }
-			add_to_variable = { YCP_ycp_deputies = 30 tooltip = YCP_add_ycp_deputies }
-			add_to_variable = { YCP_professional_groups_deputies = 6 tooltip = YCP_add_professional_groups_deputies }
-			add_to_variable = { YCP_ssp_deputies = 8 tooltip = YCP_add_ssp_deputies }
-			add_to_variable = { YCP_federalist_deputies = 8 tooltip = YCP_add_federalist_deputies }
-			add_to_variable = { YCP_other_parties_deputies = 2 tooltip = YCP_add_other_parties_deputies }
-			add_to_variable = { YCP_independent_deputies = 4 tooltip = YCP_add_independent_deputies }
+			add_to_variable = { YCP_ycp_party:YCP_num_deputies = 22 tooltip = YCP_add_ycp_deputies }
+			add_to_variable = { YCP_professional_groups_party:YCP_num_deputies = 6 tooltip = YCP_add_professional_groups_deputies } add_to_variable = { YCP_professional_groups_party:YCP_num_non_aligned_deputies = 6 }
+			add_to_variable = { YCP_ssp_party:YCP_num_deputies = 8 tooltip = YCP_add_ssp_deputies }
+			add_to_variable = { YCP_federalist_party:YCP_num_deputies = 8 tooltip = YCP_add_federalist_deputies }
+			add_to_variable = { YCP_other_parties_party:YCP_num_deputies = 2 tooltip = YCP_add_other_parties_deputies } add_to_variable = { YCP_other_parties_party:YCP_num_non_aligned_deputies = 2 }
+			add_to_variable = { YCP_independent_party:YCP_num_deputies = 2 tooltip = YCP_add_independent_deputies } add_to_variable = { YCP_independent_party:YCP_num_non_aligned_deputies = 2 }
 		}
 		else = {
-			add_to_variable = { YCP_ycp_deputies = 20 tooltip = YCP_add_ycp_deputies }
-			add_to_variable = { YCP_professional_groups_deputies = 6 tooltip = YCP_add_professional_groups_deputies }
-			add_to_variable = { YCP_ssp_deputies = 11 tooltip = YCP_add_ssp_deputies }
-			add_to_variable = { YCP_federalist_deputies = 15 tooltip = YCP_add_federalist_deputies }
-			add_to_variable = { YCP_independent_deputies = 6 tooltip = YCP_add_independent_deputies }
+			add_to_variable = { YCP_ycp_party:YCP_num_deputies = 12 tooltip = YCP_add_ycp_deputies }
+			add_to_variable = { YCP_professional_groups_party:YCP_num_deputies = 5 tooltip = YCP_add_professional_groups_deputies } add_to_variable = { YCP_professional_groups_party:YCP_num_non_aligned_deputies = 5 }
+			add_to_variable = { YCP_ssp_party:YCP_num_deputies = 11 tooltip = YCP_add_ssp_deputies }
+			add_to_variable = { YCP_federalist_party:YCP_num_deputies = 15 tooltip = YCP_add_federalist_deputies }
+			add_to_variable = { YCP_independent_party:YCP_num_deputies = 5 tooltip = YCP_add_independent_deputies } add_to_variable = { YCP_independent_party:YCP_num_non_aligned_deputies = 5 }
 		}
+		set_temp_variable = { deputies = 20 } 
+		YCP_add_enemy_party_deputies = yes
 	}
 }
 NW_china_integrate_hunan_state_effect = {
@@ -689,22 +698,24 @@ NW_china_integrate_hunan_state_effect = {
 NW_china_integrate_sichuan_effect = {
 	if = {
 		limit = { original_tag = YCP }
-		if = {
+		if = { # 106
 			limit = { has_completed_focus = YCP_nationwide_government }
-			add_to_variable = { YCP_ycp_deputies = 75 tooltip = YCP_add_ycp_deputies }
-			add_to_variable = { YCP_professional_groups_deputies = 15 tooltip = YCP_add_professional_groups_deputies }
-			add_to_variable = { YCP_ssp_deputies = 5 tooltip = YCP_add_ssp_deputies }
-			add_to_variable = { YCP_federalist_deputies = 6 tooltip = YCP_add_federalist_deputies }
-			add_to_variable = { YCP_independent_deputies = 5 tooltip = YCP_add_independent_deputies }
+			add_to_variable = { YCP_ycp_party:YCP_num_deputies = 60 tooltip = YCP_add_ycp_deputies }
+			add_to_variable = { YCP_professional_groups_party:YCP_num_deputies = 2 tooltip = YCP_add_professional_groups_deputies } add_to_variable = { YCP_professional_groups_party:YCP_num_non_aligned_deputies = 2 }
+			add_to_variable = { YCP_ssp_party:YCP_num_deputies = 5 tooltip = YCP_add_ssp_deputies }
+			add_to_variable = { YCP_federalist_party:YCP_num_deputies = 6 tooltip = YCP_add_federalist_deputies }
+			add_to_variable = { YCP_independent_party:YCP_num_deputies = 1 tooltip = YCP_add_independent_deputies } add_to_variable = { YCP_independent_party:YCP_num_non_aligned_deputies = 1 }
 		}
 		else = {
-			add_to_variable = { YCP_ycp_deputies = 60 tooltip = YCP_add_ycp_deputies }
-			add_to_variable = { YCP_professional_groups_deputies = 15 tooltip = YCP_add_professional_groups_deputies }
-			add_to_variable = { YCP_ssp_deputies = 8 tooltip = YCP_add_ssp_deputies }
-			add_to_variable = { YCP_federalist_deputies = 10 tooltip = YCP_add_federalist_deputies }
-			add_to_variable = { YCP_other_parties_deputies = 3 tooltip = YCP_add_other_parties_deputies }
-			add_to_variable = { YCP_independent_deputies = 10 tooltip = YCP_add_independent_deputies }
+			add_to_variable = { YCP_ycp_party:YCP_num_deputies = 40 tooltip = YCP_add_ycp_deputies }
+			add_to_variable = { YCP_professional_groups_party:YCP_num_deputies = 10 tooltip = YCP_add_professional_groups_deputies } add_to_variable = { YCP_professional_groups_party:YCP_num_non_aligned_deputies = 10 }
+			add_to_variable = { YCP_ssp_party:YCP_num_deputies = 8 tooltip = YCP_add_ssp_deputies }
+			add_to_variable = { YCP_federalist_party:YCP_num_deputies = 10 tooltip = YCP_add_federalist_deputies }
+			add_to_variable = { YCP_other_parties_party:YCP_num_deputies = 3 tooltip = YCP_add_other_parties_deputies } add_to_variable = { YCP_other_parties_party:YCP_num_non_aligned_deputies = 3 }
+			add_to_variable = { YCP_independent_party:YCP_num_deputies = 3 tooltip = YCP_add_independent_deputies } add_to_variable = { YCP_independent_party:YCP_num_non_aligned_deputies = 3 }
 		}
+		set_temp_variable = { deputies = 32 } 
+		YCP_add_enemy_party_deputies = yes
 		
 		custom_effect_tooltip = available_political_advisor
 		if = {
@@ -727,14 +738,16 @@ NW_china_integrate_sichuan_state_effect = {
 NW_china_integrate_sikan_effect = {
 	if = {
 		limit = { original_tag = YCP }
-		if = {
+		if = { # 2
 			limit = { has_completed_focus = YCP_nationwide_government }
-			add_to_variable = { YCP_ycp_deputies = 1 tooltip = YCP_add_ycp_deputies }
-			add_to_variable = { YCP_independent_deputies = 1 tooltip = YCP_add_independent_deputies }
+			add_to_variable = { YCP_ycp_party:YCP_num_deputies = 1 tooltip = YCP_add_ycp_deputies }
+			# add_to_variable = { YCP_independent_party:YCP_num_deputies = 0 tooltip = YCP_add_independent_deputies }
 		}
 		else = {
-			add_to_variable = { YCP_independent_deputies = 2 tooltip = YCP_add_independent_deputies }
+			add_to_variable = { YCP_independent_party:YCP_num_deputies = 1 tooltip = YCP_add_independent_deputies } add_to_variable = { YCP_independent_party:YCP_num_non_aligned_deputies = 1 }
 		}
+		set_temp_variable = { deputies = 1 } 
+		YCP_add_enemy_party_deputies = yes
 	}
 }
 NW_china_integrate_sikan_state_effect = {
@@ -747,21 +760,23 @@ NW_china_integrate_sikan_state_effect = {
 NW_china_integrate_fujian_effect = {
 	if = {
 		limit = { original_tag = YCP }
-		if = {
+		if = { # 24
 			limit = { has_completed_focus = YCP_nationwide_welfare }
-			add_to_variable = { YCP_ycp_deputies = 8 tooltip = YCP_add_ycp_deputies }
-			add_to_variable = { YCP_ssp_deputies = 4 tooltip = YCP_add_ssp_deputies }
-			add_to_variable = { YCP_other_parties_deputies = 8 tooltip = YCP_add_other_parties_deputies }
-			add_to_variable = { YCP_professional_groups_deputies = 3 tooltip = YCP_add_professional_groups_deputies }
-			add_to_variable = { YCP_independent_deputies = 1 tooltip = YCP_add_independent_deputies }
+			add_to_variable = { YCP_ycp_party:YCP_num_deputies = 8 tooltip = YCP_add_ycp_deputies }
+			add_to_variable = { YCP_ssp_party:YCP_num_deputies = 4 tooltip = YCP_add_ssp_deputies }
+			add_to_variable = { YCP_other_parties_party:YCP_num_deputies = 1 tooltip = YCP_add_other_parties_deputies } add_to_variable = { YCP_other_parties_party:YCP_num_non_aligned_deputies = 1 }
+			add_to_variable = { YCP_professional_groups_party:YCP_num_deputies = 1 tooltip = YCP_add_professional_groups_deputies } add_to_variable = { YCP_professional_groups_party:YCP_num_non_aligned_deputies = 1 }
+			add_to_variable = { YCP_independent_party:YCP_num_deputies = 1 tooltip = YCP_add_independent_deputies } add_to_variable = { YCP_independent_party:YCP_num_non_aligned_deputies = 1 }
 		}
 		else = {
-			add_to_variable = { YCP_ycp_deputies = 5 tooltip = YCP_add_ycp_deputies }
-			add_to_variable = { YCP_ssp_deputies = 6 tooltip = YCP_add_ssp_deputies }
-			add_to_variable = { YCP_other_parties_deputies = 9 tooltip = YCP_add_other_parties_deputies }
-			add_to_variable = { YCP_professional_groups_deputies = 3 tooltip = YCP_add_professional_groups_deputies }
-			add_to_variable = { YCP_independent_deputies = 1 tooltip = YCP_add_independent_deputies }
+			add_to_variable = { YCP_ycp_party:YCP_num_deputies = 5 tooltip = YCP_add_ycp_deputies }
+			add_to_variable = { YCP_ssp_party:YCP_num_deputies = 6 tooltip = YCP_add_ssp_deputies }
+			add_to_variable = { YCP_other_parties_party:YCP_num_deputies = 2 tooltip = YCP_add_other_parties_deputies } add_to_variable = { YCP_other_parties_party:YCP_num_non_aligned_deputies = 2 }
+			add_to_variable = { YCP_professional_groups_party:YCP_num_deputies = 1 tooltip = YCP_add_professional_groups_deputies } add_to_variable = { YCP_professional_groups_party:YCP_num_non_aligned_deputies = 1 }
+			add_to_variable = { YCP_independent_party:YCP_num_deputies = 1 tooltip = YCP_add_independent_deputies } add_to_variable = { YCP_independent_party:YCP_num_non_aligned_deputies = 1 }
 		}
+		set_temp_variable = { deputies = 9 } 
+		YCP_add_enemy_party_deputies = yes
 	}
 }
 NW_china_integrate_fujian_state_effect = {
@@ -774,19 +789,21 @@ NW_china_integrate_fujian_state_effect = {
 NW_china_integrate_anhui_effect = {
 	if = {
 		limit = { original_tag = YCP }
-		if = {
+		if = { # 46
 			limit = { has_completed_focus = YCP_nationwide_welfare }
-			add_to_variable = { YCP_ycp_deputies = 16 tooltip = YCP_add_ycp_deputies }
-			add_to_variable = { YCP_professional_groups_deputies = 9 tooltip = YCP_add_professional_groups_deputies }
-			add_to_variable = { YCP_ssp_deputies = 11 tooltip = YCP_add_ssp_deputies }
-			add_to_variable = { YCP_independent_deputies = 10 tooltip = YCP_add_independent_deputies }
+			add_to_variable = { YCP_ycp_party:YCP_num_deputies = 16 tooltip = YCP_add_ycp_deputies }
+			add_to_variable = { YCP_professional_groups_party:YCP_num_deputies = 1 tooltip = YCP_add_professional_groups_deputies } add_to_variable = { YCP_professional_groups_party:YCP_num_non_aligned_deputies = 1 }
+			add_to_variable = { YCP_ssp_party:YCP_num_deputies = 11 tooltip = YCP_add_ssp_deputies }
+			add_to_variable = { YCP_independent_party:YCP_num_deputies = 3 tooltip = YCP_add_independent_deputies } add_to_variable = { YCP_independent_party:YCP_num_non_aligned_deputies = 3 }
 		}
 		else = {
-			add_to_variable = { YCP_ycp_deputies = 10 tooltip = YCP_add_ycp_deputies }
-			add_to_variable = { YCP_professional_groups_deputies = 9 tooltip = YCP_add_professional_groups_deputies }
-			add_to_variable = { YCP_ssp_deputies = 15 tooltip = YCP_add_ssp_deputies }
-			add_to_variable = { YCP_independent_deputies = 12 tooltip = YCP_add_independent_deputies }
+			add_to_variable = { YCP_ycp_party:YCP_num_deputies = 10 tooltip = YCP_add_ycp_deputies }
+			add_to_variable = { YCP_professional_groups_party:YCP_num_deputies = 2 tooltip = YCP_add_professional_groups_deputies } add_to_variable = { YCP_professional_groups_party:YCP_num_non_aligned_deputies = 2 }
+			add_to_variable = { YCP_ssp_party:YCP_num_deputies = 15 tooltip = YCP_add_ssp_deputies }
+			add_to_variable = { YCP_independent_party:YCP_num_deputies = 4 tooltip = YCP_add_independent_deputies } add_to_variable = { YCP_independent_party:YCP_num_non_aligned_deputies = 4 }
 		}
+		set_temp_variable = { deputies = 15 } 
+		YCP_add_enemy_party_deputies = yes
 	}
 }
 NW_china_integrate_anhui_state_effect = {
@@ -799,20 +816,22 @@ NW_china_integrate_anhui_state_effect = {
 NW_china_integrate_zhejiang_effect = {
 	if = {
 		limit = { original_tag = YCP }
-		if = {
+		if = { # 53 / 42
 			limit = { has_completed_focus = YCP_democratic_breakaway_of_kuomintang }
-			add_to_variable = { YCP_ycp_deputies = 15 tooltip = YCP_add_ycp_deputies }
-			add_to_variable = { YCP_kdu_deputies = 20 tooltip = YCP_add_kdu_deputies }
-			add_to_variable = { YCP_professional_groups_deputies = 5 tooltip = YCP_add_professional_groups_deputies }
-			add_to_variable = { YCP_ssp_deputies = 11 tooltip = YCP_add_ssp_deputies }
-			add_to_variable = { YCP_independent_deputies = 2 tooltip = YCP_add_independent_deputies }
+			add_to_variable = { YCP_ycp_party:YCP_num_deputies = 9 tooltip = YCP_add_ycp_deputies }
+			add_to_variable = { YCP_kdu_party:YCP_num_deputies = 20 tooltip = YCP_add_kdu_deputies }
+			add_to_variable = { YCP_professional_groups_party:YCP_num_deputies = 1 tooltip = YCP_add_professional_groups_deputies } add_to_variable = { YCP_professional_groups_party:YCP_num_non_aligned_deputies = 1 }
+			add_to_variable = { YCP_ssp_party:YCP_num_deputies = 11 tooltip = YCP_add_ssp_deputies }
+			# add_to_variable = { YCP_independent_party:YCP_num_deputies = 0 tooltip = YCP_add_independent_deputies }
 		}
 		else = {
-			add_to_variable = { YCP_ycp_deputies = 18 tooltip = YCP_add_ycp_deputies }
-			add_to_variable = { YCP_ssp_deputies = 6 tooltip = YCP_add_ssp_deputies }
-			add_to_variable = { YCP_professional_groups_deputies = 5 tooltip = YCP_add_professional_groups_deputies }
-			add_to_variable = { YCP_independent_deputies = 13 tooltip = YCP_add_independent_deputies }
+			add_to_variable = { YCP_ycp_party:YCP_num_deputies = 14 tooltip = YCP_add_ycp_deputies }
+			add_to_variable = { YCP_ssp_party:YCP_num_deputies = 6 tooltip = YCP_add_ssp_deputies }
+			add_to_variable = { YCP_professional_groups_party:YCP_num_deputies = 5 tooltip = YCP_add_professional_groups_deputies } add_to_variable = { YCP_professional_groups_party:YCP_num_non_aligned_deputies = 5 }
+			add_to_variable = { YCP_independent_party:YCP_num_deputies = 5 tooltip = YCP_add_independent_deputies } add_to_variable = { YCP_independent_party:YCP_num_non_aligned_deputies = 5 }
 		}
+		set_temp_variable = { deputies = 12 } 
+		YCP_add_enemy_party_deputies = yes
 	}
 }
 NW_china_integrate_zhejiang_state_effect = {
@@ -825,16 +844,18 @@ NW_china_integrate_zhejiang_state_effect = {
 NW_china_integrate_shanghai_effect = {
 	if = {
 		limit = { original_tag = YCP }
-		if = {
+		if = { # 6
 			limit = { has_completed_focus = YCP_creating_middle_class }
-			add_to_variable = { YCP_ycp_deputies = 4 tooltip = YCP_add_ycp_deputies }
-			add_to_variable = { YCP_ssp_deputies = 2 tooltip = YCP_add_ssp_deputies }
+			add_to_variable = { YCP_ycp_party:YCP_num_deputies = 2 tooltip = YCP_add_ycp_deputies }
+			add_to_variable = { YCP_ssp_party:YCP_num_deputies = 2 tooltip = YCP_add_ssp_deputies }
 		}
 		else = {
-			add_to_variable = { YCP_ycp_deputies = 3 tooltip = YCP_add_ycp_deputies }
-			add_to_variable = { YCP_ssp_deputies = 2 tooltip = YCP_add_ssp_deputies }
-			add_to_variable = { YCP_other_parties_deputies = 1 tooltip = YCP_add_other_parties_deputies }
+			add_to_variable = { YCP_ycp_party:YCP_num_deputies = 1 tooltip = YCP_add_ycp_deputies }
+			add_to_variable = { YCP_ssp_party:YCP_num_deputies = 2 tooltip = YCP_add_ssp_deputies }
+			add_to_variable = { YCP_other_parties_party:YCP_num_deputies = 1 tooltip = YCP_add_other_parties_deputies } add_to_variable = { YCP_other_parties_party:YCP_num_non_aligned_deputies = 1 }
 		}
+		set_temp_variable = { deputies = 2 } 
+		YCP_add_enemy_party_deputies = yes
 	}
 }
 NW_china_integrate_shanghai_state_effect = {
@@ -849,11 +870,11 @@ NW_china_integrate_hong_kong_effect = {
 		limit = { original_tag = YCP }
 		if = {
 			limit = { has_completed_focus = YCP_progressive_income_tax }
-			add_to_variable = { YCP_federalist_deputies = 3 tooltip = YCP_add_federalist_deputies }
+			add_to_variable = { YCP_federalist_party:YCP_num_deputies = 3 tooltip = YCP_add_federalist_deputies }
 		}
 		else = {
-			add_to_variable = { YCP_ycp_deputies = 2 tooltip = YCP_add_ycp_deputies }
-			add_to_variable = { YCP_ssp_deputies = 1 tooltip = YCP_add_ssp_deputies }
+			add_to_variable = { YCP_ycp_party:YCP_num_deputies = 2 tooltip = YCP_add_ycp_deputies }
+			add_to_variable = { YCP_ssp_party:YCP_num_deputies = 1 tooltip = YCP_add_ssp_deputies }
 		}
 	}
 }
@@ -869,11 +890,11 @@ NW_china_integrate_qinghai_effect = {
 		limit = { original_tag = YCP }
 		if = {
 			limit = { has_completed_focus = YCP_support_republic_of_five_nations }
-			add_to_variable = { YCP_ycp_deputies = 1 tooltip = YCP_add_ycp_deputies }
-			add_to_variable = { YCP_independent_deputies = 2 tooltip = YCP_add_independent_deputies }
+			add_to_variable = { YCP_ycp_party:YCP_num_deputies = 1 tooltip = YCP_add_ycp_deputies }
+			add_to_variable = { YCP_independent_party:YCP_num_deputies = 2 tooltip = YCP_add_independent_deputies } add_to_variable = { YCP_independent_party:YCP_num_non_aligned_deputies = 2 }
 		}
 		else = {
-			add_to_variable = { YCP_independent_deputies = 3 tooltip = YCP_add_independent_deputies }
+			add_to_variable = { YCP_independent_party:YCP_num_deputies = 3 tooltip = YCP_add_independent_deputies } add_to_variable = { YCP_independent_party:YCP_num_non_aligned_deputies = 3 }
 		}
 	}
 }
@@ -887,17 +908,19 @@ NW_china_integrate_qinghai_state_effect = {
 NW_china_integrate_gansu_effect = {
 	if = {
 		limit = { original_tag = YCP }
-		if = {
+		if = { # 11
 			limit = { has_completed_focus = YCP_replace_disorganization_with_discipline }
-			add_to_variable = { YCP_ycp_deputies = 4 tooltip = YCP_add_ycp_deputies }
-			add_to_variable = { YCP_professional_groups_deputies = 1 tooltip = YCP_add_professional_groups_deputies }
-			add_to_variable = { YCP_independent_deputies = 6 tooltip = YCP_add_independent_deputies }
+			add_to_variable = { YCP_ycp_party:YCP_num_deputies = 4 tooltip = YCP_add_ycp_deputies }
+			add_to_variable = { YCP_professional_groups_party:YCP_num_deputies = 1 tooltip = YCP_add_professional_groups_deputies } add_to_variable = { YCP_professional_groups_party:YCP_num_non_aligned_deputies = 1 }
+			add_to_variable = { YCP_independent_party:YCP_num_deputies = 1 tooltip = YCP_add_independent_deputies } add_to_variable = { YCP_independent_party:YCP_num_non_aligned_deputies = 1 }
 		}
 		else = {
-			add_to_variable = { YCP_ycp_deputies = 1 tooltip = YCP_add_ycp_deputies }
-			add_to_variable = { YCP_professional_groups_deputies = 1 tooltip = YCP_add_professional_groups_deputies }
-			add_to_variable = { YCP_independent_deputies = 9 tooltip = YCP_add_independent_deputies }
+			add_to_variable = { YCP_ycp_party:YCP_num_deputies = 1 tooltip = YCP_add_ycp_deputies }
+			add_to_variable = { YCP_professional_groups_party:YCP_num_deputies = 1 tooltip = YCP_add_professional_groups_deputies } add_to_variable = { YCP_professional_groups_party:YCP_num_non_aligned_deputies = 1 }
+			add_to_variable = { YCP_independent_party:YCP_num_deputies = 4 tooltip = YCP_add_independent_deputies } add_to_variable = { YCP_independent_party:YCP_num_non_aligned_deputies = 4 }
 		}
+		set_temp_variable = { deputies = 5 } 
+		YCP_add_enemy_party_deputies = yes
 	}
 }
 NW_china_integrate_gansu_state_effect = {
@@ -910,18 +933,20 @@ NW_china_integrate_gansu_state_effect = {
 NW_china_integrate_guizhou_effect = {
 	if = {
 		limit = { original_tag = YCP }
-		if = {
+		if = { # 18
 			limit = { has_completed_focus = YCP_take_benefits_of_baojia_system }
-			add_to_variable = { YCP_ycp_deputies = 10 tooltip = YCP_add_ycp_deputies }
-			add_to_variable = { YCP_professional_groups_deputies = 2 tooltip = YCP_add_professional_groups_deputies }
-			add_to_variable = { YCP_independent_deputies = 6 tooltip = YCP_add_independent_deputies }
+			add_to_variable = { YCP_ycp_party:YCP_num_deputies = 10 tooltip = YCP_add_ycp_deputies }
+			add_to_variable = { YCP_professional_groups_party:YCP_num_deputies = 1 tooltip = YCP_add_professional_groups_deputies } add_to_variable = { YCP_professional_groups_party:YCP_num_non_aligned_deputies = 1 }
+			add_to_variable = { YCP_independent_party:YCP_num_deputies = 2 tooltip = YCP_add_independent_deputies } add_to_variable = { YCP_independent_party:YCP_num_non_aligned_deputies = 2 }
 		}
 		else = {
-			add_to_variable = { YCP_ycp_deputies = 6 tooltip = YCP_add_ycp_deputies }
-			add_to_variable = { YCP_professional_groups_deputies = 1 tooltip = YCP_add_professional_groups_deputies }
-			add_to_variable = { YCP_ssp_deputies = 2 tooltip = YCP_add_ssp_deputies }
-			add_to_variable = { YCP_independent_deputies = 9 tooltip = YCP_add_independent_deputies }
+			add_to_variable = { YCP_ycp_party:YCP_num_deputies = 3 tooltip = YCP_add_ycp_deputies }
+			add_to_variable = { YCP_professional_groups_party:YCP_num_deputies = 1 tooltip = YCP_add_professional_groups_deputies } add_to_variable = { YCP_professional_groups_party:YCP_num_non_aligned_deputies = 1 }
+			add_to_variable = { YCP_ssp_party:YCP_num_deputies = 2 tooltip = YCP_add_ssp_deputies }
+			add_to_variable = { YCP_independent_party:YCP_num_deputies = 7 tooltip = YCP_add_independent_deputies } add_to_variable = { YCP_independent_party:YCP_num_non_aligned_deputies = 7 }
 		}
+		set_temp_variable = { deputies = 5 } 
+		YCP_add_enemy_party_deputies = yes
 	}
 }
 NW_china_integrate_guizhou_state_effect = {
@@ -934,18 +959,20 @@ NW_china_integrate_guizhou_state_effect = {
 NW_china_integrate_guangxi_effect = {
 	if = {
 		limit = { original_tag = YCP }
-		if = {
+		if = { # 30
 			limit = { has_completed_focus = YCP_democratic_breakaway_of_kuomintang }
-			add_to_variable = { YCP_ycp_deputies = 12 tooltip = YCP_add_ycp_deputies }
-			add_to_variable = { YCP_professional_groups_deputies = 3 tooltip = YCP_add_professional_groups_deputies }
-			add_to_variable = { YCP_kdu_deputies = 15 tooltip = YCP_add_kdu_deputies }
+			add_to_variable = { YCP_ycp_party:YCP_num_deputies = 5 tooltip = YCP_add_ycp_deputies }
+			add_to_variable = { YCP_professional_groups_party:YCP_num_deputies = 3 tooltip = YCP_add_professional_groups_deputies } add_to_variable = { YCP_professional_groups_party:YCP_num_non_aligned_deputies = 3 }
+			add_to_variable = { YCP_kdu_party:YCP_num_deputies = 12 tooltip = YCP_add_kdu_deputies }
 		}
 		else = {
-			add_to_variable = { YCP_ycp_deputies = 14 tooltip = YCP_add_ycp_deputies }
-			add_to_variable = { YCP_professional_groups_deputies = 3 tooltip = YCP_add_professional_groups_deputies }
-			add_to_variable = { YCP_ssp_deputies = 5 tooltip = YCP_add_ssp_deputies }
-			add_to_variable = { YCP_independent_deputies = 8 tooltip = YCP_add_independent_deputies }
+			add_to_variable = { YCP_ycp_party:YCP_num_deputies = 9 tooltip = YCP_add_ycp_deputies }
+			add_to_variable = { YCP_professional_groups_party:YCP_num_deputies = 2 tooltip = YCP_add_professional_groups_deputies } add_to_variable = { YCP_professional_groups_party:YCP_num_non_aligned_deputies = 2 }
+			add_to_variable = { YCP_ssp_party:YCP_num_deputies = 5 tooltip = YCP_add_ssp_deputies }
+			add_to_variable = { YCP_independent_party:YCP_num_deputies = 4 tooltip = YCP_add_independent_deputies } add_to_variable = { YCP_independent_party:YCP_num_non_aligned_deputies = 4 }
 		}
+		set_temp_variable = { deputies = 10 } 
+		YCP_add_enemy_party_deputies = yes
 	}
 }
 NW_china_integrate_guangxi_state_effect = {
@@ -958,19 +985,25 @@ NW_china_integrate_guangxi_state_effect = {
 NW_china_integrate_guangdong_effect = {
 	if = {
 		limit = { original_tag = YCP }
-		if = {
+		if = { # 70
 			limit = { has_completed_focus = YCP_democratic_breakaway_of_kuomintang }
-			add_to_variable = { YCP_ycp_deputies = 20 tooltip = YCP_add_ycp_deputies }
-			add_to_variable = { YCP_professional_groups_deputies = 10 tooltip = YCP_add_professional_groups_deputies }
-			add_to_variable = { YCP_kdu_deputies = 40 tooltip = YCP_add_kdu_deputies }
+			add_to_variable = { YCP_ycp_party:YCP_num_deputies = 20 tooltip = YCP_add_ycp_deputies }
+			# add_to_variable = { YCP_professional_groups_party:YCP_num_deputies = 0 tooltip = YCP_add_professional_groups_deputies }
+			add_to_variable = { YCP_kdu_party:YCP_num_deputies = 40 tooltip = YCP_add_kdu_deputies }
+			
+			set_temp_variable = { deputies = 10 } 
+			YCP_add_enemy_party_deputies = yes
 		}
 		else = {
-			add_to_variable = { YCP_ycp_deputies = 20 tooltip = YCP_add_ycp_deputies }
-			add_to_variable = { YCP_professional_groups_deputies = 10 tooltip = YCP_add_professional_groups_deputies }
-			add_to_variable = { YCP_ssp_deputies = 10 tooltip = YCP_add_ssp_deputies }
-			add_to_variable = { YCP_federalist_deputies = 8 tooltip = YCP_add_federalist_deputies }
-			add_to_variable = { YCP_other_parties_deputies = 12 tooltip = YCP_add_other_parties_deputies }
-			add_to_variable = { YCP_independent_deputies = 10 tooltip = YCP_add_independent_deputies }
+			add_to_variable = { YCP_ycp_party:YCP_num_deputies = 10 tooltip = YCP_add_ycp_deputies }
+			add_to_variable = { YCP_professional_groups_party:YCP_num_deputies = 9 tooltip = YCP_add_professional_groups_deputies } add_to_variable = { YCP_professional_groups_party:YCP_num_non_aligned_deputies = 9 }
+			add_to_variable = { YCP_ssp_party:YCP_num_deputies = 10 tooltip = YCP_add_ssp_deputies }
+			add_to_variable = { YCP_federalist_party:YCP_num_deputies = 8 tooltip = YCP_add_federalist_deputies }
+			add_to_variable = { YCP_other_parties_party:YCP_num_deputies = 6 tooltip = YCP_add_other_parties_deputies } add_to_variable = { YCP_other_parties_party:YCP_num_non_aligned_deputies = 6 }
+			add_to_variable = { YCP_independent_party:YCP_num_deputies = 4 tooltip = YCP_add_independent_deputies } add_to_variable = { YCP_independent_party:YCP_num_non_aligned_deputies = 4 }
+			
+			set_temp_variable = { deputies = 23 } 
+			YCP_add_enemy_party_deputies = yes
 		}
 	}
 }
@@ -986,14 +1019,14 @@ NW_china_integrate_taiwan_effect = {
 		limit = { original_tag = YCP }
 		if = {
 			limit = { has_completed_focus = YCP_rule_of_law }
-			add_to_variable = { YCP_ycp_deputies = 5 tooltip = YCP_add_ycp_deputies }
-			add_to_variable = { YCP_professional_groups_deputies = 1 tooltip = YCP_add_professional_groups_deputies }
-			add_to_variable = { YCP_independent_deputies = 3 tooltip = YCP_add_independent_deputies }
+			add_to_variable = { YCP_ycp_party:YCP_num_deputies = 5 tooltip = YCP_add_ycp_deputies }
+			add_to_variable = { YCP_professional_groups_party:YCP_num_deputies = 1 tooltip = YCP_add_professional_groups_deputies } add_to_variable = { YCP_professional_groups_party:YCP_num_non_aligned_deputies = 1 }
+			add_to_variable = { YCP_independent_party:YCP_num_deputies = 3 tooltip = YCP_add_independent_deputies } add_to_variable = { YCP_independent_party:YCP_num_non_aligned_deputies = 3 }
 		}
 		else = {
-			add_to_variable = { YCP_professional_groups_deputies = 1 tooltip = YCP_add_professional_groups_deputies }
-			add_to_variable = { YCP_federalist_deputies = 5 tooltip = YCP_add_federalist_deputies }
-			add_to_variable = { YCP_independent_deputies = 3 tooltip = YCP_add_independent_deputies }
+			add_to_variable = { YCP_professional_groups_party:YCP_num_deputies = 1 tooltip = YCP_add_professional_groups_deputies } add_to_variable = { YCP_professional_groups_party:YCP_num_non_aligned_deputies = 1 }
+			add_to_variable = { YCP_federalist_party:YCP_num_deputies = 5 tooltip = YCP_add_federalist_deputies }
+			add_to_variable = { YCP_independent_party:YCP_num_deputies = 3 tooltip = YCP_add_independent_deputies } add_to_variable = { YCP_independent_party:YCP_num_non_aligned_deputies = 3 }
 		}
 	}
 }
@@ -1009,10 +1042,10 @@ NW_china_integrate_guangzhouwan_effect = {
 		limit = { original_tag = YCP }
 		if = {
 			limit = { has_completed_focus = YCP_protectionist_tariffs }
-			add_to_variable = { YCP_ycp_deputies = 1 tooltip = YCP_add_ycp_deputies }
+			add_to_variable = { YCP_ycp_party:YCP_num_deputies = 1 tooltip = YCP_add_ycp_deputies }
 		}
 		else = {
-			add_to_variable = { YCP_ssp_deputies = 1 tooltip = YCP_add_ssp_deputies }
+			add_to_variable = { YCP_ssp_party:YCP_num_deputies = 1 tooltip = YCP_add_ssp_deputies }
 		}
 	}
 }
@@ -1028,10 +1061,10 @@ NW_china_integrate_macau_effect = {
 		limit = { original_tag = YCP }
 		if = {
 			limit = { has_completed_focus = YCP_protectionist_tariffs }
-			add_to_variable = { YCP_ycp_deputies = 1 tooltip = YCP_add_ycp_deputies }
+			add_to_variable = { YCP_ycp_party:YCP_num_deputies = 1 tooltip = YCP_add_ycp_deputies }
 		}
 		else = {
-			add_to_variable = { YCP_ssp_deputies = 1 tooltip = YCP_add_ssp_deputies }
+			add_to_variable = { YCP_ssp_party:YCP_num_deputies = 1 tooltip = YCP_add_ssp_deputies }
 		}
 	}
 }
@@ -1047,10 +1080,10 @@ NW_china_integrate_dalian_effect = {
 		limit = { original_tag = YCP }
 		if = {
 			limit = { has_completed_focus = YCP_protectionist_tariffs }
-			add_to_variable = { YCP_ycp_deputies = 1 tooltip = YCP_add_ycp_deputies }
+			add_to_variable = { YCP_ycp_party:YCP_num_deputies = 1 tooltip = YCP_add_ycp_deputies }
 		}
 		else = {
-			add_to_variable = { YCP_ssp_deputies = 1 tooltip = YCP_add_ssp_deputies }
+			add_to_variable = { YCP_ssp_party:YCP_num_deputies = 1 tooltip = YCP_add_ssp_deputies }
 		}
 	}
 }
