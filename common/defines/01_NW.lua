@@ -13,7 +13,7 @@ NDefines.NFocus.MAX_SAVED_FOCUS_PROGRESS = 5								-- This much progress can be
 -- Country
 NDefines.NCountry.EVENT_PROCESS_OFFSET = 30									-- Events are checked every X day per country or state (1 is ideal, but CPU heavy)
 NDefines.NCountry.SPECIAL_FORCES_CAP_BASE = 0.05							-- Max ammount of special forces battalions is total number of non-special forces battalions multiplied by this and modified by a country modifier
-NDefines.NCountry.SPECIAL_FORCES_CAP_MIN = 36								-- You can have a minimum of this many special forces battalions, regardless of the number of non-special forces battalions you have, this can also be modified by a country modifier
+NDefines.NCountry.SPECIAL_FORCES_CAP_MIN = 24								-- You can have a minimum of this many special forces battalions, regardless of the number of non-special forces battalions you have, this can also be modified by a country modifier
 NDefines.NCountry.MIN_FOCUSES_FOR_CONTINUOUS = 0							-- Focuses needed to unlock continuous focuses
 NDefines.NCountry.MAJOR_MIN_FACTORIES = 75									-- need at least these many factories to become a major
 NDefines.NCountry.MIN_MAJOR_COUNTRIES = 0									-- MIN_MAJOR_COUNTRIES countries with most factories will be considered as major countries
