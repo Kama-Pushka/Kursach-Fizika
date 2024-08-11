@@ -3576,7 +3576,7 @@ SOV_manage_spanish_generals_exiled_in_ussr_effect = {
 	}
 	else_if = { #José Rovira
 		limit = {
-			ROOT = { tag = SPC }
+			ROOT = { tag = SPP }
 			SOV = {
 				has_country_flag = SOV_spanish_refugee_generals_welcome_flag
 				has_completed_focus = SOV_covert_support_for_spanish_poum
@@ -3656,12 +3656,12 @@ SOV_poum_brigades_to_soviet_civil_war_effect = {
 	add_equipment_to_stockpile = {
 		type = infantry_equipment
 		amount = 6000
-		producer = SPC
+		producer = SPR
 	}
 	add_equipment_to_stockpile = {
 		type = support_equipment
 		amount = 600
-		producer = SPC
+		producer = SPR
 	}
 
 	division_template = {
@@ -4499,12 +4499,17 @@ SOV_initiate_civil_war = {
 
 		# Remove Paranoia
 		SOV_remove_paranoia_effect = yes
+		NW_THE_CULT_OF_PERSONALITY_remove = yes
 
 		# Get Ideology Support
 		set_variable = { SOV_communist_support_before_civil_war = party_popularity_100@communism }
 		set_variable = { SOV_democratic_support_before_civil_war = party_popularity_100@democratic }
 		set_variable = { SOV_fascist_support_before_civil_war = party_popularity_100@fascism }
 		set_variable = { SOV_neutrality_support_before_civil_war = party_popularity_100@neutrality }
+		set_variable = { SOV_trozkism_support_before_civil_war = party_popularity_100@trozkism }
+		set_variable = { SOV_technocracy_support_before_civil_war = party_popularity_100@technocracy }
+		set_variable = { SOV_monarchy_support_before_civil_war = party_popularity_100@monarchy }
+		set_variable = { SOV_anarchism_support_before_civil_war = party_popularity_100@anarchism }
 
 		# Disband the NKVD -  they will come back, no worries
 		delete_units = {
@@ -4815,15 +4820,21 @@ SOV_start_civil_war = {
 		navy_ratio = var:temp_centre_navy
 		air_ratio = var:temp_centre_air
 
-		keep_political_leader = yes
+		keep_political_leader = yes # TODO сталину переходят SOV_exiled_flag советники?
 		keep_unit_leaders_trigger = {
 			IF = {
 				limit = { SOV_is_left_opposition = yes }
-				has_trait = trait_SOV_trotskyist
+				OR = {
+					has_trait = trait_SOV_trotskyist
+					# has_trait = anarchist_trait
+				}
 			}
 			ELSE_IF = {
 				limit = { SOV_is_right_opposition = yes }
-				has_trait = trait_SOV_bukharinist
+				OR = {
+					has_trait = trait_SOV_bukharinist
+					# has_trait = anarchist_trait
+				}
 			}
 			ELSE_IF = {
 				limit = { SOV_is_exiles = yes }
@@ -4845,6 +4856,10 @@ SOV_start_civil_war = {
 			democratic = SOV.SOV_democratic_support_before_civil_war
 			fascism = SOV.SOV_fascist_support_before_civil_war
 			neutrality = SOV.SOV_neutrality_support_before_civil_war
+			trozkism = SOV.SOV_trozkism_support_before_civil_war
+			technocracy = SOV.SOV_technocracy_support_before_civil_war
+			monarchy = SOV.SOV_monarchy_support_before_civil_war
+			anarchism = SOV.SOV_anarchism_support_before_civil_war
 		}
 		# Set Stalin as Leader if alive, else set Beriya
 		# recruit_character = SOV_iosif_stalin
@@ -4860,6 +4875,7 @@ SOV_start_civil_war = {
 
 		# Remove ideas 
 		remove_ideas = SOV_the_fourth_international_idea
+		NW_THE_CULT_OF_PERSONALITY_effect = yes
 
 		# Rally the Red Army!
 		IF = {
@@ -5310,6 +5326,10 @@ SOV_left_opposition_civil_war_start = {
 		democratic = SOV_democratic_support_before_civil_war
 		fascism = SOV_fascist_support_before_civil_war
 		neutrality = SOV_neutrality_support_before_civil_war
+		trozkism = SOV_trozkism_support_before_civil_war
+		technocracy = SOV_technocracy_support_before_civil_war
+		monarchy = SOV_monarchy_support_before_civil_war
+		anarchism = SOV_anarchism_support_before_civil_war
 	}
 
 	# Modify Stability
@@ -5358,6 +5378,10 @@ SOV_right_opposition_civil_war_start = {
 		democratic = SOV_democratic_support_before_civil_war
 		fascism = SOV_fascist_support_before_civil_war
 		neutrality = SOV_neutrality_support_before_civil_war
+		trozkism = SOV_trozkism_support_before_civil_war
+		technocracy = SOV_technocracy_support_before_civil_war
+		monarchy = SOV_monarchy_support_before_civil_war
+		anarchism = SOV_anarchism_support_before_civil_war
 	}
 
 	# Modify Stability
@@ -5411,6 +5435,10 @@ SOV_exiles_civil_war_start = {
 		democratic = SOV_democratic_support_before_civil_war
 		fascism = SOV_fascist_support_before_civil_war
 		neutrality = SOV_neutrality_support_before_civil_war
+		trozkism = SOV_trozkism_support_before_civil_war
+		technocracy = SOV_technocracy_support_before_civil_war
+		monarchy = SOV_monarchy_support_before_civil_war
+		anarchism = SOV_anarchism_support_before_civil_war
 	}
 
 	# Modify Stability
@@ -6766,7 +6794,7 @@ SOV_permanent_revolution_spawn_fifth_columnists_effect = {
 		limit = {
 			FROM = {
 				num_of_controlled_states > 4
-				communism > 0.1
+				trozkism > 0.1
 			}
 		}
 		if = {
@@ -6898,7 +6926,7 @@ SOV_permanent_revolution_spawn_fifth_columnists_effect = {
 		limit = {
 			FROM = {
 				num_of_controlled_states > 6
-				communism > 0.2
+				trozkism > 0.2
 			}
 		}
 		if = {
@@ -7032,7 +7060,7 @@ SOV_permanent_revolution_spawn_fifth_columnists_effect = {
 		limit = {
 			FROM = {
 				num_of_controlled_states > 8
-				communism > 0.3
+				trozkism > 0.3
 			}
 		}
 		if = {
@@ -7250,7 +7278,7 @@ SOV_permanent_revolution_spawn_fifth_columnists_effect = {
 		limit = {
 			FROM = {
 				num_of_controlled_states > 10
-				communism > 0.4
+				trozkism > 0.4
 			}
 		}
 		if = {
