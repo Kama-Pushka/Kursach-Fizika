@@ -8,7 +8,7 @@ NDefines.NGame.MISSION_REMOVE_FROM_INTERFACE_DEFAULT = 3					-- Default days bef
 NDefines.NPolitics.BASE_POLITICAL_POWER_INCREASE = 1.5						-- Weekly ?? (DAYLY!!) increase of PP.
 
 -- Focuses
-NDefines.NFocus.MAX_SAVED_FOCUS_PROGRESS = 5								-- This much progress can be saved while not having a focus selected
+NDefines.NFocus.MAX_SAVED_FOCUS_PROGRESS = 10								-- This much progress can be saved while not having a focus selected
 
 -- Country
 NDefines.NCountry.EVENT_PROCESS_OFFSET = 30									-- Events are checked every X day per country or state (1 is ideal, but CPU heavy)
