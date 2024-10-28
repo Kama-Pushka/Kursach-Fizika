@@ -384,6 +384,10 @@ focus_tree = {
 			factor = 10
 		}
 		available = {
+			NOT = {
+		        has_completed_focus = BHU_tong_rebellion
+		        has_completed_focus = BHU_reincarnation_of_shabdrung
+		    }
 		}
 		bypass = {
 		}
@@ -467,6 +471,10 @@ focus_tree = {
 			}
 		}
 		available = {
+			NOT = {
+		        has_completed_focus = BHU_tong_rebellion
+		        has_completed_focus = BHU_reincarnation_of_shabdrung
+		    }
 			
 		}
 		bypass = {
@@ -1117,13 +1125,39 @@ focus_tree = {
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BHU_infrastructure_development_in_bhutan"
 			swap_feudal_state_idea = yes
+			capital_scope = {
+				add_building_construction = {
+					type = infrastructure
+					level = 1
+					instant_build = yes
+				}
+			}
 			random_owned_controlled_state = {
 				limit = {
-					infrastructure < 9
+					is_controlled_by = ROOT
+					is_capital = no
+					free_building_slots = {
+						building = infrastructure
+						size < 5
+					}
+					OR = {
+						is_in_home_area = yes
+						NOT = {
+							owner = {
+								any_owned_state = {
+									free_building_slots = {
+										building = infrastructure
+										size > 0
+									}
+									is_in_home_area = yes
+								}
+							}
+						}
+					}
 				}
 				add_building_construction = {
 					type = infrastructure
-					level = 2
+					level = 1
 					instant_build = yes
 				}
 			}
@@ -2798,19 +2832,24 @@ focus_tree = {
 						is_faction_leader = yes
 						ROOT = { NOT = { is_in_faction_with = SOV } }
 					}
-					country_event = { id = NWbhutan.24 hours = 5 }
+					country_event = { id = generic.2 hours = 5 }
 				}
 			}
 			hidden_effect = {
-				add_popularity = {
-					ideology = var:SOV.current_party_ideology_group 
-					popularity = 0.5
-				}
-				set_politics = {
-					ruling_party = var:SOV.current_party_ideology_group
-					elections_allowed = no
-					long_name = BHU_gurung_party
-					name = BHU_gurung_party
+			    if = { 
+					limit = {
+						SOV = { NOT = { has_government = neutrality }}
+					}
+				    add_popularity = {
+					    ideology = var:SOV.current_party_ideology_group 
+					    popularity = 0.6
+				    }
+				    set_politics = {
+					    ruling_party = var:SOV.current_party_ideology_group
+					    elections_allowed = no
+					    long_name = BHU_gurung_party
+					    name = BHU_gurung_party
+				    }
 				}
 				if = {
 					limit = {
@@ -2835,6 +2874,20 @@ focus_tree = {
 						promote_leader = yes
 						country_leader = {
 							ideology = marxism
+							expire = "1965.1.1.1"
+							traits = { drug_desi }
+						}
+					}
+				}
+				else_if = {
+					limit = {
+						RAJ = { has_government = fascism }
+					}
+					add_country_leader_role = {
+						character = BHU_Garjaman_Gurung
+						promote_leader = yes
+						country_leader = {
+							ideology = nationalism_ideology
 							expire = "1965.1.1.1"
 							traits = { drug_desi }
 						}
@@ -2929,7 +2982,7 @@ focus_tree = {
 						is_faction_leader = yes
 						ROOT = { NOT = { is_in_faction_with = RAJ } }
 					}
-					country_event = { id = NWbhutan.24 hours = 5 }
+					country_event = { id = generic.2 hours = 5 }
 				}
 				else_if = {
 					limit = {
@@ -2938,19 +2991,24 @@ focus_tree = {
 							NOT = { is_in_faction_with = RAJ }
 						}
 					}
-				    country_event = { id = NWbhutan.26 hours = 5 }
+				    country_event = { id = generic.5 hours = 5 }
 				}
 			}
 			hidden_effect = {
-				add_popularity = {
-					ideology = var:RAJ.current_party_ideology_group 
-					popularity = 0.6
-				}
-				set_politics = {
-					ruling_party = var:RAJ.current_party_ideology_group
-					elections_allowed = no
-					long_name = BHU_gurung_party
-					name = BHU_gurung_party
+			    if = { 
+					limit = {
+						RAJ = { NOT = { has_government = neutrality }}
+					}
+				    add_popularity = {
+					    ideology = var:RAJ.current_party_ideology_group 
+					    popularity = 0.6
+				    }
+				    set_politics = {
+					    ruling_party = var:RAJ.current_party_ideology_group
+					    elections_allowed = no
+					    long_name = BHU_gurung_party
+					    name = BHU_gurung_party
+				    }
 				}
 				if = {
 					limit = {
@@ -2988,7 +3046,7 @@ focus_tree = {
 						character = BHU_Garjaman_Gurung
 						promote_leader = yes
 						country_leader = {
-							ideology = national_conservatism
+							ideology = nationalism_ideology
 							expire = "1965.1.1.1"
 							traits = { drug_desi }
 						}
@@ -3178,7 +3236,7 @@ focus_tree = {
 					}
 				}
 				SKM = {
-				    country_event = { id = NWbhutan.26 hours = 5 }
+				    country_event = { id = generic.5 hours = 5 }
 				}
 			}
 			else = {
@@ -3240,7 +3298,7 @@ focus_tree = {
 					}
 				}
 				TIB = {
-				    country_event = { id = NWbhutan.26 hours = 5 }
+				    country_event = { id = generic.5 hours = 5 }
 				}
 			}
 			else = {
@@ -3366,7 +3424,6 @@ focus_tree = {
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BHU_renovation_of_tsongs"
 			add_political_power = 50
-			add_popularity = {  ideology = neutrality  popularity = 0.1 }
 			add_ideas = BHU_updated_dzongs_idea
 		}
 	}
@@ -3437,12 +3494,34 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BHU_development_of_military_infrastructure"
-			random_controlled_state = {
+			random_owned_controlled_state = {
+				limit = {
+					is_controlled_by = ROOT
+					is_capital = no
+					free_building_slots = {
+						building = infrastructure
+						size < 5
+					}
+					OR = {
+						is_in_home_area = yes
+						NOT = {
+							owner = {
+								any_owned_state = {
+									free_building_slots = {
+										building = infrastructure
+										size > 0
+									}
+									is_in_home_area = yes
+								}
+							}
+						}
+					}
+				}
 				add_building_construction = {
-                    type = infrastructure
-                    level = 1
-                    instant_build = yes
-                }
+					type = infrastructure
+					level = 1
+					instant_build = yes
+				}
 			}
 			add_ideas = BHU_development_military_infrastructure_idea
 		}
@@ -3843,7 +3922,7 @@ focus_tree = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BHU_support_chi"
 			CHI = {
 			    add_opinion_modifier = { target = ROOT modifier = BHU_supported_us }
-				country_event = { id = NWbhutan.24 hours = 5 }
+				country_event = { id = generic.2 hours = 5 }
 			}
 		}
 	}
@@ -3887,7 +3966,7 @@ focus_tree = {
 			remove_ideas = BHU_treaty_of_punakha
 			ENG = {
 			    add_opinion_modifier = { target = ROOT modifier = BHU_supported_us }
-				country_event = { id = NWbhutan.24 hours = 5 }
+				country_event = { id = generic.2 hours = 5 }
 			}
 		}
 	}
@@ -3957,6 +4036,7 @@ focus_tree = {
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus BHU_reincarnation_of_shabdrung"
 			custom_effect_tooltip = BHU_reincarnation_of_shabdrung_tt
+			add_popularity = { ideology = monarchy  popularity = 0.15 }
 		}
 	}
 	
