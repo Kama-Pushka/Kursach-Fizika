@@ -1,5 +1,5 @@
 #	Example:
-# 
+#
 #	example_trigger = {
 #		tag = GER
 #		is_ai = no
@@ -39,7 +39,27 @@ is_border_conflict_defender_vs_FROM = {
 	has_variable = ROOT.defender_state_vs_@FROM
 }
 
+has_not_initiated_border_incident_with_FROM = {
+	custom_trigger_tooltip = {
+		tooltip = not_initiated_border_incident_with_FROM
+		NOT = {
+			any_state = {
+				check_variable = { FROM.defender_state_vs_@PREV = id }
+			}
+		}
+	}
+}
 
+has_not_initiated_border_incident_with_ROOT = {
+	custom_trigger_tooltip = {
+		tooltip = not_initiated_border_incident_with_ROOT
+		NOT = {
+			any_state = {
+				check_variable = { ROOT.defender_state_vs_@PREV = id }
+			}
+		}
+	}
+}
 
 #State scope
 has_ROOT_at_least_1_div_in_current_state_scope = {
@@ -203,6 +223,20 @@ is_controlled_by_ROOT_or_subject = {
 	}
 }
 
+is_not_controlled_by_ROOT_or_subject = {
+	custom_trigger_tooltip = {
+		tooltip = is_not_controlled_by_ROOT_or_subject
+		CONTROLLER = {
+			NOT = {
+				OR = {
+					tag = ROOT
+					is_subject_of = ROOT
+				}
+			}
+		}
+	}
+}
+
 #Country scope
 is_free_or_subject_of_root = {
 	OR = {
@@ -309,11 +343,59 @@ CHI_is_on_historical_plan_trigger = {
 #		}
 	}
 }
+SOV_is_on_historical_plan_trigger = {
+	OR = {
+		AND = {
+			is_historical_focus_on = yes
+			has_game_rule = {
+				rule = SOV_ai_behavior
+				option = DEFAULT
+			}
+		}
+		has_country_flag = SOV_AI_RANDOM_COMMUNIST_HISTORICAL
+		has_game_rule = {
+			rule = SOV_ai_behavior
+			option = HISTORICAL
+		}
+	}
+}
+USA_is_on_historical_plan_trigger = {
+	OR = {
+		AND = {
+			is_historical_focus_on = yes
+			has_game_rule = {
+				rule = USA_ai_behavior
+				option = DEFAULT
+			}
+		}
+		has_country_flag = USA_AI_DEMOCRATIC_HISTORICAL
+		has_game_rule = {
+			rule = USA_ai_behavior
+			option = DEMOCRATIC_HISTORICAL
+		}
+	}
+}
+ENG_is_on_historical_plan_trigger = {
+	OR = {
+		AND = {
+			is_historical_focus_on = yes
+			has_game_rule = {
+				rule = ENG_ai_behavior
+				option = DEFAULT
+			}
+		}
+		has_country_flag = ENG_AI_DEMOCRATIC_HISTORICAL
+		has_game_rule = {
+			rule = eng_ai_behavior
+			option = DEMOCRATIC_HISTORICAL
+		}
+	}
+}
 
 SOV_save_pp_for_manpower_trouble = {
 	has_manpower < 1000000
 	has_political_power < 200
-	surrender_progress > 0	
+	surrender_progress > 0
 }
 
 anti_submarine_strategy_required_trigger = {
@@ -383,7 +465,7 @@ should_USA_invade_europe_or_africa = {
 			OR = {
 				AND = {
 					has_government = democratic
-					ENG = { has_government = democratic } 
+					ENG = { has_government = democratic }
 					OR = {
 						GER = { has_government = fascism }
 						ITA = { has_government = fascism }
@@ -402,81 +484,72 @@ enemy_has_equal_or_better_radar_tech_trigger = {
 		tooltip = enemy_has_equal_or_better_radar_tech_trigger_tt
 		if = {
 			limit = {
-				ROOT = { 
-					has_tech = radio_detection 
+				ROOT = {
+					has_tech = radio_detection
 					NOT = {
-						has_tech = decimetric_radar
+						has_tech = cavity_magnatron
 					}
-				} 
+				}
 			}
-			FROM = { 
+			FROM = {
 				OR = {
-					has_tech = radio_detection 
-					has_tech = decimetric_radar
+					has_tech = radio_detection
+					has_tech = cavity_magnatron
 				}
 			}
 		}
 		else_if = {
 			limit = {
-				ROOT = { 
-					has_tech = decimetric_radar 
-					NOT = {
-						has_tech = improved_decimetric_radar
-					}
-				} 
-			}
-			FROM = { 
-				OR = {
-					has_tech = decimetric_radar 
-					has_tech = improved_decimetric_radar
+				ROOT = {
+					has_tech = cavity_magnatron
+
 				}
+			}
+			FROM = {
+				has_tech = cavity_magnatron
 			}
 		}
 		else_if = {
 			limit = {
-				ROOT = { 
-					has_tech = improved_decimetric_radar 
+				ROOT = {
 					NOT = {
 						has_tech = centimetric_radar
 					}
-				} 
+				}
 			}
-			FROM = { 
-				OR = {
-					has_tech = improved_decimetric_radar 
+			FROM = {
+				has_tech = centimetric_radar
+			}
+		}
+		else_if = {
+			limit = {
+				ROOT = {
 					has_tech = centimetric_radar
+					NOT = {
+						has_tech = phased_array
+					}
+				}
+			}
+			FROM = {
+				OR = {
+					has_tech = centimetric_radar
+					has_tech = phased_array
 				}
 			}
 		}
 		else_if = {
 			limit = {
-				ROOT = { 
-					has_tech = centimetric_radar 
+				ROOT = {
+					has_tech = phased_array
 					NOT = {
-						has_tech = improved_centimetric_radar
+						has_tech = monopulse_radar
 					}
-				} 
-			}
-			FROM = { 
-				OR = {
-					has_tech = centimetric_radar 
-					has_tech = improved_centimetric_radar
 				}
 			}
-		}
-		else_if = {
-			limit = {
-				ROOT = { 
-					has_tech = improved_centimetric_radar 
-					NOT = {
-						has_tech = advanced_centimetric_radar
-					}
-				} 
-			}
-			FROM = { 
+			FROM = {
 				OR = {
-					has_tech = improved_centimetric_radar 
-					has_tech = advanced_centimetric_radar
+					has_tech = phased_array
+					has_tech = monopulse_radar
 				}
 			}
 		}
@@ -794,6 +867,23 @@ state_is_fully_controlled_by_ROOT_or_subject = {
 	}
 }
 
+#State scope
+state_is_fully_controlled_by_ROOT_subject_or_faction_member = {
+	custom_trigger_tooltip = {
+		tooltip = state_is_fully_controlled_by_ROOT_subject_or_faction_member_tt
+		OR = {
+			is_fully_controlled_by = ROOT
+			controller = {
+				OR = {
+					is_subject_of = ROOT
+					is_in_faction_with = ROOT
+				}
+				has_full_control_of_state = PREV
+			}
+		}
+	}
+}
+
 is_alpine_state = {
 	custom_trigger_tooltip = {
 		tooltip = is_alpine_TT
@@ -908,8 +998,12 @@ has_mtg = {
 	has_dlc = "Man the Guns"
 }
 
-
-
+has_hide_rule = {
+	has_game_rule = {
+		rule = obsolete_focus_branches_visibility
+		option = HIDE
+	}
+}
 
 
 ###########################################################################################
@@ -983,12 +1077,39 @@ has_any_tanks = {
 		}
 	}
 }
+is_germanic = {
+	OR = {
+		original_tag = GER
+		original_tag = NOR
+		original_tag = SWE
+		original_tag = DEN
+		original_tag = SWI
+		original_tag = HOL
+		original_tag = LUX
+		original_tag = BEL
+		original_tag = AUS
+	}
+}
 
 mio_original_country_exists_and_not_at_war_with_ROOT = { #Used for MIO decisions visibility - THIS is original country
 	exists = yes
 	has_capitulated = no
 	NOT = { has_war_with = ROOT }
 }
+
+mio_original_country_available_with_opinion_subject_and_war_requirements_fulfilled = { #Used for MIO decisions availability - THIS is original country
+	has_opinion = {
+		target = ROOT
+		value > 49
+	}
+	OR = {
+		is_subject = no
+		is_subject_of = ROOT
+	}
+	has_capitulated = no
+	NOT = { has_war_with = ROOT }
+}
+
 
 
 can_unlock_new_special_forces_tree = {
@@ -1111,6 +1232,11 @@ is_fascist_seller_trigger = {
 is_democracy_seller_trigger = {
 	NOT = { has_war_with = ROOT	}
 	has_government = democratic 
+}
+
+is_communist_seller_trigger = {
+	NOT = { has_war_with = ROOT }
+	has_government = communism
 }
 
 is_allied_seller_trigger = {
