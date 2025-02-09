@@ -16,6 +16,8 @@
 #	}
 #
 
+# ВАНИЛЬНЫЙ ФАЙЛ, только для обновления, модовский контент добавляйте в новые файлы
+
 #####################################
 ### emergency_factory_conversion ####
 #####################################
@@ -1224,7 +1226,7 @@ gain_random_agency_upgrade = { #Gives a random agency upgrade or grants a free a
 	}
 }
 
-join_allies_effect = {
+join_allies_effect = {	# TODO полезная штука!
 	if = {
 		limit = {
 			ENG = {
@@ -1249,10 +1251,10 @@ remove_fascist_spirits_effect = {
 		limit = { has_idea = fascist_influence }
 		remove_ideas = fascist_influence
 	}
-#	if = {
-#		limit = { has_idea = american_influence_drift_fascism }
-#		remove_ideas = american_influence_drift_fascism
-#	}
+	if = {
+		limit = { has_idea = american_influence_drift_fascism }
+		remove_ideas = american_influence_drift_fascism
+	}
 	if = {
 		limit = { has_idea = GER_align_hungary }
 		remove_ideas = GER_align_hungary
@@ -1831,6 +1833,7 @@ leave_the_league_of_nations = {
 	hidden_effect = { remove_ideas = league_of_nations_member_idea }
 }
 
+# TODO выпилить это засохшее говно мамонта?
 bba_get_fighter_GER_effect = { #creates a fighter design if necessary and exports a number of them to ROOT
 	if = {
 		limit = {
@@ -4026,8 +4029,6 @@ remove_any_country_role_from_character = { #Expected to be used inside the chara
 	}
 }
 
-
-
 ### Paratroopers
 SF_PARA_sabotage_effect = { #When changing this, update the research tooltip
 	damage_building = {
@@ -4187,6 +4188,40 @@ find_local_dangerous_fascist = {
 }
 
 
+# The idea is that you can use these effects to store the party popularities (and, if desired, the ruling party) when puppeting or possibly when starting civil wars, and then use the "restore" effects to reset it after the puppeting has happened, so that you don't have to use the overlord's ideology if you don't want to. 
+get_current_ideology_popularities = {
+	set_variable = { ROOT.communist_support_before_change = ROOT.party_popularity_100@communism }
+	set_variable = { ROOT.democratic_support_before_change = ROOT.party_popularity_100@democratic }
+	set_variable = { ROOT.fascist_support_before_change = ROOT.party_popularity_100@fascism }
+	set_variable = { ROOT.neutrality_support_before_change = ROOT.party_popularity_100@neutrality }
+}
+get_current_ruling_party = {
+	set_variable = { ROOT.ruling_ideology_before_change = ROOT.current_party_ideology_group }
+}
+restore_ideology_popularities = {
+	hidden_effect = {
+		# Reset popluarities to what they were before puppeting 
+		set_popularities = {
+			communism = ROOT.communist_support_before_change
+			democratic = ROOT.democratic_support_before_change
+			fascism = ROOT.fascist_support_before_change
+			neutrality = ROOT.neutrality_support_before_change
+		}
+		clear_variable = ROOT.communist_support_before_change
+		clear_variable = ROOT.democratic_support_before_change
+		clear_variable = ROOT.fascist_support_before_change
+		clear_variable = ROOT.neutrality_support_before_change
+	}
+}
+restore_ruling_party = {
+	ROOT = {
+		set_politics = {
+			ruling_party = var:ROOT.ruling_ideology_before_change
+		}
+	}
+}
+
+
 #Upgrades state cat to the next valid level. Called from state scope
 increase_state_category = {
 	if = {
@@ -4251,9 +4286,19 @@ increase_state_category = {
 		limit = {
 			has_state_category = city
 		}
+		set_state_category = large_city
+		effect_tooltip = {
+			add_extra_state_shared_building_slots = 2
+		}
+	}
+
+	else_if = {
+		limit = {
+			has_state_category = large_city
+		}
 		set_state_category = metropolis
 		effect_tooltip = {
-			add_extra_state_shared_building_slots = 4
+			add_extra_state_shared_building_slots = 2
 		}
 	}
 
@@ -4300,717 +4345,8 @@ store_core_states_on_game_start = { #Should be called from history file
 	}
 }
 
-
-#MILITARY EFFECTS
-DEN_improve_haeren_NS = {
-	add_to_variable = { DEN_haeren_improvement_tracker_var = 1 }
-	effect_tooltip = {
-		if = {
-			limit = {
-				DEN_has_haeren_dynamic_modifier = no
-			}
-			add_dynamic_modifier = { modifier = DEN_haeren_dynamic_modifier }
-		}
-		else = { custom_effect_tooltip = DEN_modify_haeren_dynamic_modifier }
-	}
-	hidden_effect = {
-		if = {
-			limit = { #Only add the modifier if there is no one
-				check_variable = { DEN.DEN_haeren_improvement_tracker_var < 2 }
-				NOT = { 
-					has_dynamic_modifier = { modifier = DEN_haeren_dynamic_modifier }
-					has_dynamic_modifier = { modifier = DEN_haeren_dynamic_modifier_improved }
-					has_dynamic_modifier = { modifier = DEN_haeren_dynamic_modifier_max_improved }
-				}
-			}
-			add_dynamic_modifier = { modifier = DEN_haeren_dynamic_modifier }
-		}
-		else_if = {
-			limit = { #only improve to max once
-				check_variable = { DEN.DEN_haeren_improvement_tracker_var > 4 }
-				has_dynamic_modifier = { modifier = DEN_haeren_dynamic_modifier_improved }
-				NOT = {
-					has_dynamic_modifier = { modifier = DEN_haeren_dynamic_modifier_max_improved }
-				}
-			}
-			remove_dynamic_modifier = { modifier = DEN_haeren_dynamic_modifier_improved }
-			add_dynamic_modifier = { modifier = DEN_haeren_dynamic_modifier_max_improved }
-		}
-		else_if = {
-			limit = { #Only improve if you have the basic version
-				check_variable = { DEN.DEN_haeren_improvement_tracker_var > 2 }
-				has_dynamic_modifier = { modifier = DEN_haeren_dynamic_modifier }
-				NOT = {
-					has_dynamic_modifier = { modifier = DEN_haeren_dynamic_modifier_improved }
-				}
-			}
-			remove_dynamic_modifier = { modifier = DEN_haeren_dynamic_modifier }
-			add_dynamic_modifier = { modifier = DEN_haeren_dynamic_modifier_improved }
-		}
-	}
-}
-
-DEN_improve_sovaernet_NS = {
-	add_to_variable = { DEN_sovaernet_improvement_tracker_var = 1 }
-	effect_tooltip = {
-		if = {
-			limit = {
-				DEN_has_sovaernet_dynamic_modifier = no
-			}
-			add_dynamic_modifier = { modifier = DEN_sovaernet_dynamic_modifier }
-		}
-		else = { custom_effect_tooltip = DEN_modify_sovaernet_dynamic_modifier }
-	}
-	hidden_effect = {
-		if = {
-			limit = { #Only add the modifier if there is no one
-				check_variable = { DEN.DEN_sovaernet_improvement_tracker_var < 2 }
-				NOT = {
-					has_dynamic_modifier = { modifier = DEN_sovaernet_dynamic_modifier }
-					has_dynamic_modifier = { modifier = DEN_sovaernet_dynamic_modifier_improved }
-					has_dynamic_modifier = { modifier = DEN_sovaernet_dynamic_modifier_max_improved }
-				}
-			}
-			add_dynamic_modifier = { modifier = DEN_sovaernet_dynamic_modifier }
-		}
-		else_if = {
-			limit = { #only improve to max once
-				check_variable = { DEN.DEN_sovaernet_improvement_tracker_var > 4 }
-				has_dynamic_modifier = { modifier = DEN_sovaernet_dynamic_modifier_improved }
-				NOT = {
-					has_dynamic_modifier = { modifier = DEN_sovaernet_dynamic_modifier_max_improved }
-				}
-			}
-			remove_dynamic_modifier = { modifier = DEN_sovaernet_dynamic_modifier_improved }
-			add_dynamic_modifier = { modifier = DEN_sovaernet_dynamic_modifier_max_improved }
-		}
-		else_if = {
-			limit = { #Only improve if you have the basic version
-				check_variable = { DEN.DEN_sovaernet_improvement_tracker_var > 2 }
-				has_dynamic_modifier = { modifier = DEN_sovaernet_dynamic_modifier }
-				NOT = {
-					has_dynamic_modifier = { modifier = DEN_sovaernet_dynamic_modifier_improved }
-				}
-			}
-			remove_dynamic_modifier = { modifier = DEN_sovaernet_dynamic_modifier }
-			add_dynamic_modifier = { modifier = DEN_sovaernet_dynamic_modifier_improved }
-		}
-	}
-}
-
-DEN_improve_flyvevabnet_NS = { 
-	add_to_variable = { DEN_flyvevabnet_improvement_tracker_var = 1 }
-	if = {
-		limit = {
-			DEN_has_flyvevabnet_dynamic_modifier = no
-		}
-		add_dynamic_modifier = { modifier = DEN_flyvevabnet_dynamic_modifier }
-	}
-	else = { custom_effect_tooltip = DEN_modify_flyvevabnet_dynamic_modifier }
-	hidden_effect = {
-		if = {
-			limit = { #Only add the modifier if there is no one
-				check_variable = { DEN.DEN_flyvevabnet_improvement_tracker_var < 2 }
-				NOT = {
-					has_dynamic_modifier = { modifier = DEN_flyvevabnet_dynamic_modifier }
-					has_dynamic_modifier = { modifier = DEN_flyvevabnet_dynamic_modifier_improved }
-					has_dynamic_modifier = { modifier = DEN_flyvevabnet_dynamic_modifier_max_improved }
-				}
-			}
-			add_dynamic_modifier = { modifier = DEN_flyvevabnet_dynamic_modifier }
-		}
-		else_if = {
-			limit = { #only improve to max once
-				check_variable = { DEN.DEN_flyvevabnet_improvement_tracker_var > 4 }
-				has_dynamic_modifier = { modifier = DEN_flyvevabnet_dynamic_modifier_improved }
-				NOT = {
-					has_dynamic_modifier = { modifier = DEN_flyvevabnet_dynamic_modifier_max_improved }
-				}
-			}
-			remove_dynamic_modifier = { modifier = DEN_flyvevabnet_dynamic_modifier_improved }
-			add_dynamic_modifier = { modifier = DEN_flyvevabnet_dynamic_modifier_max_improved }
-		}
-		else_if = {
-			limit = { #Only improve if you have the basic version
-				check_variable = { DEN.DEN_flyvevabnet_improvement_tracker_var > 2 }
-				has_dynamic_modifier = { modifier = DEN_flyvevabnet_dynamic_modifier }
-				NOT = {
-					has_dynamic_modifier = { modifier = DEN_flyvevabnet_dynamic_modifier_improved }
-				}
-			}
-			remove_dynamic_modifier = { modifier = DEN_flyvevabnet_dynamic_modifier }
-			add_dynamic_modifier = { modifier = DEN_flyvevabnet_dynamic_modifier_improved }
-		}
-	}
-}
-
-DEN_get_converted_air_carriers = {
-	if = { 
-		limit = {
-			has_dlc = "Man the Guns"
-		}
-		if = {
-			limit = {
-				NOT = { has_tech = early_ship_hull_carrier }
-			}
-			set_technology = { early_ship_hull_carrier = 1 }
-		}
-		#Equipment Variant
-		create_equipment_variant = {
-			name = "Prinsen Class - Converted Liner"
-			type = ship_hull_carrier_conversion_ca
-			name_group = DEN_CV_HISTORICAL
-			parent_version = 0
-			allow_without_tech = yes #Makes no difference since focus grants appropriate tech (	above), but it improves tooltip
-			modules = {
-				fixed_ship_deck_slot_1 = ship_deck_space
-				fixed_ship_deck_slot_2 = ship_deck_space
-				fixed_ship_anti_air_slot = ship_anti_air_1
-				fixed_ship_radar_slot = empty
-				fixed_ship_engine_slot = carrier_ship_engine_1
-				fixed_ship_secondaries_slot = ship_secondaries_1
-			}
-		}
-	
-		#Line Production
-		add_equipment_production = {
-			equipment = {
-				type = ship_hull_carrier_conversion_ca
-				creator = "DEN"
-				version_name = "Prinsen Class - Converted Liner"
-			}
-			name = "Prinsen"
-			requested_factories = 1
-			progress = 0.65
-			amount = 1
-		}
-		#Line Production
-		add_equipment_production = {
-			equipment = {
-				type = ship_hull_carrier_conversion_ca
-				creator = "DEN"
-				version_name = "Prinsen Class - Converted Liner"
-			}
-			name = "Herren"
-			requested_factories = 1
-			progress = 0.4
-			amount = 1
-		}
-	}
-	##############
-	### NO MTG ###
-	##############
-	else = {
-		if = {
-			limit = {
-				NOT = { has_tech = early_carrier }
-			}
-			set_technology = { early_carrier = 1 }
-		}
-		create_equipment_variant = {
-			name = "Prinsen Class - Converted Liner"
-			type = carrier_1
-			allow_without_tech = yes #Makes no difference since focus grants appropriate tech (above), but it improves tooltip
-			upgrades = {
-				ship_deckspace_upgrade = 2
-				carrier_armor_upgrade = 1
-				ship_engine_upgrade = 1
-				ship_reliability_upgrade = 1
-			}
-		}
-		add_equipment_production = {
-			equipment = {
-				type = carrier_1
-				creator = "DEN"
-				version_name = "Prinsen Class - Converted Liner"
-			}
-			name = "Prinsen"
-			requested_factories = 1
-			progress = 0.65
-			amount = 1
-		}
-		add_equipment_production = {
-			equipment = {
-				type = carrier_1
-				creator = "DEN"
-				version_name = "Prinsen Class - Converted Liner"
-			}
-			name = "Herren"
-			requested_factories = 1
-			progress = 0.4
-			amount = 1
-		}
-	}
-	add_tech_bonus = {
-		name = DEN_north_sea_ambitions
-		bonus = 0.5
-		uses = 3
-		category = ca_tech
-		category = bb_tech
-		category = cv_tech
-	}
-}
-
-DEN_get_proper_air_carriers = {
-	###########
-	### MTG ###
-	###########
-	if = { 
-		limit = {
-			has_dlc = "Man the Guns"
-		}
-		if = {
-			limit = {
-				NOT = { has_tech = basic_ship_hull_carrier }
-			}
-			set_technology = { basic_ship_hull_carrier = 1 }
-		}
-
-		#Equipment Variant
-		create_equipment_variant = {
-			name = "Prinsen Class"
-			type = ship_hull_carrier_1
-			name_group = DEN_CV_HISTORICAL
-			parent_version = 0
-			allow_without_tech = yes #Makes no difference since focus grants appropriate tech (above), but it improves tooltip
-			modules = {
-				fixed_ship_deck_slot_1 = ship_deck_space
-				fixed_ship_deck_slot_2 = ship_deck_space
-				fixed_ship_anti_air_slot = ship_anti_air_1
-				fixed_ship_radar_slot = empty
-				fixed_ship_engine_slot = carrier_ship_engine_1
-				fixed_ship_secondaries_slot = ship_secondaries_1
-				front_1_custom_slot = ship_deck_space
-			}
-		}
-		#Line Production
-		add_equipment_production = {
-			equipment = {
-				type = ship_hull_carrier_1
-				creator = "DEN"
-				version_name = "Prinsen Class"
-			}
-			name = "Prinsen"
-			requested_factories = 2
-			progress = 0.5
-			amount = 1
-		}
-	}
-
-	##############
-	### NO MTG ###
-	##############
-	else = {
-		if = {
-			limit = {
-				NOT = { has_tech = basic_carrier }
-			}
-			set_technology = { basic_carrier = 1 }
-		}
-		create_equipment_variant = {
-			name = "Prinsen Class"
-			type = carrier_2
-			allow_without_tech = yes #Makes no difference since focus grants appropriate tech (above), but it improves tooltip
-			upgrades = {
-				ship_deckspace_upgrade = 3
-				carrier_armor_upgrade = 2
-				ship_engine_upgrade = 1
-				ship_reliability_upgrade = 1
-			}
-		}
-		add_equipment_production = {
-			equipment = {
-				type = carrier_2
-				creator = "DEN"
-				version_name = "Prinsen Class"
-			}
-			name = "Prinsen"
-			requested_factories = 2
-			progress = 0.5
-			amount = 1
-		}
-	}
-	add_tech_bonus = {
-		name = DEN_north_sea_ambitions
-		bonus = 0.5
-		uses = 2
-		category = ca_tech
-		category = bb_tech
-		category = cv_tech
-	}
-}
-
-DEN_guarantee_tech_sharing = {
-	if = {
-		limit = {
-			OR = {
-				FROM = {
-					original_tag = USA
-				}
-				check_variable = { DEN.DEN_guaranteeing_nation = USA }
-			}
-		}
-		if = {
-			limit = {
-				has_tech_sharing_feature = yes
-			}
-			USA = {
-				add_to_tech_sharing_group = DEN_danish_partnership_tech_sharing
-				add_tech_bonus = {
-					name = DEN_danish_partnership_tech_sharing
-					bonus = 0.15
-					uses = 1
-					category = armor
-				}
-				add_tech_bonus = {
-					name = DEN_danish_partnership_tech_sharing
-					bonus = 0.15
-					uses = 1
-					category = artillery
-				}
-				add_tech_bonus = {
-					name = DEN_danish_partnership_tech_sharing
-					bonus = 0.15
-					uses = 1
-					category = infantry_weapons
-				}
-				add_tech_bonus = {
-					name = DEN_danish_partnership_tech_sharing
-					bonus = 0.15
-					uses = 1
-					category = naval_equipment
-				}
-				add_tech_bonus = {
-					name = DEN_danish_partnership_tech_sharing
-					bonus = 0.15
-					uses = 1
-					category = air_equipment
-				}
-			}
-			DEN = {
-				add_to_tech_sharing_group = DEN_danish_partnership_tech_sharing
-				add_tech_bonus = {
-					name = DEN_danish_partnership_tech_sharing
-					bonus = 0.25
-					uses = 1
-					category = armor
-				}
-				add_tech_bonus = {
-					name = DEN_danish_partnership_tech_sharing
-					bonus = 0.25
-					uses = 1
-					category = artillery
-				}
-				add_tech_bonus = {
-					name = DEN_danish_partnership_tech_sharing
-					bonus = 0.25
-					uses = 1
-					category = infantry_weapons
-				}
-				add_tech_bonus = {
-					name = DEN_danish_partnership_tech_sharing
-					bonus = 0.25
-					uses = 1
-					category = naval_equipment
-				}
-				add_tech_bonus = {
-					name = DEN_danish_partnership_tech_sharing
-					bonus = 0.25
-					uses = 1
-					category = air_equipment
-				}
-			}
-		}
-		else = {
-			USA = {
-				add_tech_bonus = {
-					name = DEN_danish_partnership_tech_sharing
-					bonus = 0.15
-					uses = 1
-					category = armor
-				}
-				add_tech_bonus = {
-					name = DEN_danish_partnership_tech_sharing
-					bonus = 0.15
-					uses = 1
-					category = artillery
-				}
-				add_tech_bonus = {
-					name = DEN_danish_partnership_tech_sharing
-					bonus = 0.15
-					uses = 1
-					category = infantry_weapons
-				}
-				add_tech_bonus = {
-					name = DEN_danish_partnership_tech_sharing
-					bonus = 0.15
-					uses = 1
-					category = naval_equipment
-				}
-				add_tech_bonus = {
-					name = DEN_danish_partnership_tech_sharing
-					bonus = 0.15
-					uses = 1
-					category = air_equipment
-				}
-			}
-			DEN = {
-				add_tech_bonus = {
-					name = DEN_danish_partnership_tech_sharing
-					bonus = 0.25
-					uses = 1
-					category = armor
-				}
-				add_tech_bonus = {
-					name = DEN_danish_partnership_tech_sharing
-					bonus = 0.25
-					uses = 1
-					category = artillery
-				}
-				add_tech_bonus = {
-					name = DEN_danish_partnership_tech_sharing
-					bonus = 0.25
-					uses = 1
-					category = infantry_weapons
-				}
-				add_tech_bonus = {
-					name = DEN_danish_partnership_tech_sharing
-					bonus = 0.25
-					uses = 1
-					category = naval_equipment
-				}
-				add_tech_bonus = {
-					name = DEN_danish_partnership_tech_sharing
-					bonus = 0.25
-					uses = 1
-					category = air_equipment
-				}
-			}
-		}
-	}
-	if = {
-		limit = {
-			OR = {
-				FROM = {
-					original_tag = ENG
-				}
-				check_variable = { DEN.DEN_guaranteeing_nation = ENG }
-			}
-		}
-		if = {
-			limit = {
-				has_tech_sharing_feature = yes
-			}
-			ENG = {
-				add_to_tech_sharing_group = DEN_danish_partnership_tech_sharing
-				add_tech_bonus = {
-					name = DEN_danish_partnership_tech_sharing
-					bonus = 0.25
-					uses = 2
-					category = naval_equipment
-				}
-				add_tech_bonus = {
-					name = DEN_danish_partnership_tech_sharing
-					bonus = 0.25
-					uses = 2
-					category = air_equipment
-				}
-			}
-			DEN = {
-				add_to_tech_sharing_group = DEN_danish_partnership_tech_sharing
-				add_tech_bonus = {
-					name = DEN_danish_partnership_tech_sharing
-					bonus = 0.5
-					uses = 2
-					category = naval_equipment
-				}
-				add_tech_bonus = {
-					name = DEN_danish_partnership_tech_sharing
-					bonus = 0.25
-					uses = 2
-					category = air_equipment
-				}
-			}
-		}
-		else = {
-			ENG = {
-				add_tech_bonus = {
-					name = DEN_danish_partnership_tech_sharing
-					bonus = 0.25
-					uses = 2
-					category = naval_equipment
-				}
-				add_tech_bonus = {
-					name = DEN_danish_partnership_tech_sharing
-					bonus = 0.25
-					uses = 2
-					category = air_equipment
-				}
-			}
-			DEN = {
-				add_tech_bonus = {
-					name = DEN_danish_partnership_tech_sharing
-					bonus = 0.5
-					uses = 2
-					category = naval_equipment
-				}
-				add_tech_bonus = {
-					name = DEN_danish_partnership_tech_sharing
-					bonus = 0.25
-					uses = 2
-					category = air_equipment
-				}
-			}
-		}
-	}
-	if = {
-		limit = {
-			OR = {
-				FROM = {
-					original_tag = GER
-				}
-				check_variable = { DEN.DEN_guaranteeing_nation = GER }
-			}
-		}
-		if = {
-			limit = {
-				has_tech_sharing_feature = yes
-			}
-			GER = {
-				add_to_tech_sharing_group = DEN_danish_partnership_tech_sharing
-				add_tech_bonus = {
-					name = DEN_danish_partnership_tech_sharing
-					bonus = 0.25
-					uses = 2
-					category = armor
-				}
-				add_tech_bonus = {
-					name = DEN_danish_partnership_tech_sharing
-					bonus = 0.25
-					uses = 2
-					category = air_equipment
-				}
-			}
-			DEN = {
-				add_to_tech_sharing_group = DEN_danish_partnership_tech_sharing
-				add_tech_bonus = {
-					name = DEN_danish_partnership_tech_sharing
-					bonus = 0.5
-					uses = 2
-					category = armor
-				}
-				add_tech_bonus = {
-					name = DEN_danish_partnership_tech_sharing
-					bonus = 0.25
-					uses = 2
-					category = air_equipment
-				}
-			}
-		}
-		else = {
-			GER = {
-				add_tech_bonus = {
-					name = DEN_danish_partnership_tech_sharing
-					bonus = 0.25
-					uses = 2
-					category = armor
-				}
-				add_tech_bonus = {
-					name = DEN_danish_partnership_tech_sharing
-					bonus = 0.25
-					uses = 2
-					category = air_equipment
-				}
-			}
-			DEN = {
-				add_tech_bonus = {
-					name = DEN_danish_partnership_tech_sharing
-					bonus = 0.5
-					uses = 2
-					category = armor
-				}
-				add_tech_bonus = {
-					name = DEN_danish_partnership_tech_sharing
-					bonus = 0.25
-					uses = 2
-					category = air_equipment
-				}
-			}
-		}
-	}
-	if = {
-		limit = {
-			OR = {
-				FROM = {
-					original_tag = SOV
-				}
-				check_variable = { DEN.DEN_guaranteeing_nation = SOV }
-			}
-		}
-		if = {
-			limit = {
-				has_tech_sharing_feature = yes
-			}
-			SOV = {
-				add_to_tech_sharing_group = DEN_danish_partnership_tech_sharing
-				add_tech_bonus = {
-					name = DEN_danish_partnership_tech_sharing
-					bonus = 0.25
-					uses = 2
-					category = artillery
-				}
-				add_tech_bonus = {
-					name = DEN_danish_partnership_tech_sharing
-					bonus = 0.25
-					uses = 2
-					category = infantry_weapons
-				}
-			}
-			DEN = {
-				add_to_tech_sharing_group = DEN_danish_partnership_tech_sharing
-				add_tech_bonus = {
-					name = DEN_danish_partnership_tech_sharing
-					bonus = 0.5
-					uses = 2
-					category = artillery
-				}
-				add_tech_bonus = {
-					name = DEN_danish_partnership_tech_sharing
-					bonus = 0.25
-					uses = 2
-					category = infantry_weapons
-				}
-			}
-		}
-		else = {
-			SOV = {
-				add_tech_bonus = {
-					name = DEN_danish_partnership_tech_sharing
-					bonus = 0.25
-					uses = 2
-					category = artillery
-				}
-				add_tech_bonus = {
-					name = DEN_danish_partnership_tech_sharing
-					bonus = 0.25
-					uses = 2
-					category = infantry_weapons
-				}
-			}
-			DEN = {
-				add_tech_bonus = {
-					name = DEN_danish_partnership_tech_sharing
-					bonus = 0.5
-					uses = 2
-					category = artillery
-				}
-				add_tech_bonus = {
-					name = DEN_danish_partnership_tech_sharing
-					bonus = 0.25
-					uses = 2
-					category = infantry_weapons
-				}
-			}
-		}
-	}
-}
+# set_african_central_bank_variables = {
+	# set_variable = { org_africa_central_bank_stability_factor = 0.05}
+	# set_variable = { org_africa_central_bank_industrial_complex_factor = 0.1}
+	# set_variable = { org_africa_central_bank_infrastructure_factor = 0.1}
+# }
