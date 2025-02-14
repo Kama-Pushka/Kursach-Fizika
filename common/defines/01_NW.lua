@@ -18,7 +18,7 @@ NDefines.NCountry.SPECIAL_FORCES_CAP_MIN = 24								-- You can have a minimum o
 NDefines.NCountry.MAJOR_MIN_FACTORIES = 75									-- need at least these many factories to become a major
 NDefines.NCountry.MIN_MAJOR_COUNTRIES = 0									-- MIN_MAJOR_COUNTRIES countries with most factories will be considered as major countries
 NDefines.NMilitary.MIN_DIVISION_DEPLOYMENT_TRAINING = 0.3					-- Min level of division training
-NDefines.NMilitary.SLOWEST_SPEED = 1
+NDefines.NMilitary.SLOWEST_SPEED = 4 -- 1
 
 -- Diplomatic
 NDefines.NDiplomacy.MAX_OPINION_VALUE = 200									-- Max opinion value cap.
@@ -70,6 +70,8 @@ NDefines.NGraphics.COUNTRY_FLAG_LARGE_STRIPE_MAX_HEIGHT = 24000
 --------------
 -- AI FIX
 --------------
+
+NDefines.NMilitary.MAX_DIVISION_SUPPORT_HEIGHT = 6
 
 --попытка починить раш альянсов
 NDefines.NAI.POTENTIAL_ALLY_JOIN_WAR_FACTOR = 25							-- How much increase in threat does AI feel against neighbours who are allied against one of our enemies
