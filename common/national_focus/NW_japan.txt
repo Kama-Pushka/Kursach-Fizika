@@ -9536,10 +9536,22 @@ focus_tree = {
 			show_ideas_tooltip = JAP_Rehei_Uchida
 			custom_effect_tooltip = remove_political_advisor
 			show_ideas_tooltip = JAP_Hirota_Koki
-			swap_ideas = {
-				remove_idea = JAP_Amur_River_Society
-				add_idea = JAP_Amur_River_Society_1
+			
+			if = { # ПРАВКИ
+				limit = { has_idea = JAP_Amur_River_Society }
+				swap_ideas = {
+					remove_idea = JAP_Amur_River_Society
+					add_idea = JAP_Amur_River_Society_1
+				}
 			}
+			else_if = {
+				limit = { has_idea = JAP_Amur_River_Society_upd }
+				swap_ideas = {
+					remove_idea = JAP_Amur_River_Society_upd
+					add_idea = JAP_Amur_River_Society_upd_1
+				}
+			}
+			
 			effect_tooltip = { unlock_national_focus = JAP_the_New_Order_in_East_Asia }
 			unlock_decision_category_tooltip = JAP_to_attract_right_wing_political_societies_to_the_Foreign_Ministry_category
 		}
@@ -11959,6 +11971,7 @@ focus_tree = {
 		relative_position_id = JAP_the_Three_Principles_of_Hirota_Coca
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus JAP_adventure_in_Xinjiang"
+			custom_effect_tooltip = JAP_adventure_in_Xinjiang_tt # TODO а где эффект??
 		}
 	}
 	
@@ -12106,28 +12119,61 @@ focus_tree = {
 		}
 	}
 	
-	focus = {
-		id = JAP_accept_Wang_Jingwei_idea
-		icon = GFX_z_goal_JAP_accept_Wang_Jingwei_idea
-		x = 2
+	focus = { ### ПРАВКИ
+		id = JAP_waiver_of_special_rights_in_China
+		# icon = GFX_z_goal_JAP_waiver_of_special_rights_in_China
+		x = -6
 		y = 1
 		cost = 5
 		ai_will_do = { factor = 10 }
 		search_filters = {  }
-		available = {  }
+		available = { 
+			any_allied_country = {
+				has_country_flag = china_declare_government_flag
+				# и признало его (похуй?)
+			}
+		}
 		bypass = {  }
 		prerequisite = { focus = JAP_the_Three_Principles_of_Hirota_Coca }
 		relative_position_id = JAP_the_Three_Principles_of_Hirota_Coca
 		completion_reward = {
-			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus JAP_accept_Wang_Jingwei_idea"
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus JAP_waiver_of_special_rights_in_China"
+			if = { # TODO tooltip?
+				limit = {
+					is_in_faction = yes
+				}
+				every_allied_country = {
+					limit = { has_country_flag = china_declare_government_flag } 
+					random_select_amount = 1
+					add_opinion_modifier = {
+						modifier = JAP_waiver_of_special_rights_in_China
+						target = ROOT
+					}
+					reverse_add_opinion_modifier = {
+						modifier = JAP_waiver_of_special_rights_in_China
+						target = ROOT
+					}
+					if = {
+						limit = { var:1117.owner = { tag = ROOT } }
+						transfer_state = 1117
+					}
+				}
+			}
+			custom_effect_tooltip = {
+				localization_key = EFFECT_COUNTRY_EVENT
+				EVENT = NW_JAP_news.61.title
+			}
+			hidden_effect = {
+				news_event = NW_JAP_news.61
+			}
 		}
 	}
 	
 	focus = {
 		id = JAP_rejection_of_the_autonomy_plan_of_the_five_northern_provinces
 		icon = GFX_z_goal_JAP_rejection_of_the_autonomy_plan_of_the_five_northern_provinces
-		x = 2
-		y = 0
+		x = 4
+		y = 1
 		cost = 5
 		ai_will_do = { factor = 10 }
 		search_filters = {  }
@@ -12137,6 +12183,7 @@ focus_tree = {
 				check_variable = { JAP_the_level_of_insubordination_var = JAP_the_level_of_insubordination_var_TEMP }
 				tooltip = JAP_the_level_of_insubordination_var_check_tt2
 			}
+			NOT = { has_country_flag = JAP_helping_opponents_of_Nanjing_flag } # TODO улучшить триггер, заблокировав изучение при признании любого китайского тега (заблокировать возможность признания для обычных клик)
 		}
 		bypass = {
 			OR = {
@@ -12146,10 +12193,22 @@ focus_tree = {
 			}
 		}
 		prerequisite = { focus = JAP_the_Three_Principles_of_Hirota_Coca }
-		relative_position_id = JAP_accept_Wang_Jingwei_idea
+		relative_position_id = JAP_the_Three_Principles_of_Hirota_Coca
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus JAP_rejection_of_the_autonomy_plan_of_the_five_northern_provinces"
 			custom_effect_tooltip = JAP_rejection_of_the_autonomy_plan_of_the_five_northern_provinces_tt
+			
+			if = { # ПРАВКИ
+				limit = { has_subject = EHB }
+				set_autonomy = {
+					target = EHB
+					autonomous_state = autonomy_free
+					# end_wars = yes
+				}
+				CHI = { country_event = NW_JAP.456 } # TODO CHI?
+				EHB = { country_event = NW_JAP.461 }
+			}
+			
 			CHI = {
 				add_opinion_modifier = {
 					modifier = JAP_rejection_of_the_autonomy_plan_of_the_five_northern_provinces_op
@@ -12168,7 +12227,7 @@ focus_tree = {
 		icon = GFX_z_goal_JAP_the_Mongolian_Anti_communist_Shaft
 		x = -2
 		y = 1
-		cost = 10
+		cost = 5
 		ai_will_do = { factor = 10 }
 		search_filters = {  }
 		available = { has_country_flag = JAP_the_Mongolian_Anti_communist_Shaft_UNLOCK_flag }
@@ -12193,7 +12252,7 @@ focus_tree = {
 		icon = GFX_z_goal_JAP_war_mission_in_Nankin
 		x = 1
 		y = 1
-		cost = 10
+		cost = 5
 		ai_will_do = { factor = 10 }
 		search_filters = {  }
 		available = {  }
@@ -12202,6 +12261,8 @@ focus_tree = {
 		relative_position_id = JAP_the_Mongolian_Anti_communist_Shaft
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus JAP_war_mission_in_Nankin"
+			# TODO Иванэ Мацуи будет отправлен CHI в качестве теоретика (Эксперт по крупномасштабному планированию)
+			# TODO Добавить нацдух атташе?
 		}
 	}
 	
@@ -12210,7 +12271,7 @@ focus_tree = {
 		icon = GFX_z_goal_JAP_breaking_out_of_diplomatic_isolation
 		x = 0
 		y = 1
-		cost = 10
+		cost = 5
 		ai_will_do = { factor = 10 }
 		search_filters = {  }
 		available = {
@@ -12280,6 +12341,7 @@ focus_tree = {
 		ai_will_do = { factor = 10 }
 		search_filters = {  }
 		available = {
+			has_country_flag = JAP_the_Mongolian_Anti_communist_Shaft_UNLOCK_flag
 			country_exists = CHI
 			CHI = { NOT = { OR = { has_war_with = ROOT is_subject_of = ROOT } } }
 		}
@@ -12288,6 +12350,8 @@ focus_tree = {
 		relative_position_id = JAP_rejection_of_the_autonomy_plan_of_the_five_northern_provinces
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus JAP_simplify_economic_cooperation_with_China"
+			give_market_access = CHI
+			# TODO еще что-то с рынком
 		}
 	}
 	
@@ -12308,6 +12372,7 @@ focus_tree = {
 		relative_position_id = JAP_simplify_economic_cooperation_with_China
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus JAP_expand_investment_in_China"
+			CHI = { add_ideas = JAP_expand_investment_in_China_idea }
 		}
 	}
 	
@@ -12316,7 +12381,7 @@ focus_tree = {
 		icon = GFX_z_goal_JAP_statue_of_Liberty_in_San_Francisco
 		x = 1
 		y = 1
-		cost = 10
+		cost = 5
 		ai_will_do = { factor = 10 }
 		search_filters = {  }
 		available = {
@@ -12841,6 +12906,21 @@ focus_tree = {
 		relative_position_id = JAP_hit_the_Colossus
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus JAP_using_the_Amur_River_Society_Network"
+			if = {
+				limit = { has_idea = JAP_Amur_River_Society }
+				swap_ideas = {
+					remove_idea = JAP_Amur_River_Society
+					add_idea = JAP_Amur_River_Society_upd
+				}
+			}
+			else_if = {
+				limit = { has_idea = JAP_Amur_River_Society_1 }
+				swap_ideas = {
+					remove_idea = JAP_Amur_River_Society_1
+					add_idea = JAP_Amur_River_Society_upd_1
+				}
+			}
+			unlock_decision_category_tooltip = JAP_using_the_Amur_River_Society_Network_category
 		}
 	}
 	
@@ -13369,6 +13449,146 @@ focus_tree = {
 			}
 		}
 	}
+	
+	###### ПРАВКИ
+	
+	focus = {
+		id = JAP_maintaining_status_quo
+		# icon = GFX_z_goal_JAP_rejection_of_the_autonomy_plan_of_the_five_northern_provinces
+		x = 8
+		y = 1
+		cost = 5
+		ai_will_do = { factor = 10 }
+		search_filters = {  }
+		available = {
+			NOT = {
+				# has_war_with = CHI # TODO?
+				has_war_with = SHA
+				has_war_with = HCP
+				has_war_with = EHB
+				has_war_with = SHX
+				has_war_with = CSR
+			}
+		}
+		bypass = {}
+		prerequisite = { focus = JAP_the_Three_Principles_of_Hirota_Coca }
+		relative_position_id = JAP_the_Three_Principles_of_Hirota_Coca
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus JAP_rejection_of_the_autonomy_plan_of_the_five_northern_provinces"
+			every_country = {
+				limit = { OR = { tag = SHA tag = HCP tag = EHB tag = SHX tag = CSR } }
+				add_opinion_modifier = {
+					modifier = JAP_maintaining_status_quo
+					target = ROOT
+				}
+				reverse_add_opinion_modifier = {
+					modifier = JAP_maintaining_status_quo
+					target = ROOT
+				}
+			}
+			unlock_decision_tooltip = JAP_strengthen_border_with_China
+			hidden_effect = {
+				activate_targeted_decision = { decision = JAP_strengthen_border_with_China target = 610 }
+			}
+		}
+	}
+	
+	focus = { # TODO если саня надеется что иишник сам будет объявлять правительства, то он не прав
+		id = JAP_helping_opponents_of_Nanjing
+		# icon = GFX_z_goal_JAP_rejection_of_the_autonomy_plan_of_the_five_northern_provinces
+		x = -6
+		y = 0
+		cost = 5
+		ai_will_do = { factor = 10 }
+		search_filters = {  }
+		available = {
+			any_of_scopes = {
+				array = global.is_literally_china
+				tooltip = NW_any_chinese_country
+				has_country_flag = china_declare_government_flag
+				NOT = { tag = CHI }
+			}
+		}
+		bypass = {}
+		prerequisite = { focus = JAP_the_Three_Principles_of_Hirota_Coca }
+		relative_position_id = JAP_maintaining_status_quo
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus JAP_helping_opponents_of_Nanjing"
+			unlock_decision_category_tooltip = JAP_helping_opponents_of_Nanjing_category
+			# TODO tooltip
+		}
+	}
+	
+	focus = {
+		id = JAP_accept_Wang_Jingwei_idea
+		icon = GFX_z_goal_JAP_accept_Wang_Jingwei_idea
+		x = 6
+		y = 1
+		cost = 5
+		ai_will_do = { factor = 10 }
+		search_filters = {  }
+		available = { 
+			war_length_with = {
+				tag = CHI
+				months > 29
+			}
+			CHI = {
+				surrender_progress > 0.29
+				NOT = {
+					controls_state = 613
+					controls_state = 608
+					controls_state = 620
+					has_country_leader = { character = CHI_wang_jingwei ruling_only = yes }
+				}
+			}
+			country_exists = CCG # TODO tooltip?
+		}
+		bypass = {  }
+		prerequisite = { focus = JAP_the_Three_Principles_of_Hirota_Coca }
+		relative_position_id = JAP_the_Three_Principles_of_Hirota_Coca
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus JAP_accept_Wang_Jingwei_idea"
+			add_opinion_modifier = {
+				modifier = JAP_accept_Wang_Jingwei_idea
+				target = CHI
+			}
+			reverse_add_opinion_modifier = {
+				modifier = JAP_accept_Wang_Jingwei_idea
+				target = CHI
+			}
+			CCG = { # TODO что за CCG?
+				add_opinion_modifier = {
+					modifier = JAP_accept_Wang_Jingwei_idea
+					target = CHI
+				}
+				reverse_add_opinion_modifier = {
+					modifier = JAP_accept_Wang_Jingwei_idea
+					target = CHI
+				}
+				country_event = NW_JAP.464
+			}
+			custom_effect_tooltip = {
+				localization_key = EFFECT_COUNTRY_EVENT
+				EVENT = NW_JAP_news.62.title
+			}
+			hidden_effect = {
+				news_event = NW_JAP_news.62
+			}
+			
+			HCP = {
+				if = {
+					limit = { is_subject_of = ROOT }
+					country_event = NW_JAP.465
+				}
+			}
+			unlock_decision_tooltip = JAP_recognize_sovereignty_of_Nanjing_Government
+			hidden_effect = {
+				activate_targeted_decision = { target = CCG decision = JAP_recognize_sovereignty_of_Nanjing_Government }
+			}
+		}
+	}
+	
+	######
 
 	#   #  ##  ### #  # #    ##  #  # ###      ### #  # ###  #  #  ## ### ###  #   #     ### ###  ### ### 
 	## ## #  #  #  ## # #   #  # ## # #  #      #  ## # #  # #  # #    #  #  #  # #       #  #  # #   #   
@@ -13379,7 +13599,7 @@ focus_tree = {
 	focus = {
 		id = JAP_cabinet_Planning_Council
 		icon = GFX_z_goal_JAP_cabinet_Planning_Council
-		x = 13
+		x = 20
 		y = 0
 		cost = 7
 		ai_will_do = { factor = 10 }
@@ -13890,6 +14110,41 @@ focus_tree = {
 				bonus = 1
 				uses = 1
 				category = train_tech
+			}
+		}
+	}
+	
+	###### ПРАВКИ
+	
+	focus = {
+		id = JAP_industrialization_of_Taiwan
+		# icon = GFX_z_goal_JAP_trial_on_sabura_aizawa
+		x = 2
+		y = 0
+		cost = 7
+		ai_will_do = { factor = 10 }
+		search_filters = { }
+		available = { controls_state = 524 }
+		bypass = {  }
+		prerequisite = { focus = JAP_cabinet_Planning_Council }
+		relative_position_id = JAP_Asian_Development_Council
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus JAP_industrialization_of_Taiwan"
+			542 = {
+				add_extra_state_shared_building_slots = 3
+				add_building_construction = {
+					type = arms_factory
+					level = 1
+					instant_build = yes
+				}
+			}
+			unlock_decision_tooltip = JAP_kominka_in_Taiwan
+			unlock_decision_tooltip = JAP_internal_extensionism
+			unlock_decision_tooltip = JAP_request_for_autonomy
+			hidden_effect = {
+				activate_targeted_decision = { decision = JAP_kominka_in_Taiwan target = 524 }
+				activate_targeted_decision = { decision = JAP_internal_extensionism target = 524 }
+				activate_targeted_decision = { decision = JAP_request_for_autonomy target = 524 }
 			}
 		}
 	}

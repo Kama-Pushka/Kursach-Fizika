@@ -3283,12 +3283,12 @@ JAP_diplomatic_expansion_category = {
 		priority = 900
 		icon = GFX_decision_generic_political_discourse
 		available = {
-			is_faction_leader = yes			
+			is_faction_leader = yes
 			FROM = {
 				has_country_flag = china_declare_government_flag
+				controls_state = 613
 				set_temp_variable = { var_for_check = 0.3 }
 				controls_chinese_states = yes
-				controls_state = 613
 				is_subject = no
 				is_in_faction = no
 				NOT = { has_war_with = ROOT has_government = communism has_government = trozkism has_government = anarchism }
@@ -8355,6 +8355,491 @@ JAP_the_fight_against_the_monarchist_underground_category = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision JAP_arrest_religious_radicals"
 			set_country_flag = JAP_arrest_religious_radicals_flag
 			remove_mission = JAP_activities_of_religious_radicals_mission
+		}
+	}
+}
+
+###### ПРАВКИ
+
+foreign_politics = {
+	JAP_recognize_sovereignty_of_Nanjing_Government = {
+		icon = GFX_decision_generic_political_discourse
+		allowed = {
+			always = no
+		}
+		available = {
+			set_temp_variable = { JAP_the_level_of_insubordination_var_TEMP = 10 }
+			custom_trigger_tooltip = {
+				check_variable = { JAP_the_level_of_insubordination_var < JAP_the_level_of_insubordination_var_TEMP }
+				tooltip = JAP_the_level_of_insubordination_var_check_tt
+			}
+		}
+		cost = 25
+		# days_remove = 35
+		fire_only_once = yes
+		remove_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): remove decision JAP_recognize_sovereignty_of_Nanjing_Government"
+			add_political_power = 150
+			if = {
+				limit = { has_subject = FROM }
+				set_autonomy = {
+					target = FROM
+					autonomous_state = autonomy_free
+				}
+				# TODO признание?
+			}
+			custom_effect_tooltip = {
+				localization_key = EFFECT_COUNTRY_EVENT
+				EVENT = NW_JAP_news.63.title
+			}
+			hidden_effect = {
+				news_event = NW_JAP_news.63
+			}
+		}
+	}
+	
+	JAP_strengthen_border_with_China = {
+		icon = GFX_decision_generic_political_discourse
+		allowed = {
+			always = no
+		}
+		available = {
+			num_of_civilian_factories_available_for_projects > 2
+			var:FROM.controller = { # TODO добавить cancel_trigger?
+				NOT = { has_war_with = ROOT }
+			}
+		}
+		modifier = {
+			civilian_factory_use = 2
+		}
+		cost = 25
+		days_remove = 90
+		fire_only_once = yes
+		remove_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): remove decision JAP_strengthen_border_with_China"
+			add_political_power = 150
+			610 = {
+				add_building_construction = {
+					type = bunker
+					level = 2
+					instant_build = yes
+					province = {
+						id = 10331
+						id = 11801
+						id = 814
+					}
+				}
+			}
+			816 = {
+				add_building_construction = {
+					type = bunker
+					level = 2
+					instant_build = yes
+					province = {
+						id = 3830
+						id = 3900
+					}
+				}
+			}
+		}
+	}
+}
+
+economy_decisions = {
+	JAP_kominka_in_Taiwan = {
+		icon = GFX_decision_generic_political_discourse
+		allowed = {
+			always = no
+		}
+		available = {
+			controls_state = FROM
+			FROM = {
+				NOT = { has_state_flag = JAP_industrialization_of_Taiwan_next_decision }
+			}
+		}
+		target_trigger = { 
+			FROM = {
+				NOT = { 
+					has_state_flag = JAP_industrialization_of_Taiwan_next_decision 
+					has_state_flag = JAP_internal_extensionism_flag
+				}
+			}
+		}
+		state_target = yes
+		cost = 25
+		fire_only_once = yes
+		complete_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision JAP_kominka_in_Taiwan"
+			FROM = {
+				add_dynamic_modifier = { modifier = JAP_kominka_in_taiwan_modifier }
+				set_state_flag = JAP_industrialization_of_Taiwan_next_decision
+			}
+		}
+	}
+	
+	JAP_internal_extensionism = {
+		icon = GFX_decision_generic_political_discourse
+		allowed = {
+			always = no
+		}
+		available = {
+			controls_state = FROM
+			FROM = {
+				NOT = { has_state_flag = JAP_industrialization_of_Taiwan_next_decision }
+			}
+			
+		}
+		target_trigger = { 
+			FROM = {
+				NOT = { has_state_flag = JAP_industrialization_of_Taiwan_next_decision }
+			}
+		}
+		state_target = yes
+		cost = 75
+		days_remove = 400
+		fire_only_once = yes
+		complete_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision JAP_internal_extensionism"
+			FROM = {
+				set_state_flag = JAP_internal_extensionism_flag # мб пригодится это
+			}
+		}
+		remove_effect = { # TODO а если тайвань захватят?
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): remove decision JAP_internal_extensionism"
+			FROM = {
+				add_core_of = ROOT
+				clr_state_flag = JAP_internal_extensionism_flag
+				set_state_flag = JAP_industrialization_of_Taiwan_next_decision
+			}
+		}
+	}
+	
+	JAP_request_for_autonomy = {
+		icon = GFX_decision_generic_political_discourse
+		allowed = {
+			always = no
+		}
+		available = {
+			has_country_leader = { character = JAP_Kanji_Ishiwara ruling_only = yes }
+			controls_state = FROM
+			FROM = {
+				NOT = { has_state_flag = JAP_industrialization_of_Taiwan_next_decision }
+			}
+			
+		}
+		target_trigger = { 
+			FROM = {
+				NOT = { 
+					has_state_flag = JAP_industrialization_of_Taiwan_next_decision 
+					has_state_flag = JAP_internal_extensionism_flag
+				}
+			}
+		}
+		state_target = yes
+		cost = 50
+		fire_only_once = yes
+		complete_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision JAP_request_for_autonomy"
+			FROM = {
+				add_dynamic_modifier = { modifier = JAP_taiwan_autonomy_modifier }
+				set_state_flag = JAP_industrialization_of_Taiwan_next_decision
+			}
+		}
+	}
+}
+
+JAP_helping_opponents_of_Nanjing_category = {
+	JAP_support_opponents_of_Nanjing = {
+		priority = 900
+		icon = GFX_decision_generic_political_discourse
+		available = {
+			FROM = {
+				has_country_flag = china_declare_government_flag # TODO доделать меху правительства
+				# имеющего выход к морю или границу с субъектом JAP (похуй)
+				NOT = { has_war_with = ROOT has_government = communism has_government = trozkism has_government = anarchism }
+			}
+		}
+		target_array = global.is_literally_china
+		targets_dynamic = yes
+		target_trigger = { 
+			FROM = { has_country_flag = china_declare_government_flag NOT = { tag = CHI } } 
+		}
+		days_remove = 20
+		days_re_enable = 90 # TODO tooltip
+		remove_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): remove decision JAP_support_opponents_of_Nanjing"
+			FROM = { 
+				add_equipment_to_stockpile = { # TODO оповещение для FROM
+					type = infantry_equipment
+					amount = 1000
+					producer = ROOT 
+				}
+			}
+		}
+	}
+	
+	JAP_recognize_North_Chinese_Government = { # TODO а нахуя это надо если мы и сами можем признать??
+		icon = GFX_decision_generic_political_discourse
+		available = {
+			FROM = {
+				has_country_flag = china_declare_government_flag
+				controls_state = 608
+				NOT = { has_war_with = ROOT has_government = communism has_government = trozkism has_government = anarchism } # TODO ??
+			}
+			NOT = { has_country_flag = JAP_helping_opponents_of_Nanjing_flag }
+		}
+		targets = { SHX EHB HCP SHA }
+		targets_dynamic = yes
+		target_trigger = { FROM = { has_country_flag = china_declare_government_flag } }
+		target_root_trigger = { NOT = { has_completed_focus = JAP_rejection_of_the_autonomy_plan_of_the_five_northern_provinces } }
+		complete_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision JAP_recognize_North_Chinese_Government"
+			FROM = {
+				# TODO Данный тег будет признан JAP 
+			}
+			unlock_decision_tooltip = JAP_send_military_advisers
+			unlock_decision_tooltip = JAP_give_financial_tranche
+			unlock_decision_tooltip = JAP_propose_alliance
+			hidden_effect = {
+				activate_targeted_decision = { target = FROM decision = JAP_send_military_advisers }
+				activate_targeted_decision = { target = FROM decision = JAP_give_financial_tranche }
+				activate_targeted_decision = { target = FROM decision = JAP_propose_alliance }
+			}
+			
+			set_country_flag = JAP_helping_opponents_of_Nanjing_flag
+			custom_effect_tooltip = { 
+				localization_key = NW_block_focus_complete
+				FOCUS = JAP_rejection_of_the_autonomy_plan_of_the_five_northern_provinces
+			}
+		}
+	}
+	
+	JAP_recognize_South_Chinese_Government = {
+		icon = GFX_decision_generic_political_discourse
+		available = {
+			FROM = {
+				has_country_flag = china_declare_government_flag
+				# NOT = { has_war_with = ROOT has_government = communism has_government = trozkism has_government = anarchism } # TODO?
+			}
+			NOT = { has_country_flag = JAP_helping_opponents_of_Nanjing_flag }
+		}
+		targets = { GXC GND }
+		targets_dynamic = yes
+		target_trigger = { FROM = { has_country_flag = china_declare_government_flag } }
+		target_root_trigger = { NOT = { has_completed_focus = JAP_rejection_of_the_autonomy_plan_of_the_five_northern_provinces } }
+		complete_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision JAP_recognize_South_Chinese_Government"
+			FROM = {
+				# TODO Данный тег будет признан JAP 
+			}
+			unlock_decision_tooltip = JAP_send_military_advisers
+			unlock_decision_tooltip = JAP_give_financial_tranche
+			unlock_decision_tooltip = JAP_propose_alliance
+			hidden_effect = {
+				activate_targeted_decision = { target = FROM decision = JAP_send_military_advisers }
+				activate_targeted_decision = { target = FROM decision = JAP_give_financial_tranche }
+				activate_targeted_decision = { target = FROM decision = JAP_propose_alliance }
+			}
+			
+			set_country_flag = JAP_helping_opponents_of_Nanjing_flag
+			custom_effect_tooltip = { 
+				localization_key = NW_block_focus_complete
+				FOCUS = JAP_rejection_of_the_autonomy_plan_of_the_five_northern_provinces
+			}
+		}
+	}
+	
+	JAP_extraordinary_option = {
+		icon = GFX_decision_generic_political_discourse
+		available = {
+			FROM = {
+				has_country_flag = china_declare_government_flag
+			}
+			NOT = { has_country_flag = JAP_helping_opponents_of_Nanjing_flag } 
+		}
+		targets = { YCP CSR MEN }
+		targets_dynamic = yes
+		target_trigger = { FROM = { has_country_flag = china_declare_government_flag } }
+		target_root_trigger = { NOT = { has_completed_focus = JAP_rejection_of_the_autonomy_plan_of_the_five_northern_provinces } }
+		complete_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision JAP_extraordinary_option"
+			FROM = {
+				# TODO Данный тег будет признан JAP 
+			}
+			unlock_decision_tooltip = JAP_send_military_advisers
+			unlock_decision_tooltip = JAP_give_financial_tranche
+			unlock_decision_tooltip = JAP_propose_alliance
+			hidden_effect = {
+				activate_targeted_decision = { target = FROM decision = JAP_send_military_advisers }
+				activate_targeted_decision = { target = FROM decision = JAP_give_financial_tranche }
+				activate_targeted_decision = { target = FROM decision = JAP_propose_alliance }
+			}
+			
+			set_country_flag = JAP_helping_opponents_of_Nanjing_flag
+			custom_effect_tooltip = { 
+				localization_key = NW_block_focus_complete
+				FOCUS = JAP_rejection_of_the_autonomy_plan_of_the_five_northern_provinces
+			}
+		}
+	}
+	
+	###
+	
+	JAP_send_military_advisers = {
+		icon = GFX_decision_generic_political_discourse
+		allowed = {
+			always = no
+		}
+		available = {
+			NOT = { has_war_with = FROM }
+		}
+		custom_cost_trigger = {
+			set_temp_variable = { cp_cost = 50 }
+			check_variable = { var = command_power value = cp_cost }
+		}
+		custom_cost_text = CP_COST
+		fire_only_once = yes
+		complete_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision JAP_send_military_advisers"
+			FROM = {
+				# TODO будет отправлен Иванэ Мацуи 
+			}
+		}
+	}
+	
+	JAP_give_financial_tranche = {
+		icon = GFX_decision_generic_political_discourse
+		allowed = {
+			always = no
+		}
+		available = {
+			NOT = { has_war_with = FROM }
+		}
+		cost = 50
+		fire_only_once = yes
+		complete_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision JAP_give_financial_tranche"
+			FROM = {
+				# получит нацдух «Финансовая помощь от Японии» на 400 дней, который даёт Скорость восстановления +20 %, Скорость строительства +3 % (похуй) 
+				add_ideas = JAP_expand_investment_in_China_idea
+			}
+		}
+	}
+	
+	JAP_propose_alliance = {
+		icon = GFX_decision_generic_political_discourse
+		allowed = {
+			always = no
+		}
+		available = {
+			is_faction_leader = yes
+			NOT = { has_war_with = FROM }
+		}
+		cost = 25
+		fire_only_once = yes
+		complete_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision JAP_propose_alliance"
+			FROM = { country_event = { id = generic.5 days = 1 } }
+			# TODO Если данный тег согласится и не будет других правительств, то MAN будет признан великими державами ??
+		}
+	}
+}
+
+JAP_using_the_Amur_River_Society_Network_category = {
+	JAP_organize_black_uprising = {
+		icon = GFX_decision_generic_political_discourse
+		available = {
+			has_war_with = USA
+			OR = {
+				controls_state = 378
+				controls_state = 385
+				controls_state = 386
+			}
+		}
+		custom_cost_trigger = {
+			set_temp_variable = { rifles_temp_cost = 3000 }
+			check_variable = { var = num_equipment@infantry_equipment value = rifles_temp_cost compare = greater_than_or_equals }
+		}
+		custom_cost_text = rifles_cost
+		days_remove = 120
+		fire_only_once = yes
+		modifier = {
+			civilian_factory_use = 3
+		}
+		complete_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision JAP_organize_black_uprising"
+			hidden_effect = { add_equipment_to_stockpile = { type = infantry_equipment amount = -3000 } }
+		}
+		remove_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): remove decision JAP_organize_black_uprising"
+			USA = { country_event = NW_JAP.466 }
+			event_option_tooltip = NW_JAP.466.a
+		}
+	}
+	JAP_create_republic_of_New_Africa = {
+		icon = GFX_decision_generic_political_discourse
+		available = {
+			OR = {
+				controls_state = 371
+				controls_state = 370
+				controls_state = 367
+				controls_state = 365
+				controls_state = 364
+			}
+		}
+		cost = 50
+		fire_only_once = yes
+		complete_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision JAP_create_republic_of_New_Africa"
+			custom_effect_tooltip = JAP_create_republic_of_New_Africa_tt
+			hidden_effect = {
+				create_dynamic_country = {
+					original_tag = USA
+					set_cosmetic_tag = JAP_new_afrika
+					load_focus_tree = generic_focus
+					
+					hidden_effect = {
+						every_core_state = {
+							remove_core_of = PREV
+						}
+					}
+					
+					add_state_core = 371
+					add_state_core = 370
+					add_state_core = 367
+					add_state_core = 365
+					add_state_core = 364
+					ROOT = {
+						every_controlled_state = {
+							limit = { 
+								OR = {
+									state = 371
+									state = 370
+									state = 367
+									state = 365
+									state = 364
+								} 
+							}
+							transfer_state_to = PREV.PREV
+						}
+						JAP_Elijah_Muhammad = {
+							set_nationality = PREV.PREV
+							promote_character = yes
+						}
+						if = {
+							limit = { has_dlc = "Waking the Tiger" }
+							set_autonomy = { target = PREV autonomy_state = autonomy_wtt_imperial_subject }
+							else = { puppet = PREV }
+						}
+					}
+					set_politics = {
+						ruling_party = fascism
+						elections_allowed = no
+					}
+					add_popularity = { ideology = fascism popularity = 0.5 }
+					set_party_name = { ideology = fascism long_name = JAP_nation_islam_party name = JAP_nation_islam_party }
+				}
+			}
 		}
 	}
 }
