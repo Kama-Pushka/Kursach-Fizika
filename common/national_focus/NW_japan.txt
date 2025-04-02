@@ -18357,6 +18357,10 @@ focus_tree = {
 		search_filters = {  }
 		available = {
 			JAP_Yosuke_Matsuoka = { is_political_advisor = yes }
+			USA = {
+				exists = yes
+				NOT = { has_war_with = ROOT }
+			}
 			date > 1940.5.1
 			date < 1940.10.1
 		}
@@ -18365,7 +18369,9 @@ focus_tree = {
 		relative_position_id = JAP_lone_ranger_diplomacy
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus JAP_interference_in_the_presidential_election"
-			
+			custom_effect_tooltip = JAP_interference_in_the_presidential_election_tt
+			custom_effect_tooltip = empty_line_tooltip
+			unlock_decision_category_tooltip = JAP_interference_in_the_presidential_election_category
 		}
 	}
 	
@@ -18467,9 +18473,58 @@ focus_tree = {
 		bypass = {  }
 		prerequisite = { focus = JAP_form_an_alliance_with_the_axis }
 		relative_position_id = JAP_form_an_alliance_with_the_latin_bloc
+		select_effect = {
+			if = {
+				limit = { has_active_mission = JAP_discontent_of_the_military_mission }
+				add_days_mission_timeout = { mission = JAP_discontent_of_the_military_mission days = 60 }
+				custom_effect_tooltip = empty_line_tooltip
+			}
+			if = {
+				limit = {
+					SOV = {
+						has_civil_war = no
+						NOT = {
+							has_war_with = GER
+							has_war_with = ROOT
+						}
+					}
+				}
+				SOV = {
+					country_event = NW_JAP.497
+					country_event = { id = NW_JAP.502 days = 5 }
+				}
+				country_event = NW_JAP.496
+				country_event = { id = NW_JAP.501 days = 5 }
+			}
+			else = {
+				country_event = NW_JAP.509
+			}
+			GER = {
+				country_event = NW_JAP.498
+				country_event = { id = NW_JAP.499 days = 16 }
+				country_event = { id = NW_JAP.506 days = 20 }
+			}
+			country_event = { id = NW_JAP.499 days = 16 }
+			news_event = { id = NW_JAP_news.68 days = 9 }
+			news_event = { id = NW_JAP_news.69 days = 18 }
+			country_event = { id = NW_JAP.503 days = 18 }
+			country_event = { id = NW_JAP.510 days = 25 }
+			SOV = { country_event = { id = NW_JAP.511 days = 27 } }
+			USA = { country_event = { id = NW_JAP.517 days = 30 } }
+		}
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus JAP_europe_tour"
-			
+			custom_effect_tooltip = JAP_europe_tour_tt
+			effect_tooltip = {
+				if = {
+					limit = { has_active_mission = JAP_discontent_of_the_military_mission }
+					custom_effect_tooltip = on_select_focus_tt
+					add_days_mission_timeout = { mission = JAP_discontent_of_the_military_mission days = 60 }
+					custom_effect_tooltip = empty_line_tooltip
+				}
+			}
+			custom_effect_tooltip = on_completion_focus_tt
+			country_event = NW_JAP.518
 		}
 	}
 	
@@ -18499,7 +18554,10 @@ focus_tree = {
 		cost = 6
 		ai_will_do = { factor = 10 }
 		search_filters = { FOCUS_FILTER_ANNEXATION }
-		available = { JAP_Yosuke_Matsuoka = { is_political_advisor = yes } }
+		available = {
+			JAP_Yosuke_Matsuoka = { is_political_advisor = yes }
+			GER = { has_war_with = SOV }
+		}
 		bypass = {  }
 		prerequisite = { focus = JAP_form_an_alliance_with_the_latin_bloc focus = JAP_form_an_alliance_with_the_axis }
 		relative_position_id = JAP_form_an_alliance_with_the_axis
@@ -18553,13 +18611,16 @@ focus_tree = {
 		cost = 5
 		ai_will_do = { factor = 10 }
 		search_filters = {  }
-		available = { JAP_Yosuke_Matsuoka = { is_political_advisor = yes } }
+		available = {
+			JAP_Yosuke_Matsuoka = { is_political_advisor = yes }
+			has_war_with = CHI
+		}
 		bypass = {  }
 		prerequisite = { focus = JAP_lone_ranger_diplomacy }
 		relative_position_id = JAP_lone_ranger_diplomacy
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus JAP_resume_the_search_for_peace_with_china"
-			
+			CHI = { country_event = { id = NW_JAP.519 hours = 12 } }
 		}
 	}
 	
@@ -18613,7 +18674,11 @@ focus_tree = {
 		relative_position_id = JAP_lone_ranger_diplomacy
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus JAP_outrunning_the_military"
-			
+			add_to_variable = { JAP_the_level_of_insubordination_var = -10 tooltip = JAP_the_level_of_insubordination_var_tt }
+			JAP_the_level_of_insubordination_effect = yes
+			custom_effect_tooltip = empty_line_tooltip
+			add_command_power = 20
+			add_threat = 3
 		}
 	}
 	
