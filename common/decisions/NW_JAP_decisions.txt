@@ -2335,7 +2335,7 @@ JAP_operation_Z_category = {
 		}
 		icon = border_war
 		is_good = no
-		days_mission_timeout = 90
+		days_mission_timeout = 75
 		selectable_mission = no
 		war_with_on_timeout = USA
 		war_with_on_timeout = HOL
@@ -8841,5 +8841,177 @@ JAP_using_the_Amur_River_Society_Network_category = {
 				}
 			}
 		}
+	}
+}
+
+JAP_lone_ranger_diplomacy_category = {
+	
+	JAP_discontent_of_the_military_mission = {
+		priority = 1000
+		icon = GFX_decision_MLI_threat_of_a_military_coup_mission
+		activation = { always = no }
+		available = { hidden_trigger = { always = no } }
+		cancel_trigger = {
+			OR = {
+				set_temp_variable = { JAP_the_level_of_insubordination_var_TEMP = 0 }
+				custom_trigger_tooltip = {
+					check_variable = { var = JAP_the_level_of_insubordination_var value = JAP_the_level_of_insubordination_var_TEMP compare = equals }
+					tooltip = JAP_the_level_of_insubordination_var_check_tt2
+				}
+				JAP_Yosuke_Matsuoka = { is_political_advisor = no }
+				NOT = { has_character = JAP_Yosuke_Matsuoka }
+			}
+		}
+		cancel_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): cancel mission JAP_discontent_of_the_military_mission"
+		}
+		days_mission_timeout = JAP_discontent_of_the_military_mission_days_timeout
+		is_good = no
+		selectable_mission = no
+		timeout_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): timeout mission JAP_discontent_of_the_military_mission"
+			retire_character = JAP_Yosuke_Matsuoka
+			custom_effect_tooltip = empty_line_tooltip
+			country_event = { id = NW_JAP.467 hours = 12 }
+		}
+		ai_will_do = { base = 0 }
+	}
+	
+	JAP_matsuoka_health_status_mission = {
+		priority = 999
+		icon = GFX_decision_MLI_threat_of_a_military_coup_mission
+		activation = { always = no }
+		available = { hidden_trigger = { always = no } }
+		cancel_trigger = {
+			OR = {
+				set_temp_variable = { JAP_the_level_of_insubordination_var_TEMP = 0 }
+				custom_trigger_tooltip = {
+					check_variable = { var = JAP_the_level_of_insubordination_var value = JAP_the_level_of_insubordination_var_TEMP compare = equals }
+					tooltip = JAP_the_level_of_insubordination_var_check_tt2
+				}
+				JAP_Yosuke_Matsuoka = { is_political_advisor = no }
+				NOT = { has_character = JAP_Yosuke_Matsuoka }
+			}
+		}
+		cancel_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): cancel mission JAP_matsuoka_health_status_mission"
+		}
+		days_mission_timeout = 30
+		is_good = no
+		selectable_mission = no
+		timeout_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): timeout mission JAP_matsuoka_health_status_mission"
+			add_to_variable = { JAP_matsuoka_health_var = -1 tooltip = JAP_matsuoka_health_var_subtract_tt }
+			if = {
+				limit = { check_variable = { JAP_matsuoka_health_var < 1 } }
+				country_event = NW_JAP.479
+			}
+			else = { activate_mission = JAP_matsuoka_health_status_mission }
+		}
+		ai_will_do = { base = 0 }
+	}
+	
+	JAP_go_to_bed_rest = {
+		priority = 998
+		icon = GFX_decision_generic_political_discourse
+		visible = { has_active_mission = JAP_matsuoka_health_status_mission }
+		cost = 0
+		fire_only_once = no
+		days_remove = 21
+		cancel_trigger = { NOT = { has_active_mission = JAP_matsuoka_health_status_mission } }
+		cancel_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): cancel decision JAP_go_to_bed_rest"
+		}
+		remove_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): remove decision JAP_go_to_bed_rest"
+			add_days_mission_timeout = { mission = JAP_discontent_of_the_military_mission days = -30 }
+			custom_effect_tooltip = empty_line_tooltip
+			add_to_variable = { JAP_matsuoka_health_var = 2 tooltip = JAP_matsuoka_health_var_add_tt }
+		}
+		ai_will_do = { base = 10 }
+	}
+	
+	JAP_request_an_audience_with_the_emperor = {
+		priority = 997
+		icon = GFX_decision_generic_political_discourse
+		available = { has_completed_focus = JAP_audience_with_the_emperor }
+		cost = 10
+		fire_only_once = no
+		days_re_enable = 15
+		complete_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision JAP_request_an_audience_with_the_emperor"
+			add_days_mission_timeout = { mission = JAP_discontent_of_the_military_mission days = 30 }
+		}
+		ai_will_do = { base = 10 }
+	}
+	
+	JAP_pitting_army_factions_against_each_other = {
+		priority = 996
+		icon = GFX_decision_generic_political_discourse
+		available = {
+			set_temp_variable = { JAP_the_level_of_insubordination_var_TEMP = 10 }
+			custom_trigger_tooltip = {
+				check_variable = { JAP_the_level_of_insubordination_var > JAP_the_level_of_insubordination_var_TEMP }
+				tooltip = JAP_the_level_of_insubordination_var_check_tt3
+			}
+		}
+		cost = 25
+		fire_only_once = no
+		days_re_enable = 30
+		complete_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision JAP_pitting_army_factions_against_each_other"
+			add_to_variable = { JAP_the_level_of_insubordination_var = -3 tooltip = JAP_the_level_of_insubordination_var_tt }
+			JAP_the_level_of_insubordination_effect = yes
+		}
+		ai_will_do = { base = 10 }
+	}
+	
+	JAP_strike_at_the_ussr = {
+		priority = 995
+		icon = GFX_decision_generic_political_discourse
+		available = {
+			has_completed_focus = JAP_march_to_irkutsk
+			is_subject = no
+			can_declare_war_on = SOV
+		}
+		cost = 0
+		fire_only_once = yes
+		complete_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision JAP_strike_at_the_ussr"
+			declare_war_on = { target = SOV type = topple_government }
+		}
+		ai_will_do = { base = 10 }
+	}
+	
+	JAP_return_access_to_the_southern_resource_area = {
+		priority = 994
+		icon = GFX_decision_generic_political_discourse
+		available = {
+			has_completed_focus = JAP_restore_access_to_the_southern_resource_area
+			is_subject = no
+			OR = {
+				can_declare_war_on = ENG
+				can_declare_war_on = event_target:NW_france_scope
+				can_declare_war_on = HOL
+			}
+		}
+		cost = 0
+		fire_only_once = yes
+		complete_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision JAP_return_access_to_the_southern_resource_area"
+			if = {
+				limit = { can_declare_war_on = ENG }
+				declare_war_on = { target = ENG type = annex_everything }
+			}
+			if = {
+				limit = { can_declare_war_on = event_target:NW_france_scope }
+				declare_war_on = { target = event_target:NW_france_scope type = annex_everything }
+			}
+			if = {
+				limit = { can_declare_war_on = HOL }
+				declare_war_on = { target = HOL type = annex_everything }
+			}
+		}
+		ai_will_do = { base = 10 }
 	}
 }

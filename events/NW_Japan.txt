@@ -3308,7 +3308,7 @@ country_event = {
 	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_JAP.102" }
 	option = {
 		name = NW_JAP.102.a
-		FROM = { country_event = { id = NW_JAP.105 days = 1 } }
+		USA = { country_event = { id = NW_JAP.105 days = 1 } }
 		if = {
 			limit = {
 				any_of_scopes = {
@@ -3336,7 +3336,7 @@ country_event = {
 	}
 	option = {
 		name = NW_JAP.102.b
-		FROM = { country_event = { id = NW_JAP.103 days = 1 } }
+		USA = { country_event = { id = NW_JAP.103 days = 1 } }
 	}
 }
 
@@ -3725,7 +3725,15 @@ country_event = {
 	picture = GFX_report_event_JAP_118
 	trigger = {
 		country_exists = FIC
-		NOT = { has_subject = FIC }
+		NOT = {
+			has_subject = FIC
+			has_active_mission = JAP_discontent_of_the_military_mission
+		}
+		check_variable = { JAP_the_level_of_insubordination_var > 15 }
+		JAP_Yosuke_Matsuoka = {
+			is_political_advisor = no
+			NOT = { is_character_slot = political_advisor }
+		}
 	}
 	is_triggered_only = yes
 	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_JAP.118" }
@@ -4296,7 +4304,13 @@ country_event = {
 		if = {
 			limit = { has_government = fascism }
 			if = {
-				limit = { NOT = { has_country_leader = { character = JAP_Yosuke_Matsuoka ruling_only = yes } } }
+				limit = {
+					has_character = JAP_Yosuke_Matsuoka
+					JAP_Yosuke_Matsuoka = {
+						is_country_leader = no
+						NOT = { has_character_flag = JAP_Yosuke_Matsuoka_sick }
+					}
+				}
 				add_country_leader_role = {
 					character = JAP_Yosuke_Matsuoka
 					promote_leader = yes
@@ -4306,10 +4320,21 @@ country_event = {
 						traits = { JAP_former_President_of_Mantetsu JAP_master_of_a_Hundred_Thousand_Words }
 					}
 				}
+				if = {
+					limit = { NOT = { has_completed_focus = JAP_Matsuoka_Office } }
+					complete_national_focus = JAP_Matsuoka_Office
+				}
 			}
-			if = {
-				limit = { NOT = { has_completed_focus = JAP_Matsuoka_Office } }
-				complete_national_focus = JAP_Matsuoka_Office
+			else = {
+				add_country_leader_role = {
+					character = JAP_Seigo_Nakano
+					promote_leader = yes
+					country_leader = {
+						ideology = totalism
+						expire = "1965.1.1.1"
+						traits = { JAP_supporter_of_parliamentary_politics JAP_charismatic_agitator }
+					}
+				}
 			}
 		}
 		else_if = {
@@ -4394,7 +4419,14 @@ country_event = {
 country_event = {
 	id = NW_JAP.136
 	title = NW_JAP.136.t
-	desc = NW_JAP.136.d
+	desc = {
+		text = NW_JAP.136.d.a
+		trigger = { has_completed_focus = JAP_Jinzaburo_Masaki_office }
+	}
+	desc = {
+		text = NW_JAP.136.d.b
+		trigger = { NOT = { has_completed_focus = JAP_Jinzaburo_Masaki_office } }
+	}
 	picture = GFX_report_event_JAP_136_139
 	is_triggered_only = yes
 	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_JAP.136" }
@@ -4424,6 +4456,10 @@ country_event = {
 		}
 		unlock_decision_category_tooltip = JAP_operation_Z_category
 		activate_mission = JAP_tora_tora_tora
+		hidden_effect = {
+			country_event = { id = NW_JAP.469 days = 25 }
+			FROM = { country_event = { id = NW_JAP.469 days = 25 } }
+		}
 	}
 }
 
@@ -11040,7 +11076,6 @@ country_event = {
 			ROOT = {
 				add_ai_strategy = { type = prepare_for_war id = PREV value = 300 }
 				every_subject_country = {
-					add_ai_strategy = { type = prepare_for_war id = PREV.PREV value = 200 }
 					PREV.PREV = { add_ai_strategy = { type = prepare_for_war id = PREV value = 200 } }
 				}
 			}
@@ -13351,5 +13386,383 @@ country_event = {
 				count = 2
 			}
 		}
+	}
+}
+
+# Избавление от Мацуоки
+country_event = {
+	id = NW_JAP.467
+	title = NW_JAP.467.t
+	desc = {
+		text = NW_JAP.467.d.a
+		trigger = { NOT = { has_country_leader = { character = JAP_Fumimaro_Konoe ruling_only = yes } } }
+	}
+	desc = {
+		text = NW_JAP.467.d.b
+		trigger = { has_country_leader = { character = JAP_Fumimaro_Konoe ruling_only = yes } }
+	}
+	picture = GFX_report_event_hol_cabinet_de_geer
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_JAP.467" }
+	option = {
+		name = NW_JAP.467.a
+		effect_tooltip = { retire_character = JAP_Yosuke_Matsuoka }
+		custom_effect_tooltip = empty_line_tooltip
+		if = {
+			limit = { check_variable = { JAP_the_level_of_insubordination_var > 0 } }
+			country_event = { id = NW_JAP.468 hours = 12 }
+		}
+	}
+}
+
+# Неожиданная честь
+country_event = {
+	id = NW_JAP.468
+	title = NW_JAP.468.t
+	desc = NW_JAP.468.d
+	picture = GFX_report_event_hol_cabinet_de_geer
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_JAP.468" }
+	option = {
+		name = NW_JAP.468.a
+	}
+}
+
+# JAP/USA Специальный посланник Курусу
+country_event = {
+	id = NW_JAP.469
+	title = NW_JAP.469.t
+	desc = NW_JAP.469.desc
+	picture = GFX_report_event_hol_cabinet_de_geer
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_JAP.469" }
+	option = {
+		name = NW_JAP.469.a
+		trigger = { tag = USA }
+		FROM = { set_country_flag = NW_JAP_469_a_flag }
+	}
+	option = {
+		name = NW_JAP.469.b
+		trigger = { tag = USA }
+	}
+	option = {
+		name = NW_JAP.469.c
+		trigger = { tag = FROM }
+	}
+	option = {
+		name = NW_JAP.469.d
+		trigger = { tag = FROM }
+		set_country_flag = NW_JAP_469_d_flag
+		hidden_effect = {
+			country_event = { id = NW_JAP.470 days = 15 }
+			USA = { country_event = { id = NW_JAP.470 days = 15 } }
+		}
+	}
+}
+
+# Символическая поставка риса и нефти
+country_event = {
+	id = NW_JAP.470
+	title = NW_JAP.470.t
+	desc = NW_JAP.470.d
+	picture = GFX_report_event_hol_cabinet_de_geer
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_JAP.470" }
+	trigger = {
+		FROM = {
+			has_country_flag = NW_JAP_469_a_flag
+			has_country_flag = NW_JAP_469_d_flag
+		}
+	}
+	option = {
+		name = NW_JAP.470.a
+		trigger = {
+			tag = FROM
+			check_variable = { JAP_the_level_of_insubordination_var < 20 }
+		}
+		if = {
+			limit = { has_active_mission = JAP_tora_tora_tora }
+			add_days_mission_timeout = { mission = JAP_tora_tora_tora days = 30 }
+			custom_effect_tooltip = empty_line_tooltip
+		}
+		USA = {
+			country_event = { id = NW_JAP.471 days = 1 }
+			custom_effect_tooltip = empty_line_tooltip
+			add_opinion_modifier = {
+				modifier = JAP_withdrawal_of_troops_from_indochina_op
+				target = ROOT
+			}
+		}
+	}
+	option = {
+		name = NW_JAP.470.b
+		trigger = { tag = FROM }
+		if = {
+			limit = { has_active_mission = JAP_tora_tora_tora }
+			add_days_mission_timeout = { mission = JAP_tora_tora_tora days = 15 }
+			custom_effect_tooltip = empty_line_tooltip
+		}
+		USA = {
+			add_opinion_modifier = {
+				modifier = JAP_withdrawal_of_troops_from_indochina_op
+				target = ROOT
+			}
+		}
+	}
+	option = {
+		name = NW_JAP.470.c
+		trigger = { NOT = { tag = FROM } }
+	}
+}
+
+# USA Возвращение к статус-кво
+country_event = {
+	id = NW_JAP.471
+	title = NW_JAP.471.t
+	desc = NW_JAP.471.d
+	picture = GFX_report_event_hol_cabinet_de_geer
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_JAP.471" }
+	option = {
+		name = NW_JAP.471.a
+		hidden_effect = { news_event = { id = NW_JAP_news.64 days = 1 } }
+		if = {
+			limit = { is_embargoing = FROM }
+			break_embargo = FROM
+			custom_effect_tooltip = empty_line_tooltip
+		}
+		FROM = { remove_mission = JAP_tora_tora_tora }
+		custom_effect_tooltip = empty_line_tooltip
+		FIC = {
+			if = {
+				limit = { exists = yes }
+				give_military_access = FROM
+				custom_effect_tooltip = empty_line_tooltip
+				every_other_country = {
+					limit = { is_literally_china = yes }
+					PREV = { send_embargo = PREV }
+				}
+				custom_effect_tooltip = empty_line_tooltip
+				#TODO: FIC потеряет нацдух «Японская оккупация»
+				event_target:NW_france_scope = { set_autonomy = { target = PREV autonomy_state = autonomy_integrated_puppet } }
+			}
+		}
+	}
+	option = {
+		name = NW_JAP.471.b
+		FROM = { country_event = { id = NW_JAP.472 days = 1 } }
+	}
+}
+
+# Сделка Modus Vivendi между США и Японией
+news_event = {
+	id = NW_JAP_news.64
+	title = NW_JAP_news.64.t
+	desc = NW_JAP_news.64.desc
+	picture = GFX_news_event_dutch_soldiers_indonesia # TODO
+	major = yes
+	is_triggered_only = yes
+	option = {
+		name = NW_JAP_news.64.a
+		trigger = {
+			has_war_with = JAP
+		}
+	}
+	option = {
+		name = NW_JAP_news.64.b
+		trigger = {
+			NOT = { has_war_with = JAP }
+			OR = {
+				has_government = communism
+				has_government = trozkism
+				has_government = anarchism
+			}
+		}
+	}
+	option = {
+		name = NW_JAP_news.64.c
+		trigger = {
+			NOT = { has_war_with = JAP }
+			has_government = fascism
+		}
+	}
+	option = {
+		name = NW_JAP_news.64.d
+		trigger = {
+			NOT = {
+				has_war_with = JAP
+				has_government = fascism
+				has_government = communism
+				has_government = trozkism
+				has_government = anarchism
+			}
+		}
+	}
+}
+
+# Очередные требования американцев
+country_event = {
+	id = NW_JAP.472
+	title = NW_JAP.472.t
+	desc = NW_JAP.472.d
+	picture = GFX_report_event_hol_cabinet_de_geer
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_JAP.472" }
+	option = {
+		name = NW_JAP.472.a
+		add_war_support = 0.05
+	}
+}
+
+# MAN/JAP Мацуока покидает пост президента Мантецу
+country_event = {
+	id = NW_JAP.473
+	title = NW_JAP.473.t
+	desc = NW_JAP.473.d
+	picture = GFX_report_event_hol_cabinet_de_geer
+	is_triggered_only = yes
+	trigger = {
+		JAP = { has_character = JAP_Yosuke_Matsuoka }
+		FROM = {
+			has_completed_focus = MAN_monopoly_approach
+			NOT = { has_country_flag = MAN_mongolian_asian_railway_flag }
+		}
+	}
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_JAP.473" }
+	option = {
+		name = NW_JAP.473.a
+		if = {
+			limit = { tag = FROM }
+			effect_tooltip = { JAP_Yosuke_Matsuoka = { set_nationality = JAP } }
+		}
+		else = {
+			hidden_effect = { country_event = { id = NW_JAP.474 days = 30 } }
+			FROM = { JAP_Yosuke_Matsuoka = { set_nationality = ROOT } }
+		}
+	}
+}
+
+# Воссоздание молодёжной организации Мацуоки
+country_event = {
+	id = NW_JAP.474
+	title = NW_JAP.474.t
+	desc = NW_JAP.474.d
+	picture = GFX_report_event_hol_cabinet_de_geer
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_JAP.474" }
+	option = {
+		name = NW_JAP.474.a
+		hidden_effect = { country_event = { id = NW_JAP.475 days = 30 } }
+	}
+}
+
+# Свадьба дочери Мацуоки
+country_event = {
+	id = NW_JAP.475
+	title = NW_JAP.475.t
+	desc = NW_JAP.475.d
+	picture = GFX_report_event_hol_cabinet_de_geer
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_JAP.475" }
+	option = {
+		name = NW_JAP.475.a
+		set_country_flag = JAP_Yosuke_Matsuoka_want_go_to_japan
+	}
+}
+
+# Переговоры с Мацуокой
+country_event = {
+	id = NW_JAP.476
+	title = NW_JAP.476.t
+	desc = NW_JAP.476.d
+	picture = GFX_report_event_hol_cabinet_de_geer
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_JAP.476" }
+	option = {
+		name = NW_JAP.476.a
+		JAP_Yosuke_Matsuoka = { set_character_flag = JAP_Yosuke_Matsuoka_available }
+		custom_effect_tooltip = available_political_advisor
+		show_ideas_tooltip = JAP_Yosuke_Matsuoka
+	}
+	option = {
+		name = NW_JAP.476.b
+	}
+}
+
+# Ёсукэ Мацуока заболел
+country_event = {
+	id = NW_JAP.477
+	title = NW_JAP.477.t
+	desc = NW_JAP.477.d
+	picture = GFX_report_event_hol_cabinet_de_geer
+	trigger = {
+		date > 1941.5.20
+		tag = JAP
+		NOT = {
+			has_global_flag = THE_MOTHER_OF_ORDER_FLAG
+			has_global_flag = WORLD_OF_SPLIT_FLAG
+		}
+		has_country_flag = JAP_Yosuke_Matsuoka_want_go_to_japan
+		JAP_Yosuke_Matsuoka = {
+			is_political_advisor = no
+			NOT = { is_character_slot = political_advisor }
+		}
+	}
+	mean_time_to_happen = { days = 7 }
+	fire_only_once = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_JAP.477" }
+	option = {
+		name = NW_JAP.477.a
+		JAP_Yosuke_Matsuoka = { set_character_flag = JAP_Yosuke_Matsuoka_sick }
+	}
+}
+
+# Болезнь Мацуоки
+country_event = {
+	id = NW_JAP.478
+	title = NW_JAP.478.t
+	desc = NW_JAP.478.d
+	picture = GFX_report_event_hol_cabinet_de_geer
+	trigger = {
+		date > 1940.10.1
+		tag = JAP
+		NOT = {
+			has_global_flag = THE_MOTHER_OF_ORDER_FLAG
+			has_global_flag = WORLD_OF_SPLIT_FLAG
+		}
+		has_country_flag = JAP_Yosuke_Matsuoka_want_go_to_japan
+		has_completed_focus = JAP_lone_ranger_diplomacy
+		JAP_Yosuke_Matsuoka = {
+			OR = {
+				is_political_advisor = yes
+				is_character_slot = political_advisor
+			}
+		}
+	}
+	mean_time_to_happen = { days = 7 }
+	fire_only_once = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_JAP.478" }
+	option = {
+		name = NW_JAP.477.a
+		set_variable = { JAP_matsuoka_health_var = 5 }
+		activate_mission = JAP_matsuoka_health_status_mission
+		unlock_decision_tooltip = JAP_go_to_bed_rest
+	}
+}
+
+# Госпитализация министра иностранных дел
+country_event = {
+	id = NW_JAP.479
+	title = NW_JAP.479.t
+	desc = NW_JAP.479.d
+	picture = GFX_report_event_hol_cabinet_de_geer
+	is_triggered_only = yes
+	immediate = {
+		log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_JAP.479"
+		hidden_effect = { retire_character = JAP_Yosuke_Matsuoka }
+	}
+	option = {
+		name = NW_JAP.479.a
+		effect_tooltip = { retire_character = JAP_Yosuke_Matsuoka }
 	}
 }
