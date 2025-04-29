@@ -1,3 +1,147 @@
+## Ассоциация_Помощи_Трону block
+
+JAP_aht_legitimacy_check = {
+	clamp_variable = { var = JAP_aht_legitimacy min = 0 max = 1 }
+	if = {
+		limit = { 
+			check_variable = { JAP_aht_legitimacy = 0 } 
+			NOT = { has_country_flag = JAP_aht_no_zero_legitimacy_effect }
+		}
+		country_event = NW_JAP_aht.14
+	}
+}
+
+JAP_aht_fractions_influence_update = {
+	set_temp_variable = { loyal = 0 }
+	set_temp_variable = { opposition = 0 }
+	for_each_scope_loop = {
+		array = JAP_aht_fractions
+		
+		clamp_variable = { var = JAP_aht_influence min = 0 }
+		if = {
+			limit = {
+				check_variable = { JAP_aht_fraction_position = 1 }
+			}
+			add_to_temp_variable = { loyal = JAP_aht_influence }
+		}
+		else_if = {
+			limit = {
+				check_variable = { JAP_aht_fraction_position = 3 }
+			}
+			add_to_temp_variable = { opposition = JAP_aht_influence }
+		}
+	}
+	set_variable = { JAP_aht_fraction_support = loyal }
+	add_to_temp_variable = { opposition = loyal }
+	divide_variable = { JAP_aht_fraction_support = opposition } # TODO opposition=0 ?
+}
+
+JAP_aht_faction_status_update = {
+	clamp_temp_variable = { var = position min = 1 max = 3 }
+	if = {
+		limit = { 
+			NOT = { check_variable = { position = var:faction:JAP_aht_fraction_position } }
+		}
+		set_temp_variable = { JAP_aht_fraction_position = position }
+		custom_effect_tooltip = {
+			localization_key = JAP_faction_status_change
+			FACTION = "[?var:faction.JAP_get_current_fraction_desc]"
+			NEW_STATUS = "[JAP_get_current_fraction_position_full]"
+		}
+		
+		set_variable = { var:faction:JAP_aht_fraction_position = position }
+	}
+	JAP_aht_fractions_influence_update = yes # TODO вынести наружу?
+}
+
+JAP_aht_activate = {
+	add_to_array = { JAP_aht_fractions = 1 }
+	add_to_array = { JAP_aht_fractions = 2 }
+	add_to_array = { JAP_aht_fractions = 3 }
+	add_to_array = { JAP_aht_fractions = 4 }
+	add_to_array = { JAP_aht_fractions = 5 }
+	add_to_array = { JAP_aht_fractions = 6 }
+	
+	if = {
+		limit = { has_country_leader = { character = JAP_Fumimaro_Konoe ruling_only = yes } }
+		set_variable = { 1.JAP_aht_influence = 15 } # Фракция партийных реформаторов
+		set_variable = { 1.JAP_aht_fraction_position = 1 }
+		set_variable = { 2.JAP_aht_influence = 20 } # Фракция левых обновленцев
+		set_variable = { 2.JAP_aht_fraction_position = 1 }
+		set_variable = { 3.JAP_aht_influence = 20 } # Фракция правых обновленцев
+		set_variable = { 3.JAP_aht_fraction_position = 1 }
+		set_variable = { 4.JAP_aht_influence = 10 } # Фракция национал-социалистов
+		set_variable = { 4.JAP_aht_fraction_position = 2 }
+		set_variable = { 5.JAP_aht_influence = 25 } # Фракция консерваторов
+		set_variable = { 5.JAP_aht_fraction_position = 3 }
+		set_variable = { 6.JAP_aht_influence = 0 } # Фракция Мацуоки
+		set_variable = { 6.JAP_aht_fraction_position = 2 }
+		set_variable = { JAP_aht_legitimacy = 0.8 } # Легитимность АПТ
+	}
+	else_if = {
+		limit = { has_country_leader = { character = JAP_Yosuke_Matsuoka ruling_only = yes } }
+		set_variable = { 1.JAP_aht_influence = 20 } # Фракция партийных реформаторов
+		set_variable = { 1.JAP_aht_fraction_position = 3 }
+		set_variable = { 2.JAP_aht_influence = 10 } # Фракция левых обновленцев
+		set_variable = { 2.JAP_aht_fraction_position = 2 }
+		set_variable = { 3.JAP_aht_influence = 15 } # Фракция правых обновленцев
+		set_variable = { 3.JAP_aht_fraction_position = 1 }
+		set_variable = { 4.JAP_aht_influence = 5 } # Фракция национал-социалистов
+		set_variable = { 4.JAP_aht_fraction_position = 2 }
+		set_variable = { 5.JAP_aht_influence = 25 } # Фракция консерваторов
+		set_variable = { 5.JAP_aht_fraction_position = 3 }
+		set_variable = { 6.JAP_aht_influence = 30 } # Фракция Мацуоки
+		set_variable = { 6.JAP_aht_fraction_position = 1 }
+		set_variable = { JAP_aht_legitimacy = 0.75 } # Легитимность АПТ
+	}
+	else_if = {
+		limit = { has_country_leader = { character = JAP_Hiranuma_Kiichiro ruling_only = yes } }
+		set_variable = { 1.JAP_aht_influence = 25 } # Фракция партийных реформаторов
+		set_variable = { 1.JAP_aht_fraction_position = 2 }
+		set_variable = { 2.JAP_aht_influence = 5 } # Фракция левых обновленцев
+		set_variable = { 2.JAP_aht_fraction_position = 3 }
+		set_variable = { 3.JAP_aht_influence = 10 } # Фракция правых обновленцев
+		set_variable = { 3.JAP_aht_fraction_position = 3 }
+		set_variable = { 4.JAP_aht_influence = 15 } # Фракция национал-социалистов
+		set_variable = { 4.JAP_aht_fraction_position = 2 }
+		set_variable = { 5.JAP_aht_influence = 45 } # Фракция консерваторов
+		set_variable = { 5.JAP_aht_fraction_position = 1 }
+		set_variable = { 6.JAP_aht_influence = 0 } # Фракция Мацуоки
+		set_variable = { 6.JAP_aht_fraction_position = 2 }
+		set_variable = { JAP_aht_legitimacy = 0.5 } # Легитимность АПТ
+	}
+	else_if = {
+		limit = { has_country_leader = { character = JAP_Fusanosuke_Kuhara ruling_only = yes } }
+		set_variable = { 1.JAP_aht_influence = 35 } # Фракция партийных реформаторов
+		set_variable = { 1.JAP_aht_fraction_position = 1 }
+		set_variable = { 2.JAP_aht_influence = 15 } # Фракция левых обновленцев
+		set_variable = { 2.JAP_aht_fraction_position = 3 }
+		set_variable = { 3.JAP_aht_influence = 15 } # Фракция правых обновленцев
+		set_variable = { 3.JAP_aht_fraction_position = 3 }
+		set_variable = { 4.JAP_aht_influence = 10 } # Фракция национал-социалистов
+		set_variable = { 4.JAP_aht_fraction_position = 2 }
+		set_variable = { 5.JAP_aht_influence = 25 } # Фракция консерваторов
+		set_variable = { 5.JAP_aht_fraction_position = 2 }
+		set_variable = { 6.JAP_aht_influence = 0 } # Фракция Мацуоки
+		set_variable = { 6.JAP_aht_fraction_position = 2 }
+		set_variable = { JAP_aht_legitimacy = 0.67 } # Легитимность АПТ
+	}
+	else = {
+		log = "BUG: САНЯ ДОЛБАЕБ ТУТ [ROOT.GetLeader] ЗАТЕСАЛСЯ!"
+	}
+	JAP_aht_fractions_influence_update = yes
+	
+	if = { # Влияние военных
+		limit = { check_variable = { JAP_the_level_of_insubordination_var > 0 } }
+		set_variable = { JAP_aht_military_influence = JAP_the_level_of_insubordination_var }
+	}
+	else = {
+		set_variable = { JAP_aht_military_influence = 10 }
+	}
+}
+
+##
+
 JAP_the_level_of_insubordination_effect = {
 
 	hidden_effect = {
