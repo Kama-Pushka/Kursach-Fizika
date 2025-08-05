@@ -1947,9 +1947,9 @@ focus_tree = {
 			add_popularity = { ideology = neutrality popularity = 0.05 }
 			add_popularity = { ideology = monarchy popularity = -0.03 }
 			add_popularity = { ideology = fascism popularity = -0.02 }
-			JAP_Keisuke_Okada = { add_country_leader_trait = JAP_morally_depressed }
+			JAP_Keisuke_Okada = { add_country_leader_trait = JAP_poor_morale }
 			set_power_balance = { id = JAP_new_Okada_government_power_balance set_default = yes }
-			country_event = { id = NW_JAP.552 days = 20 }
+			hidden_effect = { country_event = { id = NW_JAP.552 days = 20 } }
 		}
 	}
 	
@@ -1979,6 +1979,7 @@ focus_tree = {
 				value = -0.2
 				tooltip_side = JAP_supporters_of_democracy
 			}
+			hidden_effect = { country_event = NW_JAP.180 }
 			add_popularity = { ideology = democratic popularity = 0.1 }
 			add_popularity = { ideology = neutrality popularity = -0.05 }
 			add_popularity = { ideology = fascism popularity = -0.05 }
@@ -2015,10 +2016,11 @@ focus_tree = {
 			add_stability = 0.05
 			add_power_balance_value = {
 				id = JAP_new_Okada_government_power_balance
-				value = -0.3
+				value = -0.1
 				tooltip_side = JAP_supporters_of_democracy
 			}
 			add_popularity = { ideology = democratic popularity = 0.07 }
+			country_event = NW_JAP.654
 		}
 	}
 	
@@ -2041,44 +2043,7 @@ focus_tree = {
 		relative_position_id = JAP_the_offices_of_national_unity_are_not_working
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus JAP_restore_the_Contract_Fraction"
-			add_naval_commander_role = {
-				character = JAP_Katsunoshin_Yamanasi
-				traits = { superior_tactician bold navy_career_officer }
-				skill = 3
-				attack_skill = 3
-				defense_skill = 2
-				planning_skill = 4
-				logistics_skill = 3
-			}
-			add_naval_commander_role = {
-				traits = { ironside superior_tactician bold navy_career_officer }
-				character = JAP_Teikiti_Hori
-				skill = 4
-				attack_skill = 4
-				defense_skill = 4
-				planning_skill = 3
-				logistics_skill = 2
-			}
-			USA = {
-				add_opinion_modifier = {
-					modifier = JAP_restore_the_Contract_Fraction_op
-					target = ROOT
-				}
-				reverse_add_opinion_modifier = {
-					modifier = JAP_restore_the_Contract_Fraction_op
-					target = ROOT
-				}
-			}
-			ENG = {
-				add_opinion_modifier = {
-					modifier = JAP_restore_the_Contract_Fraction_op
-					target = ROOT
-				}
-				reverse_add_opinion_modifier = {
-					modifier = JAP_restore_the_Contract_Fraction_op
-					target = ROOT
-				}
-			}
+			country_event = NW_JAP.655
 		}
 	}
 	
@@ -2129,7 +2094,10 @@ focus_tree = {
 		cost = 8
 		ai_will_do = { factor = 10 }
 		search_filters = { FOCUS_FILTER_BALANCE_OF_POWER FOCUS_FILTER_POLITICAL }
-		available = { has_country_leader = { character = JAP_Keisuke_Okada ruling_only = yes } }
+		available = { 
+			has_country_leader = { character = JAP_Keisuke_Okada ruling_only = yes } 
+			power_balance_value = { id = JAP_new_Okada_government_power_balance value < 0 }
+		}
 		bypass = {  }
 		prerequisite = { focus = JAP_solve_the_issue_with_kokutai }
 		relative_position_id = JAP_solve_the_issue_with_kokutai
@@ -2189,13 +2157,14 @@ focus_tree = {
 		search_filters = {  }
 		available = {
 			has_country_leader = { character = JAP_Keisuke_Okada ruling_only = yes }
+			has_country_flag = JAP_economic_recovery_flag
 		}
 		bypass = {  }
 		prerequisite = { focus = JAP_alliance_with_financial_groups }
 		relative_position_id = JAP_alliance_with_financial_groups
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus JAP_takahashi_was_right"
-			
+			add_timed_idea = { idea = JAP_Takahashi_is_geniuos_1 days = 400 }
 		}
 	}
 	
@@ -2222,7 +2191,18 @@ focus_tree = {
 		relative_position_id = JAP_takahashi_was_right
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus JAP_reunite_the_takahashi_group"
-			
+			if = { 
+				limit = { has_idea = JAP_Takahashi_is_geniuos_1 }
+				swap_ideas = { 
+					remove_idea = JAP_Takahashi_is_geniuos_1
+					add_idea = JAP_Takahashi_is_geniuos_2
+				}
+			}
+			add_power_balance_value = {
+				id = JAP_new_Okada_government_power_balance
+				value = -0.15
+				tooltip_side = JAP_supporters_of_democracy
+			}
 		}
 	}
 	
@@ -2337,7 +2317,10 @@ focus_tree = {
 		mutually_exclusive = { focus = JAP_Navy_Cabinet_of_Ministers }
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus JAP_Machid_Chunji_office"
-			hidden_effect = { news_event = { id = NW_JAP_news.31 hours = 12 } }
+			hidden_effect = { 
+				news_event = { id = NW_JAP_news.31 hours = 12 } 
+				country_event = { id = NW_JAP.666 days = 150 }
+			}
 			custom_effect_tooltip = JAP_Machid_Chunji_office_tt
 			show_ideas_tooltip = JAP_Kadsucige_Ugaki
 			show_ideas_tooltip = JAP_Mitsumasa_Yonai
@@ -3422,6 +3405,7 @@ focus_tree = {
 					traits = { JAP_Christian_Socialist JAP_the_Father_of_Japanese_Baseball }
 				}
 			}
+			set_power_balance = { id = JAP_unity_of_party_power_balance set_value = -0.1 }
 		}
 	}
 	
@@ -3459,6 +3443,7 @@ focus_tree = {
 				}
 			}
 			set_party_name = { ideology = neutrality long_name = JAP_neutrality_party18 name = JAP_neutrality_party18 }
+			set_power_balance = { id = JAP_unity_of_party_power_balance set_default = yes }
 		}
 	}
 	
@@ -18180,7 +18165,7 @@ focus_tree = {
 		icon = GFX_focus_FIN_expand_air_force_academy
 		x = -3
 		y = 2
-		cost = 5
+		cost = 3
 		ai_will_do = { factor = 10 }
 		search_filters = { FOCUS_FILTER_HISTORICAL FOCUS_FILTER_RESEARCH FOCUS_FILTER_AIR_XP }
 		available = {
@@ -18188,12 +18173,14 @@ focus_tree = {
 				has_idea = JAP_interservice_rivalry_army_strengthened
 				has_idea = JAP_interservice_rivalry_army_dominant
 			}
+			GER = { has_civil_war = no } 
 		}
 		prerequisite = { focus = JAP_masaharu_homma_report }
 		relative_position_id = JAP_masaharu_homma_report
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus JAP_Luftwaffe_report"
-			
+			custom_effect_tooltip = JAP_Luftwaffe_report_tt
+			hidden_effect = { country_event = { id = NW_JAP.648 days = 75 } } 
 		}
 	}
 	
@@ -18669,10 +18656,10 @@ focus_tree = {
 					add_mio_research_bonus = 0.05
 				}
 			}
-			JAP_Hara_Tomio = {
-				remove_trait = { slot = theorist trait = JAP_designer_of_medium_tanks }
-				add_trait = { slot = theorist trait = JAP_designer_of_medium_tanks_1 }
-			}
+			#JAP_Hara_Tomio = {
+			#	remove_trait = { slot = theorist trait = JAP_designer_of_medium_tanks }
+			#	add_trait = { slot = theorist trait = JAP_designer_of_medium_tanks_1 }
+			#}
 		}
 	}
 	
@@ -19064,10 +19051,54 @@ focus_tree = {
 					}
 				}
 			}
-			JAP_Shigeo_Otaka = {
-				remove_trait = { slot = theorist trait = JAP_designer_of_heavy_tanks }
-				add_trait = { slot = theorist trait = JAP_designer_of_heavy_and_superheavy_tanks }
+			#JAP_Shigeo_Otaka = {
+			#	remove_trait = { slot = theorist trait = JAP_designer_of_heavy_tanks }
+			#	add_trait = { slot = theorist trait = JAP_designer_of_heavy_and_superheavy_tanks }
+			#}
+		}
+	}
+	
+	focus = {
+		id = JAP_preparations_for_the_winter_war
+		icon = GFX_z_goal_JAP_preparations_for_the_winter_war
+		x = 3
+		y = 1
+		cost = 5
+		ai_will_do = { factor = 10 }
+		search_filters = { FOCUS_FILTER_HISTORICAL FOCUS_FILTER_RESEARCH }
+		available = {
+			OR = {
+				has_idea = JAP_interservice_rivalry_army_strengthened
+				has_idea = JAP_interservice_rivalry_army_dominant
 			}
+		}
+		prerequisite = { focus = JAP_preparing_Manchuria_for_war }
+		relative_position_id = JAP_preparing_Manchuria_for_war
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus JAP_preparations_for_the_winter_war"
+			add_ideas = JAP_preparations_for_the_winter_war_idea
+		}
+	}
+	
+	focus = {
+		id = JAP_preparations_for_the_jungle_war
+		icon = GFX_z_goal_JAP_preparations_for_the_jungle_war
+		x = 7
+		y = 2
+		cost = 5
+		ai_will_do = { factor = 10 }
+		search_filters = { FOCUS_FILTER_HISTORICAL FOCUS_FILTER_RESEARCH }
+		available = {
+			OR = {
+				has_idea = JAP_interservice_rivalry_army_strengthened
+				has_idea = JAP_interservice_rivalry_army_dominant
+			}
+		}
+		prerequisite = { focus = JAP_masaharu_homma_report }
+		relative_position_id = JAP_masaharu_homma_report
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus JAP_preparations_for_the_jungle_war"
+			set_technology = { bicycle_infantry = 1 }
 		}
 	}
 	
@@ -19089,13 +19120,8 @@ focus_tree = {
 		relative_position_id = JAP_masaharu_homma_report
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus JAP_Nasano_school"
-			add_ideas = JAP_Nasano_school_idea
-			add_tech_bonus = {
-				name = JAP_Nasano_school
-				bonus = 0.15
-				uses = 8
-				category = special_forces_tech
-			}
+			custom_effect_tooltip = available_theorist
+			show_ideas_tooltip = JAP_Hideo_Iwakuro
 		}
 	}
 	
@@ -19118,29 +19144,8 @@ focus_tree = {
 		relative_position_id = JAP_Nasano_school
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus JAP_Takasago_Volunteers"
-			if = {
-				limit = { NOT = { has_template = "Takasago Volunteers" } }
-				division_template = {
-					name = "Takasago Volunteers"
-					is_locked = no
-					division_names_group = JAP_INF_01
-					regiments = {
-						mountaineers = { x = 0 y = 0 }
-						mountaineers = { x = 0 y = 1 }
-						mountaineers = { x = 0 y = 2 }
-						mountaineers = { x = 1 y = 0 }
-						mountaineers = { x = 1 y = 1 }
-						mountaineers = { x = 1 y = 2 }
-					}
-				}
-			}
-			capital_scope = {
-				create_unit = {
-					division = "name = \"Takasago Volunteers\" division_template = \"Takasago Volunteers\" start_experience_factor = 1"
-					owner = ROOT
-					count = 2
-				}	
-			}
+			unlock_decision_category_tooltip = JAP_Nasano_school_category
+			add_ideas = JAP_Nasano_school_idea
 		}
 	}
 	
@@ -19259,6 +19264,14 @@ focus_tree = {
 		available = {
 			OR = { 
 				has_country_leader = { character = JAP_Prince_Naruhito ruling_only = yes }
+				has_country_leader = { character = JAP_Kanji_Ishiwara ruling_only = yes }
+				has_country_leader = { character = JAP_Seishiro_Itagaki ruling_only = yes }
+				has_country_leader = { character = JAP_Kimura_Takeo ruling_only = yes }
+				AND = { 
+					has_country_flag = JAP_purge_of_Toseiha_members_in_the_Army_country_flag
+					has_country_flag = JAP_purge_of_Toseiha_members_in_the_Army_UNLOCK_flag
+					has_country_flag = JAP_purge_of_Ugaki_members_in_the_Army_UNLOCK_flag
+				}
 				AND = { 
 					has_country_flag = JAP_purge_of_Toseiha_members_in_the_Army_country_flag
 					has_country_flag = JAP_purge_of_Toseiha_members_in_the_Army_UNLOCK_flag
