@@ -1,4 +1,167 @@
 on_actions = {
+
+	on_startup = {
+		effect = {
+			if = {
+				limit = { has_start_date < 1936.01.02 }
+				### Италия стартпак
+				ITA = {
+					country_event = { id = BBA_italo_ethiopian_war_events.400 days = 5 random_days = 5 }
+				}
+			}
+			
+### БАЛАНСИРОВКА ИТАЛО-ЭФИОПСКОЙ
+			if = {
+				limit = {
+					NOT = {
+						has_global_flag = THE_MOTHER_OF_ORDER_FLAG
+						has_global_flag = WORLD_OF_SPLIT_FLAG
+					}
+				}
+				if = {
+					limit = {
+						NOT = {
+							has_game_rule = {
+								rule = ETH_ai_behavior
+								option = DEFAULT
+							}
+						}
+					}
+					ETH = {
+						add_equipment_to_stockpile = { type = infantry_equipment amount = 15000 }
+					}
+				}
+				ITA = {
+					random_owned_state = {
+						limit = { OR = { state = 550 state = 559 } }
+						create_unit = {
+							division = "name = \"Divisione Coloniale\" division_template = \"Divisione Coloniale\" start_experience_factor = 0.5" 
+							owner = PREV
+						}
+					}
+					random_owned_state = {
+						limit = { OR = { state = 550 state = 559 } }
+						create_unit = {
+							division = "name = \"Divisione Coloniale\" division_template = \"Divisione Coloniale\" start_experience_factor = 0.5" 
+							owner = PREV
+						}
+					}
+					random_owned_state = {
+						limit = { OR = { state = 550 state = 559 } }
+						create_unit = {
+							division = "name = \"Divisione Coloniale\" division_template = \"Divisione Coloniale\" start_experience_factor = 0.5" 
+							owner = PREV
+						}
+					}
+					random_owned_state = {
+						limit = { OR = { state = 550 state = 559 } }
+						create_unit = {
+							division = "name = \"Divisione Coloniale\" division_template = \"Divisione Coloniale\" start_experience_factor = 0.5" 
+							owner = PREV
+						}
+					}
+					random_owned_state = {
+						limit = { OR = { state = 550 state = 559 } }
+						create_unit = {
+							division = "name = \"Divisione Coloniale\" division_template = \"Divisione Coloniale\" start_experience_factor = 0.5" 
+							owner = PREV
+						}
+					}
+					random_owned_state = {
+						limit = { OR = { state = 550 state = 559 } }
+						create_unit = {
+							division = "name = \"Divisione Celere\" division_template = \"Divisione Celere\" start_experience_factor = 0.5" 
+							owner = PREV
+						}
+					}
+					random_owned_state = {
+						limit = { OR = { state = 550 state = 559 } }
+						create_unit = {
+							division = "name = \"Divisione Celere\" division_template = \"Divisione Celere\" start_experience_factor = 0.5" 
+							owner = PREV
+						}
+					}
+					if = {
+						limit = { is_ai = yes is_historical_focus_on = yes }
+						add_equipment_to_stockpile = { type = infantry_equipment amount = 10000 }
+						add_equipment_to_stockpile = { type = artillery_equipment amount = 500 }
+						add_equipment_to_stockpile = { type = support_equipment amount = 500 }
+						add_equipment_to_stockpile = { type = armored_car_equipment amount = 300 }
+					}
+				}
+			}
+		}
+	}
+	
+	#ROOT is new controller #FROM is old controller #FROM.FROM is state ID
+	on_state_control_changed = {
+		effect = {
+			# Анархисты Италии по фокусу ITA_liberation_of_oppressed_peoples
+			if = {
+				limit = {
+					FROM.FROM = {
+						OR = {
+							is_core_of = LBA
+							is_core_of = SOM
+							is_core_of = ERI
+						}
+					}
+					ROOT = {
+						tag = IFA
+						OR = {
+							AND = {
+								all_of_scopes = {
+									array = LBA.core_states
+									is_controlled_by = IFA
+								}
+								NOT = { has_global_flag = IFA_LBA_core_states }
+							}
+							AND = {
+								all_of_scopes = {
+									array = SOM.core_states
+									is_controlled_by = IFA
+								}
+								NOT = { has_global_flag = IFA_SOM_core_states }
+							}
+							AND = {
+								all_of_scopes = {
+									array = ERI.core_states
+									is_controlled_by = IFA
+								}
+								NOT = { has_global_flag = IFA_ERI_core_states }
+							}
+						}
+					}
+				}
+				ROOT = { country_event = { id = NWduce.5 hours = 5 random_hours = 5 } }
+			}
+		}
+	}
+	
+	#ROOT is winner #FROM is loser
+	on_peaceconference_ended = {
+		effect = {
+			#Дуче жрет ETH
+			if = {
+				limit = {
+					ROOT = {
+						tag = ITA
+						is_ai = yes
+					}
+					FROM = { tag = ETH }
+				}
+				ROOT = {
+					annex_country = {
+						target = FROM
+						transfer_troops = no
+					}
+				}
+			}
+		}
+	}
+}
+
+on_actions = {
 	on_startup = {
 		effect = {
 			if = {

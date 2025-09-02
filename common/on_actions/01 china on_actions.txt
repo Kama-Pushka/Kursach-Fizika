@@ -112,4 +112,111 @@ on_actions = { # Китайские страны, с небольшим кол-�
 			}
 		}	
 	}
+	
+	# THIS is country that has just gotten into a war.
+	# ROOT is capitulated country, FROM is winner
+	on_capitulation = {
+		effect = {
+			if = {
+				limit = {
+					ROOT = { tag = KUM }
+				}
+				ROOT = {
+				    760 = { remove_core_of = KUM }
+					drop_cosmetic_tag = yes
+				}
+			}
+			if = {
+				limit = {
+					ROOT = { tag = KAS }
+				}
+				ROOT = {
+				    619 = { remove_core_of = KAS }
+					1122 = { remove_core_of = KAS }
+					drop_cosmetic_tag = yes
+				}
+			}
+			
+			#ГВ-Китай	TODO старый кал
+			if = {
+				limit = {
+					FROM = {
+						WTT_is_chinese_warlord = yes
+					}
+					ROOT = {
+						tag = CHI
+					}
+				}
+# ПОЧИНИТЬ ПОТОМ				
+				FROM = {
+#					load_focus_tree = china_nationalist_focus
+					set_cosmetic_tag = CHI_warlord_leader
+				}
+				ROOT = {
+					every_core_state = {
+						remove_core_of = PREV
+						add_core_of = FROM
+					}
+				}
+			}
+			if = {
+				limit = {
+					FROM = { tag = event_target:new_leader }
+					ROOT = { tag = event_target:old_leader }
+				}
+				drop_cosmetic_tag = yes 
+				set_cosmetic_tag = CHI
+				remove_ideas = CHI_illegal_regime
+				clear_global_event_target = WTT_current_china_leader
+				save_global_event_target_as = WTT_current_china_leader
+			}	
+			if = {
+				limit = {
+					has_civil_war = no
+					ROOT = { WTT_is_chinese_warlord = yes }
+					FROM = { tag = CHI }
+				}
+				ROOT = {
+					every_core_state = {
+						remove_core_of = PREV
+					}
+				}
+				FROM = {
+					annex_country = {
+						target = ROOT
+						transfer_troops = no
+					}
+				}
+			}
+		}
+	}
+	
+	#ROOT is winner #FROM is loser
+	on_peaceconference_ended = {
+		effect = {
+			#CHI annex PRC after cgw	TODO старый кал
+			if = {
+				limit = {
+					FROM = {
+						tag = PRC
+						has_country_flag = PRC_north_western_government_flag
+					}
+					ROOT = {
+						OR = {
+							tag = CHI
+							tag = JAP
+						}
+					}
+					CHI = { is_in_faction_with = JAP }
+				}
+				PRC = { clr_country_flag = PRC_north_western_government_flag }
+				CHI = {
+					annex_country = {
+						target = PRC
+						transfer_troops = yes
+					}
+				}
+			}
+		}
+	}
 }
