@@ -1981,7 +1981,7 @@ focus_tree = {
 			add_to_variable = { JAP_number_of_okada_focuses_var = 1 }
 			add_power_balance_value = {
 				id = JAP_new_Okada_government_power_balance
-				value = -0.2
+				value = -0.05
 				tooltip_side = JAP_supporters_of_democracy
 			}
 			hidden_effect = { country_event = NW_JAP.180 }
@@ -2104,6 +2104,7 @@ focus_tree = {
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus JAP_discredit_the_army_because_of_coup"
 			add_to_variable = { JAP_number_of_okada_focuses_var = 1 }
+			JAP_Hisaiti_Terauchi = { custom_effect_tooltip = JAP_purge_of_Kodoha_members_in_the_Army_tt }
 		}
 	}
 	
@@ -2165,8 +2166,6 @@ focus_tree = {
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus JAP_to_support_the_spirit_of_democracy_in_society"
 			add_to_variable = { JAP_number_of_okada_focuses_var = 1 }
-			add_to_variable = { JAP_the_level_of_insubordination_var = -5 tooltip = JAP_the_level_of_insubordination_var_tt }
-			JAP_the_level_of_insubordination_effect = yes
 			add_timed_idea = { idea = JAP_to_support_the_spirit_of_democracy_in_society_idea days = 400 }
 		}
 	}
@@ -2195,18 +2194,19 @@ focus_tree = {
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus JAP_reunite_the_takahashi_group"
 			add_to_variable = { JAP_number_of_okada_focuses_var = 1 }
-			if = { 
-				limit = { has_idea = JAP_Takahashi_is_geniuos_1 }
-				swap_ideas = { 
-					remove_idea = JAP_Takahashi_is_geniuos_1
-					add_idea = JAP_Takahashi_is_geniuos_2
-				}
-			}
-			add_power_balance_value = {
-				id = JAP_new_Okada_government_power_balance
-				value = -0.15
-				tooltip_side = JAP_supporters_of_democracy
-			}
+			add_ideas = JAP_group_of_takahashi1_idea
+			set_country_flag = JAP_the_takahashi_group_was_reunited
+			custom_effect_tooltip = JAP_reunite_the_takahashi_group_tt 
+			#else = {
+			#	custom_effect_tooltip = JAP_expand_aviation_orders_tt
+			#}
+			#if = { 
+			#	limit = { has_idea = JAP_Takahashi_is_geniuos_1 }
+			#	swap_ideas = { 
+			#		remove_idea = JAP_Takahashi_is_geniuos_1
+			#		add_idea = JAP_Takahashi_is_geniuos_2
+			#	}
+			#}
 		}
 	}
 	
@@ -2225,18 +2225,35 @@ focus_tree = {
 		cost = 8
 		ai_will_do = { factor = 10 }
 		search_filters = { FOCUS_FILTER_BALANCE_OF_POWER FOCUS_FILTER_STABILITY	FOCUS_FILTER_POLITICAL }
-		available = { has_country_leader = { character = JAP_Keisuke_Okada ruling_only = yes } }
+		available = { 
+			NOT = {  has_completed_focus = JAP_five_year_plan_of_democrats }
+			has_country_leader = { character = JAP_Keisuke_Okada ruling_only = yes } 
+		}
 		bypass = {  }
 		prerequisite = { focus = JAP_reunite_the_takahashi_group }
 		relative_position_id = JAP_reunite_the_takahashi_group
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus JAP_alliance_with_financial_groups"
 			add_to_variable = { JAP_number_of_okada_focuses_var = 1 }
-			add_political_power = 75
-			add_stability = 0.05
+			swap_ideas = { 
+				remove_idea = JAP_group_of_takahashi1_idea
+				add_idea = JAP_group_of_takahashi2_idea
+			}
+			if = {
+				limit = { has_dlc = "Arms Against Tyranny" }
+				#custom_effect_tooltip = JAP_expand_aviation_orders_tt1
+				mio:JAP_mitsubishi_organization_tanks = {
+					add_mio_research_bonus = 0.05
+					add_mio_funds_gain_factor = 0.05
+				}
+				mio:JAP_mitsubishi_organization = {
+					add_mio_research_bonus = 0.05
+					add_mio_funds_gain_factor = 0.05
+				}
+			}			
 			add_power_balance_value = {
 				id = JAP_new_Okada_government_power_balance
-				value = -0.1
+				value = -0.05
 				tooltip_side = JAP_supporters_of_democracy
 			}
 		}
@@ -2283,7 +2300,9 @@ focus_tree = {
 		y = 1
 		cost = 8
 		ai_will_do = { factor = 10 }
-		available = { has_country_leader = { character = JAP_Keisuke_Okada ruling_only = yes } }
+		available = { 
+			has_completed_focus = JAP_cabinet_Planning_Council
+			has_country_leader = { character = JAP_Keisuke_Okada ruling_only = yes } }
 		bypass = {  }
 		prerequisite = { focus = JAP_bringing_Foreign_Policy_Back_to_Tokyo }
 		relative_position_id = JAP_bringing_Foreign_Policy_Back_to_Tokyo
@@ -2291,6 +2310,17 @@ focus_tree = {
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus JAP_five_year_plan_of_democrats"
 			add_to_variable = { JAP_number_of_okada_focuses_var = 1 }
+			if = { 
+				limit = { has_idea = JAP_group_of_takahashi1_idea }
+				remove_ideas = JAP_group_of_takahashi1_idea
+			}
+			else_if = {
+				limit = { has_idea = JAP_group_of_takahashi2_idea }
+				remove_ideas = JAP_group_of_takahashi2_idea
+			}
+			add_timed_idea = { idea = JAP_adopt_a_stripped_down_five_year_plan_idea days = 1825 }
+			add_to_variable = { JAP_the_level_of_insubordination_var = -10 tooltip = JAP_the_level_of_insubordination_var_tt }
+			JAP_the_level_of_insubordination_effect = yes
 		}
 	}
 	
