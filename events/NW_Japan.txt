@@ -15842,6 +15842,12 @@ country_event = {
 	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_JAP.542" }
 	option = {
 		name = NW_JAP.542.a
+		set_country_flag = JAP_Lord_Yuasa
+	}
+	option = {
+		name = NW_JAP.542.b
+		set_country_flag = JAP_Lord_Konoe 
+		# напоминалка для Сани - напишите ему если увидели её (тут нужно решить что делать с Сайондзи после этого) 
 	}
 }
 
@@ -15849,12 +15855,35 @@ country_event = {
 country_event = {
 	id = NW_JAP.543
 	title = NW_JAP.543.t
-	desc = NW_JAP.543.d
+	desc = { 
+		text = NW_JAP.543.d.a
+		trigger = { has_country_leader = { character = JAP_Fumimaro_Konoe ruling_only = yes } } 
+	}
+	desc = { 
+		text = NW_JAP.543.d.b
+		trigger = { NOT = { has_country_leader = { character = JAP_Fumimaro_Konoe ruling_only = yes } } }
+	}
 	picture = GFX_report_event_NW_JAP.
+	trigger = { 
+		has_country_flag = JAP_Lord_Yuasa
+	}	
 	is_triggered_only = yes
 	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_JAP.543" }
 	option = {
 		name = NW_JAP.543.a
+		clr_country_flag = JAP_Lord_Yuasa
+		set_country_flag = JAP_Lord_Kido
+		add_political_power = 25
+		if = {
+			limit = { JAP_Sayondzi_Kimmoti = { is_hired_as_advisor = yes } }
+			hidden_effect = { country_event = { id = NW_JAP.544 hours = 6 } }
+		}
+	}
+	option = {
+		name = NW_JAP.543.b
+		trigger = { NOT = { has_country_leader = { character = JAP_Fumimaro_Konoe ruling_only = yes } } }
+		clr_country_flag = JAP_Lord_Yuasa
+		set_country_flag = JAP_Lord_Konoe 
 		add_political_power = 25
 		if = {
 			limit = { JAP_Sayondzi_Kimmoti = { is_hired_as_advisor = yes } }
@@ -21057,6 +21086,10 @@ country_event = {
 		}
 		else = { promote_character = JAP_Fumimaro_Konoe }
 		set_party_name = { ideology = neutrality long_name = JAP_neutrality_party8 name = JAP_neutrality_party8 }
+		if = { 
+			limit = { has_country_flag = JAP_Lord_Konoe }
+			country_event = NW_JAP.712
+		}
 	}
 }
 
@@ -21236,6 +21269,150 @@ country_event = {
 	}
 }
 
+# Коноэ хочет занять иной пост
+country_event = {
+	id = NW_JAP.711
+	title = NW_JAP.711.t
+	desc = { 
+		text = NW_JAP.711.d.a
+		trigger = { has_character = JAP_Sayondzi_Kimmoti }
+	}
+	desc = { 
+		text = NW_JAP.711.d.b
+		trigger = { NOT = { has_character = JAP_Sayondzi_Kimmoti } }
+	}
+	trigger = { 
+	}
+	is_triggered_only = yes
+	picture = GFX_report_event_NW_JAP.
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_JAP.711" }
+	option = { 
+		name = NW_JAP.711.a
+		clr_country_flag = JAP_Lord_Yuasa
+		set_country_flag = JAP_Lord_Konoe
+	}
+	option = { 
+		name = NW_JAP.711.b
+
+	}
+}
+
+# Кидо сменяет Коноэ
+country_event = {
+	id = NW_JAP.712
+	title = NW_JAP.712.t
+	desc = NW_JAP.712.d
+	trigger = { 
+	}
+	is_triggered_only = yes
+	picture = GFX_report_event_NW_JAP.
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_JAP.712" }
+	option = { 
+		name = NW_JAP.712.a
+		clr_country_flag = JAP_Lord_Konoe
+		set_country_flag = JAP_Lord_Kido
+	}
+}
+
+# Конфликт в дипломатическом корпусе в Берлине
+country_event = {
+	id = NW_JAP.713
+	title = NW_JAP.713.t
+	desc = NW_JAP.713.d
+	trigger = { 
+	}
+	is_triggered_only = yes
+	picture = GFX_report_event_NW_JAP.
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_JAP.713" }
+	option = { 
+		name = NW_JAP.713.a
+		add_political_power = -15
+		GER = { 
+			add_opinion_modifier = {
+				modifier = JAP_togo_to_osima_in_berlin_op
+				target = ROOT
+			}
+			reverse_add_opinion_modifier = {
+				modifier = JAP_togo_to_osima_in_berlin_op
+				target = ROOT
+			} 
+		}
+		hidden_effect = { country_event = { id = NW_JAP.714 days = 3 } }
+	}
+	option = { 
+		name = NW_JAP.713.b
+		if = { 
+			limit = { check_variable = { JAP_the_level_of_insubordination_var > 0 } } 
+			add_to_variable = { JAP_the_level_of_insubordination_var = 7 tooltip = JAP_the_level_of_insubordination_var_tt }
+			JAP_the_level_of_insubordination_effect = yes
+		}
+	}
+}
+
+# Смена посла в Москве
+country_event = {
+	id = NW_JAP.714
+	title = NW_JAP.714.t
+	desc = NW_JAP.714.d
+	trigger = { 
+	}
+	is_triggered_only = yes
+	picture = GFX_report_event_NW_JAP.
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_JAP.714" }
+	option = { 
+		name = NW_JAP.714.a
+		set_country_flag = JAP_Togo_in_Moscow
+	}
+	option = { 
+		name = NW_JAP.714.b
+		
+	}
+}
+
+# Переговоры с японским послом - SOV
+country_event = {
+	id = NW_JAP.715
+	title = NW_JAP.715.t
+	desc = NW_JAP.715.d
+	trigger = { 
+	}
+	is_triggered_only = yes
+	picture = GFX_report_event_NW_JAP.
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_JAP.715" }
+	option = { 
+		name = NW_JAP.715.a
+		diplomatic_relation = { country = FROM relation = non_aggression_pact active = yes }
+		JAP = { 
+			remove_resource_rights = 655 
+			remove_state_claim = 655 
+		}
+		send_embargo = CHI
+		hidden_effect = { news_event = NW_JAP_news.86 }
+	}
+	option = { 
+		name = NW_JAP.715.b
+		hidden_effect = { JAP = { country_event = NW_JAP.716 } }
+	}
+}
+
+# Неудачные переговоры с Москвой
+country_event = {
+	id = NW_JAP.716
+	title = NW_JAP.716.t
+	desc = NW_JAP.716.d
+	trigger = { 
+	}
+	is_triggered_only = yes
+	picture = GFX_report_event_NW_JAP.
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_JAP.716" }
+	option = { 
+		name = NW_JAP.716.a
+		
+	}
+	
+}
+
+
 
 
 # Великий связующий полёт Азии и Европы
@@ -21370,6 +21547,68 @@ news_event = {
 	}
 }
 
+# Япония и СССР подписали пакт о нейтралитете
+news_event = {
+	id = NW_JAP_news.86
+	title = NW_JAP_news.86.t
+	desc = NW_JAP_news.86.d
+	picture = GFX_news_event_NW_JAP_news.20
+	trigger = { 
+		
+	}
+	is_triggered_only = yes
+	option = {
+		name = NW_JAP_news.86.a
+		trigger = { 
+			tag = CHI
+			tag = GXC
+			tag = GND
+			tag = SHX
+			tag = SHA
+			tag = PRC
+			tag = SIK
+			tag = XIK
+			tag = SIH
+			tag = NWA
+			tag = XSM
+			tag = NGX
+			tag = HCP
+			tag = YUN
+			tag = HNA
+		}
+	}
+	option = {
+		name = NW_JAP_news.86.b
+		trigger = { 
+			NOT = { 
+				tag = SOV
+				tag = JAP
+				tag = CHI
+				tag = GXC
+				tag = GND
+				tag = SHX
+				tag = SHA
+				tag = PRC
+				tag = SIK
+				tag = XIK
+				tag = SIH
+				tag = NWA
+				tag = XSM
+				tag = NGX
+				tag = HCP
+				tag = YUN
+				tag = HNA
+			}
+		}
+	}
+	option = {
+		name = NW_JAP_news.86.c
+		trigger = { 
+			tag = SOV
+			tag = JAP
+		}
+	}
+}
 
 
 
