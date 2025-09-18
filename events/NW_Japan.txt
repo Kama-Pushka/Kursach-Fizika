@@ -7503,7 +7503,7 @@ news_event = {
 	}
 }
 
-# Ишивара ВЫРЕЗАН
+# Ишивара ВЫРЕЗАННЫЙ ИВЕНТ, заменён новым 
 country_event = {
 	id = NW_JAP.267
 	title = NW_JAP.267.t
@@ -8092,6 +8092,7 @@ country_event = {
 		}
 		check_variable = { JAP_the_level_of_insubordination_var > 70 }
 		has_character = JAP_Fumimaro_Konoe
+		NOT = { has_country_flag = JAP_incident_with_zorge }
 	}
 	mean_time_to_happen = { days = 7 }
 	fire_only_once = yes
@@ -13409,6 +13410,7 @@ country_event = {
 			limit = { check_variable = { JAP_the_level_of_insubordination_var > 0 } }
 			country_event = { id = NW_JAP.468 hours = 12 }
 		}
+		set_country_flag = NW_JAP_467_flag
 	}
 }
 
@@ -13711,6 +13713,7 @@ country_event = {
 	option = {
 		name = NW_JAP.477.a
 		JAP_Yosuke_Matsuoka = { set_character_flag = JAP_Yosuke_Matsuoka_sick }
+		set_country_flag = NW_JAP_477_flag
 	}
 }
 
@@ -13744,6 +13747,7 @@ country_event = {
 		set_variable = { JAP_matsuoka_health_var = 5 }
 		activate_mission = JAP_matsuoka_health_status_mission
 		unlock_decision_tooltip = JAP_go_to_bed_rest
+		set_country_flag = NW_JAP_478_flag
 	}
 }
 
@@ -20838,7 +20842,7 @@ country_event = {
 	trigger = { 
 	}
 	is_triggered_only = yes
-	picture = GFX_report_event_NW_JAP.
+	picture = GFX_report_event_NW_JAP.   # в папке картинок с ивентами есть картинки под этими номерами но они относились к старым ивентам которые были под этими номерами 
 	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_JAP.190" }
 	option = { 
 		name = NW_JAP.190.a
@@ -21363,6 +21367,160 @@ country_event = {
 	}
 }
 
+# Бюрократы-реформаторы пересекли черту
+country_event = {
+	id = NW_JAP.720
+	title = NW_JAP.720.t
+	desc = NW_JAP.720.d
+	trigger = { 
+	}
+	is_triggered_only = yes
+	picture = GFX_report_event_NW_JAP.
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_JAP.720" }
+	option = { 
+		name = NW_JAP.720.a
+		trigger = { 
+			NOT = { 
+				has_country_flag = JAP_incident_with_zorge 
+				has_country_flag = JAP_Lord_Konoe
+			}
+		}
+		if = {
+			limit = { NOT = { can_be_country_leader = JAP_Fumimaro_Konoe } }
+			add_country_leader_role = {
+				character = JAP_Fumimaro_Konoe
+				promote_leader = yes
+				country_leader = {
+					desc = "POLITICS_FUMIMARO_KONOE_DESC"
+					ideology = authoritarian_democracy
+					expire = "1965.1.1.1"
+					traits = { JAP_ambitious_political_views JAP_the_melancholic_Prince2 JAP_opponent_of_the_war_with_the_United_States }
+				}
+			}
+		}
+		else = { promote_character = JAP_Fumimaro_Konoe }
+		set_party_name = { ideology = neutrality long_name = JAP_neutrality_party8 name = JAP_neutrality_party8 }
+	}
+	option = { 
+		name = NW_JAP.720.b
+		if = {
+			limit = { can_be_country_leader = JAP_Hiranuma_Kiichiro }
+			promote_character = JAP_Hiranuma_Kiichiro
+		}
+		else = {
+			add_country_leader_role = {
+				character = JAP_Hiranuma_Kiichiro
+				promote_leader = yes
+				country_leader = {
+					desc = "POLITICS_HIRANUMA_KIICHIRO_DESC"
+					ideology = authoritarian_democracy
+					expire = "1965.1.1.1"
+					traits = { JAP_the_hidden_schemer JAP_a_representative_of_the_old_elites }
+				}
+			}
+		}
+		set_party_name = { ideology = neutrality long_name = JAP_neutrality_party10 name = JAP_neutrality_party10 }
+	}
+}
+
+# Раскрытие шпионской сети в Токио
+country_event = {
+	id = NW_JAP.721
+	title = NW_JAP.721.t
+	desc = NW_JAP.721.d
+	trigger = { 
+		date > 1941.10.01
+		tag = JAP
+		SOV = { has_civil_war = no }
+		country_exists = SOV
+		NOT = { 
+			has_war_with = SOV 
+			has_global_flag = THE_MOTHER_OF_ORDER_FLAG
+			has_global_flag = WORLD_OF_SPLIT_FLAG
+		}
+	}
+	fire_only_once = yes
+	picture = GFX_report_event_NW_JAP.
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_JAP.721" }
+	option = { 
+		name = NW_JAP.721.a
+		trigger = { 
+			has_country_leader = { character = JAP_Fumimaro_Konoe ruling_only = yes } 
+		}
+		add_political_power = -30 
+		set_country_flag = JAP_incident_with_zorge
+		if = {
+			limit = { 
+				has_government = fascism 
+				#NOT = { has_country_flag = NW_JAP_478_flag } ну вроде эти три проверки не нужны из-за условий у Мацуоки
+				#NOT = { has_country_flag = NW_JAP_477_flag } а зачем я тогда прописывал эти флаги в ивентах то
+				#NOT = { has_country_flag = NW_JAP_467_flag } ёмоё
+			}
+			if = {
+				limit = {
+					has_character = JAP_Yosuke_Matsuoka
+					JAP_Yosuke_Matsuoka = {
+						is_country_leader = no
+						NOT = { has_character_flag = JAP_Yosuke_Matsuoka_sick }
+					}
+				}
+				add_country_leader_role = {
+					character = JAP_Yosuke_Matsuoka
+					promote_leader = yes
+					country_leader = {
+						ideology = nationalism_ideology
+						expire = "1965.1.1.1"
+						traits = { JAP_former_President_of_Mantetsu JAP_master_of_a_Hundred_Thousand_Words }
+					}
+				}
+				if = {
+					limit = { NOT = { has_completed_focus = JAP_Matsuoka_Office } }
+					complete_national_focus = JAP_Matsuoka_Office
+				}
+			}
+			else = {
+				add_country_leader_role = {
+					character = JAP_Seigo_Nakano
+					promote_leader = yes
+					country_leader = {
+						ideology = totalism
+						expire = "1965.1.1.1"
+						traits = { JAP_supporter_of_parliamentary_politics JAP_charismatic_agitator }
+					}
+				}
+			}
+		}
+		else = { 
+			if = {
+				limit = { can_be_country_leader = JAP_Hiranuma_Kiichiro }
+					promote_character = JAP_Hiranuma_Kiichiro
+			}
+			else = {
+				add_country_leader_role = {
+					character = JAP_Hiranuma_Kiichiro
+					promote_leader = yes
+					country_leader = {
+						desc = "POLITICS_HIRANUMA_KIICHIRO_DESC"
+						ideology = authoritarian_democracy
+						expire = "1965.1.1.1"
+						traits = { JAP_the_hidden_schemer JAP_a_representative_of_the_old_elites }
+					}
+				}
+			}
+			set_party_name = { ideology = neutrality long_name = JAP_neutrality_party10 name = JAP_neutrality_party10 }
+		}
+		news_event = NW_JAP_news.87
+	}
+	option = { 
+		name = NW_JAP.721.b
+		trigger = { 
+			NOT = { has_country_leader = { character = JAP_Fumimaro_Konoe ruling_only = yes } }
+		}
+		add_political_power = -30 
+		set_country_flag = JAP_incident_with_zorge
+	}
+}
+
 
 # Великий связующий полёт Азии и Европы
 news_event = {
@@ -21556,6 +21714,21 @@ news_event = {
 			tag = SOV
 			tag = JAP
 		}
+	}
+}
+
+# Падение кабинета Коноэ
+news_event = {
+	id = NW_JAP_news.87
+	title = NW_JAP_news.87.t
+	desc = NW_JAP_news.87.d
+	picture = GFX_news_event_NW_JAP_news.87
+	trigger = { 
+		
+	} 
+	is_triggered_only = yes
+	option = {
+		name = NW_JAP_news.87.a
 	}
 }
 
