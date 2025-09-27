@@ -55,6 +55,7 @@ focus_tree = {
 			hidden_effect = {
 				country_event = { id = NW_JAP.339 days = 360 }
 				country_event = { id = NW_JAP.356 days = 360 }
+				country_event = { id = NW_JAP.725 days = 1460 }
 				if = {
 					limit = { has_country_flag = JAP_capture_of_the_Imperial_Palace_flag1 has_country_flag = JAP_capture_of_the_Imperial_Palace_flag2 }
 					country_event = { id = NW_JAP.57 days = 7 }
@@ -2886,14 +2887,16 @@ focus_tree = {
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus JAP_complete_political_stabilization_in_the_country"
 			custom_effect_tooltip = JAP_complete_political_stabilization_in_the_country_tt
-			if = {
-				limit = {
-					power_balance_value = { id = JAP_new_Okada_government_power_balance value < 0 }
-					check_variable = { JAP_the_level_of_insubordination_var < 25 }
+			hidden_effect = { 
+				if = {
+					limit = {
+						power_balance_value = { id = JAP_new_Okada_government_power_balance value < 0 }
+						check_variable = { JAP_the_level_of_insubordination_var < 25 }
+					}
+					country_event = NW_JAP.234
 				}
-				country_event = NW_JAP.234
+				else = { country_event = NW_JAP.233 }
 			}
-			else = { country_event = NW_JAP.233 }
 		}
 	}
 	
@@ -2918,9 +2921,19 @@ focus_tree = {
 		bypass = {  }
 		prerequisite = { focus = JAP_complete_political_stabilization_in_the_country }
 		relative_position_id = JAP_complete_political_stabilization_in_the_country
-		mutually_exclusive = { focus = JAP_Navy_Cabinet_of_Ministers }
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus JAP_Machid_Chunji_office"
+			set_country_flag = JAP_cancel_elections # тут всё правильно, кэнсел так как следующие выборы в ветке демократов со своими уникальными ивентами
+			set_politics = { ruling_party = democratic }
+			add_country_leader_role = {
+				character = JAP_Machida_Chuji
+				promote_leader = yes
+				country_leader = {
+					ideology = social_liberalism
+					expire = "1965.1.1.1"
+					traits = { JAP_a_staunch_commoner JAP_progressive }
+				}
+			}
 			hidden_effect = { 
 				news_event = { id = NW_JAP_news.31 hours = 12 } 
 				country_event = { id = NW_JAP.676 days = 150 }
@@ -2939,16 +2952,6 @@ focus_tree = {
 			show_ideas_tooltip = JAP_Gotaro_Ogava
 			show_ideas_tooltip = JAP_Nakadzima_Yadanji
 			show_ideas_tooltip = JAP_Eikiti_Katsuta
-			set_politics = { ruling_party = democratic elections_allowed = yes }
-			add_country_leader_role = {
-				character = JAP_Machida_Chuji
-				promote_leader = yes
-				country_leader = {
-					ideology = social_liberalism
-					expire = "1965.1.1.1"
-					traits = { JAP_a_staunch_commoner JAP_progressive }
-				}
-			}
 			unlock_decision_category_tooltip = JAP_Machid_Chunji_office_category
 			activate_mission = JAP_agitation_of_rivals_mission
 			if = {
@@ -2969,52 +2972,7 @@ focus_tree = {
 			set_variable = { JAP_currently_num_parties = 4 }
 			JAP_Machid_Chunji_office_ui_update = yes
 		}
-	}
-	
-	focus = {
-		id = JAP_Navy_Cabinet_of_Ministers
-		dynamic = yes
-		icon = {
-			trigger = { has_country_flag = NW_return_old_GFX }
-			value = GFX_z_goal_JAP_Navy_Cabinet_of_Ministers_old
-		}
-		icon = {
-			value = GFX_z_goal_JAP_Navy_Cabinet_of_Ministers
-		}
-		x = -3
-		y = 1
-		cost = 8
-		ai_will_do = { factor = 10 }
-		search_filters = { FOCUS_FILTER_POLITICAL }
-		available = {
-			has_country_leader = { character = JAP_Keisuke_Okada ruling_only = yes }
-			has_country_flag = JAP_Navy_Cabinet_of_Ministers_UNLOCK_flag
-		}
-		bypass = {  }
-		prerequisite = { focus = JAP_complete_political_stabilization_in_the_country }
-		relative_position_id = JAP_complete_political_stabilization_in_the_country
-		mutually_exclusive = { focus = JAP_Machid_Chunji_office }
-		completion_reward = {
-			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus JAP_Navy_Cabinet_of_Ministers"
-			JAP_Keisuke_Okada = { remove_country_leader_trait = JAP_morally_depressed }
-			if = {
-				limit = {
-					JAP_Yosuke_Matsuoka = {
-						NOT = {
-							has_character_flag = JAP_Yosuke_Matsuoka_sick
-							has_character_flag = JAP_Yosuke_Matsuoka_available
-						}
-					}
-					OR = {
-						JAP = { has_war_with = CHI }
-						USA = { NOT = { has_idea = NW_USA_treaty_on_trade_and_navigation_with_japan_idea } }
-					}
-				}
-				hidden_effect = { country_event = { id = NW_JAP.476 hours = 12 } }
-			}
-		}
-	}
-		
+	}		
 	
 	focus = {
 		id = JAP_improve_relations_with_USA
@@ -7127,7 +7085,10 @@ focus_tree = {
 		cost = 8
 		ai_will_do = { factor = 10 }
 		search_filters = { FOCUS_FILTER_HISTORICAL FOCUS_FILTER_POLITICAL FOCUS_FILTER_BALANCE_OF_POWER }
-		available = { has_country_leader = { character = JAP_Fumimaro_Konoe ruling_only = yes } }
+		available = { 
+			has_country_leader = { character = JAP_Fumimaro_Konoe ruling_only = yes } 
+			NOT = { has_completed_focus = JAP_new_parliamentary_elections }
+		}
 		bypass = {  }
 		#prerequisite = { focus = JAP_dissolve_parliament }
 		relative_position_id = JAP_Kuharo_office
@@ -7745,7 +7706,10 @@ focus_tree = {
 		cost = 8
 		ai_will_do = { factor = 10 }
 		search_filters = { FOCUS_FILTER_HISTORICAL FOCUS_FILTER_POLITICAL FOCUS_FILTER_BALANCE_OF_POWER }
-		available = { has_country_leader = { character = JAP_Hiranuma_Kiichiro ruling_only = yes } }
+		available = { 
+			has_country_leader = { character = JAP_Hiranuma_Kiichiro ruling_only = yes } 
+			NOT = { has_completed_focus = JAP_create_an_Association_to_Help_the_Throne } 
+		}
 		bypass = {  }
 		#prerequisite = { focus = JAP_a_new_phase_of_domestic_policy focus = JAP_the_former_elites_are_restoring_power }
 		relative_position_id = JAP_Kuharo_office 
