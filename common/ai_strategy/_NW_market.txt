@@ -2,6 +2,66 @@
 ###### РЫНОЧЕК ######
 #####################
 
+#фишка из кайзера надо понять чего она того
+default_stockpile_management = {
+	enable = {
+		num_divisions > 150
+	}
+	abort = {
+		num_divisions < 130
+	}
+
+	ai_strategy = {
+		type = equipment_stockpile_surplus_ratio
+		value = 35 #add this to default PRODUCTION_EQUIPMENT_SURPLUS_FACTOR
+	}
+}
+
+#Вторая херобора
+# If we manage to get all equipment we want, keep producing more stuff according to this
+default_surplus_management = {
+	enable = {
+		always = yes
+	}
+	abort_when_not_enabled = yes
+
+	ai_strategy = {
+		type = equipment_production_surplus_management
+		id = infantry_equipment
+		value = 10
+	}
+
+	ai_strategy = {
+		type = equipment_production_surplus_management
+		id = support_equipment
+		value = 5
+	}
+
+	ai_strategy = {
+		type = equipment_production_surplus_management
+		id = artillery_equipment
+		value = 5
+	}
+
+	ai_strategy = {
+		type = equipment_production_surplus_management
+		id = anti_air_equipment
+		value = 2
+	}
+
+	ai_strategy = {
+		type = equipment_production_surplus_management
+		id = anti_tank_equipment
+		value = 2
+	}
+
+	ai_strategy = {
+		type = equipment_production_surplus_management
+		id = convoy
+		value = 5
+	}
+}
+
 default_market_stockpile_management = {
 	allowed = { NOT = { tag = SAI } }
 	enable = {
@@ -25,13 +85,6 @@ default_market_stockpile_management = {
 		id = train
 		value = -50  # put fewer trains up for sale
 	}
-
-	# Better not put all your boats up for sail
-	# ai_strategy = {  # Commented because handled dynamically in code through the EQUIPMENT_MARKET_WANTED_CONVOY_USAGE_RATIO define
-	# 	type = equipment_market_for_sale_threshold
-	# 	id = convoy
-	# 	value = 100  # only start considering selling convoys if surplus more than 100
-	# }
 	ai_strategy = {
 		type = equipment_market_min_for_sale
 		id = convoy
@@ -74,20 +127,10 @@ default_market_stockpile_management = {
 
 default_market_stockpile_management_major = {
 	allowed = {
-		OR = {
-			tag = SOV
-			tag = ITA
-			tag = USA
-			tag = ENG
-			tag = FRA
-			tag = FRC
-			tag = FRR
-			tag = JAP
-			
-			tag = HUN
-			tag = AUS
-			tag = CZE
-		}
+		is_major = yes
+	}
+	enable = {
+		has_war = no
 	}
 	enable = {
 		is_major = yes
@@ -158,22 +201,32 @@ default_market_stockpile_management_if_at_war = {
 	ai_strategy = {
 		type = equipment_market_for_sale_threshold
 		id = artillery
-		value = 1000
+		value = 1500
 	}
 	ai_strategy = {
 		type = equipment_market_for_sale_threshold
-		id = fighter
-		value = 200
+		id = anti_air
+		value = 1500
+	}
+	ai_strategy = {
+		type = equipment_market_for_sale_threshold
+		id = anti_tank
+		value = 1500
+	}
+	ai_strategy = {
+		type = equipment_market_for_sale_threshold
+		id = armor
+		value = 1000
 	}
 	ai_strategy = {
 		type = equipment_market_for_sale_threshold
 		id = motorized
-		value = 1000
+		value = 2000
 	}
 	ai_strategy = {
 		type = equipment_market_for_sale_threshold
 		id = train
-		value = 50
+		value = 200
 	}
 	ai_strategy = {
 		type = equipment_market_for_sale_threshold
@@ -181,9 +234,14 @@ default_market_stockpile_management_if_at_war = {
 		value = 50
 	}
 	ai_strategy = {
+		type = equipment_market_for_sale_threshold
+		id = fighter
+		value = 200
+	}
+	ai_strategy = {
 		type = equipment_market_buying_threshold
 		id = elephant_equipment
-		value = 99999
+		value = 1500
 	}
 }
 
@@ -203,33 +261,14 @@ default_market_convoy_purchases = {
 
 majors_make_less_purchases_in_the_early_game = {
 	allowed = {
-		OR = {
-			tag = GER
-			tag = SOV
-			tag = ITA
-			tag = USA
-			tag = ENG
-			tag = FRA
-			tag = FRC
-			tag = FRR
-			tag = JAP
-			
-			tag = HUN
-			tag = AUS
-			tag = CZE
-		}
+		is_major = yes
 	}
 	enable = {
 		date < 1939.1.1
-		is_major = yes
 		has_war = no
 	}
 	abort_when_not_enabled = yes
 
-#	ai_strategy = {
-#		type = equipment_market_spend_factories
-#		value = 100 #+100% factories
-#	}
 	ai_strategy = {
 		type = equipment_market_spend_factories
 		value = -80 #80% less factories
@@ -243,25 +282,10 @@ majors_make_less_purchases_in_the_early_game = {
 
 majors_make_less_purchases = {
 	allowed = {
-		OR = {
-			tag = GER
-			tag = SOV
-			tag = ITA
-			tag = USA
-			tag = ENG
-			tag = FRA
-			tag = FRC
-			tag = FRR
-			tag = JAP
-			
-			tag = HUN
-			tag = AUS
-			tag = CZE
-		}
+		is_major = yes
 	}
 	enable = {
 		date > 1939.1.1
-		is_major = yes
 	}
 	abort_when_not_enabled = yes
 
