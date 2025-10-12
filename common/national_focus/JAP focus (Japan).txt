@@ -77,7 +77,7 @@ focus_tree = {
 		}
 		x = 0
 		y = 1
-		cost = 3
+		cost = 4
 		ai_will_do = { factor = 10 }
 		available = { has_country_leader = { character = JAP_Hirota_Koki ruling_only = yes } }
 		bypass = {  }
@@ -88,6 +88,7 @@ focus_tree = {
 		select_effect = { 
 			country_event = { id = NW_JAP.542 days = 2 } 
 			country_event = { id = NW_JAP.545 days = 5 }
+			country_event = { id = NW_JAP.729 days = 7 }
 		}
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus JAP_Hirota_Koki_office"
@@ -95,6 +96,7 @@ focus_tree = {
 				news_event = { id = NW_JAP_news.18 hours = 12 }
 				country_event = { id = NW_JAP.179 days = 180 }
 				country_event = { id = NW_JAP.552 days = 20 }
+				country_event = NW_JAP.731
 			}
 			custom_effect_tooltip = JAP_Hirota_Koki_office_tt
 			show_ideas_tooltip = JAP_Hachiro_Arita
@@ -7045,18 +7047,6 @@ focus_tree = {
 		select_effect = { country_event = { id = NW_JAP.206 days = 10 } }
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus JAP_Hayasi_office"
-			set_country_flag = JAP_Hayasi_office_COMPLETE_flag		#Для постпозорной Японии
-			hidden_effect = { news_event = { id = NW_JAP_news.21 hours = 12 } }
-			custom_effect_tooltip = JAP_Hayasi_office_tt
-			show_ideas_tooltip = JAP_Takuo_Godo
-			show_ideas_tooltip = JAP_Kakichi_Kawarada
-			show_ideas_tooltip = JAP_Mitsumasa_Yonai
-			show_ideas_tooltip = JAP_Hajime_Sugiyama
-			show_ideas_tooltip = JAP_Suehiko_Shiono
-			if = {
-				limit = { has_country_flag = JAP_demands_of_the_Manchurian_Faction_flag }
-				add_ideas = JAP_a_small_cabinet_of_ministers_idea
-			}
 			add_country_leader_role = {
 				character = JAP_Senjuro_Hayashi
 				promote_leader = yes
@@ -7067,6 +7057,24 @@ focus_tree = {
 					traits = { JAP_affected_by_someone JAP_complex_character }
 				}
 			}
+			set_variable = { JAP_discontent_of_parliament_var = 2 }
+			set_variable = { JAP_prowar_faction_of_RS_var = 30 }
+			set_variable = { JAP_prowar_faction_of_RM_var = 10 }
+			unlock_decision_category_tooltip = JAP_confrontation_with_parliament_category
+			activate_mission = JAP_falling_support_for_the_pro_war_factions
+			set_country_flag = JAP_Hayasi_office_COMPLETE_flag		#Для постпозорной Японии
+			hidden_effect = { news_event = { id = NW_JAP_news.21 hours = 12 } }
+			custom_effect_tooltip = JAP_Hayasi_office_tt
+			show_ideas_tooltip = JAP_Takuo_Godo
+			show_ideas_tooltip = JAP_Kakichi_Kawarada
+			show_ideas_tooltip = JAP_Mitsumasa_Yonai
+			show_ideas_tooltip = JAP_Hajime_Sugiyama
+			show_ideas_tooltip = JAP_Suehiko_Shiono
+			#if = {
+			#	limit = { has_country_flag = JAP_demands_of_the_Manchurian_Faction_flag }
+			#	
+			#}
+			add_ideas = JAP_a_small_cabinet_of_ministers_idea
 			set_party_name = { ideology = neutrality long_name = JAP_neutrality_party7 name = JAP_neutrality_party7 }
 		}
 	}
@@ -7085,18 +7093,11 @@ focus_tree = {
 		relative_position_id = JAP_Hayasi_office
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus JAP_increase_taxes"
-			add_power_balance_value = {
-				id = JAP_Hirota_Koki_power_balance
-				value = -0.25
-				tooltip_side = JAP_reformers
-			}
+			add_to_variable = { JAP_discontent_of_parliament_var = 2 tooltip = JAP_discontent_of_parliament_var_tt }
+			clamp_variable = { var = JAP_discontent_of_parliament_var min = 0 max = 10 }
+			JAP_confrontation_with_parliament_effect = yes
 			add_timed_idea = { idea = JAP_increase_taxes_idea days = 365 }
-			hidden_effect = {
-				if = {
-					limit = { has_completed_focus = JAP_cancel_financial_assistance }
-					country_event = NW_JAP.208
-				}
-			}
+			
 		}
 	}
 	
@@ -7114,28 +7115,10 @@ focus_tree = {
 		relative_position_id = JAP_Hayasi_office
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus JAP_cancel_financial_assistance"
-			random_owned_controlled_state = {
-				limit = {
-					is_core_of = ROOT
-					free_building_slots = {
-						building = arms_factory
-						size > 0
-						include_locked = yes
-					}
-				}
-				add_extra_state_shared_building_slots = 1
-				add_building_construction = {
-					type = arms_factory
-					level = 1
-					instant_build = yes		
-				}
-			}
-			hidden_effect = {
-				if = {
-					limit = { has_completed_focus = JAP_increase_taxes }
-					country_event = NW_JAP.208
-				}
-			}
+			add_to_variable = { JAP_discontent_of_parliament_var = 1 tooltip = JAP_discontent_of_parliament_var_tt }
+			clamp_variable = { var = JAP_discontent_of_parliament_var min = 0 max = 10 }
+			JAP_confrontation_with_parliament_effect = yes
+			
 		}
 	}
 	
@@ -7155,10 +7138,13 @@ focus_tree = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus JAP_find_a_moderate_compromise_with_business"
 			add_power_balance_value = {
 				id = JAP_Hirota_Koki_power_balance
-				value = -1
+				value = -0.1
 				tooltip_side = JAP_reformers
 			}
 			add_ideas = JAP_find_a_moderate_compromise_with_business_idea
+			add_to_variable = { JAP_discontent_of_parliament_var = 4 tooltip = JAP_discontent_of_parliament_var_tt }
+			clamp_variable = { var = JAP_discontent_of_parliament_var min = 0 max = 10 }
+			JAP_confrontation_with_parliament_effect = yes
 		}
 	}
 	
@@ -7185,8 +7171,375 @@ focus_tree = {
 				remove_idea = JAP_zaibatsus
 				add_idea = JAP_zaibatsus3
 			}
+			add_to_variable = { JAP_discontent_of_parliament_var = 3 tooltip = JAP_discontent_of_parliament_var_tt }
+			clamp_variable = { var = JAP_discontent_of_parliament_var min = 0 max = 10 }
+			JAP_confrontation_with_parliament_effect = yes
 		}
 	}
+	
+	
+	focus = {
+		id = JAP_alliance_with_radicals_in_Parliament
+		dynamic = yes
+		icon = {
+			trigger = { has_country_flag = NW_return_old_GFX }
+			value = GFX_z_goal_JAP_alliance_with_radicals_in_Parliament_old # GFX_z_goal_JAP_alliance_with_radicals_in_Parliament_old_old
+		}
+		icon = {
+			value = GFX_z_goal_JAP_alliance_with_radicals_in_Parliament
+		}
+		x = -1
+		y = 1
+		cost = 8
+		ai_will_do = { factor = 10 }
+		search_filters = { FOCUS_FILTER_POLITICAL }
+		available = { has_country_leader = { character = JAP_Senjuro_Hayashi ruling_only = yes } }
+		bypass = {  }
+		prerequisite = { focus = JAP_find_a_moderate_compromise_with_business }
+		relative_position_id = JAP_find_a_moderate_compromise_with_business
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus JAP_alliance_with_radicals_in_Parliament"
+			custom_effect_tooltip = add_fasc_in_coalition
+			add_to_array = { coalition_array = token:fascism }
+			NW_legitimacy_check = yes
+			add_to_variable = { JAP_discontent_of_parliament_var = -1 tooltip = JAP_discontent_of_parliament_var_tt }
+			clamp_variable = { var = JAP_discontent_of_parliament_var min = 0 max = 10 }
+			JAP_confrontation_with_parliament_effect = yes
+		}
+	}
+	
+	focus = {
+		id = JAP_political_reforms_of_the_Ministry_of_War
+		dynamic = yes
+		icon = {
+			trigger = { has_country_flag = NW_return_old_GFX }
+			value = GFX_z_goal_JAP_political_reforms_of_the_Ministry_of_War_old
+		}
+		icon = {
+			value = GFX_z_goal_JAP_political_reforms_of_the_Ministry_of_War
+		}
+		x = 1
+		y = 1
+		cost = 8
+		ai_will_do = { factor = 10 }
+		search_filters = { FOCUS_FILTER_POLITICAL }
+		available = {
+			has_country_leader = { character = JAP_Senjuro_Hayashi ruling_only = yes }
+			power_balance_value = { id = JAP_Hirota_Koki_power_balance value < -0.5 }
+		}
+		bypass = {  }
+		prerequisite = { focus = JAP_alliance_with_radicals_in_Parliament }
+		relative_position_id = JAP_alliance_with_radicals_in_Parliament
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus JAP_political_reforms_of_the_Ministry_of_War"
+			add_to_variable = { JAP_discontent_of_parliament_var = 2 tooltip = JAP_discontent_of_parliament_var_tt }
+			clamp_variable = { var = JAP_discontent_of_parliament_var min = 0 max = 10 }
+			JAP_confrontation_with_parliament_effect = yes
+		}
+	}
+	
+	focus = {
+		id = JAP_strengthen_the_role_of_the_Privy_Council
+		icon = GFX_z_goal_JAP_strengthen_the_role_of_the_Privy_Council
+		x = 1
+		y = 1
+		cost = 8
+		ai_will_do = { factor = 10 }
+		search_filters = { FOCUS_FILTER_POLITICAL }
+		available = { has_country_leader = { character = JAP_Senjuro_Hayashi ruling_only = yes } }
+		bypass = {  }
+		prerequisite = { focus = JAP_connecting_financing }
+		relative_position_id = JAP_connecting_financing
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus JAP_strengthen_the_role_of_the_Privy_Council"
+			add_to_variable = { JAP_discontent_of_parliament_var = 3 tooltip = JAP_discontent_of_parliament_var_tt }
+			clamp_variable = { var = JAP_discontent_of_parliament_var min = 0 max = 10 }
+			JAP_confrontation_with_parliament_effect = yes
+		}
+	}
+	
+	focus = {
+		id = JAP_promotion_of_Toseihi_Generals
+		icon = GFX_z_goal_JAP_promotion_of_Toseihi_Generals
+		x = 1
+		y = 1
+		cost = 8
+		ai_will_do = { factor = 10 }
+		search_filters = {  }
+		available = { has_country_leader = { character = JAP_Senjuro_Hayashi ruling_only = yes } }
+		bypass = {  }
+		prerequisite = { focus = JAP_strengthen_the_role_of_the_Privy_Council }
+		relative_position_id = JAP_strengthen_the_role_of_the_Privy_Council
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus JAP_promotion_of_Toseihi_Generals"
+			custom_effect_tooltip = JAP_promotion_of_Toseihi_Generals_tt
+			every_unit_leader = {
+				limit = { has_trait = JAP_member_of_toseiha }
+				gain_xp = 250
+			}
+			add_to_variable = { JAP_the_level_of_insubordination_var = -5 tooltip = JAP_the_level_of_insubordination_var_tt }
+			JAP_the_level_of_insubordination_effect = yes
+		}
+	}
+	
+	focus = {
+		id = JAP_create_a_new_organ_at_the_premiere
+		dynamic = yes
+		icon = {
+			trigger = { has_country_flag = NW_return_old_GFX }
+			value = GFX_z_goal_JAP_create_a_new_organ_at_the_premiere_old # GFX_z_goal_JAP_create_a_new_organ_at_the_premiere_old_old
+		}
+		icon = {
+			value = GFX_z_goal_JAP_create_a_new_organ_at_the_premiere
+		}
+		x = -1
+		y = 1
+		cost = 8
+		ai_will_do = { factor = 10 }
+		search_filters = { FOCUS_FILTER_POLITICAL FOCUS_FILTER_BALANCE_OF_POWER }
+		available = {
+			has_country_leader = { character = JAP_Senjuro_Hayashi ruling_only = yes }
+			power_balance_value = { id = JAP_Hirota_Koki_power_balance value < -0.6 }
+		}
+		bypass = {  }
+		prerequisite = { focus = JAP_political_reforms_of_the_Ministry_of_War }
+		relative_position_id = JAP_political_reforms_of_the_Ministry_of_War
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus JAP_create_a_new_organ_at_the_premiere"
+			custom_effect_tooltip = JAP_state_of_National_Defense_tt
+			set_country_leader_ideology = state_of_national_defense
+			add_power_balance_value = {
+				id = JAP_Hirota_Koki_power_balance
+				value = -0.5
+				tooltip_side = JAP_reformers
+			}
+			add_to_variable = { JAP_discontent_of_parliament_var = 2 tooltip = JAP_discontent_of_parliament_var_tt }
+			clamp_variable = { var = JAP_discontent_of_parliament_var min = 0 max = 10 }
+			JAP_confrontation_with_parliament_effect = yes
+		}
+	}
+	
+	focus = {
+		id = JAP_reform_of_ministries
+		dynamic = yes
+		icon = {
+			trigger = { has_country_flag = NW_return_old_GFX }
+			value = GFX_z_goal_JAP_reform_of_ministries_old # GFX_z_goal_JAP_reform_of_ministries_old_old
+		}
+		icon = {
+			value = GFX_z_goal_JAP_reform_of_ministries
+		}
+		x = 1
+		y = 1
+		cost = 8
+		ai_will_do = { factor = 10 }
+		search_filters = { FOCUS_FILTER_STABILITY FOCUS_FILTER_BALANCE_OF_POWER }
+		available = {
+			has_country_leader = { character = JAP_Senjuro_Hayashi ruling_only = yes }
+			power_balance_value = { id = JAP_Hirota_Koki_power_balance value < -0.7 }
+		}
+		bypass = {  }
+		prerequisite = { focus = JAP_political_reforms_of_the_Ministry_of_War }
+		relative_position_id = JAP_political_reforms_of_the_Ministry_of_War
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus JAP_reform_of_ministries"
+			add_ideas = JAP_reform_of_ministries_idea
+			add_to_variable = { JAP_discontent_of_parliament_var = 3 tooltip = JAP_discontent_of_parliament_var_tt }
+			clamp_variable = { var = JAP_discontent_of_parliament_var min = 0 max = 10 }
+			JAP_confrontation_with_parliament_effect = yes
+		}
+	}
+	
+	focus = {
+		id = JAP_expansion_of_regulatory_agencies
+		dynamic = yes
+		icon = {
+			trigger = { has_country_flag = NW_return_old_GFX }
+			value = GFX_z_goal_JAP_expansion_of_regulatory_agencies_old
+		}
+		icon = {
+			value = GFX_z_goal_JAP_expansion_of_regulatory_agencies
+		}
+		x = 1
+		y = 1
+		cost = 8
+		ai_will_do = { factor = 10 }
+		search_filters = { FOCUS_FILTER_BALANCE_OF_POWER FOCUS_FILTER_POLITICAL }
+		available = {
+			has_country_leader = { character = JAP_Senjuro_Hayashi ruling_only = yes }
+			power_balance_value = { id = JAP_Hirota_Koki_power_balance value < -0.7 }
+		}
+		bypass = {  }
+		prerequisite = { focus = JAP_reform_of_ministries }
+		relative_position_id = JAP_reform_of_ministries
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus JAP_expansion_of_regulatory_agencies"
+			add_power_balance_value = {
+				id = JAP_Hirota_Koki_power_balance
+				value = -0.3
+				tooltip_side = JAP_reformers
+			}
+			swap_ideas = { 
+				remove_idea = JAP_reform_of_ministries_idea
+				add_idea = JAP_reform_of_ministries_idea1
+			}
+			add_to_variable = { JAP_discontent_of_parliament_var = 3 tooltip = JAP_discontent_of_parliament_var_tt }
+			clamp_variable = { var = JAP_discontent_of_parliament_var min = 0 max = 10 }
+			JAP_confrontation_with_parliament_effect = yes
+		}
+	}
+	
+	focus = {
+		id = JAP_centralization_of_national_administration_and_self_government
+		icon = GFX_z_goal_JAP_centralization_of_national_administration_and_self_government
+		x = -1
+		y = 1
+		cost = 8
+		ai_will_do = { factor = 10 }
+		search_filters = { FOCUS_FILTER_BALANCE_OF_POWER FOCUS_FILTER_POLITICAL }
+		available = {
+			has_country_leader = { character = JAP_Senjuro_Hayashi ruling_only = yes }
+			power_balance_value = { id = JAP_Hirota_Koki_power_balance value < -0.8 }
+		}
+		bypass = { NOT = { has_idea = JAP_a_small_cabinet_of_ministers_idea } }
+		prerequisite = { focus = JAP_reform_of_ministries }
+		prerequisite = { focus = JAP_create_a_new_organ_at_the_premiere }
+		relative_position_id = JAP_reform_of_ministries
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus JAP_centralization_of_national_administration_and_self_government"
+			add_power_balance_value = {
+				id = JAP_Hirota_Koki_power_balance
+				value = -0.5
+				tooltip_side = JAP_reformers
+			}
+			remove_ideas = JAP_a_small_cabinet_of_ministers_idea
+			add_to_variable = { JAP_discontent_of_parliament_var = 3 tooltip = JAP_discontent_of_parliament_var_tt }
+			clamp_variable = { var = JAP_discontent_of_parliament_var min = 0 max = 10 }
+			JAP_confrontation_with_parliament_effect = yes
+		}
+	}
+	
+	focus = {
+		id = JAP_effective_use_of_journalism
+		icon = GFX_z_goal_JAP_effective_use_of_journalism
+		x = -1
+		y = 1
+		cost = 8
+		ai_will_do = { factor = 10 }
+		search_filters = { FOCUS_FILTER_BALANCE_OF_POWER }
+		available = { has_country_leader = { character = JAP_Senjuro_Hayashi ruling_only = yes } }
+		bypass = {  }
+		prerequisite = { focus = JAP_alliance_with_radicals_in_Parliament }
+		relative_position_id = JAP_alliance_with_radicals_in_Parliament 
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus JAP_effective_use_of_journalism"
+			
+		}
+	}
+	
+	focus = {
+		id = JAP_remember_the_army_pamphlet
+		icon = GFX_z_goal_JAP_remember_the_army_pamphlet
+		x = -1
+		y = 1
+		cost = 8
+		ai_will_do = { factor = 10 }
+		search_filters = { FOCUS_FILTER_BALANCE_OF_POWER }
+		available = { has_country_leader = { character = JAP_Senjuro_Hayashi ruling_only = yes } }
+		bypass = {  }
+		prerequisite = { focus = JAP_effective_use_of_journalism }
+		relative_position_id = JAP_effective_use_of_journalism 
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus JAP_remember_the_army_pamphlet"
+			add_to_variable = { JAP_discontent_of_parliament_var = 1 tooltip = JAP_discontent_of_parliament_var_tt }
+			clamp_variable = { var = JAP_discontent_of_parliament_var min = 0 max = 10 }
+			JAP_confrontation_with_parliament_effect = yes
+		}
+	}
+	
+	focus = {
+		id = JAP_meritocrat_policy
+		icon = GFX_z_goal_JAP_meritocrat_policy
+		x = 0
+		y = 2
+		cost = 8
+		ai_will_do = { factor = 10 }
+		search_filters = { FOCUS_FILTER_BALANCE_OF_POWER }
+		available = { has_country_leader = { character = JAP_Senjuro_Hayashi ruling_only = yes } }
+		bypass = {  }
+		prerequisite = { focus = JAP_effective_use_of_journalism }
+		relative_position_id = JAP_effective_use_of_journalism 
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus JAP_meritocrat_policy"
+			
+		}
+	}
+	
+	focus = {
+		id = JAP_fight_economic_inequality 
+		icon = GFX_z_goal_JAP_fight_economic_inequality 
+		x = 1
+		y = 1
+		cost = 8
+		ai_will_do = { factor = 10 }
+		search_filters = { FOCUS_FILTER_BALANCE_OF_POWER }
+		available = { has_country_leader = { character = JAP_Senjuro_Hayashi ruling_only = yes } }
+		bypass = {  }
+		prerequisite = { focus = JAP_meritocrat_policy }
+		relative_position_id = JAP_meritocrat_policy 
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus JAP_fight_economic_inequality "
+			
+		}
+	}
+	
+	focus = {
+		id = JAP_the_Triumph_of_Toseikha
+		icon = GFX_z_goal_JAP_the_Triumph_of_Toseikha
+		x = -1
+		y = 1
+		cost = 8
+		ai_will_do = { factor = 10 }
+		search_filters = { FOCUS_FILTER_BALANCE_OF_POWER }
+		available = { 
+			has_country_leader = { character = JAP_Senjuro_Hayashi ruling_only = yes } 
+			fascism > 0.85
+		}
+		bypass = {  }
+		prerequisite = { focus = JAP_expansion_of_regulatory_agencies }
+		prerequisite = { focus = JAP_centralization_of_national_administration_and_self_government }
+		prerequisite = { focus = JAP_meritocrat_policy }
+		relative_position_id = JAP_expansion_of_regulatory_agencies
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus JAP_the_Triumph_of_Toseikha"
+			add_to_variable = { JAP_the_level_of_insubordination_var = -15 tooltip = JAP_the_level_of_insubordination_var_tt }
+			JAP_the_level_of_insubordination_effect = yes
+			#country_event = NW_JAP.222
+			remove_power_balance = { id = JAP_Hirota_Koki_power_balance }
+		}
+	}
+	
+	focus = {
+		id = JAP_economics_of_control
+		icon = GFX_z_goal_JAP_economics_of_control 
+		x = 1
+		y = 1
+		cost = 8
+		ai_will_do = { factor = 10 }
+		search_filters = { FOCUS_FILTER_BALANCE_OF_POWER }
+		available = { has_country_leader = { character = JAP_Senjuro_Hayashi ruling_only = yes } }
+		bypass = {  }
+		prerequisite = { focus = JAP_fight_economic_inequality }
+		prerequisite = { focus = JAP_the_Triumph_of_Toseikha  }
+		relative_position_id = JAP_fight_economic_inequality  
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus JAP_economics_of_control "
+			
+		}
+	}
+	
+	
+	# Первый кабинет Коноэ
 	
 	focus = {
 		id = JAP_Prince_Konoe_office
@@ -8723,339 +9076,6 @@ focus_tree = {
 				}
 				hidden_effect = { country_event = { id = NW_JAP.476 hours = 12 } }
 			}
-		}
-	}
-	
-	focus = {
-		id = JAP_alliance_with_radicals_in_Parliament
-		dynamic = yes
-		icon = {
-			trigger = { has_country_flag = NW_return_old_GFX }
-			value = GFX_z_goal_JAP_alliance_with_radicals_in_Parliament_old # GFX_z_goal_JAP_alliance_with_radicals_in_Parliament_old_old
-		}
-		icon = {
-			value = GFX_z_goal_JAP_alliance_with_radicals_in_Parliament
-		}
-		x = -1
-		y = 1
-		cost = 8
-		ai_will_do = { factor = 10 }
-		search_filters = { FOCUS_FILTER_POLITICAL }
-		available = { has_country_leader = { character = JAP_Senjuro_Hayashi ruling_only = yes } }
-		bypass = {  }
-		prerequisite = { focus = JAP_find_a_moderate_compromise_with_business }
-		relative_position_id = JAP_find_a_moderate_compromise_with_business
-		completion_reward = {
-			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus JAP_alliance_with_radicals_in_Parliament"
-			custom_effect_tooltip = add_fasc_in_coalition
-			add_to_array = { coalition_array = token:fascism }
-			NW_legitimacy_check = yes
-		}
-	}
-	
-	focus = {
-		id = JAP_political_reforms_of_the_Ministry_of_War
-		dynamic = yes
-		icon = {
-			trigger = { has_country_flag = NW_return_old_GFX }
-			value = GFX_z_goal_JAP_political_reforms_of_the_Ministry_of_War_old
-		}
-		icon = {
-			value = GFX_z_goal_JAP_political_reforms_of_the_Ministry_of_War
-		}
-		x = 1
-		y = 1
-		cost = 8
-		ai_will_do = { factor = 10 }
-		search_filters = { FOCUS_FILTER_POLITICAL }
-		available = {
-			has_country_leader = { character = JAP_Senjuro_Hayashi ruling_only = yes }
-			power_balance_value = { id = JAP_Hirota_Koki_power_balance value < -0.5 }
-		}
-		bypass = {  }
-		prerequisite = { focus = JAP_alliance_with_radicals_in_Parliament }
-		relative_position_id = JAP_alliance_with_radicals_in_Parliament
-		completion_reward = {
-			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus JAP_political_reforms_of_the_Ministry_of_War"
-			add_political_power = 150
-		}
-	}
-	
-	focus = {
-		id = JAP_strengthen_the_role_of_the_Privy_Council
-		icon = GFX_z_goal_JAP_strengthen_the_role_of_the_Privy_Council
-		x = 1
-		y = 1
-		cost = 8
-		ai_will_do = { factor = 10 }
-		search_filters = { FOCUS_FILTER_POLITICAL }
-		available = { has_country_leader = { character = JAP_Senjuro_Hayashi ruling_only = yes } }
-		bypass = {  }
-		prerequisite = { focus = JAP_connecting_financing }
-		relative_position_id = JAP_connecting_financing
-		completion_reward = {
-			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus JAP_strengthen_the_role_of_the_Privy_Council"
-		}
-	}
-	
-	focus = {
-		id = JAP_promotion_of_Toseihi_Generals
-		icon = GFX_z_goal_JAP_promotion_of_Toseihi_Generals
-		x = 1
-		y = 1
-		cost = 8
-		ai_will_do = { factor = 10 }
-		search_filters = {  }
-		available = { has_country_leader = { character = JAP_Senjuro_Hayashi ruling_only = yes } }
-		bypass = {  }
-		prerequisite = { focus = JAP_strengthen_the_role_of_the_Privy_Council }
-		relative_position_id = JAP_strengthen_the_role_of_the_Privy_Council
-		completion_reward = {
-			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus JAP_promotion_of_Toseihi_Generals"
-			custom_effect_tooltip = JAP_promotion_of_Toseihi_Generals_tt
-			every_unit_leader = {
-				limit = { has_trait = JAP_member_of_toseiha }
-				gain_xp = 250
-			}
-			add_to_variable = { JAP_the_level_of_insubordination_var = -5 tooltip = JAP_the_level_of_insubordination_var_tt }
-			JAP_the_level_of_insubordination_effect = yes
-		}
-	}
-	
-	focus = {
-		id = JAP_create_a_new_organ_at_the_premiere
-		dynamic = yes
-		icon = {
-			trigger = { has_country_flag = NW_return_old_GFX }
-			value = GFX_z_goal_JAP_create_a_new_organ_at_the_premiere_old # GFX_z_goal_JAP_create_a_new_organ_at_the_premiere_old_old
-		}
-		icon = {
-			value = GFX_z_goal_JAP_create_a_new_organ_at_the_premiere
-		}
-		x = -1
-		y = 1
-		cost = 8
-		ai_will_do = { factor = 10 }
-		search_filters = { FOCUS_FILTER_POLITICAL FOCUS_FILTER_BALANCE_OF_POWER }
-		available = {
-			has_country_leader = { character = JAP_Senjuro_Hayashi ruling_only = yes }
-			power_balance_value = { id = JAP_Hirota_Koki_power_balance value < -0.6 }
-		}
-		bypass = {  }
-		prerequisite = { focus = JAP_political_reforms_of_the_Ministry_of_War }
-		relative_position_id = JAP_political_reforms_of_the_Ministry_of_War
-		completion_reward = {
-			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus JAP_create_a_new_organ_at_the_premiere"
-			custom_effect_tooltip = JAP_state_of_National_Defense_tt
-			set_country_leader_ideology = state_of_national_defense
-			add_power_balance_value = {
-				id = JAP_Hirota_Koki_power_balance
-				value = -0.5
-				tooltip_side = JAP_reformers
-			}
-		}
-	}
-	
-	focus = {
-		id = JAP_reform_of_ministries
-		dynamic = yes
-		icon = {
-			trigger = { has_country_flag = NW_return_old_GFX }
-			value = GFX_z_goal_JAP_reform_of_ministries_old # GFX_z_goal_JAP_reform_of_ministries_old_old
-		}
-		icon = {
-			value = GFX_z_goal_JAP_reform_of_ministries
-		}
-		x = 1
-		y = 1
-		cost = 8
-		ai_will_do = { factor = 10 }
-		search_filters = { FOCUS_FILTER_STABILITY FOCUS_FILTER_BALANCE_OF_POWER }
-		available = {
-			has_country_leader = { character = JAP_Senjuro_Hayashi ruling_only = yes }
-			power_balance_value = { id = JAP_Hirota_Koki_power_balance value < -0.7 }
-		}
-		bypass = {  }
-		prerequisite = { focus = JAP_political_reforms_of_the_Ministry_of_War }
-		relative_position_id = JAP_political_reforms_of_the_Ministry_of_War
-		completion_reward = {
-			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus JAP_reform_of_ministries"
-			add_ideas = JAP_reform_of_ministries_idea
-		}
-	}
-	
-	focus = {
-		id = JAP_expansion_of_regulatory_agencies
-		dynamic = yes
-		icon = {
-			trigger = { has_country_flag = NW_return_old_GFX }
-			value = GFX_z_goal_JAP_expansion_of_regulatory_agencies_old
-		}
-		icon = {
-			value = GFX_z_goal_JAP_expansion_of_regulatory_agencies
-		}
-		x = 1
-		y = 1
-		cost = 8
-		ai_will_do = { factor = 10 }
-		search_filters = { FOCUS_FILTER_BALANCE_OF_POWER FOCUS_FILTER_POLITICAL }
-		available = {
-			has_country_leader = { character = JAP_Senjuro_Hayashi ruling_only = yes }
-			power_balance_value = { id = JAP_Hirota_Koki_power_balance value < -0.7 }
-		}
-		bypass = {  }
-		prerequisite = { focus = JAP_reform_of_ministries }
-		relative_position_id = JAP_reform_of_ministries
-		completion_reward = {
-			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus JAP_expansion_of_regulatory_agencies"
-			add_power_balance_value = {
-				id = JAP_Hirota_Koki_power_balance
-				value = -0.3
-				tooltip_side = JAP_reformers
-			}
-			remove_ideas = JAP_reform_of_ministries_idea
-			add_ideas = JAP_reform_of_ministries_idea1
-		}
-	}
-	
-	focus = {
-		id = JAP_centralization_of_national_administration_and_self_government
-		icon = GFX_z_goal_JAP_centralization_of_national_administration_and_self_government
-		x = -1
-		y = 1
-		cost = 8
-		ai_will_do = { factor = 10 }
-		search_filters = { FOCUS_FILTER_BALANCE_OF_POWER FOCUS_FILTER_POLITICAL }
-		available = {
-			has_country_leader = { character = JAP_Senjuro_Hayashi ruling_only = yes }
-			power_balance_value = { id = JAP_Hirota_Koki_power_balance value < -0.8 }
-		}
-		bypass = { NOT = { has_idea = JAP_a_small_cabinet_of_ministers_idea } }
-		prerequisite = { focus = JAP_reform_of_ministries }
-		prerequisite = { focus = JAP_create_a_new_organ_at_the_premiere }
-		relative_position_id = JAP_reform_of_ministries
-		completion_reward = {
-			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus JAP_centralization_of_national_administration_and_self_government"
-			add_power_balance_value = {
-				id = JAP_Hirota_Koki_power_balance
-				value = -0.5
-				tooltip_side = JAP_reformers
-			}
-			remove_ideas = JAP_a_small_cabinet_of_ministers_idea
-		}
-	}
-	
-	focus = {
-		id = JAP_effective_use_of_journalism
-		icon = GFX_z_goal_JAP_effective_use_of_journalism
-		x = -1
-		y = 1
-		cost = 8
-		ai_will_do = { factor = 10 }
-		search_filters = { FOCUS_FILTER_BALANCE_OF_POWER }
-		available = { has_country_leader = { character = JAP_Senjuro_Hayashi ruling_only = yes } }
-		bypass = {  }
-		prerequisite = { focus = JAP_alliance_with_radicals_in_Parliament }
-		relative_position_id = JAP_alliance_with_radicals_in_Parliament 
-		completion_reward = {
-			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus JAP_effective_use_of_journalism"
-			
-		}
-	}
-	
-	focus = {
-		id = JAP_remember_the_army_pamphlet
-		icon = GFX_z_goal_JAP_remember_the_army_pamphlet
-		x = -1
-		y = 1
-		cost = 8
-		ai_will_do = { factor = 10 }
-		search_filters = { FOCUS_FILTER_BALANCE_OF_POWER }
-		available = { has_country_leader = { character = JAP_Senjuro_Hayashi ruling_only = yes } }
-		bypass = {  }
-		prerequisite = { focus = JAP_effective_use_of_journalism }
-		relative_position_id = JAP_effective_use_of_journalism 
-		completion_reward = {
-			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus JAP_remember_the_army_pamphlet"
-			
-		}
-	}
-	
-	focus = {
-		id = JAP_meritocrat_policy
-		icon = GFX_z_goal_JAP_meritocrat_policy
-		x = 0
-		y = 2
-		cost = 8
-		ai_will_do = { factor = 10 }
-		search_filters = { FOCUS_FILTER_BALANCE_OF_POWER }
-		available = { has_country_leader = { character = JAP_Senjuro_Hayashi ruling_only = yes } }
-		bypass = {  }
-		prerequisite = { focus = JAP_effective_use_of_journalism }
-		relative_position_id = JAP_effective_use_of_journalism 
-		completion_reward = {
-			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus JAP_meritocrat_policy"
-			
-		}
-	}
-	
-	focus = {
-		id = JAP_fight_economic_inequality 
-		icon = GFX_z_goal_JAP_fight_economic_inequality 
-		x = 1
-		y = 1
-		cost = 8
-		ai_will_do = { factor = 10 }
-		search_filters = { FOCUS_FILTER_BALANCE_OF_POWER }
-		available = { has_country_leader = { character = JAP_Senjuro_Hayashi ruling_only = yes } }
-		bypass = {  }
-		prerequisite = { focus = JAP_meritocrat_policy }
-		relative_position_id = JAP_meritocrat_policy 
-		completion_reward = {
-			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus JAP_fight_economic_inequality "
-			
-		}
-	}
-	
-	focus = {
-		id = JAP_the_Triumph_of_Toseikha
-		icon = GFX_z_goal_JAP_the_Triumph_of_Toseikha
-		x = -1
-		y = 1
-		cost = 8
-		ai_will_do = { factor = 10 }
-		search_filters = { FOCUS_FILTER_BALANCE_OF_POWER }
-		available = { has_country_leader = { character = JAP_Senjuro_Hayashi ruling_only = yes } }
-		bypass = {  }
-		prerequisite = { focus = JAP_expansion_of_regulatory_agencies }
-		prerequisite = { focus = JAP_centralization_of_national_administration_and_self_government }
-		prerequisite = { focus = JAP_meritocrat_policy }
-		relative_position_id = JAP_expansion_of_regulatory_agencies
-		completion_reward = {
-			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus JAP_the_Triumph_of_Toseikha"
-			add_to_variable = { JAP_the_level_of_insubordination_var = -15 tooltip = JAP_the_level_of_insubordination_var_tt }
-			JAP_the_level_of_insubordination_effect = yes
-			country_event = NW_JAP.222
-			remove_power_balance = { id = JAP_Hirota_Koki_power_balance }
-		}
-	}
-	
-	focus = {
-		id = JAP_economics_of_control
-		icon = GFX_z_goal_JAP_economics_of_control 
-		x = 1
-		y = 1
-		cost = 8
-		ai_will_do = { factor = 10 }
-		search_filters = { FOCUS_FILTER_BALANCE_OF_POWER }
-		available = { has_country_leader = { character = JAP_Senjuro_Hayashi ruling_only = yes } }
-		bypass = {  }
-		prerequisite = { focus = JAP_fight_economic_inequality }
-		prerequisite = { focus = JAP_the_Triumph_of_Toseikha  }
-		relative_position_id = JAP_fight_economic_inequality  
-		completion_reward = {
-			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus JAP_economics_of_control "
-			
 		}
 	}
 	
@@ -11486,7 +11506,7 @@ focus_tree = {
 	
 	focus = {
 		id = JAP_Manchurian_Cabinet
-		icon = GFX_z_goal_JAP_Manchurian_Cabinet
+		icon = GFX_z_goal_JAP_Manchurian_Cabinet_2
 		x = -4
 		y = 0
 		cost = 8
