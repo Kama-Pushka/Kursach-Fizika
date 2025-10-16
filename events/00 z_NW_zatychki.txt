@@ -1,4 +1,5 @@
 add_namespace = NWzatyk
+add_namespace = NWzatykNews
 add_namespace = usa
 
 ### ВРЕМЕННЫЕ И НЕ ОЧЕНЬ КОСТЫЛИ ###
@@ -959,3 +960,917 @@ country_event = {
 		}
 	}
 }
+
+# Китайские затычки 
+
+# Смерть Ху Ханьминя
+country_event = {
+	id = NWzatyk.23
+	title = NWzatyk.23.t
+	desc = NWzatyk.23.d
+	picture = GFX_report_event_generic_funeral
+
+	is_triggered_only = yes
+
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWzatyk.23" }
+
+	option = { 	
+		name = NWzatyk.23.a
+		trigger = { tag = CHI }
+		hidden_effect = { 
+			GND = { country_event = { id = NWzatyk.24 days = 5 } }
+			GXC = { country_event = { id = NWzatyk.24 days = 5 } }
+		}
+	}
+
+	option = {
+		name = NWzatyk.23.b
+		trigger = { NOT = {tag = CHI } }
+	}
+}
+
+# Ультиматум Нанкина
+country_event = {
+	id = NWzatyk.24
+	title = NWzatyk.24.t
+	desc = { 
+		text = NWzatyk.24.d.a
+		trigger = { tag = GXC }
+	}
+	desc = { 
+		text = NWzatyk.24.d.b
+		trigger = { tag = GND }
+	}
+	picture = GFX_report_event_xsm_2
+
+	is_triggered_only = yes
+
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWzatyk.24" }
+
+	option = { 	
+		name = NWzatyk.24.a
+		trigger = { tag = GND }
+		add_war_support = 0.1
+		set_country_flag = GND_antijapanese_front_flag 
+		hidden_effect = { CHI = { country_event = { id = NWzatyk.25 days = 5 } } } 
+	}
+
+	option = {
+		name = NWzatyk.24.b
+		trigger = { tag = GND }
+		add_popularity = { ideology = democratic popularity = 0.005 }
+		set_country_flag = GND_democratic_front_flag 
+		hidden_effect = { CHI = { country_event = { id = NWzatyk.25 days = 5 } } } 
+	}
+	
+	option = {
+		name = NWzatyk.24.c
+		trigger = { tag = GXC }
+	}
+}
+
+# Подкуп офицеров Гуандуна
+country_event = {
+	id = NWzatyk.25
+	title = NWzatyk.25.t
+	desc = NWzatyk.25.d
+	picture = GFX_report_event_xsm_2
+
+	is_triggered_only = yes
+
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWzatyk.25" }
+
+	option = { 	
+		name = NWzatyk.25.a
+		add_political_power = -100 
+		hidden_effect = { GND = { country_event = { id = NWzatyk.26 days = 5 } } } 
+	}
+
+	option = {
+		name = NWzatyk.25.b
+		hidden_effect = { CHI = { country_event = { id = NWzatyk.27 days = 5 } } } 
+	}
+}
+
+# Дезертирства в армии Гуандуна
+country_event = {
+	id = NWzatyk.26
+	title = NWzatyk.26.t
+	desc = NWzatyk.26.d
+	picture = GFX_report_event_xsm_2
+
+	is_triggered_only = yes
+
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWzatyk.26" }
+
+	option = { 	
+		name = NWzatyk.26.a
+		set_global_flag = GND_gave_up_flag 
+		hidden_effect = { 
+			GXC = { country_event = { id = NWzatyk.28 days = 5 } } 
+			CHI = { country_event = { id = NWzatyk.28 days = 5 } } 
+		} 
+	}
+
+	option = {
+		name = NWzatyk.26.b
+		#АЛЬНУР СЮДА НАДО ПРОПИСАТЬ ПЕРЕДАЧУ ГЕНЕРАЛОВ ГУАНДУНА КИТАЮ 
+	}
+}
+
+# Подкуп губернатора Хунаня
+country_event = {
+	id = NWzatyk.27
+	title = NWzatyk.27.t
+	desc = NWzatyk.27.d
+	picture = GFX_report_event_xsm_2
+
+	is_triggered_only = yes
+
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWzatyk.27" }
+
+	option = { 	
+		name = NWzatyk.27.a
+		add_political_power = -50 
+		hidden_effect = { 
+			HNA = { country_event = { id = NWzatyk.29 days = 5 } } 
+		} 
+	}
+
+	option = {
+		name = NWzatyk.27.b
+		if = { 
+			limit = { has_global_flag = GND_gave_up_flag }
+			hidden_effect = { CHI = { country_event = { id = NWzatyk.32 days = 5 } } }
+		}
+		else = {
+			hidden_effect = { 
+				GXC = {
+					every_unit_leader = {
+						set_nationality = GND
+					}
+				}
+				GND = { 
+					annex_country = {
+						target = GXC
+						transfer_troops = yes 
+					}
+					if = {
+						limit = { has_country_flag = GND_democratic_front_flag }
+						create_faction = GND_democratic_front
+					}
+					else = { create_faction = GND_antijapanese_front }
+					if = { 
+						limit = { has_global_flag = HNA_stay_with_southwest } 
+						GND = { add_to_faction = HNA }
+					} 
+					set_cosmetic_tag = GND_Liangguang_government
+					declare_war_on = {
+						target = CHI
+						type = annex_everything
+					}
+				}
+				every_other_country = { 
+					limit = { is_han_tags = yes }
+					country_event = { id = NWzatyk.33 days = 3 }
+				}
+				news_event = NWzatykNews.1 
+			}
+		}
+	}
+}
+
+# Чэнь Цзитань сдался
+country_event = {
+	id = NWzatyk.28
+	title = NWzatyk.28.t
+	desc = NWzatyk.28.d
+	picture = GFX_report_event_xsm_5
+
+	is_triggered_only = yes
+
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWzatyk.28" }
+
+	option = { 	
+		name = NWzatyk.28.a
+		trigger = { tag = GXC }
+		add_political_power = 100 
+		add_war_support = -0.05 
+	}
+	
+	option = { 	
+		name = NWzatyk.28.b
+		trigger = { tag = CHI }
+		GND_chen_jitang = { set_character_flag = GND_chen_left_clique }
+		GND = {
+			every_unit_leader = {
+				set_nationality = CHI
+			}
+		}
+		annex_country = {
+			target = GND
+			transfer_troops = yes 
+		}
+		hidden_effect = { CHI = { country_event = { id = NWzatyk.27 days = 5 } } }
+	}
+}
+
+
+# Взятка от Чан Кайши
+country_event = {
+	id = NWzatyk.29
+	title = NWzatyk.29.t
+	desc = NWzatyk.29.d
+	picture = GFX_report_event_xsm_2
+
+	is_triggered_only = yes
+
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWzatyk.29" }
+
+	option = { 	
+		name = NWzatyk.29.a
+		set_global_flag = HNA_stay_with_nanjing 
+		hidden_effect = { 
+			CHI = { country_event = { id = NWzatyk.30 days = 5 } }
+			GND = { country_event = { id = NWzatyk.30 days = 5 } }
+			GXC = { country_event = { id = NWzatyk.30 days = 5 } }
+		}
+	}
+	
+	option = { 	
+		name = NWzatyk.29.b
+		set_global_flag = HNA_stay_with_southwest 
+		hidden_effect = { 
+			CHI = { country_event = { id = NWzatyk.31 days = 5 } }
+			GND = { country_event = { id = NWzatyk.31 days = 5 } }
+			GXC = { country_event = { id = NWzatyk.31 days = 5 } }
+		}
+	}
+}
+
+# Хунань сохраняет верность Нанкину
+country_event = {
+	id = NWzatyk.30
+	title = NWzatyk.30.t
+	desc = NWzatyk.30.d
+	picture = GFX_report_event_xsm_2
+
+	is_triggered_only = yes
+
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWzatyk.30" }
+
+	option = { 	
+		name = NWzatyk.30.a
+		trigger = { tag = CHI }
+	}
+	
+	option = { 	
+		name = NWzatyk.30.b
+		trigger = { tag = GND }
+	}
+	
+	option = { 	
+		name = NWzatyk.30.c
+		trigger = { tag = GXC }
+		if = { 
+			limit = { has_global_flag = GND_gave_up_flag }
+			hidden_effect = { CHI = { country_event = { id = NWzatyk.32 days = 5 } } } 
+		}
+		else = {
+			hidden_effect = { 
+				GXC = {
+					every_unit_leader = {
+						set_nationality = GND
+					}
+				}
+				GND = { 
+					annex_country = {
+						target = GXC
+						transfer_troops = yes 
+					}
+					if = {
+						limit = { has_country_flag = GND_democratic_front_flag }
+						create_faction = GND_democratic_front
+					}
+					else = { create_faction = GND_antijapanese_front }
+					if = { 
+						limit = { has_global_flag = HNA_stay_with_southwest } 
+						GND = { add_to_faction = HNA }
+					} 
+					set_cosmetic_tag = GND_Liangguang_government
+					declare_war_on = {
+						target = CHI
+						type = annex_everything
+					}
+				}
+				every_other_country = { 
+					limit = { is_han_tags = yes }
+					country_event = { id = NWzatyk.33 days = 3 }
+				}
+				news_event = NWzatykNews.1 
+			}
+		}
+	}
+}
+
+# Хунань поддерживает Юго-запад
+country_event = {
+	id = NWzatyk.31
+	title = NWzatyk.31.t
+	desc = NWzatyk.31.d
+	picture = GFX_report_event_xsm_5
+
+	is_triggered_only = yes
+
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWzatyk.31" }
+
+	option = { 	
+		name = NWzatyk.31.a
+		trigger = { tag = CHI }
+	}
+	
+	option = { 	
+		name = NWzatyk.31.b
+		trigger = { tag = GND }
+	}
+	
+	option = { 	
+		name = NWzatyk.31.c
+		trigger = { tag = GXC }
+		if = { 
+			limit = { has_global_flag = GND_gave_up_flag }
+			hidden_effect = { CHI = { country_event = { id = NWzatyk.32 days = 5 } } } 
+		}
+		else = {
+			hidden_effect = { 
+				GXC = {
+					every_unit_leader = {
+						set_nationality = GND
+					}
+				}
+				GND = { 
+					annex_country = {
+						target = GXC
+						transfer_troops = yes 
+					}
+					if = {
+						limit = { has_country_flag = GND_democratic_front_flag }
+						create_faction = GND_democratic_front
+					}
+					else = { create_faction = GND_antijapanese_front }
+					if = { 
+						limit = { has_global_flag = HNA_stay_with_southwest } 
+						GND = { add_to_faction = HNA }
+					} 
+					set_cosmetic_tag = GND_Liangguang_government
+					declare_war_on = {
+						target = CHI
+						type = annex_everything
+					}
+				}
+				every_other_country = { 
+					limit = { is_han_tags = yes }
+					country_event = { id = NWzatyk.33 days = 3 }
+				}
+				news_event = NWzatykNews.1 
+			}
+		}
+	}
+	
+}
+
+# Гуанси сопротивляется
+country_event = {
+	id = NWzatyk.32
+	title = NWzatyk.32.t
+	desc = NWzatyk.32.d
+	picture = GFX_report_event_xsm_5
+
+	is_triggered_only = yes
+
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWzatyk.32" }
+
+	option = { 	
+		name = NWzatyk.32.a
+		hidden_effect = { 
+			declare_war_on = {
+				target = GXC
+				type = annex_everything
+			}
+			if = {
+				limit = { has_country_flag = GND_democratic_front_flag }
+				create_faction = GND_democratic_front
+			}
+			else = { create_faction = GND_antijapanese_front }
+			if = { 
+				limit = { has_global_flag = HNA_stay_with_southwest } 
+				GXC = { add_to_faction = HNA }
+			}
+			GXC = { set_cosmetic_tag = GND_Liangguang_government }
+			every_other_country = { 
+				limit = { is_han_tags = yes }
+				country_event = { id = NWzatyk.34 days = 3 }
+			}
+			news_event = NWzatykNews.1 
+		}
+	}
+	
+	option = { 	
+		name = NWzatyk.32.b
+		CHI_chiang_kaishek = { 
+			add_trait = { 
+				character = CHI_chiang_kaishek
+				ideology = dang_guo
+				trait = leader_of_kuomintang_and_china
+			} 
+		}
+		every_other_country = { 
+			limit = { is_literally_china = yes }
+			news_event = NWzatykNews.2 
+		}
+	}
+}
+
+# Лянгуанский инцидент 1 
+country_event = {
+	id = NWzatyk.33
+	title = NWzatyk.33.t
+	desc = { 
+		text = NWzatyk.33.desc.a
+		trigger = { 
+			OR = { 
+				tag = HCP
+				tag = SIH
+			}
+		}
+	}
+	desc = { 
+		text = NWzatyk.33.desc.b
+		trigger = { 
+			OR = { 
+				NOT = { tag = HCP }
+				NOT = { tag = SIH }
+				NOT = { tag = HCP }
+				NOT = { tag = SIH }
+				NOT = { tag = PRC }
+				NOT = { tag = GND }
+				NOT = { tag = GXC }
+				NOT = { tag = CHI }
+				NOT = { tag = HNA }
+				NOT = { tag = NEA }
+			}
+		}
+	}
+	desc = { 
+		text = NWzatyk.33.desc.c
+		trigger = { 
+			tag = PRC
+		}
+	}
+	desc = { 
+		text = NWzatyk.33.desc.d
+		trigger = { 
+			OR = { 
+				tag = NEA 
+				AND = { 
+					NOT = { tag = PRC }
+					has_government = communism
+				}
+			}
+		}
+	}
+	desc = { 
+		text = NWzatyk.33.desc.e
+		trigger = { 
+			OR = { 
+				tag = GND 
+				tag = GXC 
+				tag = HNA 
+				tag = CHI 
+			}
+		}
+	}
+	picture = GFX_report_event_xsm_5
+
+	is_triggered_only = yes
+
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWzatyk.33" }
+
+	option = { 	
+		name = NWzatyk.33.a
+		trigger = { 
+			OR = { 
+				NOT = { tag = HCP }
+				NOT = { tag = SIH }
+				NOT = { tag = HCP }
+				NOT = { tag = SIH }
+				NOT = { tag = PRC }
+				NOT = { tag = GND }
+				NOT = { tag = GXC }
+				NOT = { tag = CHI }
+				NOT = { tag = HNA }
+				NOT = { tag = NEA }
+			}
+		}
+		add_political_power = -30 
+	}
+	
+	option = { 	
+		name = NWzatyk.33.b
+		trigger = { 
+			OR = { 
+				NOT = { tag = HCP }
+				NOT = { tag = SIH }
+				NOT = { tag = HCP }
+				NOT = { tag = SIH }
+				NOT = { tag = PRC }
+				NOT = { tag = GND }
+				NOT = { tag = GXC }
+				NOT = { tag = CHI }
+				NOT = { tag = HNA }
+				NOT = { tag = NEA }
+				NOT = { tag = XSM }
+				NOT = { tag = NGX }
+				NOT = { tag = KAS }
+				NOT = { tag = DZH }
+				NOT = { tag = TNG }
+				NOT = { tag = KUM }
+				NOT = { tag = SIK }
+			}
+		}
+		GND = { add_to_faction = THIS }
+	}
+	
+	option = { 	
+		name = NWzatyk.33.c
+		trigger = { 
+			tag = HCP 
+		}
+		declare_war_on = {
+			target = CHI
+			type = annex_everything
+		}
+		HCP = { set_cosmetic_tag = HCP_North_China_government }
+		hidden_effect = { 
+			SHA = { country_event = NWzatyk.35 }
+			CSR = { country_event = NWzatyk.38 }
+		}
+	}
+	
+	option = { 	
+		name = NWzatyk.33.d
+		trigger = { 
+			tag = SIH 
+		}
+		declare_war_on = {
+			target = CHI
+			type = annex_everything
+		}
+		SIH = { set_cosmetic_tag = SIH_Sichuan_government }
+		hidden_effect = { XIK = { country_event = NWzatyk.36 } }
+	}
+	
+	option = { 	
+		name = NWzatyk.33.e
+		trigger = { 
+			tag = PRC
+		}
+		declare_war_on = {
+			target = CHI
+			type = annex_everything
+		}
+		create_faction = PRC_SZPNO
+		PRC = { add_to_faction = NEA }
+		NEA = { set_cosmetic_tag = NEA_SZPNO_gov }
+		PRC = { set_cosmetic_tag = PRC_SZPNO_government }
+		hidden_effect = { SIK = { country_event = NWzatyk.37 } }
+	}
+	
+	option = { 	
+		name = NWzatyk.33.f
+		trigger = { 
+			OR = { 
+				tag = GXC
+				tag = GND
+				tag = HNA
+				tag = CHI
+				tag = NEA				
+			}
+		}
+		
+	}
+	
+	option = { 	
+		name = NWzatyk.33.g
+		trigger = { 
+			tag = FSR
+			FSR = { has_war = no }
+		}
+		declare_war_on = {
+			target = XIK
+			type = annex_everything
+		}
+	}
+	
+}
+
+# Лянгуанский инцидент 2 
+country_event = {
+	id = NWzatyk.34
+	title = NWzatyk.34.t
+	desc = { 
+		text = NWzatyk.34.desc.a
+		trigger = { 
+			OR = { 
+				tag = HCP
+				tag = SIH
+			}
+		}
+	}
+	desc = { 
+		text = NWzatyk.34.desc.b
+		trigger = { 
+			OR = { 
+				NOT = { tag = HCP }
+				NOT = { tag = SIH }
+				NOT = { tag = HCP }
+				NOT = { tag = SIH }
+				NOT = { tag = PRC }
+				NOT = { tag = GND }
+				NOT = { tag = GXC }
+				NOT = { tag = CHI }
+				NOT = { tag = HNA }
+				NOT = { tag = NEA }
+			}
+		}
+	}
+	desc = { 
+		text = NWzatyk.34.desc.c
+		trigger = { 
+			tag = PRC
+		}
+	}
+	desc = { 
+		text = NWzatyk.34.desc.d
+		trigger = { 
+			OR = { 
+				tag = NEA 
+				AND = { 
+					NOT = { tag = PRC }
+					has_government = communism
+				}
+			}
+		}
+	}
+	desc = { 
+		text = NWzatyk.34.desc.e
+		trigger = { 
+			OR = { 
+				tag = GND 
+				tag = GXC 
+				tag = HNA 
+				tag = CHI 
+			}
+		}
+	}
+	picture = GFX_report_event_xsm_5
+
+	is_triggered_only = yes
+
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWzatyk.34" }
+
+	option = { 	
+		name = NWzatyk.34.a
+		trigger = { 
+			OR = { 
+				NOT = { tag = HCP }
+				NOT = { tag = SIH }
+				NOT = { tag = HCP }
+				NOT = { tag = SIH }
+				NOT = { tag = PRC }
+				NOT = { tag = GND }
+				NOT = { tag = GXC }
+				NOT = { tag = CHI }
+				NOT = { tag = HNA }
+				NOT = { tag = NEA }
+			}
+		}
+		add_political_power = -30 
+	}
+	
+	option = { 	
+		name = NWzatyk.34.b
+		trigger = { 
+			OR = { 
+				NOT = { tag = HCP }
+				NOT = { tag = SIH }
+				NOT = { tag = HCP }
+				NOT = { tag = SIH }
+				NOT = { tag = PRC }
+				NOT = { tag = GND }
+				NOT = { tag = GXC }
+				NOT = { tag = CHI }
+				NOT = { tag = HNA }
+				NOT = { tag = NEA }
+				NOT = { tag = XSM }
+				NOT = { tag = NGX }
+				NOT = { tag = KAS }
+				NOT = { tag = DZH }
+				NOT = { tag = TNG }
+				NOT = { tag = KUM }
+				NOT = { tag = SIK }
+			}
+		}
+		GXC = { add_to_faction = THIS }
+	}
+	
+	option = { 	
+		name = NWzatyk.34.c
+		trigger = { 
+			tag = HCP 
+		}
+		declare_war_on = {
+			target = CHI
+			type = annex_everything
+		}
+		HCP = { set_cosmetic_tag = HCP_North_China_government }
+		hidden_effect = { 
+			SHA = { country_event = NWzatyk.35 }
+			CSR = { country_event = NWzatyk.38 }
+		}
+	}
+	
+	option = { 	
+		name = NWzatyk.34.d
+		trigger = { 
+			tag = SIH 
+		}
+		declare_war_on = {
+			target = CHI
+			type = annex_everything
+		}
+		SIH = { set_cosmetic_tag = SIH_Sichuan_government }
+		hidden_effect = { XIK = { country_event = NWzatyk.36 } }
+	}
+	
+	option = { 	
+		name = NWzatyk.34.e
+		trigger = { 
+			tag = PRC
+		}
+		declare_war_on = {
+			target = CHI
+			type = annex_everything
+		}
+		create_faction = PRC_SZPNO
+		PRC = { add_to_faction = NEA }
+		NEA = { set_cosmetic_tag = NEA_SZPNO_gov }
+		PRC = { set_cosmetic_tag = PRC_SZPNO_government }
+		hidden_effect = { SIK = { country_event = NWzatyk.37 } }
+	}
+	
+	option = { 	
+		name = NWzatyk.34.f
+		trigger = { 
+			OR = { 
+				tag = GXC
+				tag = GND
+				tag = HNA
+				tag = CHI
+				tag = NEA				
+			}
+		}
+		
+	}
+	
+	option = { 	
+		name = NWzatyk.34.g
+		trigger = { 
+			tag = FSR
+			FSR = { has_war = no }
+		}
+		declare_war_on = {
+			target = XIK
+			type = annex_everything
+		}
+	}
+	
+}
+
+# Поддержка Сун Чжэюаня 
+country_event = {
+	id = NWzatyk.35
+	title = NWzatyk.35.t
+	desc = NWzatyk.35.d
+	picture = GFX_report_event_xsm_5
+
+	is_triggered_only = yes
+
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWzatyk.35" }
+
+	option = { 	
+		name = NWzatyk.35.a
+		trigger = { 
+			has_war = no
+		}
+		HCP = { add_to_faction = SHA }
+	}
+	
+	option = { 	
+		name = NWzatyk.35.b
+		
+	}
+}
+
+
+# Реванш Лю Сяну
+country_event = {
+	id = NWzatyk.36
+	title = NWzatyk.36.t
+	desc = NWzatyk.36.d
+	picture = GFX_report_event_xsm_5
+
+	is_triggered_only = yes
+
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWzatyk.36" }
+
+	option = { 	
+		name = NWzatyk.36.a
+		trigger = { 
+			has_war = no
+		}
+		declare_war_on = {
+			target = SIH
+			type = annex_everything
+		}
+	}
+	
+	option = { 	
+		name = NWzatyk.36.b
+		
+	}
+	
+}
+
+# Китайцы не смотрят
+country_event = {
+	id = NWzatyk.37
+	title = NWzatyk.37.t
+	desc = NWzatyk.37.d
+	picture = GFX_report_event_xsm_5
+
+	is_triggered_only = yes
+
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NWzatyk.37" }
+
+	option = { 	
+		name = NWzatyk.37.a
+		trigger = { 
+			has_war = no
+		}
+		declare_war_on = {
+			target = MEN
+			type = annex_everything
+		}
+	}
+	
+	option = { 	
+		name = NWzatyk.37.b
+		
+	}
+	
+}
+	
+
+# Война в Китае
+news_event = {
+	id = NWzatykNews.1
+	title = NWzatykNews.1.t
+	desc = NWzatykNews.1.d
+	major = yes
+	picture = GFX_news_event_NWzatykNews.1
+	trigger = { 
+		
+	}
+	is_triggered_only = yes
+	option = {
+		name = NWzatykNews.1.a
+	}
+}
+
+# Война в Китае
+news_event = {
+	id = NWzatykNews.2
+	title = NWzatykNews.2.t
+	desc = NWzatykNews.2.d
+	
+	picture = GFX_news_event_NWzatykNews.2
+	trigger = { 
+		
+	}
+	is_triggered_only = yes
+	option = {
+		name = NWzatykNews.2.a
+	}
+}
+
