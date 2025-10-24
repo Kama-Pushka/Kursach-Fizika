@@ -1536,18 +1536,18 @@ JAP_special_military_court_category = {
 		priority = 1000
 		activation = { always = no }
 		available = { hidden_trigger = { always = no } }
-		cancel_trigger = {
-			if = {
-				limit = { has_country_leader = { character = JAP_Hirota_Koki ruling_only = yes } }
-				NOT = { has_country_leader = { character = JAP_Hirota_Koki ruling_only = yes } }
-			}
-			else = { NOT = { has_country_leader = { character = JAP_Keisuke_Okada ruling_only = yes } } }
-		}
-		cancel_effect = {
-			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): cancel mission JAP_time_of_the_court"
-			clr_country_flag = JAP_special_military_court_category_flag
-			custom_effect_tooltip = JAP_time_of_the_court_tt
-		}
+		#cancel_trigger = {
+		#	if = {
+		#		limit = { has_country_leader = { character = JAP_Hirota_Koki ruling_only = yes } }
+		#		NOT = { has_country_leader = { character = JAP_Hirota_Koki ruling_only = yes } }
+		#	}
+		#	else = { NOT = { has_country_leader = { character = JAP_Keisuke_Okada ruling_only = yes } } }
+		#}
+		#cancel_effect = {
+		#	log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): cancel mission JAP_time_of_the_court"
+		#	clr_country_flag = JAP_special_military_court_category_flag
+		#	custom_effect_tooltip = JAP_time_of_the_court_tt
+		#}
 		icon = JAP_time_of_the_court # ну кста можно не прописывать... хотя все таки надо
 		is_good = no
 		days_mission_timeout = 720
@@ -1556,6 +1556,10 @@ JAP_special_military_court_category = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): timeout mission JAP_time_of_the_court"
 			clr_country_flag = JAP_special_military_court_category_flag
 			custom_effect_tooltip = JAP_time_of_the_court_tt
+			if = { 
+				limit = { has_country_flag = JAP_Masaki_was_arrested }
+				country_event = NW_JAP.738
+			}
 		}
 	}
 	
@@ -1572,7 +1576,7 @@ JAP_special_military_court_category = {
 		}
 		icon = JAP_interrogation_of_all_participants_of_the_uprising
 		is_good = no
-		days_mission_timeout = 50
+		days_mission_timeout = 120
 		selectable_mission = no
 		timeout_effect = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): timeout mission JAP_interrogation_of_all_participants_of_the_uprising"
@@ -1623,30 +1627,53 @@ JAP_special_military_court_category = {
 	}
 	
 	JAP_purge_of_Kodoha_members_in_the_Army = {
-		priority = 900
+		priority = 920
 		icon = JAP_purge_of_Kodoha_members_in_the_Army
 		cost = 50
 		fire_only_once = yes
 		complete_effect = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision JAP_purge_of_Kodoha_members_in_the_Army"
 			set_country_flag = JAP_purge_of_Toseiha_members_in_the_Army_UNLOCK_flag
+			remove_trait = { 
+				character = JAP_Tomoyuki_Yamashita
+				trait = JAP_member_of_kodoha
+			}
+			remove_trait = { 
+				character = JAP_Renya_Mutaguchi
+				trait = JAP_member_of_kodoha
+			}
+			remove_trait = { 
+				character = JAP_Suzuki_Teiichi
+				trait = JAP_member_of_kodoha
+			}
 			every_unit_leader = {
 				limit = { has_trait = JAP_member_of_kodoha NOT = { has_character_flag = JAP_mass_killings_in_Nanjing_flag } }
 				custom_effect_tooltip = JAP_purge_of_Kodoha_members_in_the_Army_tt
 				set_character_flag = JAP_purge_of_Kodoha_members_in_the_Army_flag
 			}
-			remove_ideas = JAP_army_factionalism
-			#add_timed_idea = { idea = JAP_strengthening_the_influence_of_Toseikha days = 28 }
-			unlock_decision_tooltip = JAP_purge_of_Toseiha_members_in_the_Army
-			unlock_decision_tooltip = JAP_arrange_a_tribunal_over_Masaki
-			remove_trait = { 
-				character = JAP_Suzuki_Teiichi
+			add_trait = { 
+				character = JAP_Tomoyuki_Yamashita
 				trait = JAP_member_of_kodoha
 			}
-			add_trait = { 
+			add_trait = {
+				character = JAP_Renya_Mutaguchi
+				trait = JAP_member_of_kodoha
+			}
+			add_trait = {
 				character = JAP_Suzuki_Teiichi
 				trait = JAP_member_of_toseiha
 			}
+			
+			hidden_effect = { country_event = { id = NW_JAP.75 days = 20 } }
+			
+			remove_ideas = JAP_army_factionalism
+			unlock_decision_tooltip = JAP_purge_of_Toseiha_members_in_the_Army
+			#unlock_decision_tooltip = JAP_arrange_a_tribunal_over_Masaki
+			
+			
+			custom_effect_tooltip = empty_line_tooltip
+			custom_effect_tooltip = JAP_purge_of_Kodoha_members_in_the_Army_tt2
+			JAP_Eisuke_Yamamoto = { set_character_flag = JAP_balance_purge }
 		}
 		ai_will_do = {
 			base = 1
@@ -1658,7 +1685,7 @@ JAP_special_military_court_category = {
 	}
 	
 	JAP_purge_of_Toseiha_members_in_the_Army = {
-		priority = 900
+		priority = 910
 		icon = JAP_promote_toseikha_faction_officers
 		visible = { has_country_flag = JAP_purge_of_Toseiha_members_in_the_Army_UNLOCK_flag }
 		cost = 50
@@ -1666,16 +1693,32 @@ JAP_special_military_court_category = {
 		complete_effect = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision JAP_purge_of_Toseiha_members_in_the_Army"
 			set_country_flag = JAP_purge_of_Toseiha_members_in_the_Army_country_flag
+			
+			remove_trait = { 
+				character = JAP_Hideki_Todze
+				trait = JAP_member_of_toseiha
+			}
+			remove_trait = { 
+				character = JAP_yoshijiro_umezu
+				trait = JAP_member_of_toseiha
+			}
 			every_unit_leader = {
 				limit = { has_trait = JAP_member_of_toseiha }
 				custom_effect_tooltip = JAP_purge_of_Kodoha_members_in_the_Army_tt
 				set_character_flag = JAP_purge_of_Toseiha_members_in_the_Army_flag
 			}
-			if = {
-				limit = { has_idea = JAP_strengthening_the_influence_of_Toseikha }
-				remove_ideas = JAP_strengthening_the_influence_of_Toseikha
+			add_trait = { 
+				character = JAP_Hideki_Todze
+				trait = JAP_member_of_toseiha
 			}
+			add_trait = { 
+				character = JAP_yoshijiro_umezu
+				trait = JAP_member_of_toseiha
+			}
+			
+			custom_effect_tooltip = empty_line_tooltip
 			custom_effect_tooltip = JAP_purge_of_Toseiha_members_in_the_Army_tt
+			JAP_Redza_Nakamura = { set_character_flag = JAP_balance_purge }
 		}
 		ai_will_do = {
 			base = 1
@@ -1694,6 +1737,11 @@ JAP_special_military_court_category = {
 		complete_effect = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision JAP_purge_of_Kodoha_members_in_the_Army"
 			set_country_flag = JAP_purge_of_Ugaki_members_in_the_Army_UNLOCK_flag
+			
+			remove_trait = { 
+				character = JAP_Isamu_Cho
+				trait = JAP_member_of_ugaki_fraction 
+			}
 			every_unit_leader = {
 				limit = { 
 					has_trait = JAP_member_of_ugaki_fraction 
@@ -1702,13 +1750,19 @@ JAP_special_military_court_category = {
 				custom_effect_tooltip = JAP_purge_of_Kodoha_members_in_the_Army_tt
 				set_character_flag = JAP_purge_of_Ugaki_members_in_the_Army_flag
 			}
+			add_trait = { 
+				character = JAP_Isamu_Cho
+				trait = JAP_member_of_ugaki_fraction 
+			}
+			
+			custom_effect_tooltip = empty_line_tooltip
+			custom_effect_tooltip = JAP_purge_of_Ugaki_members_in_the_Army_tt
+			JAP_Seizo_Kobayashi = { 
+				set_character_flag = JAP_balance_purge
+			}
 			if = { 
 				limit = { check_variable = { MAN_kwantung_army_commander_faction = token:ugaki_faction } }
 				country_event = NW_JAP.630
-				
-			}
-			JAP_Seizo_Kobayashi = { 
-				set_character_flag = JAP_balance_purge
 			}
 		}
 		ai_will_do = {
@@ -1739,45 +1793,45 @@ JAP_special_military_court_category = {
 		}
 	}
 	
-	JAP_condemn_the_army_for_the_split = {
-		priority = 850
-		icon = JAP_promote_toseikha_faction_officers
-		visible = { has_country_flag = JAP_OPEN_process_flag }
-		cost = 100
-		fire_only_once = yes
-		complete_effect = {
-			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision JAP_condemn_the_army_for_the_split"
-			add_to_variable = { JAP_the_level_of_insubordination_var = -15 tooltip = JAP_the_level_of_insubordination_var_tt }
-			JAP_the_level_of_insubordination_effect = yes
-		}
-		ai_will_do = {
-			base = 1
-			modifier = {
-				add = -1
-				is_historical_focus_on = yes
-			}
-		}
-	}
+#	JAP_condemn_the_army_for_the_split = {
+#		priority = 850
+#		icon = JAP_promote_toseikha_faction_officers
+#		visible = { has_country_flag = JAP_OPEN_process_flag }
+#		cost = 100
+#		fire_only_once = yes
+#		complete_effect = {
+#			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision JAP_condemn_the_army_for_the_split"
+#			add_to_variable = { JAP_the_level_of_insubordination_var = -15 tooltip = JAP_the_level_of_insubordination_var_tt }
+#			JAP_the_level_of_insubordination_effect = yes
+#		}
+#		ai_will_do = {
+#			base = 1
+#			modifier = {
+#				add = -1
+#				is_historical_focus_on = yes
+#			}
+#		}
+#	}
 	
-	JAP_condemn_the_army_for_violations_of_discipline = {
-		priority = 800
-		icon = JAP_promote_toseikha_faction_officers
-		visible = { has_country_flag = JAP_OPEN_process_flag }
-		cost = 100
-		fire_only_once = yes
-		complete_effect = {
-			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision JAP_condemn_the_army_for_violations_of_discipline"
-			add_to_variable = { JAP_the_level_of_insubordination_var = -15 tooltip = JAP_the_level_of_insubordination_var_tt }
-			JAP_the_level_of_insubordination_effect = yes
-		}
-		ai_will_do = {
-			base = 1
-			modifier = {
-				add = -1
-				is_historical_focus_on = yes
-			}
-		}
-	}
+#	JAP_condemn_the_army_for_violations_of_discipline = {
+#		priority = 800
+#		icon = JAP_promote_toseikha_faction_officers
+#		visible = { has_country_flag = JAP_OPEN_process_flag }
+#		cost = 100
+#		fire_only_once = yes
+#		complete_effect = {
+#			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision JAP_condemn_the_army_for_violations_of_discipline"
+#			add_to_variable = { JAP_the_level_of_insubordination_var = -15 tooltip = JAP_the_level_of_insubordination_var_tt }
+#			JAP_the_level_of_insubordination_effect = yes
+#		}
+#		ai_will_do = {
+#			base = 1
+#			modifier = {
+#				add = -1
+#				is_historical_focus_on = yes
+#			}
+#		}
+#	}
 	
 	JAP_arrange_a_tribunal_over_the_sergeants_who_attacked_the_police = {
 		priority = 750
@@ -1886,9 +1940,12 @@ JAP_special_military_court_category = {
 		fire_only_once = yes
 		remove_effect = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): remove decision JAP_arrange_a_tribunal_over_the_civilians"
+			
 			add_popularity = { ideology = fascism popularity = -0.05 }
 			add_popularity = { ideology = monarchy popularity = -0.03 }
 			add_popularity = { ideology = neutrality popularity = 0.08 }
+			set_country_flag = JAP_arrange_a_tribunal_over_the_indirectly_guilty_COMPLETE_flag
+			country_event = { id = NW_JAP.338 days = 1 }
 		}
 		ai_will_do = {
 			base = 1
@@ -1907,10 +1964,15 @@ JAP_special_military_court_category = {
 		fire_only_once = yes
 		remove_effect = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): remove decision JAP_arrange_a_tribunal_over_the_indirectly_guilty"
-			set_country_flag = JAP_arrange_a_tribunal_over_the_indirectly_guilty_COMPLETE_flag
-			add_to_variable = { JAP_the_level_of_insubordination_var = -5 tooltip = JAP_the_level_of_insubordination_var_tt }
+			custom_effect_tooltip = dead_character
+			show_ideas_tooltip = JAP_Nisida_Mitsugi
+			hidden_effect = { retire_character = JAP_Nisida_Mitsugi }
+			if = {
+				limit = { has_country_flag = JAP_CLOSE_process_flag }
+				add_to_variable = { JAP_the_level_of_insubordination_var = -5 tooltip = JAP_the_level_of_insubordination_var_tt }
+				else = { add_to_variable = { JAP_the_level_of_insubordination_var = -8 tooltip = JAP_the_level_of_insubordination_var_tt } }
+			}
 			JAP_the_level_of_insubordination_effect = yes
-			country_event = { id = NW_JAP.338 days = 1 }
 		}
 		ai_will_do = {
 			base = 1
@@ -1924,7 +1986,10 @@ JAP_special_military_court_category = {
 	JAP_arrange_a_tribunal_over_Masaki = {
 		priority = 500
 		icon = JAP_promote_toseikha_faction_officers
-		visible = { has_country_flag = JAP_arrange_a_tribunal_over_Masaki_OPEN_flag }
+		visible = { 
+			has_country_flag = JAP_Masaki_was_arrested 
+			#has_country_flag = JAP_arrange_a_tribunal_over_Masaki_OPEN_flag 
+		}
 		custom_cost_trigger = {
 			set_temp_variable = { custom_cost_pp = 100 }
 			set_temp_variable = { command_power_temp_cost = 50 }
@@ -1932,17 +1997,19 @@ JAP_special_military_court_category = {
 			check_variable = { command_power > command_power_temp_cost }
 		}
 		custom_cost_text = pol_and_comnand_power_cost
-		days_remove = 30
+		#days_remove = 30
 		fire_only_once = yes
 		complete_effect = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision JAP_arrange_a_tribunal_over_Masaki"
 			hidden_effect = { add_command_power = -50 add_political_power = -100 }
+			country_event = NW_JAP.738
 		}
-		remove_effect = {
-			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): remove decision JAP_arrange_a_tribunal_over_Masaki"
-			add_to_variable = { JAP_the_level_of_insubordination_var = -10 tooltip = JAP_the_level_of_insubordination_var_tt }
-			JAP_the_level_of_insubordination_effect = yes
-		}
+		#remove_effect = {
+		#	log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): remove decision JAP_arrange_a_tribunal_over_Masaki"
+		#	
+		#	add_to_variable = { JAP_the_level_of_insubordination_var = -10 tooltip = JAP_the_level_of_insubordination_var_tt }
+		#	JAP_the_level_of_insubordination_effect = yes
+		#}
 		ai_will_do = {
 			base = 1
 			modifier = {
@@ -1951,11 +2018,11 @@ JAP_special_military_court_category = {
 			}
 		}
 	}
-	
+		
 	JAP_accuse_Ikki_Kita_of_complicity_in_the_uprising = {
 		priority = 450
 		icon = JAP_accuse_Ikki_Kita_of_complicity_in_the_uprising
-		cost = 150
+		cost = 50
 		days_remove = 30
 		fire_only_once = yes
 		remove_effect = {
@@ -1965,6 +2032,31 @@ JAP_special_military_court_category = {
 			hidden_effect = { retire_character = JAP_Ikki_Kita }
 			add_popularity = { ideology = fascism popularity = -0.02 }
 			add_popularity = { ideology = neutrality popularity = 0.02 }
+		}
+		ai_will_do = {
+			base = 1
+			modifier = {
+				add = 999
+				is_historical_focus_on = yes
+			}
+		}
+	}
+	
+	
+	JAP_close_the_court = {
+		priority = 400
+		icon = JAP_close_the_court
+		cost = 30
+		fire_only_once = yes
+		visible = { has_war = yes } 
+		complete_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision JAP_purge_of_Kokutai_members_in_the_Army"
+			clr_country_flag = JAP_special_military_court_category_flag
+			custom_effect_tooltip = JAP_time_of_the_court_tt
+			if = { 
+				limit = { has_country_flag = JAP_Masaki_was_arrested }
+				country_event = NW_JAP.738
+			}
 		}
 		ai_will_do = {
 			base = 1
@@ -7450,6 +7542,24 @@ JAP_Ugaki_office_category = {
 
 JAP_the_Law_on_the_General_Mobilization_of_the_Nation_category = {
 	
+	JAP_passing_the_law_mission = {
+		priority = 1100
+		icon = JAP_passing_the_law_mission
+		activation = { always = no }
+		available = { hidden_trigger = { always = no } }
+		fire_only_once = yes
+		selectable_mission = no
+		days_mission_timeout = 185
+		timeout_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): timeout mission JAP_passing_the_law_mission"
+			uncomplete_national_focus = {
+				focus = JAP_the_Law_on_the_General_Mobilization_of_the_Nation
+				uncomplete_children = yes
+				refund_political_power = no
+			}
+		}
+	}
+	
 	JAP_adoption_of_the_law_on_national_mobilization_mission = {
 		priority = 1000
 		icon = JAP_adoption_of_the_law_on_national_mobilization_mission
@@ -10097,7 +10207,7 @@ JAP_state_of_Rikken_Sayukai_category = {
 
 JAP_melancholy_of_prince_category = {
 	JAP_time_to_retirement = {
-		priority = 1000
+		priority = 1100
 		icon = JAP_time_to_retirement
 		activation = { always = no }
 		available = { hidden_trigger = { always = no } }
@@ -10123,6 +10233,20 @@ JAP_melancholy_of_prince_category = {
 		}
 	}
 			
+	JAP_discuss_with_kido = {
+		priority = 1050
+		icon = JAP_discuss_with_kido
+		fire_only_once = no
+		available = {
+		}
+		days_re_enable = 30
+		cost = 30 
+		complete_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision JAP_discuss_with_kido"
+			add_days_mission_timeout = { mission = JAP_time_to_retirement days = 100 }
+		}
+	}
+	
 	JAP_change_of_mood = {
 		priority = 1000
 		icon = JAP_change_of_mood

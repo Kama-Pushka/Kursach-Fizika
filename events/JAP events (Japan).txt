@@ -2481,21 +2481,22 @@ country_event = {
 		}
 		set_country_flag = JAP_OPEN_process_flag
 		activate_mission = JAP_open_process_mission
-		unlock_decision_tooltip = JAP_condemn_the_army_for_the_split
-		unlock_decision_tooltip = JAP_condemn_the_army_for_violations_of_discipline
+		#unlock_decision_tooltip = JAP_condemn_the_army_for_the_split
+		#unlock_decision_tooltip = JAP_condemn_the_army_for_violations_of_discipline
 		unlock_decision_tooltip = JAP_arrange_a_tribunal_over_the_sergeants_who_attacked_the_police
 		unlock_decision_tooltip = JAP_arrange_a_tribunal_over_the_sergeants_who_attacked_politicians
 		unlock_decision_tooltip = JAP_arrange_a_tribunal_over_the_soldiers
+		hidden_effect = { country_event = NW_JAP.736 hours = 12 }
 	}
 	option = {
 		name = NW_JAP.72.b
 		ai_chance = { base = 1 }
 		set_country_flag = JAP_CLOSE_process_flag
-		hidden_effect = { country_event = { id = NW_JAP.75 days = 20 } }
 		activate_mission = JAP_close_process_mission
 		unlock_decision_tooltip = JAP_arrange_a_tribunal_over_the_sergeants_who_attacked_the_police
 		unlock_decision_tooltip = JAP_arrange_a_tribunal_over_the_sergeants_who_attacked_politicians
 		unlock_decision_tooltip = JAP_arrange_a_tribunal_over_the_soldiers
+		hidden_effect = { country_event = NW_JAP.736 hours = 12 }
 	}
 }
 
@@ -5662,11 +5663,22 @@ country_event = {
 	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_JAP.185" }
 	option = {
 		name = NW_JAP.185.a
+		set_country_flag = JAP_Ugaki_was_recommended 
 		if = { 
 			limit = { has_completed_focus = JAP_reassure_the_military }
 			hidden_effect = { country_event = NW_JAP.732 }
 		}
 		else = { set_country_flag = JAP_Ugaki_office_UNLOCK_flag }
+		if = { 
+			limit = {
+				OR = { 
+					has_country_flag = JAP_Masaki_was_arrested 
+					has_country_flag = JAP_Masaki_was_sentenced
+				}
+			}
+			add_to_variable = { JAP_the_level_of_insubordination_var = 10 tooltip = JAP_the_level_of_insubordination_var_tt }
+			JAP_the_level_of_insubordination_effect = yes
+		}
 	}
 }
 
@@ -5971,7 +5983,7 @@ country_event = {
 			limit = { has_completed_focus = JAP_advisory_election_reform }
 			country_event = NW_JAP.726
 		}
-		else = { country_event = NW_JAP.735 }
+		else = { country_event = NW_JAP.209 }
 	}
 }
 
@@ -6156,28 +6168,36 @@ country_event = {
 	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_JAP.215" }
 	option = {
 		name = NW_JAP.215.a
-		add_stability = -0.15
+		add_stability = -0.1
 		add_war_support = 0.1
-		add_popularity = { ideology = communism popularity = 0.04 }
+		add_popularity = { ideology = communism popularity = 0.02 }
 		add_popularity = { ideology = trozkism popularity = 0.03 }
 		add_popularity = { ideology = monarchy popularity = 0.05 }
 		add_popularity = { ideology = neutrality popularity = -0.05 }
 		add_power_balance_value = {
 			id = JAP_Hirota_Koki_power_balance
-			value = -0.5
+			value = -0.2
 			tooltip_side = JAP_reformers
 		}
+		#clr_country_flag = JAP_special_military_court_category_flag
+		#custom_effect_tooltip = JAP_time_of_the_court_tt
+		clr_country_flag = JAP_Masaki_was_arrested 
+		clr_country_flag = JAP_Masaki_was_sentenced
 	}
 	option = {
 		name = NW_JAP.215.b
 		add_power_balance_value = {
 			id = JAP_Hirota_Koki_power_balance
-			value = -0.2
+			value = -0.1
 			tooltip_side = JAP_reformers
 		}
 		add_war_support = 0.1
 		add_popularity = { ideology = monarchy popularity = 0.05 }
 		add_popularity = { ideology = neutrality popularity = -0.05 }
+		#clr_country_flag = JAP_special_military_court_category_flag
+		#custom_effect_tooltip = JAP_time_of_the_court_tt
+		clr_country_flag = JAP_Masaki_was_arrested 
+		clr_country_flag = JAP_Masaki_was_sentenced
 	}
 }
 
@@ -6194,31 +6214,6 @@ country_event = {
 	}
 }
 
-# План сторонников однопартийного движения
-country_event = {
-	id = NW_JAP.217
-	title = NW_JAP.217.t
-	desc = NW_JAP.217.d
-	picture = GFX_report_event_NW_JAP.217
-	trigger = { 
-		has_completed_focus = JAP_people_Savings_Promotion_Company
-		has_country_flag = JAP_anti_communist_defense_group_flag
-		has_country_leader = { character = JAP_Fumimaro_Konoe ruling_only = yes }
-	}
-	fire_only_once = yes
-	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_JAP.217" }
-	option = {
-		name = NW_JAP.217.a
-		set_country_flag = JAP_Konoe_approves_the_plan_flag
-		hidden_effect = { country_event = { id = NW_JAP.218 days = 10 } }
-		set_country_flag = JAP_event_217_flag
-	}
-	option = {
-		name = NW_JAP.217.b
-		hidden_effect = { country_event = { id = NW_JAP.218 days = 10 } }
-		set_country_flag = JAP_event_217_flag
-	}
-}
 
 # Митинги сторонников «Движения за одну партию»
 country_event = {
@@ -6226,18 +6221,16 @@ country_event = {
 	title = NW_JAP.218.t
 	desc = NW_JAP.218.d
 	picture = GFX_report_event_NW_JAP.218
+	trigger = { 
+		has_active_mission = JAP_adoption_of_the_law_on_national_mobilization_mission
+	}
 	is_triggered_only = yes
 	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_JAP.218" }
 	option = {
 		name = NW_JAP.218.a
-		if = {
-			limit = { has_country_flag = JAP_Konoe_approves_the_plan_flag }
-			hidden_effect = { country_event = { id = NW_JAP.219 days = 3 } }
-		}
-		else = {
-			add_stability = -0.03
-			add_popularity = { ideology = neutrality popularity = 0.02 }
-		}
+		hidden_effect = { country_event = { id = NW_JAP.219 days = 3 } }
+		add_stability = -0.03
+		add_popularity = { ideology = neutrality popularity = 0.02 }
 	}
 }
 
@@ -6256,16 +6249,6 @@ country_event = {
 	option = {
 		name = NW_JAP.219.a
 		hidden_effect = { country_event = NW_JAP.220 }
-	}
-	option = { 
-		name = NW_JAP.219.b 
-		trigger = { 
-			power_balance_value = {
-				id = JAP_Hirota_Koki_power_balance
-				value < -0.3
-			}
-		}
-		complete_national_focus = JAP_support_the_idea_of_Arima_Yeriyasu
 	}
 }
 
@@ -10711,7 +10694,9 @@ country_event = {
 	desc = NW_JAP.375.d
 	picture = GFX_report_event_JAP_375
 	is_triggered_only = yes
-	trigger = { NOT = { has_completed_focus = JAP_the_conspiracy_is_supported } }
+	trigger = { 
+		has_active_mission = JAP_adoption_of_the_law_on_national_mobilization_mission
+	}
 	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_JAP.375" }
 	option = {
 		name = NW_JAP.375.a
@@ -22949,11 +22934,105 @@ country_event = {
 	picture = GFX_report_event_NW_JAP.
 	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_JAP.735" }
 	option = { 
-		name = NW_JAP.731.a
+		name = NW_JAP.735.a
 		
 	}
 }
 
+# Арест генерала Масаки
+country_event = {
+	id = NW_JAP.736
+	title = NW_JAP.736.t
+	desc = NW_JAP.736.d
+	trigger = { 
+	}
+	is_triggered_only = yes
+	picture = GFX_report_event_NW_JAP.
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_JAP.736" }
+	option = { 
+		name = NW_JAP.736.a
+		JAP_Jinzaburo_Masaki = { set_character_flag = JAP_under_arrest }
+		hidden_effect = { country_event = { id = NW_JAP.737 days = 75 } }
+	}
+}
+
+# Ситуация вокруг Масаки
+country_event = {
+	id = NW_JAP.737
+	title = NW_JAP.737.t
+	desc = NW_JAP.737.d
+	trigger = { 
+	}
+	is_triggered_only = yes
+	picture = GFX_report_event_NW_JAP.
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_JAP.737" }
+	option = { 
+		name = NW_JAP.737.a
+		set_country_flag = JAP_Masaki_was_arrested 
+	}
+	option = { 
+		name = NW_JAP.737.b
+		add_political_power = -50 
+		add_stability = 0.03
+		add_to_variable = { JAP_the_level_of_insubordination_var = -5 tooltip = JAP_the_level_of_insubordination_var_tt }
+		JAP_the_level_of_insubordination_effect = yes		
+	}
+}
+
+# Судьба генерала Масаки
+country_event = {
+	id = NW_JAP.738
+	title = NW_JAP.738.t
+	desc = NW_JAP.738.d
+	trigger = { 
+	}
+	is_triggered_only = yes
+	picture = GFX_report_event_NW_JAP.
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_JAP.738" }
+	option = { 
+		name = NW_JAP.738.a
+		clr_country_flag = JAP_Masaki_was_arrested 
+		set_country_flag = JAP_Masaki_was_sentenced 
+		add_to_variable = { JAP_the_level_of_insubordination_var = 10 tooltip = JAP_the_level_of_insubordination_var_tt }
+		JAP_the_level_of_insubordination_effect = yes
+		if = { 
+			limit = { NOT = { has_country_flag = JAP_Ugaki_was_recommended } }
+			hidden_effect = { country_event = { id = NW_JAP.739 days = 10 } }
+		}
+	}
+	option = { 
+		name = NW_JAP.738.b
+		clr_country_flag = JAP_Masaki_was_arrested 
+		add_political_power = -20 
+		add_to_variable = { JAP_the_level_of_insubordination_var = 4 tooltip = JAP_the_level_of_insubordination_var_tt }
+		JAP_the_level_of_insubordination_effect = yes
+	}
+}
+ 
+# Привлечение генерала Угаки
+country_event = {
+	id = NW_JAP.739
+	title = NW_JAP.739.t
+	desc = NW_JAP.739.d
+	trigger = { 
+	}
+	is_triggered_only = yes
+	picture = GFX_report_event_NW_JAP.
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_JAP.739" }
+	option = { 
+		name = NW_JAP.739.a
+		add_political_power = -40
+		set_country_flag = JAP_Ugaki_was_judged
+		add_to_variable = { JAP_the_level_of_insubordination_var = -15 tooltip = JAP_the_level_of_insubordination_var_tt }
+		JAP_the_level_of_insubordination_effect = yes
+	}
+	option = { 
+		name = NW_JAP.739.b
+		add_to_variable = { JAP_the_level_of_insubordination_var = 5 tooltip = JAP_the_level_of_insubordination_var_tt }
+		JAP_the_level_of_insubordination_effect = yes
+	}
+}
+ 
  
 
 # Великий связующий полёт Азии и Европы
