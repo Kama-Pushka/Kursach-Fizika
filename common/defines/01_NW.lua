@@ -5,7 +5,7 @@ NDefines.NGame.EVENT_TIMEOUT_DEFAULT = 7									-- Default days before an event
 NDefines.NGame.MISSION_REMOVE_FROM_INTERFACE_DEFAULT = 3					-- Default days before a mission is removed from the interface after having failed or completed
 
 -- Politics
-NDefines.NPolitics.BASE_POLITICAL_POWER_INCREASE = 1.5						-- Weekly ?? (DAYLY!!) increase of PP.
+NDefines.NPolitics.BASE_POLITICAL_POWER_INCREASE = 2						-- Weekly ?? (DAYLY!!) increase of PP.
 
 -- Focuses
 NDefines.NFocus.MAX_SAVED_FOCUS_PROGRESS = 10								-- This much progress can be saved while not having a focus selected
