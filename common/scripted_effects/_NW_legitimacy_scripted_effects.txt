@@ -39,7 +39,7 @@ NW_startup_create_coalition_array = {
 	set_temp_variable = { ideology = current_party_ideology_group }
 	NW_convert_ideology_token_to_idx = yes
 	add_to_array = { NW_coalition_array = ideology }
-	log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): add_to_array NW_coalition_array = [?current_party_ideology_group.GetTokenKey] (NW_startup_create_coalition_array)"
+	log = "[GetDateText]: [THIS.GetName] ([THIS.GetTag]): add_to_array NW_coalition_array = [?current_party_ideology_group.GetTokenKey] (NW_startup_create_coalition_array)"
 }
 
 NW_convert_ideology_token_to_idx = {
@@ -76,7 +76,7 @@ NW_legitimacy_idea_update = {
 		limit = {
 			check_variable = { v > 0.849 }
 			NOT = {
-				has_idea = very_good_legitimacy
+				check_variable = { NW_current_legitimacy_idea = token:very_good_legitimacy } ## опасно хранить токены в переменных (например при запуске сейва с другого компа токен может иметь другое значение, а в переменной останется прежнее), но в данном случае это допустимо?
 				has_government = anarchism
 			}
 			
@@ -97,8 +97,9 @@ NW_legitimacy_idea_update = {
 	else_if = {
 		limit = {
 			check_variable = { v > 0.649 }
+			check_variable = { v < 0.85 }
 			NOT = {
-				has_idea = good_legitimacy
+				check_variable = { NW_current_legitimacy_idea = token:good_legitimacy }
 				has_government = anarchism
 			}
 			
@@ -119,8 +120,9 @@ NW_legitimacy_idea_update = {
 	else_if = {
 		limit = {
 			check_variable = { v > 0.499 }
-			NOT = {
-				has_idea = normal_legitimacy
+			check_variable = { v < 0.65 }
+			NOT = { 
+				check_variable = { NW_current_legitimacy_idea = token:normal_legitimacy } 
 			}
 			
 			NW_can_set_normal_legitimacy = yes ## country specific
@@ -140,8 +142,9 @@ NW_legitimacy_idea_update = {
 	else_if = {
 		limit = {
 			check_variable = { v > 0.299 }
+			check_variable = { v < 0.5 }
 			NOT = {
-				has_idea = low_legitimacy
+				check_variable = { NW_current_legitimacy_idea = token:low_legitimacy }
 			}
 			
 			NW_can_set_low_legitimacy = yes ## country specific
@@ -161,8 +164,9 @@ NW_legitimacy_idea_update = {
 	else_if = {
 		limit = {
 			check_variable = { v > 0.099 }
+			check_variable = { v < 0.3 }
 			NOT = {
-				has_idea = very_low_legitimacy
+				check_variable = { NW_current_legitimacy_idea = token:very_low_legitimacy }
 			}
 			
 			NW_can_set_very_low_legitimacy = yes ## country specific
@@ -183,7 +187,7 @@ NW_legitimacy_idea_update = {
 		limit = {
 			check_variable = { v < 0.099 }
 			NOT = {
-				has_idea = disaster_legitimacy
+				check_variable = { NW_current_legitimacy_idea = token:disaster_legitimacy }
 			}
 			
 			NW_can_set_disaster_legitimacy = yes ## country specific
@@ -220,7 +224,6 @@ NW_legitimacy_default_effects_update = {
 
 NW_startup_set_legitimacy_idea = {
 	add_ideas = var:_new_legitimacy_idea
-	#log = "[GetDateText]: [THIS.GetName] ([THIS.GetTag]): idea legitimacy_[?THIS.new_legitimacy_idea_var.GetTokenKey]" 
 	set_variable = { NW_current_legitimacy_idea = _new_legitimacy_idea }
 	set_variable = { GUI_current_legitimacy_idea_NUM = _GUI_new_legitimacy_idea } #GUI
 	
@@ -228,6 +231,7 @@ NW_startup_set_legitimacy_idea = {
 		limit = { NOT = { has_dynamic_modifier = { modifier = NW_legitimacy_default_effects } } }
 		add_dynamic_modifier = { modifier = NW_legitimacy_default_effects }
 	}
+	# log = "[GetDateText]: [THIS.GetName] ([THIS.GetTag]): idea [?_new_legitimacy_idea.GetTokenKey]" 
 }
 
 NW_swap_legitimacy_idea = {
