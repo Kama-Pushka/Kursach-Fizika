@@ -416,14 +416,7 @@ country_event = {
 			country_event = { id = NW_JAP.5 days = 30 }
 			country_event = { id = NW_JAP.26 days = 360 }
 		}
-		if = { 
-			limit = { has_power_balance = { id = JAP_Hirota_Koki_power_balance } }
-			add_power_balance_value = {
-				id = JAP_Hirota_Koki_power_balance
-				value = -0.05
-				tooltip_side = JAP_reformers
-			}
-		}
+		
 		if = { 
 			limit = { has_power_balance = { id = JAP_new_Okada_government_power_balance } }
 			add_power_balance_value = {
@@ -5483,57 +5476,214 @@ news_event = {
 	}
 }
 
-# Реформаторы перешли границы
+# Обсуждение бюджета на предстоящий год
 country_event = {
 	id = NW_JAP.175
 	title = NW_JAP.175.t
 	desc = NW_JAP.175.d
-	picture = GFX_report_event_JAP_175
+	picture = GFX_report_event_JAP_190_193
 	is_triggered_only = yes
+	trigger = { 
+		NOT = { has_country_flag = JAP_law_on_national_mobilization_flag }
+	}
 	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_JAP.175" }
 	option = {
 		name = NW_JAP.175.a
+		add_political_power = -20
+		if = { 
+			limit = { check_variable = { JAP_the_level_of_insubordination_var > 0 } }
+			add_to_variable = { JAP_the_level_of_insubordination_var = 10 tooltip = JAP_the_level_of_insubordination_var_tt }
+			JAP_the_level_of_insubordination_effect = yes
+		}
+		hidden_effect = { country_event = { id = NW_JAP.175 days = 365 } }
+	}
+	option = {
+		name = NW_JAP.175.b
+		add_political_power = -50
+		hidden_effect = { country_event = { id = NW_JAP.176 days = 365 } }
+	}
+	option = {
+		name = NW_JAP.175.c
+		add_stability = -0.1 
+		add_ideas = JAP_increase_of_inflation_idea 
+		hidden_effect = { country_event = { id = NW_JAP.177 days = 365 } }
 	}
 }
 
-# Реформаторы набрали силу
+# Напряжённое обсуждение бюджета
 country_event = {
 	id = NW_JAP.176
 	title = NW_JAP.176.t
 	desc = NW_JAP.176.d
-	picture = GFX_report_event_JAP_176
+	picture = GFX_report_event_JAP_190_193
 	is_triggered_only = yes
+	trigger = { 
+		NOT = { has_country_flag = JAP_law_on_national_mobilization_flag }
+		has_government = neutrality
+	}
 	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_JAP.176" }
 	option = {
-		name = NW_JAP.176.a
+		name = NW_JAP.175.a
+		add_political_power = -20
+		if = { 
+			limit = { check_variable = { JAP_the_level_of_insubordination_var > 0 } }
+			add_to_variable = { JAP_the_level_of_insubordination_var = 10 tooltip = JAP_the_level_of_insubordination_var_tt }
+			JAP_the_level_of_insubordination_effect = yes
+		}
+		hidden_effect = { country_event = { id = NW_JAP.175 days = 365 } }
+		if = { 
+			limit = { has_idea = JAP_increase_of_inflation_idea }
+			remove_ideas = JAP_increase_of_inflation_idea 
+		}
+	}
+	option = {
+		name = NW_JAP.175.b
+		add_political_power = -50
+		if = { 
+			limit = { NOT = { has_idea = JAP_increase_of_inflation_idea } }
+			add_ideas = JAP_increase_of_inflation_idea 
+		}
+		hidden_effect = { country_event = { id = NW_JAP.177 days = 365 } }
+	}
+	option = {
+		name = NW_JAP.175.c
+		add_stability = -0.1 
+		
+		hidden_effect = { country_event = { id = NW_JAP.178 days = 10 } }
 	}
 }
 
-# Консерваторы набрали силу
+# Тяжёлые дебаты о бюджете
 country_event = {
 	id = NW_JAP.177
 	title = NW_JAP.177.t
 	desc = NW_JAP.177.d
-	picture = GFX_report_event_JAP_177
+	picture = GFX_report_event_JAP_190_193
 	is_triggered_only = yes
+	trigger = { 
+		NOT = { has_country_flag = JAP_law_on_national_mobilization_flag }
+		has_government = neutrality
+	}
 	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_JAP.177" }
 	option = {
 		name = NW_JAP.177.a
+		add_political_power = -20
+		if = { 
+			limit = { check_variable = { JAP_the_level_of_insubordination_var > 0 } }
+			add_to_variable = { JAP_the_level_of_insubordination_var = 10 tooltip = JAP_the_level_of_insubordination_var_tt }
+			JAP_the_level_of_insubordination_effect = yes
+		}
+		hidden_effect = { country_event = { id = NW_JAP.176 days = 365 } }
+	}
+	option = {
+		name = NW_JAP.177.b
+		add_stability = -0.1 
+		
+		hidden_effect = { country_event = { id = NW_JAP.178 days = 10 } }
 	}
 }
 
-# Консерваторы чрезвычайно усилились
+# Экономический кризис
 country_event = {
 	id = NW_JAP.178
 	title = NW_JAP.178.t
-	desc = NW_JAP.178.d
-	picture = GFX_report_event_JAP_178
+	desc = { 
+		text = NW_JAP.178.d.a
+		trigger = { 
+			OR = { 
+				has_country_leader = { character = JAP_Hirota_Koki ruling_only = yes }
+				AND = { 
+					NOT = { 
+						has_country_leader = { character = JAP_Hirota_Koki ruling_only = yes }
+						has_country_flag = JAP_Lord_Konoe
+					}
+				}
+			}
+		}
+	}
+	desc = { 
+		text = NW_JAP.178.d.b
+		trigger = { has_country_leader = { character = JAP_Hirota_Koki ruling_only = yes } }
+	}
+	desc = { 
+		text = NW_JAP.178.d.c
+		trigger = { 
+			NOT = { 
+				has_country_leader = { character = JAP_Hirota_Koki ruling_only = yes }
+				has_country_flag = JAP_Lord_Konoe
+			}
+		}
+	}
+	picture = GFX_report_event_JAP_190_193
 	is_triggered_only = yes
+	trigger = { 
+		NOT = { has_country_flag = JAP_law_on_national_mobilization_flag }
+		has_government = neutrality
+	}
 	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_JAP.178" }
 	option = {
 		name = NW_JAP.178.a
+		trigger = { has_country_leader = { character = JAP_Hirota_Koki ruling_only = yes } } 
+		add_country_leader_role = {
+			character = JAP_Shigeru_Yoshida_bureaucrat
+			promote_leader = yes
+			country_leader = {
+				ideology = authoritarian_democracy
+				expire = "1965.1.1.1"
+				traits = { JAP_representative_of_reform_bureaucrats }
+			}
+		}
+		set_country_flag = JAP_Fumio_Goto_office_UNLOCK_flag
+		set_country_flag = JAP_Hirota_Koki_has_resigned_flag
+		complete_national_focus = JAP_discussion_of_the_new_budget_plan
+		effect_tooltip = { unlock_national_focus = JAP_Fumio_Goto_office }		
+	}
+	option = {
+		name = NW_JAP.178.b
+		trigger = { 
+			NOT = { 
+				has_country_leader = { character = JAP_Hirota_Koki ruling_only = yes }
+				has_country_flag = JAP_Lord_Konoe
+			} 
+		}
+		if = {
+			limit = { NOT = { can_be_country_leader = JAP_Fumimaro_Konoe } }
+			add_country_leader_role = {
+				character = JAP_Fumimaro_Konoe
+				promote_leader = yes
+				country_leader = {
+					desc = "POLITICS_FUMIMARO_KONOE_DESC"
+					ideology = authoritarian_democracy
+					expire = "1965.1.1.1"
+					traits = { JAP_ambitious_political_views JAP_the_melancholic_Prince2 JAP_opponent_of_the_war_with_the_United_States }
+				}
+			}
+		}
+		else = { promote_character = JAP_Fumimaro_Konoe }
+		set_party_name = { ideology = neutrality long_name = JAP_neutrality_party8 name = JAP_neutrality_party8 }
+		activate_mission = JAP_time_to_retirement
+		activate_mission = JAP_change_of_mood
+	#	hidden_effect = { 
+	#		country_event = NW_JAP.740
+	#		country_event = NW_JAP.742
+	#		country_event = NW_JAP.744
+	#	}
+	}
+	option = {
+		name = NW_JAP.178.c
+		OR = { 
+			has_country_leader = { character = JAP_Hirota_Koki ruling_only = yes }
+			AND = { 
+				NOT = { 
+					has_country_leader = { character = JAP_Hirota_Koki ruling_only = yes }
+					has_country_flag = JAP_Lord_Konoe
+				}
+			}
+		}
+		country_event = NW_JAP.723
 	}
 }
+
 
 # Предложения военных о политических реформах
 country_event = {
@@ -5575,7 +5725,7 @@ country_event = {
 			country_event = NW_JAP.182
 		}
 		else = { 
-			country_event = NW_JAP.187
+			country_event = NW_JAP.175
 		}
 	}
 } 
@@ -5616,17 +5766,19 @@ country_event = {
 		trigger = { NOT = { has_completed_focus = JAP_reassure_the_military } }
 		JAP_Hisaichi_Terauchi = { set_character_flag = JAP_left_minister_post }
 		JAP_Seishiro_Itagaki = { set_character_flag = JAP_harakiri_debate }
-		hidden_effect = { country_event = NW_JAP.187 }
+		hidden_effect = { country_event = NW_JAP.175 }
 	}
 	option = {
 		name = NW_JAP.183.b
 		trigger = { NOT = { has_completed_focus = JAP_reassure_the_military } }
 		JAP_Hisaichi_Terauchi = { set_character_flag = JAP_left_minister_post }
 		JAP_Hajime_Sugiyama = { set_character_flag = JAP_harakiri_debate }		
-		hidden_effect = { country_event = NW_JAP.187 }
+		hidden_effect = { country_event = NW_JAP.175 }
 	}
 	option = {
 		name = NW_JAP.183.c
+		set_country_flag = JAP_Hirota_Koki_has_resigned_flag
+		complete_national_focus = JAP_discussion_of_the_new_budget_plan
 		if = { 
 			limit = { has_country_flag = JAP_Lord_Konoe }
 			hidden_effect = { country_event = NW_JAP.184 }
@@ -5652,8 +5804,18 @@ country_event = {
 	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_JAP.184" }
 	option = {
 		name = NW_JAP.184.a
-		set_country_flag = JAP_Hayasi_office_UNLOCK_flag
+		set_country_flag = JAP_Hayasi_office_UNLOCK_flag		
 		effect_tooltip = { unlock_national_focus = JAP_Hayasi_office }
+		add_country_leader_role = {
+			character = JAP_Senjuro_Hayashi
+			promote_leader = yes
+			country_leader = {
+				desc = "POLITICS_SENDZURO_HAYASI_DESC"
+				ideology = authoritarian_democracy
+				expire = "1965.1.1.1"
+				traits = { JAP_affected_by_someone JAP_complex_character }
+			}
+		}
 	}
 }
 
@@ -5668,12 +5830,26 @@ country_event = {
 	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_JAP.185" }
 	option = {
 		name = NW_JAP.185.a
-		set_country_flag = JAP_Ugaki_was_recommended 
+		set_country_flag = JAP_Ugaki_was_recommended 		
 		if = { 
 			limit = { has_completed_focus = JAP_reassure_the_military }
 			hidden_effect = { country_event = NW_JAP.732 }
 		}
-		else = { set_country_flag = JAP_Ugaki_office_UNLOCK_flag }
+		else = { 
+			set_country_flag = JAP_Ugaki_office_UNLOCK_flag
+			effect_tooltip = { unlock_national_focus = JAP_Ugaki_office }
+			set_country_flag = JAP_imperial_decree_was_issued
+			add_country_leader_role = {
+			character = JAP_Kazushige_Ugaki
+			promote_leader = yes
+			country_leader = {
+				desc = "POLITICS_KADSUCIGE_UGAKI_DESC"
+				ideology = authoritarian_democracy
+				expire = "1965.1.1.1"
+				traits = { JAP_carried_out_an_unpopular_military_reform JAP_old_army_leader JAP_associated_with_political_radicals }
+				}
+			}
+		}
 		if = { 
 			limit = {
 				OR = { 
@@ -5698,6 +5874,7 @@ country_event = {
 	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_JAP.186" }
 	option = {
 		name = NW_JAP.186.a
+		
 		add_country_leader_role = {
 			character = JAP_Fumimaro_Konoe
 			promote_leader = yes
@@ -5711,38 +5888,6 @@ country_event = {
 		effect_tooltip = { unlock_national_focus = JAP_Prince_Konoe_office }
 		activate_mission = JAP_time_to_retirement
 		activate_mission = JAP_change_of_mood
-	}
-}
-
-# Обсуждение бюджета на предстоящий год
-country_event = {
-	id = NW_JAP.187
-	title = NW_JAP.187.t
-	desc = NW_JAP.187.d
-	picture = GFX_report_event_JAP_190_193
-	is_triggered_only = yes
-	trigger = { 
-		has_country_leader = { character = JAP_Hirota_Koki ruling_only = yes }
-	}
-	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_JAP.187" }
-	option = {
-		name = NW_JAP.187.a
-		add_political_power = -20
-		add_to_variable = { JAP_the_level_of_insubordination_var = 10 tooltip = JAP_the_level_of_insubordination_var_tt }
-		JAP_the_level_of_insubordination_effect = yes
-		hidden_effect = { country_event = { id = NW_JAP.187 days = 365 } }
-	}
-	option = {
-		name = NW_JAP.187.b
-		add_political_power = -50
-		hidden_effect = { country_event = { id = NW_JAP.187 days = 365 } }
-	}
-	option = {
-		name = NW_JAP.187.c
-		add_stability = -0.1 
-		#if = { } 
-		#else = { }
-		hidden_effect = { country_event = { id = NW_JAP.187 days = 365 } }
 	}
 }
 
@@ -5928,7 +6073,7 @@ country_event = {
 	desc = NW_JAP.206.d
 	picture = GFX_report_event_JAP_206
 	is_triggered_only = yes
-	trigger = { has_completed_focus = JAP_reassure_the_military }
+	trigger = { }
 	immediate = {
 		log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_JAP.206"
 		set_country_flag = JAP_demands_of_the_Manchurian_Faction_flag
@@ -6061,11 +6206,7 @@ country_event = {
 		set_party_name = { ideology = neutrality long_name = JAP_neutrality_party8 name = JAP_neutrality_party8 }
 		activate_mission = JAP_time_to_retirement
 		activate_mission = JAP_change_of_mood
-		add_power_balance_value = {
-			id = JAP_Hirota_Koki_power_balance
-			value = 0.1
-			tooltip_side = JAP_supporters_of_the_status_quo
-		}
+		
 		add_popularity = { ideology = fascism popularity = 0.01 }
 		add_popularity = { ideology = democratic popularity = 0.02 }
 		add_popularity = { ideology = neutrality popularity = 0.03 }
@@ -6084,11 +6225,7 @@ country_event = {
 			}
 		}
 		set_party_name = { ideology = neutrality long_name = JAP_neutrality_party10 name = JAP_neutrality_party10 }
-		add_power_balance_value = {
-			id = JAP_Hirota_Koki_power_balance
-			value = -0.1
-			tooltip_side = JAP_supporters_of_the_status_quo
-		}
+		
 		add_popularity = { ideology = fascism popularity = 0.01 }
 		add_popularity = { ideology = democratic popularity = 0.02 }
 		add_popularity = { ideology = neutrality popularity = 0.03 }
@@ -6119,7 +6256,7 @@ country_event = {
 	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_JAP.212" }
 	option = {
 		name = NW_JAP.212.a
-		add_power_balance_modifier = { id = JAP_Hirota_Koki_power_balance modifier = JAP_breakfast_society_modifier }
+		
 	}
 }
 
@@ -6179,11 +6316,7 @@ country_event = {
 		add_popularity = { ideology = trozkism popularity = 0.03 }
 		add_popularity = { ideology = monarchy popularity = 0.05 }
 		add_popularity = { ideology = neutrality popularity = -0.05 }
-		add_power_balance_value = {
-			id = JAP_Hirota_Koki_power_balance
-			value = -0.2
-			tooltip_side = JAP_reformers
-		}
+		
 		#clr_country_flag = JAP_special_military_court_category_flag
 		#custom_effect_tooltip = JAP_time_of_the_court_tt
 		clr_country_flag = JAP_Masaki_was_arrested 
@@ -6191,11 +6324,7 @@ country_event = {
 	}
 	option = {
 		name = NW_JAP.215.b
-		add_power_balance_value = {
-			id = JAP_Hirota_Koki_power_balance
-			value = -0.1
-			tooltip_side = JAP_reformers
-		}
+		
 		add_war_support = 0.1
 		add_popularity = { ideology = monarchy popularity = 0.05 }
 		add_popularity = { ideology = neutrality popularity = -0.05 }
@@ -6270,11 +6399,7 @@ country_event = {
 		add_political_power = 75
 		add_popularity = { ideology = fascism popularity = 0.03 }
 		add_popularity = { ideology = neutrality popularity = 0.02 }
-		add_power_balance_value = {
-			id = JAP_Hirota_Koki_power_balance
-			value = 0.3
-			tooltip_side = JAP_supporters_of_the_status_quo
-		}
+		
 	}
 }
 
@@ -10885,7 +11010,7 @@ country_event = {
 		trigger = {
 			has_country_flag = NW_JAP_300_event_flag
 			has_completed_focus = JAP_condemn_the_movement_in_one_party
-			power_balance_value = { id = JAP_Hirota_Koki_power_balance value > 0 }
+			
 		}
 		set_politics = { ruling_party = democratic elections_allowed = yes }
 		add_popularity = { ideology = democratic popularity = 0.1 }
@@ -16221,12 +16346,20 @@ country_event = {
 country_event = {
 	id = NW_JAP.549
 	title = NW_JAP.549.t
-	desc = NW_JAP.549.desc.a
+	desc = { 
+		text = NW_JAP.549.desc.a
+		trigger = { NOT = { has_country_flag = JAP_Lord_Konoe } }
+	}
+	desc = { 
+		text = NW_JAP.549.desc.b
+		trigger = { has_country_flag = JAP_Lord_Konoe }
+	}
 	picture = GFX_report_event_NW_JAP.549
 	is_triggered_only = yes
 	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_JAP.549" }
 	option = {
 		name = NW_JAP.549.a
+		trigger = {  NOT = { has_country_flag = JAP_Lord_Konoe } } 
 		effect_tooltip = { unlock_national_focus = JAP_Prince_Konoe_office }
 		add_country_leader_role = {
 			character = JAP_Fumimaro_Konoe
@@ -16243,6 +16376,15 @@ country_event = {
 	}
 	option = {
 		name = NW_JAP.549.b
+		add_country_leader_role = {
+			character = JAP_Shigeru_Yoshida_bureaucrat
+			promote_leader = yes
+			country_leader = {
+				ideology = authoritarian_democracy
+				expire = "1965.1.1.1"
+				traits = { JAP_representative_of_reform_bureaucrats }
+			}
+		}
 		set_country_flag = JAP_Fumio_Goto_office_UNLOCK_flag
 		effect_tooltip = { unlock_national_focus = JAP_Fumio_Goto_office }		
 	}
@@ -16250,7 +16392,31 @@ country_event = {
 		name = NW_JAP.549.c
 		set_country_flag = NW_JAP_549_c_event_flag
 		effect_tooltip = { unlock_national_focus = JAP_Manchurian_Cabinet }	
-		#complete_national_focus = JAP_Manchurian_Cabinet		
+		add_country_leader_role = {
+			character = JAP_Seishiro_Itagaki
+			promote_leader = yes
+			country_leader = {
+				ideology = authoritarian_democracy
+				expire = "1965.1.1.1"
+				traits = { }
+			}
+		}
+	}
+	option = {
+		name = NW_JAP.549.d
+		trigger = { has_country_flag = JAP_Lord_Konoe }
+		set_country_flag = JAP_Hayasi_office_UNLOCK_flag		
+		effect_tooltip = { unlock_national_focus = JAP_Hayasi_office }
+		add_country_leader_role = {
+			character = JAP_Senjuro_Hayashi
+			promote_leader = yes
+			country_leader = {
+				desc = "POLITICS_SENDZURO_HAYASI_DESC"
+				ideology = authoritarian_democracy
+				expire = "1965.1.1.1"
+				traits = { JAP_affected_by_someone JAP_complex_character }
+			}
+		}
 	}
 }
 
@@ -16310,11 +16476,7 @@ country_event = {
 		}
 		if = {
 			limit = { has_completed_focus = JAP_Hirota_Koki_office }
-			add_power_balance_value = {
-				id = JAP_Hirota_Koki_power_balance
-				value = -0.05
-				tooltip_side = JAP_reformers
-			}
+			
 		}
 	}
 }
@@ -16337,14 +16499,7 @@ country_event = {
 				tooltip_side = JAP_opponents_of_democracy
 			}
 		}
-		if = {
-			limit = { has_completed_focus = JAP_Hirota_Koki_office }
-			add_power_balance_value = {
-				id = JAP_Hirota_Koki_power_balance
-				value = -0.05
-				tooltip_side = JAP_reformers
-			}
-		}
+		
 	}
 }
 
@@ -16409,11 +16564,7 @@ country_event = {
 			has_completed_focus = JAP_Hirota_Koki_office 
 			has_war = no
 		}
-		add_power_balance_value = {
-			id = JAP_Hirota_Koki_power_balance
-			value = -0.05
-			tooltip_side = JAP_reformers
-		}
+		
 	}
 	option = {
 		name = NW_JAP.556.c
@@ -18401,14 +18552,7 @@ country_event = {
 	option = { 
 		name = NW_JAP.628.a
 		hidden_effect = { country_event = { id = NW_JAP.629 days = 5 } }
-		if = { 
-			limit = { has_power_balance = { id = JAP_Hirota_Koki_power_balance } }
-			add_power_balance_value = {
-				id = JAP_Hirota_Koki_power_balance
-				value = -0.05
-				tooltip_side = JAP_reformers
-			}
-		}
+		
 		if = { 
 			limit = { has_power_balance = { id = JAP_new_Okada_government_power_balance } }
 			add_power_balance_value = {
@@ -21874,11 +22018,7 @@ country_event = {
 	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_JAP.722" }
 	option = { 
 		name = NW_JAP.722.a
-		add_power_balance_value = {
-			id = JAP_Hirota_Koki_power_balance
-			value = 0.15
-			tooltip_side = JAP_supporters_of_the_status_quo
-		}
+		
 		add_stability = 0.03
 		MAN_nobusuke_kishi = { set_nationality = MAN } 
 	}
@@ -22213,9 +22353,12 @@ country_event = {
 		activate_mission = JAP_time_to_retirement
 		activate_mission = JAP_change_of_mood
 		hidden_effect = { 
-			country_event = NW_JAP.740
-			country_event = NW_JAP.742
-			country_event = NW_JAP.744
+			if = { 
+				limit = { has_completed_focus = JAP_Prince_Konoe_office }
+				country_event = NW_JAP.740
+				country_event = NW_JAP.742
+				country_event = NW_JAP.744
+			}
 		}
 	}
 	option = { 
@@ -22829,11 +22972,11 @@ country_event = {
 	option = { 
 		name = NW_JAP.728.c
 		trigger = { 
-			NOT = { has_country_leader = { character = JAP_Enedzo_Maeda ruling_only = yes } }
-			has_character = JAP_Enedzo_Maeda 
+			NOT = { has_country_leader = { character = JAP_Yonezo_Maeda ruling_only = yes } }
+			has_character = JAP_Yonezo_Maeda 
 		}
 		add_country_leader_role = {
-			character = JAP_Enedzo_Maeda
+			character = JAP_Yonezo_Maeda
 			promote_leader = yes
 			country_leader = {
 				desc = "POLITICS_FUMIMARO_KONOE_DESC"
@@ -23004,10 +23147,20 @@ country_event = {
 		name = NW_JAP.732.a
 		add_political_power = -100 
 		set_country_flag = JAP_Ugaki_office_UNLOCK_flag
-		add_to_variable = { JAP_the_level_of_insubordination_var = -5 tooltip = JAP_the_level_of_insubordination_var_tt }
-		JAP_the_level_of_insubordination_effect = yes
 		effect_tooltip = { unlock_national_focus = JAP_Ugaki_office }
 		set_country_flag = JAP_imperial_decree_was_issued
+		add_country_leader_role = {
+			character = JAP_Kazushige_Ugaki
+			promote_leader = yes
+			country_leader = {
+				desc = "POLITICS_KADSUCIGE_UGAKI_DESC"
+				ideology = authoritarian_democracy
+				expire = "1965.1.1.1"
+				traits = { JAP_carried_out_an_unpopular_military_reform JAP_old_army_leader JAP_associated_with_political_radicals }
+			}
+		}
+		add_to_variable = { JAP_the_level_of_insubordination_var = -5 tooltip = JAP_the_level_of_insubordination_var_tt }
+		JAP_the_level_of_insubordination_effect = yes
 	}
 	option = { 
 		name = NW_JAP.732.b
@@ -23049,6 +23202,16 @@ country_event = {
 		add_political_power = -40 
 		set_country_flag = JAP_Hayasi_office_UNLOCK_flag
 		effect_tooltip = { unlock_national_focus = JAP_Hayasi_office }
+		add_country_leader_role = {
+			character = JAP_Senjuro_Hayashi
+			promote_leader = yes
+			country_leader = {
+				desc = "POLITICS_SENDZURO_HAYASI_DESC"
+				ideology = authoritarian_democracy
+				expire = "1965.1.1.1"
+				traits = { JAP_affected_by_someone JAP_complex_character }
+			}
+		}
 	}
 }
 
@@ -23203,6 +23366,8 @@ country_event = {
 		show_ideas_tooltip = JAP_Hajime_Sugiyama
 		JAP_army_minister_clear_effect = yes
 		set_country_flag = JAP_Hajime_Sugiyama_army_minister 
+		add_to_variable = { JAP_the_level_of_insubordination_var = 3 tooltip = JAP_the_level_of_insubordination_var_tt }
+		JAP_the_level_of_insubordination_effect = yes
 	}
 	
 	option = { 
@@ -23237,6 +23402,8 @@ country_event = {
 		show_ideas_tooltip = JAP_Korechika_Anami
 		JAP_army_minister_clear_effect = yes
 		set_country_flag = JAP_Korechika_Anami_army_minister 
+		add_to_variable = { JAP_the_level_of_insubordination_var = -1 tooltip = JAP_the_level_of_insubordination_var_tt }
+		JAP_the_level_of_insubordination_effect = yes	
 	}
 
 	option = { 
@@ -23322,6 +23489,8 @@ country_event = {
 		show_ideas_tooltip = JAP_Hajime_Sugiyama
 		JAP_army_minister_clear_effect = yes
 		set_country_flag = JAP_Hajime_Sugiyama_army_minister 
+		add_to_variable = { JAP_the_level_of_insubordination_var = 3 tooltip = JAP_the_level_of_insubordination_var_tt }
+		JAP_the_level_of_insubordination_effect = yes
 	}
 	
 	option = { 
@@ -23457,10 +23626,10 @@ country_event = {
 		name = NW_JAP.744.b
 		country_event = NW_JAP.746
 	}
-	option = { 
-		name = NW_JAP.744.c
-		
-	}
+#	option = { 
+#		name = NW_JAP.744.c
+#		
+#	}
 	option = { 
 		name = NW_JAP.744.d
 		trigger = { 
