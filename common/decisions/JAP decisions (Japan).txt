@@ -1728,7 +1728,7 @@ JAP_echoes_of_the_night_of_snow_and_blood_category = {
 			NOT = {
 				has_country_leader = { character = JAP_Jinzaburo_Masaki ruling_only = yes }
 				has_country_leader = { character = JAP_Kodzaburo_Tachibana ruling_only = yes }
-				has_country_leader = { character = JAP_Gondo_Seike ruling_only = yes }
+				
 			}
 		}
 		icon = JAP_the_threat_of_a_counter_coup
@@ -1751,9 +1751,8 @@ JAP_echoes_of_the_night_of_snow_and_blood_category = {
 				has_completed_focus = JAP_sejm_of_National_Reorganization
 				has_completed_focus = JAP_prince_Naruhito_Counter_Coup
 				has_completed_focus = JAP_patriotic_reform
-				has_completed_focus = JAP_elimination_of_bureaucratic_centralization
-				has_completed_focus = JAP_implement_the_reforms_of_the_ministry_of_agriculture
-				has_completed_focus = JAP_Yasuhito_direct_rule
+				has_completed_focus = JAP_fight_against_statism
+				has_completed_focus = JAP_use_Yeshivara_authority
 			}
 		}
 		icon = JAP_the_threat_of_radicalization_of_young_officers
@@ -1776,7 +1775,7 @@ JAP_echoes_of_the_night_of_snow_and_blood_category = {
 				NOT = {
 					has_country_leader = { character = JAP_Jinzaburo_Masaki ruling_only = yes }
 					has_country_leader = { character = JAP_Kodzaburo_Tachibana ruling_only = yes }
-					has_country_leader = { character = JAP_Gondo_Seike ruling_only = yes }
+					
 				}
 			}
 		}
@@ -1800,7 +1799,7 @@ JAP_echoes_of_the_night_of_snow_and_blood_category = {
 				NOT = {
 					has_country_leader = { character = JAP_Jinzaburo_Masaki ruling_only = yes }
 					has_country_leader = { character = JAP_Kodzaburo_Tachibana ruling_only = yes }
-					has_country_leader = { character = JAP_Gondo_Seike ruling_only = yes }
+					
 				}
 			}
 		}
@@ -3800,7 +3799,7 @@ JAP_Miyadzaki_plan_category = {
 		complete_effect = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision JAP_put_pressure_on_financiers"
 			hidden_effect = { add_political_power = -50 add_command_power = -15 }
-			add_stability = -0.03
+			add_stability = -0.025
 			add_to_variable = { JAP_the_level_of_insubordination_var = -1 tooltip = JAP_the_level_of_insubordination_var_tt }
 			JAP_the_level_of_insubordination_effect = yes
 			add_to_variable = { JAP_the_size_of_the_Investment_Fund_var = 1 tooltip = JAP_the_size_of_the_Investment_Fund_var_tt }
@@ -5358,9 +5357,20 @@ JAP_Association_to_Help_the_Throne = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision JAP_support_from_the_military"
 			add_to_variable = { JAP_aht_legitimacy = 0.02 tooltip = JAP_aht_legitimacy_tooltip }
 			JAP_aht_legitimacy_check = yes
-
-			add_to_variable = { JAP_the_level_of_insubordination_var = 2 tooltip = JAP_the_level_of_insubordination_var_tt }
-			JAP_the_level_of_insubordination_effect = yes
+			if = { 
+				limit = {
+					OR = { 
+						set_temp_variable = { JAP_the_level_of_insubordination_var_TEMP = 0 }
+						check_variable = { JAP_the_level_of_insubordination_var > JAP_the_level_of_insubordination_var_TEMP } 
+						AND = { 
+							has_completed_focus = JAP_reassure_the_military 
+							NOT = { has_country_flag = JAP_Imperial_Headquarters_was_created }
+						}
+					}
+				}
+				add_to_variable = { JAP_the_level_of_insubordination_var = 2 tooltip = JAP_the_level_of_insubordination_var_tt }
+				JAP_the_level_of_insubordination_effect = yes
+			}
 			add_to_variable = { JAP_aht_military_influence = 5 tooltip = JAP_aht_military_influence_tooltip }
 		}
 	}
@@ -9553,12 +9563,12 @@ JAP_the_level_of_insubordination_category = {
 		icon = GFX_decision_generic_political_discourse
 		priority = 500
 		activation = { 
-			has_war_with = CHI
-			check_variable = { JAP_the_level_of_insubordination_var > 0 }
+			always = no
 		}
 		available = { hidden_trigger = { always = no } }
 		cancel_trigger = {
 			check_variable = { JAP_the_level_of_insubordination_var = 0 }
+			has_war = no
 		} 
 		icon = GFX_decision_activate_the_combat_cell_anarchist
 		is_good = yes
@@ -9566,8 +9576,20 @@ JAP_the_level_of_insubordination_category = {
 		selectable_mission = no
 		timeout_effect = {
 			log = "[GetDateText]: mission JAP_growth_of_insubordination_from_china"
-			add_to_variable = { JAP_the_level_of_insubordination_var = 1 tooltip = JAP_the_level_of_insubordination_var_tt }
-			JAP_the_level_of_insubordination_effect = yes
+			if = { 
+				limit = {
+					OR = { 
+						set_temp_variable = { JAP_the_level_of_insubordination_var_TEMP = 0 }
+						check_variable = { JAP_the_level_of_insubordination_var > JAP_the_level_of_insubordination_var_TEMP } 
+						AND = { 
+							has_completed_focus = JAP_reassure_the_military 
+							NOT = { has_country_flag = JAP_Imperial_Headquarters_was_created }
+						}
+					}
+				}
+				add_to_variable = { JAP_the_level_of_insubordination_var = 1 tooltip = JAP_the_level_of_insubordination_var_tt }
+				JAP_the_level_of_insubordination_effect = yes
+			}
 		}
 	}
 
@@ -9575,11 +9597,15 @@ JAP_the_level_of_insubordination_category = {
 		icon = GFX_decision_generic_political_discourse
 		priority = 500
 		activation = { 
+			has_completed_focus = JAP_reassure_the_military 
+			NOT = { has_country_flag = JAP_Imperial_Headquarters_was_created }
 			GER = { has_completed_focus = GER_improve_national_spirit }
 			check_variable = { JAP_the_level_of_insubordination_var > 0 }
 		}
 		available = { hidden_trigger = { always = no } }
 		cancel_trigger = {
+			has_country_flag = JAP_Imperial_Headquarters_was_created 
+			GER = { has_completed_focus = GER_improve_national_spirit }
 			check_variable = { JAP_the_level_of_insubordination_var = 0 }
 		} 
 		icon = GFX_decision_activate_the_combat_cell_anarchist
@@ -9588,8 +9614,20 @@ JAP_the_level_of_insubordination_category = {
 		selectable_mission = no
 		timeout_effect = {
 			log = "[GetDateText]: mission JAP_growth_of_demand_for_an_alliance_with_germany"
-			add_to_variable = { JAP_the_level_of_insubordination_var = 15 tooltip = JAP_the_level_of_insubordination_var_tt }
-			JAP_the_level_of_insubordination_effect = yes
+			if = { 
+				limit = {
+					OR = { 
+						set_temp_variable = { JAP_the_level_of_insubordination_var_TEMP = 0 }
+						check_variable = { JAP_the_level_of_insubordination_var > JAP_the_level_of_insubordination_var_TEMP } 
+						AND = { 
+							has_completed_focus = JAP_reassure_the_military 
+							NOT = { has_country_flag = JAP_Imperial_Headquarters_was_created }
+						}
+					}
+				}
+				add_to_variable = { JAP_the_level_of_insubordination_var = 15 tooltip = JAP_the_level_of_insubordination_var_tt }
+				JAP_the_level_of_insubordination_effect = yes
+			}
 		}
 	}
 	
@@ -9597,6 +9635,8 @@ JAP_the_level_of_insubordination_category = {
 		icon = GFX_decision_generic_political_discourse
 		priority = 500
 		activation = { 
+			has_completed_focus = JAP_reassure_the_military 
+			NOT = { has_country_flag = JAP_Imperial_Headquarters_was_created }
 			SOV = {
 				OR = { 
 					has_war_with = major
@@ -9610,16 +9650,30 @@ JAP_the_level_of_insubordination_category = {
 		}
 		available = { hidden_trigger = { always = no } }
 		cancel_trigger = {
+			has_country_flag = JAP_Imperial_Headquarters_was_created 
+			has_war_with = SOV 
 			check_variable = { JAP_the_level_of_insubordination_var = 0 }
 		} 
 		icon = GFX_decision_activate_the_combat_cell_anarchist
 		is_good = yes
-		days_mission_timeout = 180
+		days_mission_timeout = 120
 		selectable_mission = no
 		timeout_effect = {
 			log = "[GetDateText]: mission JAP_growth_of_demand_for_an_attack_the_soviets"
-			add_to_variable = { JAP_the_level_of_insubordination_var = 15 tooltip = JAP_the_level_of_insubordination_var_tt }
-			JAP_the_level_of_insubordination_effect = yes
+			if = { 
+				limit = {
+					OR = { 
+						set_temp_variable = { JAP_the_level_of_insubordination_var_TEMP = 0 }
+						check_variable = { JAP_the_level_of_insubordination_var > JAP_the_level_of_insubordination_var_TEMP } 
+						AND = { 
+							has_completed_focus = JAP_reassure_the_military 
+							NOT = { has_country_flag = JAP_Imperial_Headquarters_was_created }
+						}
+					}
+				}
+				add_to_variable = { JAP_the_level_of_insubordination_var = 15 tooltip = JAP_the_level_of_insubordination_var_tt }
+				JAP_the_level_of_insubordination_effect = yes
+			}
 		}
 	}
 
@@ -10845,8 +10899,20 @@ JAP_confrontation_with_parliament_category = {
 			add_to_variable = { var = JAP_prowar_faction_of_RM_var value = JAP_prowar_faction_of_RS_var_temp }
 			clamp_variable = { var = JAP_prowar_faction_of_RM_var min = 0 max = 100 }
 			custom_effect_tooltip = JAP_falling_support_for_the_pro_war_factions_tt 
-			add_to_variable = { JAP_the_level_of_insubordination_var = 1 tooltip = JAP_the_level_of_insubordination_var_tt }
-			JAP_the_level_of_insubordination_effect = yes
+			if = { 
+				limit = {
+					OR = { 
+						set_temp_variable = { JAP_the_level_of_insubordination_var_TEMP = 0 }
+						check_variable = { JAP_the_level_of_insubordination_var > JAP_the_level_of_insubordination_var_TEMP } 
+						AND = { 
+							has_completed_focus = JAP_reassure_the_military 
+							NOT = { has_country_flag = JAP_Imperial_Headquarters_was_created }
+						}
+					}
+				}
+				add_to_variable = { JAP_the_level_of_insubordination_var = 1 tooltip = JAP_the_level_of_insubordination_var_tt }
+				JAP_the_level_of_insubordination_effect = yes
+			}
 		}
 	}
 		
