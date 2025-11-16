@@ -42,19 +42,23 @@ scripted_gui = {
 	
 	###
 	
+	MAN_opium_empire_gui = {
+		context_type = decision_category
+		window_name = "MAN_opium_empire_window"
+	}
+	
 	MAN_ayukawa_vs_matsuoka_gui = {
 		context_type = decision_category
 		window_name = "MAN_ayukawa_vs_matsuoka_gui_gui_window"
-		# ai_enabled = { always = no }
 		
 		properties = {
-			ayukawa_side = { frame = MAN_ayukawa_vs_matsuoka_var }
-			matsuoka_side = { frame = MAN_ayukawa_vs_matsuoka_var }
+			ayukawa_side = { frame = MAN.MAN_ayukawa_vs_matsuoka_var }
+			matsuoka_side = { frame = MAN.MAN_ayukawa_vs_matsuoka_var }
 			JAP_flag = { image = "[JAP.GetFlag]" }
 		}
 		triggers = {
-			ayukawa_side_visible = { check_variable = { MAN_ayukawa_vs_matsuoka_var < 50 } }
-			matsuoka_side_visible = { check_variable = { MAN_ayukawa_vs_matsuoka_var > 50 } }
+			ayukawa_side_visible = { check_variable = { MAN.MAN_ayukawa_vs_matsuoka_var < 50 } }
+			matsuoka_side_visible = { check_variable = { MAN.MAN_ayukawa_vs_matsuoka_var > 50 } }
 			JAP_flag_visible = { JAP = { is_ai = yes } }
 			flag_border_thick_visible = { JAP = { is_ai = yes } }
 		}
@@ -77,63 +81,48 @@ scripted_gui = {
 			kazakhstan_turkmenistan = { frame = 586.MAN_mongolian_asian_railway_project_line_progress }
 			turkmenistan_iran = { frame = 584.MAN_mongolian_asian_railway_project_line_progress }
 			iran_bagdad = { frame = 266.MAN_mongolian_asian_railway_project_line_progress }
+			pakistan_iran = { frame = 444.MAN_mongolian_asian_railway_project_line_progress }
 		}
 
 		effects = {
 			mukden_chahar_click = {
-				effect_tooltip = {
-					set_variable = { stability = 0.05 tooltip = stability_factor_tooltip }
-				}
+				event_option_tooltip = nw_manchukou_economy.16.a
 			}
 			chahar_bailinmyao_click = {
-				effect_tooltip = {
-					set_variable = { stability = 0.05 tooltip = stability_factor_tooltip }
-				}
+				event_option_tooltip = nw_manchukou_economy.17.a
 			}
 			bailinmyao_mongolia_click = {
-				effect_tooltip = {
-					set_variable = { stability = 0.05 tooltip = stability_factor_tooltip }
-				}
+				event_option_tooltip = nw_manchukou_economy.18.a
 			}
 			mongolia_kumul_click = {
-				effect_tooltip = {
-					set_variable = { stability = 0.05 tooltip = stability_factor_tooltip }
-				}
+				event_option_tooltip = nw_manchukou_economy.19.a
+			}
+			bailinmyao_kumul_click = {
+				event_option_tooltip = nw_manchukou_economy.20.a
 			}
 			kumul_kazakhstan_click = {
-				effect_tooltip = {
-					set_variable = { stability = 0.05 tooltip = stability_factor_tooltip }
-				}
+				event_option_tooltip = nw_manchukou_economy.21.a
 			}
 			kumul_kashgar_click = {
-				effect_tooltip = {
-					set_variable = { stability = 0.05 tooltip = stability_factor_tooltip }
-				}
+				event_option_tooltip = nw_manchukou_economy.22.a
 			}
 			kashgar_pakistan_click = {
-				effect_tooltip = {
-					set_variable = { stability = 0.05 tooltip = stability_factor_tooltip }
-				}
+				event_option_tooltip = nw_manchukou_economy.23.a
 			}
 			pakistan_afganistan_click = {
-				effect_tooltip = {
-					set_variable = { stability = 0.05 tooltip = stability_factor_tooltip }
-				}
+				event_option_tooltip = nw_manchukou_economy.24.a
 			}
 			kazakhstan_turkmenistan_click = {
-				effect_tooltip = {
-					set_variable = { stability = 0.05 tooltip = stability_factor_tooltip }
-				}
+				event_option_tooltip = nw_manchukou_economy.25.a
 			}
 			turkmenistan_iran_click = {
-				effect_tooltip = {
-					set_variable = { stability = 0.05 tooltip = stability_factor_tooltip }
-				}
+				event_option_tooltip = nw_manchukou_economy.26.a
 			}
 			iran_bagdad_click = {
-				effect_tooltip = {
-					set_variable = { stability = 0.05 tooltip = stability_factor_tooltip }
-				}
+				event_option_tooltip = nw_manchukou_economy.27.a
+			}
+			pakistan_iran_click = {
+				event_option_tooltip = nw_manchukou_economy.28.a
 			}
 		}
 	}
@@ -144,6 +133,49 @@ scripted_gui = {
 
 		properties = {
 			progress = { frame = land_reform_progress_var }
+		}
+	}
+	
+	MAN_asian_prosperity_lab_graph = {
+		window_name = "MAN_apl_graph_window"
+		context_type = decision_category
+		dirty = MAN.MAN_apl_graph_dirty
+
+		# Set up dynamic list to generate one line segment per point
+		dynamic_lists = {
+			MAN_line_segments = {
+				array = MAN.MAN_apl_graph_offsets
+				index = segment_idx
+				
+				entry_container = MAN_graph_line_segment_entry
+			}
+			JAP_line_segments = {
+				array = JAP.MAN_apl_graph_offsets
+				index = segment_idx
+				
+				entry_container = JAP_graph_line_segment_entry
+			}
+		}
+
+		properties = {
+			MAN_segment = {
+				# Sets they position of the line segment to the graph offset
+				# Equal to -y1
+				y = MAN.MAN_apl_graph_offsets^segment_idx
+
+				# Tells the shader how steep to draw the line
+				# Must be equal to (y2 - y1) / 2 + 50
+				frame = MAN.MAN_apl_graph_slopes^segment_idx
+			}
+			JAP_segment = {
+				# Sets they position of the line segment to the graph offset
+				# Equal to -y1
+				y = JAP.MAN_apl_graph_offsets^segment_idx
+
+				# Tells the shader how steep to draw the line
+				# Must be equal to (y2 - y1) / 2 + 50
+				frame = JAP.MAN_apl_graph_slopes^segment_idx
+			}
 		}
 	}
 	

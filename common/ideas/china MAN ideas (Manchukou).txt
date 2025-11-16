@@ -33,7 +33,44 @@ ideas = {
 #			}
 #		}
 		
-		MAN_opium_empire = {
+		MAN_bailinmyao_mongolia_railway_idea = {
+			picture = prc_permit_opium_trade
+			
+			available = {
+				NOT = { has_war_with = MAN }
+			}
+			
+			targeted_modifier = {
+				tag = MON
+				attack_bonus_against = 0.15
+				breakthrough_bonus_against = 0.5
+			}
+			targeted_modifier = {
+				tag = MAN
+				extra_trade_to_target_factor = 0.5
+				trade_cost_for_target_factor = 0.5
+			}
+		}
+		MAN_kumul_kazakhstan_sov_idea = {
+			picture = prc_permit_opium_trade
+			
+			targeted_modifier = {
+				tag = MAN
+				cic_to_target_factor = 0.15
+				trade_cost_for_target_factor = 0.5
+			}
+		}
+		MAN_kumul_kazakhstan_idea = {
+			picture = prc_permit_opium_trade
+			
+			targeted_modifier = {
+				tag = MAN
+				extra_trade_to_target_factor = 0.5
+				trade_cost_for_target_factor = 0.5
+			}
+		}
+		
+		MAN_opium_empire = { # TODO на днд
 			picture = opium_yunnan
 			
 			allowed_civil_war = { #?
@@ -41,11 +78,12 @@ ideas = {
 			}
 			
 			modifier = {
+				stability_weekly = -0.001
 				army_org_factor = -0.1
 				political_power_factor = 0.25
 				industrial_factory_donations = 2
 				stability_factor = -0.15
-				war_support_factor = -0.05
+				war_support_factor = -0.07
 			}
 		}
 		MAN_opium_empire_1 = {
@@ -57,7 +95,8 @@ ideas = {
 			}
 			
 			modifier = {
-				political_power_factor = 0.25
+				stability_weekly = -0.001
+				political_power_factor = 0.2
 				industrial_factory_donations = 2
 				stability_factor = -0.15
 				war_support_factor = -0.05
@@ -71,7 +110,7 @@ ideas = {
 			}
 			
 			modifier = {
-				army_org_factor = -0.05 #?
+				army_org_factor = -0.05
 				political_power_factor = 0.10
 				industrial_factory_donations = 2
 				stability_factor = -0.05
@@ -294,6 +333,37 @@ ideas = {
 		
 		#
 		
+		MAN_development_of_mass_education_system_idea = {
+			picture = eastern_hebei_educational_program
+			
+			allowed_civil_war = { 
+				NOT = { has_government = communism }
+			}
+			
+			on_remove = {
+				if = {
+					limit = { has_civil_war = no } # на всякий
+					add_ideas = MAN_mass_education_system_idea
+				}
+			}
+			
+			modifier = {
+				political_power_gain = -0.15
+			}
+		}
+		MAN_mass_education_system_idea = {
+			picture = eastern_hebei_educational_program
+			
+			allowed_civil_war = { 
+				NOT = { has_government = communism }
+			}
+			
+			modifier = {
+				research_speed_factor = 0.04
+				war_support_factor = 0.06
+			}
+		}
+		
 		MAN_aisin_gyoro_pujie = {
 			picture = GFX_idea_MAN_aisin_gioro_pujie
 			
@@ -434,7 +504,7 @@ ideas = {
 			}
 			
 			modifier = {
-				monthly_population = 0.2
+				monthly_population = 0.25
 				stability_factor = 0.05
 			}
 		}
@@ -659,22 +729,38 @@ ideas = {
 			}
 			
 			modifier = {
-				political_power_factor = -0.2
-				command_power_gain_mult = -0.2
-				consumer_goods_factor = 0.03
+				political_power_factor = -0.12
+				command_power_gain_mult = -0.05
+				consumer_goods_factor = 0.12
 			}
 		}
 		
-		MAN_distribution_of_opium = {
+		MAN_distribution_of_opium = { # TODO решение по удалению этого
 			picture = prc_permit_opium_trade
 			
-			allowed_civil_war = {
+			on_add = {
+				log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): add idea MAN_distribution_of_opium"
+				set_temp_variable = { factor = num_controlled_states }
+				clamp_temp_variable = { var = factor min = 1 }
+				multiply_temp_variable = { factor = 0.05 }
+				add_to_variable = { MAN_oe_finance_factor = factor }
+				add_to_variable = { MAN.MAN_oe_finance_factor = factor }
+			}
+			
+			on_remove = {
+				log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): add idea MAN_distribution_of_opium"
+				subtract_from_variable = { MAN.MAN_oe_finance_factor = MAN_oe_finance_factor }
+			}
+			
+			targeted_modifier = {
 				tag = MAN
+				cic_to_target_factor = 0.1
+				custom_modifier_tooltip = MAN_distribution_of_opium_modifier
 			}
 			
 			modifier = {
-				army_org_factor = -0.05
-				army_attack_factor = -0.05
+				army_org_factor = -0.07
+				army_attack_factor = -0.07
 			}
 		}
 		
@@ -705,123 +791,6 @@ ideas = {
 			modifier = {
 				production_speed_rail_way_factor = 0.25
 				refit_speed = 0.5
-			}
-		} 
-		
-		MAN_first_five_year_plan = {
-			picture = man_five_year_plan_industry
-			
-			allowed_civil_war = {
-				tag = MAN #?
-			}
-			
-			modifier = {
-				production_speed_arms_factory_factor = 0.1
-				production_speed_industrial_complex_factor = 0.1
-			}
-		} 
-		MAN_first_five_year_plan_1 = {
-			name = MAN_first_five_year_plan
-			picture = man_five_year_plan_industry # TODO ??
-			
-			allowed_civil_war = {
-				tag = MAN #?
-			}
-			
-			modifier = {
-				industrial_capacity_factory = 0.07
-				production_speed_arms_factory_factor = 0.15 #?
-				production_speed_industrial_complex_factor = 0.15 #?
-				production_factory_max_efficiency_factor = -0.03
-			}
-		} 
-		MAN_second_five_year_plan = {
-			picture = man_five_year_plan_industry
-			
-			allowed_civil_war = {
-				tag = MAN #?
-			}
-			
-			modifier = {
-				production_speed_industrial_complex_factor = 0.07
-				production_speed_arms_factory_factor = 0.07
-				production_speed_synthetic_refinery_factor = 0.07
-			}
-		} 
-		MAN_second_five_year_plan_1 = {
-			name = MAN_second_five_year_plan
-			picture = man_five_year_plan_industry
-			
-			allowed_civil_war = {
-				tag = MAN #?
-			}
-			
-			modifier = {
-				production_speed_industrial_complex_factor = 0.1
-				production_speed_arms_factory_factor = 0.1
-				production_speed_synthetic_refinery_factor = 0.1
-				industrial_capacity_factory = 0.1
-				production_factory_max_efficiency_factor = -0.03
-			}
-		} 
-		MAN_second_five_year_plan_2 = {
-			name = MAN_second_five_year_plan
-			picture = man_five_year_plan_industry
-			
-			allowed_civil_war = {
-				tag = MAN #?
-			}
-			
-			modifier = {
-				production_speed_industrial_complex_factor = 0.07
-				production_speed_arms_factory_factor = 0.07
-				production_speed_synthetic_refinery_factor = 0.07
-				
-				monthly_population = 0.25
-			}
-		} 
-		MAN_second_five_year_plan_3 = {
-			name = MAN_second_five_year_plan
-			picture = man_five_year_plan_industry
-			
-			allowed_civil_war = {
-				tag = MAN #?
-			}
-			
-			modifier = {
-				production_speed_industrial_complex_factor = 0.1
-				production_speed_arms_factory_factor = 0.1
-				production_speed_synthetic_refinery_factor = 0.1
-				industrial_capacity_factory = 0.1
-				production_factory_max_efficiency_factor = -0.03
-				
-				monthly_population = 0.25
-			}
-		} 
-		MAN_third_five_year_plan = {
-			picture = man_five_year_plan_industry
-			
-			allowed_civil_war = {
-				tag = MAN #?
-			}
-			
-			modifier = {
-				industrial_capacity_factory = 0.07
-				production_speed_buildings_factor = 0.07
-			}
-		} 
-		MAN_third_five_year_plan_1 = {
-			name = MAN_third_five_year_plan
-			picture = man_five_year_plan_industry
-			
-			allowed_civil_war = {
-				tag = MAN #?
-			}
-			
-			modifier = {
-				industrial_capacity_factory = 0.1
-				production_speed_buildings_factor = 0.1
-				production_factory_max_efficiency_factor = -0.03
 			}
 		} 
 		
@@ -1538,18 +1507,18 @@ ideas = {
 			}
 			
 			available = {
-				has_completed_focus = MAN_manchurian_powder_company
+				has_country_flag = MAN_manchurian_powder_company_flag
 			}
 			
 			traits = { gunpowder_company }
 			
 			equipment_bonus = {
 				artillery_equipment = { 
-					build_cost_ic = -0.1
+					build_cost_ic = -0.2
 					instant = yes
 				}
 				infantry_equipment = {
-					build_cost_ic = -0.05
+					build_cost_ic = -0.15
 					instant = yes
 				}
 			}
@@ -1568,10 +1537,10 @@ ideas = {
 			}
 			
 			visible = {
-				NOT = { has_completed_focus = MAN_expansion_of_dova_automobile_plant }
+				NOT = { has_country_flag = MAN_expansion_of_dova_automobile_plant_flag }
 			}
 			
-			research_bonus = { # какой поставить !!!!
+			research_bonus = {
 				motorized_equipment = 0.05
 			}
 			
@@ -1594,7 +1563,7 @@ ideas = {
 			}
 			
 			visible = {
-				has_completed_focus = MAN_expansion_of_dova_automobile_plant
+				has_country_flag = MAN_expansion_of_dova_automobile_plant_flag
 			}
 			
 			research_bonus = {
@@ -1631,22 +1600,21 @@ ideas = {
 			}
 
 			traits = {
-				construction_company
+				railway_depo
 			}
 			
 			modifier = {
-				political_power_gain = -0.15 # TODO чуть чуть скам получается, для длсшных дебафф больше
 				custom_modifier_tooltip = MAN_south_manchuria_railway_company_tt
 			}
 			
 			on_add = {
-				set_temp_variable = { resize = 0.5 } # tooltip = MAN_south_manchuria_railway_company_bonus_tooltip
-				MAN_mongolian_asian_railway_days_remove = yes
+				set_temp_variable = { reduce = 0.2 } # tooltip = MAN_south_manchuria_railway_company_bonus_tooltip
+				MAN_mantetsu_line_building_days_remove = yes
 			}
 			
 			on_remove = {
-				set_temp_variable = { resize = -1 } # tooltip = MAN_south_manchuria_railway_company_bonus_tooltip
-				MAN_mongolian_asian_railway_days_remove = yes
+				set_temp_variable = { reduce = -0.25 } # tooltip = MAN_south_manchuria_railway_company_bonus_tooltip
+				MAN_mantetsu_line_building_days_remove = yes
 			}
 			
 			ai_will_do = {
@@ -1705,8 +1673,18 @@ ideas = {
 				original_tag = MAN
 			}
 			
+			visible = {
+				if = {
+					limit = { has_dlc = "Arms Against Tyranny" }
+					has_country_flag = MAN_Mange_flag
+				}
+			}
+			
 			available = {
-				has_completed_focus = MAN_manchurian_industrial_development_company
+				if = {
+					limit = { NOT = { has_dlc = "Arms Against Tyranny" } }
+					has_completed_focus = MAN_manchurian_industrial_development_company
+				}
 				is_subject_of = JAP
 			}
 			

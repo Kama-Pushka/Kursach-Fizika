@@ -17,6 +17,9 @@ NDefines.NCountry.SPECIAL_FORCES_CAP_MIN = 24								-- You can have a minimum o
 --NDefines.NCountry.MIN_FOCUSES_FOR_CONTINUOUS = 0							-- Focuses needed to unlock continuous focuses
 NDefines.NCountry.MAJOR_MIN_FACTORIES = 75									-- need at least these many factories to become a major
 NDefines.NCountry.MIN_MAJOR_COUNTRIES = 0									-- MIN_MAJOR_COUNTRIES countries with most factories will be considered as major countries
+NDefines.NMilitary.CORPS_COMMANDER_DIVISIONS_CAP = 16						-- how many divisions a corps commander is limited to. 0 = inf, < 0 = blocked
+NDefines.NMilitary.FIELD_MARSHAL_DIVISIONS_CAP = 24							-- how many divisions a field marshall is limited to. 0 = inf, < 0 = blocked
+NDefines.NMilitary.FIELD_MARSHAL_ARMIES_CAP = 5								-- how many armies a field marshall is limited to. 0 = inf, < 0 = blocked
 NDefines.NMilitary.MIN_DIVISION_DEPLOYMENT_TRAINING = 0.3					-- Min level of division training
 NDefines.NMilitary.SLOWEST_SPEED = 4 -- 1
 
