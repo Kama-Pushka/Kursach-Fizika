@@ -26,13 +26,6 @@ characters = {
 			expire = "1964.1.1.1"
 			id = -1 
 		}
-		country_leader = { 
-			desc = "POLITICS_ZHANG_JINGHUI_DESC"
-			ideology = fascism_ideology
-			traits = { prime_minister_of_tofu }
-			expire = "1964.1.1.1"
-			id = -1 
-		}
 	}
 	MAN_zang_shiyi = { 
 		name = MAN_zang_shiyi
@@ -52,12 +45,13 @@ characters = {
 				NOT = { has_government = communism }
 			}
 			available = { 
+				MAN_zang_shiyi = { is_country_leader = no }
 			}
 			traits = {
-				backroom_backstabber
+				MAN_backroom_backstabber
 			}
 			ai_will_do = {
-				factor = 1.000
+				factor = 1
 				modifier = {
 					factor = 0
 					NW_additional_slot_ai_block = yes
@@ -90,19 +84,19 @@ characters = {
 				small = "gfx/leaders/MAN/MAN_aisin_gioro_pujie_small.dds"
 			}
 		}
-		advisor={	
-			slot = army_chief
+		advisor = {
+			slot = high_command
 			idea_token = MAN_aisin_gioro_pujie
 			allowed = {
 				original_tag = MAN
 				NOT = { has_government = communism }
 			}
 			traits = {
-				head_of_royal_guard
+				MAN_head_of_royal_guard
 			}
-			cost = 100
+			cost = 50
 			ai_will_do = {
-				factor = 1.000
+				factor = 1
 			}
 		}
 		corps_commander = {
@@ -136,11 +130,11 @@ characters = {
 				MAN_zheng_xiaoxu = { is_country_leader = no }
 			}
 			traits = {
-				MAN_chinese_monarchist #?
-				silent_workhorse
+				MAN_chinese_monarchist
+				MAN_supporter_of_restoration
 			}
 			ai_will_do = {
-				factor = 1.000
+				factor = 1
 				modifier = {
 					factor = 0
 					NW_additional_slot_ai_block = yes
@@ -170,14 +164,14 @@ characters = {
 				manchurian_nationalist
 			}
 			ai_will_do = {
-				factor = 1.000
+				factor = 1
 				modifier = {
 					factor = 0
 					NW_additional_slot_ai_block = yes
 				}
 			}
 		}
-		#advisor={ #?
+		#advisor={ # TODO у Пу И он снова станет военным
 		#	slot = high_command
 		#	idea_token = MAN_aisin_gioro_xiqia
 		#	allowed = {
@@ -187,10 +181,10 @@ characters = {
 		#		army_infantry_2
 		#	}
 		#	ai_will_do = {
-		#		factor = 1.000
+		#		factor = 1
 		#	}
 		#}
-		#corps_commander={ #?
+		#corps_commander={
 		#	traits={ career_officer }
 		#	skill=3
 		#	attack_skill=3
@@ -352,6 +346,12 @@ characters = {
 				# small = "gfx/leaders/MAN/MAN_shiraki_tachibana_small.dds"
 			}
 		}
+		country_leader = {
+			ideology = MAN_neophysiocratic_agrarian_democracy
+			desc = MAN_shiraki_tachibana_desc
+			expire = "1965.1.1.1"
+			traits = { }
+		}
 	}
 	MAN_ruan_zhenduo = {
 		name = MAN_ruan_zhenduo
@@ -379,8 +379,8 @@ characters = {
 			idea_token = JAP_Yosuke_Matsuoka
 			allowed = {
 				OR = {
-					original_tag = JAP
 					original_tag = MAN
+					original_tag = JAP
 				}
 			}
 			visible = {
@@ -389,9 +389,15 @@ characters = {
 					THIS = { has_character_flag = JAP_Yosuke_Matsuoka_available }
 				}
 			}
-			on_add = { owner = { set_country_flag = JAP_yosuke_matsuoka_is_advisor_flag } }
+			available = {
+				if = {
+					limit = { tag = MAN }
+					has_completed_focus = MAN_syndicalist_approach
+				}
+			}
+			on_add = { owner = { set_country_flag = JAP_yosuke_matsuoka_is_advisor_flag } } # TODO трейт
 			on_remove = { owner = { clr_country_flag = JAP_yosuke_matsuoka_is_advisor_flag } }
-			traits = { JAP_minister_of_Foreign_Affairs }
+			traits = { MAN_asian_capitalist } # JAP_minister_of_Foreign_Affairs
 			ai_will_do = {
 				factor = 1
 				modifier = {
@@ -400,6 +406,38 @@ characters = {
 				}
 			}
 		}
+	}
+	MAN_Tong_Jixu = {
+		name = MAN_Tong_Jixu
+		portraits = {
+			army = {
+				small = "gfx/interface/ideas/MAN/MAN_Tong_Jixu_military.dds"
+			}
+			civilian = {
+				small = "gfx/interface/ideas/MAN/MAN_Tong_Jixu.dds"
+			}
+		}
+		advisor = {
+			slot = political_advisor
+			idea_token = MAN_Tong_Jixu
+			allowed = { 
+				original_tag = MAN 
+				NOT = { has_government = communism }
+			}
+			available = {
+				NOT = { has_completed_focus = MGM_end_supporters_of_united_china }
+			}
+			traits = {
+				head_of_emperors_guard # autonomy_gain_global_factor
+			}
+			ai_will_do = {
+				factor = 1
+				modifier = {
+					factor = 0
+					NW_additional_slot_ai_block = yes
+				}
+			}
+		}	
 	}
 	MAN_chu_kudo = { 
 		name = MAN_chu_kudo
@@ -424,8 +462,9 @@ characters = {
 			traits = {
 				adjutant_of_Puyi
 			}
+			cost = 50
 			ai_will_do = {
-				factor = 1.000
+				factor = 1
 				modifier = {
 					factor = 0
 					NW_additional_slot_ai_block = yes
@@ -433,25 +472,32 @@ characters = {
 			}
 		}
 	}
-	MAN_bao_guancheng = { 
-		name = MAN_bao_guancheng
+	MAN_george_bronson_rea = { 
+		name = MAN_george_bronson_rea
 		portraits = {
-			civilian = {
-				small = "gfx/interface/ideas/MAN/MAN_bao_guancheng.dds"
+			army = {
+				small = "GFX_idea_generic_army_asia_3"
 			}
 		}
 		advisor = { 
 			slot = political_advisor
-			idea_token = MAN_bao_guancheng
+			idea_token = MAN_george_bronson_rea
 			allowed = {
 				original_tag = MAN
 				NOT = { has_government = communism }
 			}
-			traits = {
-				financial_expert
+			visible = {
+				has_character = MAN_aisin_gioro_puyi
 			}
+			available = { 
+				has_character = MAN_aisin_gioro_puyi
+			}
+			traits = {
+				press_secretary_of_Puyi
+			}
+			cost = 50
 			ai_will_do = {
-				factor = 1.000
+				factor = 1
 				modifier = {
 					factor = 0
 					NW_additional_slot_ai_block = yes
@@ -459,28 +505,26 @@ characters = {
 			}
 		}
 	}
-	MAN_liu_menggeng = {
-		name = MAN_liu_menggeng
+	MAN_yuzhan = {
+		name = MAN_yuzhan
 		portraits = {
 			civilian = {
-				small = "gfx/interface/ideas/MAN/MAN_liu_menggeng.dds"
+				small = "gfx/interface/ideas/MAN/MAN_yuzhan.dds"
 			}
 		}
-		advisor = {
+		advisor = { 
 			slot = political_advisor
-			idea_token = MAN_liu_menggeng
+			idea_token = MAN_yuzhan
 			allowed = {
 				original_tag = MAN
 				NOT = { has_government = communism }
 			}
-			available = {
-				NOT = { has_completed_focus = MGM_end_supporters_of_united_china }
-			}
 			traits = {
-				old_figurehead
+				representative_of_Manchu_imperial_house
 			}
+			cost = 50
 			ai_will_do = {
-				factor = 1.000
+				factor = 1
 				modifier = {
 					factor = 0
 					NW_additional_slot_ai_block = yes
@@ -503,13 +547,15 @@ characters = {
 				NOT = { has_government = communism }
 			}
 			available = {
+				has_completed_focus = MAN_central_national_museum_of_manchukuo
 				NOT = { has_completed_focus = MGM_end_supporters_of_united_china }
 			}
 			traits = {
-				silent_workhorse
+				MAN_supporter_of_education
+				MAN_chinese_monarchist
 			}
 			ai_will_do = {
-				factor = 1.000
+				factor = 1
 				modifier = {
 					factor = 0
 					NW_additional_slot_ai_block = yes
@@ -532,9 +578,9 @@ characters = {
 				NOT = { has_government = communism }
 			}
 			available = {
-				NOT = { has_country_flag = remove_mongolian_princes_advisors }
+				has_completed_focus = MAN_alliance_with_mongolian_lamas
 			}
-			cost = 150 #mongolian_princes_advisors_cost?150 #? TODO !!
+			cost = 75
 			traits = {
 				mongolian_price
 				fortification_engineer
@@ -548,29 +594,121 @@ characters = {
 			}
 		}
 	}
-	MAN_sasaki_toichi = { 
-		name = MAN_sasaki_toichi
+	MAN_yangsanjab = {
+		name = MAN_yangsanjab
 		portraits = {
-			army = {
-				large = "gfx/leaders/MAN/MAN_sasaki_toichi.dds" # TODO ??
-				small = "gfx/leaders/MAN/MAN_sasaki_toichi_small.dds"
+			civilian = {
+				small = "gfx/interface/ideas/MAN/MAN_yangsanjab.dds"
 			}
 		}
 		advisor = {
-			slot = high_command 
-			idea_token = MAN_sasaki_toichi
-			allowed = {
+			slot = political_advisor
+			idea_token = MAN_yangsanjab
+			allowed = { 
+				original_tag = MAN 
+				NOT = { has_government = communism }
+			}
+			available = {
+				has_completed_focus = MAN_alliance_with_mongolian_lamas
+			}
+			cost = 75
+			traits = {
+				mongolian_price
+				head_of_the_banner
+			}
+			ai_will_do = {
+				factor = 1
+				modifier = {
+					factor = 0
+					NW_additional_slot_ai_block = yes
+				}
+			}
+		}
+	}
+	MAN_qimotesemupile = {
+		name = MAN_qimotesemupile
+		portraits = {
+			civilian = {
+				small = "gfx/interface/ideas/MAN/MAN_qimotesemupile.dds"
+			}
+		}
+		advisor = {
+			slot = political_advisor
+			idea_token = MAN_qimotesemupile
+			allowed = { 
+				original_tag = MAN 
+				NOT = { has_government = communism }
+			}
+			available = {
+				has_completed_focus = MAN_alliance_with_mongolian_lamas
+			}
+			cost = 75
+			traits = {
+				mongolian_price
+				appeaser
+			}
+			ai_will_do = {
+				factor = 1
+				modifier = {
+					factor = 0
+					NW_additional_slot_ai_block = yes
+				}
+			}
+		}
+	}
+	MAN_lin_sheng = {
+		name = MAN_lin_sheng
+		portraits = {
+			army = {
+				small="GFX_idea_generic_air_asia_2"
+			}
+		}
+		advisor = {
+			slot = political_advisor
+			idea_token = MAN_lin_sheng
+			allowed = { 
 				original_tag = MAN
 				NOT = { has_government = communism }
 			}
 			traits = {
-				army_chief_offensive_2
+				mongolian_governor # power_balance_daily?
 			}
+			cost = 100
 			ai_will_do = {
-				factor = 1.000
+				factor = 1
+				modifier = {
+					factor = 0
+					NW_additional_slot_ai_block = yes
+				}
 			}
 		}
 	}
+	# MAN_guifu = {
+		# name = MAN_guifu
+		# portraits = {
+			# army = {
+				# small = "gfx/interface/portraits/MAN/MAN_guifu_small.dds"
+			# }
+		# }
+		# advisor = {
+			# slot = political_advisor
+			# idea_token = MAN_guifu
+			# allowed = { 
+				# original_tag = MAN 
+				# NOT = { has_government = communism }
+			# }
+			# traits = {
+				# shadow_advisor
+			# }
+			# ai_will_do = {
+				# factor = 1
+				# modifier = {
+					# factor = 0
+					# NW_additional_slot_ai_block = yes
+				# }
+			# }
+		# }
+	# }
 	MAN_etsusaburo_shiina = { 
 		name = MAN_etsusaburo_shiina
 		portraits = {
@@ -589,22 +727,13 @@ characters = {
 				}
 			}
 			available = { 
-				NOT = { has_war_with = JAP }
+				is_subject_of = JAP
 			}
-			#visible = { TODO
-			#	NOT = { 
-			#		has_war_with = JAP #? 
-			#		has_variable = JAP_advisors_left
-			#	}  
-			#}
-			#on_remove = { #?
-			#	set_variable = { JAP_advisors_left = 1 }
-			#}
 			traits = {
 				japanese_bureaucrat
 			}
 			ai_will_do = {
-				factor = 1.000
+				factor = 1
 				modifier = {
 					factor = 0
 					NW_additional_slot_ai_block = yes
@@ -638,7 +767,7 @@ characters = {
 			available = {
 				if = {
 					limit = { original_tag = MAN }
-					NOT = { has_war_with = JAP }
+					is_subject_of = JAP
 				}
 				else_if = {
 					limit = { original_tag = JAP }
@@ -650,7 +779,7 @@ characters = {
 				japanese_war_industrialist
 			}
 			ai_will_do = {
-				factor = 1.000
+				factor = 1
 				modifier = {
 					factor = 0
 					NW_additional_slot_ai_block = yes
@@ -658,74 +787,85 @@ characters = {
 			}
 		}
 	}
-	MAN_Tong_Jixu = {
-		name = MAN_Tong_Jixu
+	MAN_bao_guancheng = { 
+		name = MAN_bao_guancheng
 		portraits = {
-			army = {
-				small = "gfx/interface/ideas/MAN/MAN_Tong_Jixu_military.dds"
-			}
 			civilian = {
-				small = "gfx/interface/ideas/MAN/MAN_Tong_Jixu.dds"
+				small = "gfx/interface/ideas/MAN/MAN_bao_guancheng.dds"
+			}
+		}
+		advisor = { 
+			slot = political_advisor
+			idea_token = MAN_bao_guancheng
+			allowed = {
+				original_tag = MAN
+				NOT = { has_government = communism }
+			}
+			available = {
+				has_dynamic_modifier = { modifier = MAN_dream_of_a_great_pan_asian_project }
+				set_temp_variable = { MAN_eob_stability_factor = 0.35 }
+				custom_trigger_tooltip = {
+					tooltip = MAN_eob_variable_check_tt
+					check_variable = { var = MAN_eob_production_factory_max_efficiency_factor value = MAN_eob_stability_factor }
+				}
+			}
+			traits = {
+				financial_expert
+			}
+			ai_will_do = {
+				factor = 1
+				modifier = {
+					factor = 0
+					NW_additional_slot_ai_block = yes
+				}
+			}
+		}
+	}
+	MAN_liu_menggeng = {
+		name = MAN_liu_menggeng
+		portraits = {
+			civilian = {
+				small = "gfx/interface/ideas/MAN/MAN_liu_menggeng.dds"
 			}
 		}
 		advisor = {
-			slot = political_advisor
-			idea_token = MAN_Tong_Jixu
-			allowed = { 
-				original_tag = MAN 
+			slot = theorist
+			idea_token = MAN_liu_menggeng
+			allowed = {
+				original_tag = MAN
 				NOT = { has_government = communism }
 			}
 			available = {
 				NOT = { has_completed_focus = MGM_end_supporters_of_united_china }
 			}
-			on_add = {
-				MAN = { #MAN?
-					if = {
-						limit = { has_completed_focus = MAN_suppress_autonomy_of_concordia_association }
-						country_event = { id = manchukou.1 days = 250 }
-					}
-				}
-			}
 			traits = {
-				head_of_emperors_guard
+				MAN_medical_expert
 			}
-			ai_will_do = {
-				factor = 1
-				modifier = {
-					factor = 0
-					NW_additional_slot_ai_block = yes
-				}
-			}
-		}	
+			cost = 100
+			research_bonus = { hospital_tech = 0.25 }
+		}
 	}
-	MAN_yangsanjab = {
-		name = MAN_yangsanjab
+	MAN_sasaki_toichi = { 
+		name = MAN_sasaki_toichi
 		portraits = {
-			civilian = {
-				small = "gfx/interface/ideas/MAN/MAN_yangsanjab.dds"
+			army = {
+				large = "gfx/leaders/MAN/MAN_sasaki_toichi.dds" # TODO ??
+				small = "gfx/leaders/MAN/MAN_sasaki_toichi_small.dds"
 			}
 		}
 		advisor = {
-			slot = political_advisor
-			idea_token = MAN_yangsanjab
-			allowed = { 
-				original_tag = MAN 
+			slot = high_command 
+			idea_token = MAN_sasaki_toichi
+			allowed = {
+				original_tag = MAN
 				NOT = { has_government = communism }
 			}
-			available = {
-				NOT = { has_country_flag = remove_mongolian_princes_advisors }
-			}
-			cost = 150 #mongolian_princes_advisors_cost?150 #?
 			traits = {
-				mongolian_price
-				head_of_the_banner
+				army_chief_offensive_2
 			}
+			cost = 200
 			ai_will_do = {
 				factor = 1
-				modifier = {
-					factor = 0
-					NW_additional_slot_ai_block = yes
-				}
 			}
 		}
 	}
@@ -743,37 +883,19 @@ characters = {
 				original_tag = MAN
 				NOT = { has_government = communism }
 			}
-			traits = {
-				war_minister
-			}
-			ai_will_do = {
-				factor = 1.000
-				modifier = {
-					factor = 0
-					NW_additional_slot_ai_block = yes
+			available = {
+				has_dynamic_modifier = { modifier = MAN_dream_of_a_great_pan_asian_project }
+				set_temp_variable = { MAN_eob_stability_factor = 0.2 }
+				custom_trigger_tooltip = {
+					tooltip = MAN_eob_variable_check_tt
+					check_variable = { var = MAN_eob_production_factory_max_efficiency_factor value = MAN_eob_stability_factor }
 				}
 			}
-		}
-	}
-	MAN_yuzhan = {
-		name = MAN_yuzhan
-		portraits = {
-			civilian = {
-				small = "gfx/interface/ideas/MAN/MAN_yuzhan.dds"
-			}
-		}
-		advisor = { 
-			slot = political_advisor
-			idea_token = MAN_yuzhan
-			allowed = {
-				original_tag = MAN
-				NOT = { has_government = communism }
-			}
 			traits = {
-				representative_of_Manchu_imperial_house
+				war_minister # max_command_power
 			}
 			ai_will_do = {
-				factor = 1.000
+				factor = 1
 				modifier = {
 					factor = 0
 					NW_additional_slot_ai_block = yes
@@ -798,39 +920,9 @@ characters = {
 			traits = {
 				army_chief_organizational_1
 			}
-			ai_will_do = {
-				factor = 1.000
-			}
-		}
-	}
-	MAN_qimotesemupile = {
-		name = MAN_qimotesemupile
-		portraits = {
-			civilian = {
-				small = "gfx/interface/ideas/MAN/MAN_qimotesemupile.dds"
-			}
-		}
-		advisor = {
-			slot = political_advisor
-			idea_token = MAN_qimotesemupile
-			allowed = { 
-				original_tag = MAN 
-				NOT = { has_government = communism }
-			}
-			available = {
-				NOT = { has_country_flag = remove_mongolian_princes_advisors }
-			}
-			cost = 150 #mongolian_princes_advisors_cost?150 #? TODO
-			traits = {
-				mongolian_price
-				appeaser
-			}
+			cost = 150
 			ai_will_do = {
 				factor = 1
-				modifier = {
-					factor = 0
-					NW_additional_slot_ai_block = yes
-				}
 			}
 		}
 	}
@@ -848,11 +940,19 @@ characters = {
 				original_tag = MAN
 				NOT = { has_government = communism }
 			}
+			available = {
+				has_dynamic_modifier = { modifier = MAN_dream_of_a_great_pan_asian_project }
+				set_temp_variable = { MAN_eob_stability_factor = 0.2 }
+				custom_trigger_tooltip = {
+					tooltip = MAN_eob_variable_check_tt
+					check_variable = { var = MAN_eob_production_factory_max_efficiency_factor value = MAN_eob_stability_factor }
+				}
+			}
 			traits = {
 				lawyer #?
 			}
 			ai_will_do = {
-				factor = 1.000
+				factor = 1
 				modifier = {
 					factor = 0
 					NW_additional_slot_ai_block = yes
@@ -874,60 +974,16 @@ characters = {
 				original_tag = MAN
 				NOT = { has_government = communism }
 			}
+			available = {
+				has_dynamic_modifier = { modifier = MAN_dream_of_a_great_pan_asian_project }
+				set_temp_variable = { MAN_eob_stability_factor = 0.35 }
+				custom_trigger_tooltip = {
+					tooltip = MAN_eob_variable_check_tt
+					check_variable = { var = MAN_eob_production_factory_max_efficiency_factor value = MAN_eob_stability_factor }
+				}
+			}
 			traits = {
 				compassionate_gentleman
-			}
-			ai_will_do = {
-				factor = 1.000
-				modifier = {
-					factor = 0
-					NW_additional_slot_ai_block = yes
-				}
-			}
-		}
-	}
-	MAN_lin_sheng = {
-		name = MAN_lin_sheng
-		portraits = {
-			army = {
-				small="GFX_idea_generic_air_asia_2"
-			}
-		}
-		advisor = {
-			slot = political_advisor
-			idea_token = MAN_lin_sheng
-			allowed = { 
-				original_tag = MAN
-				NOT = { has_government = communism }
-			}
-			traits = {
-				mongolian_governor
-			}
-			ai_will_do = {
-				factor = 1
-				modifier = {
-					factor = 0
-					NW_additional_slot_ai_block = yes
-				}
-			}
-		}
-	}
-	MAN_guifu = {
-		name = MAN_guifu
-		portraits = {
-			army = {
-				small = "gfx/interface/portraits/MAN/MAN_guifu_small.dds"
-			}
-		}
-		advisor = {
-			slot = political_advisor
-			idea_token = MAN_guifu
-			allowed = { 
-				original_tag = MAN 
-				NOT = { has_government = communism }
-			}
-			traits = {
-				shadow_advisor
 			}
 			ai_will_do = {
 				factor = 1
@@ -952,43 +1008,19 @@ characters = {
 				original_tag = MAN
 				NOT = { has_government = communism }
 			}
+			available = {
+				has_dynamic_modifier = { modifier = MAN_dream_of_a_great_pan_asian_project }
+				set_temp_variable = { MAN_eob_stability_factor = 0.05 }
+				custom_trigger_tooltip = {
+					tooltip = MAN_eob_variable_check_tt
+					check_variable = { var = MAN_eob_production_factory_max_efficiency_factor value = MAN_eob_stability_factor }
+				}
+			}
 			traits = {
 				armaments_organizer
 			}
 			ai_will_do = {
-				factor = 1.000
-				modifier = {
-					factor = 0
-					NW_additional_slot_ai_block = yes
-				}
-			}
-		}
-	}
-	MAN_george_bronson_rea = { 
-		name = MAN_george_bronson_rea
-		portraits = {
-			army = {
-				small = "GFX_idea_generic_army_asia_3"
-			}
-		}
-		advisor = { 
-			slot = political_advisor
-			idea_token = MAN_george_bronson_rea
-			allowed = {
-				original_tag = MAN
-				NOT = { has_government = communism }
-			}
-			visible = {
-				has_character = MAN_aisin_gioro_puyi
-			}
-			available = { 
-				has_character = MAN_aisin_gioro_puyi
-			}
-			traits = {
-				press_secretary_of_Puyi
-			}
-			ai_will_do = {
-				factor = 1.000
+				factor = 1
 				modifier = {
 					factor = 0
 					NW_additional_slot_ai_block = yes
@@ -1017,7 +1049,7 @@ characters = {
 				silent_workhorse
 			}
 			ai_will_do = {
-				factor = 1.000
+				factor = 1
 				modifier = {
 					factor = 0
 					NW_additional_slot_ai_block = yes
@@ -1046,7 +1078,7 @@ characters = {
 				war_minister
 			}
 			ai_will_do = {
-				factor = 1.000
+				factor = 1
 				modifier = {
 					factor = 0
 					NW_additional_slot_ai_block = yes
@@ -1075,7 +1107,7 @@ characters = {
 				prince_of_terror
 			}
 			ai_will_do = {
-				factor = 1.000
+				factor = 1
 				modifier = {
 					factor = 0
 					NW_additional_slot_ai_block = yes
@@ -1104,7 +1136,7 @@ characters = {
 				fortification_engineer
 			}
 			ai_will_do = {
-				factor = 1.000
+				factor = 1
 				modifier = {
 					factor = 0
 					NW_additional_slot_ai_block = yes
@@ -1135,7 +1167,7 @@ characters = {
 				progressive_bureaucrat
 			}
 			ai_will_do = {
-				factor = 1.000
+				factor = 1
 				modifier = {
 					factor = 0
 					NW_additional_slot_ai_block = yes
@@ -1161,10 +1193,68 @@ characters = {
 				has_completed_focus = MAN_create_film_association_of_manchukuo
 			}
 			traits = {
-				propaganda_expert
+				MAN_propaganda_expert
 			}
 			ai_will_do = {
-				factor = 1.000
+				factor = 1
+				modifier = {
+					factor = 0
+					NW_additional_slot_ai_block = yes
+				}
+			}
+		}
+	}
+	MAN_naoki_hoshino = {
+		name = MAN_naoki_hoshino
+		portraits = {
+			army = {
+				small = "GFX_idea_generic_army_asia_2"
+			}
+		}
+		advisor = {
+			slot = political_advisor
+			idea_token = MAN_naoki_hoshino
+			allowed = {
+				original_tag = MAN
+				NOT = { has_government = communism }
+			}
+			available = {
+				has_completed_focus = MAN_one_industry_one_company
+			}
+			traits = { # global_building_slots_factor
+				captain_of_industry
+			}
+			ai_will_do = {
+				factor = 1
+				modifier = {
+					factor = 0
+					NW_additional_slot_ai_block = yes
+				}
+			}
+		}
+	}
+	MAN_yoshisuke_aikawa = {
+		name = MAN_yoshisuke_aikawa
+		portraits = {
+			army = {
+				small = "GFX_idea_generic_army_asia_2"
+			}
+		}
+		advisor = {
+			slot = political_advisor
+			idea_token = MAN_yoshisuke_aikawa
+			allowed = {
+				original_tag = MAN
+				NOT = { has_government = communism }
+			}
+			available = {
+				has_completed_focus = MAN_monopoly_approach # TODO проверка на войну с JAP?
+			}
+			traits = {
+				head_of_Nissan # global_building_slots_factor
+			}
+			ai_will_do = {
+				factor = 1
 				modifier = {
 					factor = 0
 					NW_additional_slot_ai_block = yes
@@ -1179,6 +1269,12 @@ characters = {
 				small = "GFX_idea_generic_army_asia_2"
 			}
 		}
+		country_leader = { 
+			desc = MAN_yoshiaki_kasagi_desc
+			ideology = fascism_ideology
+			traits = { }
+			expire = "1964.1.1.1"
+		}
 		advisor = {
 			slot = political_advisor
 			idea_token = MAN_yoshiaki_kasagi
@@ -1188,13 +1284,14 @@ characters = {
 			}
 			available = { 
 				has_completed_focus = MAN_promote_left_wing_intellectuals
+				NOT = { has_country_leader = { character = MAN_yoshiaki_kasagi ruling_only = yes } }
 			}
 			traits = {
 				founder_of_japanese_manchurian_parties
 				associate_of_okawa_shumei
 			}
 			ai_will_do = {
-				factor = 1.000
+				factor = 1
 				modifier = {
 					factor = 0
 					NW_additional_slot_ai_block = yes
@@ -1223,7 +1320,7 @@ characters = {
 				ideologue_of_national_politics
 			}
 			ai_will_do = {
-				factor = 1.000
+				factor = 1
 				modifier = {
 					factor = 0
 					NW_additional_slot_ai_block = yes
@@ -1256,7 +1353,7 @@ characters = {
 				son_of_founder_of_independence_of_manchuria
 			}
 			ai_will_do = {
-				factor = 1.000
+				factor = 1
 				modifier = {
 					factor = 0
 					NW_additional_slot_ai_block = yes
@@ -1281,12 +1378,12 @@ characters = {
 			available = { 
 				has_completed_focus = MAN_peasant_autonomy
 			}
-			traits = {
+			traits = { # global_building_slots_factor
 				supporter_of_agrarian_reform
 				left_wing_intellectual
 			}
 			ai_will_do = {
-				factor = 1.000
+				factor = 1
 				modifier = {
 					factor = 0
 					NW_additional_slot_ai_block = yes
@@ -1294,61 +1391,52 @@ characters = {
 			}
 		}
 	}
-	MAN_naoki_hoshino = {
-		name = MAN_naoki_hoshino
+	MAN_yin_zuoqian = {
+		name = MAN_yin_zuoqian
 		portraits = {
 			army = {
 				small = "GFX_idea_generic_army_asia_2"
 			}
 		}
 		advisor = {
-			slot = political_advisor
-			idea_token = MAN_naoki_hoshino
+			slot = navy_chief
+			idea_token = MAN_yin_zuoqian
 			allowed = {
 				original_tag = MAN
 				NOT = { has_government = communism }
 			}
 			available = {
-				has_completed_focus = MAN_one_industry_one_company
+				has_completed_focus = MAN_replace_sailors_with_manchus
 			}
 			traits = {
-				captain_of_industry
+				navy_chief_reform_1
 			}
+			cost = 150
 			ai_will_do = {
-				factor = 1.000
-				modifier = {
-					factor = 0
-					NW_additional_slot_ai_block = yes
-				}
+				factor = 1
 			}
 		}
 	}
-	MAN_yoshisuke_aikawa = {
-		name = MAN_yoshisuke_aikawa
+	MAN_guo_ruolin = {
+		name = MAN_guo_ruolin
 		portraits = {
 			army = {
 				small = "GFX_idea_generic_army_asia_2"
 			}
 		}
 		advisor = {
-			slot = political_advisor
-			idea_token = MAN_yoshisuke_aikawa
+			slot = air_chief
+			idea_token = MAN_guo_ruolin
 			allowed = {
 				original_tag = MAN
 				NOT = { has_government = communism }
 			}
-			available = {
-				has_completed_focus = MAN_monopoly_approach
-			}
 			traits = {
-				head_of_Nissan
+				air_chief_reform_1
 			}
+			cost = 150
 			ai_will_do = {
-				factor = 1.000
-				modifier = {
-					factor = 0
-					NW_additional_slot_ai_block = yes
-				}
+				factor = 1
 			}
 		}
 	}
@@ -1359,24 +1447,26 @@ characters = {
 		name = MAN_zhang_haipeng
 		portraits = {
 			army = {
-				small="GFX_portrait_man_zhang_haipeng_small"
-			}
-			army = {
+				small="GFX_idea_MAN_zhang_haipeng"
 				large="GFX_portrait_man_zhang_haipeng"
 			}
 		}
-		advisor = { #?
+		advisor = {
 			slot = theorist
 			idea_token = MAN_zhang_haipeng
 			allowed = {
 				original_tag = MAN
 				NOT = { has_government = communism }
 			}
+			available = {
+				has_completed_focus = MAN_new_military_academies_of_manchurian_army
+			}
 			traits = {
 				military_theorist
 			}
+			cost = 100
 			ai_will_do = {
-				factor = 1.000
+				factor = 1
 			}
 		}
 		corps_commander = {
@@ -1404,7 +1494,7 @@ characters = {
 			}
 		}
 		gender = female
-		advisor = { #?
+		advisor = {
 			slot = high_command
 			idea_token = MAN_yoshiko_kawashima 
 			allowed = {
@@ -1414,8 +1504,9 @@ characters = {
 			traits = {
 				army_logistics_2
 			}
+			cost = 150
 			ai_will_do = {
-				factor = 1.000
+				factor = 1
 			}
 		}
 		corps_commander = {
@@ -1541,6 +1632,24 @@ characters = {
 			army = {
 				large = "gfx/leaders/MAN/MAN_yu_zhishan.dds"
 				small = "gfx/leaders/MAN/MAN_yu_zhishan_small.dds"
+			}
+		}
+		advisor = {
+			slot = army_chief
+			idea_token = MAN_yu_zhishan
+			allowed = {
+				original_tag = MAN
+				NOT = { has_government = communism }
+			}
+			available = {
+				has_completed_focus = MAN_new_military_academies_of_manchurian_army
+			}
+			traits = {
+				army_chief_offensive_2
+			}
+			cost = 150
+			ai_will_do = {
+				factor = 1
 			}
 		}
 		corps_commander = {
