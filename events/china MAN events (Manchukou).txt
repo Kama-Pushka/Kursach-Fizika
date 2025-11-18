@@ -4290,13 +4290,14 @@ country_event = { #Токийская ночь
 		name = nw_manchukou_opium.3.a
 		add_to_variable = { MAN_oe_finance_factor = 0.5 tooltip = MAN_oe_finance_factor_tooltip }
 		clamp_variable = { var = MAN_oe_finance_factor min = 0 }
+		# TODO японии нацдух на зависимость
 	}
 }
 
 country_event = { #Трансамериканская торговля
 	id = nw_manchukou_opium.4
 	title = nw_manchukou_opium.4.t
-	desc = nw_manchukou_opium.4.desc # TODO про положение дел с опиумом в америке
+	desc = nw_manchukou_opium.4.desc
 	picture = GFX_report_event_manchukou.66
 
 	is_triggered_only = yes
@@ -4322,7 +4323,7 @@ country_event = { #Конфеты Мацуоки
 	}
 }
 
-country_event = { #
+country_event = { #Вопросы рентабельности
 	id = nw_manchukou_opium.6
 	title = nw_manchukou_opium.6.t
 	desc = nw_manchukou_opium.6.desc
@@ -4334,7 +4335,12 @@ country_event = { #
 	option = {
 		name = nw_manchukou_opium.6.a
 		set_country_flag = MAN_mongolian_asian_railway_opium_flag
-		# TODO рандомной стране дается нацдух на наркоманию, который раз в год кочует от страны к стране # TODO решение на удаление? (тогда идентичное что и у доихары)
+		unlock_decision_tooltip = MAN_selling_opium_by_rail
+		if = {
+			limit = { has_completed_focus = MAN_doihara_opium_network }
+			unlock_decision_tooltip = MAN_expansion_of_drug_network_to_mongols
+			unlock_decision_tooltip = MAN_expansion_of_drug_network_to_turkestan
+		}
 	}
 	option = {
 		name = nw_manchukou_opium.6.b
@@ -4344,7 +4350,7 @@ country_event = { #
 
 add_namespace = nw_manchukou_economy
 
-country_event = { #
+country_event = { #Успех пятилетки
 	id = nw_manchukou_economy.0
 	title = nw_manchukou_economy.0.t
 	desc = nw_manchukou_economy.0.desc
@@ -4390,7 +4396,8 @@ country_event = { # Вопрос финансирования
 		trigger = { check_variable = { var = MAN_oe_finance value = event_target:proj_num.MAN_cost compare = greater_than_or_equals } }
 		add_political_power = pol_cost
 		multiply_temp_variable = { event_target:proj_num.MAN_cost = -1 }
-		add_to_variable = { MAN_oe_finance = event_target:proj_num.MAN_cost tooltip = MAN_oe_finance_tooltip }
+		set_temp_variable = { val = event_target:proj_num.MAN_cost }
+		add_to_variable = { MAN_oe_finance = val tooltip = MAN_oe_finance_tooltip }
 	}
 	option = {
 		name = nw_manchukou_economy.1.c
@@ -4508,6 +4515,9 @@ country_event = { #Передать проект Ниссан?
 		set_variable = { MAN_Mange_building_section_mission_days = event_target:target_state.MAN_mange_line_building_days } # TODO работает?
 		activate_targeted_decision = { decision = MAN_Mange_building_section_mission target = event_target:target_state }
 	}
+	option = {
+		name = nw_manchukou_economy.12.b
+	}
 }
 
 country_event = { #Трансазиатская магистраль // many countries
@@ -4544,7 +4554,7 @@ country_event = { #Трансазиатская магистраль (согла
 	title = { text = nw_manchukou_economy.14.t.AFG trigger = { FROM = { tag = AFG } } } # Ишак, груженный золотом
 	title = { text = nw_manchukou_economy.14.t.PER trigger = { FROM = { tag = PER } } } # Восточная сказка
 	title = { text = nw_manchukou_economy.14.t.IRQ trigger = { FROM = { tag = IRQ } } } # Город Тысячи и Одной Ночи (Увидеть Багдад и умереть)
-	title = { text = nw_manchukou_economy.14.t } #
+	title = { text = nw_manchukou_economy.14.t } # [FROM.GetName] согласна на строительство дороги
 	desc = { text = nw_manchukou_economy.14.d.CSR trigger = { FROM = { tag = CSR } } }
 	desc = { text = nw_manchukou_economy.14.d.MON trigger = { FROM = { tag = MON } } }
 	desc = { text = nw_manchukou_economy.14.d.NGX trigger = { FROM = { OR = { tag = NGX tag = XSM } } } }
@@ -4630,13 +4640,19 @@ country_event = { #Военный маршрут
 			add_to_variable = { MAN_mar_war_support_factor = 0.1 tooltip = war_support_factor_tooltip }
 			add_to_variable = { MAN_mar_command_power_gain_mult = 0.5 tooltip = command_power_gain_mult_tooltip }
 		}
+		
+		if = {
+			limit = { has_country_flag = MAN_selling_opium_by_rail_flag }
+			add_to_variable = { MAN_oe_finance_factor = 0.15 tooltip = MAN_oe_finance_factor_tooltip }
+		}
+		country_event = { id = nw_manchukou_opium.6 days = 10 }
+		
 		if = {
 			limit = { NOT = { has_country_flag = MAN_mange_builds_mukden_chahar } }
 			custom_effect_tooltip = empty_line_tooltip
 			custom_effect_tooltip = MAN_south_manchuria_railway_company_bonus
 			add_to_variable = { generic_building_organization_production_speed_buildings_factor = 0.03 tooltip = production_speed_buildings_factor_tt }
 		}
-		country_event = { id = nw_manchukou_opium.6 days = 10 }
 	}
 }
 
@@ -4657,13 +4673,19 @@ country_event = { #Железная дорога Внутренней Монго
 			add_to_variable = { MAN_mar_country_resource_steel = 7 tooltip = country_resource_steel_tt }
 			unlock_decision_tooltip = MAN_develop_suiyuan_steel_deposits
 		}
+		
+		if = {
+			limit = { has_country_flag = MAN_selling_opium_by_rail_flag }
+			add_to_variable = { MAN_oe_finance_factor = 0.15 tooltip = MAN_oe_finance_factor_tooltip }
+		}
+		country_event = { id = nw_manchukou_opium.6 days = 10 }
+		
 		if = {
 			limit = { NOT = { has_country_flag = MAN_mange_builds_chahar_bailinmyao } }
 			custom_effect_tooltip = empty_line_tooltip
 			custom_effect_tooltip = MAN_south_manchuria_railway_company_bonus
 			add_to_variable = { generic_building_organization_production_speed_buildings_factor = 0.03 tooltip = production_speed_buildings_factor_tt }
 		}
-		country_event = { id = nw_manchukou_opium.6 days = 10 }
 	}
 }
 
@@ -4685,13 +4707,19 @@ country_event = { #Стратегия объединения Монголии
 				add_ideas = MAN_bailinmyao_mongolia_railway_idea
 			}
 		}
+		
+		if = {
+			limit = { has_country_flag = MAN_selling_opium_by_rail_flag }
+			add_to_variable = { MAN_oe_finance_factor = 0.15 tooltip = MAN_oe_finance_factor_tooltip }
+		}
+		country_event = { id = nw_manchukou_opium.6 days = 10 }
+		
 		if = {
 			limit = { NOT = { has_country_flag = MAN_mange_builds_bailinmyao_mongolia } }
 			custom_effect_tooltip = empty_line_tooltip
 			custom_effect_tooltip = MAN_south_manchuria_railway_company_bonus
 			add_to_variable = { production_speed_buildings_factor = 0.03 tooltip = production_speed_buildings_factor_tt }
 		}
-		country_event = { id = nw_manchukou_opium.6 days = 10 }
 	}
 }
 
@@ -4709,16 +4737,22 @@ country_event = { #Открытие линии Улан-Батор - Кумул
 			limit = { has_dynamic_modifier = { modifier = MAN_mongolian_asian_railway_idea } }
 			custom_effect_tooltip = MAN_mongolian_asian_railway_idea_tooltip
 			add_to_variable = { MAN_mar_autonomy_gain_global_factor = 0.1 tooltip = autonomy_gain_global_factor_tt }
-			add_to_variable = { MAN_mar_org_loss_when_moving = 0.25 tooltip = org_loss_when_moving_tt } 
+			add_to_variable = { MAN_mar_org_loss_when_moving = -0.25 tooltip = org_loss_when_moving_tt } 
 			# TODO лояльность монголов?
 		}
+		
+		if = {
+			limit = { has_country_flag = MAN_selling_opium_by_rail_flag }
+			add_to_variable = { MAN_oe_finance_factor = 0.15 tooltip = MAN_oe_finance_factor_tooltip }
+		}
+		country_event = { id = nw_manchukou_opium.6 days = 10 }
+		
 		if = {
 			limit = { NOT = { has_country_flag = MAN_mange_builds_mongolia_kumul } }
 			custom_effect_tooltip = empty_line_tooltip
 			custom_effect_tooltip = MAN_south_manchuria_railway_company_bonus
 			add_to_variable = { production_speed_buildings_factor = 0.03 tooltip = production_speed_buildings_factor_tt }
 		}
-		country_event = { id = nw_manchukou_opium.6 days = 10 }
 	}
 }
 
@@ -4739,13 +4773,19 @@ country_event = { #Северокитайский путь
 			add_to_variable = { MAN_mar_industrial_factory_donations = 3 tooltip = industrial_factory_donations_tooltip }
 			# TODO что-то с опиумом
 		}
+		
+		if = {
+			limit = { has_country_flag = MAN_selling_opium_by_rail_flag }
+			add_to_variable = { MAN_oe_finance_factor = 0.15 tooltip = MAN_oe_finance_factor_tooltip }
+		}
+		country_event = { id = nw_manchukou_opium.6 days = 10 }
+		
 		if = {
 			limit = { NOT = { has_country_flag = MAN_mange_builds_bailinmyao_kumul } }
 			custom_effect_tooltip = empty_line_tooltip
 			custom_effect_tooltip = MAN_south_manchuria_railway_company_bonus
 			add_to_variable = { production_speed_buildings_factor = 0.03 tooltip = production_speed_buildings_factor_tt }
 		}
-		country_event = { id = nw_manchukou_opium.6 days = 10 }
 	}
 }
 
@@ -4763,7 +4803,7 @@ country_event = { #Врата в Китай
 			limit = { has_dynamic_modifier = { modifier = MAN_mongolian_asian_railway_idea } }
 			custom_effect_tooltip = MAN_mongolian_asian_railway_idea_tooltip
 			add_to_variable = { MAN_mar_autonomy_gain_global_factor = 0.1 tooltip = autonomy_gain_global_factor_tt }
-			add_to_variable = { MAN_mar_political_power_factor = 0.2 tooltip = political_power_factor_tooltip }
+			add_to_variable = { MAN_mar_political_power_factor = 0.22 tooltip = political_power_factor_tooltip }
 			var:617.controller = {
 				if = {
 					limit = { is_literally_china = yes } # TODO синьцзянский тег и просоветский
@@ -4776,13 +4816,19 @@ country_event = { #Врата в Китай
 			}
 			# TODO учитывать что союз тоже строит тут дорогу?
 		}
+		
+		if = {
+			limit = { has_country_flag = MAN_selling_opium_by_rail_flag }
+			add_to_variable = { MAN_oe_finance_factor = 0.15 tooltip = MAN_oe_finance_factor_tooltip }
+		}
+		country_event = { id = nw_manchukou_opium.6 days = 10 }
+		
 		if = {
 			limit = { NOT = { has_country_flag = MAN_mange_builds_kumul_kazakhstan } }
 			custom_effect_tooltip = empty_line_tooltip
 			custom_effect_tooltip = MAN_south_manchuria_railway_company_bonus
 			add_to_variable = { production_speed_buildings_factor = 0.03 tooltip = production_speed_buildings_factor_tt }
 		}
-		country_event = { id = nw_manchukou_opium.6 days = 10 }
 	}
 }
 
@@ -4802,13 +4848,19 @@ country_event = { #
 			add_to_variable = { MAN_mar_autonomy_gain_global_factor = 0.1 tooltip = autonomy_gain_global_factor_tt }
 			# TODO опиум? грабить корованы?
 		}
+		
+		if = {
+			limit = { has_country_flag = MAN_selling_opium_by_rail_flag }
+			add_to_variable = { MAN_oe_finance_factor = 0.15 tooltip = MAN_oe_finance_factor_tooltip }
+		}
+		country_event = { id = nw_manchukou_opium.6 days = 10 }
+		
 		if = {
 			limit = { NOT = { has_country_flag = MAN_mange_builds_kumul_kashgar } }
 			custom_effect_tooltip = empty_line_tooltip
 			custom_effect_tooltip = MAN_south_manchuria_railway_company_bonus
 			add_to_variable = { production_speed_buildings_factor = 0.03 tooltip = production_speed_buildings_factor_tt }
 		}
-		country_event = { id = nw_manchukou_opium.6 days = 10 }
 	}
 }
 
@@ -4829,13 +4881,19 @@ country_event = { #
 			add_to_variable = { MAN_mar_autonomy_gain_global_factor = 0.1 tooltip = autonomy_gain_global_factor_tt }
 			# TODO опиум?
 		}
+		
+		if = {
+			limit = { has_country_flag = MAN_selling_opium_by_rail_flag }
+			add_to_variable = { MAN_oe_finance_factor = 0.15 tooltip = MAN_oe_finance_factor_tooltip }
+		}
+		country_event = { id = nw_manchukou_opium.6 days = 10 }
+		
 		if = {
 			limit = { NOT = { has_country_flag = MAN_mange_builds_kashgar_pakistan } }
 			custom_effect_tooltip = empty_line_tooltip
 			custom_effect_tooltip = MAN_south_manchuria_railway_company_bonus
 			add_to_variable = { production_speed_buildings_factor = 0.03 tooltip = production_speed_buildings_factor_tt }
 		}
-		country_event = { id = nw_manchukou_opium.6 days = 10 }
 	}
 }
 
@@ -4855,13 +4913,19 @@ country_event = { #
 			add_to_variable = { MAN_mar_autonomy_gain_global_factor = 0.1 tooltip = autonomy_gain_global_factor_tt }
 			# TODO опиум?
 		}
+		
+		if = {
+			limit = { has_country_flag = MAN_selling_opium_by_rail_flag }
+			add_to_variable = { MAN_oe_finance_factor = 0.15 tooltip = MAN_oe_finance_factor_tooltip }
+		}
+		country_event = { id = nw_manchukou_opium.6 days = 10 }
+		
 		if = {
 			limit = { NOT = { has_country_flag = MAN_mange_builds_pakistan_afganistan } }
 			custom_effect_tooltip = empty_line_tooltip
 			custom_effect_tooltip = MAN_south_manchuria_railway_company_bonus
 			add_to_variable = { production_speed_buildings_factor = 0.03 tooltip = production_speed_buildings_factor_tt }
 		}
-		country_event = { id = nw_manchukou_opium.6 days = 10 }
 	}
 }
 
@@ -4882,13 +4946,19 @@ country_event = { #
 			set_variable = { MAN_mar_consumer_goods_factor = -0.25 tooltip = consumer_goods_factor_tooltip }
 			# TODO решения на восстания басмачей
 		}
+		
+		if = {
+			limit = { has_country_flag = MAN_selling_opium_by_rail_flag }
+			add_to_variable = { MAN_oe_finance_factor = 0.15 tooltip = MAN_oe_finance_factor_tooltip }
+		}
+		country_event = { id = nw_manchukou_opium.6 days = 10 }
+		
 		if = {
 			limit = { NOT = { has_country_flag = MAN_mange_builds_kazakhstan_turkmenistan } }
 			custom_effect_tooltip = empty_line_tooltip
 			custom_effect_tooltip = MAN_south_manchuria_railway_company_bonus
 			add_to_variable = { production_speed_buildings_factor = 0.03 tooltip = production_speed_buildings_factor_tt }
 		}
-		country_event = { id = nw_manchukou_opium.6 days = 10 }
 	}
 }
 
@@ -4910,13 +4980,19 @@ country_event = { #
 			# TODO опиум?
 			# TODO решения на влияние на иран
 		}
+		
+		if = {
+			limit = { has_country_flag = MAN_selling_opium_by_rail_flag }
+			add_to_variable = { MAN_oe_finance_factor = 0.15 tooltip = MAN_oe_finance_factor_tooltip }
+		}
+		country_event = { id = nw_manchukou_opium.6 days = 10 }
+		
 		if = {
 			limit = { NOT = { has_country_flag = MAN_mange_builds_turkmenistan_iran } }
 			custom_effect_tooltip = empty_line_tooltip
 			custom_effect_tooltip = MAN_south_manchuria_railway_company_bonus
 			add_to_variable = { production_speed_buildings_factor = 0.03 tooltip = production_speed_buildings_factor_tt }
 		}
-		country_event = { id = nw_manchukou_opium.6 days = 10 }
 	}
 }
 
@@ -4937,13 +5013,19 @@ country_event = { #
 			add_to_variable = { MAN_mar_country_resource_oil = 12 tooltip = country_resource_oil_tt }
 			# TODO решения на влияние на ирак
 		}
+		
+		if = {
+			limit = { has_country_flag = MAN_selling_opium_by_rail_flag }
+			add_to_variable = { MAN_oe_finance_factor = 0.15 tooltip = MAN_oe_finance_factor_tooltip }
+		}
+		country_event = { id = nw_manchukou_opium.6 days = 10 }
+		
 		if = {
 			limit = { NOT = { has_country_flag = MAN_mange_builds_iran_bagdad } }
 			custom_effect_tooltip = empty_line_tooltip
 			custom_effect_tooltip = MAN_south_manchuria_railway_company_bonus
 			add_to_variable = { production_speed_buildings_factor = 0.03 tooltip = production_speed_buildings_factor_tt }
 		}
-		country_event = { id = nw_manchukou_opium.6 days = 10 }
 	}
 }
 
@@ -4961,22 +5043,28 @@ country_event = { #
 			limit = { has_dynamic_modifier = { modifier = MAN_mongolian_asian_railway_idea } }
 			custom_effect_tooltip = MAN_mongolian_asian_railway_idea_tooltip
 			add_to_variable = { MAN_mar_autonomy_gain_global_factor = 0.1 tooltip = autonomy_gain_global_factor_tt } # TODO решения на нефть ирана
-			add_to_variable = { MAN_mar_country_resource_oil = 12 tooltip = country_resource_oil_tt }
+			add_to_variable = { MAN_mar_country_resource_oil = 25 tooltip = country_resource_oil_tt }
 		}
+		
+		if = {
+			limit = { has_country_flag = MAN_selling_opium_by_rail_flag }
+			add_to_variable = { MAN_oe_finance_factor = 0.15 tooltip = MAN_oe_finance_factor_tooltip }
+		}
+		country_event = { id = nw_manchukou_opium.6 days = 10 }
+		
 		if = {
 			limit = { NOT = { has_country_flag = MAN_mange_builds_iran_bagdad } }
 			custom_effect_tooltip = empty_line_tooltip
 			custom_effect_tooltip = MAN_south_manchuria_railway_company_bonus
 			add_to_variable = { production_speed_buildings_factor = 0.03 tooltip = production_speed_buildings_factor_tt }
 		}
-		country_event = { id = nw_manchukou_opium.6 days = 10 }
 	}
 }
 
 news_event = { #Экономика Маньчжоу-Го обогнала Японию
 	id = nw_manchukou_economy.29
 	title = nw_manchukou_economy.29.t
-	desc = nw_manchukou_economy.29.d
+	desc = nw_manchukou_economy.29.desc
 	picture = GFX_news_event_NW_JAP_news.3 # TODO
 	major = yes
 	is_triggered_only = yes
@@ -5424,7 +5512,7 @@ country_event = { #Подрыв железной дороги
 		name = nw_manchukou_banditry.25.a
 		custom_effect_tooltip = MAN_strength_of_partisan_movement_tooltip
 		add_to_variable = { MAN_strength_of_partisan_movement_var = -0.02 tooltip = stability_factor_tooltip }
-		random_owned_state = { # TODO железная дорога!
+		random_owned_state = { # TODO железная дорога и поезд
 			limit = {
 				is_fully_controlled_by = ROOT
 				infrastructure > 0
