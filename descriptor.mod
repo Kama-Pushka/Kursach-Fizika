@@ -63,7 +63,7 @@ tags={
 	"Events"
 	"Technologies"
 }
-supported_version="1.15.*"
+supported_version="1.16.*"
 picture="thumbnail.png"
 name="New Ways REBOOT DEV BUILD"
 path="mod/Kursach-Fizika"
