@@ -1744,6 +1744,10 @@ SAF_bring_independence_to_native_republics_category = {
 		highlight_states = {
 			highlight_states_trigger = {
 				is_core_of = FROM
+				OR = {
+					is_controlled_by = ROOT
+					owner = { is_subject_of = ROOT }
+				}
 			}
 		}
 		target_non_existing = yes
@@ -1768,7 +1772,12 @@ SAF_bring_independence_to_native_republics_category = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): remove decision SAF_creation_of_a_native_republic"
 			FROM = {
 				every_core_state = {
-					limit = { is_controlled_by = ROOT }
+					limit = {
+						OR = {
+							is_controlled_by = ROOT
+							owner = { is_subject_of = ROOT }
+						}
+					}
 					transfer_state_to = FROM
 				}
 			}
@@ -1797,7 +1806,7 @@ SAF_bring_independence_to_native_republics_category = {
 		}
 		highlight_states = {
 			highlight_states_trigger = {
-				is_core_of = FROM
+				is_owned_by = FROM
 			}
 		}
 		target_non_existing = yes
@@ -1817,8 +1826,11 @@ SAF_bring_independence_to_native_republics_category = {
 		remove_effect = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): remove decision SAF_integrate_the_workers_republic"
 			FROM = {
-				ROOT = { annex_country = { target = PREV transfer_troops = yes } }
-				every_core_state = { add_core_of = ROOT }
+				ROOT = { annex_country = { target = FROM transfer_troops = yes } }
+				every_controlled_state = {
+					limit = { is_core_of = FROM }
+					add_core_of = ROOT
+				}
 			}
 		}
 		ai_will_do = {
