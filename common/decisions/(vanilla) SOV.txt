@@ -1,6 +1,124 @@
 ####### NO STEP BACK! #######
 @DAYS_DETERMINED = 180 #Used for propaganda campaign SOV_heroes_forward -> Value should be the same as SOV_default_propaganda_campaign_duration
 
+debug_decisions = {
+	# SOV_debug_show_paranoia_system = { #This is a duplicate of the decision present in the Paranoia category
+		# priority = 202
+
+		# icon = eng_ally_imperialist_coup
+
+		# allowed = {
+			# original_tag = SOV
+		# }
+
+		# available = {
+			# always = yes
+		# }
+
+		# visible = {
+			# NOT = { has_country_flag = SOV_paranoia_system_active_flag }
+		# }
+
+		# cost = 0
+
+		# complete_effect = {
+			# custom_effect_tooltip = "This will make the Paranoia System visible in the tab. It does NOT activate the Paranoia system."
+			# set_country_flag = SOV_debug_show_paranoia_system_flag
+		# }
+	# }
+
+	# SOV_debug_show_propaganda_system = { #This is a duplicate of the decision present in the Paranoia category
+		# priority = 201
+
+		# icon = eng_ally_imperialist_coup
+
+		# allowed = {
+			# original_tag = SOV
+		# }
+
+		# available = {
+			# always = yes
+		# }
+
+		# visible = {
+			# NOT = { has_country_flag = SOV_debug_show_propaganda_system_flag }
+		# }
+
+		# cost = 0
+
+		# complete_effect = {
+			# custom_effect_tooltip = "This will make the Propaganda system visible in the tab. It does NOT activate the Propaganda system."
+			# set_country_flag = SOV_debug_show_propaganda_system_flag
+		# }
+	# }
+
+	# SOV_TEST_ULTIMATE_CONTINENTS = {
+		# priority = 200
+
+		# icon = generic_prepare_civil_war
+
+		# allowed = {
+			# original_tag = SOV
+		# }
+
+		# available = {
+			# always = yes
+		# }
+
+		# visible = {
+			# always = yes
+		# }
+
+		# cost = 0
+
+		# complete_effect = {
+			# #log = "WARNING: This takes a while"
+			# every_state = {
+				# limit = {
+					# is_on_continent = asia
+				# }
+				# TIB = { transfer_state = PREV }
+			# }
+			# every_state = {
+				# limit = {
+					# is_on_continent = europe
+				# }
+				# LUX = { transfer_state = PREV }
+			# }
+			# every_state = {
+				# limit = {
+					# is_on_continent = middle_east
+				# }
+				# YEM = { transfer_state = PREV }
+			# }
+			# every_state = {
+				# limit = {
+					# is_on_continent = africa
+				# }
+				# ETH = { transfer_state = PREV }
+			# }
+			# every_state = {
+				# limit = {
+					# is_on_continent = australia
+				# }
+				# NZL = { transfer_state = PREV }
+			# }
+			# every_state = {
+				# limit = {
+					# is_on_continent = north_america
+				# }
+				# CAN = { transfer_state = PREV }
+			# }
+			# every_state = {
+				# limit = {
+					# is_on_continent = south_america
+				# }
+				# PER = { transfer_state = PREV }
+			# }
+		# }
+	# }
+}
+
 
 
 ########     ###    ########     ###    ##    ##  #######  ####    ###
@@ -20,18 +138,17 @@ SOV_paranoia_system = {
 		icon = GFX_decision_eng_trade_unions_support
 
 		ai_will_do = {
-			base = 0
+			factor = 1.0
 			modifier = {
-				add = 1
-				check_variable = { SOV_paranoia > 35 }
+				add = var:SOV_paranoia
 			}
 			modifier = {
-				add = 100
-				check_variable = { SOV_paranoia > 75 }
-			}
-			modifier = {
-				factor = 2
+				factor = 1.2
 				SOV_is_opposition = yes
+			}
+			modifier = {
+				factor = 0
+				check_variable = { SOV_paranoia < 20 }
 			}
 		}
 
@@ -198,7 +315,14 @@ SOV_paranoia_system = {
 		icon = GFX_decision_generic_political_discourse
 
 		ai_will_do = {
-			base = 0
+			factor = 0.9
+			modifier = {
+				add = var:SOV_paranoia
+			}
+			modifier = {
+				factor = 0
+				check_variable = { SOV_paranoia < 20 }
+			}
 		}
 
 		allowed = {
@@ -321,7 +445,7 @@ SOV_paranoia_system = {
 		icon = generic_brainwash
 
 		ai_will_do = {
-			base = 1
+			base = 2
 			modifier = {
 				factor = 2
 				any_enemy_country = {
@@ -331,6 +455,10 @@ SOV_paranoia_system = {
 			modifier = {
 				factor = 5
 				has_idea = SOV_anti_soviet_military_thinking_banned_army
+			}
+			modifier = {
+				factor = 2
+				has_idea = SOV_anti_soviet_military_thinking_banned_airforce
 			}
 		}
 
@@ -345,6 +473,12 @@ SOV_paranoia_system = {
 				}
 				has_country_flag = SOV_assassinated_stalin_flag
 			}
+			else_if = {
+				limit = {
+					has_global_flag = SOV_soviet_civil_war
+				}
+				has_global_flag = SOV_soviet_civil_war
+			}
 			else = {
 				has_country_flag = { flag = SOV_third_moscow_trial_flag days > 365 }
 			}
@@ -358,6 +492,8 @@ SOV_paranoia_system = {
 			}
 			OR = {
 				SOV_is_stalinist = yes
+				SOV_is_left_opposition = yes
+				SOV_is_right_opposition = yes
 				has_country_flag = SOV_assassinated_stalin_flag
 			}
 		}
@@ -423,7 +559,21 @@ SOV_paranoia_system = {
 		}
 
 		available = {
-			has_country_flag = { flag = SOV_third_moscow_trial_flag days > 365 }
+			if = {
+				limit = {
+					has_country_flag = SOV_assassinated_stalin_flag
+				}
+				has_country_flag = SOV_assassinated_stalin_flag
+			}
+			else_if = {
+				limit = {
+					has_global_flag = SOV_soviet_civil_war
+				}
+				has_global_flag = SOV_soviet_civil_war
+			}
+			else = {
+				has_country_flag = { flag = SOV_third_moscow_trial_flag days > 365 }
+			}
 		}
 
 		visible = {
@@ -432,7 +582,12 @@ SOV_paranoia_system = {
 				has_idea = SOV_purged_junior_army_officers_2
 				has_idea = SOV_purged_junior_army_officers_3
 			}
-			SOV_is_stalinist = yes
+			OR = {
+				SOV_is_stalinist = yes
+				SOV_is_left_opposition = yes
+				SOV_is_right_opposition = yes
+				has_country_flag = SOV_assassinated_stalin_flag
+			}
 		}
 
 		days_remove = SOV_reinforce_officer_ranks_days
@@ -509,7 +664,21 @@ SOV_paranoia_system = {
 		}
 
 		available = {
-			has_country_flag = { flag = SOV_third_moscow_trial_flag days > 365 }
+			if = {
+				limit = {
+					has_country_flag = SOV_assassinated_stalin_flag
+				}
+				has_country_flag = SOV_assassinated_stalin_flag
+			}
+			else_if = {
+				limit = {
+					has_global_flag = SOV_soviet_civil_war
+				}
+				has_global_flag = SOV_soviet_civil_war
+			}
+			else = {
+				has_country_flag = { flag = SOV_third_moscow_trial_flag days > 365 }
+			}
 		}
 
 		visible = {
@@ -518,7 +687,12 @@ SOV_paranoia_system = {
 				has_idea = SOV_purged_junior_navy_officers_2
 				has_idea = SOV_purged_junior_navy_officers_3
 			}
-			SOV_is_stalinist = yes
+			OR = {
+				SOV_is_stalinist = yes
+				SOV_is_left_opposition = yes
+				SOV_is_right_opposition = yes
+				has_country_flag = SOV_assassinated_stalin_flag
+			}
 		}
 
 		days_remove = SOV_reinforce_officer_ranks_days
@@ -590,6 +764,13 @@ SOV_paranoia_system = {
 				flag = SOV_mig_design_bureau_dissolved_flag
 				days > 365
 			}
+			custom_trigger_tooltip = {
+				tooltip = SOV_mig_design_bureau_dissolved_days_tt
+				has_country_flag = {
+					flag = SOV_mig_design_bureau_dissolved_flag
+					days > 365
+				}
+			}
 			num_of_civilian_factories_available_for_projects > 1
 		}
 
@@ -630,6 +811,13 @@ SOV_paranoia_system = {
 			has_country_flag = {
 				flag = SOV_ilyushin_design_bureau_dissolved_flag
 				days > 365
+			}
+			custom_trigger_tooltip = {
+				tooltip = SOV_ilyushin_design_bureau_dissolved_days_tt
+				has_country_flag = {
+					flag = SOV_ilyushin_design_bureau_dissolved_flag
+					days > 365
+				}
 			}
 			num_of_civilian_factories_available_for_projects > 1
 		}
@@ -672,6 +860,13 @@ SOV_paranoia_system = {
 				flag = SOV_tupolev_design_bureau_dissolved_flag
 				days > 365
 			}
+			custom_trigger_tooltip = {
+				tooltip = SOV_tupolev_design_bureau_dissolved_days_tt
+				has_country_flag = {
+					flag = SOV_tupolev_design_bureau_dissolved_flag
+					days > 365
+				}
+			}
 			num_of_civilian_factories_available_for_projects > 1
 		}
 
@@ -712,6 +907,13 @@ SOV_paranoia_system = {
 			has_country_flag = {
 				flag = SOV_yakovlev_design_bureau_dissolved_flag
 				days > 365
+			}
+			custom_trigger_tooltip = {
+				tooltip = SOV_yakovlev_design_bureau_dissolved_days_tt
+				has_country_flag = {
+					flag = SOV_yakovlev_design_bureau_dissolved_flag
+					days > 365
+				}
 			}
 			num_of_civilian_factories_available_for_projects > 1
 		}
@@ -2311,6 +2513,14 @@ SOV_diplomacy_baltic_decision_category = {
 		ai_will_do = {
 			base = 200
 			modifier = {
+				factor = 0.1
+				NOT = { is_neighbor_of = FROM }
+			}
+			modifier = {
+				factor = 0.25
+				date < 1940.1.1
+			}
+			modifier = {
 				factor = 10
 				has_political_power > 160
 			}
@@ -3437,7 +3647,7 @@ SOV_diplomacy_middle_east_decision_category = {
 					type = puppet_wargoal_focus
 				}
 			}
-			else = { #SOV + ENG invading together
+			else = { #SOV + ENG invading together, SOV perspective
 				if = { #SOV triggers the actual effects
 					limit = {
 						original_tag = SOV
@@ -3464,15 +3674,26 @@ SOV_diplomacy_middle_east_decision_category = {
 					hidden_effect = { news_event = { id = nsb_news.104 days = 4 random_days = 2 } } #Only ENG sends the news event.
 				}
 			}
+
 			activate_mission = SOV_operation_countenance
 			if = { #Activate mission for ENG if joint operation
 				limit = {
 					has_global_flag = SOV_agreed_anglo_soviet_invasion_of_iran_flag
+					# tag = SOU # TODO ??
 				}
 				ENG = {
 					activate_mission = SOV_operation_countenance
 				}
 			}
+			# if = { #Activate mission for ENG if joint operation	TODO ??
+				# limit = {
+					# has_global_flag = SOV_agreed_anglo_soviet_invasion_of_iran_flag
+					# tag = ENG
+				# }
+				# SOU = {
+					# activate_mission = SOV_operation_countenance
+				# }
+			# }
 			custom_effect_tooltip = SOV_preparations_for_operation_countenance_mission_tt
 
 			hidden_effect = { #Add all AI strategies
@@ -3606,6 +3827,7 @@ SOV_diplomacy_middle_east_decision_category = {
 ############
 
 SOV_diplomacy_asia_decision_category = {
+
 	SOV_send_infantry_equipment_asia = {
 		priority = 50
 
@@ -3828,6 +4050,53 @@ SOV_diplomacy_asia_decision_category = {
 				transfer_state = 555
 				transfer_state = 536
 			}
+		}
+	}
+	
+	SOV_cancel_the_japanese_resource_rights_to_sakhalin_decision = { # TODO а оно нам надо??
+		priority = 999
+
+		icon = GFX_decision_generic_forestry
+
+		ai_will_do = {
+			base = 10
+		}
+
+		allowed = {
+			original_tag = SOV
+		}
+
+		visible = {
+			has_completed_focus = SOV_prepare_a_war_with_japan
+			655 = {
+				is_owned_and_controlled_by = ROOT
+			}
+			JAP = {
+				has_resources_rights = {
+					state = 655
+				}
+			}
+		}
+
+		available = {
+			controls_state = 655
+		}
+
+		fire_only_once = yes
+
+		cost = 50
+
+		complete_effect = {
+
+			JAP = { 
+				remove_resource_rights = 655 
+				country_event = { 
+					id = SEA_japan_popup_events.47 
+					hours = 4 
+					random_hours = 2 
+				}
+			}
+
 		}
 	}
 
@@ -4631,7 +4900,7 @@ SOV_diplomacy_asia_decision_category = {
 					target = ROOT
 					value > 80
 				}
-				has_government = communism
+				has_government = ROOT
 			}
 			has_country_flag = { flag = SOV_sinkiang_joined_comintern_counter_flag days > 730 }
 			custom_trigger_tooltip = {
@@ -4669,6 +4938,14 @@ SOV_diplomacy_asia_decision_category = {
 				add_opinion_modifier = {
 					target = SIK
 					modifier = SOV_complied_with_our_demands
+				}
+				SIK = {
+					set_cosmetic_tag = SIK_ssr
+					set_party_name = {
+					    ideology = communism
+					    long_name = SIK_CPSU_communism_party_long
+					    name = SIK_CPSU_communism_party
+					}
 				}
 			}
 
@@ -5611,7 +5888,7 @@ SOV_national_academy_of_sciences_dec_cat = {
 				effect_tooltip = {
 					add_ideas = SOV_national_academy_of_sciences_puppet
 				}
-			}			
+			}
 		}
 	}
 }
@@ -7840,8 +8117,8 @@ SOV_soviet_civil_war_dec_cat = {
 				OR = {
 					#region = 155 # Manchuria
 					region = 151
-					region = 261 
-					region = 262 
+					region = 261
+					region = 262
 					region = 149
 					region = 256
 					region = 257
@@ -8520,8 +8797,8 @@ SOV_soviet_civil_war_dec_cat = {
 					region = 147
 					region = 263
 					region = 151
-					region = 261 
-					region = 262 
+					region = 261
+					region = 262
 					region = 149
 					region = 256
 					region = 257
@@ -9543,8 +9820,8 @@ SOV_soviet_civil_war_dec_cat = {
 					region = 147
 					region = 263
 					region = 151
-					region = 261 
-					region = 262 
+					region = 261
+					region = 262
 					region = 149
 					region = 256
 					region = 257
@@ -9567,8 +9844,8 @@ SOV_soviet_civil_war_dec_cat = {
 							region = 147
 							region = 263
 							region = 151
-							region = 261 
-							region = 262 
+							region = 261
+							region = 262
 							region = 149
 							region = 256
 							region = 257
@@ -10562,6 +10839,342 @@ SOV_permanent_revolution_dec_cat = {
    ###    ##     ## ##    ## #### ######## ######## ##     ##
 
 
+operations = {
+
+	# SOV_seize_manchuria = {
+
+		# icon = generic_operation
+
+		# allowed = {
+			# original_tag = SOV
+		# }
+
+		# available = {
+			# JAP = { has_completed_focus = JAP_pre_emptive_coup }
+			# MAN = { is_puppet = no }
+			# NOT = {
+				# has_war_with = MAN
+			# }
+		# }
+
+		# cost = 25
+		# fire_only_once = yes
+		# visible = {
+			# JAP = { has_completed_focus = JAP_strengthen_civilian_government }
+			# MAN = { exists = yes }
+		# }
+
+		# complete_effect = {
+			# create_wargoal = {
+				# target = MAN
+				# type = annex_everything
+			# }
+		# }
+
+		# ai_will_do = {
+			# base = 1
+			# modifier = {
+				# MAN = {
+					# is_ai = no
+				# }
+				# factor = 0 #we're mean but not that mean
+			# }
+			# modifier = {
+				# threat < 0.25
+				# factor = 0
+			# }
+		# }
+	# }
+}
+
+political_actions = {
+
+	# SOV_return_manchuria = {
+
+		# allowed = {
+			# original_tag = SOV
+		# }
+
+		# available = {
+			# OR = {
+				# AND = {
+					# owns_state = 610
+					# owns_state = 716
+					# owns_state = 328
+					# owns_state = 715
+					# owns_state = 714
+					# owns_state = 717
+				# }
+				# AND = {
+					# MAN = { is_puppet_of = SOV }
+					# owns_state = 610
+					# owns_state = 716
+					# owns_state = 328
+					# owns_state = 715
+					# owns_state = 714
+					# owns_state = 717
+				# }
+			# }
+		# }
+		# cost = 0
+		# fire_only_once = yes
+		# visible = {
+			# JAP = { has_completed_focus = JAP_strengthen_civilian_government }
+			# PRC = { exists = yes }
+		# }
+
+		# complete_effect = {
+			# PRC = {
+				# transfer_state = 609
+				# transfer_state = 610
+				# transfer_state = 716
+				# transfer_state = 715
+				# transfer_state = 328
+				# transfer_state = 717
+				# transfer_state = 714
+				# country_event = { id = wtt_japan.125 }
+			# }
+		# }
+
+		# ai_will_do = {
+			# base = 1
+		# }
+	# }
+}
+
+political_actions = {
+
+	# demand_tribute_from_new_communist_china = {
+
+		# icon = generic_civil_support
+
+		# allowed = {
+			# tag = SOV
+		# }
+
+		# icon = generic_political_actions
+
+		# available = {
+
+		# }
+
+		# ai_will_do = {
+			# base = 0
+			# modifier = {
+				# add = 150
+					# #Has somewhat won against CHI and JAP
+				# count_triggers = {
+					# amount = 10
+					# 595 = { is_controlled_by = FROM }
+					# 596 = { is_controlled_by = FROM }
+					# 597 = { is_controlled_by = FROM }
+					# 598 = { is_controlled_by = FROM }
+					# 600 = { is_controlled_by = FROM }
+					# 601 = { is_controlled_by = FROM }
+					# 602 = { is_controlled_by = FROM }
+					# 603 = { is_controlled_by = FROM }
+					# 605 = { is_controlled_by = FROM }
+					# 606 = { is_controlled_by = FROM }
+					# 607 = { is_controlled_by = FROM }
+					# 608 = { is_controlled_by = FROM }
+					# 613 = { is_controlled_by = FROM }
+					# 614 = { is_controlled_by = FROM }
+					# 620 = { is_controlled_by = FROM }
+				# }
+			# }
+
+		# }
+
+		# cost = 10
+
+		# visible = {
+			# has_government = communism
+			# FROM = {
+				# has_country_flag = WTT_support_from_soviet
+				# NOT = { has_war_with = ROOT }
+				# NOT = { is_subject_of = ROOT }
+				# NOT = {	has_idea = PRC_soviet_tribute_6 }
+			# }
+		# }
+
+		# targets = { CHI PRC GXC YUN SHX XSM SIK }
+		# targets_dynamic = yes
+
+		# target_trigger = {
+			# FROM = {
+				# tag = event_target:WTT_communist_china
+				# has_country_flag = WTT_support_from_soviet
+			# }
+		# }
+
+		# fire_only_once = no
+
+		# days_re_enable = 180
+
+		# complete_effect = {
+			# FROM = {
+				# country_event = { id = wtt_warlord_vs_prc.21 }
+				# custom_effect_tooltip = if_they_accept
+				# effect_tooltip = {
+					# PRC_soviet_tribute_level_up = yes
+				# }
+			# }
+		# }
+	# }
+
+	# demand_full_integration = {
+
+		# icon = generic_civil_support
+
+		# allowed = {
+			# tag = SOV
+		# }
+
+		# icon = generic_political_actions
+
+		# available = {
+			# FROM = { has_soviet_tribute = yes }
+		# }
+
+		# cost = WTT_communist_china_integration_cost?300
+
+		# visible = {
+			# has_government = communism
+			# FROM = { has_country_flag = WTT_support_from_soviet }
+		# }
+
+		# targets = { CHI PRC GXC YUN SHX XSM SIK }
+		# targets_dynamic = yes
+
+		# target_trigger = {
+			# FROM = { has_country_flag = WTT_support_from_soviet }
+		# }
+
+		# ai_will_do = {
+			# base = 0
+			# modifier = {
+				# add = 100
+				# #Has won against CHI and JAP
+				# 595 = { is_controlled_by = FROM }
+				# 596 = { is_controlled_by = FROM }
+				# 597 = { is_controlled_by = FROM }
+				# 598 = { is_controlled_by = FROM }
+				# 600 = { is_controlled_by = FROM }
+				# 601 = { is_controlled_by = FROM }
+				# 602 = { is_controlled_by = FROM }
+				# 603 = { is_controlled_by = FROM }
+				# 605 = { is_controlled_by = FROM }
+				# 606 = { is_controlled_by = FROM }
+				# 607 = { is_controlled_by = FROM }
+				# 608 = { is_controlled_by = FROM }
+				# 613 = { is_controlled_by = FROM }
+				# 614 = { is_controlled_by = FROM }
+				# 620 = { is_controlled_by = FROM }
+			# }
+			# modifier = {
+				# add = 50
+				# FROM = {
+					# check_variable = { WTT_communist_china_integration_cost < 200 }
+				# }
+			# }
+			# modifier = {
+				# add = 50
+				# FROM = {
+					# check_variable = { WTT_communist_china_integration_cost < 150 }
+				# }
+			# }
+			# modifier = {
+				# add = 50
+				# FROM = {
+					# check_variable = { WTT_communist_china_integration_cost < 100 }
+				# }
+			# }
+		# }
+
+		# fire_only_once = yes
+
+		# complete_effect = {
+			# FROM = { country_event = { id = wtt_warlord_vs_prc.31 } }
+		# }
+	# }
+
+	#SOVIET MISSION TO OCCUPY TURKEY
+	# SOV_set_up_puppet_state_in_turkey = {
+
+		# icon = generic_civil_support
+
+		# allowed = {
+			# has_dlc = "Battle for the Bosporus"
+			# tag = SOV
+		# }
+
+		# available = {
+			# NOT = { army_manpower_in_state = { state = 354 amount < 9600 } }
+			# NOT = { army_manpower_in_state = { state = 353 amount < 9600 } }
+			# NOT = { army_manpower_in_state = { state = 352 amount < 9600 } }
+			# NOT = { army_manpower_in_state = { state = 349 amount < 9600 } }
+			# NOT = { army_manpower_in_state = { state = 350 amount < 9600 } }
+			# NOT = { army_manpower_in_state = { state = 355 amount < 9600 } }
+			# NOT = { army_manpower_in_state = { state = 800 amount < 9600 } }
+			# NOT = { army_manpower_in_state = { state = 344 amount < 28800 } }
+			# NOT = { army_manpower_in_state = { state = 348 amount < 48000 } }
+			# NOT = { army_manpower_in_state = { state = 356 amount < 9600 } }
+			# NOT = { army_manpower_in_state = { state = 346 amount < 9600 } }
+			# NOT = { army_manpower_in_state = { state = 345 amount < 28800 } }
+			# NOT = { army_manpower_in_state = { state = 343 amount < 48000 } }
+			# NOT = { army_manpower_in_state = { state = 347 amount < 48000 } }
+			# NOT = { army_manpower_in_state = { state = 339 amount < 48000 } }
+			# NOT = { army_manpower_in_state = { state = 342 amount < 48000 } }
+			# NOT = { army_manpower_in_state = { state = 343 amount < 48000 } }
+			# NOT = { army_manpower_in_state = { state = 49 amount < 124000 } }
+		# }
+
+		# target_trigger = {
+			# FROM = {
+				# original_tag = TUR
+			# }
+		# }
+
+		# cost = 50
+
+		# fire_only_once = yes
+
+		# days_remove = 90
+
+		# visible = {
+			# has_government = communism
+			# has_global_flag = GRE_turkey_surrenders
+			# FROM = {
+				# NOT = {
+					# is_subject_of = SOV
+					# is_subject_of = GRE
+				# }
+			# }
+		# }
+
+		# cancel_if_not_visible = yes
+
+		# remove_effect = {
+		# }
+
+		# complete_effect = {
+			# TUR = {
+				# country_event = { id = bftb_greece.34 }
+			# }
+			# hidden_effect = {
+				# clr_global_flag = GRE_turkey_surrenders
+			# }
+		# }
+
+		# ai_will_do = {
+			# base = 0
+		# }
+	# }
+
+}
+
+
+
 
 SOV_panslavic_nationalism = {	# TODO
 
@@ -10588,7 +11201,7 @@ SOV_panslavic_nationalism = {	# TODO
 		fire_only_once = yes
 		days_remove = 90
 		ai_will_do = {
-			factor = 1
+			base = 1
 		}
 
 		remove_effect = {
@@ -10627,7 +11240,7 @@ SOV_panslavic_nationalism = {	# TODO
 		fire_only_once = yes
 		days_remove = 90
 		ai_will_do = {
-			factor = 1
+			base = 1
 		}
 
 		remove_effect = {
@@ -10674,7 +11287,7 @@ SOV_panslavic_nationalism = {	# TODO
 		fire_only_once = yes
 		days_remove = 90
 		ai_will_do = {
-			factor = 1
+			base = 1
 		}
 
 		remove_effect = {
@@ -10734,7 +11347,7 @@ SOV_panslavic_nationalism = {	# TODO
 		fire_only_once = yes
 		days_remove = 90
 		ai_will_do = {
-			factor = 1
+			base = 1
 		}
 
 		remove_effect = {
@@ -10824,12 +11437,129 @@ SOV_panslavic_nationalism = {	# TODO
 		cost = 25
 		fire_only_once = yes
 		ai_will_do = {
-			factor = 1
+			base = 1
 		}
 
 		complete_effect = {
 			set_cosmetic_tag = SOV_PANSLAVIC
 			news_event = { id = nsb_news.405 hours = 12 }
 		}
+	}
+}
+
+SOV_polish_territory = {	# TODO в будущем выпилить
+	SOV_return_states_to_poland = {
+		icon = generic_form_nation
+
+		available = {
+
+		}
+
+		visible = {
+			POL = {
+				exists = yes
+				is_subject_of = ROOT
+				# NOT = { has_completed_focus = POL_surrender_the_east }
+			}
+			any_owned_state = {
+				is_core_of = POL
+				OR = {
+
+					any_country_with_core = {
+						not = { tag = POL }
+					}
+					state = 97
+				}
+				is_fully_controlled_by = ROOT
+			}
+		}
+
+		cost = 25
+		fire_only_once = yes
+		ai_will_do = {
+			base = 50
+			modifier = {
+				NOT = {
+					has_war_with = GER
+				}
+				factor = 5
+			}
+		}
+
+		complete_effect = {
+			POL = {
+				country_event = {
+					id = soviet.74
+					hours = 4
+					random_hours = 4
+				}
+				custom_effect_tooltip = if_they_accept_newline_tt
+				effect_tooltip = {
+					ROOT = {
+						add_stability = 0.05
+					}
+					POL = {
+						add_autonomy_score = {
+							value = -250
+							localization = POL_accepted_states
+						}
+						add_popularity = {
+							ideology = FROM
+							popularity = 0.05
+						}
+					}
+					ROOT  ={
+						every_owned_state = {
+							limit = {
+								is_core_of = POL
+								OR = {
+									# Białystok
+									state = 97
+									# Uncontested Polish Cores
+									NOT = {
+										any_country_with_core = {
+											NOT = { tag = POL }
+										}
+									}
+								}
+
+							}
+							transfer_state_to = POL
+						}
+					}
+				}
+				custom_effect_tooltip = if_they_refuse_newline_tt
+				effect_tooltip = {
+					POL = {
+						add_autonomy_score = {
+							value = 250
+							localization = POL_refused_states
+						}
+					}
+					ROOT = {
+						every_owned_state = {
+							limit = {
+								is_core_of = POL
+								OR = {
+									# Białystok
+									state = 97
+									# Uncontested Polish Cores
+									NOT = {
+										any_country_with_core = {
+											NOT = { tag = POL }
+										}
+									}
+								}
+
+							}
+							remove_core_of = POL
+							add_core_of = SOV
+							add_claim_by = POL
+						}
+					}
+				}
+			}
+		}
+
 	}
 }
