@@ -11,19 +11,27 @@ peace_ai_desires = {
         }
         ai_desire = 100
     }
-
+	
     generic_influence_cutoff = { #Only do force gov and liberate outside influence range
+
+        # This AI modifier attempts to make the AI start taking a new land area from specific provinces (e.g. ports) rather than starting at a random coast line.
+
         peace_action_type = { take_states puppet }
         enable = {
             ROOT = { tag = ROOT.FROM } #We are negotiating for ourselves
             OR = {
                 has_government = democratic
-                has_government = communism
+                is_left_ideology = yes
             }
             ROOT.FROM.FROM.FROM = { NOT = { is_core_of = ROOT.FROM } } #It is not ours
             ROOT.FROM.FROM.FROM = {
                 NOT = { is_claimed_by = ROOT.FROM }
-                pc_is_state_outside_influence_for_winner = ROOT.FROM
+				# any_country = { #avoid rump states in states that aren't cored by anyone
+                    # PREV = {
+                        # is_core_of = PREV
+                    # }
+                # }
+                pc_is_state_outside_influence_for_winner = ROOT.FROM  # NOTE: potentially superflous after the addition of the PEACE_BID_CONTEST_TIE_BREAKER_xxx defines
                 #is_coastal = no
                 NOT = {
                     OR = {
@@ -31,17 +39,17 @@ peace_ai_desires = {
                             is_capital = yes
                             is_coastal = yes
                         }
-                        state = 738 #California
-                        state = 860 #Cote Nord
+                        state = 378 #California
+                        state = 466 #Cote Nord
                         state = 458 #Tunis
-                        state = 446 #Suez
+                        state = 1064 #Suez
                         state = 126 #London
                         state = 286 #Indochina
                         AND = {
                             ROOT.FROM = { capital_scope = { is_on_continent = europe } }
                             OR = {
                                 state = 137 #Crimea
-                                state = 797 #Istanbul
+                                state = 341 #Istanbul
                                 state = 118 #Gibraltar
                             }
                         }
@@ -53,20 +61,28 @@ peace_ai_desires = {
     }
 
     generic_influence_cutoff_force_government_fascism_unaligned = { #Don't do ANYTHING outside influence range
+
+        # This AI modifier attempts to make the AI start taking a new land area from specific provinces (e.g. ports) rather than starting at a random coast line.
+
         peace_action_type = { take_states puppet force_government liberate }
         enable = {
             # ROOT = { tag = ROOT.FROM } #We are negotiating for ourselves
             NOT = {
                 OR = {
                     has_government = democratic
-                    has_government = communism
+                    is_left_ideology = yes
                 }
             }
             # ROOT.FROM.FROM.FROM = { NOT = { is_core_of = ROOT } } #It is not ours
             ROOT.FROM.FROM.FROM = {
                 NOT = { is_claimed_by = ROOT.FROM }
-                ROOT.FROM = { pc_is_winner = yes }
-                pc_is_state_outside_influence_for_winner = ROOT.FROM
+                ROOT = { pc_is_winner = yes }
+				# any_country = { #avoid rump states in states that aren't cored by anyone
+                    # PREV = {
+                        # is_core_of = PREV
+                    # }
+                # }
+                pc_is_state_outside_influence_for_winner = ROOT  # NOTE: potentially superflous after the addition of the PEACE_BID_CONTEST_TIE_BREAKER_xxx defines
                 # is_coastal = no
                 NOT = {
                     OR = {
@@ -74,38 +90,38 @@ peace_ai_desires = {
                             is_capital = yes
                             is_coastal = yes
                         }
-                        state = 738 #California
-                        state = 860 #Cote Nord
+                        state = 378 #California
+                        state = 466 #Cote Nord
                         state = 458 #Tunis
-                        state = 446 #Suez
+                        state = 1064 #Suez
                         state = 126 #London
                         state = 286 #Indochina
                         AND = {
                             ROOT.FROM = { capital_scope = { is_on_continent = europe } }
                             OR = {
                                 state = 137 #Crimea
-                                state = 797 #Istanbul
+                                state = 341 #Istanbul
                                 state = 118 #Gibraltar
                             }
                         }
                     }
                 }
             } #It is not claimed by us
-			#Special Japan China Handling; this has logic elsewhere which we reluctantly have to special case.
-			NOT = {
-				AND = { #NOT is sneakily NOR
-					ROOT = {
-						original_tag = JAP
-					}
-					ROOT.FROM.FROM = {
-						original_tag = CHI
-					}
-				}
-			}
+            #Special Japan China Handling; this has logic elsewhere which we reluctantly have to special case.
+            NOT = {
+                AND = { #NOT is sneakily NOR
+                    ROOT = {
+                        original_tag = JAP
+                    }
+                    ROOT.FROM.FROM = {
+                        original_tag = CHI
+                    }
+                }
+            }
         }
         ai_desire = -1000
     }
-	
+
     force_gov_puppets = {
         peace_action_type = force_government
         enable = {
@@ -228,8 +244,13 @@ peace_ai_desires = {
         peace_action_type = force_government
         enable = {
             ROOT = { has_government = democratic }
-            ROOT.FROM.FROM = { has_government = communism }
+            ROOT.FROM.FROM = { is_left_ideology = yes }
             ROOT.FROM.FROM.FROM = { NOT = { is_claimed_by = ROOT.FROM.FROM } }
+			ROOT.FROM.FROM.FROM = {
+				any_country_with_core = {
+					NOT = { pc_is_liberated = yes }
+				}
+			}
         }
         ai_desire = 50
     }
@@ -355,7 +376,7 @@ peace_ai_desires = {
             ROOT.FROM = {
                 OR = {
                     has_government = fascism
-                    has_government = communism
+                    is_left_ideology = yes # TODO
                 }
             }
         }
@@ -363,7 +384,7 @@ peace_ai_desires = {
     }
 
 
-    dont_puppet_and_force_government = {
+    dont_puppet_and_force_government = { # TODO
         peace_action_type = { puppet }
 
         enable = {
@@ -383,6 +404,22 @@ peace_ai_desires = {
                 limit = { has_government = neutrality }
                 ROOT.FROM.FROM = { pc_is_forced_government_to = neutrality }
             }
+			else_if = {
+                limit = { has_government = technocracy }
+                ROOT.FROM.FROM = { pc_is_forced_government_to = technocracy }
+            }
+			else_if = {
+                limit = { has_government = trozkism }
+                ROOT.FROM.FROM = { pc_is_forced_government_to = trozkism }
+            }
+			else_if = {
+                limit = { has_government = monarchy }
+                ROOT.FROM.FROM = { pc_is_forced_government_to = monarchy }
+            }
+			else_if = {
+                limit = { has_government = anarchism }
+                ROOT.FROM.FROM = { pc_is_forced_government_to = anarchism }
+            }
             else = {
                 always = no
             }
@@ -401,21 +438,21 @@ peace_ai_desires = {
     }
 
 
-    nonaligned_dont_liberate_the_wrong_ideology = {
+    nonaligned_dont_liberate_the_wrong_ideology = { # TODO
         peace_action_type = liberate
         enable = {
-            ROOT = { has_government = neutrality }
-            ROOT.FROM = { NOT = { has_government = neutrality } }
+            ROOT = { OR = { has_government = neutrality has_government = monarchy } }
+            ROOT.FROM = { NOT = { has_government = neutrality has_government = monarchy } }
         }
         ai_desire = -200
     }
 
 
-    communism_dont_liberate_the_wrong_ideology = {
+    communism_dont_liberate_the_wrong_ideology = { # TODO
         peace_action_type = liberate
         enable = {
-            ROOT = { has_government = communism }
-            ROOT.FROM = { NOT = { has_government = communism } }
+            ROOT = { is_left_ideology = yes }
+            ROOT.FROM = { NOT = { is_left_ideology = yes } }
         }
         ai_desire = -200
     }
@@ -430,6 +467,7 @@ peace_ai_desires = {
                     OR = {
                         has_government = fascism
                         has_government = neutrality
+                        has_government = monarchy
                     }
                 }
             }
@@ -539,11 +577,14 @@ peace_ai_desires = {
     }
 
 
-    non_aligned_should_stick_to_claims = {
+    non_aligned_should_stick_to_claims = { # TODO
         peace_action_type = take_states
         enable = {
             ROOT = { 
-                has_government = neutrality
+                OR = {
+					has_government = neutrality
+					has_government = monarchy
+				}
                 is_major = no
             }
             ROOT.FROM.FROM.FROM = {
@@ -595,7 +636,7 @@ peace_ai_desires = {
         ai_desire = -200
     }
 
-    do_force_government_if_forced_to_our_ideology = {
+    do_force_government_if_forced_to_our_ideology = { # TODO
         peace_action_type = { force_government }
 
         enable = {
@@ -615,6 +656,22 @@ peace_ai_desires = {
                 limit = { has_government = neutrality }
                 ROOT.FROM.FROM = { pc_is_forced_government_to = neutrality }
             }
+			else_if = {
+                limit = { has_government = technocracy }
+                ROOT.FROM.FROM = { pc_is_forced_government_to = technocracy }
+            }
+			else_if = {
+                limit = { has_government = trozkism }
+                ROOT.FROM.FROM = { pc_is_forced_government_to = trozkism }
+            }
+			else_if = {
+                limit = { has_government = monarchy }
+                ROOT.FROM.FROM = { pc_is_forced_government_to = monarchy }
+            }
+			else_if = {
+                limit = { has_government = anarchism }
+                ROOT.FROM.FROM = { pc_is_forced_government_to = anarchism }
+            }
             else = {
                 always = no
             }
@@ -631,7 +688,7 @@ peace_ai_desires = {
                 has_government = fascism
             }
         }
-        ai_desire = -100
+        ai_desire = -1000
     }
 
 
@@ -727,6 +784,39 @@ peace_ai_desires = {
         ai_desire = -75
     }
 
+    no_more_spains_after_scw = {		# TODO ??
+        peace_action_type = { force_government puppet liberate }
+        enable = {
+            ROOT = { NOT = { original_tag = SPR } }            #But we are not originally a spain
+            has_global_flag = spanish_civil_war             #And the spaindome is ongoing
+            NOT = { has_global_flag = scw_over }            #But the spaindome has not yet been resolved
+            ROOT.FROM.FROM = { original_tag = SPR }            #And it is being taken from an original spain
+            any_country = {                                    #Any country that was an original spain is on our side
+                original_tag = SPR
+                pc_is_on_same_side_as = ROOT
+            }
+        }
+        ai_desire = -200
+    }
+
+    return_the_spains = {		# TODO ??
+        peace_action_type = take_states
+        enable = {
+            OR = {
+                any_country = {                                            #Any country that was an original spain is on our side
+                    original_tag = SPR
+                    pc_is_on_same_side_as = ROOT
+                }
+                original_tag = SPR                                        #Or we are a spain
+            }
+            ROOT.FROM = { original_tag = SPR }                            #A spain is the recipient
+            has_global_flag = spanish_civil_war                            #The spaindome is ongoing
+            NOT = { has_global_flag = scw_over }                        #But not over
+            ROOT.FROM.FROM.FROM = { owner = { original_tag = SPR } }    #The state was owned by a spain
+        }
+        ai_desire = 60
+    }
+
     return_puppet_cores = { #This simply has to be the highest priority.
         peace_action_type = take_states
         enable = {
@@ -747,7 +837,7 @@ peace_ai_desires = {
         ai_desire = 70 #Acceptable values
     }
 
-    allies_dont_liberate_on_sov = {
+    allies_dont_liberate_on_sov = { # TODO
         peace_action_type = { liberate puppet }
         enable = {
             ROOT = {
@@ -825,7 +915,7 @@ peace_ai_desires = {
     nonaligned_mostly_take_states = { #We are empire
         peace_action_type = { puppet liberate force_government }
         enable = {
-            ROOT = { has_government = neutrality }
+            ROOT = { OR = { has_government = neutrality has_government = monarchy } }
         }
         ai_desire = -120
     }
@@ -978,6 +1068,7 @@ peace_ai_desires = {
 
         enable = {
             ROOT.FROM.FROM = { check_variable = { num_owned_states > 30 } }
+			ROOT.FROM.FROM = { NOT = { tag = GER } } #Special handling
         }
         ai_desire = -200
     }
@@ -1036,6 +1127,158 @@ peace_ai_desires = {
             }
         }
         ai_desire = -90
+    }
+	
+	prefer_not_taking_land_from_force_governmented_minors = {		# TODO ??
+        peace_action_type = take_states
+        enable = {
+			ROOT.FROM.FROM = { is_major = no }
+            if = {
+                limit = { has_government = democratic }
+                ROOT.FROM.FROM = { pc_is_forced_government_to = democratic }
+            }
+            else_if = {
+                limit = { has_government = fascism }
+                ROOT.FROM.FROM = { pc_is_forced_government_to = fascism }
+            }
+            else_if = {
+                limit = { has_government = communism }
+                ROOT.FROM.FROM = { pc_is_forced_government_to = communism }
+            }
+            else_if = {
+                limit = { has_government = neutrality }
+                ROOT.FROM.FROM = { pc_is_forced_government_to = neutrality }
+            }
+			else_if = {
+                limit = { has_government = technocracy }
+                ROOT.FROM.FROM = { pc_is_forced_government_to = technocracy }
+            }
+			else_if = {
+                limit = { has_government = trozkism }
+                ROOT.FROM.FROM = { pc_is_forced_government_to = trozkism }
+            }
+			else_if = {
+                limit = { has_government = monarchy }
+                ROOT.FROM.FROM = { pc_is_forced_government_to = monarchy }
+            }
+			else_if = {
+                limit = { has_government = anarchism }
+                ROOT.FROM.FROM = { pc_is_forced_government_to = anarchism }
+            }
+            else = {
+                always = no
+            }
+        }
+        ai_desire = -100 #Should still allow taking claims etc
+    }
+	
+	try_and_finish_off_SU = {		# TODO ??
+        peace_action_type = force_government
+        enable = {
+			ROOT.FROM.FROM = { tag = SOV }
+			ROOT.FROM.FROM.FROM = {
+				any_country_with_core = {
+					NOT = { pc_is_liberated = yes }
+				}
+			}
+            if = {
+                limit = { has_government = democratic }
+                ROOT.FROM.FROM = { pc_is_forced_government_to = democratic }
+            }
+            else_if = {
+                limit = { has_government = fascism }
+                ROOT.FROM.FROM = { pc_is_forced_government_to = fascism }
+            }
+            else_if = {
+                limit = { has_government = communism }
+                ROOT.FROM.FROM = { pc_is_forced_government_to = communism }
+            }
+            else_if = {
+                limit = { has_government = neutrality }
+                ROOT.FROM.FROM = { pc_is_forced_government_to = neutrality }
+            }
+			else_if = {
+                limit = { has_government = technocracy }
+                ROOT.FROM.FROM = { pc_is_forced_government_to = technocracy }
+            }
+			else_if = {
+                limit = { has_government = trozkism }
+                ROOT.FROM.FROM = { pc_is_forced_government_to = trozkism }
+            }
+			else_if = {
+                limit = { has_government = monarchy }
+                ROOT.FROM.FROM = { pc_is_forced_government_to = monarchy }
+            }
+			else_if = {
+                limit = { has_government = anarchism }
+                ROOT.FROM.FROM = { pc_is_forced_government_to = anarchism }
+            }
+            else = {
+                always = no
+            }
+        }
+        ai_desire = 50
+    }
+	
+	allies_try_and_have_a_unified_goal_for_eastern_europe = {
+		peace_action_type = puppet
+		enable = {
+			has_government = democratic
+			ROOT.FROM.FROM = {
+				NOT = { has_government = democratic }
+				OR = {
+					tag = CZE
+					tag = POL
+					tag = HUN
+					tag = ROM
+				}
+			}
+		}
+		ai_desire = -100
+	}
+	
+	release_ukraine_because_it_is_big_and_would_otherwise_be_messy = {
+		peace_action_type = liberate
+		enable = {
+			has_government = democratic
+			ROOT.FROM = {
+				tag = UKR
+			}
+		}
+		ai_desire = 2000
+	}
+	
+	leave_allied_ai_claims_alone = {
+        peace_action_type = { take_states puppet force_government liberate }
+        enable = {
+            ROOT = { tag = ROOT.FROM } #We are negotiating for ourselves
+            ROOT.FROM.FROM.FROM = { 
+				any_country_with_core = {
+					pc_is_winner = yes
+					pc_current_score > 200 #arbitrary but relevant
+					pc_turn < 12 #give them some leeway to take demands
+					is_ai = yes #humans have other biases
+				}
+			}
+        }
+        ai_desire = -200
+    }
+
+    annex_non_core_states = {   #avoid rump states in states that aren't cored by anyone - counteracts democracy_owner_does_not_have_core
+        peace_action_type = { take_states }
+        enable = {
+            has_government = democratic
+            ROOT.FROM.FROM.FROM = {
+                NOT = {
+                    any_country = {
+                        PREV = {
+                            is_core_of = PREV
+                        }
+                    }
+                }
+            }
+        }
+        ai_desire = 50
     }
 
 }
