@@ -21,6 +21,10 @@ NW_WOS_randomize_world = {
 	}
 	every_possible_country = { 
 		every_state = { remove_claim_by = PREV } 
+		if = {
+			limit = { is_subject = yes }
+			overlord = { set_autonomy = { target = PREV autonomous_state = autonomy_free } }
+		}
 	}
 	every_country = {
 		limit = { has_war = yes }
@@ -32,6 +36,11 @@ NW_WOS_randomize_world = {
 	NW_WOS_create_other_countries = yes
 	
 	NW_WOS_generate_states = yes
+	
+	every_state = {
+		limit = { impassable = yes }
+		NW_set_correct_owner_for_impassable_states = yes
+	}
 	
 	every_country = {
 		limit = {
@@ -50,11 +59,13 @@ NW_WOS_randomize_world = {
 
 NW_WOS_create_random_country_on_every_continent = {
 	add_to_temp_array = { continents = token:europe }
+	add_to_temp_array = { continents = token:north_america }
+	add_to_temp_array = { continents = token:south_america }
+	add_to_temp_array = { continents = token:australia }
 	add_to_temp_array = { continents = token:africa }
 	add_to_temp_array = { continents = token:asia }
-	add_to_temp_array = { continents = token:south_america }
 	add_to_temp_array = { continents = token:middle_east }
-	add_to_temp_array = { continents = token:north_america }
+	
 	for_each_loop = {
 		array = continents
 		value = token
@@ -62,11 +73,10 @@ NW_WOS_create_random_country_on_every_continent = {
 		NW_WOS_create_random_country = yes
 	}
 	
-	add_to_temp_array = { regions = 154 }
-	add_to_temp_array = { regions = 156 }
-	add_to_temp_array = { regions = 160 }
-	add_to_temp_array = { regions = 1 } # 2 3
-	add_to_temp_array = { regions = 4 } # 119
+	add_to_temp_array = { regions = 1 } # Англия
+	add_to_temp_array = { regions = 4 } # Ирландия
+	add_to_temp_array = { regions = 154 } # Япония
+	add_to_temp_array = { regions = 160 } # Филиппины
 	add_to_temp_array = { regions = 41 }
 	for_each_loop = {
 		array = regions
@@ -97,6 +107,8 @@ NW_WOS_create_random_country = {
 					}
 					is_island_state = no
 				}
+				impassable = no
+				NW_WOS_is_banned_initial_state = no
 			}
 			set_state_flag = rmap_reserved 
 			set_state_flag = rmap_owned 
@@ -111,41 +123,26 @@ NW_WOS_create_random_country = {
 			set_building_level = { type = arms_factory level = 2 } 
 			set_state_flag = capital_@PREV
 		} 
+		
+		NW_WOS_randomize_ideology = yes
 	}
 }
 
 NW_WOS_create_other_countries = {
-	every_country = {
-		limit = { NOT = { has_country_flag = rmap_ctr } }
-		random_state = {
-			limit = {
-				NOT = { has_state_flag = rmap_owned }
-			} 
-			set_state_flag = rmap_owned 
-			PREV = {
-				transfer_state = PREV 
-				set_capital = PREV 
-				goto_state = PREV
-			} 
-			add_core_of = PREV 
-			add_manpower = 250000 
-			set_building_level={type = industrial_complex level = 2} 
-			set_building_level={type = arms_factory level = 2} 
-			set_state_flag = capital_@PREV
+	if = {
+		limit = { check_variable = { NW_WOS_many_countries_bool = 2 } }
+		every_possible_country = {
+			limit = { is_dynamic_tag = no NOT = { has_country_flag = rmap_ctr } }
+			
+			NW_WOS_create_country = yes
 		}
-		
-		random_list = { 
-			25={add_popularity = {ideology = fascism popularity = 0.25} set_politics = { ruling_party = fascism } }
-			25={add_popularity = {ideology = communism popularity = 0.25} set_politics = { ruling_party = communism } }
-			25={add_popularity = {ideology = democratic popularity = 0.25} set_politics = { ruling_party = democratic } set_politics = { elections_allowed = yes }}
-			25={add_popularity = {ideology = neutrality popularity = 0.25} set_politics = { ruling_party = neutrality }}
+	}
+	else = {
+		every_country = {
+			limit = { NOT = { has_country_flag = rmap_ctr } }
+			
+			NW_WOS_create_country = yes
 		}
- 
-		#Necessary as the game doesn't update tag for some reason
-		set_cosmetic_tag = D99
-		drop_cosmetic_tag = yes
-		
-		NW_WOS_add_state = yes
 	}
 	
 	every_country = {
@@ -157,6 +154,47 @@ NW_WOS_create_other_countries = {
 	every_country = {
 		NW_WOS_add_state = yes
 	}
+}
+
+NW_WOS_create_country = {
+	random_state = {
+		limit = {
+			NOT = { has_state_flag = rmap_owned }
+			impassable = no
+			NW_WOS_is_banned_initial_state = no
+		} 
+		set_state_flag = rmap_owned 
+		PREV = {
+			transfer_state = PREV 
+			set_capital = PREV 
+			goto_state = PREV
+		} 
+		add_core_of = PREV 
+		add_manpower = 250000 
+		set_building_level = { type = industrial_complex level = 2 } 
+		set_building_level = { type = arms_factory level = 2 } 
+		set_state_flag = capital_@PREV
+	}
+
+	NW_WOS_randomize_ideology = yes
+	
+	NW_WOS_add_state = yes
+}
+
+NW_WOS_randomize_ideology = {
+	random_list = { 
+		2 = { add_popularity = { ideology = fascism popularity = 0.25 } set_politics = { ruling_party = fascism } }
+		2 = { add_popularity = { ideology = communism popularity = 0.25 } set_politics = { ruling_party = communism } }
+		2 = { add_popularity = { ideology = democratic popularity = 0.25 } set_politics = { ruling_party = democratic } set_politics = { elections_allowed = yes } }
+		2 = { add_popularity = { ideology = neutrality popularity = 0.25 } set_politics = { ruling_party = neutrality } }
+		1 = { add_popularity = { ideology = technocracy popularity = 0.25 } set_politics = { ruling_party = technocracy } }
+		1 = { add_popularity = { ideology = trozkism popularity = 0.25 } set_politics = { ruling_party = trozkism } }
+		1 = { add_popularity = { ideology = monarchy popularity = 0.25 } set_politics = { ruling_party = monarchy } }
+	}
+	
+	#Necessary as the game doesn't update tag for some reason
+	set_cosmetic_tag = D99 # TODO сюда ??
+	drop_cosmetic_tag = yes
 }
 
 NW_WOS_add_state = { 
@@ -175,40 +213,48 @@ NW_WOS_generate_states = {
 					any_owned_state = {
 						OR = { is_coastal = yes is_island_state = yes } has_state_flag = rmap_owned
 					}
+					NOT = { tag = SAI }
 				} 
 				transfer_state = PREV
 			} 
 		}
-		NW_WOS_add_manpower_to_state = yes
-		NW_WOS_add_manpower_to_state = yes
-	  
-		random_list = { 2 = {} 1 = { set_building_level={ type = industrial_complex level = 1 } } }
-		random_list = { 3 = {} 1 = { set_building_level={ type = arms_factory level = 2 } } }
-		random_list = { 2 = {} 1 = { set_building_level={ type = dockyard level = 1 } } }
-		random_list = { 5 = {} 1 = { set_building_level={ type = air_base level = 1 } } }
-  
-		NW_WOS_add_resources_to_state = yes
 		
-		random_list={
-			15={}
-			11={set_building_level ={type = infrastructure level = 1}}
-			6={set_building_level ={type = infrastructure level = 2}}
-			3={set_building_level ={type = infrastructure level = 3}}
-			2={set_building_level ={type = infrastructure level = 4}}
-			1={set_building_level ={type = infrastructure level = 5}}
+		if = {
+			limit = { check_variable = { NW_WOS_random_state_category_bool = 2 } }
+			NW_WOS_randomize_state_category = yes
 		}
-		random_list = { 
-			2={set_state_category = wasteland}
-			3={set_state_category = pastoral}
-			6={set_state_category = rural}
-			8={set_state_category = town}
-			7={set_state_category = large_town}
-			5={set_state_category = city}
-			4={set_state_category = large_city}
-			2={set_state_category = metropolis}
-			1={set_state_category = megalopolis}
+		if = {
+			limit = { check_variable = { NW_WOS_random_manpower_bool = 2 } }
+			NW_WOS_add_manpower_to_state = yes
+			NW_WOS_add_manpower_to_state = yes
 		}
+		if = {
+			limit = { check_variable = { NW_WOS_random_resources_bool = 2 } }
+			NW_WOS_add_resources_to_state = yes
+		} 
+		if = {
+			limit = { check_variable = { NW_WOS_random_buildings_bool = 2 } }
+			NW_WOS_randomize_buildings = yes
+		}
+		
 		OWNER = {add_equipment_to_stockpile = {type = infantry_equipment_0 amount = 750}}
+	}
+}
+
+NW_WOS_randomize_state_category = {
+	if = {
+		limit = { impassable = no }
+		random_list = { 
+			2 = { set_state_category = wasteland }
+			3 = { set_state_category = pastoral }
+			6 = { set_state_category = rural }
+			8 = { set_state_category = town }
+			7 = { set_state_category = large_town }
+			5 = { set_state_category = city }
+			4 = { set_state_category = large_city }
+			2 = { set_state_category = metropolis }
+			1 = { set_state_category = megalopolis }
+		}
 	}
 }
 
@@ -223,6 +269,7 @@ NW_WOS_add_manpower_to_state = {
 			12 = { add_manpower = 1600000 } 
 			3 = { add_manpower = 2800000 }
 		}
+		
 		if = {
 			limit = { is_coastal = yes } 
 			OWNER = {
@@ -257,64 +304,89 @@ NW_WOS_add_manpower_to_state = {
 
 NW_WOS_add_resources_to_state = {
 	random_list = {
-		13={}
-		2={
-			random_list={
-				1={add_resource={type = oil amount = 120}}
-				2={add_resource={type = oil amount = 80}}
-				4={add_resource={type = oil amount = 60}}
-				6={add_resource={type = oil amount = 30}}
-				9={add_resource={type = oil amount = 10}}
+		13 = {}
+		1 = {
+			random_list = {
+				1 = { add_resource = { type = coal amount = 60 } }
+				2 = { add_resource = { type = coal amount = 40 } }
+				4 = { add_resource = { type = coal amount = 30 } }
+				6 = { add_resource = { type = coal amount = 15 } }
+				9 = { add_resource = { type = coal amount = 5 } }
 			}
 		}
-		3={
-			random_list={
-				1={add_resource={type = chromium amount = 120}}
-				2={add_resource={type = chromium amount = 80}}
-				4={add_resource={type = chromium amount = 60}}
-				5={add_resource={type = chromium amount = 30}}
-				6={add_resource={type = chromium amount = 10}}
+		2 = {
+			random_list = {
+				1 = { add_resource = { type = oil amount = 120 } }
+				2 = { add_resource = { type = oil amount = 80 } }
+				4 = { add_resource = { type = oil amount = 60 } }
+				6 = { add_resource = { type = oil amount = 30 } }
+				9 = { add_resource = { type = oil amount = 10 } }
 			}
 		}
-		4={
-			random_list={
-				1={add_resource={type = rubber amount = 120}}
-				2={add_resource={type = rubber amount = 80}}
-				4={add_resource={type = rubber amount = 60}}
-				6={add_resource={type = rubber amount = 30}}
-				4={add_resource={type = rubber amount = 20}}
-				8={add_resource={type = rubber amount = 10}}
+		3 = {
+			random_list = {
+				1 = { add_resource = { type = chromium amount = 120 } }
+				2 = { add_resource = { type = chromium amount = 80 } }
+				4 = { add_resource = { type = chromium amount = 60 } }
+				5 = { add_resource = { type = chromium amount = 30 } }
+				6 = { add_resource = { type = chromium amount = 10 } }
 			}
 		}
-		5={
-			random_list={
-				1={add_resource={type = tungsten amount = 120 }}
-				2={add_resource={type = tungsten amount = 80 }}
-				4={add_resource={type = tungsten amount = 60 }}
-				5={add_resource={type = tungsten amount = 30 }}
-				4={add_resource={type = tungsten amount = 20 }}
-				6={add_resource={type = tungsten amount = 10 }}
+		4 = {
+			random_list = {
+				1 = { add_resource = { type = rubber amount = 120 } }
+				2 = { add_resource = { type = rubber amount = 80 } }
+				4 = { add_resource = { type = rubber amount = 60 } }
+				6 = { add_resource = { type = rubber amount = 30 } }
+				4 = { add_resource = { type = rubber amount = 20 } }
+				8 = { add_resource = { type = rubber amount = 10 } }
 			}
 		}
-		6={
-			random_list={
-				1={add_resource={type = aluminium amount = 120 }}
-				2={add_resource={type = aluminium amount = 80 }}
-				3={add_resource={type = aluminium amount = 60 }}
-				4={add_resource={type = aluminium amount = 30 }}
-				3={add_resource={type = aluminium amount = 20 }}
-				5={add_resource={type = aluminium amount = 10 }}
+		5 = {
+			random_list = {
+				1 = { add_resource = { type = tungsten amount = 120 } }
+				2 = { add_resource = { type = tungsten amount = 80 } }
+				4 = { add_resource = { type = tungsten amount = 60 } }
+				5 = { add_resource = { type = tungsten amount = 30 } }
+				4 = { add_resource = { type = tungsten amount = 20 } }
+				6 = { add_resource = { type = tungsten amount = 10 } }
 			}
 		}
-		7={
-			random_list={
-				1={add_resource={type = steel amount = 120 }}
-				2={add_resource={type = steel amount = 80 }}
-				3={add_resource={type = steel amount = 60 }}
-				4={add_resource={type = steel amount = 30 }}
-				3={add_resource={type = steel amount = 20 }}
-				5={add_resource={type = steel amount = 10 }}
+		6 = {
+			random_list = {
+				1 = { add_resource = { type = aluminium amount = 120 } }
+				2 = { add_resource = { type = aluminium amount = 80 } }
+				3 = { add_resource = { type = aluminium amount = 60 } }
+				4 = { add_resource = { type = aluminium amount = 30 } }
+				3 = { add_resource = { type = aluminium amount = 20 } }
+				5 = { add_resource = { type = aluminium amount = 10 } }
 			}
 		}
+		7 = {
+			random_list = {
+				1 = { add_resource = { type = steel amount = 120 } }
+				2 = {add_resource = { type = steel amount = 80 } }
+				3 = {add_resource = { type = steel amount = 60 } }
+				4 = {add_resource = { type = steel amount = 30 } }
+				3 = {add_resource = { type = steel amount = 20 } }
+				5 = {add_resource = { type = steel amount = 10 } }
+			}
+		}
+	}
+}
+
+NW_WOS_randomize_buildings = {
+	random_list = { 2 = {} 1 = { set_building_level = { type = industrial_complex level = 1 } } }
+	random_list = { 3 = {} 1 = { set_building_level = { type = arms_factory level = 2 } } }
+	random_list = { 2 = {} 1 = { set_building_level = { type = dockyard level = 1 } } }
+	random_list = { 5 = {} 1 = { set_building_level = { type = air_base level = 1 } } }
+	
+	random_list={
+		15 = {}
+		11 = { set_building_level = { type = infrastructure level = 1 } }
+		6 = { set_building_level = { type = infrastructure level = 2 } }
+		3 = { set_building_level = { type = infrastructure level = 3 } }
+		2 = { set_building_level = { type = infrastructure level = 4 } }
+		1 = { set_building_level = { type = infrastructure level = 5 } }
 	}
 }
