@@ -10688,7 +10688,11 @@ JAP_reform_bureaucrats_category = {
 					add_to_variable = { JAP_support_from_imperial_court_var = -1 tooltip = JAP_support_of_imperial_court_var_tt }
 				}
 			}
-			activate_mission = JAP_loss_of_trust
+			JAP_reform_bureaucrats_effect = yes
+			start_mission = { 
+				mission = JAP_loss_of_trust
+			}
+		#	activate_mission = JAP_loss_of_trust
 		}
 	}
 	
@@ -10730,10 +10734,16 @@ JAP_reform_bureaucrats_category = {
 		#visible = {
 		#	check_variable = { JAP_support_from_parliament_var < 10 }
 		#}
+		custom_cost_trigger = {
+			set_temp_variable = { cp_cost = 10 }
+			check_variable = { var = command_power value = cp_cost }
+		}
+		custom_cost_text = CP_COST
 		days_re_enable = 10
-		cost = 15
+	#	cost = 15
 		complete_effect = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision JAP_enlist_the_support_of_army"
+			hidden_effect = { add_command_power = -10 } 
 			add_to_variable = { JAP_support_from_army_var = 1 tooltip = JAP_support_of_army_var_tt }
 		}
 	}
@@ -10753,10 +10763,16 @@ JAP_reform_bureaucrats_category = {
 		#visible = {
 		#	check_variable = { JAP_support_from_parliament_var < 10 }
 		#}
+		custom_cost_trigger = {
+			set_temp_variable = { cp_cost = 10 }
+			check_variable = { var = command_power value = cp_cost }
+		}
+		custom_cost_text = CP_COST
 		days_re_enable = 10
-		cost = 20
+	#	cost = 20
 		complete_effect = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision JAP_enlist_the_support_of_fleet"
+			hidden_effect = { add_command_power = -10 }
 			add_to_variable = { JAP_support_from_fleet_var = 1 tooltip = JAP_support_of_fleet_var_tt }
 		}
 	}
@@ -10783,6 +10799,168 @@ JAP_reform_bureaucrats_category = {
 			add_to_variable = { JAP_support_from_imperial_court_var = 1 tooltip = JAP_support_of_imperial_court_var_tt }
 		}
 	}
+	
+	JAP_make_concessions_to_the_opponents = {
+		priority = 600
+		icon = JAP_make_concessions_to_the_opponents
+		#allowed = { original_tag = JAP }
+		fire_only_once = no
+		visible = { 
+			#set_temp_variable = { JAP_supports_var_temp = 10 }
+			has_active_mission = JAP_loss_of_trust
+		} 
+		days_re_enable = 10
+		cost = 15
+		custom_cost_trigger = {
+			technocracy > 0.03
+			has_political_power > 15
+		#	set_temp_variable = { custom_cost_pp = 0.03 }
+		#	multiply_temp_variable = { custom_cost_pp = JAP_cost_dec }
+		#	check_variable = { popularity_of > custom_cost_pp }
+		}
+		custom_cost_text = JAP_burref_custom_cost_desc	
+		complete_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision JAP_make_concessions_to_the_opponents"
+			hidden_effect = {
+				add_popularity = { ideology = technocracy popularity = -0.03 }
+				add_political_power = -15
+			}
+			add_days_mission_timeout = { mission = JAP_loss_of_trust days = 30 }
+		}
+	}
+	
+	JAP_popularize_the_ideas = {
+		priority = 500
+		icon = JAP_popularize_the_ideas
+		#allowed = { original_tag = JAP }
+		fire_only_once = no
+		visible = { 
+			#set_temp_variable = { JAP_supports_var_temp = 10 }
+			has_active_mission = JAP_loss_of_trust
+		} 
+		days_re_enable = 10
+		cost = 15
+		complete_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision JAP_popularize_the_ideas"
+			add_days_mission_timeout = { mission = JAP_loss_of_trust days = -20 }
+			add_popularity = { ideology = technocracy popularity = 0.02 }
+		}
+	}
+	
+	JAP_to_make_additional_promises = {
+		priority = 450
+		icon = JAP_to_make_additional_promises
+		#allowed = { original_tag = JAP }
+		fire_only_once = no
+		visible = { 
+			#set_temp_variable = { JAP_supports_var_temp = 10 }
+			custom_trigger_tooltip = { 
+				check_variable = { JAP_support_from_parliament_var < 10 }
+				tooltip = JAP_support_of_parliament_var_check_tt
+			}
+		} 
+		#visible = {
+		#	check_variable = { JAP_support_from_parliament_var < 10 }
+		#}
+		days_re_enable = 10
+		cost = 10
+		complete_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision JAP_to_make_additional_promises"
+			add_to_variable = { JAP_support_from_parliament_var = 1 tooltip = JAP_support_of_parliament_var_tt }
+			random_list = { 
+				50 = { 
+					add_to_variable = { JAP_support_from_army_var = -1 tooltip = JAP_support_of_army_var_tt }
+				}
+				50 = { 
+					add_to_variable = { JAP_support_from_fleet_var = -1 tooltip = JAP_support_of_fleet_var_tt }
+				}
+			}
+			JAP_reform_bureaucrats_effect = yes
+		}
+	}
+	
+	JAP_to_assure_the_imperial_entourage = {
+		priority = 700
+		icon = JAP_to_assure_the_imperial_entourage
+		#allowed = { original_tag = JAP }
+		fire_only_once = no
+		visible = { 
+			#set_temp_variable = { JAP_supports_var_temp = 10 }
+			custom_trigger_tooltip = { 
+				check_variable = { JAP_support_from_imperial_court_var < 10 }
+				tooltip = JAP_support_of_imperial_court_var_check_tt
+			}
+		} 
+		#visible = {
+		#	check_variable = { JAP_support_from_parliament_var < 10 }
+		#}
+		days_re_enable = 10
+		cost = 5
+		complete_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision JAP_to_assure_the_imperial_entourage"
+			add_to_variable = { JAP_support_from_imperial_court_var = 1 tooltip = JAP_support_of_imperial_court_var_tt }
+			random_list = { 
+				50 = { 
+					add_to_variable = { JAP_support_from_parliament_var = -1 tooltip = JAP_support_of_parliament_var_tt }
+				}
+				50 = { 
+					add_to_variable = { JAP_support_from_fleet_var = -1 tooltip = JAP_support_of_fleet_var_tt }
+				}
+			}
+			JAP_reform_bureaucrats_effect = yes
+		}
+	}
+	
+	JAP_increase_the_army_budget = {
+		priority = 350
+		icon = JAP_increase_the_army_budget
+		#allowed = { original_tag = JAP }
+		fire_only_once = no
+		visible = { 
+			#set_temp_variable = { JAP_supports_var_temp = 10 }
+			custom_trigger_tooltip = { 
+				check_variable = { JAP_support_from_army_var < 10 }
+				tooltip = JAP_support_of_army_var_check_tt
+			}
+		} 
+		#visible = {
+		#	check_variable = { JAP_support_from_parliament_var < 10 }
+		#}
+		days_re_enable = 10
+		cost = 5
+		complete_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision JAP_increase_the_army_budget"
+			add_to_variable = { JAP_support_from_army_var = 1 tooltip = JAP_support_of_army_var_tt }
+			add_to_variable = { JAP_support_from_parliament_var = -1 tooltip = JAP_support_of_parliament_var_tt }
+			JAP_reform_bureaucrats_effect = yes
+		}
+	}
+	
+	JAP_increase_the_fleet_budget = {
+		priority = 300
+		icon = JAP_increase_the_fleet_budget
+		#allowed = { original_tag = JAP }
+		fire_only_once = no
+		visible = { 
+			#set_temp_variable = { JAP_supports_var_temp = 10 }
+			custom_trigger_tooltip = { 
+				check_variable = { JAP_support_from_fleet_var < 10 }
+				tooltip = JAP_support_of_fleet_var_check_tt
+			}
+		} 
+		#visible = {
+		#	check_variable = { JAP_support_from_parliament_var < 10 }
+		#}
+		days_re_enable = 10
+		cost = 5
+		complete_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision JAP_increase_the_fleet_budget"
+			add_to_variable = { JAP_support_from_fleet_var = 1 tooltip = JAP_support_of_fleet_var_tt }
+			add_to_variable = { JAP_support_from_parliament_var = -1 tooltip = JAP_support_of_parliament_var_tt }
+			JAP_reform_bureaucrats_effect = yes
+		}
+	}
+	
 }
 	
 JAP_new_bureaucrats_power_balance_category = { 
