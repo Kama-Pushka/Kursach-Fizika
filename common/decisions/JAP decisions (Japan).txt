@@ -1,3 +1,570 @@
+
+## Олимпиада_1940 block
+
+JAP_olympiad_category = {
+	JAP_session_of_the_ioc_mis = {
+		activation = {
+			has_country_flag = JAP_session_of_the_ioc_flag
+ 		}
+		available = { hidden_trigger = { always = no } }
+ 		days_mission_timeout = 200
+ 		timeout_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision Decision JAP_session_of_the_ioc_mis"			
+			custom_effect_tooltip = JAP_session_of_the_ioc_timeout_tool
+            hidden_effect = { clr_country_flag = JAP_session_of_the_ioc_flag }
+			hidden_effect = { set_variable = { IOC_votes_for_tokyo = 0 } }
+			hidden_effect = { set_variable = { IOC_votes_for_london = 0 } }
+			hidden_effect = { set_variable = { IOC_votes_for_helsinki = 0 } }
+			every_country = {
+				limit = {
+					AND = {
+						OR = {
+							is_subject = no
+							is_subject_of = ENG
+						}
+						NOT = { original_tag = SOV }
+						has_civil_war = not
+						NOT = { has_idea = chine_clique }
+					}
+				}
+				country_event = { id = NW_JAP.544 }
+			}
+  		}
+	}
+	JAP_invite_the_president_of_the_ioc_des = {
+		visible = {
+			has_active_mission = JAP_session_of_the_ioc_mis
+		}
+		cost = 30
+		fire_only_once = yes
+		complete_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision JAP_invite_the_president_of_the_ioc_des"
+			country_event = { id = NW_JAP.542 days = 1 random_days = 3 }
+		}
+	}
+	JAP_prepare_to_olympiad_mis = {
+		activation = {
+			has_country_flag = JAP_prepare_to_olympiad_flag
+ 		}
+		available = { hidden_trigger = { always = no } }
+		cancel_trigger = {
+			hidden_trigger = { NOT = { has_country_flag = JAP_prepare_to_olympiad_flag } }
+		}
+ 		days_mission_timeout = 1460
+ 		cancel_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision Decision JAP_prepare_to_olympiad_mis"
+               		hidden_effect = { clr_country_flag = JAP_organizing_committee_created_flag }		
+  		}
+ 		timeout_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision Decision JAP_prepare_to_olympiad_mis"	
+			custom_effect_tooltip = JAP_prepare_to_olympiad_mis_tool		
+               		hidden_effect = { clr_country_flag = JAP_prepare_to_olympiad_flag }
+               		hidden_effect = { clr_country_flag = JAP_organizing_committee_created_flag }
+			if = {
+				limit = { has_country_flag = JAP_emperor_part_in_ceremony_flag }
+                		hidden_effect = { news_event = { id = NW_JAP_news.87 hours = 1 random_days = 1 } }
+			}	
+			if = {
+				limit = { NOT = { has_country_flag = JAP_emperor_part_in_ceremony_flag } }
+                		hidden_effect = { news_event = { id = NW_JAP_news.88 hours = 1 random_days = 1 } }
+			}	
+  		}
+	}
+	JAP_abandon_the_olympiad_des = {
+		visible = {
+			AND = {
+				has_active_mission = JAP_prepare_to_olympiad_mis
+				date < 1940.3.1
+			}
+		}
+		custom_cost_trigger = { 
+			AND = {
+				has_political_power > 49
+				has_stability > 0.029
+			}
+		}
+		custom_cost_text = JAP_stability_3_pol_power_50
+		fire_only_once = yes
+		complete_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision JAP_invite_the_president_of_the_ioc_des"
+			custom_effect_tooltip = JAP_abandon_the_olympiad_tool
+               		hidden_effect = { clr_country_flag = JAP_prepare_to_olympiad_flag }
+               		hidden_effect = { add_stability = -0.03 }
+               		hidden_effect = { add_political_power = -50 }
+			if = {
+				limit = { check_variable = { IOC_votes_for_helsinki > IOC_votes_for_london } }
+                		hidden_effect = { news_event = { id = NW_JAP_news.82 hours = 1 random_days = 1 } }
+			}
+			if = {
+				limit = {
+					OR = {
+						check_variable = { IOC_votes_for_london > IOC_votes_for_helsinki }
+						check_variable = { IOC_votes_for_london = IOC_votes_for_helsinki }
+					}
+				}
+                		hidden_effect = { news_event = { id = NW_JAP_news.83 hours = 1 random_days = 1 } }
+			}
+		}
+	}
+	JAP_organizing_committee_based_on_jaaa_des = {
+		visible = {
+			has_country_flag = JAP_prepare_to_olympiad_flag
+			NOT = { has_country_flag = JAP_organizing_committee_created_flag }
+		}
+		cost = 25
+		fire_only_once = yes
+		complete_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision JAP_organizing_committee_based_on_jaaa_des"
+			custom_effect_tooltip = JAP_degree_of_readiness_to_olympiad_plus_5_tool
+			custom_effect_tooltip = JAP_create_the_organizing_committee_tool
+			custom_effect_tooltip = JAP_set_organizing_committee_unity_green_tool
+               		hidden_effect = { set_country_flag = JAP_organizing_committee_created_flag }
+			hidden_effect = { set_variable = { JAP_organizing_committee_unity_var = 7 } }
+			hidden_effect = { add_to_variable = { JAP_degree_of_readiness_to_olympiad_var = 5 } }
+		}
+	}
+	JAP_organizing_committee_based_on_city_administration_des = {
+		visible = {
+			has_country_flag = JAP_prepare_to_olympiad_flag
+			NOT = { has_country_flag = JAP_organizing_committee_created_flag }
+		}
+		cost = 20
+		fire_only_once = yes
+		complete_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision JAP_organizing_committee_based_on_city_administration_des"
+			custom_effect_tooltip = JAP_degree_of_readiness_to_olympiad_plus_5_tool
+			custom_effect_tooltip = JAP_create_the_organizing_committee_tool
+			custom_effect_tooltip = JAP_set_organizing_committee_unity_yellow_tool
+               		hidden_effect = { set_country_flag = JAP_organizing_committee_created_flag }
+			hidden_effect = { set_variable = { JAP_organizing_committee_unity_var = 5 } }
+			hidden_effect = { add_to_variable = { JAP_degree_of_readiness_to_olympiad_var = 5 } }
+		}
+	}
+	JAP_national_organizing_committee_des = {
+		visible = {
+			has_country_flag = JAP_prepare_to_olympiad_flag
+			NOT = { has_country_flag = JAP_organizing_committee_created_flag }
+		}
+		cost = 10
+		fire_only_once = yes
+		complete_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision JAP_national_organizing_committee_des"
+			custom_effect_tooltip = JAP_degree_of_readiness_to_olympiad_plus_5_tool
+			custom_effect_tooltip = JAP_create_the_organizing_committee_tool
+			custom_effect_tooltip = JAP_set_organizing_committee_unity_red_tool
+               		hidden_effect = { set_country_flag = JAP_organizing_committee_created_flag }
+			hidden_effect = { set_variable = { JAP_organizing_committee_unity_var = 2 } }
+			hidden_effect = { add_to_variable = { JAP_degree_of_readiness_to_olympiad_var = 5 } }
+		}
+	}
+	JAP_reorganize_organizing_committee_des = {
+		visible = {
+			has_country_flag = JAP_prepare_to_olympiad_flag
+			has_country_flag = JAP_organizing_committee_created_flag
+		}
+		cost = 100
+		fire_only_once = no
+		days_re_enable = 30
+		complete_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision JAP_reorganize_organizing_committee_des"
+			custom_effect_tooltip = JAP_organizing_committee_unity_plus_3_tool
+			hidden_effect = { add_to_variable = { JAP_organizing_committee_unity_var = 3 } }
+			if = {
+				limit = { check_variable = { JAP_organizing_committee_unity_var > 10 } }
+				hidden_effect = { set_variable = { JAP_organizing_committee_unity_var = 10 } }
+			}
+		}
+	}
+	JAP_organizing_committee_unity_mis = {
+		activation = {
+			has_country_flag = JAP_prepare_to_olympiad_flag
+			has_country_flag = JAP_organizing_committee_created_flag
+ 		}
+		available = { hidden_trigger = { always = no } }
+		cancel_trigger = {
+			hidden_trigger = { NOT = { has_country_flag = JAP_prepare_to_olympiad_flag } }
+		}
+ 		days_mission_timeout = 50
+ 		timeout_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision Decision JAP_organizing_committee_unity_mis"			 
+			if = {
+				limit = { has_war = no }
+				custom_effect_tooltip = JAP_organizing_committee_unity_minus_1_tool
+				hidden_effect = { add_to_variable = { JAP_organizing_committee_unity_var = -1 } }
+				if = {
+					limit = { check_variable = { JAP_organizing_committee_unity_var < 0 } }
+					hidden_effect = { set_variable = { JAP_organizing_committee_unity_var = 0 } }
+				}
+			}   
+			if = {
+				limit = { has_war = yes }
+				custom_effect_tooltip = JAP_organizing_committee_unity_minus_2_tool
+				hidden_effect = { add_to_variable = { JAP_organizing_committee_unity_var = -2 } }
+				if = {
+					limit = { check_variable = { JAP_organizing_committee_unity_var < 0 } }
+					hidden_effect = { set_variable = { JAP_organizing_committee_unity_var = 0 } }
+				}
+			}  
+			if = {
+				limit = { NOT = { has_country_flag = JAP_build_olympic_complex_flag } }
+               			hidden_effect = { clr_country_flag = JAP_tokyo_support_on_the_stadium_issue_flag } 
+				hidden_effect = { clr_country_flag = JAP_temple_administration_support_on_the_stadium_issue_flag }
+				hidden_effect = { clr_country_flag = JAP_olympic_committee_support_on_the_stadium_issue_flag }
+				hidden_effect = { clr_country_flag = JAP_ministry_of_internal_affairs_support_on_the_stadium_issue_flag }
+			}  
+			if = {
+				limit = { NOT = { has_country_flag = JAP_all_support_for_the_relay_race_flag } }
+               			hidden_effect = { clr_country_flag = JAP_olympic_committee_support_for_the_relay_race_flag } 
+				hidden_effect = { clr_country_flag = JAP_ministry_of_internal_affairs_support_for_the_relay_race_flag }
+				hidden_effect = { clr_country_flag = JAP_international_participants_support_for_the_relay_race_flag }
+			}           					
+  		}
+	}
+	JAP_enlist_tokyo_support_on_the_stadium_issue_des = {
+		visible = {
+			has_country_flag = JAP_prepare_to_olympiad_flag
+			has_country_flag = JAP_organizing_committee_created_flag
+			NOT = { has_country_flag = JAP_tokyo_support_on_the_stadium_issue_flag }
+		}
+		available = {
+			custom_trigger_tooltip = {
+				tooltip = JAP_organizing_committee_unity_enough
+				check_variable = { JAP_organizing_committee_unity_var > 3 }
+			}
+		}
+		cost = 10
+		fire_only_once = no
+		complete_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision JAP_enlist_tokyo_support_on_the_stadium_issue_des"
+			custom_effect_tooltip = JAP_organizing_committee_unity_minus_1_tool
+			hidden_effect = { add_to_variable = { JAP_organizing_committee_unity_var = -1 } }
+               		hidden_effect = { set_country_flag = JAP_tokyo_support_on_the_stadium_issue_flag }			
+		}
+	}
+	JAP_enlist_the_support_of_the_temple_administration_in_the_stadium_issue = {
+		visible = {
+			has_country_flag = JAP_prepare_to_olympiad_flag
+			has_country_flag = JAP_organizing_committee_created_flag
+			NOT = { has_country_flag = JAP_temple_administration_support_on_the_stadium_issue_flag }
+		}
+		available = {
+			custom_trigger_tooltip = {
+				tooltip = JAP_organizing_committee_unity_enough
+				check_variable = { JAP_organizing_committee_unity_var > 6 }
+			}
+		}
+		cost = 15
+		fire_only_once = no
+		complete_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision JAP_enlist_the_support_of_the_temple_administration_in_the_stadium_issue"
+			custom_effect_tooltip = JAP_organizing_committee_unity_minus_1_tool
+			hidden_effect = { add_to_variable = { JAP_organizing_committee_unity_var = -1 } }
+               		hidden_effect = { set_country_flag = JAP_temple_administration_support_on_the_stadium_issue_flag }			
+		}
+	}
+	JAP_enlist_the_support_of_the_olympic_committee_on_the_stadium_issue = {
+		visible = {
+			has_country_flag = JAP_prepare_to_olympiad_flag
+			has_country_flag = JAP_organizing_committee_created_flag
+			NOT = { has_country_flag = JAP_olympic_committee_support_on_the_stadium_issue_flag }
+		}
+		available = {
+			custom_trigger_tooltip = {
+				tooltip = JAP_organizing_committee_unity_enough
+				check_variable = { JAP_organizing_committee_unity_var > 4 }
+			}
+		}
+		cost = 5
+		fire_only_once = no
+		complete_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision JAP_enlist_the_support_of_the_olympic_committee_on_the_stadium_issue"
+			custom_effect_tooltip = JAP_organizing_committee_unity_minus_1_tool
+			hidden_effect = { add_to_variable = { JAP_organizing_committee_unity_var = -1 } }
+               		hidden_effect = { set_country_flag = JAP_olympic_committee_support_on_the_stadium_issue_flag }			
+		}
+	}
+	JAP_enlist_the_support_of_the_ministry_of_internal_affairs_in_the_stadium_issue = {
+		visible = {
+			has_country_flag = JAP_prepare_to_olympiad_flag
+			has_country_flag = JAP_organizing_committee_created_flag
+			NOT = { has_country_flag = JAP_ministry_of_internal_affairs_support_on_the_stadium_issue_flag }
+		}
+		available = {
+			custom_trigger_tooltip = {
+				tooltip = JAP_organizing_committee_unity_enough
+				check_variable = { JAP_organizing_committee_unity_var > 5 }
+			}
+		}
+		cost = 10
+		fire_only_once = no
+		complete_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision JAP_enlist_the_support_of_the_ministry_of_internal_affairs_in_the_stadium_issue"
+			custom_effect_tooltip = JAP_organizing_committee_unity_minus_1_tool
+			hidden_effect = { add_to_variable = { JAP_organizing_committee_unity_var = -1 } }
+               		hidden_effect = { set_country_flag = JAP_ministry_of_internal_affairs_support_on_the_stadium_issue_flag }			
+		}
+	}
+	JAP_build_olympic_complex_fast = {
+		visible = {
+			has_country_flag = JAP_prepare_to_olympiad_flag
+			has_country_flag = JAP_organizing_committee_created_flag
+			NOT = { has_country_flag = JAP_build_olympic_complex_flag }
+		}
+		available = {
+			num_of_civilian_factories_available_for_projects > 4
+			has_country_flag = JAP_tokyo_support_on_the_stadium_issue_flag
+			has_country_flag = JAP_temple_administration_support_on_the_stadium_issue_flag
+			has_country_flag = JAP_olympic_committee_support_on_the_stadium_issue_flag
+			has_country_flag = JAP_ministry_of_internal_affairs_support_on_the_stadium_issue_flag
+		}
+		cancel_trigger = {
+			hidden_trigger = { NOT = { has_country_flag = JAP_prepare_to_olympiad_flag } }
+		}
+		modifier = {
+			civilian_factory_use = 5
+		}
+		cost = 50
+		days_remove = 250
+		fire_only_once = yes
+		complete_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision JAP_build_olympic_complex_fast"
+               		hidden_effect = { set_country_flag = JAP_build_olympic_complex_flag }			
+		}
+ 		remove_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision JAP_build_olympic_complex_fast"
+			custom_effect_tooltip = JAP_degree_of_readiness_to_olympiad_plus_35_tool
+			hidden_effect = { add_to_variable = { JAP_degree_of_readiness_to_olympiad_var = 35 } }
+			282 = {
+				add_extra_state_shared_building_slots = 3
+				add_building_construction = {
+					type = infrastructure
+					level = 1
+					instant_build = yes			
+				}
+                	}						
+		}
+	}
+	JAP_build_olympic_complex_ordinary = {
+		visible = {
+			has_country_flag = JAP_prepare_to_olympiad_flag
+			has_country_flag = JAP_organizing_committee_created_flag
+			NOT = { has_country_flag = JAP_build_olympic_complex_flag }
+		}
+		available = {
+			num_of_civilian_factories_available_for_projects > 2
+			has_country_flag = JAP_tokyo_support_on_the_stadium_issue_flag
+			has_country_flag = JAP_temple_administration_support_on_the_stadium_issue_flag
+			has_country_flag = JAP_olympic_committee_support_on_the_stadium_issue_flag
+			has_country_flag = JAP_ministry_of_internal_affairs_support_on_the_stadium_issue_flag
+		}
+		cancel_trigger = {
+			hidden_trigger = { NOT = { has_country_flag = JAP_prepare_to_olympiad_flag } }
+		}
+		modifier = {
+			civilian_factory_use = 3
+		}
+		cost = 30
+		days_remove = 400
+		fire_only_once = yes
+		complete_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision JAP_build_olympic_complex_ordinary"
+               		hidden_effect = { set_country_flag = JAP_build_olympic_complex_flag }			
+		}
+ 		remove_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision JAP_build_olympic_complex_ordinary"
+			custom_effect_tooltip = JAP_degree_of_readiness_to_olympiad_plus_35_tool
+			hidden_effect = { add_to_variable = { JAP_degree_of_readiness_to_olympiad_var = 35 } }
+			282 = {
+				add_extra_state_shared_building_slots = 3
+				add_building_construction = {
+					type = infrastructure
+					level = 1
+					instant_build = yes			
+				}
+                	}						
+		}
+	}
+	JAP_convince_emperor_to_participate = {
+		visible = {
+			has_country_flag = JAP_organizing_committee_created_flag
+			has_country_flag = JAP_prepare_to_olympiad_flag
+			NOT = { has_country_flag = JAP_emperor_part_change_flag }
+		}
+		available = {
+			custom_trigger_tooltip = {
+				tooltip = JAP_organizing_committee_unity_enough
+				check_variable = { JAP_organizing_committee_unity_var > 3 }
+			}
+		}
+		cost = 75
+		fire_only_once = yes
+		complete_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision JAP_convince_emperor_to_participate"
+			custom_effect_tooltip = JAP_degree_of_readiness_to_olympiad_plus_10_tool
+			hidden_effect = { add_to_variable = { JAP_degree_of_readiness_to_olympiad_var = 10 } }
+			custom_effect_tooltip = JAP_organizing_committee_unity_minus_3_tool
+			hidden_effect = { add_to_variable = { JAP_organizing_committee_unity_var = -3 } }
+               		hidden_effect = { set_country_flag = JAP_emperor_part_change_flag }
+               		hidden_effect = { set_country_flag = JAP_emperor_part_in_ceremony_flag }
+			add_popularity = {
+				ideology = monarchy
+				popularity = 0.03
+			} 
+			add_popularity = {
+				ideology = fascism
+				popularity = 0.03
+			} 
+		}
+	}
+	JAP_achieve_to_change_the_rules = {
+		visible = {
+			has_country_flag = JAP_prepare_to_olympiad_flag
+			NOT = { has_country_flag = JAP_emperor_part_change_flag }
+		}
+		cost = 30
+		fire_only_once = yes
+		complete_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision JAP_achieve_to_change_the_rules"
+			custom_effect_tooltip = JAP_degree_of_readiness_to_olympiad_plus_10_tool
+			hidden_effect = { add_to_variable = { JAP_degree_of_readiness_to_olympiad_var = 10 } }
+               		hidden_effect = { set_country_flag = JAP_emperor_part_change_flag }
+			every_country = {
+				limit = {
+					OR = {
+						original_tag = ITA
+						original_tag = ENG
+						original_tag = FIN
+					}
+				}
+				add_opinion_modifier = {
+					target = JAP
+					modifier = JAP_change_the_rules
+				}
+			}
+		}
+	}
+	JAP_enlist_the_support_of_the_olympic_committee_for_the_relay_race = {
+		visible = {
+			has_country_flag = JAP_prepare_to_olympiad_flag
+			has_country_flag = JAP_organizing_committee_created_flag
+			NOT = { has_country_flag = JAP_olympic_committee_support_for_the_relay_race_flag }
+			NOT = { has_country_flag = JAP_all_support_for_the_relay_race_flag }
+		}
+		available = {
+			custom_trigger_tooltip = {
+				tooltip = JAP_organizing_committee_unity_enough
+				check_variable = { JAP_organizing_committee_unity_var > 4 }
+			}
+		}
+		cost = 7
+		fire_only_once = no
+		complete_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision JAP_enlist_the_support_of_the_olympic_committee_for_the_relay_race"
+			custom_effect_tooltip = JAP_organizing_committee_unity_minus_1_tool
+			hidden_effect = { add_to_variable = { JAP_organizing_committee_unity_var = -1 } }
+               		hidden_effect = { set_country_flag = JAP_olympic_committee_support_for_the_relay_race_flag }						
+		}
+	}
+	JAP_enlist_the_support_of_the_ministry_of_internal_affairs_for_the_relay_race = {
+		visible = {
+			has_country_flag = JAP_prepare_to_olympiad_flag
+			has_country_flag = JAP_organizing_committee_created_flag
+			NOT = { has_country_flag = JAP_ministry_of_internal_affairs_support_for_the_relay_race_flag }
+			NOT = { has_country_flag = JAP_all_support_for_the_relay_race_flag }
+		}
+		available = {
+			custom_trigger_tooltip = {
+				tooltip = JAP_organizing_committee_unity_enough
+				check_variable = { JAP_organizing_committee_unity_var > 6 }
+			}
+		}
+		cost = 7
+		fire_only_once = no
+		complete_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision JAP_enlist_the_support_of_the_ministry_of_internal_affairs_for_the_relay_race"
+			custom_effect_tooltip = JAP_organizing_committee_unity_minus_1_tool
+			hidden_effect = { add_to_variable = { JAP_organizing_committee_unity_var = -1 } }
+               		hidden_effect = { set_country_flag = JAP_ministry_of_internal_affairs_support_for_the_relay_race_flag }						
+		}
+	}
+	JAP_enlist_the_support_of_the_international_participants_for_the_relay_race = {
+		visible = {
+			has_country_flag = JAP_prepare_to_olympiad_flag
+			has_country_flag = JAP_organizing_committee_created_flag
+			NOT = { has_country_flag = JAP_international_participants_support_for_the_relay_race_flag }
+			NOT = { has_country_flag = JAP_all_support_for_the_relay_race_flag }
+		}
+		available = {
+			custom_trigger_tooltip = {
+				tooltip = JAP_organizing_committee_unity_enough
+				check_variable = { JAP_organizing_committee_unity_var > 2 }
+			}
+		}
+		cost = 7
+		fire_only_once = no
+		complete_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision JAP_enlist_the_support_of_the_international_participants_for_the_relay_race"
+			custom_effect_tooltip = JAP_organizing_committee_unity_minus_1_tool
+			hidden_effect = { add_to_variable = { JAP_organizing_committee_unity_var = -1 } }
+               		hidden_effect = { set_country_flag = JAP_international_participants_support_for_the_relay_race_flag }						
+		}
+	}
+	JAP_technical_consultant_from_the_ioc = {
+		visible = {
+			has_country_flag = JAP_prepare_to_olympiad_flag
+			has_country_flag = JAP_organizing_committee_created_flag
+		}
+		cost = 10
+		fire_only_once = yes
+		complete_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision JAP_technical_consultant_from_the_ioc"
+			custom_effect_tooltip = JAP_degree_of_readiness_to_olympiad_plus_10_n_tool
+			hidden_effect = { add_to_variable = { JAP_degree_of_readiness_to_olympiad_var = 10 } }									
+		}
+	}
+	JAP_allocate_money_for_foreign_athletes = {
+		visible = {
+			has_country_flag = JAP_prepare_to_olympiad_flag
+		}
+		available = {
+			num_of_civilian_factories_available_for_projects > 2
+		}
+		cancel_trigger = {
+			hidden_trigger = { NOT = { has_country_flag = JAP_prepare_to_olympiad_flag } }
+		}
+		modifier = {
+			civilian_factory_use = 3
+		}
+		cost = 10
+		days_remove = 60
+		fire_only_once = yes
+		complete_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision JAP_allocate_money_for_foreign_athletes"
+			custom_effect_tooltip = JAP_degree_of_readiness_to_olympiad_plus_15_n_tool
+			hidden_effect = { add_to_variable = { JAP_degree_of_readiness_to_olympiad_var = 15 } }									
+		}
+	}
+	JAP_prepare_translators = {
+		visible = {
+			has_country_flag = JAP_prepare_to_olympiad_flag
+		}
+		cancel_trigger = {
+			hidden_trigger = { NOT = { has_country_flag = JAP_prepare_to_olympiad_flag } }
+		}
+		cost = 50
+		days_remove = 120
+		fire_only_once = yes
+		complete_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision JAP_prepare_translators"
+			custom_effect_tooltip = JAP_degree_of_readiness_to_olympiad_plus_15_n_tool
+			hidden_effect = { add_to_variable = { JAP_degree_of_readiness_to_olympiad_var = 15 } }									
+		}
+	}
+}
+
+##
+
+
 JAP_Naisen_Ittai = {
 
 	JAP_reorganize_the_administrative_apparatus = {

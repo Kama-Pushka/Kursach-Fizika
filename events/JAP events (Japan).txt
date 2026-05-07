@@ -4,6 +4,481 @@ add_namespace = NW_JAP_news
 
 add_namespace = NW_JAP_aht
 
+## Олимпиада_1940 block
+
+# Посещение Байе-Латуром Токио
+country_event = {
+	id = NW_JAP.542
+	title = NW_JAP.542.t
+	desc = NW_JAP.542.d
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_JAP.542" }
+	option = {
+		name = NW_JAP.542.a
+                hidden_effect = { set_global_flag = IOC_president_visit_tokyo_flag }
+	}
+}
+
+# Кандитатура Лондона на олимпийских играх 1940 года
+country_event = {
+	id = NW_JAP.543
+	title = NW_JAP.543.t
+	desc = NW_JAP.543.d
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_JAP.543" }
+	option = {
+		name = NW_JAP.543.a
+                hidden_effect = { set_global_flag = IOC_london_withdrawed_flag }
+	}
+	option = {
+		name = NW_JAP.543.b
+	}
+}
+
+# Выборы города проведения Олимпиады 1940 года
+country_event = {
+	id = NW_JAP.544
+	title = NW_JAP.544.t
+	desc = NW_JAP.544.d
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_JAP.544" }
+	option = {
+		name = NW_JAP.544.a
+		trigger = {
+			NOT = { has_global_flag = IOC_london_withdrawed_flag }			
+		}                
+		hidden_effect = { JAP = { add_to_variable = { IOC_votes_for_london = 1 } } }
+	}
+	option = {
+		name = NW_JAP.544.b
+		hidden_effect = { JAP = { add_to_variable = { IOC_votes_for_tokyo = 1 } } }
+	}
+	option = {
+		name = NW_JAP.544.c
+		hidden_effect = { JAP = { add_to_variable = { IOC_votes_for_helsinki = 1 } } }
+	}
+	option = {
+		name = NW_JAP.544.e
+		if = {
+			limit = {
+				AND = {
+					NOT = {
+						capital_scope = {
+								is_on_continent = europe
+						}
+					}
+					NOT = {
+						capital_scope = {
+								is_on_continent = south_america
+						}
+					}
+				}  
+			}
+			hidden_effect = { JAP = { add_to_variable = { IOC_votes_for_tokyo = 1 } } }  
+		}
+		if = {
+			limit = {
+				AND = {
+					OR = {
+						capital_scope = {
+								is_on_continent = europe
+						}
+						capital_scope = {
+								is_on_continent = south_america
+						}
+					}
+					has_global_flag = IOC_president_visit_tokyo_flag
+				}  
+			} 
+			hidden_effect = { JAP = { add_to_variable = { IOC_votes_for_tokyo = 1 } } }
+		} 
+		if = {
+			limit = {
+				AND = {
+					OR = {
+						capital_scope = {
+								is_on_continent = europe
+						}
+						capital_scope = {
+								is_on_continent = south_america
+						}
+					}
+					NOT = { has_global_flag = IOC_president_visit_tokyo_flag }
+					has_global_flag = IOC_london_withdrawed_flag
+				}  
+			} 
+			hidden_effect = { JAP = { add_to_variable = { IOC_votes_for_helsinki = 1 } } }
+		}    
+		if = {
+			limit = {
+				AND = {
+					OR = {
+						capital_scope = {
+								is_on_continent = europe
+						}
+						capital_scope = {
+								is_on_continent = south_america
+						}
+					}
+					NOT = { has_global_flag = IOC_president_visit_tokyo_flag }
+					NOT = { has_global_flag = IOC_london_withdrawed_flag }
+				}  
+			} 
+			hidden_effect = { 
+				random_list = {
+					50 = { JAP = { add_to_variable = { IOC_votes_for_helsinki = 1 } } }
+					50 = { JAP = { add_to_variable = { IOC_votes_for_london = 1 } } }
+				} 
+			} 
+		}         
+	}
+}
+
+# Токио выбран городом проведения летней Олимпиады 1940 года
+news_event = {
+	id = NW_JAP_news.79
+	title = NW_JAP_news.79.t
+	desc = NW_JAP_news.79.d
+	major = yes
+	is_triggered_only = yes
+	option = {
+		name = NW_JAP_news.79.a
+		if = {
+			limit = { original_tag = JAP } }
+               		hidden_effect = { set_country_flag = JAP_prepare_to_olympiad_flag }
+               		hidden_effect = { set_country_flag = JAP_prepare_to_olympiad_flag_01 }
+			hidden_effect = { set_variable = { JAP_degree_of_readiness_to_olympiad_var = 0 } }
+		}
+	}
+}
+
+# Лондон выбран городом проведения летней Олимпиады 1940 года
+news_event = {
+	id = NW_JAP_news.80
+	title = NW_JAP_news.80.t
+	desc = NW_JAP_news.80.d
+	major = yes
+	is_triggered_only = yes
+	option = {
+		name = NW_JAP_news.80.a
+		if = {
+			limit = { original_tag = JAP } }
+               		hidden_effect = { clr_country_flag = JAP_olympiad_category_flag }
+		}
+	}
+}
+
+# Хельсинки выбран городом проведения летней Олимпиады 1940 года
+news_event = {
+	id = NW_JAP_news.81
+	title = NW_JAP_news.81.t
+	desc = NW_JAP_news.81.d
+	major = yes
+	is_triggered_only = yes
+	option = {
+		name = NW_JAP_news.81.a
+		if = {
+			limit = { original_tag = JAP } }
+               		hidden_effect = { clr_country_flag = JAP_olympiad_category_flag }
+		}
+	}
+}
+
+# Токио отказывается от Олимпиады I
+news_event = {
+	id = NW_JAP_news.82
+	title = NW_JAP_news.82.t
+	desc = NW_JAP_news.82.d
+	major = yes
+	is_triggered_only = yes
+	option = {
+		name = NW_JAP_news.82.a
+		
+	}
+}
+
+# Токио отказывается от Олимпиады II
+news_event = {
+	id = NW_JAP_news.83
+	title = NW_JAP_news.83.t
+	desc = NW_JAP_news.83.d
+	major = yes
+	is_triggered_only = yes
+	option = {
+		name = NW_JAP_news.83.a
+		
+	}
+}
+
+# Просьба Международного олимпийского комитета
+country_event = {
+	id = NW_JAP.545
+	title = NW_JAP.545.t
+	desc = NW_JAP.545.d
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_JAP.545" }
+	option = {
+		name = NW_JAP.545.a
+                
+	}
+}
+
+# Предложения Международного олимпийского комитета
+country_event = {
+	id = NW_JAP.546
+	title = NW_JAP.546.t
+	desc = NW_JAP.546.d
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_JAP.546" }
+	option = {
+		name = NW_JAP.546.a
+                
+	}
+}
+
+# Перенос олимпиады
+country_event = {
+	id = NW_JAP.547
+	title = NW_JAP.547.t
+	desc = NW_JAP.547.d
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_JAP.547" }
+	option = {
+		name = NW_JAP.547.a
+		custom_effect_tooltip = JAP_abandon_the_olympiad_tool
+               	hidden_effect = { clr_country_flag = JAP_prepare_to_olympiad_flag }
+               	add_political_power = -250
+               	add_stability = -0.05 
+               	add_war_support = 0.15 
+               	hidden_effect = {  
+			if = {
+				limit = { check_variable = { IOC_votes_for_helsinki > IOC_votes_for_london } }
+                		news_event = { id = NW_JAP_news.84 hours = 1 random_days = 1 }
+			}
+			if = {
+				limit = {
+					OR = {
+						check_variable = { IOC_votes_for_london > IOC_votes_for_helsinki }
+						check_variable = { IOC_votes_for_london = IOC_votes_for_helsinki }
+					}
+				}
+                		news_event = { id = NW_JAP_news.85 hours = 1 random_days = 1 }
+			}      
+		}       
+	}
+}
+
+# МОК переносит место проведения олимпиады 1940 года II
+news_event = {
+	id = NW_JAP_news.84
+	title = NW_JAP_news.84.t
+	desc = NW_JAP_news.84.d
+	major = yes
+	is_triggered_only = yes
+	option = {
+		name = NW_JAP_news.84.a
+		
+	}
+}
+
+# МОК переносит место проведения олимпиады 1940 года II
+news_event = {
+	id = NW_JAP_news.85
+	title = NW_JAP_news.85.t
+	desc = NW_JAP_news.85.d
+	major = yes
+	is_triggered_only = yes
+	option = {
+		name = NW_JAP_news.85.a
+		
+	}
+}
+
+# Отмена Олимпиады 1940 года
+news_event = {
+	id = NW_JAP_news.86
+	title = NW_JAP_news.86.t
+	desc = NW_JAP_news.86.d
+	major = yes
+	is_triggered_only = yes
+	option = {
+		name = NW_JAP_news.86.a
+		
+	}
+}
+
+# Открытие Олимпийских игр в Токио I
+news_event = {
+	id = NW_JAP_news.87
+	title = NW_JAP_news.87.t
+	desc = NW_JAP_news.87.d
+	major = yes
+	is_triggered_only = yes
+	option = {
+		name = NW_JAP_news.87.a
+		trigger = { original_tag = JAP } 
+		add_threat = -10
+		add_stability = 0.1 
+		add_war_support = -0.1	
+		if = {
+			limit = { check_variable = { JAP_degree_of_readiness_to_olympiad_var = 100 } }
+                	add_political_power = 300
+                	282 = { add_dynamic_modifier = { modifier = JAP_successful_olympiad_state_mod } }
+			if = {
+				limit = { has_government = fascism }
+				add_popularity = {
+					ideology = fascism
+					popularity = 0.05
+				}
+			}
+			if = {
+				limit = { has_government = monarchy }
+				add_popularity = {
+					ideology = monarchy
+					popularity = 0.05
+				}
+			}
+			if = {
+				limit = { has_government = technocracy }
+				add_popularity = {
+					ideology = technocracy
+					popularity = 0.05
+				}
+			}
+			if = {
+				limit = { has_government = democratic }
+				add_popularity = {
+					ideology = democratic
+					popularity = 0.05
+				}
+			}
+			if = {
+				limit = { has_government = neutrality }
+				add_popularity = {
+					ideology = neutrality
+					popularity = 0.05
+				}
+			}	
+		}
+		if = {
+			limit = { check_variable = { JAP_degree_of_readiness_to_olympiad_var < 100 } }
+                	add_political_power = 100	
+		}	
+	}
+	option = {
+		name = NW_JAP_news.87.b
+		trigger = { 
+			AND = {
+				NOT = { original_tag = JAP } 
+				NOT = { has_war_with = JAP } 
+			} 
+		} 	
+		if = {
+			limit = { JAP = { has_war_with_major = no } }
+			add_opinion_modifier = {
+				target = JAP
+				modifier = JAP_successful_olympiad
+			}
+		}	
+	}
+	option = {
+		name = NW_JAP_news.87.c
+		trigger = { 
+			AND = {
+				NOT = { original_tag = JAP } 
+				has_war_with = JAP 
+			} 
+		}		
+	}
+}
+
+# Открытие Олимпийских игр в Токио II
+news_event = {
+	id = NW_JAP_news.88
+	title = NW_JAP_news.88.t
+	desc = NW_JAP_news.88.d
+	major = yes
+	is_triggered_only = yes
+	option = {
+		name = NW_JAP_news.88.a
+		trigger = { original_tag = JAP }
+		add_threat = -10
+		add_stability = 0.1 
+		add_war_support = -0.1	
+		if = {
+			limit = { check_variable = { JAP_degree_of_readiness_to_olympiad_var = 100 } }
+                	add_political_power = 300
+                	282 = { add_dynamic_modifier = { modifier = JAP_successful_olympiad_state_mod } }
+			if = {
+				limit = { has_government = fascism }
+				add_popularity = {
+					ideology = fascism
+					popularity = 0.05
+				}
+			}
+			if = {
+				limit = { has_government = monarchy }
+				add_popularity = {
+					ideology = monarchy
+					popularity = 0.05
+				}
+			}
+			if = {
+				limit = { has_government = technocracy }
+				add_popularity = {
+					ideology = technocracy
+					popularity = 0.05
+				}
+			}
+			if = {
+				limit = { has_government = democratic }
+				add_popularity = {
+					ideology = democratic
+					popularity = 0.05
+				}
+			}
+			if = {
+				limit = { has_government = neutrality }
+				add_popularity = {
+					ideology = neutrality
+					popularity = 0.05
+				}
+			}	
+		}
+		if = {
+			limit = { check_variable = { JAP_degree_of_readiness_to_olympiad_var < 100 } }
+                	add_political_power = 100	
+		} 		
+	}
+	option = {
+		name = NW_JAP_news.88.b
+		trigger = { 
+			AND = {
+				NOT = { original_tag = JAP } 
+				NOT = { has_war_with = JAP } 
+			} 
+		}
+		if = {
+			limit = { JAP = { has_war_with_major = no } }
+			add_opinion_modifier = {
+				target = JAP
+				modifier = JAP_successful_olympiad
+			}
+		}		
+	}
+	option = {
+		name = NW_JAP_news.88.c
+		trigger = { 
+			AND = {
+				NOT = { original_tag = JAP } 
+				has_war_with = JAP 
+			} 
+		}		
+	}
+}
+
+##
+
 # Тоталитаризм – моральный банкрот
 country_event = {
 	id = NW_JAP_looser.0
