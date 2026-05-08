@@ -17,11 +17,11 @@ country_event = {
 	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_JAP.olympiad.1" }
 	option = {
 		name = NW_JAP.olympiad.1.a
-        set_global_flag = IOC_president_visit_tokyo_flag
+        set_global_flag = JAP_olympiad_president_visit_tokyo
 	}
 }
 
-# Кандитатура Лондона на олимпийских играх 1940 года
+# Кандитатура Лондона на олимпийских играх 1940 года // ENG
 country_event = {
 	id = NW_JAP.olympiad.2
 	title = NW_JAP.olympiad.2.t
@@ -31,7 +31,7 @@ country_event = {
 	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_JAP.olympiad.2" }
 	option = {
 		name = NW_JAP.olympiad.2.a
-        set_global_flag = IOC_london_withdrawed_flag
+        set_global_flag = JAP_olympiad_london_withdrawed
 	}
 	option = {
 		name = NW_JAP.olympiad.2.b
@@ -48,93 +48,134 @@ country_event = {
 	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_JAP.olympiad.3" }
 	option = {
 		name = NW_JAP.olympiad.3.a
-		trigger = {
-			NOT = { has_global_flag = IOC_london_withdrawed_flag }			
-		}                
-		hidden_effect = { JAP = { add_to_variable = { IOC_votes_for_london = 1 } } }
+		trigger = { NOT = { has_global_flag = JAP_olympiad_london_withdrawed }	}
+		add_to_variable = { JAP.JAP_olympiad_votes_for_london = 1 }
 	}
 	option = {
 		name = NW_JAP.olympiad.3.b
-		hidden_effect = { JAP = { add_to_variable = { IOC_votes_for_tokyo = 1 } } }
+		add_to_variable = { JAP.JAP_olympiad_votes_for_tokyo = 1 }
 	}
 	option = {
 		name = NW_JAP.olympiad.3.c
-		hidden_effect = { JAP = { add_to_variable = { IOC_votes_for_helsinki = 1 } } }
+		add_to_variable = { JAP.JAP_olympiad_votes_for_helsinki = 1 }
 	}
 	option = { # TODO
 		name = NW_JAP.olympiad.3.d
 		if = {
 			limit = {
-				AND = {
-					NOT = {
-						capital_scope = {
-								is_on_continent = europe
-						}
+				NOT = {
+					capital_scope = {
+							is_on_continent = europe
 					}
-					NOT = {
-						capital_scope = {
-								is_on_continent = south_america
-						}
+				}
+				NOT = {
+					capital_scope = {
+							is_on_continent = south_america
 					}
-				}  
+				}
 			}
-			hidden_effect = { JAP = { add_to_variable = { IOC_votes_for_tokyo = 1 } } }  
+			add_to_variable = { JAP.JAP_olympiad_votes_for_tokyo = 1 } 
 		}
 		if = {
 			limit = {
-				AND = {
-					OR = {
-						capital_scope = {
-								is_on_continent = europe
-						}
-						capital_scope = {
-								is_on_continent = south_america
-						}
+				OR = {
+					capital_scope = {
+							is_on_continent = europe
 					}
-					has_global_flag = IOC_president_visit_tokyo_flag
-				}  
+					capital_scope = {
+							is_on_continent = south_america
+					}
+				}
+				has_global_flag = JAP_olympiad_president_visit_tokyo
 			} 
-			hidden_effect = { JAP = { add_to_variable = { IOC_votes_for_tokyo = 1 } } }
+			add_to_variable = { JAP.JAP_olympiad_votes_for_tokyo = 1 }
 		} 
 		if = {
 			limit = {
-				AND = {
-					OR = {
-						capital_scope = {
-								is_on_continent = europe
-						}
-						capital_scope = {
-								is_on_continent = south_america
-						}
+				OR = {
+					capital_scope = {
+							is_on_continent = europe
 					}
-					NOT = { has_global_flag = IOC_president_visit_tokyo_flag }
-					has_global_flag = IOC_london_withdrawed_flag
-				}  
+					capital_scope = {
+							is_on_continent = south_america
+					}
+				}
+				NOT = { has_global_flag = JAP_olympiad_president_visit_tokyo }
+				has_global_flag = JAP_olympiad_london_withdrawed
 			} 
-			hidden_effect = { JAP = { add_to_variable = { IOC_votes_for_helsinki = 1 } } }
+			add_to_variable = { JAP.JAP_olympiad_votes_for_helsinki = 1 }
 		}    
 		if = {
 			limit = {
-				AND = {
-					OR = {
-						capital_scope = {
-								is_on_continent = europe
-						}
-						capital_scope = {
-								is_on_continent = south_america
-						}
+				OR = {
+					capital_scope = {
+							is_on_continent = europe
 					}
-					NOT = { has_global_flag = IOC_president_visit_tokyo_flag }
-					NOT = { has_global_flag = IOC_london_withdrawed_flag }
-				}  
+					capital_scope = {
+							is_on_continent = south_america
+					}
+				}
+				NOT = { has_global_flag = JAP_olympiad_president_visit_tokyo }
+				NOT = { has_global_flag = JAP_olympiad_london_withdrawed }  
 			} 
-			hidden_effect = { 
-				random_list = {
-					50 = { JAP = { add_to_variable = { IOC_votes_for_helsinki = 1 } } }
-					50 = { JAP = { add_to_variable = { IOC_votes_for_london = 1 } } }
-				} 
+			random_list = {
+				50 = { add_to_variable = { JAP.JAP_olympiad_votes_for_helsinki = 1 } }
+				50 = { add_to_variable = { JAP.JAP_olympiad_votes_for_london = 1 } }
 			} 
-		}         
+		}
+	}
+}
+
+### Проверка на победителя голосования
+country_event = {
+	id = NW_JAP.olympiad.17
+	hidden = yes
+	is_triggered_only = yes
+	immediate = { 
+		log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_JAP.olympiad.17"
+		if = {
+			limit = {
+				check_variable = { JAP_olympiad_votes_for_tokyo > JAP_olympiad_votes_for_london }
+				check_variable = { JAP_olympiad_votes_for_tokyo > JAP_olympiad_votes_for_helsinki }
+			}
+			news_event = { id = NW_JAP.olympiad.4 hours = 1 random_days = 1 }
+		}
+		else_if = {
+			limit = {
+				check_variable = { JAP_olympiad_votes_for_london > JAP_olympiad_votes_for_tokyo }
+				check_variable = { JAP_olympiad_votes_for_london > JAP_olympiad_votes_for_helsinki }
+			}
+			news_event = { id = NW_JAP.olympiad.5 hours = 1 random_days = 1 }
+		}
+		else_if = {
+			limit = {
+				check_variable = { JAP_olympiad_votes_for_helsinki > JAP_olympiad_votes_for_tokyo }
+				check_variable = { JAP_olympiad_votes_for_helsinki > JAP_olympiad_votes_for_london }
+			}
+			news_event = { id = NW_JAP.olympiad.6 hours = 1 random_days = 1 }
+		}
+		else_if = {
+			limit = {
+				OR = {
+					AND = {
+						check_variable = { JAP_olympiad_votes_for_tokyo = JAP_olympiad_votes_for_london }
+						check_variable = { JAP_olympiad_votes_for_tokyo > JAP_olympiad_votes_for_helsinki }
+					}
+					AND = {
+						check_variable = { JAP_olympiad_votes_for_tokyo = JAP_olympiad_votes_for_helsinki }
+						check_variable = { JAP_olympiad_votes_for_tokyo > JAP_olympiad_votes_for_london }
+					}
+				}
+			}
+			news_event = { id = NW_JAP.olympiad.4 hours = 1 random_days = 1 }
+		}
+		else_if = { # TODO else!
+			limit = {
+				check_variable = { JAP_olympiad_votes_for_tokyo = JAP_olympiad_votes_for_london }
+				check_variable = { JAP_olympiad_votes_for_tokyo = JAP_olympiad_votes_for_helsinki }
+			}
+			news_event = { id = NW_JAP.olympiad.4 hours = 1 random_days = 1 }
+		}
 	}
 }
 
@@ -153,6 +194,11 @@ news_event = {
             set_country_flag = JAP_prepare_to_olympiad_flag
             set_country_flag = JAP_prepare_to_olympiad_flag_01
 			set_variable = { JAP_degree_of_readiness_to_olympiad_var = 0 }
+			
+			activate_mission = JAP_prepare_to_olympiad_mis
+			country_event = { id = NW_JAP.olympiad.18 days = 365 } # Проверка на Просьба Международного олимпийского комитета
+			country_event = { id = NW_JAP.olympiad.19 days = 730 } # Проверка на Предложения Международного олимпийского комитета
+			country_event = { id = NW_JAP.olympiad.20 days = 1095 } # Проверка на Перенос олимпиады
 		}
 	}
 }
@@ -217,6 +263,22 @@ news_event = {
 	}
 }
 
+### Проверка на Просьба Международного олимпийского комитета
+country_event = {
+	id = NW_JAP.olympiad.18
+	hidden = yes
+	is_triggered_only = yes
+	immediate = { 
+		log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_JAP.olympiad.18"
+		if = {
+			limit = {
+				check_variable = { JAP_degree_of_readiness_to_olympiad_var < 15 }
+			}
+			country_event = { id = NW_JAP.olympiad.9 days = 1 }
+		}
+	}
+}
+
 # Просьба Международного олимпийского комитета
 country_event = {
 	id = NW_JAP.olympiad.9
@@ -230,6 +292,22 @@ country_event = {
 	}
 }
 
+### Проверка на Предложения Международного олимпийского комитета
+country_event = {
+	id = NW_JAP.olympiad.19
+	hidden = yes
+	is_triggered_only = yes
+	immediate = { 
+		log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_JAP.olympiad.18"
+		if = {
+			limit = {
+				check_variable = { JAP_degree_of_readiness_to_olympiad_var < 35 }
+			}
+			country_event = { id = NW_JAP.olympiad.10 days = 1 }
+		}
+	}
+}
+
 # Предложения Международного олимпийского комитета
 country_event = {
 	id = NW_JAP.olympiad.10
@@ -240,6 +318,23 @@ country_event = {
 	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_JAP.olympiad.10" }
 	option = {
 		name = NW_JAP.olympiad.10.a
+	}
+}
+
+### Проверка на Перенос олимпиады
+country_event = {
+	id = NW_JAP.olympiad.20
+	hidden = yes
+	is_triggered_only = yes
+	immediate = { 
+		log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_JAP.olympiad.18"
+		if = {
+			limit = {
+				check_variable = { JAP_degree_of_readiness_to_olympiad_var < 55 }
+				NOT = { has_country_flag = JAP_build_olympic_complex_flag }
+			}
+			country_event = { id = NW_JAP.olympiad.11 days = 1 }
+		}
 	}
 }
 
@@ -260,14 +355,14 @@ country_event = {
 		add_war_support = 0.15 
 		hidden_effect = {
 			if = {
-				limit = { check_variable = { IOC_votes_for_helsinki > IOC_votes_for_london } }
+				limit = { check_variable = { JAP_olympiad_votes_for_helsinki > JAP_olympiad_votes_for_london } }
 				news_event = { id = NW_JAP.olympiad.12 hours = 1 random_days = 1 }
 			}
 			if = {
 				limit = {
 					OR = {
-						check_variable = { IOC_votes_for_london > IOC_votes_for_helsinki }
-						check_variable = { IOC_votes_for_london = IOC_votes_for_helsinki }
+						check_variable = { JAP_olympiad_votes_for_london > JAP_olympiad_votes_for_helsinki }
+						check_variable = { JAP_olympiad_votes_for_london = JAP_olympiad_votes_for_helsinki }
 					}
 				}
                 news_event = { id = NW_JAP.olympiad.13 hours = 1 random_days = 1 }
@@ -334,40 +429,9 @@ news_event = {
 			limit = { check_variable = { JAP_degree_of_readiness_to_olympiad_var = 100 } }
             add_political_power = 300
             282 = { add_dynamic_modifier = { modifier = JAP_successful_olympiad_state_mod } }
-			if = { # TODO
-				limit = { has_government = fascism }
-				add_popularity = {
-					ideology = fascism
-					popularity = 0.05
-				}
-			}
-			if = {
-				limit = { has_government = monarchy }
-				add_popularity = {
-					ideology = monarchy
-					popularity = 0.05
-				}
-			}
-			if = {
-				limit = { has_government = technocracy }
-				add_popularity = {
-					ideology = technocracy
-					popularity = 0.05
-				}
-			}
-			if = {
-				limit = { has_government = democratic }
-				add_popularity = {
-					ideology = democratic
-					popularity = 0.05
-				}
-			}
-			if = {
-				limit = { has_government = neutrality }
-				add_popularity = {
-					ideology = neutrality
-					popularity = 0.05
-				}
+			add_popularity = {
+				ideology = current_party_ideology_group
+				popularity = 0.05
 			}
 		}
 		if = { # TODO
@@ -378,10 +442,7 @@ news_event = {
 	option = {
 		name = NW_JAP.olympiad.15.b
 		trigger = { 
-			AND = {
-				NOT = { original_tag = JAP } 
-				NOT = { has_war_with = JAP } 
-			} 
+			NOT = { original_tag = JAP has_war_with = JAP }
 		} 	
 		if = {
 			limit = { JAP = { has_war_with_major = no } }
@@ -394,10 +455,8 @@ news_event = {
 	option = {
 		name = NW_JAP.olympiad.15.c
 		trigger = { 
-			AND = {
-				NOT = { original_tag = JAP } 
-				has_war_with = JAP 
-			} 
+			NOT = { original_tag = JAP } 
+			has_war_with = JAP 
 		}
 	}
 }
@@ -420,41 +479,10 @@ news_event = {
 			limit = { check_variable = { JAP_degree_of_readiness_to_olympiad_var = 100 } }
 			add_political_power = 300
 			282 = { add_dynamic_modifier = { modifier = JAP_successful_olympiad_state_mod } }
-			if = { # TODO
-				limit = { has_government = fascism }
-				add_popularity = {
-					ideology = fascism
-					popularity = 0.05
-				}
+			add_popularity = {
+				ideology = current_party_ideology_group
+				popularity = 0.05
 			}
-			if = {
-				limit = { has_government = monarchy }
-				add_popularity = {
-					ideology = monarchy
-					popularity = 0.05
-				}
-			}
-			if = {
-				limit = { has_government = technocracy }
-				add_popularity = {
-					ideology = technocracy
-					popularity = 0.05
-				}
-			}
-			if = {
-				limit = { has_government = democratic }
-				add_popularity = {
-					ideology = democratic
-					popularity = 0.05
-				}
-			}
-			if = {
-				limit = { has_government = neutrality }
-				add_popularity = {
-					ideology = neutrality
-					popularity = 0.05
-				}
-			}	
 		}
 		if = { # TODO
 			limit = { check_variable = { JAP_degree_of_readiness_to_olympiad_var < 100 } }
@@ -464,10 +492,7 @@ news_event = {
 	option = {
 		name = NW_JAP.olympiad.16.b
 		trigger = { 
-			AND = {
-				NOT = { original_tag = JAP } 
-				NOT = { has_war_with = JAP } 
-			} 
+			NOT = { original_tag = JAP has_war_with = JAP } 
 		}
 		if = {
 			limit = { JAP = { has_war_with_major = no } }
@@ -480,10 +505,8 @@ news_event = {
 	option = {
 		name = NW_JAP.olympiad.16.c
 		trigger = { 
-			AND = {
-				NOT = { original_tag = JAP } 
-				has_war_with = JAP 
-			} 
+			NOT = { original_tag = JAP } 
+			has_war_with = JAP 
 		}		
 	}
 }
