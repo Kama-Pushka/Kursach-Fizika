@@ -7886,16 +7886,55 @@ country_event = {
 # Коалиция Рютаро побеждает на выборах
 country_event = {
 	id = NW_JAP.239
-	title = NW_JAP.239.t
-	desc = NW_JAP.239.d
+	title = {
+		text = NW_JAP.239.t.a
+		trigger = { NOT = { has_country_flag = NW_JAP_239_flag } }
+	}
+	desc = { 
+		text = NW_JAP.239.d.a
+		trigger = { NOT = { has_country_flag = NW_JAP_239_flag } }
+	}
+	title = {
+		text = NW_JAP.239.t.b
+		trigger = { has_country_flag = NW_JAP_239_flag } 
+	}
+	desc = { 
+		text = NW_JAP.239.d.b
+		trigger = { has_country_flag = NW_JAP_239_flag } 
+	}
 	picture = GFX_report_event_NW_JAP.239
 	is_triggered_only = yes
 	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_JAP.239" }
 	option = {
-		name = NW_JAP.239.a
+		name = { 
+			text = NW_JAP.239.a
+			trigger = { NOT = { has_country_flag = NW_JAP_239_flag } }
+		}
+		name = { 
+			text = NW_JAP.239.aa
+			trigger = { has_country_flag = NW_JAP_239_flag } 
+		}
 		set_country_flag = JAP_Nagaya_office_UNLOCK_flag
 		effect_tooltip = { unlock_national_focus = JAP_Nagaya_office }
-		clr_country_flag = JAP_cabinet_of_Minseito
+		
+		if = { 
+			limit = { NOT = { has_country_flag = NW_JAP_239_flag } }
+			set_country_flag = NW_JAP_239_flag 
+		}
+		
+		if = { 
+			limit = { 
+				NOT = { 
+					OR = { 
+						has_country_flag = JAP_cabinet_of_Minseito 
+						has_country_flag = JAP_cabinet_of_Shinshinto
+					}
+				}
+			}
+			set_variable = { JAP_party_finances = 0 }
+			activate_mission = JAP_money_from_mitsubishi 
+		}
+		JAP_cabinet_cleaning_effect = yes
 		set_country_flag = JAP_cabinet_of_Shinshinto
 	}
 }
@@ -7905,14 +7944,24 @@ country_event = {
 	id = NW_JAP.240
 	title = NW_JAP.240.t
 	desc = NW_JAP.240.d
-	picture = GFX_report_event_NW_JAP.239
+	picture = GFX_report_event_NW_JAP.240
 	is_triggered_only = yes
 	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_JAP.240" }
 	option = {
 		name = NW_JAP.240.a
 		set_country_flag = JAP_Nakadzima_office_UNLOCK_flag
 		effect_tooltip = { unlock_national_focus = JAP_Nakadzima_office }
-		clr_country_flag = JAP_cabinet_of_Minseito
+		
+		if = { 
+			limit = { 
+				NOT = { 
+					has_country_flag = JAP_cabinet_of_Seyukai_reformists
+				}
+			}
+			set_variable = { JAP_party_finances = 0 }
+			activate_mission = JAP_money_from_nakajima
+		}
+		JAP_cabinet_cleaning_effect = yes
 		set_country_flag = JAP_cabinet_of_Seyukai_reformists
 	}
 }
@@ -7929,7 +7978,18 @@ country_event = {
 		name = NW_JAP.241.a
 		set_country_flag = JAP_Nakano_office_UNLOCK_flag
 		effect_tooltip = { unlock_national_focus = JAP_Nakano_office }
-		clr_country_flag = JAP_cabinet_of_Minseito
+		
+		if = { 
+			limit = { 
+				NOT = { 
+					has_country_flag = JAP_cabinet_of_Kakushin_Shinto
+				}
+			}
+			set_variable = { JAP_party_finances = 0 }
+			activate_mission = JAP_donations_from_small_business
+			activate_mission = JAP_donations_from_people
+		}
+		JAP_cabinet_cleaning_effect = yes
 		set_country_flag = JAP_cabinet_of_Kakushin_Shinto
 	}
 }
@@ -7946,8 +8006,20 @@ country_event = {
 		name = NW_JAP.242.a
 		set_country_flag = JAP_Nakano_office_UNLOCK_flag
 		effect_tooltip = { unlock_national_focus = JAP_Nakano_office }
-		clr_country_flag = JAP_cabinet_of_Minseito
+		
+		if = { 
+			limit = { 
+				NOT = { 
+					has_country_flag = JAP_cabinet_of_Kakushin_Shinto
+				}
+			}
+			set_variable = { JAP_party_finances = 0 }
+			activate_mission = JAP_donations_from_small_business
+			activate_mission = JAP_donations_from_people
+		}
+		JAP_cabinet_cleaning_effect = yes
 		set_country_flag = JAP_cabinet_of_Kakushin_Shinto
+		
 	}
 }
 
@@ -10596,11 +10668,7 @@ country_event = {
 	option = {
 		name = NW_JAP.329.a
 		trigger = { NOT = { has_country_leader = { character = JAP_Machida_Chuji ruling_only = yes } } }
-		if = { 
-			limit = { has_country_flag = JAP_party_popularity_active }
-			activate_mission = JAP_agitation_of_Shinshinto_mission
-		}
-		set_country_flag = JAP_shinshinto_was_created_flag
+
 		hidden_effect = {
 			if = {
 				limit = {
@@ -10621,11 +10689,7 @@ country_event = {
 	option = {
 		name = NW_JAP.329.b
 		trigger = { has_country_leader = { character = JAP_Machida_Chuji ruling_only = yes } }
-		set_country_flag = JAP_shinshinto_was_created_flag
-		if = { 
-			limit = { has_country_flag = JAP_party_popularity_active }
-			activate_mission = JAP_agitation_of_Shinshinto_mission
-		}
+		
 		hidden_effect = {
 			if = {
 				limit = {
@@ -10887,6 +10951,11 @@ country_event = {
 			divide_temp_variable = { JAP_kakushin_shinto_popularity_temp = -1 }
 			add_to_variable = { JAP_kakushin_shinto_popularity = JAP_kakushin_shinto_popularity_temp tooltip = JAP_kakushin_shinto_popularity_tt }
 			clear_variable = JAP_rikken_minseito_popularity
+			
+			activate_mission = JAP_agitation_of_Shinshinto_mission
+			clr_country_flag = JAP_cabinet_of_Minseito
+			set_country_flag = JAP_cabinet_of_Shinshinto
+			set_country_flag = JAP_shinshinto_was_created_flag
 		}
 	}
 }
@@ -11454,15 +11523,17 @@ country_event = {
 		set_country_flag = JAP_Kuharo_office_UNLOCK_flag
 		effect_tooltip = { unlock_national_focus = JAP_Kuharo_office }
 		
-		clr_country_flag = JAP_cabinet_of_Minseito
 		if = { 
-			limit = { has_country_flag = JAP_split_of_seukai_flag }
-			set_country_flag = JAP_cabinet_of_Seyukai_ortodox
-		}
-		else = { 
-			set_country_flag = JAP_cabinet_of_Seyukai
+			limit = { 
+				NOT = { 
+					has_country_flag = JAP_cabinet_of_Seyukai_ortodox
+				}
+			}
+			set_variable = { JAP_party_finances = 0 }
 			activate_mission = JAP_money_from_mitsui
 		}
+		JAP_cabinet_cleaning_effect = yes
+		set_country_flag = JAP_cabinet_of_Seyukai_ortodox
 	}
 }
 
@@ -11480,21 +11551,18 @@ country_event = {
 		set_country_flag = JAP_Nakadzima_office_UNLOCK_flag
 		effect_tooltip = { unlock_national_focus = JAP_Nakadzima_office }
 		
-		clr_country_flag = JAP_cabinet_of_Minseito
 		if = { 
-			limit = { has_country_flag = JAP_split_of_seukai_flag }
-			set_country_flag = JAP_cabinet_of_Seyukai_reformists 
+			limit = { 
+				NOT = { 
+					has_country_flag = JAP_cabinet_of_Seyukai
+				}
+			}
+			set_variable = { JAP_party_finances = 0 }
 			activate_mission = JAP_money_from_mitsui
+			activate_mission = JAP_money_from_nakajima
 		}
-		else_if = { 
-			limit = { has_country_flag = NW_JAP_348_event_flag }
-			set_country_flag = JAP_cabinet_of_Innovation_alliance
-			activate_mission = JAP_money_from_mitsui
-		}
-		else = { 
-			set_country_flag = JAP_cabinet_of_Seyukai
-			activate_mission = JAP_money_from_mitsui
-		}
+		JAP_cabinet_cleaning_effect = yes
+		set_country_flag = JAP_cabinet_of_Seyukai
 	}
 }
 
@@ -11512,16 +11580,17 @@ country_event = {
 		set_country_flag = JAP_Hatoyama_office_UNLOCK_flag
 		effect_tooltip = { unlock_national_focus = JAP_Hatoyama_office }
 		
-		clr_country_flag = JAP_cabinet_of_Minseito
 		if = { 
-			limit = { has_country_flag = JAP_split_of_seukai_flag }
-			set_country_flag = JAP_cabinet_of_Seyukai_ortodox
+			limit = { 
+				NOT = { 
+					has_country_flag = JAP_cabinet_of_Seyukai
+				}
+			}
+			set_variable = { JAP_party_finances = 0 }
 			activate_mission = JAP_money_from_mitsui
 		}
-		else = { 
-			set_country_flag = JAP_cabinet_of_Seyukai
-			activate_mission = JAP_money_from_mitsui
-		}
+		JAP_cabinet_cleaning_effect = yes
+		set_country_flag = JAP_cabinet_of_Seyukai
 	}
 }
 
@@ -11538,16 +11607,18 @@ country_event = {
 		set_party_name = { ideology = democratic long_name = JAP_democratic_party5_long name = JAP_democratic_party5 }
 		set_country_flag = JAP_Hatoyama_office_UNLOCK_flag
 		effect_tooltip = { unlock_national_focus = JAP_Hatoyama_office }
-		clr_country_flag = JAP_cabinet_of_Minseito
+	
 		if = { 
-			limit = { has_country_flag = JAP_split_of_seukai_flag }
-			set_country_flag = JAP_cabinet_of_Seyukai_ortodox
+			limit = { 
+				NOT = { 
+					has_country_flag = JAP_cabinet_of_Seyukai_ortodox
+				}
+			}
+			set_variable = { JAP_party_finances = 0 }
 			activate_mission = JAP_money_from_mitsui
 		}
-		else = { 
-			set_country_flag = JAP_cabinet_of_Seyukai
-			activate_mission = JAP_money_from_mitsui
-		}
+		JAP_cabinet_cleaning_effect = yes
+		set_country_flag = JAP_cabinet_of_Seyukai_ortodox
 	}
 }
 
@@ -11563,6 +11634,19 @@ country_event = {
 		name = NW_JAP.364.a
 		set_country_flag = JAP_Konoe_office_UNLOCK_flag
 		effect_tooltip = { unlock_national_focus = JAP_Konoe_office }
+		
+		if = { 
+			limit = { 
+				NOT = { 
+					has_country_flag = JAP_cabinet_of_Kakushin_Shinto
+				}
+			}
+			set_variable = { JAP_party_finances = 0 }
+			activate_mission = JAP_donations_from_small_business
+			activate_mission = JAP_donations_from_people
+		}
+		JAP_cabinet_cleaning_effect = yes
+		set_country_flag = JAP_cabinet_of_Kakushin_Shinto
 	}
 }
 
@@ -11579,7 +11663,17 @@ country_event = {
 		set_country_flag = JAP_Hisasi_office_UNLOCK_flag
 		effect_tooltip = { unlock_national_focus = JAP_Hisasi_office }
 		
-		clr_country_flag = JAP_cabinet_of_Minseito
+		if = { 
+			limit = { 
+				NOT = { 
+					has_country_flag = JAP_cabinet_of_Kakushin_Shinto
+				}
+			}
+			set_variable = { JAP_party_finances = 0 }
+			activate_mission = JAP_donations_from_small_business
+			activate_mission = JAP_donations_from_people
+		}
+		JAP_cabinet_cleaning_effect = yes
 		set_country_flag = JAP_cabinet_of_Kakushin_Shinto
 	}
 }
@@ -11597,9 +11691,17 @@ country_event = {
 		set_country_flag = JAP_Nakano_office_UNLOCK_flag
 		effect_tooltip = { unlock_national_focus = JAP_Nakano_office }
 		
-		clr_country_flag = JAP_cabinet_of_Minseito
+		if = { 
+			limit = { 
+				NOT = { 
+					has_country_flag = JAP_cabinet_of_Tohokai
+				}
+			}
+			set_variable = { JAP_party_finances = 0 }
+			activate_mission = JAP_donations_from_small_business
+		}
+		JAP_cabinet_cleaning_effect = yes
 		set_country_flag = JAP_cabinet_of_Tohokai
-		activate_mission = JAP_donations_from_small_business
 	}
 }
 
@@ -11617,9 +11719,17 @@ country_event = {
 		effect_tooltip = { unlock_national_focus = JAP_Hisasi_office }
 		set_party_name = { ideology = democratic long_name = JAP_democratic_party2_long name = JAP_democratic_party2 }
 	
-		clr_country_flag = JAP_cabinet_of_Minseito
+		if = { 
+			limit = { 
+				NOT = { 
+					has_country_flag = JAP_cabinet_of_Shakai_Taishuto
+				}
+			}
+			set_variable = { JAP_party_finances = 0 }
+			activate_mission = JAP_donations_from_people
+		}
+		JAP_cabinet_cleaning_effect = yes
 		set_country_flag = JAP_cabinet_of_Shakai_Taishuto
-		activate_mission = JAP_donations_from_people
 	}
 }
 
@@ -11637,9 +11747,18 @@ country_event = {
 		effect_tooltip = { unlock_national_focus = JAP_Isu_office }
 		set_party_name = { ideology = democratic long_name = JAP_democratic_party2_long name = JAP_democratic_party2 }
 	
-		clr_country_flag = JAP_cabinet_of_Minseito
+		
+		if = { 
+			limit = { 
+				NOT = { 
+					has_country_flag = JAP_cabinet_of_Shakai_Taishuto
+				}
+			}
+			set_variable = { JAP_party_finances = 0 }
+			activate_mission = JAP_donations_from_people
+		}
+		JAP_cabinet_cleaning_effect = yes
 		set_country_flag = JAP_cabinet_of_Shakai_Taishuto
-		activate_mission = JAP_donations_from_people
 		
 	}
 }
@@ -11655,8 +11774,22 @@ country_event = {
 	option = {
 		name = NW_JAP.369.a
 		set_country_flag = JAP_Machid_Chunji_second_office_UNLOCK_flag
-		complete_national_focus = JAP_Machid_Chunji_second_office
+		
 		set_party_name = { ideology = democratic long_name = JAP_democratic_party_long name = JAP_democratic_party }
+		if = { 
+			limit = { 
+				NOT = { 
+					OR = { 
+						has_country_flag = JAP_cabinet_of_Minseito 
+						has_country_flag = JAP_cabinet_of_Shinshinto
+					}
+				}
+			}
+			set_variable = { JAP_party_finances = 0 }
+			activate_mission = JAP_money_from_mitsubishi 
+		}
+		JAP_cabinet_cleaning_effect = yes
+		set_country_flag = JAP_cabinet_of_Minseito
 	}
 }
 
@@ -21983,194 +22116,20 @@ country_event = {
 }
 
 # Свадьба сына Хатоямы
-# country_event = {		TODO Александр, айдишники у ивентов совпадают со следующим, фикси (пока закомментил)
-	# id = NW_JAP.694
-	# title = NW_JAP.694.t
-	# desc = NW_JAP.694.d
-	# trigger = { 
-		# date > 1942.11.13
-		# has_country_leader = { character = JAP_Ichiro_Hatoyama ruling_only = yes }
-	# }
-	# fire_only_once = yes
-	# picture = GFX_report_event_NW_JAP.544
-	# immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_JAP.694" }
-	# option = { 
-		# name = NW_JAP.694.a
-		# set_country_flag = JAP_son_of_Hatoyama_married
-	# }
-# }
-
-# Парламентские выборы 
-country_event = {
+country_event = {		
 	id = NW_JAP.694
 	title = NW_JAP.694.t
 	desc = NW_JAP.694.d
 	trigger = { 
+		date > 1942.11.13
+		has_country_leader = { character = JAP_Ichiro_Hatoyama ruling_only = yes }
 	}
-	is_triggered_only = yes
+	fire_only_once = yes
 	picture = GFX_report_event_NW_JAP.544
 	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_JAP.694" }
 	option = { 
 		name = NW_JAP.694.a
-	}
-}
-
-# Парламентские выборы [текущий год] года - Хатояма Сэйюкай 
-country_event = {
-	id = NW_JAP.695
-	title = NW_JAP.695.t
-	desc = NW_JAP.695.desc
-	trigger = { 
-		has_government = democratic
-	}
-	picture = GFX_report_event_NW_JAP.544
-	is_triggered_only = yes
-	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_JAP.695" }
-	option = {
-		name = NW_JAP.695.a
-		trigger = { 
-			custom_trigger_tooltip = {
-				set_temp_variable = { JAP_popularity_of_party_var_TEMP = 49 }
-				check_variable = { JAP_popularity_of_party_var > JAP_popularity_of_party_var_TEMP }
-				tooltip = JAP_popularity_of_party_var_check_tt
-			}
-			#check_variable = { JAP_popularity_of_party_var > JAP_popularity_of_party_var_TEMP }
-			#tooltip = JAP_popularity_of_party_var_check_tt
-		}
-		add_popularity = { ideology = neutrality popularity = 0.03 }
-		add_political_power = 30
-		remove_ideas = JAP_high_unity_of_rikken_Seyukai_idea
-		remove_ideas = JAP_sufficient_unity_of_rikken_Seyukai_idea
-		remove_ideas = JAP_low_unity_of_rikken_Seyukai_idea
-	}
-	option = {
-		name = NW_JAP.695.b
-		trigger = { 
-			custom_trigger_tooltip = {
-				set_temp_variable = { JAP_popularity_of_party_var_TEMP = 50 }
-				check_variable = { JAP_popularity_of_party_var < JAP_popularity_of_party_var_TEMP }
-				tooltip = JAP_popularity_of_party_var_check_tt
-			}
-			has_country_flag = JAP_shinshinto_was_created_flag
-			NOT = { has_completed_focus = JAP_conservative_party }
-		}
-		set_party_name = { ideology = democratic long_name = JAP_democratic_party2_long name = JAP_democratic_party2 }
-		if = { 
-			limit = { 
-				OR = { 
-					AND = { 
-						has_country_flag = NW_JAP_318_event_flag
-						has_country_flag = NW_JAP_372_event_flag
-					}
-					NOT = { has_country_flag = NW_JAP_318_event_flag }
-				}
-			}
-			add_country_leader_role = {
-				character = JAP_Tetsu_Katayama
-				promote_leader = yes
-				country_leader = {
-					ideology = socialism
-					expire = "1965.1.1.1"
-					traits = {  }
-				}
-			}
-		}
-		else = { 
-			add_country_leader_role = {
-				character = JAP_Inejiro_Asanuma
-				promote_leader = yes
-				country_leader = {
-					ideology = socialism
-					expire = "1965.1.1.1"
-					traits = {  }
-				}
-			}
-		}
-		remove_ideas = JAP_high_unity_of_rikken_Seyukai_idea
-		remove_ideas = JAP_sufficient_unity_of_rikken_Seyukai_idea
-		remove_ideas = JAP_low_unity_of_rikken_Seyukai_idea
-	}
-	option = {
-		name = NW_JAP.695.c
-		trigger = { 
-			custom_trigger_tooltip = {
-				set_temp_variable = { JAP_popularity_of_party_var_TEMP = 50 }
-				check_variable = { JAP_popularity_of_party_var < JAP_popularity_of_party_var_TEMP }
-				tooltip = JAP_popularity_of_party_var_check_tt
-			}
-			NOT = { has_country_flag = JAP_shinshinto_was_created_flag }
-			has_completed_focus = JAP_conservative_party
-		}
-		set_party_name = { ideology = democratic long_name = JAP_democratic_party_long name = JAP_democratic_party }
-		remove_ideas = JAP_high_unity_of_rikken_Seyukai_idea
-		remove_ideas = JAP_sufficient_unity_of_rikken_Seyukai_idea
-		remove_ideas = JAP_low_unity_of_rikken_Seyukai_idea
-		if = { 
-			limit = { 
-				has_character = JAP_Ryutaro_Nagai
-			}
-			add_country_leader_role = {
-				character = JAP_Ryutaro_Nagai
-				promote_leader = yes
-				country_leader = {
-					ideology = national_liberalism
-					expire = "1965.1.1.1"
-					traits = {  }
-				}
-			}
-		}
-		else = { 
-			add_country_leader_role = {
-				character = JAP_Yuki_Taketi
-				promote_leader = yes
-				country_leader = {
-					ideology = national_liberalism
-					expire = "1965.1.1.1"
-					traits = {  }
-				}
-			}
-		}
-	}
-	option = {
-		name = NW_JAP.695.d
-		trigger = { 
-			custom_trigger_tooltip = {
-				set_temp_variable = { JAP_popularity_of_party_var_TEMP = 50 }
-				check_variable = { JAP_popularity_of_party_var < JAP_popularity_of_party_var_TEMP }
-				tooltip = JAP_popularity_of_party_var_check_tt
-			}
-			has_country_flag = JAP_shinshinto_was_created_flag
-			has_completed_focus = JAP_conservative_party
-		}
-		set_party_name = { ideology = democratic long_name = JAP_democratic_party4_long name = JAP_democratic_party4 }
-		remove_ideas = JAP_high_unity_of_rikken_Seyukai_idea
-		remove_ideas = JAP_sufficient_unity_of_rikken_Seyukai_idea
-		remove_ideas = JAP_low_unity_of_rikken_Seyukai_idea
-		if = { 
-			limit = { 
-				has_character = JAP_Ryutaro_Nagai
-			}
-			add_country_leader_role = {
-				character = JAP_Ryutaro_Nagai
-				promote_leader = yes
-				country_leader = {
-					ideology = national_liberalism
-					expire = "1965.1.1.1"
-					traits = {  }
-				}
-			}
-		}
-		else = { 
-			add_country_leader_role = {
-				character = JAP_Yuki_Taketi
-				promote_leader = yes
-				country_leader = {
-					ideology = national_liberalism
-					expire = "1965.1.1.1"
-					traits = {  }
-				}
-			}
-		}
+		set_country_flag = JAP_son_of_Hatoyama_married
 	}
 }
 
@@ -22199,124 +22158,6 @@ country_event = {
 	}
 }
 
-# Парламентские выборы [текущий год] года - Хатояма Сэйюкай 2 
-country_event = {
-	id = NW_JAP.697
-	title = NW_JAP.697.t
-	desc = NW_JAP.697.d
-	trigger = { 
-		has_government = democratic
-	}
-	is_triggered_only = yes
-	picture = GFX_report_event_NW_JAP.544 # TODO куча ивентов имеет эту картинку
-	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_JAP.697" }
-	option = { 
-		name = NW_JAP.697.a
-		trigger = {
-			OR = { 
-				AND = { 
-					NOT = { has_country_leader = { character = JAP_Ichiro_Hatoyama ruling_only = yes } }
-					has_stability < 0.5 
-				}
-				AND = { 
-					has_country_leader = { character = JAP_Ichiro_Hatoyama ruling_only = yes }
-					custom_trigger_tooltip = {
-						set_temp_variable = { JAP_popularity_of_party_var_TEMP = 50 }
-						check_variable = { JAP_popularity_of_party_var > JAP_popularity_of_party_var_TEMP }
-						tooltip = JAP_popularity_of_party_var_check_tt
-					}
-				}
-			}
-		}
-		if = {
-			limit = { has_country_flag = NW_JAP_696_1 }
-			add_country_leader_role = {
-				character = JAP_Ichiro_Kono
-				promote_leader = yes
-				country_leader = {
-					ideology = liberalism
-					expire = "1965.1.1.1"
-					traits = {  }
-				}
-			}
-		}
-		else_if = { 
-			limit = { has_country_flag = NW_JAP_696_2 }
-			add_country_leader_role = {
-				character = JAP_Banboku_Oto
-				promote_leader = yes
-				country_leader = {
-					ideology = liberalism
-					expire = "1965.1.1.1"
-					traits = {  }
-				}
-			}
-		}
-		else = {
-			add_country_leader_role = {
-				character = JAP_Hitoshi_Ashida
-				promote_leader = yes
-				country_leader = {
-					ideology = liberalism
-					expire = "1965.1.1.1"
-					traits = {  }
-				}
-			}
-		}
-	}
-	option = { 
-		name = NW_JAP.697.b
-		trigger = {
-			NOT = { 
-				OR = { 
-					AND = { 
-						NOT = { has_country_leader = { character = JAP_Ichiro_Hatoyama ruling_only = yes } }
-						has_stability < 0.5 
-					}
-					AND = { 
-						has_country_leader = { character = JAP_Ichiro_Hatoyama ruling_only = yes }
-						custom_trigger_tooltip = {
-							set_temp_variable = { JAP_popularity_of_party_var_TEMP = 50 }
-							check_variable = { JAP_popularity_of_party_var > JAP_popularity_of_party_var_TEMP }
-							tooltip = JAP_popularity_of_party_var_check_tt
-						}
-					}
-				}
-			}
-		}
-		if = { 
-			limit = { 
-				OR = { 
-					AND = { 
-						has_country_flag = NW_JAP_318_event_flag
-						has_country_flag = NW_JAP_372_event_flag
-					}
-					NOT = { has_country_flag = NW_JAP_318_event_flag }
-				}
-			}
-			add_country_leader_role = {
-				character = JAP_Tetsu_Katayama
-				promote_leader = yes
-				country_leader = {
-					ideology = socialism
-					expire = "1965.1.1.1"
-					traits = {  }
-				}
-			}
-		}
-		else = { 
-			add_country_leader_role = {
-				character = JAP_Inejiro_Asanuma
-				promote_leader = yes
-				country_leader = {
-					ideology = socialism
-					expire = "1965.1.1.1"
-					traits = {  }
-				}
-			}
-		}
-	}
-}
 
 # Выборы президента Риккен Сэйюкай - Накадзима 
 country_event = {
@@ -22401,117 +22242,35 @@ country_event = {
 	}
 }
 
-# Выборы в парламент [текущий год] года
+# Инновационный альянс побеждает на выборах
 country_event = {
-	id = NW_JAP.700
-	title = NW_JAP.700.t
-	desc = NW_JAP.700.desc
+	id = NW_JAP.701
+	title = NW_JAP.701.t
+	desc = NW_JAP.701.d
 	trigger = { 
-		has_country_leader = { character = JAP_Chikuhei_Nakajima ruling_only = yes }
 	}
 	is_triggered_only = yes
-	picture = GFX_report_event_NW_JAP.544
-	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_JAP.700" }
+	picture = GFX_report_event_NW_JAP.361
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_JAP.701" }
 	option = { 
-		name = NW_JAP.700.a
-		trigger = { 
-		}
+		name = NW_JAP.701.a
+		set_party_name = { ideology = democratic long_name = JAP_democratic_party13_long name = JAP_democratic_party13 }
+		set_country_flag = JAP_Nakadzima_office_UNLOCK_flag
+		effect_tooltip = { unlock_national_focus = JAP_Nakadzima_office }
 		
-	}
-	option = { 
-		name = NW_JAP.700.b
-		trigger = { 
-			has_country_flag = NW_JAP_344_event_flag
-			NOT = { has_country_flag = JAP_shinshinto_was_created_flag }
-			has_stability < 0.5
-		}
-		set_party_name = { ideology = democratic long_name = JAP_democratic_party2_long name = JAP_democratic_party2 }
 		if = { 
 			limit = { 
-				OR = { 
-					AND = { 
-						has_country_flag = NW_JAP_318_event_flag
-						has_country_flag = NW_JAP_372_event_flag
-					}
-					NOT = { has_country_flag = NW_JAP_318_event_flag }
+				NOT = { 
+					has_country_flag = JAP_cabinet_of_Innovation_alliance
 				}
 			}
-			add_country_leader_role = {
-				character = JAP_Tetsu_Katayama
-				promote_leader = yes
-				country_leader = {
-					ideology = socialism
-					expire = "1965.1.1.1"
-					traits = {  }
-				}
-			}
+			set_variable = { JAP_party_finances = 0 }
+			activate_mission = JAP_money_from_nakajima
 		}
-		else = { 
-			add_country_leader_role = {
-				character = JAP_Inejiro_Asanuma
-				promote_leader = yes
-				country_leader = {
-					ideology = socialism
-					expire = "1965.1.1.1"
-					traits = {  }
-				}
-			}
-		}
-	}
-	option = { 
-		name = NW_JAP.700.c
-		trigger = { 
-			has_country_flag = NW_JAP_344_event_flag
-			NOT = { has_country_flag = JAP_shinshinto_was_created_flag }
-			has_stability > 0.49
-		}
-		set_party_name = { ideology = democratic long_name = JAP_democratic_party_long name = JAP_democratic_party }
-		if = { 
-			limit = { 
-				date < 1945.01.20 
-			}
-			add_country_leader_role = {
-				character = JAP_Machida_Chuji
-				promote_leader = yes
-				country_leader = {
-					ideology = liberalism
-					expire = "1965.1.1.1"
-					traits = {  }
-				}
-			}
-		}
-		else = { 
-			add_country_leader_role = {
-				character = JAP_Kenzo_Matsumura
-				promote_leader = yes
-				country_leader = {
-					ideology = liberalism
-					expire = "1965.1.1.1"
-					traits = {  }
-				}
-			}
-		}
+		JAP_cabinet_cleaning_effect = yes
+		set_country_flag = JAP_cabinet_of_Innovation_alliance
 	}
 }
-
-# пульсар
-country_event = {
-	hidden = yes
-    id = NW_JAP.701
-	is_triggered_only = yes
-	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): hidden event NW_JAP.701" }
-	immediate = {
-		if = { 
-			limit = { 
-				has_completed_focus = JAP_symbiosis_of_military_and_parliamentary_politicians
-			}
-			country_event = NW_JAP.699
-		}
-		else = {
-			country_event = NW_JAP.700
-		}
-	}
-} 
 
 # Убитый гений
 country_event = {
@@ -26807,6 +26566,63 @@ country_event = {
 		
 	}
 }
+
+# Провокация корейских газет
+country_event = {
+	id = NW_JAP.803
+	title = NW_JAP.803.t
+	desc = NW_JAP.803.d
+	picture = GFX_report_event_NW_JAP.544
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_JAP.803" }
+	option = {
+		name = NW_JAP.803.a
+		524 = { add_compliance = 5 }
+		add_to_variable = { JAP_the_level_of_integration_var = -2 tooltip = JAP_the_level_of_integration_var_tt }
+		JAP_the_level_of_integration = yes
+	}
+	option = {
+		name = NW_JAP.803.b
+		add_political_power = -5 
+	}
+}
+
+# Генерал Угаки покидает пост губернатора Кореи
+country_event = {
+	id = NW_JAP.804
+	title = NW_JAP.804.t
+	desc = { 
+		text = NW_JAP.804.d.a
+		trigger = { has_country_flag = JAP_purge_of_Toseiha_members_in_the_Army_country_flag }
+	}
+	desc = { 
+		text = NW_JAP.804.d.b
+		trigger = { NOT = { has_country_flag = JAP_purge_of_Toseiha_members_in_the_Army_country_flag } } 
+	}
+	picture = GFX_report_event_NW_JAP.544
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_JAP.804" }
+	option = {
+		name = NW_JAP.804.a
+		trigger = { NOT = { has_country_flag = JAP_purge_of_Toseiha_members_in_the_Army_country_flag } }
+		add_to_variable = { JAP_the_level_of_integration_var = 3 tooltip = JAP_the_level_of_integration_var_tt }
+		JAP_the_level_of_integration = yes
+		add_to_variable = { JAP_the_level_of_insubordination_var = 5 tooltip = JAP_the_level_of_insubordination_var_tt }
+		JAP_the_level_of_insubordination_effect = yes
+	}
+	option = {
+		name = NW_JAP.804.b
+		trigger = { NOT = { has_country_flag = JAP_purge_of_Toseiha_members_in_the_Army_country_flag } }
+		524 = { add_compliance = 5 }
+	}
+	option = {
+		name = NW_JAP.804.c
+		trigger = { has_country_flag = JAP_purge_of_Toseiha_members_in_the_Army_country_flag }
+		add_to_variable = { JAP_the_level_of_integration_var = 3 tooltip = JAP_the_level_of_integration_var_tt }
+		JAP_the_level_of_integration = yes
+	}
+}
+
 
 # Великий связующий полёт Азии и Европы
 news_event = {
