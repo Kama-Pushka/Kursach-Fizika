@@ -12722,16 +12722,72 @@ JAP_reform_bureaucrats_category = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): timeout mission JAP_loss_of_trust"
 			random_list = { 
 				25 = { 
-					add_to_variable = { JAP_support_from_parliament_var = -1 tooltip = JAP_support_of_parliament_var_tt }
+					if = { 
+						limit = { 
+							surrender_progress > 0.01 
+						}
+						add_to_variable = { JAP_support_from_parliament_var = -3 tooltip = JAP_support_of_parliament_var_tt }
+					}
+					else_if = { 
+						limit = { 
+							has_war_support < 0.3
+						}
+						add_to_variable = { JAP_support_from_parliament_var = -2 tooltip = JAP_support_of_parliament_var_tt }
+					}
+					else = { 
+						add_to_variable = { JAP_support_from_parliament_var = -1 tooltip = JAP_support_of_parliament_var_tt }
+					}
 				}
 				25 = { 
-					add_to_variable = { JAP_support_from_army_var = -1 tooltip = JAP_support_of_army_var_tt }
+					if = { 
+						limit = { 
+							surrender_progress > 0.01 
+						}
+						add_to_variable = { JAP_support_from_army_var = -3 tooltip = JAP_support_of_army_var_tt }
+					}
+					else_if = { 
+						limit = { 
+							has_war_support < 0.3
+						}
+						add_to_variable = { JAP_support_from_army_var = -2 tooltip = JAP_support_of_army_var_tt }
+					}
+					else = { 
+						add_to_variable = { JAP_support_from_army_var = -1 tooltip = JAP_support_of_army_var_tt }
+					}
 				}
 				25 = { 
-					add_to_variable = { JAP_support_from_fleet_var = -1 tooltip = JAP_support_of_fleet_var_tt }
+					if = { 
+						limit = { 
+							surrender_progress > 0.01 
+						}
+						add_to_variable = { JAP_support_from_fleet_var = -3 tooltip = JAP_support_of_fleet_var_tt }
+					}
+					else_if = { 
+						limit = { 
+							has_war_support < 0.3
+						}
+						add_to_variable = { JAP_support_from_fleet_var = -2 tooltip = JAP_support_of_fleet_var_tt }
+					}
+					else = { 
+						add_to_variable = { JAP_support_from_fleet_var = -1 tooltip = JAP_support_of_fleet_var_tt }
+					}
 				}
 				25 = { 
-					add_to_variable = { JAP_support_from_imperial_court_var = -1 tooltip = JAP_support_of_imperial_court_var_tt }
+					if = { 
+						limit = { 
+							surrender_progress > 0.01 
+						}
+						add_to_variable = { JAP_support_from_imperial_court_var = -3 tooltip = JAP_support_of_imperial_court_var_tt }
+					}
+					else_if = { 
+						limit = { 
+							has_war_support < 0.3
+						}
+						add_to_variable = { JAP_support_from_imperial_court_var = -2 tooltip = JAP_support_of_imperial_court_var_tt }
+					}
+					else = { 
+						add_to_variable = { JAP_support_from_imperial_court_var = -1 tooltip = JAP_support_of_imperial_court_var_tt }
+					}
 				}
 			}
 			JAP_reform_bureaucrats_effect = yes
@@ -12755,7 +12811,14 @@ JAP_reform_bureaucrats_category = {
 		cost = 30
 		complete_effect = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision JAP_enlist_the_support_of_parliament"
-			add_to_variable = { JAP_support_from_parliament_var = 1 tooltip = JAP_support_of_parliament_var_tt }
+			if = { 
+				limit = { has_country_flag = JAP_mass_party_was_created }
+				add_to_variable = { JAP_support_from_parliament_var = 1 tooltip = JAP_support_of_parliament_var_tt }
+			}
+			else = { 
+				add_to_variable = { JAP_support_from_parliament_var = 3 tooltip = JAP_support_of_parliament_var_tt }
+				clamp_variable = { var = JAP_support_from_parliament_var min = 0 max = 10 }
+			}
 		}
 	}
 	
@@ -12887,6 +12950,37 @@ JAP_reform_bureaucrats_category = {
 		}
 	}
 	
+	JAP_create_mass_party = {
+		priority = 500
+		icon = JAP_create_mass_party
+		#allowed = { original_tag = JAP }
+		fire_only_once = yes
+		visible = { 
+			#set_temp_variable = { JAP_supports_var_temp = 10 }
+			has_active_mission = JAP_loss_of_trust
+			has_government = technocracy
+		} 
+		available = { 
+			custom_trigger_tooltip = { 
+				check_variable = { JAP_number_of_technocrat_ministers_var > 3 } 
+				tooltip = JAP_number_of_technocrat_ministers_var_check_tt
+			}
+			custom_trigger_tooltip = { 
+				check_variable = { JAP_support_from_parliament_var > 5 }
+				tooltip = JAP_support_of_parliament_var_check_tt2
+			}
+		}
+		
+		cost = 150
+		complete_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision JAP_create_mass_party"
+			set_country_flag = JAP_mass_party_was_created
+			set_party_name = { ideology = technocracy long_name = JAP_technocracy_party1_long name = JAP_technocracy_party1 }
+			add_popularity = { ideology = technocracy popularity = 0.1 }
+			country_event = NW_JAP.612
+		}
+	}
+	
 	JAP_to_make_additional_promises = {
 		priority = 450
 		icon = JAP_to_make_additional_promises
@@ -13002,6 +13096,40 @@ JAP_reform_bureaucrats_category = {
 	}
 	
 }
+
+JAP_complex_technology_category = {
+	
+	JAP_make_state_planning_in_the_region = {
+		icon = JAP_make_state_planning_in_the_region
+		priority = 100
+
+		
+		icon = GFX_decision_JAP_reorganize_the_administrative_apparatus # TODO
+		
+		available = {
+			num_of_civilian_factories_available_for_projects > 2
+			 controls_state = FROM
+		}
+		state_target = yes
+		modifier = {
+			civilian_factory_use = 3
+		}
+		cost = 30
+		days_remove = 250
+		fire_only_once = yes
+		on_map_mode = map_and_decisions_view
+		targets = { 524 525 527 528 529 530 531 532 533 534 535 536 282 }
+		complete_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision JAP_make_state_planning_in_the_region"
+			
+		}
+ 		remove_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): complete decision JAP_make_state_planning_in_the_region"
+			FROM = { add_extra_state_shared_building_slots = 3 }
+			
+		}
+	}
+}
 	
 JAP_new_bureaucrats_power_balance_category = { 
 	JAP_increase_the_influence_of_leftists = {
@@ -13066,7 +13194,12 @@ JAP_resource_allocation_category = {
 	JAP_meet_the_requirements_of_the_army = {
 		priority = 1000
 		#allowed = { original_tag = JAP }
-		#available = { hidden_trigger = { always = no } }
+		available = { 
+			custom_trigger_tooltip = { 
+				check_variable = { JAP_RA_var > -7 }
+				tooltip = JAP_RA_var_check_tt2 
+			}
+		}
 		icon = JAP_purge_of_Kokutai_members_in_the_Army
 		cost = 15
 		fire_only_once = no
@@ -13082,7 +13215,12 @@ JAP_resource_allocation_category = {
 	JAP_meet_the_requirements_of_the_fleet = {
 		priority = 900
 		#allowed = { original_tag = JAP }
-		#available = { hidden_trigger = { always = no } }
+		available = { 
+			custom_trigger_tooltip = { 
+				check_variable = { JAP_RA_var < 7 }
+				tooltip = JAP_RA_var_check_tt 
+			}
+		}
 		icon = JAP_naval_officers_icon
 		cost = 15
 		fire_only_once = no
