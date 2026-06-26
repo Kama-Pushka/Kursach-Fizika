@@ -9530,7 +9530,28 @@ JAP_the_Law_on_the_General_Mobilization_of_the_Nation_category = {
 		available = { hidden_trigger = { always = no } }
 		fire_only_once = yes
 		selectable_mission = no
-		days_mission_timeout = 185
+		days_mission_timeout = 125
+		
+		cancel_trigger = {
+			OR = {
+				has_war = no
+				hidden_trigger = {
+					NOT = {
+						has_government = democratic
+						has_government = neutrality
+					}
+				}
+			}
+		}
+		cancel_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): cancel mission JAP_adoption_of_the_law_on_national_mobilization_mission"
+			uncomplete_national_focus = {
+				focus = JAP_the_Law_on_the_General_Mobilization_of_the_Nation
+				uncomplete_children = yes
+				refund_political_power = no
+			}
+		}
+		
 		timeout_effect = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): timeout mission JAP_passing_the_law_mission"
 			uncomplete_national_focus = {
@@ -9549,30 +9570,15 @@ JAP_the_Law_on_the_General_Mobilization_of_the_Nation_category = {
 		fire_only_once = yes
 		selectable_mission = no
 		days_mission_timeout = 30
-		cancel_trigger = {
-			OR = {
-				set_temp_variable = { JAP_consent_of_the_sejm_temp_var = 50 }
-				custom_trigger_tooltip = {
-					check_variable = { var = JAP_consent_of_the_sejm_var value = JAP_consent_of_the_sejm_temp_var compare = greater_than_or_equals }
-					tooltip = JAP_consent_of_the_sejm_var_check_tt
-				}
-				has_war = no
-				hidden_trigger = {
-					NOT = {
-						has_government = democratic
-						has_government = neutrality
-					}
-				}
-			}
-		}
-		cancel_effect = {
-			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): cancel mission JAP_adoption_of_the_law_on_national_mobilization_mission"
-			if = {
+		
+		timeout_effect = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): timeout mission JAP_adoption_of_the_law_on_national_mobilization_mission"
+			if = { 
 				limit = {
-					has_war = yes
-					OR = {
-						has_government = democratic
-						has_government = neutrality
+					set_temp_variable = { JAP_consent_of_the_sejm_temp_var = 50 }
+					custom_trigger_tooltip = {
+						check_variable = { var = JAP_consent_of_the_sejm_var value = JAP_consent_of_the_sejm_temp_var compare = greater_than_or_equals }
+						tooltip = JAP_consent_of_the_sejm_var_check_tt
 					}
 				}
 				set_country_flag = JAP_law_on_national_mobilization_flag
@@ -9590,78 +9596,13 @@ JAP_the_Law_on_the_General_Mobilization_of_the_Nation_category = {
 					custom_effect_tooltip = JAP_despotism_tt
 					set_country_leader_ideology = despotism
 				}
-				#MANPOWER LAW#
-#				if = {
-#					limit = { has_idea = disarmed_nation }
-#					swap_ideas = {
-#						remove_idea = disarmed_nation
-#						add_idea = volunteer_only
-#					}
-#				}
-#				else_if = {
-#					limit = { has_idea = volunteer_only }
-#					swap_ideas = {
-#						remove_idea = volunteer_only
-#						add_idea = limited_conscription
-#					}
-#				}
-#				else_if = {
-#					limit = { has_idea = limited_conscription }
-#					swap_ideas = {
-#						remove_idea = limited_conscription
-#						add_idea = extensive_conscription
-#					}
-#				}
-#				else_if = {
-#					limit = { has_idea = extensive_conscription }
-#					swap_ideas = {
-#						remove_idea = extensive_conscription
-#						add_idea = service_by_requirement
-#					}
-#				}
-#				else_if = {
-#					limit = { has_idea = service_by_requirement }
-#					swap_ideas = {
-#						remove_idea = service_by_requirement
-#						add_idea = all_adults_serve
-#					}
-#				}
-#				else_if = {
-#					limit = { has_idea = all_adults_serve }
-#					swap_ideas = {
-#						remove_idea = all_adults_serve
-#						add_idea = scraping_the_barrel
-#					}
-#				}
-#				#ECONOMIC LAW#
-#				if = {
-#					limit = { has_idea = free_trade }
-#					swap_ideas = {
-#						remove_idea = free_trade
-#						add_idea = export_focus
-#					}
-#				}
-#				else_if = {
-#					limit = { has_idea = export_focus }
-#					swap_ideas = {
-#						remove_idea = export_focus
-#						add_idea = limited_exports
-#					}
-#				}
-#				else_if = {
-#					limit = { has_idea = limited_exports }
-#					swap_ideas = {
-#						remove_idea = limited_exports
-#						add_idea = closed_economy
-#					}
-#				}
+				
 			}
-		}
-		timeout_effect = {
-			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): timeout mission JAP_adoption_of_the_law_on_national_mobilization_mission"
-			add_to_variable = { JAP_consent_of_the_sejm_var = -5 tooltip = JAP_consent_of_the_sejm_var_tt }
-			activate_mission = JAP_adoption_of_the_law_on_national_mobilization_mission
-			JAP_consent_of_the_sejm_effect = yes
+			else = { 
+			    add_to_variable = { JAP_consent_of_the_sejm_var = -5 tooltip = JAP_consent_of_the_sejm_var_tt }
+				activate_mission = JAP_adoption_of_the_law_on_national_mobilization_mission
+				JAP_consent_of_the_sejm_effect = yes
+			}
 		}
 	}
 	
@@ -11631,8 +11572,8 @@ JAP_Ishiwara_power_balance_category = {
 
 JAP_the_level_of_insubordination_category = {
 	JAP_growth_of_insubordination_from_china = {
-		icon = GFX_decision_generic_political_discourse
-		priority = 500
+	#	icon = GFX_decision_generic_political_discourse
+		priority = 700
 		activation = { 
 			always = no
 		}
@@ -11642,7 +11583,10 @@ JAP_the_level_of_insubordination_category = {
 			has_war = no
 		} 
 		icon = GFX_decision_activate_the_combat_cell_anarchist
-		is_good = yes
+	#	is_good = yes
+	
+		fire_only_once = yes
+	
 		days_mission_timeout = 30
 		selectable_mission = no
 		timeout_effect = {
@@ -11661,26 +11605,28 @@ JAP_the_level_of_insubordination_category = {
 				add_to_variable = { JAP_the_level_of_insubordination_var = 1 tooltip = JAP_the_level_of_insubordination_var_tt }
 				JAP_the_level_of_insubordination_effect = yes
 			}
+			activate_mission = JAP_growth_of_insubordination_from_china
 		}
 	}
 
 	JAP_growth_of_demand_for_an_alliance_with_germany = {
 		icon = GFX_decision_generic_political_discourse
-		priority = 500
+		priority = 300
 		activation = { 
 			has_completed_focus = JAP_reassure_the_military 
 			NOT = { has_country_flag = JAP_Imperial_Headquarters_was_created }
 			GER = { has_completed_focus = GER_improve_national_spirit }
+			NOT = { has_country_flag = JAP_anti_soviet_alliance_flag }
 			check_variable = { JAP_the_level_of_insubordination_var > 0 }
 		}
 		available = { hidden_trigger = { always = no } }
 		cancel_trigger = {
 			has_country_flag = JAP_Imperial_Headquarters_was_created 
-			GER = { has_completed_focus = GER_improve_national_spirit }
+			has_country_flag = JAP_anti_soviet_alliance_flag
 			check_variable = { JAP_the_level_of_insubordination_var = 0 }
 		} 
 		icon = GFX_decision_activate_the_combat_cell_anarchist
-		is_good = yes
+	#	is_good = yes
 		days_mission_timeout = 180
 		selectable_mission = no
 		timeout_effect = {
@@ -11704,7 +11650,7 @@ JAP_the_level_of_insubordination_category = {
 	
 	JAP_growth_of_demand_for_an_attack_the_soviets = {
 		icon = GFX_decision_generic_political_discourse
-		priority = 500
+		priority = 800
 		activation = { 
 			has_completed_focus = JAP_reassure_the_military 
 			NOT = { has_country_flag = JAP_Imperial_Headquarters_was_created }
@@ -11726,7 +11672,7 @@ JAP_the_level_of_insubordination_category = {
 			check_variable = { JAP_the_level_of_insubordination_var = 0 }
 		} 
 		icon = GFX_decision_activate_the_combat_cell_anarchist
-		is_good = yes
+	#	is_good = yes
 		days_mission_timeout = 120
 		selectable_mission = no
 		timeout_effect = {
@@ -12262,9 +12208,15 @@ JAP_melancholy_of_prince_category = {
 		icon = JAP_time_to_retirement
 		activation = { always = no }
 		available = { hidden_trigger = { always = no } }
-		#fire_only_once = yes
+		fire_only_once = yes
 		selectable_mission = no
 		days_mission_timeout = 450
+		
+		cancel_trigger = { 
+			NOT = { has_country_leader = { character = JAP_Fumimaro_Konoe ruling_only = yes } }
+		}
+		cancel_effect = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): cancel mission JAP_loss_of_trust" }
+		
 		timeout_effect = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): timeout mission JAP_time_to_retirement"
 			if = { 
@@ -12303,9 +12255,15 @@ JAP_melancholy_of_prince_category = {
 		icon = JAP_change_of_mood
 		activation = { always = no }
 		available = { hidden_trigger = { always = no } }
-		#fire_only_once = yes
+		fire_only_once = yes
 		selectable_mission = no
 		days_mission_timeout = 60
+		
+		cancel_trigger = { 
+			NOT = { has_country_leader = { character = JAP_Fumimaro_Konoe ruling_only = yes } }
+		}
+		cancel_effect = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): cancel mission JAP_loss_of_trust" }
+		
 		timeout_effect = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): timeout mission JAP_change_of_mood"
 			if = { 

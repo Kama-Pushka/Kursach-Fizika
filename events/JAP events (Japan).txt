@@ -2103,19 +2103,19 @@ country_event = {
 	id = NW_JAP.35
 	title = {
 		text = NW_JAP.35.t.a
-		trigger = { original_tag = JAP }
+		trigger = { original_tag = SOV }
 	}
 	title = {
 		text = NW_JAP.35.t.b
-		trigger = { original_tag = SOV }
-	}
-	desc = {
-		text = NW_JAP.35.d.a
 		trigger = { original_tag = JAP }
 	}
 	desc = {
-		text = NW_JAP.35.d.b
+		text = NW_JAP.35.d.a
 		trigger = { original_tag = SOV }
+	}
+	desc = {
+		text = NW_JAP.35.d.b
+		trigger = { original_tag = JAP }
 	}
 	picture = GFX_report_event_JAP_35
 	is_triggered_only = yes
@@ -2159,6 +2159,8 @@ country_event = {
 	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_JAP.36" }
 	option = {
 		name = NW_JAP.36.a
+		add_war_support = 0.02 
+		army_experience = 5 
 	}
 }
 
@@ -2171,7 +2173,8 @@ country_event = {
 	is_triggered_only = yes
 	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_JAP.37" }
 	option = {
-		name = NW_JAP.37.a
+		name = NW_JAP.37.a 
+		army_experience = 10
 	}
 }
 
@@ -2185,6 +2188,8 @@ country_event = {
 	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_JAP.38" }
 	option = {
 		name = NW_JAP.38.a
+		add_war_support = 0.02 
+		army_experience = 5 
 	}
 }
 
@@ -2198,6 +2203,7 @@ country_event = {
 	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_JAP.39" }
 	option = {
 		name = NW_JAP.39.a
+		army_experience = 10
 	}
 }
 
@@ -2264,18 +2270,18 @@ country_event = {
 		name = NW_JAP.41.a
 		trigger = { 
 			OR = { 
-				check_variable = { JAP_the_level_of_insubordination_var < 10 }
+				check_variable = { JAP_the_level_of_insubordination_var < 20 }
 				has_country_flag = JAP_Imperial_Headquarters_was_created
 				has_country_leader = { character = JAP_Kanji_Ishiwara ruling_only = yes } 
 				has_country_leader = { character = JAP_Senjuro_Hayashi ruling_only = yes }
 				has_country_leader = { character = JAP_Seishiro_Itagaki ruling_only = yes }
 			}
 		}
-		add_army_experience = 30
+		army_experience = 30
 	}
 	option = {
 		name = NW_JAP.41.b
-		add_army_experience = 30
+		army_experience = 30
 		declare_war_on = {
 			target = SOV
 			type = puppet_wargoal_focus
@@ -2314,7 +2320,7 @@ country_event = {
 	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_JAP.43" }
 	option = {
 		name = NW_JAP.43.a
-		add_army_experience = 30
+		army_experience = 30
 	}
 }
 
@@ -9346,7 +9352,7 @@ country_event = {
 	desc = NW_JAP.292.d
 	picture = GFX_report_event_NW_JAP.292
 	trigger = {
-		date > 1940.01.01
+		date > 1937.01.01
 		tag = JAP
 		NOT = {
 			has_global_flag = THE_MOTHER_OF_ORDER_FLAG
@@ -12447,10 +12453,26 @@ country_event = {
 		set_country_flag = NW_JAP_399_event_flag
 		FROM = { activate_mission = JAP_attack_on_the_USSR_2 }
 		activate_mission = JAP_attack_on_the_USSR_2
+		
+		JAP = {
+			diplomatic_relation = {
+				country = event_target:NW_france_scope
+				relation = guarantee
+				active = yes
+			}
+		}
+		
+		event_target:NW_france_scope = {
+			diplomatic_relation = {
+				country = JAP
+				relation = guarantee
+				active = yes
+			}
+		}
 	}
 }
 
-# Согласие французов
+# Отказ французов 
 country_event = {
 	id = NW_JAP.400
 	title = NW_JAP.400.t
@@ -13067,6 +13089,7 @@ country_event = {
 		check_variable = { JAP_the_level_of_insubordination_var > 7 }
 		NOT = { has_country_flag = JAP_purge_of_Toseiha_members_in_the_Army_country_flag }
 		can_declare_war_on = HCP
+		HCP = { NOT = { has_country_flag = china_declare_government_flag } }
 	}
 	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_JAP.425" }
 	option = {
@@ -15455,7 +15478,7 @@ country_event = {
 			news_event = { id = NW_JAP_news.65 days = 1 }
 			country_event = { id = NW_JAP.492 days = 3 }
 		}
-		add_to_faction = FROM
+		
 		custom_effect_tooltip = empty_line_tooltip
 		FROM = {
 			set_country_flag = JAP_anti_soviet_alliance_flag
@@ -15598,7 +15621,7 @@ country_event = {
 		set_country_flag = JAP_anti_soviet_alliance_flag
 		hidden_effect = { news_event = { id = NW_JAP_news.65 days = 1 } }
 		FROM = {
-			add_to_faction = ROOT
+			
 			hidden_effect = { country_event = { id = NW_JAP.492 days = 3 } }
 			set_country_flag = JAP_anti_soviet_alliance_flag
 			if = {
@@ -18016,6 +18039,11 @@ country_event = {
 		add_popularity = { ideology = fascism popularity = 0.01 }
 		add_war_support = 0.03
 		add_political_power = -15
+		if = { 
+			limit = { has_active_mission = JAP_loss_of_trust }
+			add_to_variable = { var = JAP_support_from_parliament_var value = -2 tooltip = JAP_support_of_parliament_var_tt }
+			JAP_reform_bureaucrats_effect = yes
+		}
 	}
 }
 
@@ -23749,7 +23777,7 @@ country_event = {
 country_event = {
 	id = NW_JAP.726
 	title = NW_JAP.726.t
-	desc = NW_JAP.726.d
+	desc = NW_JAP.726.desc
 	trigger = { 
 		NOT = { 
 			has_country_flag = JAP_cancel_elections 
@@ -23824,7 +23852,7 @@ country_event = {
 		trigger = { 
 			has_government = neutrality
 		}
-		custom_effect_tooltip = add_fasc_in_coalition
+		custom_effect_tooltip = add_mon_in_coalition
 		remove_from_array = { coalition_array = token:fascism }
 		remove_from_array = { coalition_array = token:technocracy }
 		remove_from_array = { coalition_array = token:democratic }
@@ -25241,8 +25269,14 @@ country_event = {
 	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_JAP.765" }
 	option = { 
 		name = NW_JAP.765.a
+		trigger = { has_active_mission = JAP_loss_of_trust } 
 		add_to_variable = { JAP_support_from_parliament_var = -2 tooltip = JAP_support_of_parliament_var_tt }
 		JAP_reform_bureaucrats_effect = yes
+	}
+	option = { 
+		name = NW_JAP.765.a
+		trigger = { has_completed_focus = JAP_radicals_set_new_rules }
+		
 	}
 }
 
@@ -26627,6 +26661,61 @@ country_event = {
 	}
 }
 
+# GER Япония готова заключить союз
+country_event = {
+	id = NW_JAP.805
+	title = NW_JAP.805.t
+	desc = NW_JAP.805.d
+	picture = GFX_report_event_NW_JAP.544
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_JAP.805" }
+	option = {
+		name = NW_JAP.805.a
+		set_country_flag = JAP_anti_soviet_alliance_flag
+		hidden_effect = {
+			news_event = { id = NW_JAP_news.65 days = 1 }
+			
+		}
+		
+		custom_effect_tooltip = empty_line_tooltip
+		FROM = {
+			set_country_flag = JAP_anti_soviet_alliance_flag
+			if = {
+				limit = { has_active_mission = JAP_discontent_of_the_military_mission }
+				add_days_mission_timeout = { mission = JAP_discontent_of_the_military_mission days = 200 }
+				custom_effect_tooltip = empty_line_tooltip
+			}
+		}
+		SOV = {
+			add_opinion_modifier = {
+				modifier = JAP_anti_soviet_alliance_op
+				target = ROOT
+			}
+			add_opinion_modifier = {
+				modifier = JAP_anti_soviet_alliance_op
+				target = FROM
+			}
+		}
+	}
+	option = {
+		name = NW_JAP.805.b
+		JAP = { country_event = NW_JAP.806 }
+	}
+}
+
+# Германия отказалась от союза
+country_event = {
+	id = NW_JAP.806
+	title = NW_JAP.806.t
+	desc = NW_JAP.806.d
+	picture = GFX_report_event_NW_JAP.544
+	is_triggered_only = yes
+	immediate = { log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): event NW_JAP.806" }
+	option = {
+		name = NW_JAP.806.a
+		
+	}
+}
 
 # Великий связующий полёт Азии и Европы
 news_event = {
