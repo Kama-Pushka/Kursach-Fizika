@@ -69,4 +69,4 @@ tags={
 supported_version="1.19.*"
 picture="thumbnail.png"
 name="New Ways REBOOT DEV BUILD"
-path="mod/Kursach-Fizika"
+path="C:/Users/User/Documents/GitHub/Kursach-Fizika"
