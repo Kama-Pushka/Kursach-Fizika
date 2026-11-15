@@ -286,7 +286,7 @@ ideas = {
 		partial_economic_mobilisation = {
 			allowed = {
 				NOT = { tag = SAI }
-				NOT = { tag = JAP } 
+			#	NOT = { tag = JAP } перенёс ниже в available
 			}
 			allowed_to_remove = {
 				# if = {
@@ -301,26 +301,31 @@ ideas = {
 				# }
 			}
 			available = {
-				OR = { 
-					AND = { 
-						hidden_trigger = { NOT = { tag = SWE } }
-						has_war_support > 0.25
-				
-						NW_partial_economic_mobilisation_available = yes
+				if = { 
+					limit = { tag = SWE }
+					NOT = { has_government = democratic }
+					has_war_support > 0.25
+					NW_partial_economic_mobilisation_available = yes
 
-						hidden_trigger = {
-							NOT = { has_government = anarchism }
-						}
+					hidden_trigger = {
+						NOT = { has_government = anarchism }
 					}
-					AND = { 
-						hidden_trigger = { tag = SWE }
-						NOT = { has_government = democratic }
-						has_war_support > 0.25
-						NW_partial_economic_mobilisation_available = yes
+				}
+				else_if = { 
+					limit = { tag = JAP  }
+					has_war = yes
+					has_country_flag = JAP_law_on_national_mobilization_flag
+					hidden_trigger = {
+						NOT = { has_government = anarchism }
+					}
+				}
+				else = { 
+					has_war_support > 0.25
+				
+					NW_partial_economic_mobilisation_available = yes
 
-						hidden_trigger = {
-							NOT = { has_government = anarchism }
-						}
+					hidden_trigger = {
+						NOT = { has_government = anarchism }
 					}
 				}
 			}
@@ -409,13 +414,35 @@ ideas = {
 				# }
 			}
 			available = {
-				has_war_support > 0.5
+				if = { 
+					limit = { tag = SWE }
+					NOT = { has_government = democratic }
+					has_war_support > 0.5
+					NW_war_economy_available = yes
 
-				NW_war_economy_available = yes
-
-				hidden_trigger = {
-					NOT = { has_government = anarchism }
+					hidden_trigger = {
+						NOT = { has_government = anarchism }
+					}
 				}
+				else_if = { 
+					limit = { tag = JAP }
+					has_war = yes
+					has_country_flag = JAP_law_on_national_mobilization_flag
+					hidden_trigger = {
+						NOT = { has_government = anarchism }
+					}
+				}
+				else = { 
+					has_war_support > 0.5
+				
+					NW_war_economy_available = yes
+
+					hidden_trigger = {
+						NOT = { has_government = anarchism }
+					}
+				}
+			
+				
 			}
 			visible = {
 				NOT = { has_government = anarchism }
@@ -521,20 +548,50 @@ ideas = {
 				
 			}
 			available = {
-				has_war = yes
-				has_war_support > 0.8
-				any_enemy_country = {
-					ic_ratio = {
-						tag = ROOT
-						ratio > 0.5
+				if = { 
+					limit = { tag = SWE }
+					NOT = { has_government = democratic }
+					has_war = yes
+					has_war_support > 0.8
+					any_enemy_country = {
+						ic_ratio = {
+							tag = ROOT
+							ratio > 0.5
+						}
+					}
+					NW_tot_economic_mobilisation_available = yes
+					hidden_trigger = {
+						NOT = { has_government = anarchism }
 					}
 				}
-
-				NW_tot_economic_mobilisation_available = yes
-
-				hidden_trigger = {
-					NOT = { has_government = anarchism }
+				else_if = { 
+					limit = { tag = JAP }
+					has_war = yes
+					has_country_flag = JAP_law_on_national_mobilization_flag
+					hidden_trigger = {
+						NOT = { has_government = anarchism }
+					}
 				}
+				else = { 
+					has_war = yes
+					has_war_support > 0.8
+					any_enemy_country = {
+						ic_ratio = {
+							tag = ROOT
+							ratio > 0.5
+						}
+					}
+				
+					NW_tot_economic_mobilisation_available = yes
+
+					hidden_trigger = {
+						NOT = { has_government = anarchism }
+					}
+				}
+				
+				
+				
+				
 			}
 			visible = {
 				NOT = { has_government = anarchism }

@@ -112,7 +112,8 @@ focus_tree = {
 		}
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus SWE_arbetsmarknadskommitten"
-			country_event = NW_SWE.32
+			custom_effect_tooltip = SWE_arbetsmarknadskommitten_tt
+			hidden_effect = { country_event = NW_SWE.32 }
 		}
 	}
 	
@@ -319,14 +320,17 @@ focus_tree = {
 	}
 	
 	focus = {
-		id = SWE_norrbottens 
-		icon = { GFX_focus_generic_steel_mill = yes }
+		id = SWE_establish_control_over_the_export_of_bearings
+		icon = { GFX_focus_SWE_SKF_ball_bearings = yes } 
 		x = -3
 		y = 1
 		cost = 5
 		ai_will_do = { factor = 10 }
 		available = { 
-		
+			custom_trigger_tooltip = { 
+				check_variable = { SWE_summ_of_deputies > 115 }
+				tooltip = NW_SWE_support_of_government_check_tt 
+			}
 		}
 		bypass = {  }
 		search_filters = { FOCUS_FILTER_HISTORICAL }
@@ -336,19 +340,26 @@ focus_tree = {
 			
 		}
 		completion_reward = {
-			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus SWE_norrbottens"
-			666 = {
-				add_resource = {
-					type = steel
-					amount = 40
-				}
-			}
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus SWE_establish_control_over_the_export_of_bearings"
+			custom_effect_tooltip = SWE_establish_control_over_the_export_of_bearings_tt 
+			
+			set_variable = { var = SWE_undistributed_bearings value = 100 }
+			set_variable = { var = SWE_bearings_of_germany value = 0 }
+			set_variable = { var = SWE_bearings_of_britain value = 0 }
+			set_variable = { var = SWE_bearings_of_france value = 0 }
+			set_variable = { var = SWE_bearings_of_italy value = 0 }
+			set_variable = { var = SWE_bearings_of_usa value = 0 }
+			
+			
+			set_variable = { var = SWE_payment_for_bearings_var_IC value = 0.05 }
+			set_variable = { var = SWE_payment_for_bearings_var_GT value = 0 }
+			hidden_effect = { add_dynamic_modifier = { modifier = SWE_payment_for_bearings } }
 		}
 	}
 	
 	focus = {
-		id = SWE_engage_in_shale_oil_production
-		icon = { GFX_goal_generic_oil_refinery = yes }
+		id = SWE_norrbottens 
+		icon = { GFX_focus_generic_steel_mill = yes }
 		x = -4
 		y = 2
 		cost = 5
@@ -364,13 +375,32 @@ focus_tree = {
 			
 		}
 		completion_reward = {
+			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus SWE_norrbottens"
+			unlock_decision_tooltip = SWE_norrbottens_decision 
+	
+		}
+	}
+	
+	focus = {
+		id = SWE_engage_in_shale_oil_production
+		icon = { GFX_goal_generic_oil_refinery = yes }
+		x = -1
+		y = 1
+		cost = 5
+		ai_will_do = { factor = 10 }
+		available = { 
+		
+		}
+		bypass = {  }
+		search_filters = { FOCUS_FILTER_HISTORICAL }
+		prerequisite = { focus = SWE_norrbottens }
+		relative_position_id = SWE_norrbottens
+		select_effect = { 
+			
+		}
+		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): Focus SWE_engage_in_shale_oil_production"
-			141 = {
-				add_resource = {
-					type = oil
-					amount = 20
-				}
-			}
+			unlock_decision_tooltip = SWE_shale_oil_producttion
 		}
 	}
 	
@@ -1335,6 +1365,9 @@ focus_tree = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): SWE_wide_right_government"
 			add_war_support = 0.05
 			add_popularity = { ideology = democratic popularity = 0.05 }
+			add_to_variable = { SWE_popularity_of_SDRPSH = -6 tooltip = SWE_increase_of_socdem_popularity_tt }
+			add_to_variable = { SWE_popularity_of_socialistic_party = 5 tooltip = SWE_increase_of_socialist_popularity_tt }
+			add_to_variable = { SWE_popularity_of_KPSH = 1 tooltip = SWE_increase_of_KPSH_popularity_tt }
 		}
 	}
 	
@@ -1719,7 +1752,7 @@ focus_tree = {
 	
 	focus = {
 		id = SWE_tax_cuts_for_industry
-		icon = GFX_focus_SWE_SKF_ball_bearings
+		icon = GFX_focus_RAJ_war_taxes
 		x = 1
 		y = 1
 		cost = 5
@@ -4847,6 +4880,9 @@ focus_tree = {
 		cancelable = no 
 		available = {
 			has_country_flag = SWE_national_government_is_ruling
+			ENG = { has_war = yes }
+			ENG = { is_faction_leader = yes }
+			NOT = { has_war_with = ENG }
 		}
 		bypass = {  }
 		search_filters = { FOCUS_FILTER_HISTORICAL }
@@ -4857,7 +4893,49 @@ focus_tree = {
 		}
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): SWE_transmit_information_to_allies"
-			
+			# сюда можно что-то с развед агентствами добавить но мне лень 
+			ENG = {
+				add_opinion_modifier = {
+					target = SWE
+					modifier = emphasis_on_alliance
+				}
+				reverse_add_opinion_modifier = {
+					target = SWE
+					modifier = emphasis_on_alliance
+				}
+			}
+			if = { 
+				limit = { 
+					USA = { has_war = yes } 
+					NOT = { has_war_with = SWE }
+				}
+				USA = {
+					add_opinion_modifier = {
+						target = SWE
+						modifier = emphasis_on_alliance
+					}
+					reverse_add_opinion_modifier = {
+						target = SWE
+						modifier = emphasis_on_alliance
+					}
+				}
+			}
+			if = { 
+				limit = { 
+					FRA = { has_war = yes } 
+					NOT = { has_war_with = SWE }
+				}
+				FRA = {
+					add_opinion_modifier = {
+						target = SWE
+						modifier = emphasis_on_alliance
+					}
+					reverse_add_opinion_modifier = {
+						target = SWE
+						modifier = emphasis_on_alliance
+					}
+				}
+			}
 		}
 	}
 	
@@ -4920,7 +4998,10 @@ focus_tree = {
 		ai_will_do = { factor = 10 }
 		cancelable = no 
 		available = {
-		
+			OR = { 
+				threat > 0.25 
+				has_country_flag = SWE_national_government_is_ruling
+			}
 		}
 		bypass = {  }
 		search_filters = { FOCUS_FILTER_HISTORICAL }
@@ -4948,6 +5029,8 @@ focus_tree = {
 				check_variable = { SWE_summ_of_deputies > 115 }
 				tooltip = NW_SWE_support_of_government_check_tt 
 			}
+			DEN = { is_subject = no }
+			NOR = { is_subject = no }
 		}
 		bypass = {  }
 		search_filters = { FOCUS_FILTER_HISTORICAL }
@@ -4964,7 +5047,7 @@ focus_tree = {
 				DEN = { country_event = NW_SWE.45 }
 				NOR = { country_event = NW_SWE.45 }
 				FIN = { country_event = NW_SWE.45 }
-				SWE = { country_event = { id = NW_SWE.45 days = 15 } } 
+				SWE = { country_event = { id = NW_SWE.46 days = 15 } } 
 			}
 		}
 	}
@@ -5092,18 +5175,60 @@ focus_tree = {
 		ai_will_do = { factor = 10 }
 		cancelable = no 
 		available = {
-		
+			DEN = { is_subject = no }
+			NOR = { is_subject = no }
 		}
 		bypass = {  }
 		search_filters = { FOCUS_FILTER_HISTORICAL }
 		prerequisite = { focus = SWE_new_meeting_of_nordic }
 		relative_position_id = SWE_new_meeting_of_nordic
 		select_effect = { 
-			
+			DEN = { country_event = NW_SWE.63 }
+			NOR = { country_event = NW_SWE.63 }
 		}
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): SWE_nordic_council"
+			custom_effect_tooltip = SWE_nordic_council_tt
 			
+			hidden_effect = { 
+				if = {
+					limit = { has_country_flag = NW_SWE_veto_for_nordic_council }
+					SWE = { country_event = NW_SWE.64 } 
+				}
+				else = { 
+					SWE = {
+						add_opinion_modifier = {
+							target = DEN
+							modifier = emphasis_on_alliance
+						}
+						reverse_add_opinion_modifier = {
+							target = DEN
+							modifier = emphasis_on_alliance
+						}
+					}
+					SWE = {
+						add_opinion_modifier = {
+							target = NOR
+							modifier = emphasis_on_alliance
+						}
+						reverse_add_opinion_modifier = {
+							target = NOR
+							modifier = emphasis_on_alliance
+						}
+					}
+					NOR = {
+						add_opinion_modifier = {
+							target = DEN
+							modifier = emphasis_on_alliance
+						}
+						reverse_add_opinion_modifier = {
+							target = DEN
+							modifier = emphasis_on_alliance
+						}
+					}
+					news_event = NW_SWE_news.4
+				}
+			}
 		}
 	}
 	
@@ -5116,18 +5241,45 @@ focus_tree = {
 		ai_will_do = { factor = 10 }
 		cancelable = no 
 		available = {
-		
+			has_country_flag = NW_SWE_nordic_council_was_created
+			custom_trigger_tooltip = { 
+				check_variable = { SWE_summ_of_deputies > 115 }
+				tooltip = NW_SWE_support_of_government_check_tt 
+			}
 		}
 		bypass = {  }
 		search_filters = { FOCUS_FILTER_HISTORICAL }
 		prerequisite = { focus = SWE_nordic_council }
 		relative_position_id = SWE_nordic_council
 		select_effect = { 
-			
+			DEN = { country_event = NW_SWE.69 }
+			NOR = { country_event = NW_SWE.69 }
+			if = { 
+				limit = { has_country_flag = NW_SWE_Finland_include }
+				FIN = { country_event = NW_SWE.69 }
+				
+			}
 		}
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): SWE_northern_passport_union"
-			
+			custom_effect_tooltip = SWE_northern_passport_union_tt
+			hidden_effect = { 
+				if = { 
+					limit = { has_country_flag = NW_SWE_veto_for_passport_zone }
+					country_event = NW_SWE.70
+					set_country_flag = NW_SWE_passport_union_recently_was_offered
+					country_event = { id = NW_SWE.75 days = 365 }
+				}
+				else = { 
+					country_event = NW_SWE.71 
+					NOR = { country_event = NW_SWE.71 }
+					DEN = { country_event = NW_SWE.71 }
+					if = { 
+						limit = { has_country_flag = NW_SWE_Finland_include } 
+						FIN = { country_event = NW_SWE.71 }
+					}
+				}
+			}
 		}
 	}
 	
@@ -5140,18 +5292,45 @@ focus_tree = {
 		ai_will_do = { factor = 10 }
 		cancelable = no 
 		available = {
-		
+			has_country_flag = NW_SWE_nordic_council_was_created
+			custom_trigger_tooltip = { 
+				check_variable = { SWE_summ_of_deputies > 115 }
+				tooltip = NW_SWE_support_of_government_check_tt 
+			}
 		}
 		bypass = {  }
 		search_filters = { FOCUS_FILTER_HISTORICAL }
 		prerequisite = { focus = SWE_nordic_council }
 		relative_position_id = SWE_nordic_council
 		select_effect = { 
-			
+			DEN = { country_event = NW_SWE.72 }
+			NOR = { country_event = NW_SWE.72 }
+			if = { 
+				limit = { has_country_flag = NW_SWE_Finland_include }
+				FIN = { country_event = NW_SWE.72 }
+				
+			}
 		}
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName] ([Root.GetTag]): SWE_organization_for_economic_cooperation"
-			
+			custom_effect_tooltip = SWE_organization_for_economic_cooperation_tt
+			hidden_effect = { 
+				if = { 
+					limit = { has_country_flag = NW_SWE_veto_for_economic_cooperation }
+					country_event = NW_SWE.73
+					set_country_flag = NW_SWE_economic_cooperation_recently_was_offered
+					country_event = { id = NW_SWE.76 days = 365 }
+				}
+				else = { 
+					country_event = NW_SWE.74 
+					NOR = { country_event = NW_SWE.74 }
+					DEN = { country_event = NW_SWE.74 }
+					if = { 
+						limit = { has_country_flag = NW_SWE_Finland_include } 
+						FIN = { country_event = NW_SWE.74 }
+					}
+				}
+			}
 		}
 	}
 	
