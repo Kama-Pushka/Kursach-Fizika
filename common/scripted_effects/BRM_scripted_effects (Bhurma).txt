@@ -1,0 +1,387 @@
+BRM_burmese_currency_effect = {
+
+	hidden_effect = {
+		clamp_variable = { var = BRM_burmese_currency_var min = 0 }
+	}
+}
+
+BRM_national_tension_effect = {
+	
+	hidden_effect = {
+		clamp_variable = { var = BRM_national_tension_var min = 0 max = 100 }
+		if = {
+			limit = { check_variable = { BRM_national_tension_var > 99.9 } }
+			country_event = { id = NW_BRM.47 hours = 6 }
+		}
+	}
+}
+
+BRM_the_struggle_for_power_effect = {
+	
+	hidden_effect = {
+		clamp_variable = { var = BRM_clear_party_var min = 0 max = 100 }
+		clamp_variable = { var = BRM_stable_party_var min = 0 max = 100 }
+		if = {
+			limit = { check_variable = { BRM_clear_party_var > 99 } }
+			country_event = { id = NW_BRM.74 hours = 6 }
+		}
+		if = {
+			limit = { check_variable = { BRM_stable_party_var > 99 } }
+			country_event = { id = NW_BRM.77 hours = 6 }
+		}
+		else_if = {
+			limit = {
+				check_variable = { BRM_stable_party_var > 79 }
+				NOT = { has_country_flag = BRM_event_75_BLOCK_flag }
+			}
+			set_country_flag = BRM_event_75_BLOCK_flag
+			country_event = { id = NW_BRM.75 hours = 6 }
+		}
+	}
+}
+
+BRM_civil_war_effect = {
+	#politics#
+	if = {
+		limit = {
+			NOT = {
+				has_global_flag = BRM_second_civil_war_flag
+				has_global_flag = BRM_third_civil_war_flag
+			}
+		}	
+		if = {
+			limit = { has_government = communism }
+			PREV = {
+				BRM_Aung_San = { set_nationality = PREV.PREV }
+				BRM_Ba_Cho = { set_nationality = PREV.PREV }
+				BRM_Thein_Pe_Myint = { set_nationality = PREV.PREV }
+				BRM_Maung_Maung_Kha = { set_nationality = PREV.PREV }
+				BRM_Khin_Kyi = { set_nationality = PREV.PREV }
+				BRM_Thakin_Mya = { set_nationality = PREV.PREV }
+				BRM_U_Nu = { set_nationality = PREV.PREV }
+				BRM_Thakin_Soe = { set_nationality = PREV.PREV }
+				BRM_Ne_Win = { set_nationality = PREV.PREV }
+				BRM_Kyaw_Nyein = { set_nationality = PREV.PREV }
+				BRM_Than_Tun = { set_nationality = PREV.PREV }
+				#generals#
+				BRM_Bo_Let_Ya = { set_nationality = PREV.PREV }
+				BRM_Kyaw_Zaw = { set_nationality = PREV.PREV }
+				BRM_Bo_Hmu_Aung = { set_nationality = PREV.PREV }
+				BRM_Bo_Zeya = { set_nationality = PREV.PREV }
+				BRM_Bo_Yan_Aung = { set_nationality = PREV.PREV }
+				BRM_Bo_Taya = { set_nationality = PREV.PREV }
+			}
+			promote_character = BRM_Aung_San
+			complete_national_focus = BRM_the_last_hungry_march
+			division_template = {
+				name = "Takin Rebels"
+				is_locked = yes
+				division_names_group = RAJ_INF_01
+				regiments = {
+					infantry = { x = 0 y = 0 }
+					infantry = { x = 0 y = 1 }
+					infantry = { x = 1 y = 0 }
+					infantry = { x = 1 y = 1 }
+				}
+			}
+			capital_scope = {
+				create_unit = {
+					division = "division_template = \"Takin Rebels\" start_equipment_factor = 0.25"
+					owner = PREV
+					count = 1
+				}
+			}
+			country_event = { id = NW_BRM.41 days = 10 }
+		}
+		else_if = {
+			limit = { has_government = fascism }
+			PREV = {
+				BRM_U_Saw = { set_nationality = PREV.PREV }
+			}
+			promote_character = BRM_U_Saw
+			complete_national_focus = BRM_the_second_revolt_of_the_gallons
+			division_template = {
+				name = "Halon Tat"
+				is_locked = yes
+				division_names_group = RAJ_INF_01
+				regiments = {
+					infantry = { x = 0 y = 0 }
+					infantry = { x = 0 y = 1 }
+					infantry = { x = 0 y = 2 }
+					infantry = { x = 1 y = 0 }
+					infantry = { x = 1 y = 1 }
+					infantry = { x = 1 y = 2 }
+				}
+			}
+			capital_scope = {
+				create_unit = {
+					division = "division_template = \"Halon Tat\" start_experience_factor = 0.75"
+					owner = PREV
+					count = 1
+				}
+			}
+		}
+		country_event = { id = NW_BRM.39 days = 2 }
+		country_event = { id = NW_BRM.40 days = 20 }
+		PREV = {
+			country_event = { id = NW_BRM.39 days = 2 }
+			country_event = { id = NW_BRM.40 days = 20 }
+		}
+	}
+	#common#
+	set_variable = { BRM_burmese_currency_var = PREV.BRM_burmese_currency_var }
+	set_variable = { BRM_cost_dec = PREV.BRM_cost_dec }
+	set_country_flag = BRM_parliament_of_burma_category_BLOCK_flag
+	#падение экономики#
+	if = {
+		limit = { PREV = { has_dynamic_modifier = { modifier = BRM_landless_peasants_modifier } } }
+		add_dynamic_modifier = { modifier = BRM_landless_peasants_modifier }
+		set_variable = { BRM_global_building_slots_factor_var = PREV.BRM_global_building_slots_factor_var }
+		force_update_dynamic_modifier = yes
+		if = {
+			limit = { PREV = { has_country_flag = BRM_investments_from_tick_business_COMPLETED_flag } }
+			set_country_flag = BRM_investments_from_tick_business_COMPLETED_flag
+		}
+		if = {
+			limit = { PREV = { has_country_flag = BRM_opium_plantations_COMPLETED_flag } }
+			set_country_flag = BRM_opium_plantations_COMPLETED_flag
+		}
+		if = {
+			limit = { PREV = { has_country_flag = BRM_take_advantage_of_foreign_investments_COMPLETED_flag } }
+			set_country_flag = BRM_take_advantage_of_foreign_investments_COMPLETED_flag
+		}
+	}
+	#oil#
+	if = {
+		limit = { PREV = { has_country_flag = BRM_expansion_of_oil_production_1_complete_flag } }
+		set_country_flag = BRM_expansion_of_oil_production_1_complete_flag
+	}
+	if = {
+		limit = { PREV = { has_country_flag = BRM_expansion_of_oil_production_2_complete_flag } }
+		set_country_flag = BRM_expansion_of_oil_production_2_complete_flag
+	}
+	if = {
+		limit = { PREV = { has_country_flag = BRM_expansion_of_oil_production_3_complete_flag } }
+		set_country_flag = BRM_expansion_of_oil_production_3_complete_flag
+	}
+	if = {
+		limit = { PREV = { has_country_flag = BRM_expansion_of_oil_production_4_complete_flag } }
+		set_country_flag = BRM_expansion_of_oil_production_4_complete_flag
+	}
+	if = {
+		limit = { PREV = { has_country_flag = BRM_expansion_of_oil_production_5_complete_flag } }
+		set_country_flag = BRM_expansion_of_oil_production_5_complete_flag
+	}
+	#tungsten#
+	if = {
+		limit = { PREV = { has_country_flag = BRM_expansion_tungsten_mining_1_complete_flag } }
+		set_country_flag = BRM_expansion_tungsten_mining_1_complete_flag
+	}
+	if = {
+		limit = { PREV = { has_country_flag = BRM_expansion_tungsten_mining_2_complete_flag } }
+		set_country_flag = BRM_expansion_tungsten_mining_2_complete_flag
+	}
+	if = {
+		limit = { PREV = { has_country_flag = BRM_expansion_tungsten_mining_3_complete_flag } }
+		set_country_flag = BRM_expansion_tungsten_mining_3_complete_flag
+	}
+}
+
+BRM_checking_vars_gui_effect = {
+
+	hidden_effect = {
+### СЛУЧАЙ ДЛЯ ПРИБАВКИ ПАРТИЙ
+		if = {
+			limit = {
+				OR = {
+					NOT = { check_variable = { BRM_support_of_gcba_temp_var = 0 } }
+					NOT = { check_variable = { BRM_support_of_comin_cochin_temp_var = 0 } }
+					NOT = { check_variable = { BRM_support_of_tramp_temp_var = 0 } }
+					NOT = { check_variable = { BRM_support_of_union_of_five_flowers_temp_var = 0 } }
+				}
+			}
+			add_to_temp_variable = { current_delta_temp = BRM_support_of_gcba_temp_var }
+			add_to_temp_variable = { current_delta_temp = BRM_support_of_comin_cochin_temp_var }
+			add_to_temp_variable = { current_delta_temp = BRM_support_of_tramp_temp_var }
+			add_to_temp_variable = { current_delta_temp = BRM_support_of_union_of_five_flowers_temp_var }
+		
+### НЕЗАВИСИМЫЕ КАНДИДАТЫ - НА МЯСО
+			if = {
+				limit = { check_variable = { BRM_support_of_independent_candidates_var > 0 } }
+				if = {
+					limit = { check_variable = { current_delta_temp > 0 } }
+					set_temp_variable = { current_delta_sub_temp = -1 }
+					else_if = {
+						limit = { check_variable = { current_delta_temp < 0 } }
+						set_temp_variable = { current_delta_sub_temp = 1 }
+					}
+				}
+				while_loop_effect = {
+					limit = {
+						NOT = { check_variable = { current_delta_temp = 0 } }
+						check_variable = { BRM_support_of_independent_candidates_var > 0 }
+					}
+					add_to_temp_variable = { current_delta_temp = current_delta_sub_temp }
+					add_to_variable = { BRM_support_of_independent_candidates_var = current_delta_sub_temp }
+				}
+			}	
+		}
+### СЛУЧАЙ ДЛЯ ПРИБАВКИ НЕЙТРАЛОВ
+		else_if = {
+			limit = { NOT = { check_variable = { BRM_support_of_independent_candidates_temp_var = 0 } } }
+			# ИТОГОВОЕ ВЫЧИСЛЕНИЕ
+			add_to_temp_variable = { current_delta_temp = BRM_support_of_independent_candidates_temp_var }
+			add_to_variable = { BRM_support_of_independent_candidates_var = current_delta_temp }
+		}
+			
+### ОПЕРАЦИИ ВЫЧЕТА ИЗ НЕ НЕЙТРАЛЬНЫХ ПАРТИЙ
+		if = {
+			limit = { NOT = { check_variable = { current_delta_temp = 0 } } }
+			set_temp_variable = { percent_piece_total = 91 }
+			if = {
+				limit = {
+					check_variable = { BRM_support_of_gcba_temp_var = 0 }
+				}
+				if = {
+					limit = {
+						check_variable = { BRM_support_of_gcba_var > 0 }
+					}
+					set_temp_variable = { percent_piece = BRM_support_of_gcba_var }
+					divide_temp_variable = { percent_piece = percent_piece_total }
+					set_temp_variable = { delta_temp_1 = current_delta_temp }
+					multiply_temp_variable = { delta_temp_1 = percent_piece }
+					# ИТОГОВОЕ ВЫЧИСЛЕНИЕ
+					subtract_from_temp_variable = { current_delta_temp = delta_temp_1 }
+					subtract_from_variable = { BRM_support_of_gcba_var = delta_temp_1 }
+				}
+			}
+			if = {
+				limit = {
+					check_variable = { BRM_support_of_tramp_temp_var = 0 }
+				}
+				if = {
+					limit = {
+						check_variable = { BRM_support_of_tramp_var > 0 }
+					}
+					set_temp_variable = { percent_piece = BRM_support_of_tramp_var }
+					divide_temp_variable = { percent_piece = percent_piece_total }
+					set_temp_variable = { delta_temp_1 = current_delta_temp }
+					multiply_temp_variable = { delta_temp_1 = percent_piece }
+					# ИТОГОВОЕ ВЫЧИСЛЕНИЕ
+					subtract_from_temp_variable = { current_delta_temp = delta_temp_1 }
+					subtract_from_variable = { BRM_support_of_tramp_var = delta_temp_1 }
+				}
+			}
+			if = {
+				limit = {
+					check_variable = { BRM_support_of_union_of_five_flowers_temp_var = 0 }
+				}
+				if = {
+					limit = {
+						check_variable = { BRM_support_of_union_of_five_flowers_var > 0 }
+					}
+					set_temp_variable = { percent_piece = BRM_support_of_union_of_five_flowers_var }
+					divide_temp_variable = { percent_piece = percent_piece_total }
+					set_temp_variable = { delta_temp_1 = current_delta_temp }
+					multiply_temp_variable = { delta_temp_1 = percent_piece }
+					# ИТОГОВОЕ ВЫЧИСЛЕНИЕ
+					subtract_from_temp_variable = { current_delta_temp = delta_temp_1 }
+					subtract_from_variable = { BRM_support_of_union_of_five_flowers_var = delta_temp_1 }
+				}
+			}
+			if = {
+				limit = {
+					check_variable = { BRM_support_of_comin_cochin_temp_var = 0 }
+				}
+				if = {
+					limit = {
+						check_variable = { BRM_support_of_comin_cochin_var > 0 }
+					}
+					set_temp_variable = { percent_piece = BRM_support_of_comin_cochin_var }
+					divide_temp_variable = { percent_piece = percent_piece_total }
+					set_temp_variable = { delta_temp_1 = current_delta_temp }
+					multiply_temp_variable = { delta_temp_1 = percent_piece }
+					# ИТОГОВОЕ ВЫЧИСЛЕНИЕ
+					subtract_from_temp_variable = { current_delta_temp = delta_temp_1 }
+					subtract_from_variable = { BRM_support_of_comin_cochin_var = delta_temp_1 }
+				}
+			}
+		}
+		round_variable = BRM_support_of_independent_candidates_var
+		round_variable = BRM_support_of_gcba_var
+		round_variable = BRM_support_of_tramp_var
+		round_variable = BRM_support_of_union_of_five_flowers_var
+		round_variable = BRM_support_of_comin_cochin_var
+	}
+}
+
+BRM_circle_effect = {
+	
+	hidden_effect = {
+		clamp_variable = { var = BRM_support_of_independent_candidates_var min = 0 max = 91 }
+		clamp_variable = { var = BRM_support_of_gcba_var min = 0 max = 91 }
+		clamp_variable = { var = BRM_support_of_tramp_var min = 0 max = 91 }
+		clamp_variable = { var = BRM_support_of_union_of_five_flowers_var min = 0 max = 91 }
+		clamp_variable = { var = BRM_support_of_comin_cochin_var min = 0 max = 91 }
+		
+		#CIRCLE BAR#
+		
+		clear_array = pie_chart
+		resize_array = {
+			array = pie_chart
+			value = 1  
+			size = 91
+		}
+		
+		set_temp_variable = { BRM_support_of_independent_candidates_var_temp_for_circle = BRM_support_of_independent_candidates_var }
+		round_temp_variable = BRM_support_of_independent_candidates_var_temp_for_circle			
+		for_loop_effect = {
+			start = 0
+			end = BRM_support_of_independent_candidates_var_temp_for_circle
+			set_variable = { pie_chart^v = 1 }
+			add_to_variable = { ROOT.last_idx = 1 }
+		}
+		
+		set_temp_variable = { BRM_support_of_comin_cochin_var_temp_for_circle = BRM_support_of_comin_cochin_var }
+		round_temp_variable = BRM_support_of_comin_cochin_var_temp_for_circle 
+		add_to_temp_variable = { BRM_support_of_comin_cochin_var_temp_for_circle = ROOT.last_idx }
+		for_loop_effect = {
+			start = ROOT.last_idx
+			end = BRM_support_of_comin_cochin_var_temp_for_circle
+			set_variable = { pie_chart^v = 2 }
+			add_to_variable = { ROOT.last_idx = 1 }
+		}
+		
+		set_temp_variable = { BRM_support_of_gcba_var_temp_for_circle = BRM_support_of_gcba_var }
+		round_temp_variable = BRM_support_of_gcba_var_temp_for_circle 
+		add_to_temp_variable = { BRM_support_of_gcba_var_temp_for_circle = ROOT.last_idx }
+		for_loop_effect = {
+			start = ROOT.last_idx
+			end = BRM_support_of_gcba_var_temp_for_circle
+			set_variable = { pie_chart^v = 3 }
+			add_to_variable = { ROOT.last_idx = 1 }
+		}
+
+		set_temp_variable = { BRM_support_of_tramp_var_temp_for_circle = BRM_support_of_tramp_var }
+		round_temp_variable = BRM_support_of_tramp_var_temp_for_circle
+		add_to_temp_variable = { BRM_support_of_tramp_var_temp_for_circle = ROOT.last_idx }
+		for_loop_effect = {
+			start = ROOT.last_idx
+			end = BRM_support_of_tramp_var_temp_for_circle
+			set_variable = { pie_chart^v = 4 }
+			add_to_variable = { ROOT.last_idx = 1 }
+		}
+
+		set_temp_variable = { BRM_support_of_union_of_five_flowers_var_temp_for_circle = BRM_support_of_union_of_five_flowers_var }
+		round_temp_variable = BRM_support_of_union_of_five_flowers_var_temp_for_circle 
+		add_to_temp_variable = { BRM_support_of_union_of_five_flowers_var_temp_for_circle = ROOT.last_idx }
+		for_loop_effect = {
+			start = ROOT.last_idx
+			end = BRM_support_of_union_of_five_flowers_var_temp_for_circle
+			set_variable = { pie_chart^v = 5 }
+		}
+
+		clear_variable = ROOT.last_idx
+		add_to_variable = { pie_chart_dirty = 1 }
+	}
+}
